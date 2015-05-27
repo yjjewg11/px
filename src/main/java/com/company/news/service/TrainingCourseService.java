@@ -133,30 +133,31 @@ public class TrainingCourseService extends AbstractServcice {
       formTime.setType(1);
       formTime.setRelation_id( dbobj.getId());
       // 保存
-      TimeScheduleRelation dbobjTime = new TimeScheduleRelation();
-      // Properties properties = (Properties) this.bodyJsonToProperties(bodyJson);
-      // RestUtil.copyNotEmptyValueToobj(properties, form, dbobjTime);
-      BeanUtils.copyProperties(formTime, dbobjTime);
-      if (Long.valueOf(0).equals(dbobjTime.getId())) {
-        dbobjTime.setId(null);
+    
+      if (Long.valueOf(0).equals(formTime.getId())) {
+        formTime.setId(null);
       }
-      if (dbobjTime.getId() == null) {// 新建
+      if (formTime.getId() == null) {// 新建
+        TimeScheduleRelation dbobjTime = new TimeScheduleRelation();
+        // Properties properties = (Properties) this.bodyJsonToProperties(bodyJson);
+        // RestUtil.copyNotEmptyValueToobj(properties, form, dbobjTime);
+        BeanUtils.copyProperties(formTime, dbobjTime);
         dbobjTime.setCreate_time(TimeUtils.getCurrentTimestamp());
         dbobjTime.setCreate_userid(userInfo.getId());
         this.nSimpleHibernateDao.save(dbobjTime);
       } else {
        
         TimeScheduleRelation entityDB =
-            (TimeScheduleRelation) this.nSimpleHibernateDao.getObject(TimeScheduleRelation.class, dbobjTime
+            (TimeScheduleRelation) this.nSimpleHibernateDao.getObject(TimeScheduleRelation.class, formTime
                 .getId());
         if (entityDB == null) {
           responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-          responseMessage.setMessage("请刷新页面，重试。异常数据：TimeScheduleRelation数据不存在！id="+dbobjTime
+          responseMessage.setMessage("请刷新页面，重试。异常数据：TimeScheduleRelation数据不存在！id="+formTime
             .getId());
           return model;
         }
         // this.nSimpleHibernateDao.getHibernateTemplate().evict(entityDB);
-        BeanUtils.copyProperties(form, entityDB);
+        BeanUtils.copyProperties(formTime, entityDB);
         // RestUtil.copyNotEmptyValueToobj(properties, form, entityDB);
 
         this.nSimpleHibernateDao.getHibernateTemplate().update(entityDB);
