@@ -68,10 +68,10 @@ public class UserinfoController extends AbstractRESTController{
     }
 
 	   @RequestMapping(value = "/modify", method = RequestMethod.POST)
-	    public String modify( ModelMap model, HttpServletRequest request) {
+	    public String modify(String verify, ModelMap model, HttpServletRequest request) {
 	        try {
 	          String bodyJson=RestUtil.getJsonStringByRequest(request);
-	          userinfoService.modify(bodyJson, model, request);
+	          userinfoService.modify(verify,bodyJson, model, request);
 	        } catch (Exception e) {
 	          e.printStackTrace();
 	          ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);

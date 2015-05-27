@@ -135,7 +135,7 @@ public class UserinfoService extends AbstractServcice {
    * @param request
    * @return
    */
-  public ModelMap modify(String bodyJson, ModelMap model, HttpServletRequest request) throws Exception {
+  public ModelMap modify(String verify,String bodyJson, ModelMap model, HttpServletRequest request) throws Exception {
     ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
     User userInfo = SessionListener.getUserInfoBySession(request);
     
@@ -163,15 +163,16 @@ public class UserinfoService extends AbstractServcice {
     RestUtil.copyNotEmptyValueToobj(properties, form, userDB);
     
     //增加教练认证和实名认证参数。
-    String type=(String)request.getAttribute("verify");
-    if("name".equals(type)){//实名认证
-      userInfo.setReal_name_verify(SystemConstants.User_Verify_Apply);
+//    String verify=(String)request.getAttribute("verify");
+    if("name".equals(verify)){//实名认证
+      userDB.setReal_name_verify(SystemConstants.User_Verify_Apply);
       
-    }else  if("marathon".equals(type)){//马拉松教练认证
-      userInfo.setReal_name_verify(SystemConstants.User_Verify_Apply);
+    }else  if("marathon".equals(verify)){//马拉松教练认证
+      userDB.setReal_name_verify(SystemConstants.User_Verify_Apply);
      // userInfo.setMarathon_verify(SystemConstants.User_Verify_Apply);
       //初始策略，默认通过
-      userInfo.setMarathon_verify(SystemConstants.User_Verify_Pass);
+      userDB.setMarathon_verify(SystemConstants.User_Verify_Pass);
+      userDB.setType(1);
     }
   
     try {
