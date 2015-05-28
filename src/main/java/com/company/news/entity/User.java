@@ -69,6 +69,9 @@ public class User implements DBEntityInterface {
   private String context;//简介，自由填写（300个字符）
   @Column
   private Integer trainer_status;//教练工作状态：。1：可以接单。2：暂停接单。
+  
+  private Integer trainer_star_level;//教练评级，根据评级综合计算。1-5
+  
   @Column
   private String marathon_imgurl;//马拉松认证图片地址.
   @Column
@@ -231,6 +234,12 @@ public class User implements DBEntityInterface {
   }
   public void setBirth(Timestamp birth) {
     this.birth = birth;
+  }
+  public Integer getTrainer_star_level() {
+    return trainer_star_level;
+  }
+  public void setTrainer_star_level(Integer trainer_star_level) {
+    this.trainer_star_level = trainer_star_level;
   }
  
 
