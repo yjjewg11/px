@@ -27,13 +27,15 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
   private Long course_id;//关联课程id
   @Column
   private Long time_schedule_id;//关联课程时段id
+    @Column
+    private Timestamp course_time;//课程上课时间　
   @Column
-  private Timestamp create_time;//关联时间
+  private Timestamp create_time;//关联时间　　　　
   @Column
   private Integer status;//订单状态：2：已接单，3：待支付，4支付完成，4：课程完成,5:关闭。
   @Column
   private Timestamp receiving_order_time;//接单时间
-  @Column
+    @Column
   private Timestamp pay_time;//支付时间
   @Column
   private Timestamp complete_time;//关闭时间
@@ -43,9 +45,18 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
   private String  appraise_context;//评价内容。[最大300字数]可以不填写。
   @Column
   private Timestamp  appraise_time;//时间。
-  
-  
-  @Override
+
+
+
+    public Timestamp getCourse_time() {
+        return course_time;
+    }
+
+    public void setCourse_time(Timestamp course_time) {
+        this.course_time = course_time;
+    }
+
+    @Override
   public Long getId() {
     // TODO Auto-generated method stub
     return id;
