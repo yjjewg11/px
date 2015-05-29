@@ -75,11 +75,60 @@ public class UserRelationTrainingCourseController {
     return "";
   }
   
-  @RequestMapping(value = "/userRelationTrainingCourse/query", method = RequestMethod.GET)
+  
+  /**
+   * 根据课程查询销售数据
+   * @param sc
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/userRelationTrainingCourse/query/byCourse", method = RequestMethod.GET)
    public String query(UserRelationTrainingCourseSearchContion sc, ModelMap model,HttpServletRequest request) {
+    model.clear();
+    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+    if (sc.getCourse_id()==null) {
+    responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+    responseMessage.setMessage("查询条件 course_id 不能未空");
+    return "";
+  }
+//  if (sc.getTime_schedule_id()==null) {
+//    responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//    responseMessage.setMessage("查询条件 time_schedule_id 不能未空");
+//    return "";
+//  }
     userRelationTrainingCourseService.index(sc, model,request);
     return "";
   }
+  
+  
+  /**
+   * 查询我预订的课程
+   * @param sc
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/userRelationTrainingCourse/query/subscribe/my", method = RequestMethod.GET)
+  public String querySubscribeMy(UserRelationTrainingCourseSearchContion sc, ModelMap model,HttpServletRequest request) {
+    sc.setType("subscribe_my");
+   userRelationTrainingCourseService.index(sc, model,request);
+   return "";
+ }
+  
+  /**
+   * 查询我的课程销售数据
+   * @param sc
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/userRelationTrainingCourse/query/myCourse/sales", method = RequestMethod.GET)
+  public String queryMyCourseSales(UserRelationTrainingCourseSearchContion sc, ModelMap model,HttpServletRequest request) {
+    sc.setType("myCourse_sales");
+   userRelationTrainingCourseService.index(sc, model,request);
+   return "";
+ }
   
   
   @RequestMapping(value = "/userRelationTrainingCourse/my/{ids}", method = RequestMethod.DELETE)

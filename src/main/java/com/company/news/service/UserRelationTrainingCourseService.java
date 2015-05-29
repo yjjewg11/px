@@ -8,7 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
-import com.company.news.commons.util.DbUtils;
+import com.company.news.entity.TimeScheduleRelation;
+import com.company.news.entity.TrainingCourse;
 import com.company.news.entity.User;
 import com.company.news.entity.UserRelationTrainingCourse;
 import com.company.news.jsonform.UserRelationTrainingCourseJsonform;
@@ -56,6 +57,29 @@ public class UserRelationTrainingCourseService extends AbstractServcice {
       responseMessage.setMessage("属性 Time_schedule_id 不能为空");
       return model;
     }
+    if (form.getCourse_time() == null) {
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("请填写预约时间！");
+      return model;
+    }
+    
+    
+    TrainingCourse trainingCourse =
+      (TrainingCourse) this.nSimpleHibernateDao.getObject(TrainingCourse.class,  form.getCourse_id());
+    if(trainingCourse==null){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("课程已不在。Course_id="+form.getCourse_id());
+      return model;
+    }
+    
+    TimeScheduleRelation timeScheduleRelation =
+      (TimeScheduleRelation) this.nSimpleHibernateDao.getObject(TimeScheduleRelation.class,  form.getTime_schedule_id());
+    if(timeScheduleRelation==null){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("课程对应时段已不在。Time_schedule_id="+form.getTime_schedule_id());
+      return model;
+    }
+   
     // 保存
     UserRelationTrainingCourse dbobj = (UserRelationTrainingCourse) this.getEntityClass().newInstance();
     Properties properties = (Properties) this.bodyJsonToProperties(bodyJson);
@@ -65,30 +89,44 @@ public class UserRelationTrainingCourseService extends AbstractServcice {
     }
     if (dbobj.getId() == null) {// 新建
       dbobj.setCreate_time(TimeUtils.getCurrentTimestamp());
-      dbobj.setUser_id(userInfo.getId());
+      dbobj.setCreate_userid(userInfo.getId());
+      dbobj.setCourse_place(trainingCourse.getPlace());
+      dbobj.setCourse_coach_id(trainingCourse.getCreate_userid());
+      dbobj.setCourse_difficulty_degree(trainingCourse.getDifficulty_degree());
+      dbobj.setCourse_price(trainingCourse.getPrice());
+      dbobj.setCourse_time_length(trainingCourse.getTime_length());
+      dbobj.setCourse_title(trainingCourse.getTitle());
+      
+      UserRelationTrainingCourse entityDB =
+        (UserRelationTrainingCourse) this.nSimpleHibernateDao.getObject(this.getEntityClass(), dbobj
+            .getId());
+      
+      
       this.nSimpleHibernateDao.save(dbobj);
     } else {
-      UserRelationTrainingCourse entityDB =
+       dbobj =
           (UserRelationTrainingCourse) this.nSimpleHibernateDao.getObject(this.getEntityClass(), dbobj
               .getId());
-      if (entityDB == null) {
+      if (dbobj == null) {
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
         responseMessage.setMessage("数据不存在！");
         return model;
       }
 
-      if (!userInfo.getId().equals(entityDB.getUser_id())) {
+      if (!userInfo.getId().equals(dbobj.getCreate_userid())) {
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
         responseMessage.setMessage("不是创建人，没有修改权限！");
         return model;
       }
       // this.nSimpleHibernateDao.getHibernateTemplate().evict(entityDB);
-      RestUtil.copyNotEmptyValueToobj(properties, form, entityDB);
+      RestUtil.copyNotEmptyValueToobj(properties, form, dbobj);
 
-      this.nSimpleHibernateDao.getHibernateTemplate().update(entityDB);
+      this.nSimpleHibernateDao.getHibernateTemplate().update(dbobj);
     }
 
-
+    model.addAttribute(RestConstants.Return_G_entity_id, dbobj.getId());
+    
+    model.addAttribute(RestConstants.Return_G_entity, dbobj);
     return model;
   }
 
@@ -125,16 +163,16 @@ public class UserRelationTrainingCourseService extends AbstractServcice {
     model.clear();
     ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
     
-    if (sc.getCourse_id()==null) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage("查询条件 course_id 不能未空");
-      return model;
-    }
-    if (sc.getTime_schedule_id()==null) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage("查询条件 time_schedule_id 不能未空");
-      return model;
-    }
+//    if (sc.getCourse_id()==null) {
+//      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//      responseMessage.setMessage("查询条件 course_id 不能未空");
+//      return model;
+//    }
+//    if (sc.getTime_schedule_id()==null) {
+//      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//      responseMessage.setMessage("查询条件 time_schedule_id 不能未空");
+//      return model;
+//    }
     User userInfo = SessionListener.getUserInfoBySession(request);
     // String hql="from " + this.getEntityClass().getName() +
     // " where  create_userid =  "+userInfo.getId();
@@ -142,6 +180,18 @@ public class UserRelationTrainingCourseService extends AbstractServcice {
 
     StringBuffer sb = new StringBuffer();
 
+    if("subscribe_my".equals(sc.getType())){//查询我预订的课程
+      sb.append(" and create_userid = ").append(userInfo.getId());
+    }else  if("myCourse_sales".equals(sc.getType())){//查询我的课程销售数据
+      sb.append(" and course_coach_id = ").append(userInfo.getId());
+    }
+    
+    if (sc.getUser_id()!=null) {
+      sb.append(" and user_id = ").append(sc.getUser_id());
+    }
+    if (sc.getCoach_id()!=null) {
+      sb.append(" and course_coach_id = ").append(sc.getCoach_id());
+    }
     if (sc.getCourse_id()!=null) {
       sb.append(" and course_id = ").append(sc.getCourse_id());
     }
@@ -205,7 +255,7 @@ public class UserRelationTrainingCourseService extends AbstractServcice {
           return model;
         }
          if(entityDB!=null){
-           if (!userInfo.getId().equals(entityDB.getUser_id())) {
+           if (!userInfo.getId().equals(entityDB.getCreate_userid())) {
              responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
              responseMessage.setMessage("不是创建人，不能删除！");
              return model;

@@ -22,7 +22,7 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
   @Column(name = "id", unique = true, nullable = false)
   private Long id;//主键
   @Column
-  private Long user_id;//关联普通用户id
+  private Long create_userid;//关联普通用户id
   @Column
   private Long course_id;//关联课程id
   @Column
@@ -45,13 +45,25 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
   private String  appraise_context;//评价内容。[最大300字数]可以不填写。
   @Column
   private Timestamp  appraise_time;//时间。
-
-
+  
+  //--课程表的必要信息
+  @Column
+  private String course_title;//课程名称【必填】，20字符
+  @Column
+  private Integer course_time_length;//课程时长【必填】，单位分钟
+  @Column
+  private Integer course_difficulty_degree;//课程难度。1-5星。
+  @Column
+  private String course_place;//授课地点。40字符
+  @Column
+  private Double course_price;//[必填]发布价格 1~9999
+  @Column
+  private Long course_coach_id;//教练id
 
     public Timestamp getCourse_time() {
         return course_time;
     }
-
+ 
     public void setCourse_time(Timestamp course_time) {
         this.course_time = course_time;
     }
@@ -62,15 +74,6 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
     return id;
   }
 
-
-  public Long getUser_id() {
-    return user_id;
-  }
-
-
-  public void setUser_id(Long user_id) {
-    this.user_id = user_id;
-  }
 
 
   public Long getCourse_id() {
@@ -175,6 +178,62 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
 
   public void setTime_schedule_id(Long time_schedule_id) {
     this.time_schedule_id = time_schedule_id;
+  }
+
+  public String getCourse_title() {
+    return course_title;
+  }
+
+  public void setCourse_title(String course_title) {
+    this.course_title = course_title;
+  }
+
+  public Integer getCourse_time_length() {
+    return course_time_length;
+  }
+
+  public void setCourse_time_length(Integer course_time_length) {
+    this.course_time_length = course_time_length;
+  }
+
+  public Integer getCourse_difficulty_degree() {
+    return course_difficulty_degree;
+  }
+
+  public void setCourse_difficulty_degree(Integer course_difficulty_degree) {
+    this.course_difficulty_degree = course_difficulty_degree;
+  }
+
+  public String getCourse_place() {
+    return course_place;
+  }
+
+  public void setCourse_place(String course_place) {
+    this.course_place = course_place;
+  }
+
+  public Double getCourse_price() {
+    return course_price;
+  }
+
+  public void setCourse_price(Double course_price) {
+    this.course_price = course_price;
+  }
+
+  public Long getCourse_coach_id() {
+    return course_coach_id;
+  }
+
+  public void setCourse_coach_id(Long course_coach_id) {
+    this.course_coach_id = course_coach_id;
+  }
+
+  public Long getCreate_userid() {
+    return create_userid;
+  }
+
+  public void setCreate_userid(Long create_userid) {
+    this.create_userid = create_userid;
   }
 
 }

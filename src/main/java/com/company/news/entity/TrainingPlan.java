@@ -42,7 +42,7 @@ public class TrainingPlan implements DBEntityInterface {
   @Column
   private Double price;//[必填]发布价格 1~9999
   @Column
-  private Integer status;//订单状态：0：未发布，1：发布，2：已接单，3：待支付，4支付完成，4：训练完成,5:关闭
+  private Integer status;//订单状态：0：未发布，1：发布，2：待支付（已接单），3支付完成，4：训练完成,5:关闭
   @Column
   private Timestamp receiving_order_time;//接单时间
   @Column

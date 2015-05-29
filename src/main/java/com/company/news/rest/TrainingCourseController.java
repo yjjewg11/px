@@ -61,6 +61,7 @@ public class TrainingCourseController {
       return "";
   }
   
+  
   @RequestMapping(value = "/trainingCourse/{uuid}", method = RequestMethod.GET)
   public String get(@PathVariable("uuid") String uuid, ModelMap model,HttpServletRequest request) {
     try {
@@ -75,13 +76,14 @@ public class TrainingCourseController {
     return "";
   }
   
+  
+  
   @RequestMapping(value = "/trainingCourse/my", method = RequestMethod.GET)
    public String indexMy(NSearchContion sc, ModelMap model,HttpServletRequest request) {
     sc.setType("my");
     trainingCourseService.index(sc, model,request);
     return "";
   }
-  
   /**
    * 查询发布状态
    * @param sc

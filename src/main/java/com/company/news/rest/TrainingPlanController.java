@@ -86,13 +86,27 @@ public class TrainingPlanController {
   }
   
   /**
+   * 教练查询我接的训练计划
+   * @param sc
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/trainingPlan/query/trainer/my", method = RequestMethod.GET)
+  public String indexTrainerMy(NSearchContion sc, ModelMap model,HttpServletRequest request) {
+   sc.setType("trainer_my");
+   trainingPlanService.index(sc, model,request);
+   return "";
+ }
+  
+  /**
    * 查询发布状态
    * @param sc
    * @param model
    * @param request
    * @return
    */
-  @RequestMapping(value = "/trainingPlan/queryPublish", method = RequestMethod.GET)
+  @RequestMapping(value = "/trainingPlan/query/publish", method = RequestMethod.GET)
   public String queryPublish(NSearchContion sc, ModelMap model,HttpServletRequest request) {
     sc.setType("queryPublish");
    trainingPlanService.index(sc, model,request);
@@ -104,5 +118,82 @@ public class TrainingPlanController {
     // TODO Auto-generated method stub
     trainingPlanService.delete(ids, request,model);  
     return "";
+  }
+  
+  
+  /**
+   * 教练接单
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/trainingPlan/status/request/{uuid}", method = RequestMethod.POST)
+  public String status_request(@PathVariable("uuid") String uuid, ModelMap model, HttpServletRequest request) {
+      try {
+        trainingPlanService.status_request(uuid,model, request);
+      } catch (Exception e) {
+        e.printStackTrace();
+        ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+        responseMessage.setMessage(e.getMessage());
+      }
+      return "";
+  }
+  
+  /**
+   * 用户付款
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/trainingPlan/status/pay/{uuid}", method = RequestMethod.POST)
+  public String status_pay(@PathVariable("uuid") String uuid, ModelMap model, HttpServletRequest request) {
+      try {
+        trainingPlanService.status_pay(uuid,model, request);
+      } catch (Exception e) {
+        e.printStackTrace();
+        ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+        responseMessage.setMessage(e.getMessage());
+      }
+      return "";
+  }
+  
+  /**
+   * 用户确认训练完成(status/complete)
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/trainingPlan/status/complete/{uuid}", method = RequestMethod.POST)
+  public String status_complete(@PathVariable("uuid") String uuid, ModelMap model, HttpServletRequest request) {
+      try {
+        trainingPlanService.status_complete(uuid,model, request);
+      } catch (Exception e) {
+        e.printStackTrace();
+        ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+        responseMessage.setMessage(e.getMessage());
+      }
+      return "";
+  }
+  
+  /**
+   * 用户关闭训练计划
+   * @param model
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/trainingPlan/status/close/{uuid}", method = RequestMethod.POST)
+  public String status_close(@PathVariable("uuid") String uuid, ModelMap model, HttpServletRequest request) {
+      try {
+        trainingPlanService.status_close(uuid,model, request);
+      } catch (Exception e) {
+        e.printStackTrace();
+        ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+        responseMessage.setMessage(e.getMessage());
+      }
+      return "";
   }
 }

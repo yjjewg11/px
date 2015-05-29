@@ -296,4 +296,6 @@ public class TrainingCourseService extends AbstractServcice {
     return model;
   }
 
+
+
 }

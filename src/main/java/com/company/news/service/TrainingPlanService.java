@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.TrainingPlan;
 import com.company.news.entity.User;
@@ -132,6 +133,8 @@ public class TrainingPlanService extends AbstractServcice {
     sb.append(" and create_userid = ").append(userInfo.getId());
   }else  if("queryPublish".equals(sc.getType())){//查询发布的
     sb.append(" and status = 1");
+  }else if("trainer_my".equals(sc.getType())){//教练查询我接的训练计划
+    sb.append(" and trainer_id = ").append(userInfo.getId());
   }
     
     PaginationData pData=sc.getPsoData();
@@ -188,4 +191,122 @@ public class TrainingPlanService extends AbstractServcice {
     return model;
   }
 
+  /**
+   * 教练接单
+   * @param uuid
+   * @param model
+   * @param request
+   * @return
+   */
+public ModelMap status_request(String uuid, ModelMap model, HttpServletRequest request) {
+  ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+  User userInfo = SessionListener.getUserInfoBySession(request);
+  if(StringUtils.isBlank(uuid)){
+    responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+    responseMessage.setMessage("uuid参数不合法");
+    return model;
+  }
+  TrainingPlan o=(TrainingPlan)this.nSimpleHibernateDao.getObject(this.getEntityClass(), Long.valueOf(uuid));
+ 
+  if(o==null){
+    responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+    responseMessage.setMessage("数据不存在！");
+    return model;
+  }
+  if(!SystemConstants.TrainingPlan_status_1.equals(o.getStatus())){
+    responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+    responseMessage.setMessage("只有发布状态，可以接单。");
+    return model;
+  }
+  o.setStatus(SystemConstants.TrainingPlan_status_2);
+  o.setTrainer_id(userInfo.getId());
+  o.setReceiving_order_time(TimeUtils.getCurrentTimestamp());
+  
+  model.addAttribute(RestConstants.Return_G_entity, o);
+  return model;
+  
+}
+
+  public ModelMap status_pay(String uuid, ModelMap model, HttpServletRequest request) {
+    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+    User userInfo = SessionListener.getUserInfoBySession(request);
+    if(StringUtils.isBlank(uuid)){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("uuid参数不合法");
+      return model;
+    }
+    TrainingPlan o=(TrainingPlan)this.nSimpleHibernateDao.getObject(this.getEntityClass(), Long.valueOf(uuid));
+   
+    if(o==null){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("数据不存在！");
+      return model;
+    }
+    if(o.getTrainer_id()==null||Long.valueOf(0).equals(o.getTrainer_id())){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("没被教练接单，不能付款。！");
+      return model;
+    }
+    o.setStatus(SystemConstants.TrainingPlan_status_3);
+    o.setTrainer_id(userInfo.getId());
+    o.setReceiving_order_time(TimeUtils.getCurrentTimestamp());
+    
+    model.addAttribute(RestConstants.Return_G_entity, o);
+    return model;
+    
+  }
+  
+
+  public ModelMap status_complete(String uuid, ModelMap model, HttpServletRequest request) {
+    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+    User userInfo = SessionListener.getUserInfoBySession(request);
+    if(StringUtils.isBlank(uuid)){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("uuid参数不合法");
+      return model;
+    }
+    TrainingPlan o=(TrainingPlan)this.nSimpleHibernateDao.getObject(this.getEntityClass(), Long.valueOf(uuid));
+   
+    if(o==null){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("数据不存在！");
+      return model;
+    }
+    if(o.getTrainer_id()==null||Long.valueOf(0).equals(o.getTrainer_id())){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("没被教练接单，不能更改状态！");
+      return model;
+    }
+    o.setStatus(SystemConstants.TrainingPlan_status_4);
+    o.setTrainer_id(userInfo.getId());
+    o.setReceiving_order_time(TimeUtils.getCurrentTimestamp());
+    
+    model.addAttribute(RestConstants.Return_G_entity, o);
+    return model;
+    
+  }
+  public ModelMap status_close(String uuid, ModelMap model, HttpServletRequest request) {
+    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+    User userInfo = SessionListener.getUserInfoBySession(request);
+    if(StringUtils.isBlank(uuid)){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("uuid参数不合法");
+      return model;
+    }
+    TrainingPlan o=(TrainingPlan)this.nSimpleHibernateDao.getObject(this.getEntityClass(), Long.valueOf(uuid));
+   
+    if(o==null){
+      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+      responseMessage.setMessage("数据不存在！");
+      return model;
+    }
+   
+    o.setStatus(SystemConstants.TrainingPlan_status_5);
+    o.setTrainer_id(userInfo.getId());
+    o.setReceiving_order_time(TimeUtils.getCurrentTimestamp());
+    
+    model.addAttribute(RestConstants.Return_G_entity, o);
+    return model;
+    
+  }
 }
