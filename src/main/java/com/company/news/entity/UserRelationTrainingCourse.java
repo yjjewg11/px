@@ -32,7 +32,7 @@ public class UserRelationTrainingCourse implements DBEntityInterface {
   @Column
   private Timestamp create_time;//关联时间　　　　
   @Column
-  private Integer status;//订单状态：2：已接单，3：待支付，4支付完成，4：课程完成,5:关闭。
+  private Integer status;//订单状态：2：已预订，3：待支付，4：支付完成，5：课程完成,6:关闭。
   @Column
   private Timestamp receiving_order_time;//接单时间
     @Column
