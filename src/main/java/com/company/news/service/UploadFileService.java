@@ -60,28 +60,49 @@ public class UploadFileService extends AbstractServcice {
         ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
         User userInfo = SessionListener.getUserInfoBySession(request);
         String guid=new UUIDGenerator().generate().toString();
+        
+        
         try {
+          
+          long fileSize=file.getSize();
+          Long maxfileSize=Long.valueOf(ProjectProperties.getProperty("UploadFilePath_maxSize_M", "2"));
+          if(fileSize>maxfileSize*1024*1024){
+            responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+            responseMessage.setMessage("上载文件太大，不能超过"+maxfileSize+"M");
+            model.addAttribute(RestConstants.Return_ResponseMessage, responseMessage);
+            return model;
+          }
+          
+          
             String uploadPath =ProjectProperties.getProperty("UploadFilePath", "H:/runman_upload/");
             String fileName=file.getOriginalFilename();
               uploadPath+=upladFileForm.getType()+"/";
               FileUtils.createDirIfNoExists(uploadPath);
-              fileName=userInfo.getId()+"_"+upladFileForm.getType()+"_"+guid+"."+SystemConstants.UploadFile_imgtype;
+              fileName=userInfo.getId()+"_"+upladFileForm.getType()+"_"+guid+"."+FilenameUtils.getExtension(fileName);
            // FileUtils.saveFile(file.getInputStream(), uploadPath,fileName);
               
               
-              String img_max_with=ProjectProperties.getProperty("img_max_with", "200");
+            
             //业务数据，关联用户保存
-              if(SystemConstants.UploadFile_type_identity_card.equals(upladFileForm.getType())){
-                img_max_with=ProjectProperties.getProperty("img_max_with_identity_card", "1000");
-              }else if(SystemConstants.UploadFile_type_marathon.equals(upladFileForm.getType())){
-                img_max_with=ProjectProperties.getProperty("img_max_with_marathon", "1000");
-              }
-           if(!FileUtils.makeThumbnail(file.getInputStream(), uploadPath,fileName,Integer.valueOf(img_max_with))){
+         
+           if(!FileUtils.saveFile(file.getInputStream(), uploadPath,fileName)){
              responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
              responseMessage.setMessage("上载文件保存失败!");
              model.addAttribute(RestConstants.Return_ResponseMessage, responseMessage);
              return model;
            }
+//           String img_max_with=ProjectProperties.getProperty("img_max_with", "200");
+//           if(SystemConstants.UploadFile_type_identity_card.equals(upladFileForm.getType())){
+//             img_max_with=ProjectProperties.getProperty("img_max_with_identity_card", "1000");
+//           }else if(SystemConstants.UploadFile_type_marathon.equals(upladFileForm.getType())){
+//             img_max_with=ProjectProperties.getProperty("img_max_with_marathon", "1000");
+//           }
+//           if(!FileUtils.makeThumbnail(file.getInputStream(), uploadPath,fileName,Integer.valueOf(img_max_with))){
+//             responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//             responseMessage.setMessage("上载文件保存失败!");
+//             model.addAttribute(RestConstants.Return_ResponseMessage, responseMessage);
+//             return model;
+//           }
            //上传头像,身份证，马拉松认证唯一。其他情况新建
            UploadFile uploadFile =null;
            String oldFile=null;
