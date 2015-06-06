@@ -15,7 +15,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="run_training_course") 
+@Table(name="px_training_course") 
 public class TrainingCourse implements DBEntityInterface {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)

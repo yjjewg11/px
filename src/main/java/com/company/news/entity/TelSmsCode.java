@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
-@Table(name="run_telsmscode") 
+@Table(name="px_telsmscode") 
 public class TelSmsCode implements DBEntityInterface{
 
    public Object getId() {

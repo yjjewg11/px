@@ -15,7 +15,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="run_user") 
+@Table(name="px_teacher") 
 public class User implements DBEntityInterface {
   
   
@@ -50,6 +50,8 @@ public class User implements DBEntityInterface {
   @Column
   private String real_name_verify;//实名认证。默认0，0:没验证。1:验证。2：提交验证，3.验证失败
   @Column
+  private Integer ishowflag;//0:不公布自己。1：公布自己信息出去
+  @Column
   private Integer sex;//0:男,1:女
   @Column
   private Integer online;//是否在线。0：不在线。1：在线
@@ -79,7 +81,13 @@ public class User implements DBEntityInterface {
  
   
   
-  public String getLoginname() {
+  public Integer getIshowflag() {
+	return ishowflag;
+}
+public void setIshowflag(Integer ishowflag) {
+	this.ishowflag = ishowflag;
+}
+public String getLoginname() {
     return loginname;
   }
   public void setLoginname(String loginname) {

@@ -15,7 +15,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="run_uploadFile") 
+@Table(name="px_uploadFile") 
 public class UploadFile implements DBEntityInterface {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
@@ -28,7 +28,7 @@ public class UploadFile implements DBEntityInterface {
   @Column
   private Timestamp create_time;//创建时间
   @Column
-  private String type;//[必填,10字符]文件类型.head:头像,identity:身份证认证,marathon:教练认证
+  private String type;//[必填,10字符]文件类型.head:头像,identity:身份证认证
   @Column
   private String file_path;// [必填]相对路径
   @Column

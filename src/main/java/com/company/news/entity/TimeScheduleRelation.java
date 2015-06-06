@@ -16,7 +16,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="run_time_schedule_relation") 
+@Table(name="px_time_schedule_relation") 
 public class TimeScheduleRelation implements DBEntityInterface {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
@@ -35,6 +35,10 @@ public class TimeScheduleRelation implements DBEntityInterface {
   @Column
   private String days;//[必填]根据周期设置与time_period有关，分隔符“,”。1：表示每周，时取值：1-7。2：表示每月时，取值1-31.样例：1，4，7
   @Column
+  private Timestamp start_day;//有效开始日期
+  @Column
+  private Timestamp end_day;//有效结束日期
+    @Column
   private String start_time;//[必填]开始时间。格式24H：mm:SS,举例：14：00：00。
   @Column
   private String end_time;//[必填]结束时间。格式24H：mm:SS,举例：17：00：00。

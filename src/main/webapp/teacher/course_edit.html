@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>登录</title>
+
+<link rel="stylesheet"
+	href="../js/jquery.mobile/jquery.mobile.theme-1.4.5.min.css">
+<link rel="shortcut icon" href="../favicon.ico">
+<script src="../js/jquery.js"></script>
+<script src="login.js"></script>
+<script src="../js/jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div id="ViewBag" class="box-short">
+        <hgroup class="title">
+            <h1>私教申请</h1>
+        </hgroup>
+        <div class="box-inside">
+            <form id="signup_form" class="form-horizontal" autocomplete="off">
+                <!--ko with:$root.PrivateTeacher-->
+                <fieldset>
+                    <legend style="font-size: 16px"><b>身份信息</b></legend>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>姓名：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <div>
+                                    <input id="appendedDropdownButton" type="text" placeholder="请输入真实姓名" data-bind="value: $data.RealName" name="PrivateTeacher[Name]" autocomplete="off" />
+                                </div>
+                                <span class="msg-box n-right" style="position:absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>昵称：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <div>
+                                    <input type="text" placeholder="请输入昵称" data-bind="value: $data.NickName" name="PrivateTeacher[NickName]" autocomplete="off" />
+                                </div>
+                                <span class="msg-box n-right" style="position:absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>国籍：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <select data-bind="options: $root.CountryList, optionsText: 'CountryName', value: $root.Country"></select>
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>证件号：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <select id="CertificateType" data-bind="value: CertificateType">
+                                    <option value="1">身份证</option>
+                                    <option value="2">护照</option>
+                                </select>
+                                <input type="text" data-bind="value: $data.IdentityNumber" placeholder="请输入身份证或护照号码" name="PrivateTeacher[Identity]" id="PrivateTeacher[Identity]" maxlength="25" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>身份验证：</label>
+                        <div class="controls">
+                            <input type="text" id="url3" data-bind="value: $data.localIdentityUrl" readonly="readonly" name="PrivateTeacher[IdentityUrl]" autocomplete="off" />
+                            <input type="button" class="btn" id="image3" data-bind="click: $root.uploadResource.bind($root,$data,'identity')" value="上传身份证或护照照片" style="cursor:pointer;" />
+                            <span class="msg-box n-right" style="position: static;"></span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton">教师证验证：</label>
+                        <div class="controls">
+                            <input type="text" id="url4" data-bind="value: $data.localLicensesUrl" readonly="readonly" autocomplete="off" />
+                            <input type="button" class="btn" id="image4" data-bind="click: $root.uploadResource.bind($root,$data,'privateteacher')" value="上传教师证照片" style="cursor:pointer;" />
+                            <span class="msg-box n-right" style="position: static;"></span>
+                            <h1></h1>
+                            <div style="margin-left:30px">
+                                <img src="/Images/Register/img_identity.png" width="220" />
+                                <div style="margin-top: -28px;margin-left:26px;color: white;">手持证件，确保脸部和证件清晰</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>学校：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <select id="IsGraduate" data-bind="value: IsGraduate">
+                                    <option value="false">就读院校</option>
+                                    <option value="true">毕业院校</option>
+                                </select>
+                                <input type="text" data-bind="value: $data.GraduateSchool" placeholder="请输入学校名称" name="PrivateTeacher[School]" id="PrivateTeacher[School]" maxlength="100" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>个人介绍：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <textarea data-bind="value: $data.SelfIntroduction" placeholder="请输入个人介绍" id="SelfIntroduction" rows="8" maxlength="200" data-rule="required;length[10~200]"></textarea>
+
+                                <span class="msg-box n-right" style="position: absolute;" for="SelfIntroduction"></span>
+                                <br />
+                                <span>&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;（内容请在10-200字以内）</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>老师生活照：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <a href="#ResourceModal" data-toggle="modal" data-backdrop="static" class="btn">生活照管理</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend style="font-size: 16px"><b>地址信息</b></legend>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>城市区域：</label>
+                        <div class="controls">
+                            <select class="input-medium" data-bind="options: $root.StateList, optionsText: 'StateName', value: $root.State, optionsCaption: '选择省份'"></select>
+                            <select class="input-medium" data-bind="options: $root.CityList, optionsText: 'CityName', value: $root.City, optionsCaption: '选择城市'"></select>
+                            <select class="input-medium" data-bind="options: $root.ReginList, optionsText: 'RegionName', value: $root.Region, optionsCaption: '选择区域'" name="PrivateTeacher[RegionName]"></select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>商圈：</label>
+                        <div class="controls">
+                            <select class="input-medium" data-bind="options: $root.AreaList, optionsText: 'BusinessAreaName', value: $root.Area, optionsCaption: '选择商圈'" name="PrivateTeacher[AreaName]"></select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>常用授课地址：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <input type="text" data-bind="value: $data.Address,event:{ blur: $root.updateAddress }" placeholder="请输入常用授课地址" name="PrivateTeacher[Address]" maxlength="100" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--ko if: $root.City()-->
+                    <div class="control-group">
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <div style="width: 100%; height: 350px" id="map_canvas"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton">授课范围：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <select class="multiselect" multiple="multiple" data-bind="options: $root.ReginList, optionsText: 'RegionName', optionsValue: 'RegionId'"></select>
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ko-->
+                </fieldset>
+
+                <fieldset>
+                    <legend style="font-size: 16px"><b>联系方式</b></legend>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>手机号码：</label>
+                        <div class="controls">
+                            <div class="input-append">
+                                <input type="text" data-bind=" value: $data.MobilePhone, disable: !$root.BindMobile()" placeholder="请输入手机号" name="PrivateTeacher[Mobile]" id="mobile" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton">Email：</label>
+                        <div class="controls">
+                            <div class="input-append">
+                                <input type="text" data-bind=" value: $data.Email" placeholder="请输入Email" name="PrivateTeacher[Email]" id="PrivateTeacher[Email]" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend style="font-size: 16px"><b>SNS账号</b></legend>
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton"><i>*</i>QQ：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <input type="text" data-bind="value: $data.QQ" placeholder="请输入QQ号" name="PrivateTeacher[QQ]" id="PrivateTeacher[QQ]" maxlength="25" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton">微信：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <input type="text" data-bind="value: $data.Weixin" placeholder="请输入微信号" maxlength="100" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="appendedDropdownButton">新浪微博：</label>
+                        <div class="controls">
+                            <div style="position: relative;">
+                                <input type="text" data-bind="value: $data.Weibo" placeholder="请输入新浪微博" maxlength="100" autocomplete="off" />
+                                <span class="msg-box n-right" style="position: absolute;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend style="font-size: 16px"><b><i>*</i>课程</b></legend>
+                    <a href="#" class="button" data-bind="click: function(){$root.popupClassTitle(null); }">添加课程</a>
+                    <br />
+                    <br />
+
+                    <table class="table table-bordered table-hover table-condensed hideen">
+                        <thead>
+                            <tr>
+                                <td>
+                                    课程名
+                                </td>
+                                <td>
+                                    类别
+                                </td>
+                                <td>
+                                    图片
+                                </td>
+                                <td>
+                                    数量
+                                </td>
+                                <td>
+                                    价格
+                                </td>
+                                <td>
+                                    操作
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: $data.ClassTitles">
+                            <tr>
+                                <td>
+                                    <abbr data-bind="text: $data.ClassTitleName().length>3?$data.ClassTitleName().substr(0,3)+'...':$data.ClassTitleName(),attr:{title:$data.ClassTitleName()}"></abbr>
+                                    
+                                </td>
+                                <td>
+                                    <abbr data-bind="text: $data.CustomCategories().length>3?$data.CustomCategories().substr(0,3)+'...':$data.CustomCategories(),attr:{title:$data.CustomCategories()}"></abbr>
+                                    
+                                </td>
+                                <td>
+                                    <!--ko if: $data.ResourceURL -->
+                                    <img width="240" height="176" data-bind="attr: { src: $data.ResourceURL }" />
+                                    <!--/ko-->
+                                </td>
+                                <td></td>
+                                <td>
+                                    <span data-bind="text: $data.Price"></span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn" data-bind="click: $root.popupClassTitle">修改</a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="btn red" data-bind="click: $root.removeClassTitle">删除</a>
+                                    <!--ko if: $root.tempPackage()==null -->
+                                    <br /><br />
+                                    <a href="#" class="btn" data-bind="click: $root.addClassPackage">添加课包</a>
+                                    <!--/ko-->
+                                </td>
+                            </tr>
+                            <!--ko foreach: $data.Packages-->
+                            <tr>
+                                <td>
+                                    <span data-bind="text: $parent.ClassTitleName().length>3?$parent.ClassTitleName().substr(0,3)+'...':$parent.ClassTitleName()"></span>
+                                </td>
+                                <td>
+                                    <span>课包</span>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <!--ko if: IsEdit()==false-->
+                                    <span data-bind="text: ClassCount"></span>
+                                    <!--/ko-->
+                                    <!--ko if: IsEdit-->
+                                    <input type="text" style="width:40px" data-bind="value: ClassCount" placeholder="请输入课程包数" name="Package[ClassCount]" maxlength="6" autocomplete="off" />
+                                    <!--/ko-->
+                                </td>
+                                <td>
+                                    <!--ko if: IsEdit()==false-->
+                                    <span data-bind="text: Price"></span>
+                                    <!--/ko-->
+                                    <!--ko if: IsEdit-->
+                                    <input type="text" style="width:40px" data-bind="value: Price" placeholder="请输入价格" name="Package[Price]" maxlength="10" autocomplete="off" />
+                                    <!--/ko-->
+                                </td>
+                                <td>
+                                    <!--ko if: $root.tempPackage()==null && IsEdit()==false-->
+                                    <a href="#" class="btn" data-bind="click: function(){ $root.editClassPackage($parent,$data); }">修改</a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="btn red" data-bind="click: $root.removeClassPackage">删除</a>
+                                    <!--/ko-->
+                                    <!--ko if: IsEdit-->
+                                    <a href="#" class="btn" data-bind="click: $root.saveClassPackage">保存</a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="btn red" data-bind="click: $root.cancelClassPackage">取消</a>
+                                    <!--/ko-->
+                                </td>
+                            </tr>
+                            <!--/ko-->
+                        </tbody>
+                    </table>
+
+
+                </fieldset>
+
+                <div class="control-group">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <input type="checkbox" id="email_check" data-bind="checked: $data.IsChecked" style="min-height: initial; width: 15px; float: left; min-height:0px; padding:0px;" />
+                        <label style="line-height: 16px; width: 300px; ">
+                            我已经阅读并同意孩子学
+                            <a href="/Protocol/TeacherContract" target="_blank">私教合作协议</a>
+                        </label>
+                    </div>
+                </div>
+                <center><input type="submit" data-bind="disable: !$data.IsChecked() || $root.IsDisabled()" class="button" value=" 申 请 " /></center>
+                <!--/ko-->
+
+                <p>已开通运营的城市：</p>
+                <div data-bind="foreach: ActivedCityList">
+                    <span data-bind="text: $data.City.CityName"></span>
+                </div>
+            </form>
+        </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="button" value=" 保 存 " />
+                    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">取消</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal hide" id="ResourceModal" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>生活照</h3>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-info" data-bind="click:$root.uploadResource.bind($root,$data,'TeacherLifePhoto')">上传图片</button>
+                <div class="tabbable tabbable-custom boxless">
+                    <div style="margin-top: 10px;">
+                        <div class="row-fluid mix-grid" data-bind="foreach: $root.PrivateTeacher().Resources">
+                            <div class="span3 mix">
+                                <div class="mix-inner">
+                                    <input type="hidden" data-bind="value:OrderNumber($index())" />
+                                    <img class="img-responsive" style="height: 100px" data-bind="attr: { src: ResourceURL }" alt="">
+                                    <div class="mix-details">
+                                        <a class="mix-preview fancybox-button" data-bind="attr: { href: ResourceURL,title:ResourceDescription }" data-rel="fancybox-button"><i class="icon-search"></i></a>
+                                        <a class="mix-link" data-bind="click: $root.removeResource.bind($root,$data)"><i class="icon-trash"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+    </div>
+
+
+</body>
+</html>
