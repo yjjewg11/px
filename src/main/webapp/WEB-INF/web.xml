@@ -8,7 +8,7 @@
 	</context-param>
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>runman</param-value>
+		<param-value>px</param-value>
 	</context-param>
 	<context-param>
 		<param-name>spring.profiles.default</param-name>
@@ -111,7 +111,7 @@
 		<init-param>
 			<param-name>excludeFilters</param-name>
 			<param-value>
-				/userinfo/login.json,/userinfo/reg.json,/sms/sendCode.json,/uploadFile/getImgFile.json
+				/userinfo/login.json,/userinfo/reg.json,/uploadFile/getImgFile.json
 			</param-value>
 		</init-param>
 	</filter>

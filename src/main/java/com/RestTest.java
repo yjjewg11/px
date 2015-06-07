@@ -8,7 +8,12 @@ package com;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.company.news.entity.User;
+import com.company.news.jsonform.UserRegJsonform;
 import com.ucpaas.restDemo.client.AbsRestClient;
 import com.ucpaas.restDemo.client.JsonReqClient;
 import com.ucpaas.restDemo.client.XmlReqClient;
@@ -155,6 +160,22 @@ public class RestTest {
 	 * @method main
 	 */
 	public static void main(String[] args) throws IOException {
+		User user = new User();
+		UserRegJsonform userRegJsonform=new UserRegJsonform();
+		userRegJsonform.setTel("12345");
+		
+		try {
+			BeanUtils.copyProperties(user, userRegJsonform);
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.print(user.getTel());
+		
 //		String jsonStr="{\"client\":\"1\"}";
 //		JSONObject obj=JSONObject.fromObject(jsonStr);
 //		System.out.println(obj.getInt("client"));

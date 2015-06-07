@@ -5,8 +5,8 @@ import com.company.news.rest.RestConstants;
 public class ResponseMessage implements java.io.Serializable{
 
   private String status;
-  public ResponseMessage() {
-    status=RestConstants.Return_ResponseMessage_success;
+  public ResponseMessage() {//默认初始化为失败状态
+    status=RestConstants.Return_ResponseMessage_failed;
   }
   private String message;
   public String getStatus() {

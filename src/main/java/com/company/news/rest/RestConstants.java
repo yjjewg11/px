@@ -59,13 +59,5 @@ public class RestConstants {
   static public String Return_MD5CODE="md5";
   static public String Return_ConditionShow="conditionShow";
   
-  
-  	//选题
-	static public final Integer NEWS_MODULE_LISTPLAN_ID = new Integer(2);
-	//阶段性重点
-	static public final Integer NEWS_MODULE_STAGEKEY_ID = new Integer(21);
-	//系列报道
-	static public final Integer NEWS_MODULE_SERIESREPORT_ID = new Integer(22);
-	//采访计划
-	static public final Integer NEWS_MODULE_COVERPLAN_ID = new Integer(3);
+
 }

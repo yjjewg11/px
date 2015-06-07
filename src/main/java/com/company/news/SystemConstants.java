@@ -15,13 +15,9 @@ public class SystemConstants {
     static public final String User_Verify_Pass = "1";//用户验证状态-验证通过
     static public final String User_Verify_Apply = "2";//用户验证状态-提交验证
     static public final String User_Verify_Fail= "3";//用户验证状态-验证失败
+
     
-    //订单状态：0：未发布，1：发布，2：待支付（已接单），3支付完成，4：训练完成,5:关闭。
-    static public final Integer TrainingPlan_status_5= 5;
-    static public final Integer TrainingPlan_status_4= 4;
-    static public final Integer TrainingPlan_status_3= 3;
-    static public final Integer TrainingPlan_status_2= 2;
-    static public final Integer TrainingPlan_status_1= 1;
+    static public String Charset="UTF-8";
     
 }
 

@@ -1,7 +1,5 @@
 package com.company.news.service;
 
-import java.util.Properties;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -12,14 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
-import com.company.news.SystemConstants;
-import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
 import com.company.news.form.UserLoginForm;
-import com.company.news.jsonform.UserModifyJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
-import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -34,262 +28,188 @@ import com.company.web.listener.SessionListener;
  */
 @Service
 public class UserinfoService extends AbstractServcice {
+	public static final int USER_disable_default = 0;// 电话号码，验证。默认0，0:没验证。1:验证，2：提交验证
+	public static final int USER_tel_verify_default = 0;// 是否被管理员封号。0：不封。1：封号，不允许登录。
 
-  /**
-   * 用户注册
-   * 
-   * @param entityStr
-   * @param model
-   * @param request
-   * @return
-   */
-  public ModelMap reg(String bodyJson, ModelMap model, HttpServletRequest request) throws Exception {
-    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-   
-    UserRegJsonform userRegJsonform = (UserRegJsonform)this.bodyJsonToFormObject(bodyJson, UserRegJsonform.class);
-   
+	public static final int USER_type_group = 1;// 组织管理员
+	public static final int USER_type_teacher = 0;// 老师类型
 
+	/**
+	 * 用户注册
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean reg(int type, UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
 
-    String attribute = "loginname";
-    User userDB =
-        (User) this.nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, userRegJsonform
-            .getLoginname());
-    if (userDB != null) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage("登录名已经被注册！");
-      return model;
-    }
-    
-    if(CommonsValidate.checkCellphone(userRegJsonform.getLoginname())){
-      userRegJsonform.setTel(userRegJsonform.getLoginname());
-    }
-    attribute = "tel";
-    
-    
-    userDB =
-        (User) this.nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, userRegJsonform.getTel());
-    if (userDB != null) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage("电话号码已经被注册！");
-      return model;
-    }
+		// TEL格式验证
+		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码格式不正确！");
+			return false;
+		}
 
-    /**
-     * 如果短信验证码不为空进行验证
-     */
-    if(StringUtils.isNotBlank(userRegJsonform.getTel_smscode())){
-      TelSmsCode telSmsCode=(TelSmsCode)this.nSimpleHibernateDao.getObjectByAttribute(TelSmsCode.class,"tel", userRegJsonform.getTel());
-      if(telSmsCode==null){
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-        responseMessage.setMessage("验证码不匹配！");
-        return model;
-      }
-      if(userRegJsonform.getTel_smscode().equals(telSmsCode.getCode())){
-        //验证成功后，清除验证码。
-        this.nSimpleHibernateDao.delete(telSmsCode);
-      }else{
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-        responseMessage.setMessage("验证码不匹配！");
-        return model;
-      }
-      
-    }
-//    attribute = "email";
-//    userDB =
-//        (User) this.nSimpleHibernateDao
-//            .getObjectByAttribute(User.class, attribute, user.getEmail());
-//    if (userDB != null) {
-//      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-//      responseMessage.setMessage("Email已经被注册！");
-//      return model;
-//    }
+		// name昵称验证
+		if (StringUtils.isBlank(userRegJsonform.getName())||userRegJsonform.getName().length()>15) {
+			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
+			return false;
+		}
 
-    
-    
-    User user = new User();
-    Properties properties = (Properties) this.bodyJsonToProperties(bodyJson);
-    user = (User) RestUtil.copyNotEmptyValueToobj(properties, userRegJsonform, user);
-    
-    user.setCreatetime(TimeUtils.getCurrentTimestamp());
-    user.setDisable(0);
-    if(StringUtils.isNotBlank(userRegJsonform.getTel_smscode())){
-      user.setTel_verify(1);
-    }
+		// group_uuid
+		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+			responseMessage.setMessage("关联组织的UUID不能为空！");
+			return false;
+		}
 
+		// 用户名是否存在
+		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码已被注册！");
+			return false;
+		}
 
-    try {
-      this.nSimpleHibernateDao.save(user);
-    } catch (DataIntegrityViolationException e) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage(e.getMessage());
+		User user = new User();
 
-    }
-    responseMessage.setMessage("注册成功！");
-    return model;
-  }
-  /**
-   * 用户修改资料
-   * 
-   * @param entityStr
-   * @param model
-   * @param request
-   * @return
-   */
-  public ModelMap modify(String verify,String bodyJson, ModelMap model, HttpServletRequest request) throws Exception {
-    ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-    User userInfo = SessionListener.getUserInfoBySession(request);
-    
-    UserModifyJsonform form = (UserModifyJsonform)this.bodyJsonToFormObject(bodyJson, UserModifyJsonform.class);
-    
-    /**
-     * 如果短信验证码不为空进行验证
-     */
-    if(StringUtils.isBlank(form.getName())){
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-        responseMessage.setMessage("昵称不能为空！");
-        return model;
-      }
-      
-    String attribute = "loginname";
-    User userDB =
-        (User) this.nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, userInfo.getLoginname());
-    if (userDB == null) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage("异常请求：修改资料失败，数据库没记录。");
-      return model;
-    }
-    //保存
-    Properties properties = (Properties) this.bodyJsonToProperties(bodyJson);
-    RestUtil.copyNotEmptyValueToobj(properties, form, userDB);
-    
-    //增加教练认证和实名认证参数。
-//    String verify=(String)request.getAttribute("verify");
-    if("name".equals(verify)){//实名认证
-      userDB.setReal_name_verify(SystemConstants.User_Verify_Apply);
-      
-    }else  if("marathon".equals(verify)){//马拉松教练认证
-      userDB.setReal_name_verify(SystemConstants.User_Verify_Apply);
-     // userInfo.setMarathon_verify(SystemConstants.User_Verify_Apply);
-      //初始策略，默认通过
-      userDB.setMarathon_verify(SystemConstants.User_Verify_Pass);
-      userDB.setType(1);
-    }
-  
-    try {
-      this.nSimpleHibernateDao.save(userDB);
-    } catch (DataIntegrityViolationException e) {
-      responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-      responseMessage.setMessage(e.getMessage());
+		BeanUtils.copyProperties(user, userRegJsonform);
+		user.setLoginname(userRegJsonform.getTel());
+		user.setCreate_time(TimeUtils.getCurrentTimestamp());
+		user.setDisable(USER_disable_default);
+		user.setLogin_time(TimeUtils.getCurrentTimestamp());
+		user.setTel_verify(USER_tel_verify_default);
+		user.setType(type);
+		user.setSex(0);
 
-    }
-    
-    SessionListener.getSession(request).setAttribute(RestConstants.Session_UserInfo, userDB);
-    responseMessage.setMessage("修改成功！");
-    putUserInfoReturnToModel(model,request);
-    return model;
-  }
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.save(user);
 
-  /**
-   * 
-   * @param loginName
-   * @param password
-   * @return
-   * @throws Exception 
-   */
-  public ModelMap login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request,
-      ResponseMessage responseMessage) throws Exception {
-    String loginname = userLoginForm.getLoginname();
-    String password = userLoginForm.getPassword();
-    if (password == null) password = "";
-    if (StringUtils.isBlank(loginname)) {
-      responseMessage.setMessage("用户登录名不能为空!");
-      responseMessage.setStatus("failed");
-      return model;
-    }
+		return true;
+	}
 
-    String attribute = "loginname";
+	/**
+	 * 
+	 * @param loginName
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelMap login(UserLoginForm userLoginForm, ModelMap model,
+			HttpServletRequest request, ResponseMessage responseMessage)
+			throws Exception {
+		String loginname = userLoginForm.getLoginname();
+		String password = userLoginForm.getPassword();
+		if (password == null)
+			password = "";
+		if (StringUtils.isBlank(loginname)) {
+			responseMessage.setMessage("用户登录名不能为空!");
+			responseMessage.setStatus("failed");
+			return model;
+		}
 
-    User user =
-        (User) this.nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, loginname);
+		String attribute = "loginname";
 
-    if (user == null) {
-      responseMessage.setMessage("用户不存在或者密码错误!");
-      responseMessage.setStatus("failed");
-      return model;
-    }
+		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
+				User.class, attribute, loginname);
 
-    boolean pwdIsTrue = false;
-    {
-      // 密码比较
-      String smmPWD = user.getPassword();
-      if (smmPWD == null) smmPWD = "";
-      if (password.equals(smmPWD)) {
-        pwdIsTrue = true;
-      } else {
-        pwdIsTrue = false;
-      }
+		if (user == null) {
+			responseMessage.setMessage("用户不存在或者密码错误!");
+			responseMessage.setStatus("failed");
+			return model;
+		}
 
-      //
-      String project_loginLimit = ProjectProperties.getProperty("project.LoginLimit", "true");
-      if ("true".equals(project_loginLimit)) {
-        if (!LoginLimit.verifyCount(loginname, pwdIsTrue, responseMessage)) {// 密码错误次数验证
-          return model;
-        }
-        if (!pwdIsTrue) {
-          return model;
-        }
+		boolean pwdIsTrue = false;
+		{
+			// 密码比较
+			String smmPWD = user.getPassword();
+			if (smmPWD == null)
+				smmPWD = "";
+			if (password.equals(smmPWD)) {
+				pwdIsTrue = true;
+			} else {
+				pwdIsTrue = false;
+			}
 
-      } else {
-        if (!pwdIsTrue) {
-          responseMessage.setMessage("用户登录名或者密码错误，请重试!");
-          responseMessage.setStatus("failed");
-          return model;
-        }
-      }
+			//
+			String project_loginLimit = ProjectProperties.getProperty(
+					"project.LoginLimit", "true");
+			if ("true".equals(project_loginLimit)) {
+				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
+						responseMessage)) {// 密码错误次数验证
+					return model;
+				}
+				if (!pwdIsTrue) {
+					return model;
+				}
 
-    }
+			} else {
+				if (!pwdIsTrue) {
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					responseMessage.setStatus("failed");
+					return model;
+				}
+			}
 
-    // 创建session
-    HttpSession session = SessionListener.getSession((HttpServletRequest) request);
+		}
 
-    if (session != null) {
-      User userInfo = (User) session.getAttribute(RestConstants.Session_UserInfo);
-      if (userInfo != null && loginname.equals(userInfo.getLoginname())) {
-        // 当前用户,在线直接返回当前用户.
-        this.logger.info("userInfo is online,loginName=" + loginname);
-        // 返回用户信息
-        UserInfoReturn userInfoReturn = new UserInfoReturn();
-        try {
-          BeanUtils.copyProperties(userInfoReturn, user);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        model.put(RestConstants.Return_JSESSIONID, session.getId());
-        model.put(RestConstants.Return_UserInfo, userInfoReturn);
-        return model;
-      }
-    }
-    user.setLogintime(TimeUtils.getCurrentTimestamp());
-    this.nSimpleHibernateDao.save(user);
-    session = request.getSession(true);
-    this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
-    SessionListener.putSessionByJSESSIONID(session);
-    session.setAttribute(RestConstants.Session_UserInfo, user);
-    // 返回客户端用户信息放入Map
-   putUserInfoReturnToModel(model,request);
-    
-    model.put(RestConstants.Return_JSESSIONID, session.getId());
-//    model.put(RestConstants.Return_UserInfo, userInfoReturn);
+		// 创建session
+		HttpSession session = SessionListener
+				.getSession((HttpServletRequest) request);
 
-    return model;
-  }
+		if (session != null) {
+			User userInfo = (User) session
+					.getAttribute(RestConstants.Session_UserInfo);
+			if (userInfo != null && loginname.equals(userInfo.getLoginname())) {
+				// 当前用户,在线直接返回当前用户.
+				this.logger.info("userInfo is online,loginName=" + loginname);
+				// 返回用户信息
+				UserInfoReturn userInfoReturn = new UserInfoReturn();
+				try {
+					BeanUtils.copyProperties(userInfoReturn, user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				model.put(RestConstants.Return_UserInfo, userInfoReturn);
+				return model;
+			}
+		}
+		user.setLogin_time(TimeUtils.getCurrentTimestamp());
+		this.nSimpleHibernateDao.save(user);
+		session = request.getSession(true);
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+		SessionListener.putSessionByJSESSIONID(session);
+		session.setAttribute(RestConstants.Session_UserInfo, user);
+		// 返回客户端用户信息放入Map
+		// putUserInfoReturnToModel(model, request);
 
-  
+		model.put(RestConstants.Return_JSESSIONID, session.getId());
+		// model.put(RestConstants.Return_UserInfo, userInfoReturn);
 
-  @Override
-  public Class getEntityClass() {
-    // TODO Auto-generated method stub
-    return User.class;
-  }
+		return model;
+	}
+
+	/**
+	 * 是否用户名已被占用
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	private boolean isExitSameUserByLoginName(String loginname) {
+		String attribute = "tel";
+		Object user = nSimpleHibernateDao.getObjectByAttribute(User.class,
+				attribute, loginname);
+
+		if (user != null)// 已被占用
+			return true;
+		else
+			return false;
+
+	}
+
+	@Override
+	public Class getEntityClass() {
+		// TODO Auto-generated method stub
+		return User.class;
+	}
 
 }

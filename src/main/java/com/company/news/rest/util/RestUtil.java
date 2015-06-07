@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
 
-import com.company.news.Constants;
+import com.company.news.SystemConstants;
 import com.company.news.rest.RestConstants;
 import com.company.news.vo.ResponseMessage;
 import com.sobey.tp.utils.ReflectionUtils;
@@ -124,7 +124,7 @@ public class RestUtil {
 				byteArrayOutputStream.write(buffer, 0, length);
 			}
 			byteArrayOutputStream.flush();
-			syncRequestString = new String(byteArrayOutputStream.toByteArray(), Constants.Charset);
+			syncRequestString = new String(byteArrayOutputStream.toByteArray(), SystemConstants.Charset);
 			logger.info("request.getInputStream="+syncRequestString);
 		} catch (Exception e) {
 		  e.printStackTrace();
