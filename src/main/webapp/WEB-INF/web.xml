@@ -111,7 +111,7 @@
 		<init-param>
 			<param-name>excludeFilters</param-name>
 			<param-value>
-				/userinfo/login.json,/userinfo/reg.json,/uploadFile/getImgFile.json
+				/userinfo/login.json,/userinfo/reg.json,/uploadFile/getImgFile.json,/group/reg.json,/group/list.json
 			</param-value>
 		</init-param>
 	</filter>

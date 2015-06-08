@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.entity.User;
+import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
@@ -56,12 +57,13 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
 			return false;
 		}
-
-		// group_uuid
+		
+		// Group_uuid昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
-			responseMessage.setMessage("关联组织的UUID不能为空！");
+			responseMessage.setMessage("关联机构不能为空！");
 			return false;
 		}
+
 
 		// 用户名是否存在
 		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
@@ -81,7 +83,15 @@ public class UserinfoService extends AbstractServcice {
 		user.setSex(0);
 
 		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.save(user);
+		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
+		
+		
+		//保存用户机构关联表
+		UserGroupRelation userGroupRelation=new UserGroupRelation();
+		userGroupRelation.setUseruuid(user.getUuid());
+		userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 
 		return true;
 	}
@@ -93,17 +103,19 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
-	public ModelMap login(UserLoginForm userLoginForm, ModelMap model,
+	public boolean login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request, ResponseMessage responseMessage)
 			throws Exception {
 		String loginname = userLoginForm.getLoginname();
 		String password = userLoginForm.getPassword();
-		if (password == null)
-			password = "";
+
 		if (StringUtils.isBlank(loginname)) {
 			responseMessage.setMessage("用户登录名不能为空!");
-			responseMessage.setStatus("failed");
-			return model;
+			return false;
+		}
+		if (StringUtils.isBlank(password)) {
+			responseMessage.setMessage("登陆密码不能为空!");
+			return false;
 		}
 
 		String attribute = "loginname";
@@ -112,40 +124,38 @@ public class UserinfoService extends AbstractServcice {
 				User.class, attribute, loginname);
 
 		if (user == null) {
-			responseMessage.setMessage("用户不存在或者密码错误!");
-			responseMessage.setStatus("failed");
-			return model;
+			responseMessage.setMessage("用户名:"+loginname+",不存在!");
+			return false;
 		}
 
 		boolean pwdIsTrue = false;
 		{
 			// 密码比较
 			String smmPWD = user.getPassword();
-			if (smmPWD == null)
-				smmPWD = "";
+
 			if (password.equals(smmPWD)) {
 				pwdIsTrue = true;
 			} else {
 				pwdIsTrue = false;
 			}
 
-			//
+			//在限定次数内
 			String project_loginLimit = ProjectProperties.getProperty(
 					"project.LoginLimit", "true");
 			if ("true".equals(project_loginLimit)) {
 				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
 						responseMessage)) {// 密码错误次数验证
-					return model;
+					return false;
 				}
 				if (!pwdIsTrue) {
-					return model;
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					return false;
 				}
 
 			} else {
 				if (!pwdIsTrue) {
 					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
-					responseMessage.setStatus("failed");
-					return model;
+					return false;
 				}
 			}
 
@@ -170,13 +180,14 @@ public class UserinfoService extends AbstractServcice {
 				}
 				model.put(RestConstants.Return_JSESSIONID, session.getId());
 				model.put(RestConstants.Return_UserInfo, userInfoReturn);
-				return model;
+				return true;
 			}
 		}
-		user.setLogin_time(TimeUtils.getCurrentTimestamp());
-		this.nSimpleHibernateDao.save(user);
+		
+		//更新登陆日期,最近一次登陆日期
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set login_time=?,last_login_time=? where uuid=?",TimeUtils.getCurrentTimestamp(),user.getLogin_time(),user.getUuid());
 		session = request.getSession(true);
-		this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+		//this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 		SessionListener.putSessionByJSESSIONID(session);
 		session.setAttribute(RestConstants.Session_UserInfo, user);
 		// 返回客户端用户信息放入Map
@@ -185,7 +196,7 @@ public class UserinfoService extends AbstractServcice {
 		model.put(RestConstants.Return_JSESSIONID, session.getId());
 		// model.put(RestConstants.Return_UserInfo, userInfoReturn);
 
-		return model;
+		return true;
 	}
 
 	/**
@@ -195,7 +206,7 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 */
 	private boolean isExitSameUserByLoginName(String loginname) {
-		String attribute = "tel";
+		String attribute = "loginname";
 		Object user = nSimpleHibernateDao.getObjectByAttribute(User.class,
 				attribute, loginname);
 

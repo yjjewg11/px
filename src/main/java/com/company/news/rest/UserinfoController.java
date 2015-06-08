@@ -26,8 +26,20 @@ public class UserinfoController extends AbstractRESTController{
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request) {
-
-	
+		//返回消息体
+		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		try {
+			boolean flag=userinfoService.login(userLoginForm, model, request, responseMessage);
+			if(!flag)//请求服务返回失败标示
+		    	return "";			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("登陆成功");
 		return "";
 	}
 	
@@ -80,6 +92,7 @@ public class UserinfoController extends AbstractRESTController{
 		}
 
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		// responseMessage.setMessage(new Message("失败消息!", "Failure message"));
 		return "";
 	}
@@ -95,13 +108,12 @@ public class UserinfoController extends AbstractRESTController{
      */
     @RequestMapping(value = "/getUserinfo", method = RequestMethod.GET)
     public String getUserinfo( ModelMap model, HttpServletRequest request) {
-        model.clear();
-        RestUtil.addResponseMessageForModelMap(model);
+        ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
         HttpSession session = SessionListener.getSession(request);
         // 返回用户信息
         this.putUserInfoReturnToModel(model, request);
         model.put(RestConstants.Return_JSESSIONID, session.getId());
-        //model.put(RestConstants.Return_UserInfo, userInfoReturn);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }
 }

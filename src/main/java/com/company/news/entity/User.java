@@ -34,11 +34,21 @@ public class User extends IdEntity {
 	@Column
 	private Timestamp login_time;// 最后一次登录时间。
 	@Column
-	private Timestamp create_time;// 上一次登录时间
+	private Timestamp create_time;
+	
+	@Column
+	private Timestamp last_login_time;// 上一次登录时间
+	public Timestamp getLast_login_time() {
+		return last_login_time;
+	}
+
+	public void setLast_login_time(Timestamp last_login_time) {
+		this.last_login_time = last_login_time;
+	}
+
 	@Column
 	private Integer type;// 用户类型。0:普通用户(默认)；1:组织管理员
-	@Column
-	private String group_uuid;// 关联组织UUID
+
 	@Column
 	private String email;// email
 
@@ -50,13 +60,7 @@ public class User extends IdEntity {
 		this.email = email;
 	}
 
-	public String getGroup_uuid() {
-		return group_uuid;
-	}
 
-	public void setGroup_uuid(String groupUuid) {
-		group_uuid = groupUuid;
-	}
 
 	public String getLoginname() {
 		return loginname;
