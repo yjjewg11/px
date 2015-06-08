@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.sobey.tp.core.entity.IdEntity;
 
 /**
  * 用户基本信息表

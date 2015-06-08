@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.sobey.tp.core.entity.IdEntity;
 @Entity
 @Table(name="px_group") 
 public class Group extends IdEntity{

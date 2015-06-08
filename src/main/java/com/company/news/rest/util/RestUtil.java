@@ -15,7 +15,7 @@ import org.springframework.ui.ModelMap;
 import com.company.news.SystemConstants;
 import com.company.news.rest.RestConstants;
 import com.company.news.vo.ResponseMessage;
-import com.sobey.tp.utils.ReflectionUtils;
+
 
 public class RestUtil {
 	private static Logger logger = LoggerFactory.getLogger(RestUtil.class);
@@ -85,25 +85,6 @@ public class RestUtil {
 		return responseMessage;
 	}
 
-	/**
-	 * @param obj
-	 * @param newobj
-	 * @return 2013-5-30 TODO 将对象中不为空的字段复制到另外一个对象中去
-	 * @author yl
-	 */
-	static public Object copyNotEmptyValueToobj(Properties pro, Object entity, Object newobj) {
-		Enumeration en = pro.keys();
-		while (en.hasMoreElements()) {
-			Object keyObj = en.nextElement();
-			try {
-				Object obj = ReflectionUtils.getFieldValue(entity, keyObj + "");
-				ReflectionUtils.setFieldValue(newobj, keyObj + "", obj);
-			} catch (Exception e) {
-				logger.warn("ReflectionUtils.getAccessibleField,NoSuchFieldException=" + keyObj + "");
-			}
-		}
-		return newobj;
-	}
 
 	/**
 	 * put post请求时,业务数据放到内容区,json格式.

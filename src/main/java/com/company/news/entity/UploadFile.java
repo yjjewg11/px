@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.sobey.tp.core.entity.IdEntity;
 
 /**
  * 上传文件，头像，身份证，认证照片
