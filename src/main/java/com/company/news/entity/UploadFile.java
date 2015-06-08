@@ -9,22 +9,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 /**
  * 上传文件，头像，身份证，认证照片
  * @author Administrator
  *
  */
 @Entity
-@Table(name="px_uploadFile") 
-public class UploadFile implements DBEntityInterface {
-  @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
-  @Column(name = "id", unique = true, nullable = false)
-  private Long id;//主键
+@Table(name="px_upload") 
+public class UploadFile extends IdEntity {
+
   @Column
-  private String guid;// [必填唯一]请求图片时使用。防止漏洞获取所有图片。
-  @Column
-  private Long create_userid;//创建用户id
+  private String user_uuid;//创建用户id
   @Column
   private Timestamp create_time;//创建时间
   @Column
@@ -33,22 +29,25 @@ public class UploadFile implements DBEntityInterface {
   private String file_path;// [必填]相对路径
   @Column
   private String content_type;// [必填]文件类型："image/jpg","image/jpeg","image/png","image/gif"
-  
   @Column
   private Long file_size;// [必填]文件大小
-  public Long getId() {
-    return id;
-  }
-  public void setId(Long id) {
-    this.id = id;
-  }
-  public Long getCreate_userid() {
-    return create_userid;
-  }
-  public void setCreate_userid(Long create_userid) {
-    this.create_userid = create_userid;
-  }
-  public Timestamp getCreate_time() {
+  @Column
+  private String out_uuid;// [必填]外部GUID，比如用户关联类型是必应用户UUID，组织营业执照类型是对应组织UUID 
+
+
+public String getUser_uuid() {
+	return user_uuid;
+}
+public void setUser_uuid(String userUuid) {
+	user_uuid = userUuid;
+}
+public String getOut_uuid() {
+	return out_uuid;
+}
+public void setOut_uuid(String outUuid) {
+	out_uuid = outUuid;
+}
+public Timestamp getCreate_time() {
     return create_time;
   }
   public void setCreate_time(Timestamp create_time) {
@@ -78,11 +77,6 @@ public class UploadFile implements DBEntityInterface {
   public void setContent_type(String content_type) {
     this.content_type = content_type;
   }
-  public String getGuid() {
-    return guid;
-  }
-  public void setGuid(String guid) {
-    this.guid = guid;
-  }
+
 
 }

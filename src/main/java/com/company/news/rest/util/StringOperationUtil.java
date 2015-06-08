@@ -5,19 +5,17 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.company.news.Constants;
 import com.company.news.ProjectProperties;
 
 public class StringOperationUtil {
 	public static String stringToDateByDBType(String dateStr) {
-		String dbtype = ProjectProperties.getProperty("primary.dbtype", "oracle");
 	    String mysqlStringToDate = "DATE_FORMAT('aaaa','%Y-%m-%d %H:%i:%s')";
 	    String oracleStringToDate = "to_date('aaaa','yyyy-mm-dd hh24:mi:ss')";
 	    String db2StringToDate = "TIMESTAMP('aaaa')";
 	    String currStringToDate = oracleStringToDate;
-	    if ("mysql".equals(dbtype)) {
+	    if ("mysql".equals(DBUtil.dbtype)) {
 	      currStringToDate = mysqlStringToDate;
-	    } else if ("db2".equals(dbtype)) {
+	    } else if ("db2".equals(DBUtil.dbtype)) {
 	      currStringToDate = db2StringToDate;
 	    }
 

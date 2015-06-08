@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.news.form.UserLoginForm;
+import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
@@ -22,64 +23,64 @@ public class UserinfoController extends AbstractRESTController{
 
 	@Autowired
 	private UserinfoService userinfoService;
-	
-	public UserinfoService getUserinfoService() {
-		return userinfoService;
-	}
 
-	public void setUserinfoService(UserinfoService userinfoService) {
-		this.userinfoService = userinfoService;
-	}
-//
-
-//
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	 @ResponseBody
-	public ModelMap login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request) {
-
-		// 清除原输入参数MAP
-		model.clear();
+	public String login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request) {
+		//返回消息体
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-
-		 try {
-		   userinfoService.login(userLoginForm, model, request, responseMessage);
-	        } catch (Exception e) {
-	          e.printStackTrace();
-	           responseMessage = RestUtil.addResponseMessageForModelMap(model);
-	          responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-	          responseMessage.setMessage(e.getMessage());
-	        }
-	
-		return model;
+		try {
+			boolean flag=userinfoService.login(userLoginForm, model, request, responseMessage);
+			if(!flag)//请求服务返回失败标示
+		    	return "";			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("登陆成功");
+		return "";
 	}
 	
+	/**
+	 * 教师注册
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/reg", method = RequestMethod.POST)
-    public String reg( ModelMap model, HttpServletRequest request) {
-        try {
-          String bodyJson=RestUtil.getJsonStringByRequest(request);
-          userinfoService.reg(bodyJson, model, request);
-        } catch (Exception e) {
-          e.printStackTrace();
-          ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-          responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-          responseMessage.setMessage(e.getMessage());
-        }
+    public String reg( ModelMap model,HttpServletRequest request) {
+		//返回消息体
+		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		//请求消息体
+		String bodyJson=RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform)this.bodyJsonToFormObject(bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		try {
+			boolean flag=userinfoService.reg(UserinfoService.USER_type_teacher, userRegJsonform, responseMessage);
+		    if(!flag)//请求服务返回失败标示
+		    	return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+        
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("注册成功");
         return "";
     }
 
-	   @RequestMapping(value = "/modify", method = RequestMethod.POST)
-	    public String modify(String verify, ModelMap model, HttpServletRequest request) {
-	        try {
-	          String bodyJson=RestUtil.getJsonStringByRequest(request);
-	          userinfoService.modify(verify,bodyJson, model, request);
-	        } catch (Exception e) {
-	          e.printStackTrace();
-	          ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-	          responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-	          responseMessage.setMessage(e.getMessage());
-	        }
-	        return "";
-	    }
+
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	public String logout(ModelMap model, HttpServletRequest request) {
 		// 创建session
@@ -91,25 +92,13 @@ public class UserinfoController extends AbstractRESTController{
 		}
 
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		// responseMessage.setMessage(new Message("失败消息!", "Failure message"));
 		return "";
 	}
 
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout1(ModelMap model, HttpServletRequest request) {
-        // 创建session
-        HttpSession session = SessionListener.getSession(request);
-        if (session != null) {
-            // UserInfo
-            // userInfo=(UserInfo)session.getAttribute(RestConstants.Session_UserInfo);
-            session.invalidate();
-        }
 
-        ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-        // responseMessage.setMessage(new Message("失败消息!", "Failure message"));
-        return "";
-    }
 
     /**
      * 获取用户信息
@@ -119,13 +108,12 @@ public class UserinfoController extends AbstractRESTController{
      */
     @RequestMapping(value = "/getUserinfo", method = RequestMethod.GET)
     public String getUserinfo( ModelMap model, HttpServletRequest request) {
-        model.clear();
-        RestUtil.addResponseMessageForModelMap(model);
+        ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
         HttpSession session = SessionListener.getSession(request);
         // 返回用户信息
-        this.userinfoService.putUserInfoReturnToModel(model, request);
+        this.putUserInfoReturnToModel(model, request);
         model.put(RestConstants.Return_JSESSIONID, session.getId());
-        //model.put(RestConstants.Return_UserInfo, userInfoReturn);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }
 }

@@ -13,7 +13,7 @@ import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.sobey.tp.core.spring.web.servlet.i18n.I18nUtils;
+
 
 public final class JSONUtils {
 
@@ -48,17 +48,5 @@ public final class JSONUtils {
     return t;
   }
 
-  public static String getDBStringByLocale(String jsonstr) {
-    Locale locale = I18nUtils.getLocale();
-    if (null == locale) locale = new Locale("zh-CN");
-    try {
-      Map map = (Map) jsonToObject(jsonstr, Map.class);
-      String key = locale.getLanguage();
-      if (StringUtils.isNotEmpty(key)) {
-        if (key.length() > 2) key = key.substring(0, 2);
-        if (map.containsKey(key)) return (String) map.get(key);
-      }
-    } catch (Exception e) {}
-    return jsonstr;
-  }
+
 }

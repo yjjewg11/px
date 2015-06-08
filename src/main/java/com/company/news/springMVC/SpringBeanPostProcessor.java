@@ -72,13 +72,13 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
       SpringBeanPostProcessor.sessionFactory = sessionFactory;
     }
 
-    @Override  
+
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {  
         // Bean实例化之前执行  
         return bean;  
     }  
   
-    @Override  
+
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {  
         // Bean实例化之后执行   
       if(isInit)return bean;

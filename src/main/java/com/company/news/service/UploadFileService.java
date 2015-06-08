@@ -39,7 +39,7 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
-import com.sobey.tp.utils.TimeUtils;
+
 
 /**
  * 文件上传
@@ -56,7 +56,7 @@ public class UploadFileService extends AbstractServcice {
      * @return
      */
     public ModelMap uploadImg(UploadFileForm upladFileForm,CommonsMultipartFile file,ModelMap model, HttpServletRequest request) {
-        model.clear();
+/*        model.clear();
         ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
         User userInfo = SessionListener.getUserInfoBySession(request);
         String guid=new UUIDGenerator().generate().toString();
@@ -120,11 +120,10 @@ public class UploadFileService extends AbstractServcice {
            }else{
              oldFile=uploadFile.getFile_path();
            }
-           //每次都更新guid
-           uploadFile.setGuid(guid);
+
             uploadFile.setType(upladFileForm.getType());
             uploadFile.setFile_size(file.getSize());
-            uploadFile.setCreate_userid(userInfo.getId());
+            uploadFile.setCreate_userid(userInfo.getUuid());
             uploadFile.setCreate_time(TimeUtils.getCurrentTimestamp());
             uploadFile.setFile_path(uploadPath+fileName);
             uploadFile.setContent_type(file.getContentType());
@@ -171,7 +170,8 @@ public class UploadFileService extends AbstractServcice {
             responseMessage.setMessage("上载文件失败!");
             model.addAttribute(RestConstants.Return_ResponseMessage, responseMessage);
         }
-        return model;
+        return model;*/
+    	return model;
     }
 
     /**
@@ -357,34 +357,12 @@ chunked
         return true;
     }
 
-   
+	@Override
+	public Class getEntityClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /**
-     * 判断上载的附件是否为图片
-     * @param description
-     * @return
-     */
-    private boolean isImage(String description) {
-        JSONObject jsonObject = JSONObject.fromObject(description);
-        if ("jpg".equalsIgnoreCase(jsonObject.get("type").toString())) {
-            return true;
-        }
-        
-        if ("png".equalsIgnoreCase(jsonObject.get("type").toString())) {
-            return true;
-        }
-        
-        if ("bmp".equalsIgnoreCase(jsonObject.get("type").toString())) {
-            return true;
-        }
-        return false;
-    }
-
-  @Override
-  public Class getEntityClass() {
-    // TODO Auto-generated method stub
-    return UploadFile.class;
-  }
 
 
 }

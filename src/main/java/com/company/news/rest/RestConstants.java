@@ -16,6 +16,8 @@ public class RestConstants {
   static public String Return_ResponseMessage="ResMsg";
   //请求返回状态-成功
   static public String Return_ResponseMessage_success="success";
+  //请求list
+  static public String Return_ResponseMessage_list="list";
   //请求返回状态-失败
   static public String Return_ResponseMessage_failed="failed";
   //请求返回状态-无权限
@@ -59,13 +61,5 @@ public class RestConstants {
   static public String Return_MD5CODE="md5";
   static public String Return_ConditionShow="conditionShow";
   
-  
-  	//选题
-	static public final Integer NEWS_MODULE_LISTPLAN_ID = new Integer(2);
-	//阶段性重点
-	static public final Integer NEWS_MODULE_STAGEKEY_ID = new Integer(21);
-	//系列报道
-	static public final Integer NEWS_MODULE_SERIESREPORT_ID = new Integer(22);
-	//采访计划
-	static public final Integer NEWS_MODULE_COVERPLAN_ID = new Integer(3);
+
 }
