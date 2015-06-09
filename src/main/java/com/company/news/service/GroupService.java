@@ -34,7 +34,6 @@ import com.company.web.listener.SessionListener;
  */
 @Service
 public class GroupService extends AbstractServcice {
-    public static final int Group_type_default = 0;//类型：1，培训机构，0:幼儿园
 	@Autowired
 	private UserinfoService userinfoService;
 
@@ -73,7 +72,10 @@ public class GroupService extends AbstractServcice {
 			return false;
 		}
 		
-
+		if (groupRegJsonform.getType()==null) {
+			responseMessage.setMessage("机构类型不能为空！");
+			return false;
+		}
 		
 		// 机构名是否存在
 		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
@@ -84,7 +86,6 @@ public class GroupService extends AbstractServcice {
 		Group group = new Group();
 
 		BeanUtils.copyProperties(group, groupRegJsonform);
-		group.setType(Group_type_default);
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 
 		// 有事务管理，统一在Controller调用时处理异常
@@ -140,7 +141,10 @@ public class GroupService extends AbstractServcice {
 			return false;
 		}
 		
-
+		if (groupRegJsonform.getType()==null) {
+			responseMessage.setMessage("机构类型不能为空！");
+			return false;
+		}
 		
 		// 机构名是否存在
 		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
@@ -151,7 +155,7 @@ public class GroupService extends AbstractServcice {
 		Group group = new Group();
 
 		BeanUtils.copyProperties(group, groupRegJsonform);
-		group.setType(Group_type_default);
+
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 
 		// 有事务管理，统一在Controller调用时处理异常

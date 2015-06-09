@@ -31,8 +31,7 @@ public class UploadFile extends IdEntity {
   private String content_type;// [必填]文件类型："image/jpg","image/jpeg","image/png","image/gif"
   @Column
   private Long file_size;// [必填]文件大小
-  @Column
-  private String out_uuid;// [必填]外部GUID，比如用户关联类型是必应用户UUID，组织营业执照类型是对应组织UUID 
+
 
 
 public String getUser_uuid() {
@@ -40,12 +39,6 @@ public String getUser_uuid() {
 }
 public void setUser_uuid(String userUuid) {
 	user_uuid = userUuid;
-}
-public String getOut_uuid() {
-	return out_uuid;
-}
-public void setOut_uuid(String outUuid) {
-	out_uuid = outUuid;
 }
 public Timestamp getCreate_time() {
     return create_time;

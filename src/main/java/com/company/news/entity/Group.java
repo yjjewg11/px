@@ -17,7 +17,7 @@ public class Group extends IdEntity{
 	  @Column
 	  private String company_name;//公司全称
 	  @Column
-	  private Integer type;//类型：1，培训机构，0:幼儿园
+	  private Integer type;//类型：2，培训机构，1:幼儿园
 	  @Column
 	  private String map_point;//坐标
 	  @Column
