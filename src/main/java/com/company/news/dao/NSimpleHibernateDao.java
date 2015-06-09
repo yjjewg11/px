@@ -171,7 +171,7 @@ public class NSimpleHibernateDao extends HibernateDaoSupport {
    * @param entityClass
    * @param id 根据ID逐条删除实体
    */
-  public void deleteObjectById(Class className, long id) {
+  public void deleteObjectById(Class className, Object id) {
       String hql = "delete from " + className.getName() + " where id = ? ";
       this.getHibernateTemplate().bulkUpdate(hql, new Object[]{id});
   }

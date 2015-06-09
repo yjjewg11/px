@@ -34,7 +34,7 @@ public class AbstractRESTController   {
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }
-	    model.put(RestConstants.Return_UserInfo, userInfoReturn);
+	    model.addAttribute(userInfoReturn);
 	  }
 	  
 	  /**
