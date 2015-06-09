@@ -5,7 +5,7 @@
 .project
 /.settings/
 /target/
-/classes/
+classes/
 .idea/
 
 # Mobile Tools for Java (J2ME)
@@ -65,3 +65,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/build
