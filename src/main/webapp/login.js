@@ -20,6 +20,16 @@ function init() {
 }
 //用户登陆
 function login() {
+	
+//	 var $btn = $(this)
+//	  $btn.button('loading');
+//	    setTimeout(function(){
+//	      $btn.button('reset');
+//	  }, 5000);
+//	    
+	
+	$.AMUI.progress.start();
+
 	var loginname = $("#loginname").val();
 	var password = $("#password").val();
 	var pwdmd5=$.md5(password); 
@@ -32,6 +42,7 @@ function login() {
 		data : "",
 		dataType : "json",
 		success : function(data) {
+			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
@@ -50,6 +61,7 @@ function login() {
 			}
 		},
 		error : function() {
+			$.AMUI.progress.done();
 			return "error";
 		}
 	});
