@@ -5,24 +5,24 @@ window.onload = function() {
 
 //如果之前已经记住密码，需要将账号密码填充到输入框中
 function init() {
-	var username = getCookie("bs_username");
+	var username = getCookie("bs_loginname");
 	var password = getCookie("bs_password");
 	var password_checked = getCookie("password_checked");
 	
 	if(username && username != "") {
-		$("#username").attr("value",username);
+		$("#loginname").attr("value",username);
 	}
 	
 	if(password_checked && password_checked == "checked") {
 		$("#password").attr("value",password);
-		$("#savepwd").attr("checked",'true');
+		$("#remember-me").attr("checked",'true');
 	}
 }
 //用户登陆
 function login() {
 	
-//	 var $btn = $(this)
-//	  $btn.button('loading');
+	 var $btn = $("#btn_login");
+	  $btn.button('loading');
 //	    setTimeout(function(){
 //	      $btn.button('reset');
 //	  }, 5000);
@@ -32,35 +32,45 @@ function login() {
 
 	var loginname = $("#loginname").val();
 	var password = $("#password").val();
-	var pwdmd5=$.md5(password); 
-	pwdmd5=password;
+	if(password.length!=32){
+		 password=$.md5(password); 
+		
+	}
 	var url = hostUrl + "rest/userinfo/login.json?loginname=" + loginname + "&password="
-			+ pwdmd5;
+			+ password;
 	$.ajax({
 		type : "POST",
 		url : url,
 		data : "",
 		dataType : "json",
 		success : function(data) {
+			 $btn.button('reset');
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
 				setCookie("bs_loginname", loginname);
-				if($("#remember-me").attr("checked")){
-					setCookie("bs_password", pwdmd5);
+				if($("#remember-me")[0].checked){
+					setCookie("bs_password", password);
 					setCookie("password_checked", "checked");
 				} else {
 					setCookie("bs_password", ""); 
 					setCookie("password_checked", "");
 				}
-				window.location = rootPath + "/index_admin.jsp"
+				//data.userinfo.name;
+				if(data.userinfo.type==1){
+					window.location = hostUrl + "kd_index.html";
+				}else{
+					window.location = hostUrl + "index_admin.html";
+				}
+				
 				
 			} else {
-				alert(data.ResponseMessage.message.zh_CN);
+				alert(data.ResMsg.message);
 			}
 		},
 		error : function() {
+			 $btn.button('reset');
 			$.AMUI.progress.done();
 			return "error";
 		}

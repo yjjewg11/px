@@ -9,9 +9,10 @@ function reg() {
 	  
 	  //alert(JSON.stringify(objectForm));
 	  //return;
-	  if(objectForm.password!=objectForm.password){
+	  if(objectForm.password!=objectForm.password1){
 		  alert("2次输入密码不匹配");
 	  }
+	  delete objectForm.password1;
 	  objectForm.password=$.md5(objectForm.password); 
       var jsonString=JSON.stringify(objectForm);
       var url = hostUrl + "rest/group/reg.json";
@@ -19,23 +20,24 @@ function reg() {
 	$.ajax({
 		type : "POST",
 		url : url,
-		 processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
 		data : jsonString,
 		dataType : "json",
+		contentType : false,  
 		success : function(data) {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				
-				window.location = rootPath + "/index_admin.jsp"
+				alert(data.ResMsg.message);
+				window.location = hostUrl + "/login.html"
 				
 			} else {
-				alert(data.ResponseMessage.message.zh_CN);
+				alert(data.ResMsg.message);
 			}
 		},
-		error : function() {
+		error : function( obj, textStatus, errorThrown ){
 			$.AMUI.progress.done();
-			return "error";
+			alert("error:"+textStatus);
 		}
 	});
 }
