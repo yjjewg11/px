@@ -43,7 +43,7 @@ public class UserinfoService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean reg(int type, UserRegJsonform userRegJsonform,
+	public boolean reg(UserRegJsonform userRegJsonform,
 			ResponseMessage responseMessage) throws Exception {
 
 		// TEL格式验证
@@ -79,7 +79,6 @@ public class UserinfoService extends AbstractServcice {
 		user.setDisable(USER_disable_default);
 		user.setLogin_time(TimeUtils.getCurrentTimestamp());
 		user.setTel_verify(USER_tel_verify_default);
-		user.setType(type);
 		user.setSex(0);
 
 		// 有事务管理，统一在Controller调用时处理异常

@@ -93,7 +93,9 @@ public class GroupService extends AbstractServcice {
 		//设置保存后的机构UUID
 		groupRegJsonform.setGroup_uuid(group.getUuid());
 		//注册对应的管理员用户
-		if(!userinfoService.reg(userinfoService.USER_type_group, groupRegJsonform, responseMessage))
+		groupRegJsonform.setType(userinfoService.USER_type_group);
+		
+		if(!userinfoService.reg(groupRegJsonform, responseMessage))
 		{
           //关联管理员账号注册失败，回滚之前操作
 			throw new RuntimeException(responseMessage.getMessage());
@@ -102,6 +104,71 @@ public class GroupService extends AbstractServcice {
 		
 		return true;
 	}
+	
+	/**
+	 * 增加机构
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean add(GroupRegJsonform groupRegJsonform,
+			ResponseMessage responseMessage,String useruuid) throws Exception {
+		if (StringUtils.isBlank(groupRegJsonform.getBrand_name())||groupRegJsonform.getBrand_name().length()>45) {
+			responseMessage.setMessage("品牌名不能为空！，且长度不能超过45位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getCompany_name())||groupRegJsonform.getCompany_name().length()>45) {
+			responseMessage.setMessage("机构名不能为空！，且长度不能超过45位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getMap_point())) {
+			responseMessage.setMessage("位置信息不能为空！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getAddress())||groupRegJsonform.getAddress().length()>64) {
+			responseMessage.setMessage("联系地址不能为空！，且长度不能超过64位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getLink_tel())) {
+			responseMessage.setMessage("联系方式不能为空！");
+			return false;
+		}
+		
+
+		
+		// 机构名是否存在
+		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
+			responseMessage.setMessage("机构名已被注册！");
+			return false;
+		}
+		
+		Group group = new Group();
+
+		BeanUtils.copyProperties(group, groupRegJsonform);
+		group.setType(Group_type_default);
+		group.setCreate_time(TimeUtils.getCurrentTimestamp());
+
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
+		
+		//设置保存后的机构UUID
+		groupRegJsonform.setGroup_uuid(group.getUuid());
+		//保存用户机构关联表
+		UserGroupRelation userGroupRelation=new UserGroupRelation();
+		userGroupRelation.setUseruuid(useruuid);
+		userGroupRelation.setGroupuuid(groupRegJsonform.getGroup_uuid());
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		
+		return true;
+	}
+	
 	
 	/**
 	 * 查询所有机构列表

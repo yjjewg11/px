@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.company.news.entity.User;
 import com.company.news.jsonform.UserRegJsonform;
+import com.company.news.rest.AbstractRESTController;
 
 
 public class RestTest {
@@ -40,10 +41,12 @@ public class RestTest {
 	 * @date 2014-06-30
 	 * @param params[]
 	 * @return void
-	 * @throws IOException 
+	 * @throws Exception 
 	 * @method main
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
+		String bodyJson="{\"email\":\"\",\"group_uuid\":\"testuuid\"}";
+		UserRegJsonform	userRegJsonform = (UserRegJsonform)AbstractRESTController.bodyJsonToFormObject(bodyJson, UserRegJsonform.class);
 
 	}
 }

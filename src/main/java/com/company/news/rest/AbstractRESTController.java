@@ -25,7 +25,7 @@ public class AbstractRESTController   {
 	   * @param request
 	   * @return
 	   */
-	  public void putUserInfoReturnToModel( ModelMap model,HttpServletRequest request){
+	  protected void putUserInfoReturnToModel( ModelMap model,HttpServletRequest request){
 	    User user = SessionListener.getUserInfoBySession(request);
 	    // 返回用户信息
 	    UserInfoReturn userInfoReturn = new UserInfoReturn();
@@ -36,6 +36,17 @@ public class AbstractRESTController   {
 	    }
 	    model.put(RestConstants.Return_UserInfo, userInfoReturn);
 	  }
+	  
+	  /**
+	   * 
+	   * @param request
+	   * @return
+	   */
+	  protected User getUserInfoBySession(HttpServletRequest request){
+		    User user = SessionListener.getUserInfoBySession(request);
+		    // 返回用户信息
+		    return user;
+		  }
 	  
 	  /**
 	   * 
