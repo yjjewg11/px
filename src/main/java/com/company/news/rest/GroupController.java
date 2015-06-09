@@ -68,6 +68,49 @@ public class GroupController extends AbstractRESTController {
 		responseMessage.setMessage("注册成功");
 		return "";
 	}
+	
+	
+	/**
+	 * 组织增加
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public String add(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		GroupRegJsonform groupRegJsonform;
+		try {
+			groupRegJsonform = (GroupRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, GroupRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		
+		
+		try {
+			boolean flag = groupService.add(groupRegJsonform, responseMessage,this.getUserInfoBySession(request).getUuid());
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("增加成功");
+		return "";
+	}
 
     /**
      * 获取机构信息

@@ -3,6 +3,7 @@ package com.company.news.rest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -64,8 +65,11 @@ public class UserinfoController extends AbstractRESTController{
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
+		//默认注册未普通用户类型
+		userRegJsonform.setType(UserinfoService.USER_type_teacher);
+		
 		try {
-			boolean flag=userinfoService.reg(UserinfoService.USER_type_teacher, userRegJsonform, responseMessage);
+			boolean flag=userinfoService.reg(userRegJsonform, responseMessage);
 		    if(!flag)//请求服务返回失败标示
 		    	return "";
 		} catch (Exception e) {
@@ -114,6 +118,52 @@ public class UserinfoController extends AbstractRESTController{
         this.putUserInfoReturnToModel(model, request);
         model.put(RestConstants.Return_JSESSIONID, session.getId());
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+        return "";
+    }
+    
+    
+	/**
+	 * 添加用户
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String add( ModelMap model,HttpServletRequest request) {
+		//返回消息体
+		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		//请求消息体
+		String bodyJson=RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform)this.bodyJsonToFormObject(bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		
+		// type 添加用户时需要指定用户类型
+		if (userRegJsonform.getType()==null) {
+			responseMessage.setMessage("用户类型不能为空！");
+			return "";
+		}
+
+		
+		try {
+			boolean flag=userinfoService.reg(userRegJsonform, responseMessage);
+		    if(!flag)//请求服务返回失败标示
+		    	return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+        
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("增加成功");
         return "";
     }
 }
