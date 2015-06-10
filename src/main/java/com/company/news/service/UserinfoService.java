@@ -31,7 +31,8 @@ public class UserinfoService extends AbstractServcice {
 	public static final int USER_disable_default = 0;// 电话号码，验证。默认0，0:没验证。1:验证，2：提交验证
 	public static final int USER_tel_verify_default = 0;// 是否被管理员封号。0：不封。1：封号，不允许登录。
 
-	public static final int USER_type_group = 1;// 组织管理员
+	//20150610 去掉对用户表的TYPE定义，默认都为0
+	public static final int USER_type_group = 0;// 组织管理员
 	public static final int USER_type_teacher = 0;// 老师类型
 
 	/**

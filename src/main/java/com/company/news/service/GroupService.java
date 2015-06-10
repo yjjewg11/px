@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -167,6 +169,20 @@ public class GroupService extends AbstractServcice {
 	 */
 	public List<Group> query(){
 		return (List<Group>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group", null);
+	}
+
+	
+	/**
+	 * 查询指定用户的机构列表
+	 * @return
+	 */
+	public List getGroupByUseruuid(String uuid)throws Exception{
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+				.addEntity("t1",Group.class);
+		
+		return q.list();
 	}
 
 
