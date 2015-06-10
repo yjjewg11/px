@@ -96,7 +96,7 @@ public class RightController extends AbstractRESTController{
 
 
     /**
-     * 获取用户信息
+     * 获取所有权限
      * @param model
      * @param request
      * @return
@@ -105,7 +105,7 @@ public class RightController extends AbstractRESTController{
     public String list( ModelMap model, HttpServletRequest request) {
     	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
         List<Right> list=rightService.query();
-        model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+        model.addAttribute(list);
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }

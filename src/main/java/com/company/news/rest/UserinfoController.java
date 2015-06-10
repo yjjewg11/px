@@ -1,5 +1,8 @@
 package com.company.news.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.service.GroupService;
 import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
@@ -24,7 +28,9 @@ public class UserinfoController extends AbstractRESTController{
 
 	@Autowired
 	private UserinfoService userinfoService;
-
+	@Autowired
+	private GroupService groupService;
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request) {
 		//返回消息体
@@ -39,6 +45,19 @@ public class UserinfoController extends AbstractRESTController{
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
+		
+		
+        List list=new ArrayList();
+		try {
+			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(request).getUuid());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+        model.addAttribute(list);
+		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");
 		return "";

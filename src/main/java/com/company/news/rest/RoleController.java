@@ -104,7 +104,7 @@ public class RoleController extends AbstractRESTController {
 	}
 
 	/**
-	 * 获取用户信息
+	 * 获取所有角色
 	 * 
 	 * @param model
 	 * @param request
@@ -115,13 +115,13 @@ public class RoleController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		List<Role> list = roleService.query();
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		model.addAttribute(list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
 	
 	/**
-	 * 获取用户信息
+	 * 获取指定角色的权限
 	 * 
 	 * @param model
 	 * @param request
@@ -132,7 +132,7 @@ public class RoleController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		List<RoleRightRelation> list = roleService.getRightByRoleuuid(request.getParameter("uuid"));
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		model.addAttribute(list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

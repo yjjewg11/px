@@ -1,5 +1,6 @@
 package com.company.news.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -116,7 +117,30 @@ public class GroupController extends AbstractRESTController {
     public String list( ModelMap model, HttpServletRequest request) {
     	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
         List<Group> list=groupService.query();
-        model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+        model.addAttribute(list);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+        return "";
+    }
+    
+    /**
+     * 获取我的机构信息
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/myList", method = RequestMethod.GET)
+    public String myList( ModelMap model, HttpServletRequest request) {
+    	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
+        List list=new ArrayList();
+		try {
+			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(request).getUuid());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+        model.addAttribute(list);
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }
