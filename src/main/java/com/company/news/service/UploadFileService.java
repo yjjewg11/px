@@ -1,23 +1,14 @@
 package com.company.news.service;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -26,19 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import com.company.news.ContentTypeConstants;
-import com.company.news.ProjectProperties;
-import com.company.news.SystemConstants;
-import com.company.news.commons.util.FileUtils;
-import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.entity.UploadFile;
-import com.company.news.entity.User;
 import com.company.news.form.UploadFileForm;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 
 /**

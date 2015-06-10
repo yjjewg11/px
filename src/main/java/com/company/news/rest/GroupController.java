@@ -3,24 +3,18 @@ package com.company.news.rest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.news.entity.Group;
-import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.GroupService;
-import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/group")
