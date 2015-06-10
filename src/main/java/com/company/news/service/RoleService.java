@@ -2,32 +2,15 @@ package com.company.news.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
-import com.company.news.ProjectProperties;
-import com.company.news.entity.Group;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Right;
 import com.company.news.entity.Role;
-import com.company.news.entity.User;
-import com.company.news.entity.UserGroupRelation;
-import com.company.news.form.UserLoginForm;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.jsonform.UserRegJsonform;
-import com.company.news.rest.RestConstants;
+import com.company.news.entity.RoleRightRelation;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
-import com.company.news.vo.UserInfoReturn;
-import com.company.plugin.security.LoginLimit;
-import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -129,11 +112,11 @@ public class RoleService extends AbstractServcice {
 		if (uuid.indexOf(",") != -1)// 多ID
 		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Right where uuid in(?)", uuid);
+					"delete from Role where uuid in(?)", uuid);
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from RoleRightRelation where roleuuid in(?)", uuid);
 		} else {
-			this.nSimpleHibernateDao.deleteObjectById(Right.class, uuid);
+			this.nSimpleHibernateDao.deleteObjectById(Role.class, uuid);
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from RoleRightRelation where roleuuid =?", uuid);
 		}
@@ -146,9 +129,9 @@ public class RoleService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Right> query() {
-		return (List<Right>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from role", null);
+	public List<Role> query() {
+		return (List<Role>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from Role", null);
 
 	}
 
@@ -175,4 +158,48 @@ public class RoleService extends AbstractServcice {
 			return false;
 
 	}
+	
+	/**
+	 * 根据角色ID取权限列表
+	 * @param uuid
+	 */
+	public List<RoleRightRelation> getRightByRoleuuid(String uuid){
+		if (StringUtils.isBlank(uuid)) 
+			return null;
+		
+		return (List<RoleRightRelation>) this.nSimpleHibernateDao.getHibernateTemplate().find("from RoleRightRelation where roleuuid=?", uuid);
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param roleuuid
+	 * @param rightuuids
+	 */
+	public boolean updateRoleRightRelation(String roleuuid,String rightuuids,ResponseMessage responseMessage){
+		if (StringUtils.isBlank(roleuuid)) 
+		{
+			responseMessage.setMessage("roleuuid不能为空");
+			return false;
+		}
+		
+		//删除原有角色权限
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from RoleRightRelation where roleuuid =?", roleuuid);
+		
+		if(StringUtils.isNotBlank(rightuuids))
+		{
+			String[] str=PxStringUtil.StringDecComma(rightuuids).split(",");
+			for(String s:str){
+				RoleRightRelation r=new RoleRightRelation();
+				r.setRightuuid(s);
+				r.setRoleuuid(roleuuid);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+			}
+			
+		}
+		return true;
+	}
+	
+	
 }
