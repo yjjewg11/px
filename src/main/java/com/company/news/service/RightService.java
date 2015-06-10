@@ -127,10 +127,18 @@ public class RightService extends AbstractServcice {
 		}
 
 		if (uuid.indexOf(",") != -1)// 多ID
+		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from Right where uuid in(?)", uuid);
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from RoleRightRelation where rightuuid in(?)", uuid);
+		}
 		else
+		{
 			this.nSimpleHibernateDao.deleteObjectById(Right.class, uuid);
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from RoleRightRelation where rightuuid =?", uuid);			
+		}
 
 		return true;
 	}
