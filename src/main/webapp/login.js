@@ -58,8 +58,9 @@ function login() {
 					setCookie("password_checked", "");
 				}
 				//data.userinfo.name;
+				Store.setUserinfo(data.userinfo);
 				if(data.userinfo.type==1){
-					window.location = hostUrl + "kd_index.html";
+					window.location = hostUrl + "kd/index.html";
 				}else{
 					window.location = hostUrl + "index_admin.html";
 				}
@@ -72,7 +73,7 @@ function login() {
 		error : function() {
 			 $btn.button('reset');
 			$.AMUI.progress.done();
-			return "error";
+			alert(url+",error:"+textStatus);
 		}
 	});
 }

@@ -36,34 +36,31 @@
   <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
    
 
-    <form method="post" class="am-form">
-    
+    <form id="regform" method="post" class="am-form">
+     <input type="hidden" name="type"  value="1">
     <div class="am-form-group">
-          <select data-am-selected="{btnSize: 'sm'}">
-            <option value="0">必须选择机构</option>
-            <option value="1">晨钟教育</option>
+          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}">
+            <option value="0">加载中...</option>
           </select>
         </div>
       
-      
-      <label for="">手机号码:</label>
-      <input type="text" name="" id="" value="">
+      <label for="tel">手机号码:</label>
+      <input type="text" name="tel" id="tel" value="" placeholder="">
       <br>
-      <label for="">昵称:</label>
-      <input type="text" name="" id="" value="">
+      <label for="name">昵称:</label>
+      <input type="text" name="name" id="name" value="" placeholder="昵称不能为空，且长度不能超过15位！">
       <br>
        <label for="">Email:</label>
-      <input type="text" name="" id="" value="">
+      <input type="email" name="email" id="email"  placeholder="输入邮箱" placeholder="">
       <br>
-      
       <label for="password">密码:</label>
-      <input type="password" name="password1" id="password" value="">
+      <input type="password" name="password" id="password" value="" >
       <br>
       
-      <label for="password1">确认密码:</label>
+      <label for="password1">重复密码:</label>
       <input type="password" name="password1" id="password1" value="">
       <br>
-      <button type="button" class="am-btn am-btn-primary">注册</button>
+      <button type="button" onclick="reg()" class="am-btn am-btn-primary">注册</button>
     </form>
     <hr>
   
@@ -83,6 +80,9 @@
 <script src="assets/js/amazeui.min.js"></script>
 <!--<![endif]-->
 <script src="assets/js/app.js"></script>
+<script src="js/jQuery.md5.js"></script>
+<script src="js/gl.js"></script>
+<script src="userinfo_reg.js"></script>
 </body>
 
 </html>
