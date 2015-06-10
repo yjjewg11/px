@@ -10,9 +10,9 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="renderer" content="webkit">
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
-  <link rel="icon" type="image/png" href="assets/i/favicon.png">
-  <link rel="stylesheet" href="assets/css/amazeui.min.css">
-  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="icon" type="image/png" href="../assets/i/favicon.png">
+  <link rel="stylesheet" href="../assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
 </head>
 <body>
 <!--[if lte IE 9]>
@@ -31,19 +31,31 @@
   {{>footer footer}}
 </script>
 
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/amazeui.js"></script>
-<script src="assets/js/handlebars.min.js"></script>
-<script src="assets/js/amazeui.widgets.helper.js"></script>
-<script src="js/gl.js"></script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/amazeui.js"></script>
+<script src="../assets/js/handlebars.min.js"></script>
+<script src="../assets/js/amazeui.widgets.helper.js"></script>
+<script src="../js/gl.js"></script>
+<script src="../js/store.js"></script>
 <script>
+var userinfo=Store.getUserinfo();
+if(userinfo==null)userinfo={};
+
+
   var $tpl = $('#amz-tpl');
   var source = $tpl.text();
   var template = Handlebars.compile(source);
   var data = {
     header: {
       "content": {
-        "title": "PX"
+        	  "left": [
+          	         {
+          	           "link": hostUrl + "kd_index.html",
+          	           "title": "首页",
+          	           "icon": "home"
+          	         }
+          	       ],
+        "title": "PX-"+userinfo.name
       }
     },
     menu: {
@@ -53,10 +65,18 @@
       "content": [
 		{
 		    "link": "##",
-		    "title": "分校管理",
-		   
+		    "title": "校园管理",
+		    "subMenu": [
+		                {
+		                  "link": "##",
+		                  "title": "分校管理"
+		                },
+		                {
+			                  "link": "##",
+			                  "title": "权限分配"
+			                },
+		                ],
 		    "subCols": 2
-		   // "channelLink": "进入栏目 »",
 		   
 		  },
         {
@@ -106,40 +126,58 @@
               {
                   "link": "##",
                   "title": "班级管理",
-                  
+                  "subMenu": [
+                              {
+                                "link": "##",
+                                "title": "现有班级"
+                              },
+                              {
+                                  "link": "##",
+                                  "title": "邀请家长"
+                                },
+                                {
+                                    "link": "##",
+                                    "title": "孩子考勤"
+                                  }
+                              ],
                   "subCols": 2
                  // "channelLink": "进入栏目 »",
                  
                 },
+                {
+                    "link": "##",
+                    "title": "家长互动",
+                    "subMenu": [
+                                {
+                                  "link": "##",
+                                  "title": "班级圈"
+                                },
+                                {
+                                    "link": "##",
+                                    "title": "家长反馈"
+                                  },
+                                  {
+                                      "link": "##",
+                                      "title": "分享文章"
+                                    }
+                                ],
+                    "subCols": 2
+                   // "channelLink": "进入栏目 »",
+                   
+                  },
                 
         {
           "link": "##",
-          "title": "人物",
+          "title": "我",
           "subCols": 3,
           "subMenu": [
             {
               "link": "##",
-              "title": "公司"
+              "title": "修改资料"
             },
             {
               "link": "##",
-              "title": "人物"
-            },
-            {
-              "link": "##",
-              "title": "趋势"
-            },
-            {
-              "link": "##",
-              "title": "投融资"
-            },
-            {
-              "link": "##",
-              "title": "创业公司"
-            },
-            {
-              "link": "##",
-              "title": "创业人物"
+              "title": "设置"
             }
           ]
         }
@@ -210,13 +248,6 @@
 
   $tpl.before(html);
 
-  /*
-  // 如果 Handlebars 渲染出来的 HTML 在 DOM ready 事件之后插入文档，需要手动初始化组件
-   $.each(['slider', 'menu', 'gallery', 'footer', 'navbar'], function(i, m) {
-     var module = $.AMUI[m];
-     module && module.init && module.init();
-   })
-   */
 </script>
 </body>
 </html>
