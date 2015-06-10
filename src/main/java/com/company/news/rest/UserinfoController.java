@@ -56,7 +56,7 @@ public class UserinfoController extends AbstractRESTController{
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-        model.addAttribute(list);
+        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");

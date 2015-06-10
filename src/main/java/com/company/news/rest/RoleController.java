@@ -115,7 +115,7 @@ public class RoleController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		List<Role> list = roleService.query();
-		model.addAttribute(list);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
@@ -132,7 +132,7 @@ public class RoleController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		List<RoleRightRelation> list = roleService.getRightByRoleuuid(request.getParameter("uuid"));
-		model.addAttribute(list);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

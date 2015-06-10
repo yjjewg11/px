@@ -117,7 +117,7 @@ public class GroupController extends AbstractRESTController {
     public String list( ModelMap model, HttpServletRequest request) {
     	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
         List<Group> list=groupService.query();
-        model.addAttribute(list);
+        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }
@@ -140,7 +140,7 @@ public class GroupController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-        model.addAttribute(list);
+        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
         responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
         return "";
     }
