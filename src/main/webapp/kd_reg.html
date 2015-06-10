@@ -39,38 +39,38 @@
     <input type="hidden" name="type"  value="1">
     
       <label for="brand_name">品牌名:</label>
-      <input type="email" name="brand_name" id="brand_name" value="" placeholder="品牌名不能为空！，且长度不能超过45位！">
+      <input type="email" name="brand_name" id="brand_name" value="" placeholder="机构名不能为空！，且长度不能超过45位！">
       <br>
        <label for="company_name">机构全称:</label>
-      <input type="text" name="company_name" id="company_name" value="">
+      <input type="text" name="company_name" id="company_name" value="" placeholder="机构名不能为空！，且长度不能超过45位！">
       <br>
        <label for="address">公司地址:</label>
-      <input type="text" name="address" id="address" value="">
+      <input type="text" name="address" id="address" value="" placeholder="联系地址不能为空！，且长度不能超过64位！">
       <br>
        <label for="">地址坐标:</label>
       <input type="text" name="map_point" id="map_point" value="" placeholder="拾取坐标后，复制到这里。格式：104.074822,30.6623"> 
       <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
       <br>
        <label for="">公司电话:</label>
-      <input type="text" name="link_tel" id="link_tel" value="">
+      <input type="text" name="link_tel" id="link_tel" value="" placeholder="">
       <br>
       
       <legend style="font-size: 120%"><b>管理人员</b></legend>  
      
-      <label for="">手机号码:</label>
-      <input type="text" name="tel" id="tel" value="">
+      <label for="tel">手机号码:</label>
+      <input type="text" name="tel" id="tel" value="" placeholder="">
       <br>
-      <label for="">昵称:</label>
-      <input type="text" name="" id="" value="">
+      <label for="name">昵称:</label>
+      <input type="text" name="name" id="name" value="" placeholder="昵称不能为空，且长度不能超过15位！">
       <br>
        <label for="">Email:</label>
-      <input type="email" name="email" id="email"  placeholder="输入邮箱" required>
+      <input type="email" name="email" id="email"  placeholder="输入邮箱" placeholder="">
       <br>
       <label for="password">密码:</label>
-      <input type="password" name="password" id="password" value="">
+      <input type="password" name="password" id="password" value="" >
       <br>
       
-      <label for="password1">确认密码:</label>
+      <label for="password1">重复密码:</label>
       <input type="password" name="password1" id="password1" value="">
       <br>
       <button type="button" onclick="reg()" class="am-btn am-btn-primary">注册</button>
