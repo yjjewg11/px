@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -63,8 +64,7 @@ public class GroupController extends AbstractRESTController {
 		responseMessage.setMessage("注册成功");
 		return "";
 	}
-	
-	
+
 	/**
 	 * 组织增加
 	 * 
@@ -72,8 +72,8 @@ public class GroupController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -89,10 +89,16 @@ public class GroupController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-		
-		
+
 		try {
-			boolean flag = groupService.add(groupRegJsonform, responseMessage,this.getUserInfoBySession(request).getUuid());
+			boolean flag;
+			if (StringUtils.isEmpty(groupRegJsonform.getUuid()))
+				flag = groupService.add(groupRegJsonform, responseMessage, this
+						.getUserInfoBySession(request).getUuid());
+
+			else
+
+				flag = groupService.update(groupRegJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -103,45 +109,50 @@ public class GroupController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("增加成功");
+		responseMessage.setMessage("操作成功");
 		return "";
 	}
 
-    /**
-     * 获取机构信息
-     * @param model
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list( ModelMap model, HttpServletRequest request) {
-    	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
-        List<Group> list=groupService.query();
-        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-        return "";
-    }
-    
-    /**
-     * 获取我的机构信息
-     * @param model
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/myList", method = RequestMethod.GET)
-    public String myList( ModelMap model, HttpServletRequest request) {
-    	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
-        List list=new ArrayList();
+	/**
+	 * 获取机构信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String list(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		List<Group> list = groupService.query();
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+
+	/**
+	 * 获取我的机构信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/myList", method = RequestMethod.GET)
+	public String myList(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		List list = new ArrayList();
 		try {
-			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(request).getUuid());
+			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
+					request).getUuid());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-        return "";
-    }
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 }
