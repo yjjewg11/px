@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Right;
 import com.company.news.vo.ResponseMessage;
 
@@ -14,7 +15,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class RightService extends AbstractServcice {
+public class BaseDataTypeService extends AbstractServcice {
 
 	/**
 	 * 新增权限
@@ -24,7 +25,7 @@ public class RightService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Right add(String name, String description,
+	public BaseDataType add(String name, String description,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
@@ -41,12 +42,12 @@ public class RightService extends AbstractServcice {
 			return null;
 		}
 
-		Right right = new Right();
-		right.setDescription(description);
-		right.setName(name);
+		BaseDataType baseDataType = new BaseDataType();
+		baseDataType.setDescription(description);
+		baseDataType.setName(name);
 
-		this.nSimpleHibernateDao.getHibernateTemplate().save(right);
-		return right;
+		this.nSimpleHibernateDao.getHibernateTemplate().save(baseDataType);
+		return baseDataType;
 
 	}
 
@@ -59,7 +60,7 @@ public class RightService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Right update(String uuid, String name, String description,
+	public BaseDataType update(String uuid, String name, String description,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
@@ -81,18 +82,18 @@ public class RightService extends AbstractServcice {
 			return null;
 		}
 
-		Right right = (Right) this.nSimpleHibernateDao.getObject(Right.class,
+		BaseDataType baseDataType = (BaseDataType) this.nSimpleHibernateDao.getObject(BaseDataType.class,
 				uuid);
-		if (right != null) {
-			right.setDescription(description);
-			right.setName(name);
+		if (baseDataType != null) {
+			baseDataType.setDescription(description);
+			baseDataType.setName(name);
 
-			this.nSimpleHibernateDao.getHibernateTemplate().update(right);
+			this.nSimpleHibernateDao.getHibernateTemplate().update(baseDataType);
 		}else{
 			responseMessage.setMessage("更新对象不存在，");
 		}
 
-		return right;
+		return baseDataType;
 
 	}
 
@@ -111,16 +112,15 @@ public class RightService extends AbstractServcice {
 		if (uuid.indexOf(",") != -1)// 多ID
 		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Right where uuid in(?)", uuid);
-			this.nSimpleHibernateDao
-					.getHibernateTemplate()
-					.bulkUpdate(
-							"delete from RoleRightRelation where rightuuid in(?)",
-							uuid);
-		} else {
-			this.nSimpleHibernateDao.deleteObjectById(Right.class, uuid);
+					"delete from BaseDataType where uuid in(?)", uuid);
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from RoleRightRelation where rightuuid =?", uuid);
+					"delete from BaseDataList where typeuuid in(?)", uuid);
+		}
+		else
+		{
+			this.nSimpleHibernateDao.deleteObjectById(BaseDataType.class, uuid);
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from BaseDataList where typeuuid =?", uuid);			
 		}
 
 		return true;
@@ -131,9 +131,9 @@ public class RightService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Right> query() {
-		return (List<Right>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from Right", null);
+	public List<BaseDataType> query() {
+		return (List<BaseDataType>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from BaseDataType", null);
 
 	}
 
@@ -143,19 +143,21 @@ public class RightService extends AbstractServcice {
 	 * @param company_name
 	 * @return
 	 */
-	private boolean isExitSameRightByname(String name, String uuid) {
+	private boolean isExitSameRightByname(String name,String uuid) {
 		String attribute = "name";
-		Right right = (Right) nSimpleHibernateDao.getObjectByAttribute(
-				Right.class, attribute, name);
+		BaseDataType baseDataType = (BaseDataType) nSimpleHibernateDao.getObjectByAttribute(BaseDataType.class,
+				attribute, name);
 
-		if (right != null)// 已被占用
+		if (baseDataType != null)// 已被占用
 		{
 			// 判断的是自身
-			if (StringUtils.isNotEmpty(uuid) && right.getUuid().equals(uuid))
+			if (StringUtils.isNotEmpty(uuid) && baseDataType.getUuid().equals(uuid))
 				return false;
 			else
 				return true;
-		} else
+			
+		}
+		else
 			return false;
 
 	}
@@ -163,7 +165,7 @@ public class RightService extends AbstractServcice {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return RightService.class;
+		return BaseDataTypeService.class;
 	}
 
 }
