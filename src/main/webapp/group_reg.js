@@ -38,6 +38,9 @@ function reg() {
 		error : function( obj, textStatus, errorThrown ){
 			$.AMUI.progress.done();
 			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
 		}
 	});
 }

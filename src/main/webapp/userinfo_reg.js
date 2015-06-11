@@ -50,7 +50,7 @@ function reg() {
 	  delete objectForm.password1;
 	  objectForm.password=$.md5(objectForm.password); 
       var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/userinfo/add.json";
+      var url = hostUrl + "rest/userinfo/reg.json";
   			
 	$.ajax({
 		type : "POST",

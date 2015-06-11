@@ -58,22 +58,21 @@ function login() {
 					setCookie("password_checked", "");
 				}
 				//data.userinfo.name;
-				Store.setUserinfo(data.userinfo);
-				if(data.userinfo.type==1){
-					window.location = hostUrl + "kd/index.html";
-				}else{
-					window.location = hostUrl + "index_admin.html";
-				}
+				Store.setUserinfo(data.userLoginForm);
+				Store.setUserinfo(data.list);
+				window.location = hostUrl + "kd/index.html";
 				
 				
 			} else {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function() {
-			 $btn.button('reset');
+		error : function( obj, textStatus, errorThrown ){
 			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
 		}
 	});
 }
