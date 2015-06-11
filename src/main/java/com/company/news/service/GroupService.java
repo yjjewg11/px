@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Group;
+import com.company.news.entity.Role;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
@@ -67,7 +68,7 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
+		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
 			responseMessage.setMessage("机构名已被注册！");
 			return false;
 		}
@@ -136,7 +137,7 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
+		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
 			responseMessage.setMessage("机构名已被注册！");
 			return false;
 		}
@@ -158,6 +159,65 @@ public class GroupService extends AbstractServcice {
 		userGroupRelation.setGroupuuid(groupRegJsonform.getGroup_uuid());
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		
+		return true;
+	}
+	
+	
+	/**
+	 * 增加机构
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean update(GroupRegJsonform groupRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if (StringUtils.isBlank(groupRegJsonform.getBrand_name())||groupRegJsonform.getBrand_name().length()>45) {
+			responseMessage.setMessage("品牌名不能为空！，且长度不能超过45位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getCompany_name())||groupRegJsonform.getCompany_name().length()>45) {
+			responseMessage.setMessage("机构名不能为空！，且长度不能超过45位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getMap_point())) {
+			responseMessage.setMessage("位置信息不能为空！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getAddress())||groupRegJsonform.getAddress().length()>64) {
+			responseMessage.setMessage("联系地址不能为空！，且长度不能超过64位！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupRegJsonform.getLink_tel())) {
+			responseMessage.setMessage("联系方式不能为空！");
+			return false;
+		}
+		
+		if (groupRegJsonform.getType()==null) {
+			responseMessage.setMessage("机构类型不能为空！");
+			return false;
+		}
+		
+		// 机构名是否存在
+		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),groupRegJsonform.getUuid())) {
+			responseMessage.setMessage("机构名已被注册！");
+			return false;
+		}
+			
+		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
+		if (group != null) {
+			BeanUtils.copyProperties(group, groupRegJsonform);
+
+			this.nSimpleHibernateDao.getHibernateTemplate().update(group);
+		}else{
+			responseMessage.setMessage("更新对象不存在，");
+		}
 		
 		return true;
 	}
@@ -210,13 +270,19 @@ public class GroupService extends AbstractServcice {
 	 * @param company_name
 	 * @return
 	 */
-	private boolean isExitSameUserByCompany_name(String company_name) {
+	private boolean isExitSameUserByCompany_name(String company_name,String uuid) {
 		String attribute = "company_name";
-		Object group = nSimpleHibernateDao.getObjectByAttribute(Group.class,
-				attribute, company_name);
+		Group group = (Group) nSimpleHibernateDao.getObjectByAttribute(
+				Group.class, attribute, company_name);
 
 		if (group != null)// 已被占用
-			return true;
+			{
+			// 判断的是自身
+			if (StringUtils.isNotEmpty(uuid) && group.getUuid().equals(uuid))
+				return false;
+			else
+				return true;
+			}
 		else
 			return false;
 
