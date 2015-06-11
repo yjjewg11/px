@@ -6,9 +6,12 @@ var div_header_props = {
 		  "link": "#title-link",
 		  data: {
 		    "left": [
+		             {
+		 		        "link": "javascript:Queue.doBackFN();",
+		 		        "icon": "chevron-left"
+		 		      },
 		      {
-		        "link": hostUrl + "index.html",
-		        "title": "首页",
+		        "link": hostUrl + "/kd/index.html",
 		        "icon": "home"
 		      }
 		    ],
@@ -41,6 +44,13 @@ var div_menu_data=[
         		    "subCols": 2
         		   
         		  },
+        		  {
+                      "link": "##",
+                      "title": "老师管理",
+                      "fn":ajax_uesrinfo_listByMyGroup,
+                      "subCols": 2
+                     // "channelLink": "进入栏目 »",
+                    },
                 {
                   "link": "##",
                   "title": "每日食谱",
@@ -48,13 +58,7 @@ var div_menu_data=[
                  // "channelLink": "进入栏目 »",
                  
                 },
-                {
-                    "link": "##",
-                    "title": "老师管理",
-                    "subCols": 2
-                   // "channelLink": "进入栏目 »",
-                   
-                  },
+              
                   {
                       "link": "##",
                       "title": "课程安排",
@@ -167,3 +171,17 @@ var div_menu_handleClick = function(nav, index, e) {
 	};
 
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:div_menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
+
+function ajax_dohome(){
+	Queue.push(ajax_dohome);
+	var div_Gallery_data=[
+	                      {
+	                    	    "img": hostUrl+"i/header.png",
+	                    	    "link": "###",
+	                    	    "title": "我"
+	                    	  }
+	                    	  ];
+	React.render(React.createElement(AMUIReact.Gallery,{themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
+}
+ajax_dohome();
+
