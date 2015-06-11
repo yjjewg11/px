@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,57 +27,23 @@ public class BaseDataTypeController extends AbstractRESTController {
 	@Autowired
 	private BaseDataTypeService baseDataTypeService;
 
-
-	
-	
 	/**
-	 * 组织增加
+	 * 获取机构信息
 	 * 
 	 * @param model
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(ModelMap model, HttpServletRequest request) {
-		// 返回消息体
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
-		
-		try {
-			BaseDataType baseDataType = baseDataTypeService.add(request.getParameter("name"),request.getParameter("description"), responseMessage);
-			if(baseDataType!=null)
-			model.addAttribute(baseDataType);
-			else
-				return "";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
-
+		List<BaseDataType> list = baseDataTypeService.query();
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("增加成功");
 		return "";
 	}
 
-    /**
-     * 获取机构信息
-     * @param model
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list( ModelMap model, HttpServletRequest request) {
-    	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
-        List<BaseDataType> list=baseDataTypeService.query();
-        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-        return "";
-    }
-    
-    
 	/**
 	 * 组织增加
 	 * 
@@ -84,17 +51,27 @@ public class BaseDataTypeController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
-		
 		try {
-			BaseDataType baseDataType = baseDataTypeService.update(request.getParameter("uuid"),request.getParameter("name"),request.getParameter("description"), responseMessage);
-			if(baseDataType!=null)
-			model.addAttribute(baseDataType);
+			String uuid = request.getParameter("uuid");
+			BaseDataType baseDataType;
+			if (StringUtils.isEmpty(uuid))
+				baseDataType = baseDataTypeService.add(
+						request.getParameter("name"),
+						request.getParameter("description"), responseMessage);
+			else
+
+				baseDataType = baseDataTypeService.update(
+						request.getParameter("uuid"),
+						request.getParameter("name"),
+						request.getParameter("description"), responseMessage);
+			if (baseDataType != null)
+				model.addAttribute(baseDataType);
 			else
 				return "";
 		} catch (Exception e) {
@@ -108,27 +85,28 @@ public class BaseDataTypeController extends AbstractRESTController {
 		responseMessage.setMessage("更新成功");
 		return "";
 	}
-    
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String delete( ModelMap model,HttpServletRequest request) {
-		//返回消息体
-		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-		
+	public String delete(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
 		try {
-			boolean flag=baseDataTypeService.delete(request.getParameter("uuid"), responseMessage);
-		    if(!flag)
-		    	return "";
+			boolean flag = baseDataTypeService.delete(
+					request.getParameter("uuid"), responseMessage);
+			if (!flag)
+				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-        
+
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("删除成功");
-        return "";
-    }
+		return "";
+	}
 
 }

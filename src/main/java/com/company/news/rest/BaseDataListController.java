@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,40 +31,7 @@ public class BaseDataListController extends AbstractRESTController {
 
 
 	
-	
-	/**
-	 * 组织增加
-	 * 
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(ModelMap model, HttpServletRequest request) {
-		// 返回消息体
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
 
-		
-		try {
-			BaseDataList baseDatalist = baseDataListService.add(request.getParameter("datavalue"),request.getParameter("description"),
-					request.getParameter("datakey"),request.getParameter("typeuuid"),request.getParameter("enable"),responseMessage);
-			if(baseDatalist!=null)
-			model.addAttribute(baseDatalist);
-			else
-				return "";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
-
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("增加成功");
-		return "";
-	}
-	
 	
 	
 	/**
@@ -73,15 +41,20 @@ public class BaseDataListController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
 		
 		try {
-			BaseDataList baseDatalist = baseDataListService.update(request.getParameter("uuid"),request.getParameter("datavalue"),request.getParameter("description"),
+			BaseDataList baseDatalist;
+			String uuid=request.getParameter("uuid");
+			if(StringUtils.isEmpty(uuid))
+				baseDatalist = baseDataListService.add(request.getParameter("datavalue"),request.getParameter("description"),request.getParameter("datakey"),request.getParameter("typeuuid"),request.getParameter("enable"),responseMessage);
+				else
+			baseDatalist = baseDataListService.update(request.getParameter("uuid"),request.getParameter("datavalue"),request.getParameter("description"),
 					request.getParameter("datakey"),request.getParameter("typeuuid"),request.getParameter("enable"),responseMessage);
 			if(baseDatalist!=null)
 			model.addAttribute(baseDatalist);
