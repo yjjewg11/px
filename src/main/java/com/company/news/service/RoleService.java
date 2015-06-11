@@ -39,7 +39,7 @@ public class RoleService extends AbstractServcice {
 			return null;
 		}
 
-		if (isExitSameRoleByname(name)) {
+		if (isExitSameRoleByname(name,null)) {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
@@ -80,7 +80,7 @@ public class RoleService extends AbstractServcice {
 			return null;
 		}
 
-		if (isExitSameRoleByname(name)) {
+		if (isExitSameRoleByname(name,uuid)) {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
@@ -91,6 +91,8 @@ public class RoleService extends AbstractServcice {
 			role.setName(name);
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(role);
+		}else{
+			responseMessage.setMessage("更新对象不存在，");
 		}
 
 		return role;
@@ -147,59 +149,66 @@ public class RoleService extends AbstractServcice {
 	 * @param company_name
 	 * @return
 	 */
-	private boolean isExitSameRoleByname(String name) {
+	private boolean isExitSameRoleByname(String name, String uuid) {
 		String attribute = "name";
-		Object role = nSimpleHibernateDao.getObjectByAttribute(Role.class,
+		Role role = (Role) nSimpleHibernateDao.getObjectByAttribute(Role.class,
 				attribute, name);
 
 		if (role != null)// 已被占用
-			return true;
-		else
+		{
+			// 判断的是自身
+			if (StringUtils.isNotEmpty(uuid) && role.getUuid().equals(uuid))
+				return false;
+			else
+				return true;
+
+		} else
 			return false;
 
 	}
-	
+
 	/**
 	 * 根据角色ID取权限列表
+	 * 
 	 * @param uuid
 	 */
-	public List<RoleRightRelation> getRightByRoleuuid(String uuid){
-		if (StringUtils.isBlank(uuid)) 
+	public List<RoleRightRelation> getRightByRoleuuid(String uuid) {
+		if (StringUtils.isBlank(uuid))
 			return null;
-		
-		return (List<RoleRightRelation>) this.nSimpleHibernateDao.getHibernateTemplate().find("from RoleRightRelation where roleuuid=?", uuid);
-		
+
+		return (List<RoleRightRelation>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(
+						"from RoleRightRelation where roleuuid=?", uuid);
+
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param roleuuid
 	 * @param rightuuids
 	 */
-	public boolean updateRoleRightRelation(String roleuuid,String rightuuids,ResponseMessage responseMessage){
-		if (StringUtils.isBlank(roleuuid)) 
-		{
+	public boolean updateRoleRightRelation(String roleuuid, String rightuuids,
+			ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(roleuuid)) {
 			responseMessage.setMessage("roleuuid不能为空");
 			return false;
 		}
-		
-		//删除原有角色权限
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from RoleRightRelation where roleuuid =?", roleuuid);
-		
-		if(StringUtils.isNotBlank(rightuuids))
-		{
-			String[] str=PxStringUtil.StringDecComma(rightuuids).split(",");
-			for(String s:str){
-				RoleRightRelation r=new RoleRightRelation();
+
+		// 删除原有角色权限
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from RoleRightRelation where roleuuid =?", roleuuid);
+
+		if (StringUtils.isNotBlank(rightuuids)) {
+			String[] str = PxStringUtil.StringDecComma(rightuuids).split(",");
+			for (String s : str) {
+				RoleRightRelation r = new RoleRightRelation();
 				r.setRightuuid(s);
 				r.setRoleuuid(roleuuid);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 			}
-			
+
 		}
 		return true;
 	}
-	
-	
+
 }
