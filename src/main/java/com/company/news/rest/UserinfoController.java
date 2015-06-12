@@ -63,6 +63,12 @@ public class UserinfoController extends AbstractRESTController {
 		}
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 
+		
+		HttpSession session = SessionListener.getSession(request);
+		// 返回用户信息
+		this.putUserInfoReturnToModel(model, request);
+		model.put(RestConstants.Return_JSESSIONID, session.getId());
+		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");
 		return "";
