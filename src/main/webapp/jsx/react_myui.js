@@ -128,7 +128,7 @@ var Userinfo_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
 
     return (
-      <tr className={className} onClick={ajax_userinfo_edit.bind(this,event )}>
+      <tr className={className} >
       <td> 
       <input type="checkbox" value={event.uuid} name="table_checkbox" />
       </td>
@@ -137,7 +137,7 @@ var Userinfo_EventRow = React.createClass({
         <td>{event.tel}</td>
         <td>{event.email}</td>
         <td>{event.sex=="0"?"男":"女"}</td>
-        <td>{event.disable=="1"?"禁用":"正常"}</td>
+        <td  className={"px_disable_"+event.disable}>{event.disable=="1"?"禁用":"正常"}</td>
         <td>{event.login_time}</td>
         <td>{event.create_time}</td>
       </tr> 
@@ -148,11 +148,29 @@ var Userinfo_EventRow = React.createClass({
 var Userinfo_EventsTable = React.createClass({
 	handleClick: function(m) {
 		 if(this.props.handleClick){
-			 this.props.handleClick(m);
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
 		 }
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  //
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').value);
 	  },
   render: function() {
     return (
@@ -163,6 +181,14 @@ var Userinfo_EventsTable = React.createClass({
 	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "add_disable")} round>禁用</AMUIReact_Button>
 	  </AMUIReact_ButtonToolbar>
 	  <hr/>
+	  <div className="am-form-group">
+      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+      {this.props.group_list.map(function(event) {
+          return (<option value={event.uuid} >{event.company_name}</option>);
+        })}
+      </select>
+    </div>
+	  
       <AMUIReact_Table {...this.props}>  
         <thead> 
           <tr>

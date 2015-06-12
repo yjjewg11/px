@@ -137,7 +137,7 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
         React.createElement("td", null, event.tel), 
         React.createElement("td", null, event.email), 
         React.createElement("td", null, event.sex=="0"?"男":"女"), 
-        React.createElement("td", {className: "px_disable_"+event.disable}, event.disable=="1"?"禁用":"正常"), 
+        React.createElement("td", null, event.disable=="1"?"禁用":"正常"), 
         React.createElement("td", null, event.login_time), 
         React.createElement("td", null, event.create_time)
       ) 

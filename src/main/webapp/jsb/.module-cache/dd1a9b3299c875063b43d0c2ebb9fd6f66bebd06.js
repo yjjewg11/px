@@ -137,7 +137,7 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
         React.createElement("td", null, event.tel), 
         React.createElement("td", null, event.email), 
         React.createElement("td", null, event.sex=="0"?"男":"女"), 
-        React.createElement("td", {className: "px_disable_"+event.disable}, event.disable=="1"?"禁用":"正常"), 
+        React.createElement("td", null, event.disable=="1"?"禁用":"正常"), 
         React.createElement("td", null, event.login_time), 
         React.createElement("td", null, event.create_time)
       ) 
@@ -148,21 +148,13 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
 var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable",
 	handleClick: function(m) {
 		 if(this.props.handleClick){
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
+			  var uuids=$('input[name="table_checkbox"][checked=true]').join(',');
+			  alert(uuids);
 			  if(!uuids){
 				  alert("请勾选复选框！");
-				  return;
 			  }
-			  
-			 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
+			  return;
+			 this.props.handleClick(m,$('#selectgroup_uuid').value,uuids);
 		 }
 	  },
 	  handleChange_checkbox_all:function(){
