@@ -1,14 +1,19 @@
 package com.company.news.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
+import com.company.news.entity.Group;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
@@ -34,6 +39,9 @@ public class UserinfoService extends AbstractServcice {
 	//20150610 去掉对用户表的TYPE定义，默认都为0
 	public static final int USER_type_group = 0;// 组织管理员
 	public static final int USER_type_teacher = 0;// 老师类型
+	
+	//用户状态
+	public static final int USER_disable_true = 1;// 禁用
 
 	/**
 	 * 用户注册
@@ -220,6 +228,60 @@ public class UserinfoService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return User.class;
+	}
+	
+	/**
+	 * 查询所有机构列表
+	 * @return
+	 */
+	public List<User> query(){
+		return (List<User>) this.nSimpleHibernateDao.getHibernateTemplate().find("from User", null);
+	}
+
+	
+	/**
+	 * 查询指定机构的用户列表
+	 * @return
+	 */
+	public List<User> getUserByGroupuuid(String uuid){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid and t0.groupuuid='"+uuid+"'")
+				.addEntity("t1",User.class);
+		
+		return q.list();
+	}
+	
+	/**
+	 * 
+	 * @param disable
+	 * @param useruuid
+	 */
+	public boolean updateDisable(String disable,String useruuid,ResponseMessage responseMessage){
+		//更新用户状态
+		// Group_uuid昵称验证
+		if (StringUtils.isBlank(useruuid)) {
+			responseMessage.setMessage("useruuid不能为空！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(disable)) {
+			responseMessage.setMessage("disable不能为空！");
+			return false;
+		}
+		
+		int disable_i=USER_disable_default;
+		try{
+	    disable_i=Integer.parseInt(disable);
+	    if(disable_i!=USER_disable_true)//不是禁用时，默认都是0
+	    	disable_i=USER_disable_default;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set disable=? where uuid=?",disable_i,useruuid);
+		return true;
 	}
 
 }

@@ -141,16 +141,9 @@ public class GroupController extends AbstractRESTController {
 	public String myList(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List list = new ArrayList();
-		try {
-			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
+		List list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
 					request).getUuid());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
+		
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
