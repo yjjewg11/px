@@ -58,7 +58,7 @@ function login() {
 					setCookie("password_checked", "");
 				}
 				//data.userinfo.name;
-				Store.setUserinfo(data.userInfoReturn);
+				Store.setUserinfo(data.userinfo);
 				Store.setGroup(data.list);
 				window.location = hostUrl + "kd/index.html";
 				
@@ -68,6 +68,7 @@ function login() {
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
+			 $btn.button('reset');
 			$.AMUI.progress.done();
 			alert(url+","+textStatus+"="+errorThrown);
 			 console.log(url+',error：', obj);

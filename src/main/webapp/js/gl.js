@@ -10,6 +10,12 @@ return serializeObj;
 
 var hostUrl='/px-rest/';
 
+function G_resMsg_filter(ResMsg){
+	if("sessionTimeout"==ResMsg.status){
+		window.location = hostUrl + "login.html";
+	}
+}
+
 /**
  * Queue.doBackFN();
  * Queue.push(fn);

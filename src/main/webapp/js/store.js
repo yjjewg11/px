@@ -1,6 +1,13 @@
 var Store={
 	map:{},
 //	/store : $.AMUI.store,
+	getGroupNameByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			if(uuid==arr[i])return arr[i].company_name;
+		}
+		return "";
+	},
 	enabled:function(){
 		if (!$.AMUI.store.enabled) {
 			  alert('你的浏览器禁用 LocalStorage，部分显示有问题，请启用LocalStorage');
