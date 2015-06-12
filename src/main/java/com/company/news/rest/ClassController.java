@@ -124,4 +124,22 @@ public class ClassController extends AbstractRESTController {
 		responseMessage.setMessage("删除成功");
 		return "";
 	}
+	
+	
+	/**
+	 * 获取班级信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryClassByUseruuid", method = RequestMethod.GET)
+	public String queryClassByUseruuid(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		List<PClass> list = classService.queryClassByUseruuid(request.getParameter("useruuid"));
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 }

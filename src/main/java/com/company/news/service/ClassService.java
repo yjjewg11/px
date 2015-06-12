@@ -100,6 +100,22 @@ public class ClassService extends AbstractServcice {
 					.getHibernateTemplate().find(
 							"from PClass where groupuuid=?", groupuuid);
 	}
+	
+	
+	/**
+	 * 查询指定用户相关的班级
+	 * 
+	 * @return
+	 */
+	public List<PClass> queryClassByUseruuid(String useruuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select {t1.*} from px_userclassrelation t0,px_class {t1} where t0.classuuid={t1}.uuid and t0.useruuid='"+useruuid+"'")
+				.addEntity("t1",PClass.class);
+		
+		return q.list();
+			
+	}
 
 	/**
 	 * 删除 支持多个，用逗号分隔
