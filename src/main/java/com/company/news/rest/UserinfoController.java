@@ -36,6 +36,7 @@ public class UserinfoController extends AbstractRESTController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request) {
+		model.clear();
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -238,7 +239,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		boolean flag = userinfoService.updateDisable(
-				request.getParameter("disable"), request.getParameter("useruuid"),
+				request.getParameter("disable"), request.getParameter("useruuids"),
 				responseMessage);
 		if (!flag)// 请求服务返回失败标示
 			return "";

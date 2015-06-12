@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
@@ -257,10 +258,10 @@ public class UserinfoService extends AbstractServcice {
 	 * @param disable
 	 * @param useruuid
 	 */
-	public boolean updateDisable(String disable,String useruuid,ResponseMessage responseMessage){
+	public boolean updateDisable(String disable,String useruuids,ResponseMessage responseMessage){
 		//更新用户状态
 		// Group_uuid昵称验证
-		if (StringUtils.isBlank(useruuid)) {
+		if (StringUtils.isBlank(useruuids)) {
 			responseMessage.setMessage("useruuid不能为空！");
 			return false;
 		}
@@ -280,7 +281,7 @@ public class UserinfoService extends AbstractServcice {
 		}
 		
 		
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set disable=? where uuid=?",disable_i,useruuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set disable=? where uuid in(?)",disable_i,PxStringUtil.StringDecComma(useruuids));
 		return true;
 	}
 
