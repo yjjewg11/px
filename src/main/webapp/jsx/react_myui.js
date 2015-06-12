@@ -128,7 +128,7 @@ var Userinfo_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
 
     return (
-      <tr className={className} onClick={ajax_userinfo_edit.bind(this,event )}>
+      <tr className={className} >
       <td> 
       <input type="checkbox" value={event.uuid} name="table_checkbox" />
       </td>
@@ -137,7 +137,7 @@ var Userinfo_EventRow = React.createClass({
         <td>{event.tel}</td>
         <td>{event.email}</td>
         <td>{event.sex=="0"?"男":"女"}</td>
-        <td>{event.disable=="1"?"禁用":"正常"}</td>
+        <td  className={"px_disable_"+event.disable}>{event.disable=="1"?"禁用":"正常"}</td>
         <td>{event.login_time}</td>
         <td>{event.create_time}</td>
       </tr> 
@@ -148,11 +148,32 @@ var Userinfo_EventRow = React.createClass({
 var Userinfo_EventsTable = React.createClass({
 	handleClick: function(m) {
 		 if(this.props.handleClick){
-			 this.props.handleClick(m);
+			 if(m=="add_userinfo"){
+				 this.props.handleClick(m,$('#selectgroup_uuid').val());
+				 return;
+			 }
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
 		 }
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  //
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
   render: function() {
     return (
@@ -163,6 +184,14 @@ var Userinfo_EventsTable = React.createClass({
 	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "add_disable")} round>禁用</AMUIReact_Button>
 	  </AMUIReact_ButtonToolbar>
 	  <hr/>
+	  <div className="am-form-group">
+      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+      {this.props.group_list.map(function(event) {
+          return (<option value={event.uuid} >{event.company_name}</option>);
+        })}
+      </select>
+    </div>
+	  
       <AMUIReact_Table {...this.props}>  
         <thead> 
           <tr>
@@ -244,3 +273,151 @@ var Userinfo_edit = React.createClass({
     );
   }
 }); 
+//end userinfo
+
+
+
+
+//class
+
+var Class_EventRow = React.createClass({ 
+render: function() {
+  var event = this.props.event;
+  var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+    <tr className={className} >
+    <td> 
+    <input type="checkbox" value={event.uuid} name="table_checkbox" />
+    </td>
+      <td>{event.name}</td>
+      <td>{event.createUser}</td>
+      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+      <td>{event.create_time}</td>
+    </tr> 
+  );
+}
+}); 
+var Class_EventsTable = React.createClass({
+render: function() {
+  return (
+  <div>
+  <AMUIReact_ButtonToolbar>
+	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMUIReact_Button>
+	  </AMUIReact_ButtonToolbar>
+	  <hr/>
+	  <div className="am-form-group">
+    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+    {this.props.group_list.map(function(event) {
+        return (<option value={event.uuid} >{event.company_name}</option>);
+      })}
+    </select>
+  </div>
+	  
+    <AMUIReact_Table {...this.props}>  
+      <thead> 
+        <tr>
+        	<th>  
+          <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+          </th>
+          <th>班级</th>
+          <th>创建人</th>
+          <th>学校</th>
+          <th>创建时间</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {this.props.events.map(function(event) {
+          return (<Class_EventRow key={event.id} event={event} />);
+        })}
+      </tbody>
+    </AMUIReact_Table>
+    </div>
+  );
+},
+handleClick: function(m) {
+	 if(this.props.handleClick){
+		 
+		 if(m=="add_class"){
+			 this.props.handleClick(m,$('#selectgroup_uuid').val());
+			 return;
+		 }
+		 var uuids=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			
+			　if(this.checked){
+				 if(uuids==null)uuids=this.value;
+				 else
+				　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+			　}
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  
+		 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
+	 }
+ },
+ handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+ },
+ //
+ handleChange_selectgroup_uuid:function(){
+	  ajax_class_listByGroup($('#selectgroup_uuid').val());
+ }
+});
+  
+var Class_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+  return (
+  		<div>
+  		<div className="header">
+  		  <div className="am-g">
+  		    <h1>编辑</h1>
+  		  </div>
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <form id="editClassForm" method="post" className="am-form">
+  		     <input type="hidden" name="type"  value="1"/>
+  		    <div className="am-form-group">
+  		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.groupuuid} onChange={this.handleChange}>
+  		          {this.props.group_uuid_data.map(function(event) {
+  		              return (<option value={event.uuid} >{event.company_name}</option>);
+  		            })}
+  		          </select>
+  		        </div>
+  		    
+  		      <label htmlFor="name">班级:</label>
+  		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="班级名不能为空！，且长度不能超过45位！"/>
+  		      <br/>
+  		    <label htmlFor="name">班主任:</label>
+  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
+		      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <label htmlFor="name">其他老师:</label>
+	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
+			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} placeholder=""/>
+			      <br/>
+		      
+  		      <button type="button"  onClick={ajax_class_save}  className="am-btn am-btn-primary">提交</button>
+  		    </form>
+
+  	     </div>
+  	   </div>
+  	   
+  	   </div>
+  );
+}
+}); 
+//end class

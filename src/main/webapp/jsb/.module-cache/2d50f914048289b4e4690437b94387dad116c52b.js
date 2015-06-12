@@ -148,12 +148,9 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
 var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable",
 	handleClick: function(m) {
 		 if(this.props.handleClick){
-			 if(m=="add_userinfo"){
-				 this.props.handleClick(m,$('#selectgroup_uuid').val());
-				 return;
-			 }
 			 var uuids=null;
 			 $($("input[name='table_checkbox']")).each(function(){
+				
 				　if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
@@ -173,7 +170,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').value);
 	  },
   render: function() {
     return (
@@ -294,17 +291,47 @@ render: function() {
       React.createElement("td", null, event.name), 
       React.createElement("td", null, event.createUser), 
       React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+    
       React.createElement("td", null, event.create_time)
     ) 
   );
 }
 }); 
+
 var Class_EventsTable = React.createClass({displayName: "Class_EventsTable",
+	handleClick: function(m) {
+		 if(this.props.handleClick){
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
+		 }
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  //
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').value);
+	  },
 render: function() {
   return (
   React.createElement("div", null, 
   React.createElement(AMUIReact_ButtonToolbar, null, 
-	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级")
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加老师"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "启用"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用")
 	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -321,9 +348,13 @@ render: function() {
         	React.createElement("th", null, 
           React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
           ), 
-          React.createElement("th", null, "班级"), 
-          React.createElement("th", null, "创建人"), 
-          React.createElement("th", null, "学校"), 
+          React.createElement("th", null, "帐号"), 
+          React.createElement("th", null, "昵称"), 
+          React.createElement("th", null, "电话"), 
+          React.createElement("th", null, "邮箱"), 
+          React.createElement("th", null, "性别"), 
+          React.createElement("th", null, "状态"), 
+          React.createElement("th", null, "登录时间"), 
           React.createElement("th", null, "创建时间")
         )
       ), 
@@ -335,38 +366,7 @@ render: function() {
     )
     )
   );
-},
-handleClick: function(m) {
-	 if(this.props.handleClick){
-		 
-		 if(m=="add_class"){
-			 this.props.handleClick(m,$('#selectgroup_uuid').val());
-			 return;
-		 }
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  
-		 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
-	 }
- },
- handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
- },
- //
- handleChange_selectgroup_uuid:function(){
-	  ajax_class_listByGroup($('#selectgroup_uuid').val());
- }
+}
 });
   
 var Class_edit = React.createClass({displayName: "Class_edit", 
@@ -391,25 +391,28 @@ render: function() {
   		  React.createElement("form", {id: "editClassForm", method: "post", className: "am-form"}, 
   		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
   		    React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'sm'}", value: o.groupuuid, onChange: this.handleChange}, 
+  		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
   		          this.props.group_uuid_data.map(function(event) {
   		              return (React.createElement("option", {value: event.uuid}, event.company_name));
   		            })
   		          )
   		        ), 
-  		    
-  		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
-  		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "班级名不能为空！，且长度不能超过45位！"}), 
+  		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
+  		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
   		      React.createElement("br", null), 
-  		    React.createElement("label", {htmlFor: "name"}, "班主任:"), 
-  		    React.createElement("input", {type: "hidden", name: "teacher", id: "teacher", value: o.teacher, onChange: this.handleChange}), 
-		      React.createElement("input", {type: "text", id: "teacher_name", value: o.teacher_name, onChange: this.handleChange, placeholder: ""}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "name"}, "其他老师:"), 
-	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
-			      React.createElement("input", {type: "text", id: "headTeacher_name", value: o.headTeacher_name, onChange: this.handleChange, placeholder: ""}), 
-			      React.createElement("br", null), 
-		      
+  		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
+  		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "昵称不能为空，且长度不能超过15位！"}), 
+  		      React.createElement("br", null), 
+  		       React.createElement("label", {htmlFor: ""}, "Email:"), 
+  		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
+  		      React.createElement("br", null), 
+  		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
+  		      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+  		      React.createElement("br", null), 
+  		      
+  		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
+  		      React.createElement("input", {type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
+  		      React.createElement("br", null), 
   		      React.createElement("button", {type: "button", onClick: ajax_class_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
 

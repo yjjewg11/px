@@ -148,12 +148,9 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
 var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable",
 	handleClick: function(m) {
 		 if(this.props.handleClick){
-			 if(m=="add_userinfo"){
-				 this.props.handleClick(m,$('#selectgroup_uuid').val());
-				 return;
-			 }
 			 var uuids=null;
 			 $($("input[name='table_checkbox']")).each(function(){
+				
 				　if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
@@ -173,7 +170,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').value);
 	  },
   render: function() {
     return (
@@ -338,11 +335,6 @@ render: function() {
 },
 handleClick: function(m) {
 	 if(this.props.handleClick){
-		 
-		 if(m=="add_class"){
-			 this.props.handleClick(m,$('#selectgroup_uuid').val());
-			 return;
-		 }
 		 var uuids=null;
 		 $($("input[name='table_checkbox']")).each(function(){
 			
@@ -365,7 +357,7 @@ handleClick: function(m) {
  },
  //
  handleChange_selectgroup_uuid:function(){
-	  ajax_class_listByGroup($('#selectgroup_uuid').val());
+	  ajax_class_listByGroup($('#selectgroup_uuid').value);
  }
 });
   
@@ -391,7 +383,7 @@ render: function() {
   		  React.createElement("form", {id: "editClassForm", method: "post", className: "am-form"}, 
   		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
   		    React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'sm'}", value: o.groupuuid, onChange: this.handleChange}, 
+  		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
   		          this.props.group_uuid_data.map(function(event) {
   		              return (React.createElement("option", {value: event.uuid}, event.company_name));
   		            })

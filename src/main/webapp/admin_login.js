@@ -60,7 +60,7 @@ function login() {
 				//data.userinfo.name;
 				Store.setUserinfo(data.userinfo);
 				Store.setGroup(data.list);
-				window.location = hostUrl + "kd/index.html";
+				window.location = hostUrl + "admin/index.html";
 				
 				
 			} else {

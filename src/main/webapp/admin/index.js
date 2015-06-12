@@ -35,7 +35,7 @@ var div_menu_data=[
         		    "subMenu": [
         		                {
         		                  "link": hostUrl+"kd/group_list.html",
-        		                  "fn":menu_group_myList_fn,
+        		                  "fn":ajax_group_myList,
         		                  "title": "分校管理"
         		                },
         		                {
@@ -53,29 +53,6 @@ var div_menu_data=[
                       "subCols": 2
                      // "channelLink": "进入栏目 »",
                     },
-                    {
-                        "link": "##",
-                        "title": "班级管理",
-                        "subMenu": [
-                                    {
-                                      "link": "##",
-                                      "fn":menu_class_list_fn,
-                                      "title": "现有班级"
-                                    },
-                                    
-                                    {
-                                        "link": "##",
-                                        "title": "邀请家长"
-                                      },
-                                      {
-                                          "link": "##",
-                                          "title": "孩子考勤"
-                                        }
-                                    ],
-                        "subCols": 2
-                       // "channelLink": "进入栏目 »",
-                       
-                      },
                 {
                   "link": "##",
                   "title": "每日食谱",
@@ -114,7 +91,27 @@ var div_menu_data=[
                        // "channelLink": "进入栏目 »",
                        
                       },
-                      
+                      {
+                          "link": "##",
+                          "title": "班级管理",
+                          "subMenu": [
+                                      {
+                                        "link": "##",
+                                        "title": "现有班级"
+                                      },
+                                      {
+                                          "link": "##",
+                                          "title": "邀请家长"
+                                        },
+                                        {
+                                            "link": "##",
+                                            "title": "孩子考勤"
+                                          }
+                                      ],
+                          "subCols": 2
+                         // "channelLink": "进入栏目 »",
+                         
+                        },
                         {
                             "link": "##",
                             "title": "家长互动",
@@ -153,12 +150,7 @@ var div_menu_data=[
                     {
                       "link": "##",
                       "title": "设置"
-                    },
-                    {
-                        "link": "##",
-                        "fn":menu_userinfo_logout_fn,
-                        "title": "注销"
-                      }
+                    }
                   ]
                 }
                 
@@ -198,12 +190,7 @@ function ajax_dohome(){
 	                    	    "img": hostUrl+"i/header.png",
 	                    	    "link": "###",
 	                    	    "title": "点名"
-	                    	  },
-		                      {
-		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "我的班级"
-		                    	  }
+	                    	  }
 	                    	  ];
 	React.render(React.createElement(AMUIReact.Gallery,{themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
