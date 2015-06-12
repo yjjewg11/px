@@ -5,7 +5,7 @@
 
 //获取我的
 function menu_group_myList_fn() {
-	Queue.push(ajax_group_myList);
+	Queue.push(menu_group_myList_fn);
 	$.AMUI.progress.start();
 
 	var url = hostUrl + "rest/group/myList.json";

@@ -1,19 +1,32 @@
 var Store={
 	map:{},
-//	/store : $.AMUI.store,
-	getGroupNameByUuid:function(uuid){
-		var arr=this.getGroup();
-		for(var i=0;i<arr.length;i++){
-			if(uuid==arr[i])return arr[i].company_name;
-		}
-		return "";
-	},
 	enabled:function(){
 		if (!$.AMUI.store.enabled) {
 			  alert('你的浏览器禁用 LocalStorage，部分显示有问题，请启用LocalStorage');
 			  return false;
 			}
 		return true;
+	},
+	/**
+	 * 设置人员选择控件到内存缓存。
+	 * @param v
+	 */
+	setChooseUer:function(groupuuid,v){
+		this.map["ChooseUer"+groupuuid]=v;
+	},
+	getChooseUer:function(groupuuid){
+		 return this.map["ChooseUer"+groupuuid];
+	},
+//	/store : $.AMUI.store,
+	/**
+	 * 根据uuid获取机构名称
+	 */
+	getGroupNameByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			if(uuid==arr[i].uuid)return arr[i].company_name;
+		}
+		return "";
 	},
 	getCurGroup:function(){
 		 if(this.map["CurGroup"])return this.map["CurGroup"];
@@ -35,8 +48,8 @@ var Store={
 		$.AMUI.store.set("CurGroup", v);
 	},
 	getGroup:function(){
-		 var o=$.AMUI.store.get("Group");
 		 if(this.map["Group"])return this.map["Group"];
+		 var o=$.AMUI.store.get("Group");
 		 if(o==null){
 			 //从后台重新获取
 			 o=[];

@@ -40,6 +40,7 @@ var div_menu_data=[
         		                },
         		                {
         			                  "link": "##",
+        			                  "fn":widget_chooseUser_fn,
         			                  "title": "权限分配"
         			                },
         		                ],
