@@ -21,7 +21,15 @@ public class UserClassRelation extends IdEntity {
 	private String classuuid;//班级标示
 	@Column
 	private String useruuid;// 昵称
+	@Column
+	private Integer type;// 类型
 
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
 	public String getClassuuid() {
 		return classuuid;
 	}

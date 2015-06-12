@@ -17,9 +17,9 @@ public class PClass extends IdEntity{
 	  @Column
 	  private String groupuuid;//公司全称
 	  @Column
-	  private String createUser;//类型：2，培训机构，1:幼儿园
+	  private String createUser;//
 	  @Column
-	  private String createUseruuid;//坐标
+	  private String createUseruuid;//
 	  
 	public Timestamp getCreate_time() {
 		return create_time;

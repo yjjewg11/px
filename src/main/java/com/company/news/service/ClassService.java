@@ -10,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Group;
+import com.company.news.entity.PClass;
+import com.company.news.entity.Right;
 import com.company.news.entity.User;
+import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserGroupRelation;
+import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -23,135 +27,108 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class ClassService extends AbstractServcice {
+	// 20150610 去掉对用户表的TYPE定义，默认都为0
+	public static final int Class_usertype_head = 1;// 班主任
+	public static final int Class_usertype_teacher = 0;// 老师类型
 
-
-
-	
 	/**
-	 * 增加机构
+	 * 增加班级
 	 * 
 	 * @param entityStr
 	 * @param model
 	 * @param request
 	 * @return
 	 */
-	public boolean add(GroupRegJsonform groupRegJsonform,
-			ResponseMessage responseMessage,String useruuid) throws Exception {
-		if (StringUtils.isBlank(groupRegJsonform.getBrand_name())||groupRegJsonform.getBrand_name().length()>45) {
-			responseMessage.setMessage("品牌名不能为空！，且长度不能超过45位！");
+	public boolean add(ClassRegJsonform classRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if (StringUtils.isBlank(classRegJsonform.getName())
+				|| classRegJsonform.getName().length() > 45) {
+			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
 			return false;
 		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getCompany_name())||groupRegJsonform.getCompany_name().length()>45) {
-			responseMessage.setMessage("机构名不能为空！，且长度不能超过45位！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getMap_point())) {
-			responseMessage.setMessage("位置信息不能为空！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getAddress())||groupRegJsonform.getAddress().length()>64) {
-			responseMessage.setMessage("联系地址不能为空！，且长度不能超过64位！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getLink_tel())) {
-			responseMessage.setMessage("联系方式不能为空！");
-			return false;
-		}
-		
-		if (groupRegJsonform.getType()==null) {
-			responseMessage.setMessage("机构类型不能为空！");
-			return false;
-		}
-		
-		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name())) {
-			responseMessage.setMessage("机构名已被注册！");
-			return false;
-		}
-		
-		Group group = new Group();
 
-		BeanUtils.copyProperties(group, groupRegJsonform);
+		if (StringUtils.isBlank(classRegJsonform.getGroupuuid())) {
+			responseMessage.setMessage("groupuuid不能为空！");
+			return false;
+		}
 
-		group.setCreate_time(TimeUtils.getCurrentTimestamp());
+		PClass pClass = new PClass();
 
+		BeanUtils.copyProperties(pClass, classRegJsonform);
+
+		pClass.setCreate_time(TimeUtils.getCurrentTimestamp());
 		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
-		
-		//设置保存后的机构UUID
-		groupRegJsonform.setGroup_uuid(group.getUuid());
-		//保存用户机构关联表
-		UserGroupRelation userGroupRelation=new UserGroupRelation();
-		userGroupRelation.setUseruuid(useruuid);
-		userGroupRelation.setGroupuuid(groupRegJsonform.getGroup_uuid());
-		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
-		
+		this.nSimpleHibernateDao.getHibernateTemplate().save(pClass);
+
+		if (StringUtils.isNotBlank(classRegJsonform.getHeadTeacher())) {
+			String[] headTeachers = classRegJsonform.getHeadTeacher()
+					.split(",");
+			for (String s : headTeachers) {
+				UserClassRelation u = new UserClassRelation();
+				u.setClassuuid(pClass.getUuid());
+				u.setUseruuid(s);
+				u.setType(Class_usertype_head);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
+			}
+		}
+
+		if (StringUtils.isNotBlank(classRegJsonform.getTeacher())) {
+			String[] teachers = classRegJsonform.getTeacher().split(",");
+			for (String s : teachers) {
+				UserClassRelation u = new UserClassRelation();
+				u.setClassuuid(pClass.getUuid());
+				u.setUseruuid(s);
+				u.setType(Class_usertype_teacher);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
+			}
+		}
+
 		return true;
 	}
-	
-	
-	/**
-	 * 查询所有机构列表
-	 * @return
-	 */
-	public List<Group> query(){
-		return (List<Group>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group", null);
-	}
-
-	
-	/**
-	 * 查询指定用户的机构列表
-	 * @return
-	 */
-	public List getGroupByUseruuid(String uuid)throws Exception{
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql="";
-		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
-				.addEntity("t1",Group.class);
-		
-		return q.list();
-	}
-
-
 
 	/**
-	 * 品牌名是否存在
+	 * 查询所有班级
 	 * 
-	 * @param loginname
 	 * @return
 	 */
-	private boolean isExitSameUserByBrand_name(String brand_name) {
-		String attribute = "brand_name";
-		Object group = nSimpleHibernateDao.getObjectByAttribute(Group.class,
-				attribute, brand_name);
-
-		if (group != null)// 已被占用
-			return true;
+	public List<PClass> query(String groupuuid) {
+		if (StringUtils.isBlank(groupuuid))
+			return (List<PClass>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find("from PClass", null);
 		else
-			return false;
-
+			return (List<PClass>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find(
+							"from PClass where groupuuid=?", groupuuid);
 	}
-	
+
 	/**
-	 * 公司名是否存在
-	 * @param company_name
-	 * @return
+	 * 删除 支持多个，用逗号分隔
+	 * 
+	 * @param uuid
 	 */
-	private boolean isExitSameUserByCompany_name(String company_name) {
-		String attribute = "company_name";
-		Object group = nSimpleHibernateDao.getObjectByAttribute(Group.class,
-				attribute, company_name);
+	public boolean delete(String uuid, ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(uuid)) {
 
-		if (group != null)// 已被占用
-			return true;
-		else
+			responseMessage.setMessage("ID不能为空！");
 			return false;
+		}
 
+		if (uuid.indexOf(",") != -1)// 多ID
+		{
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from PClass where uuid in(?)", uuid);
+			this.nSimpleHibernateDao
+					.getHibernateTemplate()
+					.bulkUpdate(
+							"delete from UserClassRelation where classuuid in(?)",
+							uuid);
+		} else {
+			this.nSimpleHibernateDao.deleteObjectById(PClass.class, uuid);
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from UserClassRelation where classuuid =?", uuid);
+		}
+
+		return true;
 	}
 
 	@Override
