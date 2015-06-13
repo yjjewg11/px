@@ -41,11 +41,10 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
 }); 
 
 var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsTable",
-//	 getInitialState: function() {
-//		 	alert(this.props.group_uuid);
-//		    return this.props.group_uuid;
-//		  },
-//	
+	 getInitialState: function() {
+		    return this.props.group_uuid;
+		  },
+	
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="cancel"){
@@ -76,8 +75,8 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 	  },
 	  //
 	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
-		//  this.setState(v);
+		  var v=('#selectgroup_uuid_chuser').val();
+		  this.setState(v);
 		  w_ch_user.reshowBygroup(v);
 	  },
   render: function() {
@@ -97,7 +96,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
   React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
+      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid_chuser}, 
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })

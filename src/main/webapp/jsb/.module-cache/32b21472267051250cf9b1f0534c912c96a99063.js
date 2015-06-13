@@ -3,7 +3,7 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
+
 
 var Group_EventRow = React.createClass({displayName: "Group_EventRow", 
   render: function() {
@@ -178,14 +178,11 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
   render: function() {
     return (
     React.createElement("div", null, 
-    React.createElement(AMUIReact_Sticky, null, 
     React.createElement(AMUIReact_ButtonToolbar, null, 
 	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_userinfo"), round: true}, "添加老师"), 
 	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "启用"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "分配权限")
-	    )
-	), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用")
+	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
       React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 

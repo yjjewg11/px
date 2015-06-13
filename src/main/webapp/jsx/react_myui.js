@@ -3,7 +3,7 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-
+var AMUIReact_Sticky=AMUIReact.Sticky;
 
 var Group_EventRow = React.createClass({ 
   render: function() {
@@ -90,16 +90,16 @@ var Group_edit = React.createClass({
     		<input type="hidden" name="uuid"  value={o.uuid}/>
     	    <input type="hidden" name="type"  value={o.type}/>
     	      <label htmlFor="brand_name">品牌名:</label>
-    	      <input type="email" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="机构名不能为空！，且长度不能超过45位！"/>
+    	      <input type="email" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	      <br/>
     	       <label htmlFor="company_name">机构全称:</label>
-    	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="机构名不能为空！，且长度不能超过45位！"/>
+    	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	      <br/>
     	       <label htmlFor="address">公司地址:</label>
-    	      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="联系地址不能为空！，且长度不能超过64位！"/>
+    	      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
     	      <br/>
     	       <label htmlFor="map_point">地址坐标:</label>
-    	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：104.074822,30.6623"/> 
+    	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
     	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
     	      <br/>
     	       <label htmlFor="link_tel">公司电话:</label>
@@ -157,7 +157,7 @@ var Userinfo_EventsTable = React.createClass({
 				　if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
 				　}
 				});
 			  if(!uuids){
@@ -178,11 +178,14 @@ var Userinfo_EventsTable = React.createClass({
   render: function() {
     return (
     <div>
+    <AMUIReact_Sticky>
     <AMUIReact_ButtonToolbar>
 	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_userinfo")} round>添加老师</AMUIReact_Button>
 	    <AMUIReact_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>启用</AMUIReact_Button>
 	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "add_disable")} round>禁用</AMUIReact_Button>
-	  </AMUIReact_ButtonToolbar>
+	    <AMUIReact_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>分配权限</AMUIReact_Button>
+	    </AMUIReact_ButtonToolbar>
+	</AMUIReact_Sticky>
 	  <hr/>
 	  <div className="am-form-group">
       <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -251,7 +254,7 @@ var Userinfo_edit = React.createClass({
     		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
     		      <br/>
     		      <label htmlFor="name">昵称:</label>
-    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="昵称不能为空，且长度不能超过15位！"/>
+    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
     		      <br/>
     		       <label htmlFor="">Email:</label>
     		      <input type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
@@ -349,7 +352,7 @@ handleClick: function(m) {
 			　if(this.checked){
 				 if(uuids==null)uuids=this.value;
 				 else
-				　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
+				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
 			　}
 			});
 		  if(!uuids){
@@ -399,21 +402,21 @@ render: function() {
   		        </div>
   		    
   		      <label htmlFor="name">班级:</label>
-  		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="班级名不能为空！，且长度不能超过45位！"/>
+  		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
   		      <br/>
-  		    <label htmlFor="name">班主任:</label>
-  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
-		      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange} placeholder=""/>
-		      <br/>
-		      <label htmlFor="name">其他老师:</label>
+  		   
+		      <label htmlFor="name">班主任:</label>
 	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
-			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} placeholder=""/>
+			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",$('#selectgroup_uuid').val())} placeholder=""/>
 			      <br/>
-		      
+			      <label htmlFor="name">其他老师:</label>
+		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
+				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",$('#selectgroup_uuid').val())} placeholder=""/>
+				      <br/>
   		      <button type="button"  onClick={ajax_class_save}  className="am-btn am-btn-primary">提交</button>
   		    </form>
 
-  	     </div>
+  	     </div> 
   	   </div>
   	   
   	   </div>

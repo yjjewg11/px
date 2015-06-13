@@ -3,7 +3,7 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
+
 
 var Group_EventRow = React.createClass({displayName: "Group_EventRow", 
   render: function() {

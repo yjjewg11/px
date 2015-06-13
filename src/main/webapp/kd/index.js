@@ -13,7 +13,7 @@ var div_header_props = {
 		 		        "icon": "chevron-left"
 		 		      },
 		      {
-		        "link": hostUrl + "/kd/index.html",
+		        "link": "javascript:menu_dohome();",
 		        "icon": "home"
 		      }
 		    ],
@@ -31,19 +31,8 @@ React.render(React.createElement(AMUIReact.Header,div_header_props), document.ge
 var div_menu_data=[
            		{
         		    "link": "##",
+        		    "fn":menu_group_myList_fn,
         		    "title": "校园管理",
-        		    "subMenu": [
-        		                {
-        		                  "link": hostUrl+"kd/group_list.html",
-        		                  "fn":menu_group_myList_fn,
-        		                  "title": "分校管理"
-        		                },
-        		                {
-        			                  "link": "##",
-        			                  "fn":widget_chooseUser_fn,
-        			                  "title": "权限分配"
-        			                },
-        		                ],
         		    "subCols": 2
         		   
         		  },
@@ -77,6 +66,13 @@ var div_menu_data=[
                        // "channelLink": "进入栏目 »",
                        
                       },
+                      {
+                          "link": "##",
+                          "title": "课程安排",
+                          "subCols": 2
+                         // "channelLink": "进入栏目 »",
+                         
+                        },
                 {
                   "link": "##",
                   "title": "每日食谱",
@@ -84,15 +80,6 @@ var div_menu_data=[
                  // "channelLink": "进入栏目 »",
                  
                 },
-              
-                  {
-                      "link": "##",
-                      "title": "课程安排",
-                      "subCols": 2
-                     // "channelLink": "进入栏目 »",
-                     
-                    },
-                    
                   
                     {
                         "link": "##",
@@ -151,6 +138,10 @@ var div_menu_data=[
                         "link": "##",
                         "title": "修改密码"
                       },
+                      {
+                          "link": "##",
+                          "title": "重置密码"
+                        },
                     {
                       "link": "##",
                       "title": "设置"
@@ -170,6 +161,7 @@ var div_menu_handleClick = function(nav, index, e) {
 	    // 有二级菜单的链接点击了
 		 if( typeof  nav.fn=="function"){
 			 nav.fn();
+			 w_ch_user.hide();
 			 this.closeAll();
 		 }
 		  console.log('点击的链接为：', nav);
@@ -177,6 +169,7 @@ var div_menu_handleClick = function(nav, index, e) {
 	    e.preventDefault();
 	    if( typeof  nav.fn=="function"){
 			 nav.fn();
+			 w_ch_user.hide();
 			 this.closeAll();
 		 }
 	    console.log('点击的链接为：', nav);
@@ -187,8 +180,8 @@ var div_menu_handleClick = function(nav, index, e) {
 
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:div_menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 
-function ajax_dohome(){
-	Queue.push(ajax_dohome);
+function menu_dohome(){
+	Queue.push(menu_dohome);
 	var div_Gallery_data=[
 	                      {
 	                    	    "img": hostUrl+"i/header.png",
@@ -208,5 +201,5 @@ function ajax_dohome(){
 	                    	  ];
 	React.render(React.createElement(AMUIReact.Gallery,{themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
-ajax_dohome();
+menu_dohome();
 

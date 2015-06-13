@@ -22,14 +22,14 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
 	},
   render: function() {
     var event = this.props.event;
-    var is_Checked=this.props.checkedUseruuid.indexOf(event.uuid)>-1;
-    var className = is_Checked ? 'am-active' :
+    var isChecked=this.props.checkedUseruuid.indexOf(event.uuid)>-1;
+    var className = isChecked ? 'am-active' :
       event.disabled ? 'am-disabled' : '';
 
     return (
       React.createElement("tr", {id: "tr_chuser_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}, 
       React.createElement("td", null, 
-      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox", checked: is_Checked?"checked":""})
+      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox", checkbox: isChecked})
       ), 
         React.createElement("td", null, event.name), 
         React.createElement("td", null, event.tel), 
@@ -41,11 +41,6 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
 }); 
 
 var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsTable",
-//	 getInitialState: function() {
-//		 	alert(this.props.group_uuid);
-//		    return this.props.group_uuid;
-//		  },
-//	
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="cancel"){
@@ -76,9 +71,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 	  },
 	  //
 	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
-		//  this.setState(v);
-		  w_ch_user.reshowBygroup(v);
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid_chuser').val());
 	  },
   render: function() {
 	  var that=this;
@@ -97,7 +90,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
   React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
+      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid_chuser}, 
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })

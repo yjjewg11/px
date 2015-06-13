@@ -2,34 +2,21 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
 
 /**
  * ajax_chooseUser_edit
  */
 
 var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow", 
-	tr_onClick:function(trid,cbid){
-		var cbox=$("#"+cbid);
-		var tr=$("#"+trid);
-		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
-			$(tr).removeClass("am-active");
-		}else{
-			cbox.prop("checked", true); 
-			$(tr).addClass("am-active");
-		}
-	},
   render: function() {
     var event = this.props.event;
-    var is_Checked=this.props.checkedUseruuid.indexOf(event.uuid)>-1;
-    var className = is_Checked ? 'am-active' :
+    var className = event.highlight ? 'am-active' :
       event.disabled ? 'am-disabled' : '';
 
     return (
-      React.createElement("tr", {id: "tr_chuser_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}, 
+      React.createElement("tr", {className: className}, 
       React.createElement("td", null, 
-      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox", checked: is_Checked?"checked":""})
+      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, name: "table_checkbox", checkbox: this.props.checkedUseruuid.indexOf(event.uuid)>-1})
       ), 
         React.createElement("td", null, event.name), 
         React.createElement("td", null, event.tel), 
@@ -41,15 +28,10 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
 }); 
 
 var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsTable",
-//	 getInitialState: function() {
-//		 	alert(this.props.group_uuid);
-//		    return this.props.group_uuid;
-//		  },
-//	
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="cancel"){
-				 this.props.handleClick(m,$('#selectgroup_uuid_chuser').val());
+				 this.props.handleClick(m,$('#selectgroup_uuid').val());
 				 return;
 			 }
 			 var uuids=null;
@@ -68,36 +50,26 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 				　}
 				});
 			  
-			 this.props.handleClick(m,$('#selectgroup_uuid_chuser').val(),uuids,names);
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids,names);
 		 }
 	  },
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all_chuser")[0].checked); 
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
 	  //
-	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
-		//  this.setState(v);
-		  w_ch_user.reshowBygroup(v);
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
   render: function() {
-	  var that=this;
     return (
     React.createElement("div", null, 
-    React.createElement(AMUIReact_Sticky, null, 
     React.createElement(AMUIReact_ButtonToolbar, null, 
-    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
-  )
-  ), 
-  React.createElement("div", {className: "header"}, 
-  React.createElement("div", {className: "am-g"}, 
-    React.createElement("h1", null, "老师选择")
-  ), 
-  React.createElement("hr", null)
-), 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+	  ), 
+	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
+      React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })
@@ -108,7 +80,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
         React.createElement("thead", null, 
           React.createElement("tr", null, 
           	React.createElement("th", null, 
-            React.createElement("input", {type: "checkbox", id: "id_checkbox_all_chuser", onChange: this.handleChange_checkbox_all})
+            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
             ), 
             React.createElement("th", null, "昵称"), 
             React.createElement("th", null, "电话"), 
@@ -118,7 +90,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
         ), 
         React.createElement("tbody", null, 
           this.props.events.map(function(event) {
-            return (React.createElement(ChooseUser_EventRow, {event: event, checkedUseruuid: that.props.checkedUseruuid}));
+            return (React.createElement(ChooseUser_EventRow, React.__spread({},  this.props, {event: event})));
           })
         )
       )

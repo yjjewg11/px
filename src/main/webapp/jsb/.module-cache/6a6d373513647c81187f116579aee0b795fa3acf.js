@@ -3,7 +3,7 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
+
 
 var Group_EventRow = React.createClass({displayName: "Group_EventRow", 
   render: function() {
@@ -90,16 +90,16 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
     	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
     	      React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
-    	      React.createElement("input", {type: "email", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
+    	      React.createElement("input", {type: "email", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "机构名不能为空！，且长度不能超过45位！"}), 
     	      React.createElement("br", null), 
     	       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
-    	      React.createElement("input", {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
+    	      React.createElement("input", {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "机构名不能为空！，且长度不能超过45位！"}), 
     	      React.createElement("br", null), 
     	       React.createElement("label", {htmlFor: "address"}, "公司地址:"), 
-    	      React.createElement("input", {type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"}), 
+    	      React.createElement("input", {type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "联系地址不能为空！，且长度不能超过64位！"}), 
     	      React.createElement("br", null), 
     	       React.createElement("label", {htmlFor: "map_point"}, "地址坐标:"), 
-    	      React.createElement("input", {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
+    	      React.createElement("input", {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：104.074822,30.6623"}), 
     	      React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取"), 
     	      React.createElement("br", null), 
     	       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
@@ -157,7 +157,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 				　if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
 				　}
 				});
 			  if(!uuids){
@@ -178,14 +178,11 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
   render: function() {
     return (
     React.createElement("div", null, 
-    React.createElement(AMUIReact_Sticky, null, 
     React.createElement(AMUIReact_ButtonToolbar, null, 
 	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_userinfo"), round: true}, "添加老师"), 
 	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "启用"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "分配权限")
-	    )
-	), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用")
+	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
       React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
@@ -254,7 +251,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
     		      React.createElement("br", null), 
     		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
-    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
+    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "昵称不能为空，且长度不能超过15位！"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
     		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
@@ -352,7 +349,7 @@ handleClick: function(m) {
 			　if(this.checked){
 				 if(uuids==null)uuids=this.value;
 				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　uuids+=this.value + ',';    //遍历被选中CheckBox元素的集合 得到Value值
 			　}
 			});
 		  if(!uuids){
@@ -402,7 +399,7 @@ render: function() {
   		        ), 
   		    
   		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
-  		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45位！"}), 
+  		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "班级名不能为空！，且长度不能超过45位！"}), 
   		      React.createElement("br", null), 
   		   
 		      React.createElement("label", {htmlFor: "name"}, "班主任:"), 

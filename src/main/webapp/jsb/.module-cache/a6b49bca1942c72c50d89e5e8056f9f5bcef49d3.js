@@ -76,7 +76,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 	  },
 	  //
 	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
+		  var v=('#selectgroup_uuid_chuser').val();
 		//  this.setState(v);
 		  w_ch_user.reshowBygroup(v);
 	  },
@@ -97,7 +97,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
   React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
+      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid_chuser}, 
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })

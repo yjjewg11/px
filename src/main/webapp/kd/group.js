@@ -220,7 +220,7 @@ $.AMUI.progress.start();
 	});
 }
 
-function ajax_userinfo_updateDisable(groupuuid,useruuid,disable){
+function ajax_userinfo_updateDisable(groupuuid,useruuids,disable){
 	if(!groupuuid){
 		alert("ajax_userinfo_updateDisable:groupuuid is null!");
 		return;
@@ -230,7 +230,7 @@ function ajax_userinfo_updateDisable(groupuuid,useruuid,disable){
 		$.ajax({
 			type : "POST",
 			url : url,
-			data : {useruuid:useruuid,disable:disable},
+			data : {useruuids:useruuids,disable:disable},
 			dataType : "json",
 			success : function(data) {
 				$.AMUI.progress.done();
