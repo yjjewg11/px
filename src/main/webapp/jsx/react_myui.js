@@ -162,7 +162,7 @@ render: function() {
  	      </label>
  	      <br />
  	      <div className="am-cf">
- 	        <input id="btn_login" onClick={login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
+ 	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	      <a  href="javascript:menu_kd_group_reg_fn();" >幼儿园注册</a>|

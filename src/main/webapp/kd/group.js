@@ -1,6 +1,58 @@
 
 //用户登陆
-function loaddata_group_list_for_userinfo_reg() {
+function ajax_userinfo_login() {
+	
+	 var $btn = $("#btn_login");
+	  $btn.button('loading');
+	$.AMUI.progress.start();
+
+	var loginname = $("#loginname").val();
+	var password = $("#password").val();
+	if(password.length!=32){
+		 password=$.md5(password); 
+	}
+	
+	var url = hostUrl + "rest/userinfo/login.json?loginname=" + loginname + "&password="
+			+ password;
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
+				$.AMUI.utils.cookie.set("bs_loginname", loginname);
+				if($("#pw_checked")[0].checked){
+					setCookie("bs_password", password);
+					setCookie("pw_checked", "checked");
+				} else {
+					setCookie("bs_password", ""); 
+					setCookie("pw_checked", "");
+				}
+				Store.setUserinfo(data.userinfo);
+				Store.setGroup(data.list);
+				menu_body_fn();
+				
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+function ajax_loaddata_group_list_for_userinfo_reg() {
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/group/list.json";
 	$.ajax({
@@ -12,12 +64,9 @@ function loaddata_group_list_for_userinfo_reg() {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				var sel=$("#reg_group_uuid");
-				sel.empty();
-				sel.prepend("<option value='0'>请选择</option>"); 
-				for(i=0;i<data.list.length;i++){
-					sel.append("<option value='"+data.list[i].uuid+"'>"+data.list[i].company_name+"</option>");
-				}
+				React.render(React.createElement(Div_userinfo_reg,{group_list:data.list})
+						, document.getElementById('div_login'));
+				$("#div_seesion_body").hide();
 				
 			} else {
 				alert("加载公司数据失败："+data.ResMsg.message);
@@ -113,13 +162,9 @@ function ajax_kd_group_reg() {
 }
 
 
-//group
-
 //获取我的
-function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn);
+function ajax_group_myList() {
 	$.AMUI.progress.start();
-
 	var url = hostUrl + "rest/group/myList.json";
 	$.ajax({
 		type : "GET",
@@ -191,7 +236,9 @@ $.AMUI.progress.start();
 //group end
 
 //userinfo
-function menu_userinfo_logout_fn(){
+
+
+function ajax_userinfo_logout(){
 	Queue.clear();
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/logout.json";
@@ -215,10 +262,6 @@ function menu_userinfo_logout_fn(){
 	});
 }
 //老师管理
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
 
 //老师查询，条件groupuuid
 //
@@ -333,6 +376,35 @@ $.AMUI.progress.start();
 	});
 }
 
+function ajax_getUserinfo(isInit) {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.userinfo)Store.setUserinfo(data.userinfo);
+				if(data.list)Store.setGroup(data.list);
+				menu_body_fn();
+			} else {
+				if(!isInit)alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+			
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
 function ajax_userinfo_updateDisable(groupuuid,useruuids,disable){
 	if(!groupuuid){
 		alert("ajax_userinfo_updateDisable:groupuuid is null!");
@@ -370,11 +442,7 @@ function ajax_userinfo_updateDisable(groupuuid,useruuids,disable){
 
 
 //class
-//班级管理
-function menu_class_list_fn() {
-	Queue.push(menu_class_list_fn);
-	ajax_class_listByGroup(Store.getCurGroup().uuid);
-};
+
 
 //班级查询，条件groupuuid
 //
