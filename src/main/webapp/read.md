@@ -6,3 +6,7 @@ kd/--幼儿园模块
 命名规则：
 菜单功能按钮，调用方法：menu_xx_fn
 公告组件（wedget）。入口方法：weget_xx_fn
+
+
+方法说明：
+menu_userinfo_login_fn();//跳转登录页面

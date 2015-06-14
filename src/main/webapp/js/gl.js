@@ -12,7 +12,8 @@ var hostUrl='/px-rest/';
 
 function G_resMsg_filter(ResMsg){
 	if("sessionTimeout"==ResMsg.status){
-		window.location = hostUrl + "login.html";
+		//window.location = hostUrl + "login.html";
+		menu_userinfo_login_fn();
 	}
 }
 

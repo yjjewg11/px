@@ -490,8 +490,7 @@ render: function() {
   React.createElement("div", null, 
   React.createElement(AMUIReact_Sticky, null, 
   React.createElement(AMUIReact_ButtonToolbar, null, 
-	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "gua_class"), round: true}, "毕业")
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级")
 	  )
 	  ), 
 	  React.createElement("hr", null), 
