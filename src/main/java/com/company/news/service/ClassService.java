@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -9,6 +10,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Right;
@@ -28,8 +30,8 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class ClassService extends AbstractServcice {
 	// 20150610 去掉对用户表的TYPE定义，默认都为0
-	public static final int Class_usertype_head = 1;// 班主任
-	public static final int Class_usertype_teacher = 0;// 老师类型
+	public static final int class_usertype_head = 1;// 班主任
+	public static final int class_usertype_teacher = 0;// 老师类型
 
 	/**
 	 * 增加班级
@@ -67,7 +69,7 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pClass.getUuid());
 				u.setUseruuid(s);
-				u.setType(Class_usertype_head);
+				u.setType(class_usertype_head);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
@@ -78,7 +80,58 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pClass.getUuid());
 				u.setUseruuid(s);
-				u.setType(Class_usertype_teacher);
+				u.setType(class_usertype_teacher);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
+			}
+		}
+
+		return true;
+	}
+	
+	
+	/**
+	 * 更新班级
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean update(ClassRegJsonform classRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if (StringUtils.isBlank(classRegJsonform.getName())
+				|| classRegJsonform.getName().length() > 45) {
+			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+			return false;
+		}
+
+        //更新班级名字
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PClass set name=? where uuid =?",classRegJsonform.getName(),classRegJsonform.getUuid());
+
+	    //先删除原来数据
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",classRegJsonform.getUuid());
+		
+		
+
+		if (StringUtils.isNotBlank(classRegJsonform.getHeadTeacher())) {
+			String[] headTeachers = classRegJsonform.getHeadTeacher()
+					.split(",");
+			for (String s : headTeachers) {
+				UserClassRelation u = new UserClassRelation();
+				u.setClassuuid(classRegJsonform.getUuid());
+				u.setUseruuid(s);
+				u.setType(class_usertype_head);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
+			}
+		}
+
+		if (StringUtils.isNotBlank(classRegJsonform.getTeacher())) {
+			String[] teachers = classRegJsonform.getTeacher().split(",");
+			for (String s : teachers) {
+				UserClassRelation u = new UserClassRelation();
+				u.setClassuuid(classRegJsonform.getUuid());
+				u.setUseruuid(s);
+				u.setType(class_usertype_teacher);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
@@ -145,6 +198,32 @@ public class ClassService extends AbstractServcice {
 		}
 
 		return true;
+	}
+	
+	public ClassRegJsonform get(String uuid) throws Exception{
+		ClassRegJsonform c=new ClassRegJsonform();
+		PClass pclass=(PClass) this.nSimpleHibernateDao.getObjectById(PClass.class, uuid);
+		if(pclass==null)
+			return c;
+		
+		BeanUtils.copyProperties(c, pclass);
+		
+		List<UserClassRelation> l=(List<UserClassRelation>) this.nSimpleHibernateDao.getHibernateTemplate().find("from UserClassRelation where classuuid=?", uuid);
+		
+		String headTeacher="";
+		String teacher="";
+		for(UserClassRelation u:l)
+		{
+			if(u.getType().intValue()==class_usertype_head)
+				headTeacher+=(u.getUseruuid()+",");
+			else
+				teacher+=(u.getUseruuid()+",");			
+		}
+		
+		c.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher) );
+		c.setTeacher(PxStringUtil.StringDecComma(teacher));
+		
+		return c;
 	}
 
 	@Override
