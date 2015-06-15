@@ -691,7 +691,7 @@ var Announcements_EventsTable = React.createClass({displayName: "Announcements_E
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
 render: function() {
   return (
@@ -765,7 +765,7 @@ render: function() {
   		        ), 
   		        
   		      React.createElement("div", {className: "am-form-group"}, 
-		          React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'sm'}", value: o.type, onChange: this.handleChange}, 
+		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: o.type, onChange: this.handleChange}, 
 		          React.createElement("option", {value: "0"}, Vo.announce_type(0)), 
 		          React.createElement("option", {value: "1"}, Vo.announce_type(1)), 
 		          React.createElement("option", {value: "2"}, Vo.announce_type(2))

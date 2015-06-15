@@ -81,8 +81,8 @@ function login_affter_init(){
 	                        "title": "发布消息",
 	                        "subMenu": [
 	                                    {
-	                                      "link": "##",
-	                                      "title": "发布公告"
+	                                      "fn":menu_announce_list_fn,
+	                                      "title": "公告通知"
 	                                    },
 	                                    {
 	                                        "link": "##",
@@ -232,6 +232,11 @@ function menu_class_list_fn() {
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
 
+
+function menu_announce_list_fn() {
+	Queue.push(menu_announce_list_fn);
+	ajax_announce_listByGroup(Store.getCurGroup().uuid);
+};
 
 function menu_userinfo_reg_fn(){
 	

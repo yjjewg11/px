@@ -1,9 +1,12 @@
 
 //
-var AMUIReact_Table=AMUIReact.Table;
-var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
-var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
+var AMR_Table=AMUIReact.Table;
+var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
+var AMR_Button=AMUIReact.Button;
+var AMR_Sticky=AMUIReact.Sticky;
+var AMR_Panel=AMUIReact.Panel;
+var AMR_Gallery=AMUIReact.Gallery;
+var AMR_Input=AMUIReact.Input;
 
 
 //userinfo reg
@@ -218,13 +221,13 @@ var Group_EventsTable = React.createClass({
   render: function() {
     return (
     <div>
-    <AMUIReact_Sticky>
-    <AMUIReact_ButtonToolbar>
-	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_group")} round>添加分校</AMUIReact_Button>
-	  </AMUIReact_ButtonToolbar>
-	 </AMUIReact_Sticky>
+    <AMR_Sticky>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_group")} round>添加分校</AMR_Button>
+	  </AMR_ButtonToolbar>
+	 </AMR_Sticky>
 	  <hr/>
-      <AMUIReact_Table {...this.props}>  
+      <AMR_Table {...this.props}>  
         <thead> 
           <tr>
           <th>  
@@ -242,7 +245,7 @@ var Group_EventsTable = React.createClass({
             return (<Group_EventRow key={event.id} event={event} />);
           })}
         </tbody>
-      </AMUIReact_Table>
+      </AMR_Table>
       </div>
     );
   }
@@ -299,10 +302,6 @@ var Group_edit = React.createClass({
 }); 
 
 //userinfo
-/**
- * ajax_userinfo_edit
- */
-
 var Userinfo_EventRow = React.createClass({ 
   render: function() {
     var event = this.props.event;
@@ -360,14 +359,14 @@ var Userinfo_EventsTable = React.createClass({
   render: function() {
     return (
     <div>
-    <AMUIReact_Sticky>
-    <AMUIReact_ButtonToolbar>
-	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_userinfo")} round>添加老师</AMUIReact_Button>
-	    <AMUIReact_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>启用</AMUIReact_Button>
-	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "add_disable")} round>禁用</AMUIReact_Button>
-	    <AMUIReact_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>分配权限</AMUIReact_Button>
-	    </AMUIReact_ButtonToolbar>
-	</AMUIReact_Sticky>
+    <AMR_Sticky>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_userinfo")} round>添加老师</AMR_Button>
+	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>启用</AMR_Button>
+	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "add_disable")} round>禁用</AMR_Button>
+	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "add_enable")} round>分配权限</AMR_Button>
+	    </AMR_ButtonToolbar>
+	</AMR_Sticky>
 	  <hr/>
 	  <div className="am-form-group">
       <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -377,7 +376,7 @@ var Userinfo_EventsTable = React.createClass({
       </select>
     </div>
 	  
-      <AMUIReact_Table {...this.props}>  
+      <AMR_Table {...this.props}>  
         <thead> 
           <tr>
           	<th>  
@@ -398,7 +397,7 @@ var Userinfo_EventsTable = React.createClass({
             return (<Userinfo_EventRow key={event.id} event={event} />);
           })}
         </tbody>
-      </AMUIReact_Table>
+      </AMR_Table>
       </div>
     );
   }
@@ -476,7 +475,7 @@ render: function() {
     <td> 
     <input type="checkbox" value={event.uuid} name="table_checkbox" />
     </td>
-      <td>{event.name}</td>
+      <td><a href={"javascript:react_ajax_class_students_manage('"+event.uuid+"')"}>{event.name}</a></td>
       <td>{event.createUser}</td>
       <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
       <td>{event.create_time}</td>
@@ -488,12 +487,13 @@ var Class_EventsTable = React.createClass({
 render: function() {
   return (
   <div>
-  <AMUIReact_Sticky>
-  <AMUIReact_ButtonToolbar>
-	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMUIReact_Button>
-	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "gua_class")} round>毕业</AMUIReact_Button>
-	  </AMUIReact_ButtonToolbar>
-	  </AMUIReact_Sticky>
+  <AMR_Sticky>
+  <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMR_Button>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit_class")} round>编辑</AMR_Button>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "graduate_class")} round>毕业</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  </AMR_Sticky>
 	  <hr/>
 	  <div className="am-form-group">
     <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -503,7 +503,7 @@ render: function() {
     </select>
   </div>
 	  
-    <AMUIReact_Table {...this.props}>  
+    <AMR_Table {...this.props}>  
       <thead> 
         <tr>
         	<th>  
@@ -520,7 +520,7 @@ render: function() {
           return (<Class_EventRow key={event.id} event={event} />);
         })}
       </tbody>
-    </AMUIReact_Table>
+    </AMR_Table>
     </div>
   );
 },
@@ -608,4 +608,185 @@ render: function() {
   );
 }
 }); 
+
+
+var AMR_Grid=AMUIReact.Grid;
+var AMR_Col=AMUIReact.Col;
+var Class_students_manage = React.createClass({
+	render: function() {
+		var o=this.props.formdata;
+	  return (
+	  <div>
+	  <AMR_Sticky>
+	  <AMR_ButtonToolbar>
+		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add_class")} round>添加学生</AMR_Button>
+		  </AMR_ButtonToolbar>
+		  </AMR_Sticky>
+		  <hr/>
+		  <AMR_Panel>
+			  <AMR_Grid className="doc-g">
+			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
+			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
+			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
+			  </AMR_Grid>
+		  </AMR_Panel>
+		  <AMR_Gallery data={this.props.students} />
+	    </div>
+	  );
+	}
+	});
 //end class
+
+
+
+//announcements
+/**
+* ajax_announcements_edit
+*/
+
+var Announcements_EventRow = React.createClass({ 
+render: function() {
+  var event = this.props.event;
+  var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+    <tr className={className} >
+    <td> 
+    <input type="checkbox" value={event.uuid} name="table_checkbox" />
+    </td>
+      <td>{event.title}</td>
+      <td>{Vo.announce_type(event.type)}</td>
+      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+      <td>{0}</td>
+      <td>{event.create_user}</td>
+      <td>{event.create_time}</td>
+    </tr> 
+  );
+}
+}); 
+
+var Announcements_EventsTable = React.createClass({
+	handleClick: function(m) {
+			 if(m=="add_announcements"){
+				 btn_click_announce(m,$('#selectgroup_uuid').val());
+				 return;
+			 }
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  btn_click_announce(m,$('#selectgroup_uuid').val(),uuids);
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  //
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+	  },
+render: function() {
+  return (
+  <div>
+  <AMR_Sticky>
+  <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_announcements")} round>创建</AMR_Button>
+	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+	    </AMR_ButtonToolbar>
+	</AMR_Sticky>
+	  <hr/>
+	  <div className="am-form-group">
+    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+    {this.props.group_list.map(function(event) {
+        return (<option value={event.uuid} >{event.company_name}</option>);
+      })}
+    </select>
+  </div>
+	  
+    <AMR_Table {...this.props}>  
+      <thead> 
+        <tr>
+        	<th>  
+          <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+          </th>
+          <th>标题</th>
+          <th>类型</th>
+          <th>幼儿园</th>
+          <th>浏览次数</th>
+          <th>创建人</th>
+          <th>创建时间</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {this.props.events.map(function(event) {
+          return (<Announcements_EventRow key={event.id} event={event} />);
+        })}
+      </tbody>
+    </AMR_Table>
+    </div>
+  );
+}
+});
+  
+var Announcements_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+  return (
+  		<div>
+  		<div className="header">
+  		  <div className="am-g">
+  		    <h1>编辑</h1>
+  		  </div>
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <form id="editAnnouncementsForm" method="post" className="am-form">
+  		    <div className="am-form-group">
+  		          <select id="group_uuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
+  		          {this.props.group_uuid_data.map(function(event) {
+  		              return (<option value={event.uuid} >{event.company_name}</option>);
+  		            })}
+  		          </select>
+  		        </div>
+  		        
+  		      <div className="am-form-group">
+		          <select id="type" name="type" data-am-selected="{btnSize: 'sm'}" value={o.type} onChange={this.handleChange}>
+		          <option value="0" >{Vo.announce_type(0)}</option>
+		          <option value="1" >{Vo.announce_type(1)}</option>
+		          <option value="2" >{Vo.announce_type(2)}</option>
+		          </select>
+		        </div>
+		        <div className="am-form-group" id="div_classuuids" >
+  		      <label htmlFor="tel">班级通知:</label>
+  		      <input type="text" name="classuuids" id="classuuids" value={o.tel} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		     </div>
+  		      <label htmlFor="name">标题:</label>
+  		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
+  		      <br/>
+  		    <AMR_Input type="textarea" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+  		      <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
+  		    </form>
+
+  	     </div>
+  	   </div>
+  	   
+  	   </div>
+  );
+}
+}); 
+//end announcements

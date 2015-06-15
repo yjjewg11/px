@@ -1,12 +1,11 @@
 
 //
-var AMR_Table=AMUIReact.Table;
-var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
-var AMR_Button=AMUIReact.Button;
-var AMR_Sticky=AMUIReact.Sticky;
-var AMR_Panel=AMUIReact.Panel;
-var AMR_Gallery=AMUIReact.Gallery;
-var AMR_Input=AMUIReact.Input;
+var AMUIReact_Table=AMUIReact.Table;
+var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
+var AMUIReact_Button=AMUIReact.Button;
+var AMUIReact_Sticky=AMUIReact.Sticky;
+var AMUIReact_Panel=AMUIReact.Panel;
+
 
 
 //userinfo reg
@@ -221,13 +220,13 @@ var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
   render: function() {
     return (
     React.createElement("div", null, 
-    React.createElement(AMR_Sticky, null, 
-    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_group"), round: true}, "添加分校")
+    React.createElement(AMUIReact_Sticky, null, 
+    React.createElement(AMUIReact_ButtonToolbar, null, 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_group"), round: true}, "添加分校")
 	  )
 	 ), 
 	  React.createElement("hr", null), 
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
+      React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
           React.createElement("th", null, 
@@ -302,6 +301,10 @@ var Group_edit = React.createClass({displayName: "Group_edit",
 }); 
 
 //userinfo
+/**
+ * ajax_userinfo_edit
+ */
+
 var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow", 
   render: function() {
     var event = this.props.event;
@@ -359,12 +362,12 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
   render: function() {
     return (
     React.createElement("div", null, 
-    React.createElement(AMR_Sticky, null, 
-    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_userinfo"), round: true}, "添加老师"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "启用"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "分配权限")
+    React.createElement(AMUIReact_Sticky, null, 
+    React.createElement(AMUIReact_ButtonToolbar, null, 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_userinfo"), round: true}, "添加老师"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "启用"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "禁用"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "add_enable"), round: true}, "分配权限")
 	    )
 	), 
 	  React.createElement("hr", null), 
@@ -376,7 +379,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
       )
     ), 
 	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
+      React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
           	React.createElement("th", null, 
@@ -475,7 +478,7 @@ render: function() {
     React.createElement("td", null, 
     React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
     ), 
-      React.createElement("td", null, React.createElement("a", {href: "javascript:react_ajax_class_students_manage('"+event.uuid+"')"}, event.name)), 
+      React.createElement("td", null, React.createElement("a", {herf: "javascript:void()"}, event.name)), 
       React.createElement("td", null, event.createUser), 
       React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
       React.createElement("td", null, event.create_time)
@@ -487,11 +490,11 @@ var Class_EventsTable = React.createClass({displayName: "Class_EventsTable",
 render: function() {
   return (
   React.createElement("div", null, 
-  React.createElement(AMR_Sticky, null, 
-  React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级"), 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit_class"), round: true}, "编辑"), 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "graduate_class"), round: true}, "毕业")
+  React.createElement(AMUIReact_Sticky, null, 
+  React.createElement(AMUIReact_ButtonToolbar, null, 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit_class"), round: true}, "编辑"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "graduate_class"), round: true}, "毕业")
 	  )
 	  ), 
 	  React.createElement("hr", null), 
@@ -503,7 +506,7 @@ render: function() {
     )
   ), 
 	  
-    React.createElement(AMR_Table, React.__spread({},  this.props), 
+    React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
       React.createElement("thead", null, 
         React.createElement("tr", null, 
         	React.createElement("th", null, 
@@ -610,183 +613,24 @@ render: function() {
 }); 
 
 
-var AMR_Grid=AMUIReact.Grid;
-var AMR_Col=AMUIReact.Col;
-var Class_students_manage = React.createClass({displayName: "Class_students_manage",
+
+
+var Class_EventsTable = React.createClass({displayName: "Class_EventsTable",
 	render: function() {
-		var o=this.props.formdata;
 	  return (
 	  React.createElement("div", null, 
-	  React.createElement(AMR_Sticky, null, 
-	  React.createElement(AMR_ButtonToolbar, null, 
-		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this, "add_class"), round: true}, "添加学生")
+	  React.createElement(AMUIReact_Sticky, null, 
+	  React.createElement(AMUIReact_ButtonToolbar, null, 
+		    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加学生")
 		  )
 		  ), 
 		  React.createElement("hr", null), 
-		  React.createElement(AMR_Panel, null, 
-			  React.createElement(AMR_Grid, {className: "doc-g"}, 
-			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
-			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
-			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)
-			  )
-		  ), 
-		  React.createElement(AMR_Gallery, {data: this.props.students})
+		  React.createElement(AMUIReact_Panel, null, 
+		  "班级:", o.name, ",班主任:", o.headTeacher_name, ",其他老师:", o.teacher_name
+		  )
+		
 	    )
 	  );
 	}
 	});
 //end class
-
-
-
-//announcements
-/**
-* ajax_announcements_edit
-*/
-
-var Announcements_EventRow = React.createClass({displayName: "Announcements_EventRow", 
-render: function() {
-  var event = this.props.event;
-  var className = event.highlight ? 'am-active' :
-    event.disabled ? 'am-disabled' : '';
-
-  return (
-    React.createElement("tr", {className: className}, 
-    React.createElement("td", null, 
-    React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
-    ), 
-      React.createElement("td", null, event.title), 
-      React.createElement("td", null, Vo.announce_type(event.type)), 
-      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-      React.createElement("td", null, 0), 
-      React.createElement("td", null, event.create_user), 
-      React.createElement("td", null, event.create_time)
-    ) 
-  );
-}
-}); 
-
-var Announcements_EventsTable = React.createClass({displayName: "Announcements_EventsTable",
-	handleClick: function(m) {
-			 if(m=="add_announcements"){
-				 btn_click_announce(m,$('#selectgroup_uuid').val());
-				 return;
-			 }
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  btn_click_announce(m,$('#selectgroup_uuid').val(),uuids);
-	  },
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
-	  //
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
-	  },
-render: function() {
-  return (
-  React.createElement("div", null, 
-  React.createElement(AMR_Sticky, null, 
-  React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_announcements"), round: true}, "创建"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
-	    )
-	), 
-	  React.createElement("hr", null), 
-	  React.createElement("div", {className: "am-form-group"}, 
-    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
-    this.props.group_list.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.company_name));
-      })
-    )
-  ), 
-	  
-    React.createElement(AMR_Table, React.__spread({},  this.props), 
-      React.createElement("thead", null, 
-        React.createElement("tr", null, 
-        	React.createElement("th", null, 
-          React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-          ), 
-          React.createElement("th", null, "标题"), 
-          React.createElement("th", null, "类型"), 
-          React.createElement("th", null, "幼儿园"), 
-          React.createElement("th", null, "浏览次数"), 
-          React.createElement("th", null, "创建人"), 
-          React.createElement("th", null, "创建时间")
-        )
-      ), 
-      React.createElement("tbody", null, 
-        this.props.events.map(function(event) {
-          return (React.createElement(Announcements_EventRow, {key: event.id, event: event}));
-        })
-      )
-    )
-    )
-  );
-}
-});
-  
-var Announcements_edit = React.createClass({displayName: "Announcements_edit", 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editAnnouncementsForm').serializeJson());
-	  },
-render: function() {
-	  var o = this.state;
-  return (
-  		React.createElement("div", null, 
-  		React.createElement("div", {className: "header"}, 
-  		  React.createElement("div", {className: "am-g"}, 
-  		    React.createElement("h1", null, "编辑")
-  		  ), 
-  		  React.createElement("hr", null)
-  		), 
-  		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-  		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
-  		    React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "group_uuid", name: "groupuuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
-  		          this.props.group_uuid_data.map(function(event) {
-  		              return (React.createElement("option", {value: event.uuid}, event.company_name));
-  		            })
-  		          )
-  		        ), 
-  		        
-  		      React.createElement("div", {className: "am-form-group"}, 
-		          React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'sm'}", value: o.type, onChange: this.handleChange}, 
-		          React.createElement("option", {value: "0"}, Vo.announce_type(0)), 
-		          React.createElement("option", {value: "1"}, Vo.announce_type(1)), 
-		          React.createElement("option", {value: "2"}, Vo.announce_type(2))
-		          )
-		        ), 
-		        React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
-  		      React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
-  		      React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.tel, onChange: this.handleChange, placeholder: "班级通知，才填写"})
-  		     ), 
-  		      React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
-  		      React.createElement("br", null), 
-  		    React.createElement(AMR_Input, {type: "textarea", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
-  		      React.createElement("button", {type: "button", onClick: ajax_announcements_save, className: "am-btn am-btn-primary"}, "提交")
-  		    )
-
-  	     )
-  	   )
-  	   
-  	   )
-  );
-}
-}); 
-//end announcements

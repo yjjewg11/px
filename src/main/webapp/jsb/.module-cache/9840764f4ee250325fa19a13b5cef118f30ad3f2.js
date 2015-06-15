@@ -691,7 +691,7 @@ var Announcements_EventsTable = React.createClass({displayName: "Announcements_E
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
 render: function() {
   return (

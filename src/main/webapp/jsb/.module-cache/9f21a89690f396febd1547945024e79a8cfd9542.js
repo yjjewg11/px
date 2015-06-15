@@ -691,7 +691,7 @@ var Announcements_EventsTable = React.createClass({displayName: "Announcements_E
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
 render: function() {
   return (
@@ -699,7 +699,7 @@ render: function() {
   React.createElement(AMR_Sticky, null, 
   React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_announcements"), round: true}, "创建"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
+	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "add_disable"), round: true}, "删除")
 	    )
 	), 
 	  React.createElement("hr", null), 
@@ -757,7 +757,7 @@ render: function() {
   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		    React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "group_uuid", name: "groupuuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
+  		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
   		          this.props.group_uuid_data.map(function(event) {
   		              return (React.createElement("option", {value: event.uuid}, event.company_name));
   		            })
@@ -765,7 +765,7 @@ render: function() {
   		        ), 
   		        
   		      React.createElement("div", {className: "am-form-group"}, 
-		          React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'sm'}", value: o.type, onChange: this.handleChange}, 
+		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: o.type, onChange: this.handleChange}, 
 		          React.createElement("option", {value: "0"}, Vo.announce_type(0)), 
 		          React.createElement("option", {value: "1"}, Vo.announce_type(1)), 
 		          React.createElement("option", {value: "2"}, Vo.announce_type(2))
