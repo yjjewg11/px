@@ -1,159 +1,166 @@
+function login_affter_init(){
+	var div_header_props = {
+			  "title": Store.getCurGroup().company_name+"-"+Store.getUserinfo().name,
+			  "link": "#title-link",
+			  data: {
+			    "left": [
+			             {
+			 		        "link": "javascript:Queue.doBackFN();",
+			 		        "icon": "chevron-left"
+			 		      },
+			      {
+			        "link": "javascript:menu_dohome();",
+			        "icon": "home"
+			      }
+			    ],
+			    "right": [
+			      {
+			        "link": "#right-link",
+			        "icon": "bars"
+			      }
+			    ]
+			  }
+			};
 
-var div_header_props = {
-		  "title": Store.getCurGroup().company_name+"-"+Store.getUserinfo().name,
-		  "link": "#title-link",
-		  data: {
-		    "left": [
-		             {
-		 		        "link": "javascript:Queue.doBackFN();",
-		 		        "icon": "chevron-left"
-		 		      },
-		      {
-		        "link": "javascript:menu_dohome();",
-		        "icon": "home"
-		      }
-		    ],
-		    "right": [
-		      {
-		        "link": "#right-link",
-		        "icon": "bars"
-		      }
-		    ]
-		  }
-		};
+	//menu
+	var div_menu_data=[
+	           		{
+	        		    "link": "##",
+	        		    "fn":menu_group_myList_fn,
+	        		    "title": "校园管理",
+	        		    "subCols": 2
+	        		   
+	        		  },
+	        		  {
+	                      "link": "##",
+	                      "title": "老师管理",
+	                      "fn":menu_userinfo_list_fn,
+	                      "subCols": 2
+	                     // "channelLink": "进入栏目 »",
+	                    },
+	                    {
+	                        "link": "##",
+	                        "title": "班级管理",
+	                        "subMenu": [
+	                                    {
+	                                      "link": "##",
+	                                      "fn":menu_class_list_fn,
+	                                      "title": "现有班级"
+	                                    },
+	                                    
+	                                    {
+	                                        "link": "##",
+	                                        "title": "邀请家长"
+	                                      },
+	                                      {
+	                                          "link": "##",
+	                                          "title": "孩子考勤"
+	                                        }
+	                                    ],
+	                        "subCols": 2
+	                       // "channelLink": "进入栏目 »",
+	                       
+	                      },
+	                      {
+	                          "link": "##",
+	                          "title": "课程安排",
+	                          "subCols": 2
+	                         // "channelLink": "进入栏目 »",
+	                         
+	                        },
+	                {
+	                  "link": "##",
+	                  "title": "每日食谱",
+	                  "subCols": 2
+	                 // "channelLink": "进入栏目 »",
+	                 
+	                },
+	                  
+	                    {
+	                        "link": "##",
+	                        "title": "发布消息",
+	                        "subMenu": [
+	                                    {
+	                                      "link": "##",
+	                                      "title": "发布公告"
+	                                    },
+	                                    {
+	                                        "link": "##",
+	                                        "title": "发布通知"
+	                                      },
+	                                      {
+	                                          "link": "##",
+	                                          "title": "招生计划"
+	                                        },
+	                                        {
+	                                            "link": "##",
+	                                            "title": "图片管理"
+	                                          }
+	                                    ],
+	                        "subCols": 2
+	                       // "channelLink": "进入栏目 »",
+	                       
+	                      },
+	                      
+	                        {
+	                            "link": "##",
+	                            "title": "家长互动",
+	                            "subMenu": [
+	                                        {
+	                                          "link": "##",
+	                                          "title": "班级圈"
+	                                        },
+	                                        {
+	                                            "link": "##",
+	                                            "title": "家长反馈"
+	                                          },
+	                                          {
+	                                              "link": "##",
+	                                              "title": "分享文章"
+	                                            }
+	                                        ],
+	                            "subCols": 2
+	                           // "channelLink": "进入栏目 »",
+	                           
+	                          },
+	                        
+	                {
+	                  "link": "##",
+	                  "title": "我",
+	                  "subCols": 3,
+	                  "subMenu": [
+	                    {
+	                      "link": "##",
+	                      "title": "修改资料"
+	                    },
+	                    {
+	                        "link": "##",
+	                        "title": "修改密码"
+	                      },
+	                      {
+	                          "link": "##",
+	                          "title": "重置密码"
+	                        },
+	                    {
+	                      "link": "##",
+	                      "title": "设置"
+	                    },
+	                    {
+	                        "link": "##",
+	                        "fn":menu_userinfo_logout_fn,
+	                        "title": "注销"
+	                      }
+	                  ]
+	                }
+	                
+	              ];
+	
+	
 
-//menu
-var div_menu_data=[
-           		{
-        		    "link": "##",
-        		    "fn":menu_group_myList_fn,
-        		    "title": "校园管理",
-        		    "subCols": 2
-        		   
-        		  },
-        		  {
-                      "link": "##",
-                      "title": "老师管理",
-                      "fn":menu_userinfo_list_fn,
-                      "subCols": 2
-                     // "channelLink": "进入栏目 »",
-                    },
-                    {
-                        "link": "##",
-                        "title": "班级管理",
-                        "subMenu": [
-                                    {
-                                      "link": "##",
-                                      "fn":menu_class_list_fn,
-                                      "title": "现有班级"
-                                    },
-                                    
-                                    {
-                                        "link": "##",
-                                        "title": "邀请家长"
-                                      },
-                                      {
-                                          "link": "##",
-                                          "title": "孩子考勤"
-                                        }
-                                    ],
-                        "subCols": 2
-                       // "channelLink": "进入栏目 »",
-                       
-                      },
-                      {
-                          "link": "##",
-                          "title": "课程安排",
-                          "subCols": 2
-                         // "channelLink": "进入栏目 »",
-                         
-                        },
-                {
-                  "link": "##",
-                  "title": "每日食谱",
-                  "subCols": 2
-                 // "channelLink": "进入栏目 »",
-                 
-                },
-                  
-                    {
-                        "link": "##",
-                        "title": "发布消息",
-                        "subMenu": [
-                                    {
-                                      "link": "##",
-                                      "title": "发布公告"
-                                    },
-                                    {
-                                        "link": "##",
-                                        "title": "发布通知"
-                                      },
-                                      {
-                                          "link": "##",
-                                          "title": "招生计划"
-                                        },
-                                        {
-                                            "link": "##",
-                                            "title": "图片管理"
-                                          }
-                                    ],
-                        "subCols": 2
-                       // "channelLink": "进入栏目 »",
-                       
-                      },
-                      
-                        {
-                            "link": "##",
-                            "title": "家长互动",
-                            "subMenu": [
-                                        {
-                                          "link": "##",
-                                          "title": "班级圈"
-                                        },
-                                        {
-                                            "link": "##",
-                                            "title": "家长反馈"
-                                          },
-                                          {
-                                              "link": "##",
-                                              "title": "分享文章"
-                                            }
-                                        ],
-                            "subCols": 2
-                           // "channelLink": "进入栏目 »",
-                           
-                          },
-                        
-                {
-                  "link": "##",
-                  "title": "我",
-                  "subCols": 3,
-                  "subMenu": [
-                    {
-                      "link": "##",
-                      "title": "修改资料"
-                    },
-                    {
-                        "link": "##",
-                        "title": "修改密码"
-                      },
-                      {
-                          "link": "##",
-                          "title": "重置密码"
-                        },
-                    {
-                      "link": "##",
-                      "title": "设置"
-                    },
-                    {
-                        "link": "##",
-                        "fn":menu_userinfo_logout_fn,
-                        "title": "注销"
-                      }
-                  ]
-                }
-                
-              ];
+	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
+	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:div_menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
+
+}
 
 var div_menu_handleClick = function(nav, index, e) {
 	  if (nav && nav.subMenu) {
@@ -251,9 +258,9 @@ function menu_body_fn (){
 	$("#div_seesion_body").show();
 	//$("#div_login").hide();
 	$("#div_login").html(null);
+
+	login_affter_init();
 	menu_dohome();
-	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
-	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:div_menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 }
 ajax_getUserinfo(true);
 
