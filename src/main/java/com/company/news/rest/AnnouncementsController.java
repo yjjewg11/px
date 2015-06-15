@@ -9,26 +9,28 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.entity.Announcements;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
+import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.service.AnnouncementsService;
 import com.company.news.service.ClassService;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/class")
-public class ClassController extends AbstractRESTController {
+@RequestMapping(value = "/announcements")
+public class AnnouncementsController extends AbstractRESTController {
 
 	@Autowired
-	private ClassService classService;
+	private AnnouncementsService announcementsService;
 
 	/**
 	 * 组织注册
@@ -44,10 +46,10 @@ public class ClassController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
-		ClassRegJsonform classRegJsonform;
+		AnnouncementsJsonform announcementsJsonform;
 		try {
-			classRegJsonform = (ClassRegJsonform) this.bodyJsonToFormObject(
-					bodyJson, ClassRegJsonform.class);
+			announcementsJsonform = (AnnouncementsJsonform) this.bodyJsonToFormObject(
+					bodyJson, AnnouncementsJsonform.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,15 +59,16 @@ public class ClassController extends AbstractRESTController {
 		
 		//设置当前用户
 		User user=this.getUserInfoBySession(request);
-		classRegJsonform.setCreate_user(user.getName());
-		classRegJsonform.setCreate_useruuid(user.getUuid());
+		announcementsJsonform.setCreate_user(user.getName());
+		announcementsJsonform.setCreate_useruuid(user.getUuid());
 		
 		try {
 			boolean flag;
-			if(StringUtils.isEmpty(classRegJsonform.getUuid()))
-			    flag = classService.add(classRegJsonform, responseMessage);
+			if(StringUtils.isEmpty(announcementsJsonform.getUuid()))
+			    flag = announcementsService.add(announcementsJsonform, responseMessage);
 			else
-				flag = classService.update(classRegJsonform, responseMessage);
+				flag = announcementsService.update(announcementsJsonform, responseMessage);
+
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -82,7 +85,7 @@ public class ClassController extends AbstractRESTController {
 
 
 	/**
-	 * 获取班级信息
+	 * 根据分类获取所有，管理员用
 	 * 
 	 * @param model
 	 * @param request
@@ -92,7 +95,7 @@ public class ClassController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<PClass> list = classService.query(request.getParameter("groupuuid"));
+		List<Announcements> list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
@@ -112,7 +115,7 @@ public class ClassController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
-			boolean flag = classService.delete(request.getParameter("uuid"),
+			boolean flag = announcementsService.delete(request.getParameter("uuid"),
 					responseMessage);
 			if (!flag)
 				return "";
@@ -130,37 +133,18 @@ public class ClassController extends AbstractRESTController {
 	
 	
 	/**
-	 * 获取班级信息
+	 * 获取我的通知
 	 * 
 	 * @param model
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/queryClassByUseruuid", method = RequestMethod.GET)
-	public String queryClassByUseruuid(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/queryMyAnnouncements", method = RequestMethod.GET)
+	public String queryMyAnnouncements(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<PClass> list = classService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
+		List<Announcements> list = announcementsService.queryMyAnnouncements(request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		return "";
-	}
-	
-	
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String queryClassByUseruuid(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		ClassRegJsonform c;
-		try {
-			c = classService.get(uuid);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
-		model.addAttribute(RestConstants.Return_G_entity,c);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

@@ -23,28 +23,6 @@ public class RightController extends AbstractRESTController {
 	@Autowired
 	private RightService rightService;
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(ModelMap model, HttpServletRequest request) {
-		// 返回消息体
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		try {
-			Right right = rightService.add(request.getParameter("name"),
-					request.getParameter("description"), responseMessage);
-			if (right != null)
-				model.addAttribute(right);
-			else
-				return "";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("添加成功");
-		return "";
-	}
 
 	/**
 	 * 教师注册

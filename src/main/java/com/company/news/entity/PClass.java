@@ -17,9 +17,9 @@ public class PClass extends IdEntity{
 	  @Column
 	  private String groupuuid;//公司全称
 	  @Column
-	  private String createUser;//
+	  private String create_user;//品牌名称
 	  @Column
-	  private String createUseruuid;//
+	  private String create_useruuid;//公司全称
 	  
 	public Timestamp getCreate_time() {
 		return create_time;
@@ -39,17 +39,17 @@ public class PClass extends IdEntity{
 	public void setGroupuuid(String groupuuid) {
 		this.groupuuid = groupuuid;
 	}
-	public String getCreateUser() {
-		return createUser;
+	public String getCreate_user() {
+		return create_user;
 	}
-	public void setCreateUser(String createUser) {
-		this.createUser = createUser;
+	public void setCreate_user(String create_user) {
+		this.create_user = create_user;
 	}
-	public String getCreateUseruuid() {
-		return createUseruuid;
+	public String getCreate_useruuid() {
+		return create_useruuid;
 	}
-	public void setCreateUseruuid(String createUseruuid) {
-		this.createUseruuid = createUseruuid;
+	public void setCreate_useruuid(String create_useruuid) {
+		this.create_useruuid = create_useruuid;
 	}
 
 	  
