@@ -40,8 +40,9 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		boolean flag;
 		try {
-			boolean flag = userinfoService.login(userLoginForm, model, request,
+			flag = userinfoService.login(userLoginForm, model, request,
 					responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
@@ -51,24 +52,12 @@ public class UserinfoController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-
-		List list = new ArrayList();
-		try {
-			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
-					request).getUuid());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+		
+		flag = this.getUserAndGroup(model, request, responseMessage);
+		if (!flag)// 请求服务返回失败标示
 			return "";
-		}
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 
 		
-		HttpSession session = SessionListener.getSession(request);
-		// 返回用户信息
-		this.putUserInfoReturnToModel(model, request);
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
 		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");
@@ -147,10 +136,9 @@ public class UserinfoController extends AbstractRESTController {
 	public String getUserinfo(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		HttpSession session = SessionListener.getSession(request);
-		// 返回用户信息
-		this.putUserInfoReturnToModel(model, request);
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
+		boolean flag = this.getUserAndGroup(model, request, responseMessage);
+		if (!flag)// 请求服务返回失败标示
+			return "";
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
@@ -247,5 +235,36 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("操作成功");
 		return "";
+	}
+	
+	
+	/**
+	 * 获取登录用户和机构
+	 * @param model
+	 * @param request
+	 * @param responseMessage
+	 * @return
+	 */
+	private boolean getUserAndGroup(ModelMap model,
+			HttpServletRequest request,ResponseMessage responseMessage){
+		List list = new ArrayList();
+		try {
+			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
+					request).getUuid());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return false;
+		}
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+
+		
+		HttpSession session = SessionListener.getSession(request);
+		// 返回用户信息
+		this.putUserInfoReturnToModel(model, request);
+		model.put(RestConstants.Return_JSESSIONID, session.getId());
+		
+		return true;
 	}
 }
