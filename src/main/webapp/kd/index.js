@@ -81,11 +81,15 @@ function login_affter_init(){
 	                        "title": "发布消息",
 	                        "subMenu": [
 	                                    {
-	                                      "fn":menu_announce_list_fn,
-	                                      "title": "公告通知"
+	                                      "fn":function(){menu_announce_list_fn(0)},
+	                                      "title": "校园公告"
 	                                    },
 	                                    {
-	                                        "link": "##",
+	                                    	  "fn":function(){menu_announce_list_fn(1)},
+	                                        "title": "老师公告"
+	                                      },
+	                                    {
+	                                    	  "fn":function(){menu_announce_list_fn(2)},
 	                                        "title": "班级通知"
 	                                      },
 	                                      {
@@ -243,8 +247,10 @@ function menu_class_list_fn() {
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
 
-
-function menu_announce_list_fn() {
+//类型'0:普通通知 1:内部通知 2：班级通知',
+var announce_types=1;
+function menu_announce_list_fn(types) {
+	announce_types=types;
 	Queue.push(menu_announce_list_fn);
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
 };

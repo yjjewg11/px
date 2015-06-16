@@ -673,7 +673,7 @@ render: function() {
 		      React.createElement(AMUIReact.FormGroup, null, 
 		      React.createElement("label", null, "单选："), 
 		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""})
 		    ), 
 		      React.createElement("label", {htmlFor: "birthday"}, "生日:"), 
  		      React.createElement("input", {type: "text", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange, placeholder: ""}), 

@@ -514,22 +514,19 @@ function btn_click_class_list_name(uuid){
 	alert("btn_click_class_list_name="+uuid);
 		
 };
-function class_students_manage_onClick(m,groupuuid,useruuid){
+function class_students_manage_onClick(m,classuuid){
 	if(m=="add"){
-		ajax_students_edit({group_uuid:groupuuid},"add");
+		ajax_class_students_edit({classuuid:classuuid,sex:0},null);
 	}
 };
-function react_ajax_class_students_manage(uuid){
-	
-	var students=[ {
-	    "img": hostUrl+"i/header.png",
-	    "title": "刘小一"
-	  }, {
-  	    "img": hostUrl+"i/header.png",
-	    "title": "刘小二"
-	  }];
+
+function ajax_class_students_edit(formdata,uuid){
+	if(!uuid){
+		React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	}
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/class/"+uuid+".json";
+    var url = hostUrl + "rest/student/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -539,7 +536,7 @@ function react_ajax_class_students_manage(uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Class_students_manage,{formdata:data.data,students:students}), document.getElementById('div_body'));
+				React.render(React.createElement(Class_student_edit,{formdata:data.data}), document.getElementById('div_body'));
 			} else {
 				alert("加载公司数据失败："+data.ResMsg.message);
 			}
@@ -550,6 +547,110 @@ function react_ajax_class_students_manage(uuid){
 		}
 	});
 };
+function react_ajax_class_students_manage(uuid){
+	
+	
+	$.AMUI.progress.start();
+	
+	var formdata=null;
+    var url = hostUrl + "rest/class/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				formdata=data.data;
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+	
+	//stud
+	var students=null;
+	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				students=data.list;
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+	
+//	var students=[ {
+//	    "img": hostUrl+"i/header.png",
+//	    "title": "刘小一"
+//	  }, {
+//  	    "img": hostUrl+"i/header.png",
+//	    "title": "刘小二"
+//	  }];
+	if(students){
+		for(var i=0;i<students.length;i++){
+			var tmp=students[i];
+			tmp.img=hostUrl+"i/header.png";
+			tmp.title=tmp.name;
+			
+		}
+	}
+	
+	React.render(React.createElement(Class_students_manage,{formdata:formdata,students:students}), document.getElementById('div_body'));
+};
+
+function btn_class_student_uploadHeadere(){
+	alert("上传图片");
+}
+
+function btn_ajax_class_student_save(){
+	
+	$.AMUI.progress.start();
+	  var objectForm = $('#editClassStudentForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+    var url = hostUrl + "rest/student/save.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data : jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				react_ajax_class_students_manage(objectForm.classuuid);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
 
 function react_ajax_class_edit_get(formdata,uuid){
 	if(!uuid){
@@ -673,7 +774,7 @@ function ajax_announce_listByGroup(groupuuid) {
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {type:0,groupuuid:groupuuid},
+		data : {type:announce_types,groupuuid:groupuuid},
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -704,7 +805,7 @@ function ajax_announce_listByGroup(groupuuid) {
 function btn_click_announce(m,groupuuid,uuid){
 	Queue.push(function(){btn_click_announce(m,groupuuid,uuid)});
 	if(m=="add"){
-		react_ajax_announce_edit({group_uuid:groupuuid},null);
+		react_ajax_announce_edit({group_uuid:groupuuid,type:announce_types},null);
 	}else if(m=="edit"){
 		react_ajax_announce_edit(null,uuid);
 	}else if(m=="del"){

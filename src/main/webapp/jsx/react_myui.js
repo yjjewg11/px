@@ -423,6 +423,7 @@ var Userinfo_edit = React.createClass({
     		<div className="am-g">
     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
     		  <form id="editUserinfoForm" method="post" className="am-form">
+    			<input type="hidden" name="uuid"  value={o.uuid}/>
     		     <input type="hidden" name="type"  value="1"/>
     		    <div className="am-form-group">
     		          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
@@ -577,6 +578,7 @@ render: function() {
   		<div className="am-g">
   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
   		  <form id="editClassForm" method="post" className="am-form">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
   		     <input type="hidden" name="type"  value="1"/>
   		    <div className="am-form-group">
   		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.groupuuid} onChange={this.handleChange}>
@@ -619,7 +621,7 @@ var Class_students_manage = React.createClass({
 	  <div>
 	  <AMR_Sticky>
 	  <AMR_ButtonToolbar>
-		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add_class")} round>添加学生</AMR_Button>
+		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
 		  </AMR_ButtonToolbar>
 		  </AMR_Sticky>
 		  <hr/>
@@ -635,6 +637,84 @@ var Class_students_manage = React.createClass({
 	  );
 	}
 	});
+
+
+
+var Class_student_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+ return (
+ 		<div>
+ 		<div className="header">
+ 		  <div className="am-g">
+ 		    <h1>学生编辑</h1>
+ 		  </div>
+ 		  <hr />
+ 		</div>
+ 		<div className="am-g">
+ 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+ 		  <form id="editClassStudentForm" method="post" className="am-form">
+ 		<input type="hidden" name="uuid"  value={o.uuid}/>
+ 		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
+ 		<input type="hidden" name="headimg"  value={o.headimg}/>
+ 		      <label htmlFor="name">姓名:</label>
+ 		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+
+ 		     <label htmlFor="nickname">昵称:</label>
+		      <input type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <AMUIReact.FormGroup>
+		      <label>单选：</label>
+		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		    </AMUIReact.FormGroup>
+		      <label htmlFor="birthday">生日:</label>
+ 		      <input type="text" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		     <label htmlFor="nickname">头像:</label>
+ 		    <AMUIReact.Image src={hostUrl+"i/header.png"} responsive />
+ 		    
+ 		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+		      <br/>
+		      <label htmlFor="nickname">妈妈电话:</label>
+ 		      <input type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		     <label htmlFor="nickname">爸爸电话:</label>
+		      <input type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <label htmlFor="nickname">奶奶电话:</label>
+ 		      <input type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		     <label htmlFor="nickname">爷爷电话:</label>
+		      <input type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <label htmlFor="nickname">外婆电话:</label>
+ 		      <input type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		     <label htmlFor="nickname">外公电话:</label>
+		      <input type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <label htmlFor="nickname">其他电话:</label>
+		      <input type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      
+ 		      <button type="button"  onClick={btn_ajax_class_student_save}  className="am-btn am-btn-primary">提交</button>
+ 		    </form>
+
+ 	     </div> 
+ 	   </div>
+ 	   
+ 	   </div>
+ );
+}
+}); 
 //end class
 
 
@@ -696,6 +776,12 @@ var Announcements_EventsTable = React.createClass({
 render: function() {
   return (
   <div>
+  <div className="header">
+	  <div className="am-g">
+	    <h1>{Vo.announce_type(announce_types)}</h1>
+	  </div>
+	  <hr />
+	</div>
   <AMR_Sticky>
   <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
@@ -760,11 +846,24 @@ var Announcements_edit = React.createClass({
 	  },
 render: function() {
 	  var o = this.state;
+	  
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   <div className="am-form-group" id="div_classuuids" >
+		  		<input type="hidden" name="type"  value={o.type}/>
+		  		<label htmlFor="tel">班级通知:</label>
+		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		     </div>;
+	  } else {
+		  type_div =
+		  <input type="hidden" name="type"  value={o.type}/>
+	  }
   return (
   		<div>
   		<div className="header">
   		  <div className="am-g">
-  		    <h1>编辑</h1>
+  		    <h1>{Vo.announce_type(o.type)}-编辑</h1>
   		  </div>
   		  <hr />
   		</div>
@@ -782,17 +881,8 @@ render: function() {
   		          </select>
   		        </div>
   		        
-  		      <div className="am-form-group">
-		          <select id="type" name="type" data-am-selected="{btnSize: 'sm'}" value={o.type} onChange={this.handleChange}>
-		          <option value="0" >{Vo.announce_type(0)}</option>
-		          <option value="1" >{Vo.announce_type(1)}</option>
-		          <option value="2" >{Vo.announce_type(2)}</option>
-		          </select>
-		        </div>
-		        <div className="am-form-group" id="div_classuuids" >
-  		      <label htmlFor="tel">班级通知:</label>
-  		      <input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-  		     </div>
+  		    {type_div}
+  		    
   		      <label htmlFor="name">标题:</label>
   		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
   		      <br/>
@@ -818,7 +908,7 @@ render: function() {
   return (
 		  <AMUIReact.Article
 		    title={o.title}
-		    meta={Store.getGroupNameByUuid(o.groupuuid)+"|"+o.create_time}>
+		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time}>
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
 		   </AMUIReact.Article>	
   );
