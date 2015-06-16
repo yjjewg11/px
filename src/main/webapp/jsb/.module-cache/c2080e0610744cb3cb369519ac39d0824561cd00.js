@@ -744,20 +744,6 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	 handleChange: function(event) {
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
-	  componentDidMount:function(){
-		  $('#announce_message').xheditor();
-		  return;
-		  if($.fn.xheditor){
-			  $('#announce_message').xheditor();
-		  }else{
-			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
-					loadJS('../js/xheditor/zh-cn.js');
-					$('#announce_message').xheditor();
-				});
-		  }
-		 
-
-	  },
 render: function() {
 	  var o = this.state;
   return (
@@ -771,10 +757,7 @@ render: function() {
   		React.createElement("div", {className: "am-g"}, 
   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
-  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
-  		
-  		React.createElement("div", {className: "am-form-group"}, 
+  		    React.createElement("div", {className: "am-form-group"}, 
   		          React.createElement("select", {id: "group_uuid", name: "groupuuid", "data-am-selected": "{btnSize: 'sm'}", value: o.group_uuid, onChange: this.handleChange}, 
   		          this.props.group_uuid_data.map(function(event) {
   		              return (React.createElement("option", {value: event.uuid}, event.company_name));
@@ -796,7 +779,7 @@ render: function() {
   		      React.createElement("label", {htmlFor: "name"}, "标题:"), 
   		      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		      React.createElement("br", null), 
-  		    React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
+  		    React.createElement(AMR_Input, {type: "textarea", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
   		      React.createElement("button", {type: "button", onClick: ajax_announcements_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
 
@@ -818,7 +801,7 @@ render: function() {
   return (
 		  React.createElement(AMUIReact.Article, {
 		    title: o.title, 
-		    meta: Store.getGroupNameByUuid(o.groupuuid)+"|"+o.create_time}, 
+		    meta: Store.getGroupNameByUuid(event.groupuuid)+"|"+o.create_time}, 
 
 		  React.createElement("p", null, o.message)
 		   )	

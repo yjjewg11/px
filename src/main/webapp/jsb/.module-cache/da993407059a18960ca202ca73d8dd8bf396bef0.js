@@ -745,8 +745,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor();
-		  return;
+		  
 		  if($.fn.xheditor){
 			  $('#announce_message').xheditor();
 		  }else{

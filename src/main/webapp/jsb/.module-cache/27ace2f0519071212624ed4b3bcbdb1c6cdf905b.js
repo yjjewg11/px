@@ -744,20 +744,6 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	 handleChange: function(event) {
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
-	  componentDidMount:function(){
-		  $('#announce_message').xheditor();
-		  return;
-		  if($.fn.xheditor){
-			  $('#announce_message').xheditor();
-		  }else{
-			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
-					loadJS('../js/xheditor/zh-cn.js');
-					$('#announce_message').xheditor();
-				});
-		  }
-		 
-
-	  },
 render: function() {
 	  var o = this.state;
   return (
@@ -796,7 +782,7 @@ render: function() {
   		      React.createElement("label", {htmlFor: "name"}, "标题:"), 
   		      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		      React.createElement("br", null), 
-  		    React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
+  		    React.createElement(AMR_Input, {type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
   		      React.createElement("button", {type: "button", onClick: ajax_announcements_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
 

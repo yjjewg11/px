@@ -86,7 +86,7 @@ function login_affter_init(){
 	                                    },
 	                                    {
 	                                        "link": "##",
-	                                        "title": "发布通知"
+	                                        "title": "班级通知"
 	                                      },
 	                                      {
 	                                          "link": "##",
@@ -187,12 +187,23 @@ var div_menu_handleClick = function(nav, index, e) {
 function menu_dohome(){
 	Queue.push(menu_dohome);
 	var div_Gallery_data=[
-	                      {
-	                    	    "img": hostUrl+"i/header.png",
-	                    	    "link": "###",
-	                    	    "title": "我"
-	                    	  },
-	                      {
+	                      
+	                    	  {
+		                    	    "img": hostUrl+"i/header.png",
+		                    	    "link": "###",
+		                    	    "title": "我的通知公告"
+		                    	  },
+		                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "###",
+			                    	    "title": "我的班级通知"
+			                    	  },
+			                    	  {
+				                    	    "img": hostUrl+"i/header.png",
+				                    	    "link": "###",
+				                    	    "title": "我"
+				                    	  },
+		                    	  {
 	                    	    "img": hostUrl+"i/header.png",
 	                    	    "link": "###",
 	                    	    "title": "点名"

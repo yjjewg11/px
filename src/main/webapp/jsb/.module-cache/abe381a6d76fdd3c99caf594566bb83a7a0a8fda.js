@@ -745,17 +745,10 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor();
-		  return;
-		  if($.fn.xheditor){
-			  $('#announce_message').xheditor();
-		  }else{
-			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
-					loadJS('../js/xheditor/zh-cn.js');
-					$('#announce_message').xheditor();
-				});
-		  }
-		 
+		  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
+				loadJS('../js/xheditor/zh-cn.js');
+				$('#announce_message').xheditor();
+			});
 
 	  },
 render: function() {

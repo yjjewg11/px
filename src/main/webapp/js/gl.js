@@ -16,6 +16,22 @@ function G_resMsg_filter(ResMsg){
 		menu_userinfo_login_fn();
 	}
 }
+function loadJS(url,callback,charset)
+{
+	var script = document.createElement('script');
+	script.onload = script.onreadystatechange = function ()
+	{
+		if (script && script.readyState && /^(?!(?:loaded|complete)$)/.test(script.readyState)) return;
+		script.onload = script.onreadystatechange = null;
+		script.src = '';
+		script.parentNode.removeChild(script);
+		script = null;
+		if(callback)callback();
+	};
+	script.charset=charset || document.charset || document.characterSet;
+	script.src = url;
+	try {document.getElementsByTagName("head")[0].appendChild(script);} catch (e) {}
+}
 
 /**
  * Queue.doBackFN();

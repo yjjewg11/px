@@ -655,7 +655,7 @@ render: function() {
     <td> 
     <input type="checkbox" value={event.uuid} name="table_checkbox" />
     </td>
-      <td>{event.title}</td>
+      <td><a href={"javascript:react_ajax_announce_show('"+event.uuid+"')"}>{event.title}</a></td>
       <td>{Vo.announce_type(event.type)}</td>
       <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
       <td>{0}</td>
@@ -668,7 +668,7 @@ render: function() {
 
 var Announcements_EventsTable = React.createClass({
 	handleClick: function(m) {
-			 if(m=="add_announcements"){
+			 if(m=="add"){
 				 btn_click_announce(m,$('#selectgroup_uuid').val());
 				 return;
 			 }
@@ -698,7 +698,8 @@ render: function() {
   <div>
   <AMR_Sticky>
   <AMR_ButtonToolbar>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_announcements")} round>创建</AMR_Button>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
 	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
 	    </AMR_ButtonToolbar>
 	</AMR_Sticky>
@@ -743,6 +744,20 @@ var Announcements_edit = React.createClass({
 	 handleChange: function(event) {
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
+	  componentDidMount:function(){
+		  $('#announce_message').xheditor();
+		  return;
+		  if($.fn.xheditor){
+			  $('#announce_message').xheditor();
+		  }else{
+			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
+					loadJS('../js/xheditor/zh-cn.js');
+					$('#announce_message').xheditor();
+				});
+		  }
+		 
+
+	  },
 render: function() {
 	  var o = this.state;
   return (
@@ -756,7 +771,10 @@ render: function() {
   		<div className="am-g">
   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
   		  <form id="editAnnouncementsForm" method="post" className="am-form">
-  		    <div className="am-form-group">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/>
+  		
+  		<div className="am-form-group">
   		          <select id="group_uuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
   		          {this.props.group_uuid_data.map(function(event) {
   		              return (<option value={event.uuid} >{event.company_name}</option>);
@@ -773,12 +791,12 @@ render: function() {
 		        </div>
 		        <div className="am-form-group" id="div_classuuids" >
   		      <label htmlFor="tel">班级通知:</label>
-  		      <input type="text" name="classuuids" id="classuuids" value={o.tel} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		      <input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
   		     </div>
   		      <label htmlFor="name">标题:</label>
   		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
   		      <br/>
-  		    <AMR_Input type="textarea" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+  		    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
   		      <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
   		    </form>
 
@@ -789,4 +807,23 @@ render: function() {
   );
 }
 }); 
+
+
+
+
+
+var Announcements_show = React.createClass({ 
+render: function() {
+	  var o = this.props.data;
+  return (
+		  <AMUIReact.Article
+		    title={o.title}
+		    meta={Store.getGroupNameByUuid(o.groupuuid)+"|"+o.create_time}>
+
+		  <p>{o.message}</p>
+		   </AMUIReact.Article>	
+  );
+}
+}); 
+
 //end announcements

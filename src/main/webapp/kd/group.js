@@ -703,8 +703,10 @@ function ajax_announce_listByGroup(groupuuid) {
 
 function btn_click_announce(m,groupuuid,uuid){
 	Queue.push(function(){btn_click_announce(m,groupuuid,uuid)});
-	if(m=="add_announcements"){
+	if(m=="add"){
 		react_ajax_announce_edit({group_uuid:groupuuid},null);
+	}else if(m=="edit"){
+		react_ajax_announce_edit(null,uuid);
 	}else if(m=="del"){
 		react_ajax_announce_delete(groupuuid,uuid);
 	}
@@ -727,6 +729,30 @@ function react_ajax_announce_delete(groupuuid,uuid){
 				ajax_announce_listByGroup(groupuuid);
 			} else {
 				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+function react_ajax_announce_show(uuid){
+	Queue.push(function(){react_ajax_announce_show(uuid)});
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/announcements/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Announcements_show,{data:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
