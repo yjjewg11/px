@@ -819,8 +819,7 @@ render: function() {
 		  <AMUIReact.Article
 		    title={o.title}
 		    meta={Store.getGroupNameByUuid(o.groupuuid)+"|"+o.create_time}>
-
-		  <p>{o.message}</p>
+			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
 		   </AMUIReact.Article>	
   );
 }
