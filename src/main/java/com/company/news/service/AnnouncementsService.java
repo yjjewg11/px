@@ -8,12 +8,16 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Announcements;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
+import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -43,9 +47,8 @@ public class AnnouncementsService extends AbstractServcice {
 			return false;
 		}
 
-		if (StringUtils.isBlank(announcementsJsonform.getMessage())
-				|| announcementsJsonform.getMessage().length() > 10000) {
-			responseMessage.setMessage("Message不能为空！，且长度不能超过10000位！");
+		if (StringUtils.isBlank(announcementsJsonform.getMessage())) {
+			responseMessage.setMessage("Message不能为空！");
 			return false;
 		}
 
@@ -102,9 +105,8 @@ public class AnnouncementsService extends AbstractServcice {
 			return false;
 		}
 
-		if (StringUtils.isBlank(announcementsJsonform.getMessage())
-				|| announcementsJsonform.getMessage().length() > 10000) {
-			responseMessage.setMessage("Message不能为空！，且长度不能超过10000位！");
+		if (StringUtils.isBlank(announcementsJsonform.getMessage())) {
+			responseMessage.setMessage("Message不能为空！");
 			return false;
 		}
 
@@ -244,9 +246,31 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
-	public Announcements get(String uuid) throws Exception{
+	public AnnouncementsVo get(String uuid) throws Exception{
 		Announcements announcements=(Announcements) this.nSimpleHibernateDao.getObjectById(Announcements.class, uuid);
-		return announcements;		
+		
+		List<AnnouncementsTo> list=(List<AnnouncementsTo>) this.nSimpleHibernateDao.getHibernateTemplate().find("from AnnouncementsTo where announcementsuuid=?", uuid);
+		
+		String classuuids="";
+		String classnames="";
+		
+		for(AnnouncementsTo announcementsTo:list)
+		{
+			PClass p=CommonsCache.getClass(announcementsTo.getClassuuid());
+			if(p!=null)
+			{
+				classuuids+=(p.getUuid()+",");
+				classnames+=(p.getName()+",");
+			}					
+		}
+		
+		AnnouncementsVo a=new AnnouncementsVo();
+		BeanUtils.copyProperties(a,announcements);
+		
+		a.setClassnames(PxStringUtil.StringDecComma(classnames));
+		a.setClassuuids(PxStringUtil.StringDecComma(classuuids));
+		
+		return a;		
 	}
 	
 

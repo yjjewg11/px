@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="px_announcements") 
@@ -25,7 +26,9 @@ public class Announcements extends IdEntity{
 	  @Column
 	  private Integer type;//类型'0:普通通知 1:内部通知 2：班级通知',
 	  @Column
-	  private String groupuuid;//坐标	  
+	  private String groupuuid;//坐标	 
+	  
+	  
 	public Timestamp getCreate_time() {
 		return create_time;
 	}
