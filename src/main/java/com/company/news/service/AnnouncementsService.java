@@ -164,13 +164,12 @@ public class AnnouncementsService extends AbstractServcice {
 		if (StringUtils.isBlank(groupuuid))
 			return null;
 
-		String hql = "from Announcements4Q where groupuuid='" + groupuuid+"'";
+		String hql = "from Announcements4Q where groupuuid='" + groupuuid + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 
 		hql += " order by create_time";
-		return (List) this.nSimpleHibernateDao
-				.getHibernateTemplate().find(hql);
+		return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 	}
 
 	/**
@@ -196,8 +195,8 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @param type
 	 * @return
 	 */
-	public List queryMyAnnouncements(String type,
-			String groupuuid, String classuuid) {
+	public List queryMyAnnouncements(String type, String groupuuid,
+			String classuuid) {
 		if (StringUtils.isBlank(type))
 			return null;
 		// 查询班级公告
@@ -239,40 +238,44 @@ public class AnnouncementsService extends AbstractServcice {
 
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @param uuid
 	 * @return
 	 * @throws Exception
 	 */
-	public AnnouncementsVo get(String uuid) throws Exception{
-		Announcements announcements=(Announcements) this.nSimpleHibernateDao.getObjectById(Announcements.class, uuid);
-		
-		List<AnnouncementsTo> list=(List<AnnouncementsTo>) this.nSimpleHibernateDao.getHibernateTemplate().find("from AnnouncementsTo where announcementsuuid=?", uuid);
-		
-		String classuuids="";
-		String classnames="";
-		
-		for(AnnouncementsTo announcementsTo:list)
-		{
-			PClass p=CommonsCache.getClass(announcementsTo.getClassuuid());
-			if(p!=null)
-			{
-				classuuids+=(p.getUuid()+",");
-				classnames+=(p.getName()+",");
-			}					
+	public AnnouncementsVo get(String uuid) throws Exception {
+		Announcements announcements = (Announcements) this.nSimpleHibernateDao
+				.getObjectById(Announcements.class, uuid);
+
+		String classuuids = "";
+		String classnames = "";
+
+		//当类型是通知班级时
+		if (announcements.getType().intValue() == announcements_type_class) {
+			List<AnnouncementsTo> list = (List<AnnouncementsTo>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find(
+							"from AnnouncementsTo where announcementsuuid=?",
+							uuid);
+
+			for (AnnouncementsTo announcementsTo : list) {
+				PClass p = CommonsCache
+						.getClass(announcementsTo.getClassuuid());
+				if (p != null) {
+					classuuids += (p.getUuid() + ",");
+					classnames += (p.getName() + ",");
+				}
+			}
 		}
-		
-		AnnouncementsVo a=new AnnouncementsVo();
-		BeanUtils.copyProperties(a,announcements);
-		
+		AnnouncementsVo a = new AnnouncementsVo();
+		BeanUtils.copyProperties(a, announcements);
+
 		a.setClassnames(PxStringUtil.StringDecComma(classnames));
 		a.setClassuuids(PxStringUtil.StringDecComma(classuuids));
-		
-		return a;		
+
+		return a;
 	}
-	
 
 	@Override
 	public Class getEntityClass() {
