@@ -105,5 +105,23 @@
     <aop:advisor pointcut-ref="servicePointcut" advice-ref="serviceAdvice"/>  
 </aop:config>  
 
- 
+<bean class="com.company.common.SpringContextHolder" lazy-init="false"></bean>
+
+
+ 	<!-- ====================== 缓存 ======================= -->
+
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:ehcache.xml</value>
+		</property>
+	</bean>
+
+	<bean id="dbDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager" />
+		</property>
+		<!-- 使用缓存 关联ehcache.xml中的缓存配置 -->
+    <property name="cacheName" value="dbDataCache" />
+	</bean>
 </beans>

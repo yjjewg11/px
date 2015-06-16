@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -212,17 +213,26 @@ public class ClassService extends AbstractServcice {
 		
 		String headTeacher="";
 		String teacher="";
+		String headTeacher_name="";
+		String teacher_name="";
 		for(UserClassRelation u:l)
 		{
 			if(u.getType().intValue()==class_usertype_head)
+			{
 				headTeacher+=(u.getUseruuid()+",");
+				headTeacher_name+=(CommonsCache.getUser(u.getUseruuid()).getName() +",");
+			}
 			else
-				teacher+=(u.getUseruuid()+",");			
+			{
+				teacher+=(u.getUseruuid()+",");		
+				teacher_name+=(CommonsCache.getUser(u.getUseruuid()).getName() +",");
+			}
 		}
 		
 		c.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher) );
 		c.setTeacher(PxStringUtil.StringDecComma(teacher));
-		
+		c.setHeadTeacher_name(headTeacher_name);
+		c.setTeacher_name(teacher_name);
 		return c;
 	}
 

@@ -112,16 +112,15 @@ public class AnnouncementsService extends AbstractServcice {
 			responseMessage.setMessage("Message不能为空！，且长度不能超过10000位！");
 			return false;
 		}
-		
+
 		if (StringUtils.isBlank(announcementsJsonform.getUuid())) {
 			responseMessage.setMessage("uuid不能为空！");
 			return false;
 		}
 
-
-		Announcements announcements = (Announcements) this.nSimpleHibernateDao.getObjectById(Announcements.class, announcementsJsonform.getUuid());
-
-
+		Announcements announcements = (Announcements) this.nSimpleHibernateDao
+				.getObjectById(Announcements.class,
+						announcementsJsonform.getUuid());
 
 		announcements.setIsimportant(announcementsJsonform.getIsimportant());
 		announcements.setMessage(announcementsJsonform.getMessage());
@@ -131,9 +130,11 @@ public class AnnouncementsService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
 
-		//删除原来已发通知
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from AnnouncementsTo where announcementsuuid=?", announcements.getUuid());
-		
+		// 删除原来已发通知
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from AnnouncementsTo where announcementsuuid=?",
+				announcements.getUuid());
+
 		// 如果类型是班级通知
 		if (announcements.getType().intValue() == this.announcements_type_class) {
 			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
@@ -162,13 +163,17 @@ public class AnnouncementsService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Announcements> query(String type,String groupuuid) {
-		if(StringUtils.isBlank(groupuuid))
+	public List<Announcements> query(String type, String groupuuid) {
+		if (StringUtils.isBlank(groupuuid))
 			return null;
-		if(StringUtils.isBlank(type))
-			return null;
-		return (List<Announcements>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from Announcements where type=? and groupuuid=? order by create_time",Integer.parseInt(type),groupuuid);
+
+		String hql = "from Announcements where groupuuid=" + groupuuid;
+		if (StringUtils.isNotBlank(type))
+			hql += " and type=" + type;
+
+		hql += " order by create_time";
+		return (List<Announcements>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(hql);
 	}
 
 	/**
@@ -183,30 +188,31 @@ public class AnnouncementsService extends AbstractServcice {
 		Query q = s
 				.createSQLQuery(
 						"select {t1.*} from px_announcementsto t0,px_announcements {t1} where t0.announcementsuuid={t1}.uuid and t0.classuuid='"
-								+ classuuid + "' order by {t1}.create_time").addEntity("t1", Announcements.class);
+								+ classuuid + "' order by {t1}.create_time")
+				.addEntity("t1", Announcements.class);
 
 		return q.list();
 	}
-	
+
 	/**
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public List<Announcements> queryMyAnnouncements(String type,String groupuuid,String classuuid){
-		if(StringUtils.isBlank(type))
+	public List<Announcements> queryMyAnnouncements(String type,
+			String groupuuid, String classuuid) {
+		if (StringUtils.isBlank(type))
 			return null;
-		//查询班级公告
-		if(Integer.parseInt(type)==announcements_type_class)
-		{
-			if(StringUtils.isBlank(classuuid))
+		// 查询班级公告
+		if (Integer.parseInt(type) == announcements_type_class) {
+			if (StringUtils.isBlank(classuuid))
 				return null;
 			return getAnnouncementsByClassuuid(classuuid);
-			
-		}else{//机构公告
+
+		} else {// 机构公告
 			return query(type, groupuuid);
 		}
-			
+
 	}
 
 	/**
@@ -225,21 +231,18 @@ public class AnnouncementsService extends AbstractServcice {
 		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from Announcements where uuid in(?)", uuid);
-			this.nSimpleHibernateDao
-					.getHibernateTemplate()
-					.bulkUpdate(
-							"delete from AnnouncementsTo where classuuid in(?)",
-							uuid);
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from AnnouncementsTo where classuuid in(?)", uuid);
 		} else {
-			this.nSimpleHibernateDao.deleteObjectById(Announcements.class, uuid);
+			this.nSimpleHibernateDao
+					.deleteObjectById(Announcements.class, uuid);
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from AnnouncementsTo where classuuid =?", uuid);
 		}
 
 		return true;
 	}
-	
-	
+
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
