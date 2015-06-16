@@ -14,70 +14,64 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.company.news.ContentTypeConstants;
 import com.company.news.SystemConstants;
+import com.company.news.entity.UploadFile;
 import com.company.news.form.UploadFileForm;
+import com.company.news.rest.util.RestUtil;
 import com.company.news.service.UploadFileService;
+import com.company.news.vo.ResponseMessage;
 
 @Controller
-public class UploadFileController {
-  @Autowired
-  private UploadFileService uploadFileService;
-  
-  
-  /**
-   * 根据guid返回图片下载流
-   * @param model
-   * @param request
-   * @return
-   * @throws Exception 
-   */
-  @RequestMapping(value = "/uploadFile/getImgFile", method = RequestMethod.GET)
-  public String getImg(@RequestParam("guid") String guid, ModelMap model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-      uploadFileService.down(guid,response,ContentTypeConstants.Image_gif);
-      return "";
-  }
-  /**
-   * 上传我的头像
-   * @param model
-   * @param request
-   * @return
-   */
-  @RequestMapping(value = "/uploadFile/uploadMyheadImg", method = RequestMethod.POST)
-  public String uploadMyheadImg(UploadFileForm upladFile,@RequestParam("file") CommonsMultipartFile file,ModelMap model, HttpServletRequest request) {
-    upladFile.setType(SystemConstants.UploadFile_type_myhead);
-    upladFile.setDeleteOldFile(1);
-    uploadFileService.uploadImg(upladFile,file,model, request);
-      return "";
-  }
-  /**
-   * 上传我身份证
-   * @param model
-   * @param request
-   * @return
-   */
-  @RequestMapping(value = "/uploadFile/uploadIdentityCardImg", method = RequestMethod.POST)
-  public String uploadIdentityCardImg(UploadFileForm upladFile,@RequestParam("file") CommonsMultipartFile file,ModelMap model, HttpServletRequest request) {
-    upladFile.setType(SystemConstants.UploadFile_type_identity_card);
-    upladFile.setDeleteOldFile(1);
-    uploadFileService.uploadImg(upladFile,file,model, request);
-      return "";
-  }
-  /**
-   * 上传我马拉松认证
-   * @param model
-   * @param request
-   * @return
-   */
-  @RequestMapping(value = "/uploadFile/uploadMarathonImg", method = RequestMethod.POST)
-  public String uploadMarathonImg(UploadFileForm upladFile,@RequestParam("file") CommonsMultipartFile file,ModelMap model, HttpServletRequest request) {
-    upladFile.setType(SystemConstants.UploadFile_type_marathon);
-    upladFile.setDeleteOldFile(1);
-    uploadFileService.uploadImg(upladFile,file,model, request);
-      return "";
-  }
+@RequestMapping(value = "/uploadFile")
+public class UploadFileController extends AbstractRESTController {
+	@Autowired
+	private UploadFileService uploadFileService;
 
-  @RequestMapping(value = "/uploadFile/delete/{uuid}", method = RequestMethod.DELETE)
-  public String delete(@PathVariable("uuid") String uuid, HttpServletRequest request, ModelMap model) {
-    uploadFileService.delete(uuid, request, model);
-      return "";
-  }
+	/**
+	 * 根据guid返回图片下载流
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getImgFile", method = RequestMethod.GET)
+	public String getImg(@RequestParam("guid") String guid, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		uploadFileService.down(guid, response, ContentTypeConstants.Image_gif);
+		return "";
+	}
+
+	/**
+	 * 上传我的头像
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public String upload(@RequestParam("file") CommonsMultipartFile file, ModelMap model,
+			HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			UploadFile uploadFile = uploadFileService.uploadImg(request.getParameter("type"), file,
+					responseMessage, request,
+					this.getUserInfoBySession(request));
+			if (uploadFile==null)
+				return "";
+			
+			model.addAttribute(RestConstants.Return_G_entity,uploadFile);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("上传成功");
+		return "";
+	}
+
 }

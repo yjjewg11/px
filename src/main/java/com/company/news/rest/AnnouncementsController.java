@@ -17,6 +17,7 @@ import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.AnnouncementsService;
+import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -147,7 +148,7 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		Announcements a;
+		AnnouncementsVo a;
 		try {
 			a = announcementsService.get(uuid);
 		} catch (Exception e) {
