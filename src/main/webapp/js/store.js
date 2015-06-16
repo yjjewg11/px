@@ -52,6 +52,11 @@ var Store={
 		 var o=$.AMUI.store.get("Group");
 		 if(o==null){
 			 //从后台重新获取
+			 ajax_group_myList_toStroe();
+			 if(this.map["Group"])return this.map["Group"];
+			 var o=$.AMUI.store.get("Group");
+		 }
+		 if(o==null){
 			 o=[];
 		 }
 		 return o;
