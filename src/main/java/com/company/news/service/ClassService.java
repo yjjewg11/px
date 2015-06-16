@@ -88,8 +88,7 @@ public class ClassService extends AbstractServcice {
 
 		return true;
 	}
-	
-	
+
 	/**
 	 * 更新班级
 	 * 
@@ -106,13 +105,15 @@ public class ClassService extends AbstractServcice {
 			return false;
 		}
 
-        //更新班级名字
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PClass set name=? where uuid =?",classRegJsonform.getName(),classRegJsonform.getUuid());
+		// 更新班级名字
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update PClass set name=? where uuid =?",
+				classRegJsonform.getName(), classRegJsonform.getUuid());
 
-	    //先删除原来数据
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",classRegJsonform.getUuid());
-		
-		
+		// 先删除原来数据
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from UserClassRelation where classuuid =?",
+				classRegJsonform.getUuid());
 
 		if (StringUtils.isNotBlank(classRegJsonform.getHeadTeacher())) {
 			String[] headTeachers = classRegJsonform.getHeadTeacher()
@@ -154,21 +155,23 @@ public class ClassService extends AbstractServcice {
 					.getHibernateTemplate().find(
 							"from PClass where groupuuid=?", groupuuid);
 	}
-	
-	
+
 	/**
 	 * 查询指定用户相关的班级
 	 * 
 	 * @return
 	 */
 	public List<PClass> queryClassByUseruuid(String useruuid) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql="";
-		Query q = s.createSQLQuery("select {t1.*} from px_userclassrelation t0,px_class {t1} where t0.classuuid={t1}.uuid and t0.useruuid='"+useruuid+"'")
-				.addEntity("t1",PClass.class);
-		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "";
+		Query q = s
+				.createSQLQuery(
+						"select {t1.*} from px_userclassrelation t0,px_class {t1} where t0.classuuid={t1}.uuid and t0.useruuid='"
+								+ useruuid + "'").addEntity("t1", PClass.class);
+
 		return q.list();
-			
+
 	}
 
 	/**
@@ -200,39 +203,45 @@ public class ClassService extends AbstractServcice {
 
 		return true;
 	}
-	
-	public ClassRegJsonform get(String uuid) throws Exception{
-		ClassRegJsonform c=new ClassRegJsonform();
-		PClass pclass=(PClass) this.nSimpleHibernateDao.getObjectById(PClass.class, uuid);
-		if(pclass==null)
+
+	public ClassRegJsonform get(String uuid) throws Exception {
+		ClassRegJsonform c = new ClassRegJsonform();
+		PClass pclass = (PClass) this.nSimpleHibernateDao.getObjectById(
+				PClass.class, uuid);
+		if (pclass == null)
 			return c;
-		
+
 		BeanUtils.copyProperties(c, pclass);
-		
-		List<UserClassRelation> l=(List<UserClassRelation>) this.nSimpleHibernateDao.getHibernateTemplate().find("from UserClassRelation where classuuid=?", uuid);
-		
-		String headTeacher="";
-		String teacher="";
-		String headTeacher_name="";
-		String teacher_name="";
-		for(UserClassRelation u:l)
-		{
-			if(u.getType().intValue()==class_usertype_head)
-			{
-				headTeacher+=(u.getUseruuid()+",");
-				headTeacher_name+=(CommonsCache.getUser(u.getUseruuid()).getName() +",");
-			}
-			else
-			{
-				teacher+=(u.getUseruuid()+",");		
-				teacher_name+=(CommonsCache.getUser(u.getUseruuid()).getName() +",");
+
+		List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(
+						"from UserClassRelation where classuuid=?", uuid);
+
+		String headTeacher = "";
+		String teacher = "";
+		String headTeacher_name = "";
+		String teacher_name = "";
+		for (UserClassRelation u : l) {
+			User user = CommonsCache.getUser(u.getUseruuid());
+			if (user != null) {
+				if (u.getType().intValue() == class_usertype_head) {
+
+					headTeacher += (u.getUseruuid() + ",");
+					headTeacher_name += (CommonsCache.getUser(u.getUseruuid())
+							.getName() + ",");
+
+				} else {
+					teacher += (u.getUseruuid() + ",");
+					teacher_name += (CommonsCache.getUser(u.getUseruuid())
+							.getName() + ",");
+				}
 			}
 		}
-		
-		c.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher) );
+
+		c.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher));
 		c.setTeacher(PxStringUtil.StringDecComma(teacher));
-		c.setHeadTeacher_name(headTeacher_name);
-		c.setTeacher_name(teacher_name);
+		c.setHeadTeacher_name(PxStringUtil.StringDecComma(headTeacher_name));
+		c.setTeacher_name(PxStringUtil.StringDecComma(teacher_name));
 		return c;
 	}
 

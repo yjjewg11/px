@@ -6,18 +6,13 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Announcements;
+import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Role;
 import com.company.news.entity.User;
-import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.AnnouncementsJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -163,16 +158,16 @@ public class AnnouncementsService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Announcements> query(String type, String groupuuid) {
+	public List query(String type, String groupuuid) {
 		if (StringUtils.isBlank(groupuuid))
 			return null;
 
-		String hql = "from Announcements where groupuuid=" + groupuuid;
+		String hql = "from Announcements4Q where groupuuid='" + groupuuid+"'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 
 		hql += " order by create_time";
-		return (List<Announcements>) this.nSimpleHibernateDao
+		return (List) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(hql);
 	}
 
@@ -189,7 +184,7 @@ public class AnnouncementsService extends AbstractServcice {
 				.createSQLQuery(
 						"select {t1.*} from px_announcementsto t0,px_announcements {t1} where t0.announcementsuuid={t1}.uuid and t0.classuuid='"
 								+ classuuid + "' order by {t1}.create_time")
-				.addEntity("t1", Announcements.class);
+				.addEntity("t1", Announcements4Q.class);
 
 		return q.list();
 	}
@@ -199,7 +194,7 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @param type
 	 * @return
 	 */
-	public List<Announcements> queryMyAnnouncements(String type,
+	public List queryMyAnnouncements(String type,
 			String groupuuid, String classuuid) {
 		if (StringUtils.isBlank(type))
 			return null;
@@ -242,6 +237,18 @@ public class AnnouncementsService extends AbstractServcice {
 
 		return true;
 	}
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 * @throws Exception
+	 */
+	public Announcements get(String uuid) throws Exception{
+		Announcements announcements=(Announcements) this.nSimpleHibernateDao.getObjectById(Announcements.class, uuid);
+		return announcements;		
+	}
+	
 
 	@Override
 	public Class getEntityClass() {

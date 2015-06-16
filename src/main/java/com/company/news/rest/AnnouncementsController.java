@@ -1,6 +1,5 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,20 +8,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Announcements;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
-import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.AnnouncementsService;
-import com.company.news.service.ClassService;
-import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -95,7 +89,7 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Announcements> list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
+		List list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
@@ -143,8 +137,26 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String queryMyAnnouncements(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Announcements> list = announcementsService.queryMyAnnouncements(request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
+		List list = announcementsService.queryMyAnnouncements(request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		Announcements a;
+		try {
+			a = announcementsService.get(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

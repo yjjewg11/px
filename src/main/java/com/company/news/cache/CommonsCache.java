@@ -4,18 +4,21 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.company.common.SpringContextHolder;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.User;
+import com.company.news.service.AbstractServcice;
 
-public class CommonsCache {
+
+public class CommonsCache{
 	private static Logger logger = Logger.getLogger("CommonsCache");
 	private static Cache dbDataCache = (Cache) SpringContextHolder
 			.getBean("dbDataCache");
-	private static NSimpleHibernateDao nSimpleHibernateDao = (NSimpleHibernateDao) SpringContextHolder
-			.getBean("nSimpleHibernateDao");
+    private static NSimpleHibernateDao nSimpleHibernateDao=SpringContextHolder.getBean("NSimpleHibernateDao");
 
+	
 	// 获取自动保存内容
 	public static User getUser(String uuid) {
 		logger.info("getUser:uuid-->" + uuid);
@@ -24,8 +27,7 @@ public class CommonsCache {
 		if (user != null)
 			return (User) user.getObjectValue();
 		else {
-			User object = (User) nSimpleHibernateDao
-					.getObject(User.class, uuid);
+			User object =(User) nSimpleHibernateDao.getObject(User.class, uuid);
 			if (object != null)
 				putUser(uuid, object);
 			return object;
@@ -38,5 +40,6 @@ public class CommonsCache {
 		Element e = new Element(uuid, user);
 		dbDataCache.put(e);
 	}
+
 
 }

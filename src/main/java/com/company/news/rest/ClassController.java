@@ -148,7 +148,7 @@ public class ClassController extends AbstractRESTController {
 	
 	
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String queryClassByUseruuid(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		ClassRegJsonform c;
