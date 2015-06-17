@@ -24,7 +24,7 @@ public class RightService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Right add(String name, String description,
+	public Right add(String name, String description,String type,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
@@ -40,10 +40,16 @@ public class RightService extends AbstractServcice {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
+		
+		if (StringUtils.isBlank(type)) {
+			responseMessage.setMessage("type不能为空！");
+			return null;
+		}
 
 		Right right = new Right();
 		right.setDescription(description);
 		right.setName(name);
+		right.setType(Integer.parseInt(type));
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(right);
 		return right;
@@ -59,7 +65,7 @@ public class RightService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Right update(String uuid, String name, String description,
+	public Right update(String uuid, String name, String description,String type,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
@@ -80,12 +86,18 @@ public class RightService extends AbstractServcice {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
+		
+		if (StringUtils.isBlank(type)) {
+			responseMessage.setMessage("type不能为空！");
+			return null;
+		}
 
 		Right right = (Right) this.nSimpleHibernateDao.getObject(Right.class,
 				uuid);
 		if (right != null) {
 			right.setDescription(description);
 			right.setName(name);
+			right.setType(Integer.parseInt(type));
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(right);
 		}else{
@@ -131,7 +143,11 @@ public class RightService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Right> query() {
+	public List<Right> query(String type) {
+		String hql="from Right";
+		if(StringUtils.isNotBlank(type))
+			hql+=" where type="+type;
+		
 		return (List<Right>) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("from Right", null);
 

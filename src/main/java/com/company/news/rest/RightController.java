@@ -64,11 +64,11 @@ public class RightController extends AbstractRESTController {
 			Right right;
 			if (StringUtils.isEmpty(uuid))
 				right = rightService.add(request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+						request.getParameter("description"),request.getParameter("type"), responseMessage);
 			else
 				right = rightService.update(request.getParameter("uuid"),
 						request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+						request.getParameter("description"),request.getParameter("type"), responseMessage);
 			if (right != null)
 				model.addAttribute(right);
 			else
@@ -95,7 +95,7 @@ public class RightController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Right> list = rightService.query();
+		List<Right> list = rightService.query(request.getParameter("type"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
