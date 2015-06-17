@@ -42,6 +42,39 @@ public class UploadFileController extends AbstractRESTController {
 		return "";
 	}
 
+	
+
+	/**
+	 * 上传我的头像
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/uploadBase64", method = RequestMethod.POST)
+	public String upload(@RequestParam("base64") String base64,@RequestParam("type") Integer type, ModelMap model,
+			HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			UploadFile uploadFile = uploadFileService.uploadImg(base64,type,
+					responseMessage, request,
+					this.getUserInfoBySession(request));
+			if (uploadFile==null)
+				return "";
+			
+			model.addAttribute(RestConstants.Return_G_entity,uploadFile);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("上传成功");
+		return "";
+	}
 	/**
 	 * 上传我的头像
 	 * 

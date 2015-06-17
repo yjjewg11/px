@@ -128,5 +128,91 @@ var ChooseUser_EventsTable = React.createClass({
 });
 //end chooseUser
 
+    
+
+    //upload headImg
+var Upload_headImg_options =
+    {
+        thumbBox: '.thumbBox',
+        spinner: '.spinner',
+        imgSrc: ''
+    };
+var Upload_headImg = React.createClass({
+       	handleClick: function(m) {
+       		w_uploadImg.handleClick(m);
+       	  },
+       	upload_file_onChange:function(){
+       	  var reader = new FileReader();
+          reader.onload = function(e) {
+              options.imgSrc = e.target.result;
+              w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
+          }
+          reader.readAsDataURL(this.files[0]);
+          this.files = [];
+       	},
+       	btnZoomIn_onClick: function(){
+       		if(w_uploadImg.cropper)w_uploadImg.cropper.zoomIn();
+        },
+        btnZoomOut_onClick: function(){
+        	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
+       },
+       btnCrop_onClick: function(){
+    	   var img = cropper.getDataURL();
+    	   w_uploadImg.base64=img;
+           $('#upload_file_imageBox_cropped').append('<img src="'+img+'">');
+	   },
+       	 componentDidMount:function(){
+           $('#upload_file').on('change', function(){
+               var reader = new FileReader();
+               reader.onload = function(e) {
+            	   Upload_headImg_options.imgSrc = e.target.result;
+                   cropper = $('.imageBox').cropbox(Upload_headImg_options);
+               }
+               reader.readAsDataURL(this.files[0]);
+               this.files = [];
+           })
+    
+             
+   	  },
+         render: function() {
+        	 var spinner_divStyle={
+        			 display: "none"
+        	 };
+           return (
+           <div>
+      	 <AMUIReact_ButtonToolbar>
+         <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
+         <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+       </AMUIReact_ButtonToolbar>
+         <div className="header">
+         <div className="am-g">
+           <h1>上传图片</h1>
+         </div>
+         <hr />
+       </div>
+       <div className="container">
+   
+	   	<div className="imageBox" id="upload_file_imageBox">
+	   	    <div className="thumbBox"></div>
+	   	    <div className="spinner"  style={spinner_divStyle}>加载中...</div>
+	   	</div>
+   	<div className="action">
+   	<input type="hide" id="upload_file_base64"/>
+   	    <input type="file" id="upload_file" accept="image/*" onChange={this.upload_file_onChange}/>
+   	    <input type="button" id="btnCrop" value="剪切"  onClick={this.btnCrop_onClick}/>
+   	    <input type="button" id="btnZoomIn" value="放大" onClick={this.btnZoomIn_onClick}/>
+   	    <input type="button" id="btnZoomOut" value="缩小" onClick={this.btnZoomOut_onClick}/>
+   	</div>
+   		<div className="cropped" id="upload_file_imageBox_cropped">
+   	   	</div>
+   	</div>
+
+             </div>
+           );
+         }
+});
+           
+           
+    //end uploadImg
 
 

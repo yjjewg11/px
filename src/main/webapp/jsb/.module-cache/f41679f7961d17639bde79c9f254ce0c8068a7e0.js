@@ -131,12 +131,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
     
 
     //upload headImg
-var Upload_headImg_options =
-    {
-        thumbBox: '.thumbBox',
-        spinner: '.spinner',
-        imgSrc: ''
-    };
+
 var Upload_headImg = React.createClass({displayName: "Upload_headImg",
        	handleClick: function(m) {
        		w_uploadImg.handleClick(m);
@@ -145,7 +140,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
        	  var reader = new FileReader();
           reader.onload = function(e) {
               options.imgSrc = e.target.result;
-              w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
+              w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(options);
           }
           reader.readAsDataURL(this.files[0]);
           this.files = [];
@@ -158,32 +153,25 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
        },
        btnCrop_onClick: function(){
     	   var img = cropper.getDataURL();
-    	   w_uploadImg.base64=img;
            $('#upload_file_imageBox_cropped').append('<img src="'+img+'">');
 	   },
        	 componentDidMount:function(){
-           $('#upload_file').on('change', function(){
-               var reader = new FileReader();
-               reader.onload = function(e) {
-            	   Upload_headImg_options.imgSrc = e.target.result;
-                   cropper = $('.imageBox').cropbox(Upload_headImg_options);
-               }
-               reader.readAsDataURL(this.files[0]);
-               this.files = [];
-           })
+//       		 $('#upload_file').on('change', function(){
+//               
+//             });
+       		 $('#imageBox_loading').hide();
     
              
    	  },
          render: function() {
-        	 var spinner_divStyle={
-        			 display: "none"
-        	 };
            return (
            React.createElement("div", null, 
-      	 React.createElement(AMUIReact_ButtonToolbar, null, 
-         React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-         React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
-       ), 
+           React.createElement(AMUIReact_Sticky, null, 
+           React.createElement(AMUIReact_ButtonToolbar, null, 
+           React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
+           React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+         )
+         ), 
          React.createElement("div", {className: "header"}, 
          React.createElement("div", {className: "am-g"}, 
            React.createElement("h1", null, "上传图片")
@@ -191,10 +179,9 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
          React.createElement("hr", null)
        ), 
        React.createElement("div", {className: "container"}, 
-   
 	   	React.createElement("div", {className: "imageBox", id: "upload_file_imageBox"}, 
 	   	    React.createElement("div", {className: "thumbBox"}), 
-	   	    React.createElement("div", {className: "spinner", style: spinner_divStyle}, "加载中...")
+	   	    React.createElement("div", {className: "spinner", id: "imageBox_loading"}, "加载中...")
 	   	), 
    	React.createElement("div", {className: "action"}, 
    	React.createElement("input", {type: "hide", id: "upload_file_base64"}), 
@@ -203,10 +190,10 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
    	    React.createElement("input", {type: "button", id: "btnZoomIn", value: "放大", onClick: this.btnZoomIn_onClick}), 
    	    React.createElement("input", {type: "button", id: "btnZoomOut", value: "缩小", onClick: this.btnZoomOut_onClick})
    	), 
-   		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
-   	   	)
+   	React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
    	)
-
+   	)
+   	
              )
            );
          }

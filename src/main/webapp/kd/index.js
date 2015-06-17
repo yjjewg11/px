@@ -97,9 +97,15 @@ function login_affter_init(){
 	                                          "title": "招生计划"
 	                                        },
 	                                        {
+	                                        	
 	                                            "link": "##",
 	                                            "title": "图片管理"
-	                                          }
+	                                          },
+		                                        {
+		                                        	"fn":function(){w_uploadImg.open(null)},
+		                                            "link": "##",
+		                                            "title": "上传图片"
+		                                          }
 	                                    ],
 	                        "subCols": 2
 	                       // "channelLink": "进入栏目 »",
@@ -170,17 +176,19 @@ var div_menu_handleClick = function(nav, index, e) {
 	  if (nav && nav.subMenu) {
 	    // 有二级菜单的链接点击了
 		 if( typeof  nav.fn=="function"){
-			 nav.fn();
 			 w_ch_user.hide();
 			 this.closeAll();
+			 nav.fn();
+			 
 		 }
 		  console.log('点击的链接为：', nav);
 	  } else {
 	    e.preventDefault();
 	    if( typeof  nav.fn=="function"){
+	    	w_ch_user.hide();
+	    	this.closeAll();
 			 nav.fn();
-			 w_ch_user.hide();
-			 this.closeAll();
+			 
 		 }
 	    console.log('点击的链接为：', nav);
 	    // do something

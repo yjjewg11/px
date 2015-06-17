@@ -61,6 +61,103 @@ public class FileUtils {
    * @return
    * @see
    */
+  static public boolean saveFile( byte[] b, String path, String filename) {
+
+    if (logger.isDebugEnabled()) {
+      logger.debug("saveFile(FormFile, String, String) - start");
+      logger.debug(" path: " + path);
+    }
+
+    try {
+      String filePath = null;
+      int bytesRead = 0;
+      boolean isupdate = false;
+      byte[] buffer = new byte[8192];
+      if (SmbFileUtil.isSmbFileFormat(path)) {
+        SmbFileUtil.mkSmbDirIfNoExist(path);
+      } else {
+        SmbFileUtil.mkDirIfNoExist(path);
+      }
+
+      char spliter = path.charAt(path.length() - 1);
+      if (spliter == '\\' || spliter == '/')
+        filePath = path + filename;
+      else
+        filePath = path + "/" + filename;
+
+      if (SmbFileUtil.isSmbFileFormat(filePath)) {
+        SmbFileOutputStream bos = null;
+        SmbFile file = null;
+        SmbFile existFile = new SmbFile(filePath);// 存在同名文件
+        if (existFile.exists()) {// 存在则覆盖,数据更新
+          isupdate = Boolean.TRUE;
+          file = new SmbFile(filePath + ".tmp");
+        } else {
+          isupdate = Boolean.FALSE;
+          file = existFile;
+        }
+        try {
+          bos = new SmbFileOutputStream(file);
+          bos.write(b, 0, b.length);
+        } catch (Exception e) {
+          e.printStackTrace();
+        } finally {
+          if (bos != null) bos.close();
+        }
+        if (isupdate) {
+          existFile.delete();
+          file.renameTo(existFile);
+        }
+      } else {// 非smb协议文件报存
+        OutputStream bos = null;
+        File file = null;
+        File existFile = new File(filePath);// 存在同名文件
+        if (existFile.exists()) {// 存在则覆盖,数据更新
+          isupdate = Boolean.TRUE;
+          file = new File(filePath + ".tmp");
+        } else {
+          isupdate = Boolean.FALSE;
+          file = existFile;
+        }
+        try {
+          bos = new FileOutputStream(file);
+          bos.write(b, 0, b.length);
+        } catch (Exception e) {
+          e.printStackTrace();
+        } finally {
+          if (bos != null) bos.close();
+        }
+        if (isupdate) {
+          existFile.delete();
+          file.renameTo(existFile);
+        }
+        bos.close();
+      }
+      if (logger.isDebugEnabled()) {
+        logger.debug("saveFile byte() - end");
+      }
+      return true;
+    } catch (Exception e) {
+      logger.error("saveFile byte()", e);
+
+      if (logger.isDebugEnabled()) {
+        logger.debug("saveFile byte() - end");
+      }
+      return false;
+    }
+  }
+
+  
+
+  /**
+   * 保存附件到指定服务器
+   * 
+   * @param fileForm
+   * @param path
+   * @param filename
+   * @return
+   * @see
+   */
   static public boolean saveFile(InputStream stream, String path, String filename) {
 
     if (logger.isDebugEnabled()) {
@@ -153,7 +250,6 @@ public class FileUtils {
       return false;
     }
   }
-
   public static void main(String[] args) throws FileNotFoundException {
     File file = new File("H:/work_资料/流媒体播放.jpg");
     InputStream in = new FileInputStream(file);
