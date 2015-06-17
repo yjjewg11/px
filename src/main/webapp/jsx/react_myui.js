@@ -615,6 +615,10 @@ render: function() {
 var AMR_Grid=AMUIReact.Grid;
 var AMR_Col=AMUIReact.Col;
 var Class_students_manage = React.createClass({
+	 componentDidMount:function(){
+			 G_img_down404();
+
+	  },
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -632,7 +636,7 @@ var Class_students_manage = React.createClass({
 			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
 			  </AMR_Grid>
 		  </AMR_Panel>
-		  <AMR_Gallery data={this.props.students} />
+		  <AMR_Gallery data={this.props.students}  sm={3} md={4} lg={6} />
 	    </div>
 	  );
 	}
@@ -646,6 +650,14 @@ var Class_student_edit = React.createClass({
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.headimg;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
 	  },
 render: function() {
 	  var o = this.state;
@@ -662,7 +674,7 @@ render: function() {
  		  <form id="editClassStudentForm" method="post" className="am-form">
  		<input type="hidden" name="uuid"  value={o.uuid}/>
  		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
- 		<input type="hidden" name="headimg"  value={o.headimg}/>
+ 		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
  		      <label htmlFor="name">姓名:</label>
  		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
@@ -679,8 +691,8 @@ render: function() {
  		      <input type="text" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange} placeholder=""/>
  		      <br/>
  		     <label htmlFor="nickname">头像:</label>
- 		    <AMUIReact.Image src={hostUrl+"i/header.png"} responsive />
- 		    
+ 		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+ 		   <br/>
  		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
 		      <br/>
 		      <label htmlFor="nickname">妈妈电话:</label>

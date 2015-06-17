@@ -35,10 +35,10 @@ public class UploadFileController extends AbstractRESTController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getImgFile", method = RequestMethod.GET)
-	public String getImg(@RequestParam("guid") String guid, ModelMap model,
+	public String getImg(@RequestParam("uuid") String uuid, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		uploadFileService.down(guid, response, ContentTypeConstants.Image_gif);
+		uploadFileService.down(uuid, response, ContentTypeConstants.Image_gif);
 		return "";
 	}
 

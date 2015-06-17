@@ -9,6 +9,20 @@ return serializeObj;
 })(jQuery);
 
 var hostUrl='/px-rest/';
+var G_def_headImgPath=hostUrl+"i/header.png";
+var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
+
+/**
+ * 加载图片的地方执行一次。
+ * 不传参数，则所有img替换。
+ */
+function G_img_down404(jquery_name){
+	if(!jquery_name)jquery_name="img";
+	$(jquery_name).error(function(){
+		 $(this).attr("alt","图片不存在！");
+		});
+}
+
 
 function G_resMsg_filter(ResMsg){
 	if("sessionTimeout"==ResMsg.status){

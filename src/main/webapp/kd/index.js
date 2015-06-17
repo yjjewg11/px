@@ -100,12 +100,7 @@ function login_affter_init(){
 	                                        	
 	                                            "link": "##",
 	                                            "title": "图片管理"
-	                                          },
-		                                        {
-		                                        	"fn":function(){w_uploadImg.open(null)},
-		                                            "link": "##",
-		                                            "title": "上传图片"
-		                                          }
+	                                          }
 	                                    ],
 	                        "subCols": 2
 	                       // "channelLink": "进入栏目 »",
@@ -226,7 +221,7 @@ function menu_dohome(){
 		                    	    "title": "我的班级"
 		                    	  }
 	                    	  ];
-	React.render(React.createElement(AMUIReact.Gallery,{themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
+	React.render(React.createElement(AMUIReact.Gallery,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 
 

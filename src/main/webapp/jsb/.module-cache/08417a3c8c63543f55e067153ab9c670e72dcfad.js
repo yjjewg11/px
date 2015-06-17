@@ -615,10 +615,6 @@ render: function() {
 var AMR_Grid=AMUIReact.Grid;
 var AMR_Col=AMUIReact.Col;
 var Class_students_manage = React.createClass({displayName: "Class_students_manage",
-	 componentDidMount:function(){
-			 G_img_down404();
-
-	  },
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -655,7 +651,9 @@ var Class_student_edit = React.createClass({displayName: "Class_student_edit",
 		  var imgGuid=this.state.headimg;
 		 if(imgGuid){
 			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-			 G_img_down404("#img_head_image");
+			 $("#img_head_image").error(function(){
+				 $(this).replaceWith("图片不存在！");
+				});
 		 }
 
 	  },
@@ -674,7 +672,7 @@ render: function() {
  		  React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
  		     React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
- 		React.createElement("input", {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
+ 		React.createElement("input", {type: "hidden", name: "headimg", id: "headimg", value: o.headimg}), 
  		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
  		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: ""}), 
  		      React.createElement("br", null), 
@@ -691,8 +689,8 @@ render: function() {
  		      React.createElement("input", {type: "text", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange, placeholder: ""}), 
  		      React.createElement("br", null), 
  		     React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
- 		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
- 		   React.createElement("br", null), 
+ 		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, responsive: true}), 
+ 		    
  		   React.createElement("button", {type: "button", onClick: btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "nickname"}, "妈妈电话:"), 

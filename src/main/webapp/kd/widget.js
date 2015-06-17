@@ -1,4 +1,11 @@
 
+/**
+ * 人员选择控件
+ * w_ch_user.open(bind_inputid_uuid,bind_inputid_name,groupuuid)
+ * 
+ * 剪切上传图片方法
+ * w_uploadImg.open(callbackFN);
+ */
 //chooseUser
 var w_ch_user={
 	div_id:"div_widget_chooseUser",
@@ -163,6 +170,7 @@ function ajax_chooseUser_listByGroup(groupuuid,callbackFN) {
 
 //uploadImg
 /**
+ * w_uploadImg.open(callbackFN);
  * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
  */
 var w_uploadImg={
@@ -184,7 +192,9 @@ var w_uploadImg={
 					$.AMUI.progress.done();
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
-						alert(data.data.uuid);
+						if(w_uploadImg.callbackFN){
+							w_uploadImg.callbackFN(data.data.uuid);
+						}
 						w_uploadImg.hide();
 						
 					} else {
@@ -213,7 +223,7 @@ var w_uploadImg={
 			}
 			 
        	  },
-		open:function(imguuid,callbackFN){
+		open:function(callbackFN){
 			w_uploadImg.base64=null;
 			w_uploadImg.callbackFN=callbackFN;
 			w_uploadImg.show();

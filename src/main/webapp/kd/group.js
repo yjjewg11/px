@@ -607,8 +607,10 @@ function react_ajax_class_students_manage(uuid){
 	if(students){
 		for(var i=0;i<students.length;i++){
 			var tmp=students[i];
-			tmp.img=hostUrl+"i/header.png";
+			tmp.img=G_def_headImgPath;
+			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
 			tmp.title=tmp.name;
+			tmp.link= "javascript:ajax_class_students_edit(null,'"+tmp.uuid+"')"
 			
 		}
 	}
@@ -617,7 +619,14 @@ function react_ajax_class_students_manage(uuid){
 };
 
 function btn_class_student_uploadHeadere(){
-	alert("上传图片");
+	
+	w_uploadImg.open(function(guid){
+		$("#headimg").val(guid);
+		 $("#img_head_image").attr("src",G_imgPath+guid); 
+		 G_img_down404("#img_head_image");
+	})
+	
+	
 }
 
 function btn_ajax_class_student_save(){

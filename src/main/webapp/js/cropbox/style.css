@@ -37,18 +37,19 @@
     background: rgba(0,0,0,0.7);
 }
 
-
    .container
         {
             top: 10%; left: 10%; right: 0; bottom: 0;
         }
         .action
         {
-            width: 400px;
-            height: 30px;
             margin: 10px 0;
         }
-        .cropped>img
+         .cropped
         {
-            margin-right: 10px;
+         margin-right: 10px;
+         width: 198px;
+    	height: 198px;
+    	background-color:gray;
+       
         }

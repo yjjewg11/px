@@ -144,7 +144,7 @@ var Upload_headImg = React.createClass({
        	upload_file_onChange:function(){
        	  var reader = new FileReader();
           reader.onload = function(e) {
-              options.imgSrc = e.target.result;
+        	  Upload_headImg_options.imgSrc = e.target.result;
               w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
           }
           reader.readAsDataURL(this.files[0]);
@@ -157,16 +157,16 @@ var Upload_headImg = React.createClass({
         	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
        },
        btnCrop_onClick: function(){
-    	   var img = cropper.getDataURL();
+    	   var img = w_uploadImg.cropper.getDataURL();
     	   w_uploadImg.base64=img;
-           $('#upload_file_imageBox_cropped').append('<img src="'+img+'">');
+           $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
 	   },
        	 componentDidMount:function(){
-           $('#upload_file').on('change', function(){
+           $('#upload_imgfile').on('change', function(){
                var reader = new FileReader();
                reader.onload = function(e) {
             	   Upload_headImg_options.imgSrc = e.target.result;
-                   cropper = $('.imageBox').cropbox(Upload_headImg_options);
+            	   w_uploadImg.cropper = $('.imageBox').cropbox(Upload_headImg_options);
                }
                reader.readAsDataURL(this.files[0]);
                this.files = [];
@@ -180,10 +180,7 @@ var Upload_headImg = React.createClass({
         	 };
            return (
            <div>
-      	 <AMUIReact_ButtonToolbar>
-         <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
-         <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
-       </AMUIReact_ButtonToolbar>
+      	
          <div className="header">
          <div className="am-g">
            <h1>上传图片</h1>
@@ -197,8 +194,7 @@ var Upload_headImg = React.createClass({
 	   	    <div className="spinner"  style={spinner_divStyle}>加载中...</div>
 	   	</div>
    	<div className="action">
-   	<input type="hide" id="upload_file_base64"/>
-   	    <input type="file" id="upload_file" accept="image/*" onChange={this.upload_file_onChange}/>
+   	    <input type="file" id="upload_imgfile" accept="image/*" />
    	    <input type="button" id="btnCrop" value="剪切"  onClick={this.btnCrop_onClick}/>
    	    <input type="button" id="btnZoomIn" value="放大" onClick={this.btnZoomIn_onClick}/>
    	    <input type="button" id="btnZoomOut" value="缩小" onClick={this.btnZoomOut_onClick}/>
@@ -206,7 +202,10 @@ var Upload_headImg = React.createClass({
    		<div className="cropped" id="upload_file_imageBox_cropped">
    	   	</div>
    	</div>
-
+    <AMUIReact_ButtonToolbar>
+    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
+    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+  </AMUIReact_ButtonToolbar>
              </div>
            );
          }

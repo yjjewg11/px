@@ -144,7 +144,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
        	upload_file_onChange:function(){
        	  var reader = new FileReader();
           reader.onload = function(e) {
-        	  Upload_headImg_options.imgSrc = e.target.result;
+              options.imgSrc = e.target.result;
               w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
           }
           reader.readAsDataURL(this.files[0]);
@@ -157,16 +157,16 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
         	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
        },
        btnCrop_onClick: function(){
-    	   var img = w_uploadImg.cropper.getDataURL();
+    	   var img = cropper.getDataURL();
     	   w_uploadImg.base64=img;
            $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
 	   },
        	 componentDidMount:function(){
-           $('#upload_imgfile').on('change', function(){
+           $('#upload_file').on('change', function(){
                var reader = new FileReader();
                reader.onload = function(e) {
             	   Upload_headImg_options.imgSrc = e.target.result;
-            	   w_uploadImg.cropper = $('.imageBox').cropbox(Upload_headImg_options);
+                   cropper = $('.imageBox').cropbox(Upload_headImg_options);
                }
                reader.readAsDataURL(this.files[0]);
                this.files = [];
@@ -194,7 +194,8 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
 	   	    React.createElement("div", {className: "spinner", style: spinner_divStyle}, "加载中...")
 	   	), 
    	React.createElement("div", {className: "action"}, 
-   	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
+   	React.createElement("input", {type: "hide", id: "upload_file_base64"}), 
+   	    React.createElement("input", {type: "file", id: "upload_file", accept: "image/*", onChange: this.upload_file_onChange}), 
    	    React.createElement("input", {type: "button", id: "btnCrop", value: "剪切", onClick: this.btnCrop_onClick}), 
    	    React.createElement("input", {type: "button", id: "btnZoomIn", value: "放大", onClick: this.btnZoomIn_onClick}), 
    	    React.createElement("input", {type: "button", id: "btnZoomOut", value: "缩小", onClick: this.btnZoomOut_onClick})
