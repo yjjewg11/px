@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Right;
 import com.company.news.entity.Role;
@@ -202,9 +203,14 @@ public class RoleService extends AbstractServcice {
 			String[] str = PxStringUtil.StringDecComma(rightuuids).split(",");
 			for (String s : str) {
 				RoleRightRelation r = new RoleRightRelation();
+				Right right=CommonsCache.getRight(s);
+				if(right!=null)
+				{
+				r.setRightname(right.getName());
 				r.setRightuuid(s);
 				r.setRoleuuid(roleuuid);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+				}
 			}
 
 		}

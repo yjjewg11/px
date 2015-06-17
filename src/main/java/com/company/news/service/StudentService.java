@@ -137,5 +137,14 @@ public class StudentService extends AbstractServcice {
 		return (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("from Student where classuuid=?", classuuid);
 	}
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public Student get(String uuid)throws Exception{
+		return (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+	}
 
 }
