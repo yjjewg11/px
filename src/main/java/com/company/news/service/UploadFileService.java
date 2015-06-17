@@ -3,7 +3,6 @@ package com.company.news.service;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,17 +15,16 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import sun.misc.BASE64Decoder;
+
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.FileUtils;
 import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.entity.UploadFile;
 import com.company.news.entity.User;
-import com.company.news.form.UploadFileForm;
-import com.company.news.rest.RestConstants;
-import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -42,6 +40,121 @@ public class UploadFileService extends AbstractServcice {
 	private static Logger logger = LoggerFactory
 			.getLogger(UploadFileService.class);
 
+	
+	/**
+	 * 上载附件
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * base64='data:image/png;base64,iVBORw0KG...'
+	 */
+	public UploadFile uploadImg(String base64,Integer type, ResponseMessage responseMessage,
+			HttpServletRequest request, User user) throws Exception {
+		String extension="png";
+		String contentType=null;
+		if(StringUtils.isEmpty(base64)){
+			 responseMessage.setMessage("上传内容是空的！");
+			return null;
+		}
+		  byte[] b = null;  
+	        if (base64 != null) {  
+	        	String tmpbase64=base64.substring(base64.indexOf(";base64,")+";base64,".length());
+	        	contentType=base64.substring("data:".length(),base64.indexOf(";base64,"));
+	        	extension=contentType.substring("image/".length());
+	        	
+	            BASE64Decoder decoder = new BASE64Decoder();  
+	            try {  
+	                b = decoder.decodeBuffer(tmpbase64);  
+	            } catch (Exception e) {  
+	                e.printStackTrace();  
+	                responseMessage.setMessage("解析错误："+e.getMessage());
+	    			return null;
+	            }  
+	        }  
+		String guid = new UUIDGenerator().generate().toString();
+
+		Long maxfileSize = Long.valueOf(ProjectProperties.getProperty(
+				"UploadFilePath_maxSize_M", "2"));
+		if (b.length > maxfileSize * 1024 * 1024) {
+			responseMessage.setMessage("上载文件太大，不能超过" + maxfileSize + "M");
+			return null;
+		}
+		
+
+		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
+				"c:/px_upload/");
+		String fileName =guid;
+		
+		if(SystemConstants.UploadFile_type_head.equals(type)){
+			fileName ="head_"+guid;
+		}
+		uploadPath += user.getUuid()+"/";
+		FileUtils.createDirIfNoExists(uploadPath);
+		fileName = fileName + "." + extension;
+
+		// 业务数据，关联用户保存
+
+		if (!FileUtils.saveFile(b, uploadPath, fileName)) {
+			responseMessage.setMessage("上载文件保存失败!");
+			return null;
+		}
+		
+		UploadFile uploadFile = new UploadFile();
+
+		uploadFile.setType(type);
+		uploadFile.setFile_size(Long.valueOf(b.length));
+		uploadFile.setUser_uuid(user.getUuid());
+		uploadFile.setCreate_time(TimeUtils.getCurrentTimestamp());
+		uploadFile.setFile_path(uploadPath + fileName);
+		uploadFile.setContent_type(contentType);
+		this.nSimpleHibernateDao.getHibernateTemplate().save(uploadFile);
+
+		/*
+		 * //更新用户头像访问地址 String uploadFilePath_url=
+		 * ProjectProperties.getProperty("uploadFilePath_url",
+		 * "rest/uploadFile/getImgFile.json?guid=")+uploadFile.getGuid();
+		 * 
+		 * //业务数据，关联用户保存
+		 * if(SystemConstants.UploadFile_type_myhead.equals(uploadFile
+		 * .getType())){ userInfo.setHead_imgurl(uploadFilePath_url);
+		 * this.nSimpleHibernateDao.save(userInfo); }else
+		 * if(SystemConstants.UploadFile_type_identity_card
+		 * .equals(uploadFile.getType())){
+		 * userInfo.setIdentity_card_imgurl(uploadFilePath_url);
+		 * this.nSimpleHibernateDao.save(userInfo);
+		 * putUserInfoReturnToModel(model,request); }else
+		 * if(SystemConstants.UploadFile_type_marathon
+		 * .equals(uploadFile.getType())){
+		 * userInfo.setMarathon_imgurl(uploadFilePath_url);
+		 * 
+		 * this.nSimpleHibernateDao.save(userInfo); }
+		 * 
+		 * model.addAttribute("imgurl",uploadFilePath_url);
+		 * 
+		 * //oldFile需要删除好似，才不会null，删除原文件。 if(oldFile!=null){
+		 * this.logger.info("delete old img File="+oldFile); if
+		 * (SmbFileUtil.isSmbFileFormat(oldFile)) { String
+		 * username=ProjectProperties.getProperty("UploadFilePath_username",
+		 * "runman"); String
+		 * password=ProjectProperties.getProperty("UploadFilePath_password",
+		 * "Ruanman2015"); FileUtils.deletesmbFile(oldFile, username, password);
+		 * }else{ FileUtils.deleteFile(oldFile);
+		 * 
+		 * } } // if (isImage(description)) { //
+		 * makeThumbnail(files.getInputStream(), uploadPath,
+		 * uploadFile.getTitle()); // } // model.addAttribute("attachmentId",
+		 * uploadFile.getId()); } catch (Exception e) { logger.error("", e);
+		 * responseMessage
+		 * .setStatus(RestConstants.Return_ResponseMessage_failed);
+		 * responseMessage.setMessage("上载文件失败!");
+		 * model.addAttribute(RestConstants.Return_ResponseMessage,
+		 * responseMessage); } return model;
+		 */
+
+		return uploadFile;
+	}
 	/**
 	 * 上载附件
 	 * 
@@ -71,7 +184,10 @@ public class UploadFileService extends AbstractServcice {
 		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
 				"c:/px_upload/");
 		String fileName = file.getOriginalFilename();
-		uploadPath += type + "/"+user.getUuid()+"/";
+		if(SystemConstants.UploadFile_type_head.equals(Integer.parseInt(type))){
+			fileName ="head_"+guid+file.getOriginalFilename();
+		}
+		uploadPath += user.getUuid()+"/";
 		FileUtils.createDirIfNoExists(uploadPath);
 		fileName = guid + "." + FilenameUtils.getExtension(fileName);
 

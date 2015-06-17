@@ -158,7 +158,6 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
        },
        btnCrop_onClick: function(){
     	   var img = cropper.getDataURL();
-    	   w_uploadImg.base64=img;
            $('#upload_file_imageBox_cropped').append('<img src="'+img+'">');
 	   },
        	 componentDidMount:function(){
@@ -166,6 +165,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
                var reader = new FileReader();
                reader.onload = function(e) {
             	   Upload_headImg_options.imgSrc = e.target.result;
+            	   w_uploadImg.base64=Upload_headImg_options.imgSrc;
                    cropper = $('.imageBox').cropbox(Upload_headImg_options);
                }
                reader.readAsDataURL(this.files[0]);
@@ -180,10 +180,6 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
         	 };
            return (
            React.createElement("div", null, 
-      	 React.createElement(AMUIReact_ButtonToolbar, null, 
-         React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-         React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
-       ), 
          React.createElement("div", {className: "header"}, 
          React.createElement("div", {className: "am-g"}, 
            React.createElement("h1", null, "上传图片")
@@ -204,9 +200,13 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
    	    React.createElement("input", {type: "button", id: "btnZoomOut", value: "缩小", onClick: this.btnZoomOut_onClick})
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
-   	   	)
+   	   	), 
+   	 React.createElement(AMUIReact_ButtonToolbar, null, 
+     React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
+     React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+   )
    	)
-
+   	
              )
            );
          }
