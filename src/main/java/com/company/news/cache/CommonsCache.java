@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.company.common.SpringContextHolder;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.PClass;
+import com.company.news.entity.Right;
 import com.company.news.entity.User;
 import com.company.news.service.AbstractServcice;
 
@@ -65,5 +66,25 @@ public class CommonsCache{
 		dbDataCache.put(e);
 	}
 
+	// 获取自动保存内容
+	public static Right getRight(String uuid) {
+		logger.info("putClass:uuid-->" + uuid);
+		Element c = dbDataCache.get(uuid);
 
+		if (c != null)
+			return (Right) c.getObjectValue();
+		else {
+			Right object =(Right) nSimpleHibernateDao.getObject(Right.class, uuid);
+			if (object != null)
+				putRight(uuid, object);
+			return object;
+		}
+	}
+
+	// 存入自动保存内容
+	public static void putRight(String uuid, Right c) {
+		logger.info("putClass:uuid-->" + uuid);
+		Element e = new Element(uuid, c);
+		dbDataCache.put(e);
+	}
 }
