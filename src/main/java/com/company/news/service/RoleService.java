@@ -28,7 +28,7 @@ public class RoleService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Role add(String name, String description,
+	public Role add(String name, String description,String type,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
@@ -44,11 +44,17 @@ public class RoleService extends AbstractServcice {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
+		
+		if (StringUtils.isBlank(type)) {
+			responseMessage.setMessage("type不能为空！");
+			return null;
+		}
 
 		Role role = new Role();
 		role.setDescription(description);
 		role.setName(name);
 		role.setCreate_time(TimeUtils.getCurrentTimestamp());
+		role.setType(Integer.parseInt(type));
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(role);
 		return role;
@@ -64,7 +70,7 @@ public class RoleService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public Role update(String uuid, String name, String description,
+	public Role update(String uuid, String name, String description,String type,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(name) || name.length() > 45) {
 			responseMessage.setMessage("角色名不能为空！，且长度不能超过45位！");
@@ -85,12 +91,17 @@ public class RoleService extends AbstractServcice {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
+		
+		if (StringUtils.isBlank(type)) {
+			responseMessage.setMessage("type不能为空！");
+			return null;
+		}
 
 		Role role = (Role) this.nSimpleHibernateDao.getObject(Role.class, uuid);
 		if (role != null) {
 			role.setDescription(description);
 			role.setName(name);
-
+			role.setType(Integer.parseInt(type));
 			this.nSimpleHibernateDao.getHibernateTemplate().update(role);
 		}else{
 			responseMessage.setMessage("更新对象不存在，");
@@ -132,9 +143,13 @@ public class RoleService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Role> query() {
+	public List<Role> query(String type) {
+		String hql="from Role";
+		if(StringUtils.isNotBlank(type))
+			hql+=" where type="+type;
+		
 		return (List<Role>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from Role", null);
+				.find(hql, null);
 
 	}
 

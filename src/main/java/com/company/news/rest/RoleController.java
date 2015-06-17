@@ -66,11 +66,11 @@ public class RoleController extends AbstractRESTController {
 			Role role;
 			if (StringUtils.isEmpty(uuid))
 				role = roleService.add(request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+						request.getParameter("description"),request.getParameter("type"), responseMessage);
 			else
 				role = roleService.update(request.getParameter("uuid"),
 						request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+						request.getParameter("description"),request.getParameter("type"), responseMessage);
 			if (role != null)
 				model.addAttribute(role);
 			else
@@ -97,7 +97,7 @@ public class RoleController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Role> list = roleService.query();
+		List<Role> list = roleService.query(request.getParameter("type"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

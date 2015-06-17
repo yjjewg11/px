@@ -16,6 +16,16 @@ public class Role extends IdEntity {
 	private String name;// 角色名
 	@Column
 	private String description;// 角色描述
+	@Column
+	private Integer type;// 权限类型	
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Timestamp getCreate_time() {
 		return create_time;
