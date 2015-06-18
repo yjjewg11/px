@@ -81,7 +81,7 @@ var Div_kd_group_reg = React.createClass({
 			    <form id="kd_group_reg_form" method="post" className="am-form">
 			    <input type="hidden" name="type"  value="1"/>
 			      <label htmlFor="brand_name">品牌名:</label>
-			      <input type="email" name="brand_name" id="brand_name"  placeholder="必填，不超过45位"/>
+			      <input type="text" name="brand_name" id="brand_name"  placeholder="必填，不超过45位"/>
 			      <br/>
 			       <label htmlFor="company_name">机构全称:</label>
 			      <input type="text" name="company_name" id="company_name"  placeholder="必填，不超过45位"/>
@@ -154,7 +154,7 @@ render: function() {
  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
  		 <form id="login_form" method="post" className="am-form">
  	      <label htmlFor="loginname">手机号:</label>
- 	      <input type="email" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+ 	      <input type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
  	      <br/>
  	      <label htmlFor="password">密码:</label>
  	      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>

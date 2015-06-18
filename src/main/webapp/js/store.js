@@ -1,5 +1,12 @@
 var Store={
 	map:{},
+	clear:function(){
+		if (!$.AMUI.store.enabled) {
+			$.AMUI.store.clear();
+		}
+		Store.map={};
+		Store.setCurGroup(null);
+	},
 	enabled:function(){
 		if (!$.AMUI.store.enabled) {
 			  alert('你的浏览器禁用 LocalStorage，部分显示有问题，请启用LocalStorage');
