@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.company.common.SpringContextHolder;
 import com.company.news.dao.NSimpleHibernateDao;
+import com.company.news.entity.Cookbook;
+import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Right;
 import com.company.news.entity.User;
@@ -46,7 +48,7 @@ public class CommonsCache{
 	
 	// 获取自动保存内容
 	public static PClass getClass(String uuid) {
-		logger.info("putClass:uuid-->" + uuid);
+		logger.info("getClass(String):uuid-->" + uuid);
 		Element c = dbDataCache.get(uuid);
 
 		if (c != null)
@@ -68,7 +70,7 @@ public class CommonsCache{
 
 	// 获取自动保存内容
 	public static Right getRight(String uuid) {
-		logger.info("putClass:uuid-->" + uuid);
+		logger.info("getRight:uuid-->" + uuid);
 		Element c = dbDataCache.get(uuid);
 
 		if (c != null)
@@ -83,7 +85,29 @@ public class CommonsCache{
 
 	// 存入自动保存内容
 	public static void putRight(String uuid, Right c) {
-		logger.info("putClass:uuid-->" + uuid);
+		logger.info("putRight:uuid-->" + uuid);
+		Element e = new Element(uuid, c);
+		dbDataCache.put(e);
+	}
+	
+	// 获取自动保存内容
+	public static Cookbook getCookbook(String uuid) {
+		logger.info("getCookbook:uuid-->" + uuid);
+		Element c = dbDataCache.get(uuid);
+
+		if (c != null)
+			return (Cookbook) c.getObjectValue();
+		else {
+			Cookbook object =(Cookbook) nSimpleHibernateDao.getObject(Cookbook.class, uuid);
+			if (object != null)
+				putCookbook(uuid, object);
+			return object;
+		}
+	}
+
+	// 存入自动保存内容
+	public static void putCookbook(String uuid, Cookbook c) {
+		logger.info("putCookbook:uuid-->" + uuid);
 		Element e = new Element(uuid, c);
 		dbDataCache.put(e);
 	}
