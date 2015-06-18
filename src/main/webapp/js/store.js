@@ -85,6 +85,11 @@ var Store={
 
 //获取cookie
 function getCookie(cookie_name) {
+	
+	if($.AMUI.store.enabled){
+		return $.AMUI.store.get(cookie_name);
+		return;
+	}
 	var allcookies = document.cookie;
 	var cookie_pos = allcookies.indexOf(cookie_name); // 索引的长度
 	// 如果找到了索引，就代表cookie存在，
@@ -109,6 +114,11 @@ function getCookie(cookie_name) {
 
 //设置cookie
 function setCookie(name, value) {
+	
+	if($.AMUI.store.enabled){
+		$.AMUI.store.set(name, value);
+		return;
+	}
 	var timeout = 60*60*24*30; // 设置cookie超时时间为30天。
 	var expires = "";
 	if (timeout != 0) { // 设置cookie生存时间

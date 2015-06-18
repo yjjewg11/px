@@ -25,7 +25,7 @@ function ajax_userinfo_login() {
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
-				$.AMUI.utils.cookie.set("bs_loginname", loginname);
+				setCookie("bs_loginname", loginname);
 				if($("#pw_checked")[0].checked){
 					setCookie("bs_password", password);
 					setCookie("pw_checked", "checked");
