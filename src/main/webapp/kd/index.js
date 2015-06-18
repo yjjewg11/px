@@ -26,8 +26,25 @@ function login_affter_init(){
 	var div_menu_data=[
 	           		{
 	        		    "link": "##",
-	        		    "fn":menu_group_myList_fn,
 	        		    "title": "校园管理",
+	        		    "subMenu": [
+	        		                {
+	        		                	"fn":menu_group_myList_fn,
+	                                      "title": "校园列表"
+	                                    },
+	                                    {
+	                                        "link": "##",
+	                                        "title": "校园介绍"
+	                                      },   
+                                    {
+                                      "link": "##",
+                                      "title": "老师考勤"
+                                    },
+                                    {
+                                        "link": "##",
+                                        "title": "学生考勤"
+                                      }
+                                    ],
 	        		    "subCols": 2
 	        		   
 	        		  },
@@ -266,9 +283,9 @@ function menu_userinfo_reg_fn(){
 
 function menu_userinfo_login_fn(){
 	Queue.push(menu_userinfo_login_fn);
-	var loginname = $.AMUI.utils.cookie.get("bs_loginname");
-	var password = $.AMUI.utils.cookie.get("bs_password");
-	var pw_checked = $.AMUI.utils.cookie.get("pw_checked");
+	var loginname = getCookie("bs_loginname");
+	var password = getCookie("bs_password");
+	var pw_checked = getCookie("pw_checked");
 	
 	React.render(React.createElement(Div_login,{loginname:loginname,password:password,pw_checked:pw_checked})
 			, document.getElementById('div_login'));

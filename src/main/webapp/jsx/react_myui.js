@@ -145,7 +145,7 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
- 		 <h1>PX_老师登录</h1>
+ 		 <h1>幼儿园老师登录</h1>
  	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
  		  </div>
  		  <hr />
@@ -169,9 +169,12 @@ render: function() {
  	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	      <a  href="javascript:menu_kd_group_reg_fn();" >幼儿园注册</a>|
- 	      <a  href="javascript:void();" >培训机构注册</a>
+ 	     <a  href="javascript:menu_userinfo_reg_fn();" >老师注册</a>
  	      <br/>
- 			<a  href="javascript:menu_userinfo_reg_fn();" >老师注册</a>
+ 	      
+ 	     <a  href="http://120.25.248.31/px-rest/kd/" > <img src="ewm_kd.png" /></a>
+ 	    
+ 			
  	    </form>
  	    <hr/>
  	    <p>© 2015 PX, Inc. </p>

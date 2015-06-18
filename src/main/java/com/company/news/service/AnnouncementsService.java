@@ -123,6 +123,7 @@ public class AnnouncementsService extends AbstractServcice {
 		announcements.setMessage(announcementsJsonform.getMessage());
 		announcements.setTitle(announcementsJsonform.getTitle());
 		announcements.setType(announcementsJsonform.getType());
+		announcements.setGroupuuid(announcementsJsonform.getGroupuuid());
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
