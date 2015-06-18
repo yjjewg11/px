@@ -52,9 +52,9 @@ public class CookbookService extends AbstractServcice {
 			return false;
 		}
 		
+		//避免NULL存在
 		if (StringUtils.isBlank(groupuuid)) {
-			responseMessage.setMessage("groupuuid不能为空！");
-			return false;
+			groupuuid="";
 		}
 
 		Cookbook cb = new Cookbook();
@@ -77,10 +77,11 @@ public class CookbookService extends AbstractServcice {
 	public List<Cookbook> query(Integer type,String groupuuid) {
 		if (type==null)
 			return null;
-		if(StringUtils.isBlank(groupuuid))
-			return null;
+		String hql="";
+		if(StringUtils.isNotBlank(groupuuid))
+			hql+=" and (groupuuid='"+groupuuid+"' or groupuuid='')";
 			return (List<Cookbook>) this.nSimpleHibernateDao
-					.getHibernateTemplate().find("from Cookbook where type=?",
+					.getHibernateTemplate().find("from Cookbook where type=?"+hql,
 							type);
 	}
 
