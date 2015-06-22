@@ -346,7 +346,7 @@ function btn_click_userinfo(m,groupuuid,useruuid){
  * @param operate
  */
 function ajax_userinfo_edit(formdata,operate){
-	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 
 	
 };
@@ -664,7 +664,7 @@ function btn_ajax_class_student_save(){
 
 function react_ajax_class_edit_get(formdata,uuid){
 	if(!uuid){
-		React.render(React.createElement(Class_edit,{formdata:formdata,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+		React.render(React.createElement(Class_edit,{formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 		return;
 	}
 	$.AMUI.progress.start();
@@ -678,7 +678,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Class_edit,{formdata:data.data,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+				React.render(React.createElement(Class_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
 			} else {
 				alert("加载公司数据失败："+data.ResMsg.message);
 			}
@@ -696,7 +696,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 * @param operate
 */
 function ajax_class_edit(formdata,operate){
-	React.render(React.createElement(Class_edit,{operate:operate,formdata:formdata,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+	React.render(React.createElement(Class_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 	
 };
 
@@ -874,7 +874,7 @@ function react_ajax_announce_show(uuid){
 };
 function react_ajax_announce_edit(formdata,uuid){
 	if(!uuid){
-		React.render(React.createElement(Announcements_edit,{formdata:formdata,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+		React.render(React.createElement(Announcements_edit,{formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 		return;
 	}
 	$.AMUI.progress.start();
@@ -888,7 +888,7 @@ function react_ajax_announce_edit(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_edit,{formdata:data.data,group_uuid_data:Store.getGroup()}), document.getElementById('div_body'));
+				React.render(React.createElement(Announcements_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
 			} else {
 				alert("加载公司数据失败："+data.ResMsg.message);
 			}
@@ -934,3 +934,346 @@ function ajax_announcements_save(){
 }
 
 //announce end
+
+
+
+
+
+
+
+//teachingplan
+
+
+//老师查询，条件groupuuid
+//
+function ajax_teachingplan_listByClass(classuuid) {
+	
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/teachingplan/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {classuuid:classuuid},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.list==null)data.list=[];
+				React.render(React.createElement(Teachingplan_EventsTable, {
+					classuuid:classuuid,
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+function btn_click_teachingplan(m,uuid,classuuid){
+	Queue.push(function(){btn_click_teachingplan(m,uuid,classuuid)});
+	if(m=="add"){
+		react_ajax_teachingplan_edit({classuuid:classuuid},null);
+	}else if(m=="edit"){
+		react_ajax_teachingplan_edit(null,uuid);
+	}else if(m=="del"){
+		//react_ajax_teachingplan_delete(groupuuid,uuid);
+	}
+};
+
+
+function react_ajax_teachingplan_delete(groupuuid,uuid){
+	
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/teachingplan/delete.json?uuid="+uuid;
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_teachingplan_listByClass(groupuuid);
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+function react_ajax_teachingplan_show(uuid){
+	Queue.push(function(){react_ajax_teachingplan_show(uuid)});
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Teachingplanments_show,{data:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+function react_ajax_teachingplan_edit(formdata,uuid){
+	if(!uuid){
+		if(!formdata.classuuid){
+			alert("新建课程，班级id必填");
+			return;
+		}
+		React.render(React.createElement(Teachingplan_edit,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	}
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Teachingplan_edit,{formdata:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+
+function ajax_teachingplan_save(){
+	$.AMUI.progress.start();
+	  var objectForm = $('#editTeachingplanForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+  var url = hostUrl + "rest/teachingplan/save.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data : jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				//alert(data.ResMsg.message);
+				Queue.doBackFN();
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+//teachingplan end
+
+
+
+//cookbookPlan
+
+
+//老师查询，条件groupuuid
+//
+function ajax_cookbookPlan_listByGroup(groupuuid) {
+	
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/cookbookplan/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {groupuuid:groupuuid},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.list==null)data.list=[];
+				React.render(React.createElement(CookbookPlan_EventsTable, {
+					group_uuid:groupuuid,
+					events: data.list,
+					group_list:Store.getGroup(),
+					handleClick:btn_click_cookbookPlan,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+function btn_click_cookbookPlan(m,groupuuid,uuid){
+	Queue.push(function(){btn_click_cookbookPlan(m,groupuuid,uuid)});
+	if(m=="add"){
+		react_ajax_cookbookPlan_edit({groupuuid:groupuuid},null);
+	}else if(m=="edit"){
+		react_ajax_cookbookPlan_edit(null,uuid);
+	}else if(m=="del"){
+		//react_ajax_cookbookPlan_delete(groupuuid,uuid);
+	}
+};
+
+
+function react_ajax_cookbookPlan_delete(groupuuid,uuid){
+	
+	$.AMUI.progress.start();
+var url = hostUrl + "rest/cookbookplan/delete.json?uuid="+uuid;
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_cookbookPlan_listByClass(groupuuid);
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+function react_ajax_cookbookPlan_show(uuid){
+	Queue.push(function(){react_ajax_cookbookPlan_show(uuid)});
+	$.AMUI.progress.start();
+var url = hostUrl + "rest/cookbookPlan/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(CookbookPlanments_show,{data:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+function react_ajax_cookbookPlan_edit(formdata,uuid){
+	if(!uuid){
+		if(!formdata.groupuuid){
+			alert("新建食谱，学校id必填");
+			return;
+		}
+		React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:formdata}), document.getElementById('div_body'));
+		return;
+	}
+	$.AMUI.progress.start();
+var url = hostUrl + "rest/cookbookPlan/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+
+function ajax_cookbookPlan_save(){
+	$.AMUI.progress.start();
+	  var objectForm = $('#editCookbookPlanForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+var url = hostUrl + "rest/cookbookplan/save.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data :jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				//alert(data.ResMsg.message);
+				Queue.doBackFN();
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+//cookbookPlan end

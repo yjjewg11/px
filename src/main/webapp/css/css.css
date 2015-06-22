@@ -30,3 +30,36 @@
     width: 200px;
     height: 200px;
     }
+    
+
+    .G_ch_cook_item{
+    float: left;
+    margin-left: 15px;
+    position:relative;
+    cursor: pointer;
+    margin-top: 5px;
+    border:1px solid #FFFFFF;
+     width: 134px; height: 122px;
+     text-align: center;
+    }
+    .G_ch_cook_item img{width: 134px;height: 100px;}
+  
+    .G_ch_cook_item_checked{
+    float: left;margin-left: 15px;position:relative;cursor: pointer;
+    margin-top: 5px;border:1px solid #FF0033; width: 134px; height: 122px;
+    text-align: center;
+    }
+       .G_ch_cook_item_checked img{width: 134px;height: 100px;}
+       
+    .G_ch_cook_item span{width: 134px;height: 22px;color: #000000;font-size: 14px;}
+   .G_ch_cook_item_checked span{width: 134px;height: 22px;color: #000000;font-size: 14px;}
+    
+			
+			
+	
+.G_cookplan_Img{width:135px; height:100px; position:relative; margin:0px 10px 10px 0px; float:left;}
+.G_cookplan_Img_img{width: 134px;height: 100px;}
+.G_cookplan_Img_close{position:absolute; top:0px; right:0px;cursor: pointer;}
+
+.cls{clear:both;height:0px;}
+	

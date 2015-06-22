@@ -14,6 +14,28 @@ var Store={
 			}
 		return true;
 	},
+	
+	
+	/**
+	 * 设置班级选择控件到内存缓存。
+	 * @param v
+	 */
+	setChooseCook:function(type,v){
+		this.map["ChooseCook"+type]=v;
+	},
+	getChooseCook:function(type){
+		 return this.map["ChooseCook"+type];
+	},
+	/**
+	 * 设置班级选择控件到内存缓存。
+	 * @param v
+	 */
+	setChooseClass:function(groupuuid,v){
+		this.map["ChooseClass"+groupuuid]=v;
+	},
+	getChooseClass:function(groupuuid){
+		 return this.map["ChooseClass"+groupuuid];
+	},
 	/**
 	 * 设置人员选择控件到内存缓存。
 	 * @param v

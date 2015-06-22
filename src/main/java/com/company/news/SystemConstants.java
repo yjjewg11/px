@@ -5,6 +5,7 @@ package com.company.news;
 public class SystemConstants {
     //------------------------上传模块
 	static public final Integer UploadFile_type_head = Integer.valueOf(1);//我的头像
+	static public final Integer UploadFile_type_cook = Integer.valueOf(2);//菜谱图片
 //	
 //    static public final String UploadFile_type_myhead = "head";//我的头像
 //    static public final String UploadFile_type_identity_card ="identity";//身份证

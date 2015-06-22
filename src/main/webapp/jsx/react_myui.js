@@ -430,7 +430,7 @@ var Userinfo_edit = React.createClass({
     		     <input type="hidden" name="type"  value="1"/>
     		    <div className="am-form-group">
     		          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
-    		          {this.props.group_uuid_data.map(function(event) {
+    		          {this.props.group_list.map(function(event) {
     		              return (<option value={event.uuid} >{event.company_name}</option>);
     		            })}
     		          </select>
@@ -585,7 +585,7 @@ render: function() {
   		     <input type="hidden" name="type"  value="1"/>
   		    <div className="am-form-group">
   		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.groupuuid} onChange={this.handleChange}>
-  		          {this.props.group_uuid_data.map(function(event) {
+  		          {this.props.group_list.map(function(event) {
   		              return (<option value={event.uuid} >{event.company_name}</option>);
   		            })}
   		          </select>
@@ -691,7 +691,8 @@ render: function() {
 		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
 		    </AMUIReact.FormGroup>
 		      <label htmlFor="birthday">生日:</label>
- 		      <input type="text" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange} placeholder=""/>
+
+			<AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
  		      <br/>
  		     <label htmlFor="nickname">头像:</label>
  		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
@@ -890,7 +891,7 @@ render: function() {
   		
   		<div className="am-form-group">
   		          <select id="group_uuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
-  		          {this.props.group_uuid_data.map(function(event) {
+  		          {this.props.group_list.map(function(event) {
   		              return (<option value={event.uuid} >{event.company_name}</option>);
   		            })}
   		          </select>
@@ -931,3 +932,377 @@ render: function() {
 }); 
 
 //end announcements
+
+
+
+
+
+//teachingplan
+/**
+* ajax_teachingplan_edit
+*/
+
+var Teachingplan_EventRow = React.createClass({ 
+render: function() {
+var event = this.props.event;
+var className = event.highlight ? 'am-active' :
+  event.disabled ? 'am-disabled' : '';
+
+return (
+  <tr className={className} >
+  <td> 
+  <input type="checkbox" value={event.uuid} name="table_checkbox" />
+  </td>
+    <td><a href={"javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}>{event.plandate}</a></td>
+    <td>{event.morning}</td>
+    <td>{event.afternoon}</td>
+    <td>{event.create_useruuid}</td>
+  </tr> 
+);
+}
+}); 
+
+var Teachingplan_EventsTable = React.createClass({
+	handleClick: function(m,uuid,classuuid) {
+			 if(m=="add"){
+				 btn_click_teachingplan(m,null,classuuid);
+				 return;
+			 }
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  btn_click_teachingplan(m,$('#selectgroup_uuid').val(),uuids);
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  //
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+	  },
+render: function() {
+return (
+<div>
+<div className="header">
+	  <div className="am-g">
+	    <h1>【小一班】本周[2015-06-16~2015-06-20]</h1>
+	  </div>
+	  <hr />
+	</div>
+<AMR_Sticky>
+<AMR_ButtonToolbar>
+	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.classuuid)} round>添加</AMR_Button>
+    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
+    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>
+    </AMR_ButtonToolbar>
+</AMR_Sticky>
+	  <hr/>
+  <AMR_Table {...this.props}>  
+    <thead> 
+      <tr>
+      	<th>一周</th>
+        <th>上午</th>
+        <th>下午</th>
+        <th>创建人</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {this.props.events.map(function(event) {
+        return (<Teachingplan_EventRow  event={event} />);
+      })}
+    </tbody>
+  </AMR_Table>
+  </div>
+);
+}
+});
+
+var Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+	
+return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>某某班级课程1-编辑</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editTeachingplanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="classuuid"  value={o.classuuid}/>
+		 <label htmlFor="name">日期:</label>
+		 <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandate" id="plandate" dateTime={o.plandate}  onChange={this.handleChange}/>
+		      <br/>
+	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
+		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
+		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
+	 </form>
+
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+}); 
+
+//end teachingplan
+
+
+
+
+//cookbookPlan
+var CookbookPlan_EventRow = React.createClass({ 
+render: function() {
+var event = this.props.event;
+var className = event.highlight ? 'am-active' :
+  event.disabled ? 'am-disabled' : '';
+
+return (
+  <tr className={className} >
+  <td> 
+  <input type="checkbox" value={event.uuid} name="table_checkbox" />
+  </td>
+    <td><a href={"javascript:react_ajax_class_students_manage('"+event.uuid+"')"}>{event.plandate}</a></td>
+    <td>{event.time_1}</td>
+    <td>{event.time_2}</td>
+    <td>{event.time_3}</td>
+    <td>{event.time_4}</td>
+    <td>{event.time_5}</td>
+    <td>{event.time_6}</td>
+    <td>{event.time_7}</td>
+  </tr> 
+);
+}
+}); 
+var CookbookPlan_EventsTable = React.createClass({
+render: function() {
+return (
+<div>
+<AMR_Sticky>
+<AMR_ButtonToolbar>
+<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
+<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
+<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	  </AMR_ButtonToolbar>
+	  </AMR_Sticky>
+	  <hr/>
+	  <div className="am-form-group">
+  <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+  {this.props.group_list.map(function(event) {
+      return (<option value={event.uuid} >{event.company_name}</option>);
+    })}
+  </select>
+</div>
+	  
+  <AMR_Table {...this.props}>  
+    <thead> 
+      <tr>
+        <th>一周</th>
+        <th>早餐</th>
+        <th>加餐</th>
+        <th>午餐</th>
+        <th>加餐</th>
+        <th>晚餐</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {this.props.events.map(function(event) {
+        return (<CookbookPlan_EventRow  event={event} />);
+      })}
+    </tbody>
+  </AMR_Table>
+  </div>
+);
+},
+handleClick: function(m) {
+	 if(this.props.handleClick){
+		 
+		 if(m=="add"){
+			 this.props.handleClick(m,$('#selectgroup_uuid').val());
+			 return;
+		 }
+	 }
+},
+//
+handleChange_selectgroup_uuid:function(){
+	ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val());
+}
+});
+
+
+var CookbookPlan_edit_EventRow = React.createClass({
+	
+	 getInitialState: function() {
+		    return {
+	            items: []
+	        };
+		  },
+	componentDidMount: function() {
+		var lists=this.ajax_cookbookPlan_list(this.props.uuids);
+	       this.setState({
+	            items: lists
+	        });
+	  },
+	  ajax_cookbookPlan_list:function(uuids){
+		  
+		  var imgArr=[];
+		  var tmpO={};
+		  	tmpO.uuid="abc1";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据1";
+			 
+			 imgArr.push(tmpO);
+			 tmpO={};
+				tmpO.uuid="abc2";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据2";
+			 
+			 imgArr.push(tmpO);
+		  return imgArr;
+		  
+			$.AMUI.progress.start();
+			var url = hostUrl + "rest/cookbook/list.json?type="+type;
+			$.ajax({
+				type : "GET",
+				url : url,
+				async: false,
+				data : "",
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						Store.setChooseCook(type,data.list);
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+","+textStatus+"="+errorThrown);
+					 console.log(url+',error：', obj);
+					 console.log(url+',error：', textStatus);
+					 console.log(url+',error：', errorThrown);
+				}
+			});
+		},
+		deleteImg:function(divid){
+			$("#"+divid).remove();
+		},
+		 btn_addCookplan: function(divid) {
+			 var that=this;
+			  var checkeduuids =null;
+			  $("#"+divid+" > .G_cookplan_Img").each(function(){
+						 if(checkeduuids==null)checkeduuids=this.title;
+						 else
+						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+					});
+			  w_ch_cook.open(function(uuids,imgArr){
+				  that.setState({
+			            items: imgArr
+			        });
+				  
+			  },checkeduuids);
+		  },
+	  render: function() {
+		var that=this;
+	    return (
+	    		  <div id={"div_cookPlan_"+this.props.type}>
+	    		  {
+ 	    			 this.state.items.map(function(event) {
+ 	 	            return (
+ 	 	            		<div id={"div_cookPlan_Item_"+event.uuid} title={event.uuid} className="G_cookplan_Img" >
+		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+event.uuid}  src={event.src} alt="图片不存在" title={event.name} />
+		    	 	       			<div className="G_cookplan_Img_close"  onclick={cookplan_deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}><img src={hostUrl+"i/close.png"} border="0" /></div>
+		    	 	       			<span >{event.name}</span>
+		    	 	       		</div>		
+ 	 	            	);
+ 	 	          })
+ 	 	          }
+	    		  
+	    		  <button type="button"  onClick={this.btn_addCookplan.bind(this,"div_cookPlan_"+this.props.type)}  className="am-btn am-btn-primary">添加</button>
+	      </div>
+	    		
+		
+	  )}
+	});
+
+function cookplan_deleteImg(divid){
+	$("#"+divid).remove();
+}
+var CookbookPlan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editCookbookPlanForm').serializeJson());
+	  },
+	 
+render: function() {
+	  var o = this.state;
+	  if(!o.time_1_arr)o.time_1_arr=[];
+return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>每日食谱-编辑</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editCookbookPlanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		     <input type="hidden" name="type"  value="1"/>
+		    <div className="am-form-group">
+		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'sm'}" value={o.groupuuid} onChange={this.handleChange}>
+		          {this.props.group_list.map(function(event) {
+		              return (<option value={event.uuid} >{event.company_name}</option>);
+		            })}
+		          </select>
+		        </div>
+		        <label htmlFor="name">日期:</label>
+				 <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+				      <br/>
+		        
+		    
+		      <label>早餐:</label> 
+		      <input type="hidden" name="time_1" id="time_1"  value={o.time_1} onChange={this.handleChange} />
+		      <CookbookPlan_edit_EventRow  uuids={o.time_1}  type={"time_1"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>
+		    </form>
+
+	     </div> 
+	   </div>
+	   
+	   </div>
+);
+}
+}); 
+
+
+
+//end class
+
+//end cookbookPlan

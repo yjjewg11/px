@@ -48,7 +48,7 @@ var div_menu_data=[
         		  },
         		  {
                       "link": "##",
-                      "title": "老师管理",
+                      "title": "食谱管理",
                       "fn":menu_userinfo_list_fn,
                       "subCols": 2
                      // "channelLink": "进入栏目 »",

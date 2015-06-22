@@ -89,8 +89,15 @@ public class UploadFileService extends AbstractServcice {
 		
 		if(SystemConstants.UploadFile_type_head.equals(type)){
 			fileName ="head_"+guid;
+			
 		}
-		uploadPath += user.getUuid()+"/";
+		if(SystemConstants.UploadFile_type_cook.equals(type)){
+			fileName ="cook_"+guid;
+			uploadPath += "cook/";
+		}else{
+			uploadPath += user.getUuid()+"/";
+		};
+		
 		FileUtils.createDirIfNoExists(uploadPath);
 		fileName = fileName + "." + extension;
 

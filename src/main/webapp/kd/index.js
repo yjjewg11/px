@@ -79,7 +79,8 @@ function login_affter_init(){
 	                       
 	                      },
 	                      {
-	                          "link": "##",
+	                    	  "link": "##",
+	                    	   "fn":menu_teachingplan_list_fn,
 	                          "title": "课程安排",
 	                          "subCols": 2
 	                         // "channelLink": "进入栏目 »",
@@ -88,6 +89,7 @@ function login_affter_init(){
 	                {
 	                  "link": "##",
 	                  "title": "每日食谱",
+	                  "fn":menu_cookbookPlan_list_fn,
 	                  "subCols": 2
 	                 // "channelLink": "进入栏目 »",
 	                 
@@ -266,6 +268,18 @@ function menu_class_list_fn() {
 	Queue.push(menu_class_list_fn);
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
+
+function menu_teachingplan_list_fn(){
+	Queue.push(menu_teachingplan_list_fn);
+	//first 选择班级
+	w_ch_class.open(ajax_teachingplan_listByClass);
+	//ajax_teachingplan_listByClass();
+}
+
+function menu_cookbookPlan_list_fn(){
+	Queue.push(menu_cookbookPlan_list_fn);
+	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
+}
 
 //类型'0:普通通知 1:内部通知 2：班级通知',
 var announce_types=1;
