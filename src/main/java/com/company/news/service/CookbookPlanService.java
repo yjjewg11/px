@@ -118,11 +118,21 @@ public class CookbookPlanService extends AbstractServcice {
 		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
 
 		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
-
-		return (List<CookbookPlan>) this.nSimpleHibernateDao
+		
+		List<CookbookPlan> list=(List<CookbookPlan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
 				.find("from CookbookPlan where groupuuid=? and plandate<=? and plandate >=?",
 						groupuuid, endDate, begDate);
+
+		for(CookbookPlan c:list){
+			c.setTime_1(this.makeCookbookName(c.getTime_1()));
+			c.setTime_2(this.makeCookbookName(c.getTime_2()));
+			c.setTime_3(this.makeCookbookName(c.getTime_3()));
+			c.setTime_4(this.makeCookbookName(c.getTime_4()));
+			c.setTime_5(this.makeCookbookName(c.getTime_5()));			
+		}
+		
+		return list;
 	}
 
 	/**
