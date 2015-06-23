@@ -31,6 +31,54 @@ function G_resMsg_filter(ResMsg){
 		menu_userinfo_login_fn();
 	}
 }
+
+/**
+var week; 
+if(new Date().getDay()==0) week="星期日"
+if(new Date().getDay()==1) week="星期一"
+if(new Date().getDay()==2) week="星期二" 
+if(new Date().getDay()==3) week="星期三"
+if(new Date().getDay()==4) week="星期四"
+if(new Date().getDay()==5) week="星期五"
+if(new Date().getDay()==6) week="星期六"
+86400000=24小时*60分*60秒+1000毫秒=1天
+ */
+var G_week={
+		x:["星期日", "星期一", "星期二","星期三","星期四", "星期五","星期六"],
+		/**
+		 * 
+		 * @param d Date
+		 * @returns
+		 */
+	getWeekDayByDate:function(d){
+		return d.getDay();
+	},
+	getWeekStr:function(d){
+		if(d==null||d=="")return "";
+		if(typeof(d)=='string') d=new Date(Date.parse(d));
+		return G_week.x[d.getDay()];
+	},
+	
+	getDate:function(now,days){
+		   //var now=new Date();   
+		   now=new Date(now.getTime()+86400000*days); 
+	},
+	getDateStr:function(now,days){
+		   //var now=new Date();   
+		   now=new Date(now.getTime()+86400000*days); 
+		   var yyyy=now.getFullYear(),mm=(now.getMonth()+1).toString(),dd=now.getDate().toString();   
+		   if(mm.length==1){mm='0'+mm;} if(dd.length==1){dd='0'+dd;}
+		   return (yyyy+'-'+mm+'-'+dd);        
+		  },
+		  //获取当前时间前个星期天
+	getWeek0:function(d){
+		return G_week.getDateStr(d, 0-G_week.getWeekDayByDate(d));
+	},
+	//获取当前时间后个星期6
+	getWeek6:function(d){
+		return G_week.getDateStr(d, 6-G_week.getWeekDayByDate(d));
+	}
+};
 function loadJS(url,callback,charset)
 {
 	var script = document.createElement('script');

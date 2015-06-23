@@ -156,12 +156,12 @@ var w_ch_cook={
 	callbackFN:null,
 	checkedClassuuid:null,
 	checkeduuids:null,
-	handleClick:function(m,uuids,imgArr){
+	handleClick:function(m,uuids){
 		w_ch_cook.hide();
 		if(m=="cancel")return;
 		
 		if(w_ch_cook.callbackFN){
-			w_ch_cook.callbackFN(uuids,imgArr);
+			w_ch_cook.callbackFN(uuids);
 		}
 	},
 	open:function(callbackFN,checkeduuids){

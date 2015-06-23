@@ -1079,10 +1079,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   <tr className={className} >
-  <td> 
-  <input type="checkbox" value={event.uuid} name="table_checkbox" />
-  </td>
-    <td><a href={"javascript:react_ajax_class_students_manage('"+event.uuid+"')"}>{event.plandate}</a></td>
+    <td><a href={"javascript:btn_click_cookbookPlan(null,'"+event.uuid+"')"}>{G_week.getWeekStr(event.plandate)}</a></td>
     <td>{event.time_1}</td>
     <td>{event.time_2}</td>
     <td>{event.time_3}</td>
@@ -1103,7 +1100,12 @@ return (
 <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
 <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
 </AMR_ButtonToolbar>
-	  <hr/>
+<div className="header">
+<div className="am-g">
+  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
+</div>
+<hr />
+</div>
 	  <div className="am-form-group">
   <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
   {this.props.group_list.map(function(event) {
@@ -1138,12 +1140,20 @@ handleClick: function(m) {
 		 if(m=="add"){
 			 this.props.handleClick(m,$('#selectgroup_uuid').val());
 			 return;
+		 }else if(m=="pre"){
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
+			 return;
+		 }else if(m=="next"){
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+			 return;
 		 }
+		 
+		 
 	 }
 },
 //
 handleChange_selectgroup_uuid:function(){
-	ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val());
+	ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),g_cookbookPlan_week_point);
 }
 });
 
@@ -1156,57 +1166,22 @@ var CookbookPlan_edit_EventRow = React.createClass({
 	        };
 		  },
 	componentDidMount: function() {
-		var lists=this.ajax_cookbookPlan_list(this.props.uuids);
+		var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
 		  if (this.isMounted()) {
 			   this.setState({
 		            items: lists
 		        });
+			   
 		  }
 	    
 	  },
-	  ajax_cookbookPlan_list:function(uuids){
+	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
+	  cookbookPlan_timeStr_to_list:function(cooks){
+		  if(cooks==null)return [];
+		  return cooks.split(",");
 		  
-		  var imgArr=[];
-		  var tmpO={};
-		  	tmpO.uuid="abc1";
-			 tmpO.src=hostUrl+"i/header.png";
-			 tmpO.name="测试数据1";
-			 
-			 imgArr.push(tmpO);
-			 tmpO={};
-				tmpO.uuid="abc2";
-			 tmpO.src=hostUrl+"i/header.png";
-			 tmpO.name="测试数据2";
-			
-			 imgArr.push(tmpO);
-		  return imgArr;
-		  
-			$.AMUI.progress.start();
-			var url = hostUrl + "rest/cookbook/list.json?type="+type;
-			$.ajax({
-				type : "GET",
-				url : url,
-				async: false,
-				data : "",
-				dataType : "json",
-				success : function(data) {
-					$.AMUI.progress.done();
-					if (data.ResMsg.status == "success") {
-						Store.setChooseCook(type,data.list);
-					} else {
-						alert(data.ResMsg.message);
-						G_resMsg_filter(data.ResMsg);
-					}
-				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+","+textStatus+"="+errorThrown);
-					 console.log(url+',error：', obj);
-					 console.log(url+',error：', textStatus);
-					 console.log(url+',error：', errorThrown);
-				}
-			});
-		},
+	  },
+	  
 		deleteImg:function(divid){
 			$("#"+divid).hide();
 		},
@@ -1214,19 +1189,18 @@ var CookbookPlan_edit_EventRow = React.createClass({
 			 var that=this;
 			  var checkeduuids =null;
 			  $("#"+divid+" > .G_cookplan_Img").each(function(){
-				  
 				  		if($(this).is(":hidden")){
-				  			alert(this.title);
 				  			return;
 				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
 						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
-			w_ch_cook.open(function(uuids,imgArr){
+			w_ch_cook.open(function(cooks){
 				  that.setState({
-			            items: imgArr
+			            items: that.cookbookPlan_timeStr_to_list(cooks)
 			        });
+				  $(".G_cookplan_Img").show();
 				  
 			  },checkeduuids);
 		  },
@@ -1237,12 +1211,17 @@ var CookbookPlan_edit_EventRow = React.createClass({
 	    		  
 	    		  {
 	    			  this.state.items.map(function(event) {
- 	    				
+	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
+	    				  var arr=event.split("$");
+	    				  if(arr.length!=3)return;
+	    				  var t_uuid=arr[0];
+	    				  var t_imguuid=arr[1];
+	    				  var t_name=arr[2];
  	    					 return (
- 	     	 	            		<div id={"div_cookPlan_Item_"+event.uuid} title={event.uuid} className="G_cookplan_Img" >
- 	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+event.uuid}  src={event.src} alt="图片不存在" title={event.name} />
- 	    		    	 	       			<div className="G_cookplan_Img_close"  onClick={that.deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}><img src={hostUrl+"i/close.png"} border="0" /></div>
- 	    		    	 	       			<span >{event.name}</span>
+ 	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
+ 	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
+ 	    		    	 	       			<div className="G_cookplan_Img_close"  onClick={that.deleteImg.bind(this,"div_cookPlan_Item_"+t_uuid)}><img src={hostUrl+"i/close.png"} border="0" /></div>
+ 	    		    	 	       			<span >{t_name}</span>
  	    		    	 	       		</div>		
  	     	 	            	);
  	     	 	          
@@ -1305,11 +1284,7 @@ return (
 		        
 		    
 		      <label>早餐:</label> 
-		      <input type="hidden" name="time_1" id="time_1"  value={o.time_1} onChange={this.handleChange} />
-		     
-		      <div>
 		      <CookbookPlan_edit_EventRow  uuids={o.time_1}  type={"time_1"}/>
-		      </div>
 		      
 		      <div className="cls"></div>
 		      <br/>

@@ -159,6 +159,7 @@ public class CookbookPlanService extends AbstractServcice {
 	 * 
 	 * @param uuids
 	 * @return
+	 * 食材uuid$图片uuid$食材名字
 	 */
 	private String makeCookbookName(String uuids) {
 		String rs = "";
@@ -167,7 +168,7 @@ public class CookbookPlanService extends AbstractServcice {
 			for (String s : uuid) {
 				Cookbook cb = CommonsCache.getCookbook(s);
 				if (cb != null)
-					rs += (cb.getUuid() + "$" + cb.getName() + ",");
+					rs += (s+"$"+cb.getUuid() + "$" + cb.getName() + ",");
 
 			}
 

@@ -1181,7 +1181,49 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 		  return cooks.split(",");
 		  
 	  },
-	  
+	  ajax_cookbookPlan_list:function(uuids){
+		  
+		  var imgArr=[];
+		  var tmpO={};
+		  	tmpO.uuid="abc1";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据1";
+			 
+			 imgArr.push(tmpO);
+			 tmpO={};
+				tmpO.uuid="abc2";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据2";
+			
+			 imgArr.push(tmpO);
+		  return imgArr;
+		  
+			$.AMUI.progress.start();
+			var url = hostUrl + "rest/cookbook/list.json?type="+type;
+			$.ajax({
+				type : "GET",
+				url : url,
+				async: false,
+				data : "",
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						Store.setChooseCook(type,data.list);
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+","+textStatus+"="+errorThrown);
+					 console.log(url+',error：', obj);
+					 console.log(url+',error：', textStatus);
+					 console.log(url+',error：', errorThrown);
+				}
+			});
+		},
 		deleteImg:function(divid){
 			$("#"+divid).hide();
 		},
@@ -1213,13 +1255,13 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 	    			  this.state.items.map(function(event) {
 	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
 	    				  var arr=event.split("$");
-	    				  if(arr.length!=3)return;
+	    				  if(arr.length!=2)return;
 	    				  var t_uuid=arr[0];
-	    				  var t_imguuid=arr[1];
-	    				  var t_name=arr[2];
+	    				  var t_name=arr[1];
+	    				  
  	    					 return (
  	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+t_uuid, title: t_uuid, className: "G_cookplan_Img"}, 
- 	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+t_uuid, src: G_imgPath+t_imguuid, alt: "图片不存在", title: t_name}), 
+ 	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+t_uuid, src: G_imgPath+t_uuid, alt: "图片不存在", title: t_name}), 
  	    		    	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: that.deleteImg.bind(this,"div_cookPlan_Item_"+t_uuid)}, React.createElement("img", {src: hostUrl+"i/close.png", border: "0"})), 
  	    		    	 	       			React.createElement("span", null, t_name)
  	    		    	 	       		)		
