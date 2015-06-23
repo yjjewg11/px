@@ -950,9 +950,13 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
+  React.createElement("td", null, 
+  React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+  ), 
     React.createElement("td", null, React.createElement("a", {href: "javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}, event.plandate)), 
     React.createElement("td", null, event.morning), 
-    React.createElement("td", null, event.afternoon)
+    React.createElement("td", null, event.afternoon), 
+    React.createElement("td", null, event.create_useruuid)
   ) 
 );
 }
@@ -964,10 +968,10 @@ var Teachingplan_EventsTable = React.createClass({displayName: "Teachingplan_Eve
 				 btn_click_teachingplan(m,null,classuuid);
 				 return;
 			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(null,null,--g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(null,--g_cookbookPlan_week_point);
 				 return;
 			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(null,null,++g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(null,++g_cookbookPlan_week_point);
 				 return;
 			 }
 	  },
@@ -1000,7 +1004,8 @@ React.createElement(AMR_ButtonToolbar, null,
       React.createElement("tr", null, 
       	React.createElement("th", null, "一周"), 
         React.createElement("th", null, "上午"), 
-        React.createElement("th", null, "下午")
+        React.createElement("th", null, "下午"), 
+        React.createElement("th", null, "创建人")
       )
     ), 
     React.createElement("tbody", null, 
@@ -1038,7 +1043,7 @@ return (
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		 React.createElement("label", {htmlFor: "name"}, "日期:"), 
-		 React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange}), 
+		 React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "plandate", id: "plandate", dateTime: o.plandate, onChange: this.handleChange}), 
 		      React.createElement("br", null), 
 	    React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange}), 
 		React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange}), 

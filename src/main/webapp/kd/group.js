@@ -945,15 +945,32 @@ function ajax_announcements_save(){
 
 
 //老师查询，条件groupuuid
-//
-function ajax_teachingplan_listByClass(classuuid) {
+//weeknum:0.表示当前周.-1上周,1下周.2下下周
+//记录当前翻页的周数
+var g_cookbookPlan_week_point=0;
+var g_teachingplan_classuuid=null;
+var g_teachingplan_classname=null;
+function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
+	if(classuuid)g_teachingplan_classuuid=classuuid;
+	else classuuid=g_teachingplan_classuuid;
+	if(classname)g_teachingplan_classname=classname;
+	else classname=g_teachingplan_classname;
+	
+	var now=new Date();
+	if(weeknum){
+		now=G_week.getDate(now,weeknum*7);
+	}else{
+		g_cookbookPlan_week_point=0;
+	}
+	var begDateStr=G_week.getWeek0(now);
+	var endDateStr=G_week.getWeek6(now);
 	
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/teachingplan/list.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {classuuid:classuuid},
+		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -961,7 +978,10 @@ function ajax_teachingplan_listByClass(classuuid) {
 				if(data.list==null)data.list=[];
 				React.render(React.createElement(Teachingplan_EventsTable, {
 					classuuid:classuuid,
+					classname:classname,
 					events: data.list,
+					begDateStr:begDateStr,
+					endDateStr:endDateStr,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -1295,7 +1315,7 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				//alert(data.ResMsg.message);
-				//Queue.doBackFN();
+				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

@@ -239,7 +239,7 @@ var ChooseClass_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
 
     return (
-      <tr  className={className} onClick={w_ch_class.handleClick.bind(this,"choose",event.uuid)}>
+      <tr  className={className} onClick={w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}>
         <td>{event.name}</td>
         <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
       </tr> 
@@ -324,7 +324,6 @@ var ChooseCook_Widget = React.createClass({
 			 var uuids=null;
 			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
 			 $($(".G_ch_cook_item_checked")).each(function(){
-				 uuids+=this.title;
 					 if(uuids==null){
 						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
 					 }
@@ -349,7 +348,6 @@ var ChooseCook_Widget = React.createClass({
 	  var that=this;
 	  if(!this.props.events)this.props.events=[];
 	  
-		var typeArr=[1,2,3,4,5];
     return (
     		
 	 <div>

@@ -207,12 +207,12 @@ var w_ch_class={
 	groupuuid:null,
 	callbackFN:null,
 	checkedClassuuid:null,
-	handleClick:function(m,uuid){
+	handleClick:function(m,uuid,name){
 		w_ch_class.hide();
 		if(m=="cancel")return;
 		
 		if(w_ch_class.callbackFN){
-			w_ch_class.callbackFN(uuid);
+			w_ch_class.callbackFN(uuid,name);
 		}
 	},
 	open:function(callbackFN,groupuuid){

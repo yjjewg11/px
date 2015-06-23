@@ -123,7 +123,7 @@ public class CookbookPlanService extends AbstractServcice {
 				.getHibernateTemplate()
 				.find("from CookbookPlan where groupuuid=? and plandate<=? and plandate >=?",
 						groupuuid, endDate, begDate);
-
+		this.nSimpleHibernateDao.getHibernateTemplate().clear();
 		for(CookbookPlan c:list){
 			c.setTime_1(this.makeCookbookName(c.getTime_1()));
 			c.setTime_2(this.makeCookbookName(c.getTime_2()));
@@ -143,6 +143,7 @@ public class CookbookPlanService extends AbstractServcice {
 	public CookbookPlan get(String uuid) {
 		CookbookPlan c = (CookbookPlan) this.nSimpleHibernateDao.getObjectById(
 				CookbookPlan.class, uuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().clear();
 		if (c != null) {
 			c.setTime_1(this.makeCookbookName(c.getTime_1()));
 			c.setTime_2(this.makeCookbookName(c.getTime_2()));

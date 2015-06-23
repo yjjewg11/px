@@ -950,13 +950,9 @@ var className = event.highlight ? 'am-active' :
 
 return (
   <tr className={className} >
-  <td> 
-  <input type="checkbox" value={event.uuid} name="table_checkbox" />
-  </td>
     <td><a href={"javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}>{event.plandate}</a></td>
     <td>{event.morning}</td>
     <td>{event.afternoon}</td>
-    <td>{event.create_useruuid}</td>
   </tr> 
 );
 }
@@ -967,20 +963,13 @@ var Teachingplan_EventsTable = React.createClass({
 			 if(m=="add"){
 				 btn_click_teachingplan(m,null,classuuid);
 				 return;
+			 }else if(m=="pre"){
+				 ajax_teachingplan_listByClass(null,null,--g_cookbookPlan_week_point);
+				 return;
+			 }else if(m=="next"){
+				 ajax_teachingplan_listByClass(null,null,++g_cookbookPlan_week_point);
+				 return;
 			 }
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  btn_click_teachingplan(m,$('#selectgroup_uuid').val(),uuids);
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
@@ -994,7 +983,7 @@ return (
 <div>
 <div className="header">
 	  <div className="am-g">
-	    <h1>【小一班】本周[2015-06-16~2015-06-20]</h1>
+	  <h1>【{this.props.classname}】[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
 	  </div>
 	  <hr />
 	</div>
@@ -1012,7 +1001,6 @@ return (
       	<th>一周</th>
         <th>上午</th>
         <th>下午</th>
-        <th>创建人</th>
       </tr> 
     </thead>
     <tbody>
@@ -1050,7 +1038,7 @@ return (
 		<input type="hidden" name="uuid"  value={o.uuid}/>
 		<input type="hidden" name="classuuid"  value={o.classuuid}/>
 		 <label htmlFor="name">日期:</label>
-		 <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandate" id="plandate" dateTime={o.plandate}  onChange={this.handleChange}/>
+		 <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
 		      <br/>
 	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
 		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
@@ -1072,6 +1060,17 @@ return (
 
 //cookbookPlan
 var CookbookPlan_EventRow = React.createClass({ 
+	parseTimes:function(s){
+		var rs=null;
+		if(s==null||s=="")return "";
+		var arr=s.split(",");
+		for(var i=0;i<arr.length;i++){
+			var t_arr=arr[i].split("$");
+			if(rs==null)rs=t_arr[t_arr.length-1];
+			else rs+=","+t_arr[t_arr.length-1];
+		}  
+		return rs;
+	},
 render: function() {
 var event = this.props.event;
 var className = event.highlight ? 'am-active' :
@@ -1080,13 +1079,11 @@ var className = event.highlight ? 'am-active' :
 return (
   <tr className={className} >
     <td><a href={"javascript:btn_click_cookbookPlan(null,'"+event.uuid+"')"}>{G_week.getWeekStr(event.plandate)}</a></td>
-    <td>{event.time_1}</td>
-    <td>{event.time_2}</td>
-    <td>{event.time_3}</td>
-    <td>{event.time_4}</td>
-    <td>{event.time_5}</td>
-    <td>{event.time_6}</td>
-    <td>{event.time_7}</td>
+    <td>{this.parseTimes(event.time_1)}</td>
+    <td>{this.parseTimes(event.time_2)}</td>
+    <td>{this.parseTimes(event.time_3)}</td>
+    <td>{this.parseTimes(event.time_4)}</td>
+    <td>{this.parseTimes(event.time_5)}</td>
   </tr> 
 );
 }
@@ -1119,9 +1116,9 @@ return (
       <tr>
         <th>一周</th>
         <th>早餐</th>
-        <th>加餐</th>
+        <th>早上加餐</th>
         <th>午餐</th>
-        <th>加餐</th>
+        <th>下午加餐</th>
         <th>晚餐</th>
       </tr> 
     </thead>
@@ -1144,7 +1141,7 @@ handleClick: function(m) {
 			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
 			 return;
 		 }else if(m=="next"){
-			 this.props.handleClick(m,$('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
 			 return;
 		 }
 		 
@@ -1285,7 +1282,22 @@ return (
 		    
 		      <label>早餐:</label> 
 		      <CookbookPlan_edit_EventRow  uuids={o.time_1}  type={"time_1"}/>
-		      
+		      <div className="cls"></div>
+		      <br/>
+		      <label>早上加餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.time_2}  type={"time_2"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>午餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.time_3}  type={"time_3"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>下午加餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.time_4}  type={"time_4"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>晚餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.time_5}  type={"time_5"}/>
 		      <div className="cls"></div>
 		      <br/>
 		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>

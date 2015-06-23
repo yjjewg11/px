@@ -950,9 +950,13 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
+  React.createElement("td", null, 
+  React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+  ), 
     React.createElement("td", null, React.createElement("a", {href: "javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}, event.plandate)), 
     React.createElement("td", null, event.morning), 
-    React.createElement("td", null, event.afternoon)
+    React.createElement("td", null, event.afternoon), 
+    React.createElement("td", null, event.create_useruuid)
   ) 
 );
 }
@@ -1000,7 +1004,8 @@ React.createElement(AMR_ButtonToolbar, null,
       React.createElement("tr", null, 
       	React.createElement("th", null, "一周"), 
         React.createElement("th", null, "上午"), 
-        React.createElement("th", null, "下午")
+        React.createElement("th", null, "下午"), 
+        React.createElement("th", null, "创建人")
       )
     ), 
     React.createElement("tbody", null, 

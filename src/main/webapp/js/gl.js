@@ -54,6 +54,7 @@ var G_week={
 		return d.getDay();
 	},
 	getWeekStr:function(d){
+		return d;
 		if(d==null||d=="")return "";
 		if(typeof(d)=='string') d=new Date(Date.parse(d));
 		return G_week.x[d.getDay()];
@@ -61,7 +62,7 @@ var G_week={
 	
 	getDate:function(now,days){
 		   //var now=new Date();   
-		   now=new Date(now.getTime()+86400000*days); 
+		   return new Date(now.getTime()+86400000*days); 
 	},
 	getDateStr:function(now,days){
 		   //var now=new Date();   

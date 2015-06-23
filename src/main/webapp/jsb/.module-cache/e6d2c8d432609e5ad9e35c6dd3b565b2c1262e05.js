@@ -950,9 +950,13 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
+  React.createElement("td", null, 
+  React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+  ), 
     React.createElement("td", null, React.createElement("a", {href: "javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}, event.plandate)), 
     React.createElement("td", null, event.morning), 
-    React.createElement("td", null, event.afternoon)
+    React.createElement("td", null, event.afternoon), 
+    React.createElement("td", null, event.create_useruuid)
   ) 
 );
 }
@@ -963,13 +967,20 @@ var Teachingplan_EventsTable = React.createClass({displayName: "Teachingplan_Eve
 			 if(m=="add"){
 				 btn_click_teachingplan(m,null,classuuid);
 				 return;
-			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(null,null,--g_cookbookPlan_week_point);
-				 return;
-			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(null,null,++g_cookbookPlan_week_point);
-				 return;
 			 }
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  btn_click_teachingplan(m,$('#selectgroup_uuid').val(),uuids);
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
@@ -983,7 +994,7 @@ return (
 React.createElement("div", null, 
 React.createElement("div", {className: "header"}, 
 	  React.createElement("div", {className: "am-g"}, 
-	  React.createElement("h1", null, "【", this.props.classname, "】[", this.props.begDateStr, " 到 ", this.props.endDateStr, "]")
+	    React.createElement("h1", null, "【小一班】本周[2015-06-16~2015-06-20]")
 	  ), 
 	  React.createElement("hr", null)
 	), 
@@ -1000,7 +1011,8 @@ React.createElement(AMR_ButtonToolbar, null,
       React.createElement("tr", null, 
       	React.createElement("th", null, "一周"), 
         React.createElement("th", null, "上午"), 
-        React.createElement("th", null, "下午")
+        React.createElement("th", null, "下午"), 
+        React.createElement("th", null, "创建人")
       )
     ), 
     React.createElement("tbody", null, 
@@ -1038,7 +1050,7 @@ return (
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		 React.createElement("label", {htmlFor: "name"}, "日期:"), 
-		 React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange}), 
+		 React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "plandate", id: "plandate", dateTime: o.plandate, onChange: this.handleChange}), 
 		      React.createElement("br", null), 
 	    React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange}), 
 		React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange}), 
@@ -1066,10 +1078,11 @@ var CookbookPlan_EventRow = React.createClass({displayName: "CookbookPlan_EventR
 		var arr=s.split(",");
 		for(var i=0;i<arr.length;i++){
 			var t_arr=arr[i].split("$");
-			if(rs==null)rs=t_arr[t_arr.length-1];
-			else rs+=","+t_arr[t_arr.length-1];
+			if(t_arr.length!=3) continue;
+			if(rs==null)rs=t_arr[2];
+			else rs+=","+t_arr[2];
 		}  
-		return rs;
+		  var rs;
 	},
 render: function() {
 var event = this.props.event;
@@ -1079,11 +1092,13 @@ var className = event.highlight ? 'am-active' :
 return (
   React.createElement("tr", {className: className}, 
     React.createElement("td", null, React.createElement("a", {href: "javascript:btn_click_cookbookPlan(null,'"+event.uuid+"')"}, G_week.getWeekStr(event.plandate))), 
-    React.createElement("td", null, this.parseTimes(event.time_1)), 
-    React.createElement("td", null, this.parseTimes(event.time_2)), 
-    React.createElement("td", null, this.parseTimes(event.time_3)), 
-    React.createElement("td", null, this.parseTimes(event.time_4)), 
-    React.createElement("td", null, this.parseTimes(event.time_5))
+    React.createElement("td", null, event.time_1), 
+    React.createElement("td", null, event.time_2), 
+    React.createElement("td", null, event.time_3), 
+    React.createElement("td", null, event.time_4), 
+    React.createElement("td", null, event.time_5), 
+    React.createElement("td", null, event.time_6), 
+    React.createElement("td", null, event.time_7)
   ) 
 );
 }
@@ -1116,9 +1131,9 @@ React.createElement("hr", null)
       React.createElement("tr", null, 
         React.createElement("th", null, "一周"), 
         React.createElement("th", null, "早餐"), 
-        React.createElement("th", null, "早上加餐"), 
+        React.createElement("th", null, "加餐"), 
         React.createElement("th", null, "午餐"), 
-        React.createElement("th", null, "下午加餐"), 
+        React.createElement("th", null, "加餐"), 
         React.createElement("th", null, "晚餐")
       )
     ), 
@@ -1141,7 +1156,7 @@ handleClick: function(m) {
 			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
 			 return;
 		 }else if(m=="next"){
-			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+			 this.props.handleClick(m,$('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
 			 return;
 		 }
 		 
@@ -1282,22 +1297,7 @@ return (
 		    
 		      React.createElement("label", null, "早餐:"), 
 		      React.createElement(CookbookPlan_edit_EventRow, {uuids: o.time_1, type: "time_1"}), 
-		      React.createElement("div", {className: "cls"}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", null, "早上加餐:"), 
-		      React.createElement(CookbookPlan_edit_EventRow, {uuids: o.time_2, type: "time_2"}), 
-		      React.createElement("div", {className: "cls"}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", null, "午餐:"), 
-		      React.createElement(CookbookPlan_edit_EventRow, {uuids: o.time_3, type: "time_3"}), 
-		      React.createElement("div", {className: "cls"}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", null, "下午加餐:"), 
-		      React.createElement(CookbookPlan_edit_EventRow, {uuids: o.time_4, type: "time_4"}), 
-		      React.createElement("div", {className: "cls"}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", null, "晚餐:"), 
-		      React.createElement(CookbookPlan_edit_EventRow, {uuids: o.time_5, type: "time_5"}), 
+		      
 		      React.createElement("div", {className: "cls"}), 
 		      React.createElement("br", null), 
 		      React.createElement("button", {type: "button", onClick: ajax_cookbookPlan_save, className: "am-btn am-btn-primary"}, "提交")
