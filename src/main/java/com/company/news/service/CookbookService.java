@@ -47,8 +47,8 @@ public class CookbookService extends AbstractServcice {
 			return false;
 		}
 		
-		if (name.indexOf("$")>-1) {
-			responseMessage.setMessage("名字中不能包含$");
+		if (name.indexOf("$")>-1||name.indexOf(",")>-1) {
+			responseMessage.setMessage("名字中不能包含以下字符:$,");
 			return false;
 		}
 
