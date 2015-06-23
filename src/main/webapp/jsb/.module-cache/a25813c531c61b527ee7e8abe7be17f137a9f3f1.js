@@ -1157,6 +1157,7 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 		  },
 	componentDidMount: function() {
 		var lists=this.ajax_cookbookPlan_list(this.props.uuids);
+		lists=[];
 		  if (this.isMounted()) {
 			   this.setState({
 		            items: lists
@@ -1177,6 +1178,11 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 				tmpO.uuid="abc2";
 			 tmpO.src=hostUrl+"i/header.png";
 			 tmpO.name="测试数据2";
+			 
+			 imgArr.push(tmpO);
+			 
+			 tmpO={};
+			tmpO.btn="add";
 			
 			 imgArr.push(tmpO);
 		  return imgArr;
@@ -1208,22 +1214,22 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 			});
 		},
 		deleteImg:function(divid){
-			$("#"+divid).hide();
+			$("#"+divid).remove();
 		},
 		 btn_addCookplan: function(divid) {
 			 var that=this;
 			  var checkeduuids =null;
 			  $("#"+divid+" > .G_cookplan_Img").each(function(){
-				  
-				  		if($(this).is(":hidden")){
-				  			alert(this.title);
-				  			return;
-				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
 						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
 			w_ch_cook.open(function(uuids,imgArr){
+				
+				 tmpO={};
+					tmpO.btn="add";
+					
+					imgArr.push(tmpO);
 				  that.setState({
 			            items: imgArr
 			        });
@@ -1237,7 +1243,12 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 	    		  
 	    		  
 	    			  this.state.items.map(function(event) {
- 	    				
+ 	    				 if(event.btn=="add"){
+ 	    					 return (
+ 	    							React.createElement("button", {type: "button", onClick: that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type), className: "am-btn am-btn-primary"}, "添加") 
+ 	    					 );
+ 	    				 }
+ 	    				 else {
  	    					 return (
  	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+event.uuid, title: event.uuid, className: "G_cookplan_Img"}, 
  	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+event.uuid, src: event.src, alt: "图片不存在", title: event.name}), 
@@ -1246,10 +1257,10 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
  	    		    	 	       		)		
  	     	 	            	);
  	     	 	          
- 	    				
- 	    			 }), //end map
+ 	    				}//end else
+ 	    			 })//end map
 	    		  
-	    		  React.createElement("button", {type: "button", onClick: that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type), className: "am-btn am-btn-primary"}, "添加")
+	    		  
  	    		)
 		
 	  )

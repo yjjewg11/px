@@ -360,19 +360,19 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
     		
 	 React.createElement(AMUIReact.Tabs, {defaultActiveKey: "1", justify: true}, 
 	    React.createElement(AMUIReact.Tabs.Item, {eventKey: "1", title: "主食"}, 
-	    React.createElement(ChooseCook_EventRow, {type: 1, checkeduuids: that.props.checkeduuids})
+	    React.createElement(ChooseCook_EventRow, {type: 1, checkedCookuuid: that.props.checkedCookuuid})
 	    ), 
 	    React.createElement(AMUIReact.Tabs.Item, {eventKey: "2", title: "汤粥"}, 
-	    React.createElement(ChooseCook_EventRow, {type: 2, checkeduuids: that.props.checkeduuids})
+	    React.createElement(ChooseCook_EventRow, {type: 2, checkedCookuuid: that.props.checkedCookuuid})
 	    ), 
 	    React.createElement(AMUIReact.Tabs.Item, {eventKey: "3", title: "炒菜"}, 
-	    React.createElement(ChooseCook_EventRow, {type: 3, checkeduuids: that.props.checkeduuids})
+	    React.createElement(ChooseCook_EventRow, {type: 3, checkedCookuuid: that.props.checkedCookuuid})
 	    ), 
 	    React.createElement(AMUIReact.Tabs.Item, {eventKey: "4", title: "水果"}, 
-	    React.createElement(ChooseCook_EventRow, {type: 4, checkeduuids: that.props.checkeduuids})
+	    React.createElement(ChooseCook_EventRow, {type: 4, checkedCookuuid: that.props.checkedCookuuid})
 	    ), 
 	      React.createElement(AMUIReact.Tabs.Item, {eventKey: "5", title: "其他"}, 
-	      React.createElement(ChooseCook_EventRow, {type: 5, checkeduuids: that.props.checkeduuids})
+	      React.createElement(ChooseCook_EventRow, {type: 5, checkedCookuuid: that.props.checkedCookuuid})
 	    )
 	  )
 	)
@@ -441,7 +441,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
       	 var event = this.props.event;
     	    return (
     	    		  React.createElement("div", {id: "div_cook_"+this.props.type}, 
-    	    	
+    	    		  React.createElement("div", null), 
     	    		  
      	    			 this.state.items.map(function(event) {
      	    				  var is_Checked=false;

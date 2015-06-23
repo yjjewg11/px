@@ -186,11 +186,19 @@ function login_affter_init(){
 
 }
 
+/**
+ * 显示bodydiv,隐藏其他所有控件div
+ */
+function body_show(){
+	 w_ch_user.hide();
+	 w_ch_cook.hide();
+}
+
 var div_menu_handleClick = function(nav, index, e) {
 	  if (nav && nav.subMenu) {
 	    // 有二级菜单的链接点击了
 		 if( typeof  nav.fn=="function"){
-			 w_ch_user.hide();
+			 body_show();
 			 this.closeAll();
 			 nav.fn();
 			 
@@ -199,7 +207,7 @@ var div_menu_handleClick = function(nav, index, e) {
 	  } else {
 	    e.preventDefault();
 	    if( typeof  nav.fn=="function"){
-	    	w_ch_user.hide();
+	    	body_show();
 	    	this.closeAll();
 			 nav.fn();
 			 

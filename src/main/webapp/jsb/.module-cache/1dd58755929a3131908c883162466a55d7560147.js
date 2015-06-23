@@ -1157,6 +1157,7 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 		  },
 	componentDidMount: function() {
 		var lists=this.ajax_cookbookPlan_list(this.props.uuids);
+		
 		  if (this.isMounted()) {
 			   this.setState({
 		            items: lists
@@ -1177,7 +1178,7 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 				tmpO.uuid="abc2";
 			 tmpO.src=hostUrl+"i/header.png";
 			 tmpO.name="测试数据2";
-			
+			 
 			 imgArr.push(tmpO);
 		  return imgArr;
 		  
@@ -1208,22 +1209,17 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 			});
 		},
 		deleteImg:function(divid){
-			$("#"+divid).hide();
+			$("#"+divid).remove();
 		},
 		 btn_addCookplan: function(divid) {
 			 var that=this;
 			  var checkeduuids =null;
 			  $("#"+divid+" > .G_cookplan_Img").each(function(){
-				  
-				  		if($(this).is(":hidden")){
-				  			alert(this.title);
-				  			return;
-				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
 						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
-			w_ch_cook.open(function(uuids,imgArr){
+			  w_ch_cook.open(function(uuids,imgArr){
 				  that.setState({
 			            items: imgArr
 			        });
@@ -1234,40 +1230,29 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 		var that=this;
 	    return (
 	    		  React.createElement("div", {id: "div_cookPlan_"+this.props.type}, 
+	    		  React.createElement("div", null, 
 	    		  
-	    		  
-	    			  this.state.items.map(function(event) {
- 	    				
- 	    					 return (
- 	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+event.uuid, title: event.uuid, className: "G_cookplan_Img"}, 
- 	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+event.uuid, src: event.src, alt: "图片不存在", title: event.name}), 
- 	    		    	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: that.deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}, React.createElement("img", {src: hostUrl+"i/close.png", border: "0"})), 
- 	    		    	 	       			React.createElement("span", null, event.name)
- 	    		    	 	       		)		
- 	     	 	            	);
- 	     	 	          
- 	    				
- 	    			 }), //end map
-	    		  
-	    		  React.createElement("button", {type: "button", onClick: that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type), className: "am-btn am-btn-primary"}, "添加")
- 	    		)
+ 	    			 this.state.items.map(function(event) {
+ 	 	            return (
+ 	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+event.uuid, title: event.uuid, className: "G_cookplan_Img"}, 
+		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+event.uuid, src: event.src, alt: "图片不存在", title: event.name}), 
+		    	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: that.deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}, React.createElement("img", {src: hostUrl+"i/close.png", border: "0"})), 
+		    	 	       			React.createElement("span", null, event.name)
+		    	 	       		)		
+ 	 	            	);
+ 	 	          })
+ 	 	          
+	    		  ), 
+	    		  React.createElement("button", {type: "button", onClick: this.btn_addCookplan.bind(this,"div_cookPlan_"+this.props.type), className: "am-btn am-btn-primary"}, "添加")
+	      )
+	    		
 		
-	  )
-	  }
+	  )}
 	});
 
-var CookbookPlan_edit = React.createClass({displayName: "CookbookPlan_edit", 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editCookbookPlanForm').serializeJson());
-	  },
-	 
-	render: function() {
-		
-	}
-});
+function cookplan_deleteImg(divid){
+	$("#"+divid).remove();
+}
 var CookbookPlan_edit = React.createClass({displayName: "CookbookPlan_edit", 
 	 getInitialState: function() {
 		    return this.props.formdata;

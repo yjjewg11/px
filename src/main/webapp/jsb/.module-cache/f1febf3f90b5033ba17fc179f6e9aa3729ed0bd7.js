@@ -1237,7 +1237,12 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 	    		  
 	    		  
 	    			  this.state.items.map(function(event) {
- 	    				
+ 	    				 if(event.btn=="add"){
+ 	    					 return (
+ 	    							React.createElement("button", {type: "button", onClick: that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type), className: "am-btn am-btn-primary"}, "添加") 
+ 	    					 );
+ 	    				 }
+ 	    				 else {
  	    					 return (
  	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+event.uuid, title: event.uuid, className: "G_cookplan_Img"}, 
  	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+event.uuid, src: event.src, alt: "图片不存在", title: event.name}), 
@@ -1246,10 +1251,10 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
  	    		    	 	       		)		
  	     	 	            	);
  	     	 	          
- 	    				
- 	    			 }), //end map
+ 	    				}//end else
+ 	    			 })//end map
 	    		  
-	    		  React.createElement("button", {type: "button", onClick: that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type), className: "am-btn am-btn-primary"}, "添加")
+	    		  
  	    		)
 		
 	  )

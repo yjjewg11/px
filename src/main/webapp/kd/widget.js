@@ -185,6 +185,7 @@ var w_ch_cook={
 		
 		React.render(React.createElement(ChooseCook_Widget, {
 			handleClick:w_ch_cook.handleClick,
+			checkeduuids:w_ch_cook.checkeduuids,
 			responsive: true, bordered: true, striped :true,hover:true,striped:true
 			}), document.getElementById(w_ch_cook.div_id));
 		$("#"+this.div_body).hide();

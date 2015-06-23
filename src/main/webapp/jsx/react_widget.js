@@ -353,28 +353,26 @@ var ChooseCook_Widget = React.createClass({
     return (
     		
 	 <div>
-	    <AMUIReact_Sticky>
 	    <AMUIReact_ButtonToolbar>
 	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
 	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
 	  </AMUIReact_ButtonToolbar>
-	  </AMUIReact_Sticky>
     		
 	 <AMUIReact.Tabs defaultActiveKey="1" justify>
 	    <AMUIReact.Tabs.Item eventKey="1" title="主食">
-	    <ChooseCook_EventRow type={1} checkedCookuuid={that.props.checkedCookuuid}  />
+	    <ChooseCook_EventRow type={1} checkeduuids={that.props.checkeduuids}  />
 	    </AMUIReact.Tabs.Item>
 	    <AMUIReact.Tabs.Item eventKey="2" title="汤粥">
-	    <ChooseCook_EventRow type={2} checkedCookuuid={that.props.checkedCookuuid}  />
+	    <ChooseCook_EventRow type={2} checkeduuids={that.props.checkeduuids}  />
 	    </AMUIReact.Tabs.Item>
 	    <AMUIReact.Tabs.Item eventKey="3" title="炒菜">
-	    <ChooseCook_EventRow type={3} checkedCookuuid={that.props.checkedCookuuid}  />
+	    <ChooseCook_EventRow type={3} checkeduuids={that.props.checkeduuids}  />
 	    </AMUIReact.Tabs.Item>
 	    <AMUIReact.Tabs.Item eventKey="4" title="水果">
-	    <ChooseCook_EventRow type={4} checkedCookuuid={that.props.checkedCookuuid}  />
+	    <ChooseCook_EventRow type={4} checkeduuids={that.props.checkeduuids}  />
 	    </AMUIReact.Tabs.Item>
 	      <AMUIReact.Tabs.Item eventKey="5" title="其他">
-	      <ChooseCook_EventRow type={5} checkedCookuuid={that.props.checkedCookuuid}  />
+	      <ChooseCook_EventRow type={5} checkeduuids={that.props.checkeduuids}  />
 	    </AMUIReact.Tabs.Item>
 	  </AMUIReact.Tabs>
 	</div>
@@ -443,6 +441,7 @@ var ChooseCook_Widget = React.createClass({
       	 var event = this.props.event;
     	    return (
     	    		  <div id={"div_cook_"+this.props.type}>
+    	    	
     	    		  {
      	    			 this.state.items.map(function(event) {
      	    				  var is_Checked=false;
@@ -457,7 +456,7 @@ var ChooseCook_Widget = React.createClass({
      	 	          })
      	 	          }
 
-    	    		  
+    	    		
     			      <div id={"divCookItem_add"} className="G_ch_cook_item" onClick={w_ch_cook.add_img.bind(this,that.props.type)}>
     					<img src={hostUrl+"i/addCook.gif"} alt="本地上传" />
     				</div>

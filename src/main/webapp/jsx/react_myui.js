@@ -1098,12 +1098,11 @@ var CookbookPlan_EventsTable = React.createClass({
 render: function() {
 return (
 <div>
-<AMR_Sticky>
 <AMR_ButtonToolbar>
 <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
 <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	  </AMR_ButtonToolbar>
-	  </AMR_Sticky>
+<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
+</AMR_ButtonToolbar>
 	  <hr/>
 	  <div className="am-form-group">
   <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -1158,9 +1157,12 @@ var CookbookPlan_edit_EventRow = React.createClass({
 		  },
 	componentDidMount: function() {
 		var lists=this.ajax_cookbookPlan_list(this.props.uuids);
-	       this.setState({
-	            items: lists
-	        });
+		  if (this.isMounted()) {
+			   this.setState({
+		            items: lists
+		        });
+		  }
+	    
 	  },
 	  ajax_cookbookPlan_list:function(uuids){
 		  
@@ -1175,7 +1177,7 @@ var CookbookPlan_edit_EventRow = React.createClass({
 				tmpO.uuid="abc2";
 			 tmpO.src=hostUrl+"i/header.png";
 			 tmpO.name="测试数据2";
-			 
+			
 			 imgArr.push(tmpO);
 		  return imgArr;
 		  
@@ -1206,17 +1208,22 @@ var CookbookPlan_edit_EventRow = React.createClass({
 			});
 		},
 		deleteImg:function(divid){
-			$("#"+divid).remove();
+			$("#"+divid).hide();
 		},
 		 btn_addCookplan: function(divid) {
 			 var that=this;
 			  var checkeduuids =null;
 			  $("#"+divid+" > .G_cookplan_Img").each(function(){
+				  
+				  		if($(this).is(":hidden")){
+				  			alert(this.title);
+				  			return;
+				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
 						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
-			  w_ch_cook.open(function(uuids,imgArr){
+			w_ch_cook.open(function(uuids,imgArr){
 				  that.setState({
 			            items: imgArr
 			        });
@@ -1227,28 +1234,40 @@ var CookbookPlan_edit_EventRow = React.createClass({
 		var that=this;
 	    return (
 	    		  <div id={"div_cookPlan_"+this.props.type}>
-	    		  {
- 	    			 this.state.items.map(function(event) {
- 	 	            return (
- 	 	            		<div id={"div_cookPlan_Item_"+event.uuid} title={event.uuid} className="G_cookplan_Img" >
-		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+event.uuid}  src={event.src} alt="图片不存在" title={event.name} />
-		    	 	       			<div className="G_cookplan_Img_close"  onclick={cookplan_deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}><img src={hostUrl+"i/close.png"} border="0" /></div>
-		    	 	       			<span >{event.name}</span>
-		    	 	       		</div>		
- 	 	            	);
- 	 	          })
- 	 	          }
 	    		  
-	    		  <button type="button"  onClick={this.btn_addCookplan.bind(this,"div_cookPlan_"+this.props.type)}  className="am-btn am-btn-primary">添加</button>
-	      </div>
-	    		
+	    		  {
+	    			  this.state.items.map(function(event) {
+ 	    				
+ 	    					 return (
+ 	     	 	            		<div id={"div_cookPlan_Item_"+event.uuid} title={event.uuid} className="G_cookplan_Img" >
+ 	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+event.uuid}  src={event.src} alt="图片不存在" title={event.name} />
+ 	    		    	 	       			<div className="G_cookplan_Img_close"  onClick={that.deleteImg.bind(this,"div_cookPlan_Item_"+event.uuid)}><img src={hostUrl+"i/close.png"} border="0" /></div>
+ 	    		    	 	       			<span >{event.name}</span>
+ 	    		    	 	       		</div>		
+ 	     	 	            	);
+ 	     	 	          
+ 	    				
+ 	    			 })//end map
+	    		  } 
+	    		  <button type="button"  onClick={that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type)}  className="am-btn am-btn-primary">添加</button> 
+ 	    		</div>
 		
-	  )}
+	  )
+	  }
 	});
 
-function cookplan_deleteImg(divid){
-	$("#"+divid).remove();
-}
+var CookbookPlan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editCookbookPlanForm').serializeJson());
+	  },
+	 
+	render: function() {
+		
+	}
+});
 var CookbookPlan_edit = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -1287,7 +1306,11 @@ return (
 		    
 		      <label>早餐:</label> 
 		      <input type="hidden" name="time_1" id="time_1"  value={o.time_1} onChange={this.handleChange} />
+		     
+		      <div>
 		      <CookbookPlan_edit_EventRow  uuids={o.time_1}  type={"time_1"}/>
+		      </div>
+		      
 		      <div className="cls"></div>
 		      <br/>
 		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>
