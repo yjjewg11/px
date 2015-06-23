@@ -25,6 +25,7 @@ import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -44,35 +45,35 @@ public class TeachingPlanService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(String morning,String afternoon,String plandateStr,String classuuid,
-			ResponseMessage responseMessage,String create_useruuid) throws Exception {
-		if (StringUtils.isBlank(plandateStr)) {
+	public boolean add(TeachingPlanJsonform teachingPlanJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if (StringUtils.isBlank(teachingPlanJsonform.getPlandateStr())) {
 			responseMessage.setMessage("plandateStr不能为空！");
 			return false;
 		}
 		
-		if (StringUtils.isBlank(classuuid)) {
+		if (StringUtils.isBlank(teachingPlanJsonform.getClassuuid())) {
 			responseMessage.setMessage("classuuid不能为空！");
 			return false;
 		}
 
-		Date plandate = TimeUtils.string2Timestamp(null,plandateStr);
+		Date plandate = TimeUtils.string2Timestamp(null,teachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
 			responseMessage.setMessage("Plandate格式不正确");
 			return false;
 		}
 
-		Teachingplan teachingplan = this.getByPlandateAndClassuuid(plandate,classuuid);
+		Teachingplan teachingplan = this.getByPlandateAndClassuuid(plandate,teachingPlanJsonform.getClassuuid());
 
 		if (teachingplan == null)
 			teachingplan = new Teachingplan();
 
-		teachingplan.setAfternoon(afternoon);
-		teachingplan.setClassuuid(classuuid);
+		teachingplan.setAfternoon(teachingPlanJsonform.getAfternoon());
+		teachingplan.setClassuuid(teachingPlanJsonform.getClassuuid());
 		teachingplan.setPlandate(plandate);
-		teachingplan.setMorning(morning);
-		teachingplan.setCreate_useruuid(create_useruuid);
+		teachingplan.setMorning(teachingPlanJsonform.getMorning());
+		teachingplan.setCreate_useruuid(teachingPlanJsonform.getCreate_useruuid());
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(
 				teachingplan);

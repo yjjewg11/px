@@ -15,6 +15,8 @@ import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Teachingplan;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
+import com.company.news.jsonform.StudentJsonform;
+import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.CookbookPlanService;
 import com.company.news.service.TeachingPlanService;
@@ -39,10 +41,25 @@ public class TeachingPlanController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		TeachingPlanJsonform teachingPlanJsonform;
+		try {
+			teachingPlanJsonform = (TeachingPlanJsonform) this
+					.bodyJsonToFormObject(bodyJson, TeachingPlanJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		teachingPlanJsonform.setCreate_useruuid(this.getUserInfoBySession(
+				request).getUuid());
 
 		try {
-			boolean flag = teachingPlanService.add(request.getParameter("morning") ,request.getParameter("afternoon") ,request.getParameter("plandateStr") ,request.getParameter("classuuid") ,
-					responseMessage,this.getUserInfoBySession(request).getName());
+			boolean flag = teachingPlanService.add(teachingPlanJsonform,
+					responseMessage);
 
 			if (!flag)// 请求服务返回失败标示
 				return "";
@@ -94,8 +111,8 @@ public class TeachingPlanController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
-			boolean flag = teachingPlanService.delete(request.getParameter("uuid"),
-					responseMessage);
+			boolean flag = teachingPlanService.delete(
+					request.getParameter("uuid"), responseMessage);
 			if (!flag)
 				return "";
 		} catch (Exception e) {
@@ -109,14 +126,15 @@ public class TeachingPlanController extends AbstractRESTController {
 		responseMessage.setMessage("删除成功");
 		return "";
 	}
-	
+
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+	public String get(@PathVariable String uuid, ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		Teachingplan t = teachingPlanService.get(uuid);
-		
-		model.addAttribute(RestConstants.Return_G_entity,t);
+
+		model.addAttribute(RestConstants.Return_G_entity, t);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
