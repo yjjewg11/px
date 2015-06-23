@@ -280,7 +280,6 @@ return (
 	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "add_basedatatype")} round>添加</AMUIReact.Button>
 	 </AMUIReact.ButtonToolbar>
 	  <hr/>
-</div>
 	  
   <AMUIReact.Table {...this.props}>  
     <thead> 

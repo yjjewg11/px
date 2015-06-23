@@ -1,3 +1,34 @@
+//userinfo
+
+function menu_userinfo_logout_fn(){
+	ajax_userinfo_logout();
+}
+function ajax_userinfo_logout(){
+	Queue.clear();
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/logout.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			menu_userinfo_login_fn();
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+			 window.location = hostUrl + "login.html";
+		}
+	});
+}
+
+//userinfo end
+
 //right
 function menu_right_list_fn() {
 	Queue.push(menu_right_list_fn);
