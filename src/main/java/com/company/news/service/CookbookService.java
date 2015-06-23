@@ -46,6 +46,11 @@ public class CookbookService extends AbstractServcice {
 			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
 			return false;
 		}
+		
+		if (name.indexOf("$")>-1) {
+			responseMessage.setMessage("名字中不能包含$");
+			return false;
+		}
 
 		if (StringUtils.isBlank(type)) {
 			responseMessage.setMessage("type不能为空！");
