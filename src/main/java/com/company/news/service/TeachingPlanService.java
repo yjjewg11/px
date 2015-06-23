@@ -124,7 +124,7 @@ public class TeachingPlanService extends AbstractServcice {
 
 		return (List<Teachingplan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from Teachingplan where classuuid=? and plandate<=? and plandate >=?",
+				.find("from Teachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
 						classuuid, endDate, begDate);
 	}
 

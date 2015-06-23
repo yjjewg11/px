@@ -54,9 +54,12 @@ var G_week={
 		return d.getDay();
 	},
 	getWeekStr:function(d){
-		return d;
 		if(d==null||d=="")return "";
-		if(typeof(d)=='string') d=new Date(Date.parse(d));
+		if(typeof(d)=='string'){
+			// '2011-06-07 10:00:00'.replace(/-/ig,'/'); 
+			var nd = d.replace(/-/ig,'/'); 
+			d= new Date(nd); 
+		}
 		return G_week.x[d.getDay()];
 	},
 	

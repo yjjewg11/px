@@ -945,12 +945,15 @@ render: function() {
 var Teachingplan_EventRow = React.createClass({ 
 render: function() {
 var event = this.props.event;
+if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
+	event.highlight=true;
+}
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 
 return (
   <tr className={className} >
-    <td><a href={"javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}>{event.plandate}</a></td>
+    <td><a href={"javascript:btn_click_teachingplan('edit','"+event.uuid+"')"}>{G_week.getWeekStr(event.plandate)}</a></td>
     <td>{event.morning}</td>
     <td>{event.afternoon}</td>
   </tr> 
@@ -990,8 +993,8 @@ return (
 <AMR_Sticky>
 <AMR_ButtonToolbar>
 	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.classuuid)} round>添加</AMR_Button>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>
     </AMR_ButtonToolbar>
 </AMR_Sticky>
 	  <hr/>
@@ -1094,8 +1097,8 @@ return (
 <div>
 <AMR_ButtonToolbar>
 <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
-<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
+<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
+<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
 </AMR_ButtonToolbar>
 <div className="header">
 <div className="am-g">

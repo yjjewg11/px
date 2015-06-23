@@ -945,9 +945,6 @@ render: function() {
 var Teachingplan_EventRow = React.createClass({displayName: "Teachingplan_EventRow", 
 render: function() {
 var event = this.props.event;
-if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
-	event.highlight=true;
-}
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 
@@ -993,8 +990,8 @@ React.createElement("div", {className: "header"},
 React.createElement(AMR_Sticky, null, 
 React.createElement(AMR_ButtonToolbar, null, 
 	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add",null,this.props.classuuid), round: true}, "添加"), 
-    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
-    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")
+    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
+    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")
     )
 ), 
 	  React.createElement("hr", null), 
@@ -1097,8 +1094,8 @@ return (
 React.createElement("div", null, 
 React.createElement(AMR_ButtonToolbar, null, 
 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add",null,this.props.group_uuid), round: true}, "添加"), 
-React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
-React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")	
+React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
+React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")	
 ), 
 React.createElement("div", {className: "header"}, 
 React.createElement("div", {className: "am-g"}, 

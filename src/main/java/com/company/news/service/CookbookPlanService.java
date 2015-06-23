@@ -121,7 +121,7 @@ public class CookbookPlanService extends AbstractServcice {
 		
 		List<CookbookPlan> list=(List<CookbookPlan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from CookbookPlan where groupuuid=? and plandate<=? and plandate >=?",
+				.find("from CookbookPlan where groupuuid=? and plandate<=? and plandate >=?  order by plandate asc",
 						groupuuid, endDate, begDate);
 		this.nSimpleHibernateDao.getHibernateTemplate().clear();
 		for(CookbookPlan c:list){

@@ -281,7 +281,6 @@ function menu_teachingplan_list_fn(){
 	//first 选择班级
 	w_ch_class.open(ajax_teachingplan_listByClass);
 	Queue.push(ajax_teachingplan_listByClass);
-	//ajax_teachingplan_listByClass();
 }
 
 function menu_cookbookPlan_list_fn(){

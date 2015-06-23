@@ -1,104 +1,27 @@
-
-//group
-function ajax_group_myList_button_handleClick(m){
-	if(m=="add_group"){
-		ajax_group_edit({"type":1,"brand_name":""});
-	}
+//right
+function menu_right_list_fn() {
+	Queue.push(menu_right_list_fn);
+	ajax_right_list();
 };
-//获取我的
-function ajax_group_myList() {
-	Queue.push(ajax_group_myList);
-	$.AMUI.progress.start();
 
-	var url = hostUrl + "rest/group/myList.json";
+var right_list_type=null;
+function ajax_right_list(type) {
+	if(type)right_list_type=type;
+	else type=right_list_type;
+	if(!type)type="0";
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/right/list.json?type="+type;
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : "",
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Group_EventsTable, {events: data.list,handleClick:ajax_group_myList_button_handleClick, responsive: true, bordered: true, striped :true,hover:true,striped:true}), document.getElementById('div_body'));
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
-
-function ajax_group_edit(data){
-	Queue.push(function(){ajax_group_edit(data)});
-	React.render(React.createElement(Group_edit,{formdata:data}), document.getElementById('div_body'));
-};
-
-function ajax_group_save(){
-$.AMUI.progress.start();
-	
-	  var objectForm = $('#editGroupForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/group/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-}
-//group end
-
-//userinfo
-//老师管理
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
-
-//老师查询，条件groupuuid
-//
-function ajax_uesrinfo_listByGroup(groupuuid) {
-	var group=Store.getGroup();
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : "",
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_EventsTable, {
-					groupuuid:groupuuid,
-					group_list:group,
+				React.render(React.createElement(Right_EventsTable, {
+					type:type,
 					events: data.list,
-					handleClick:ajax_userinfo_button_handleClick,
+					handleClick:ajax_right_button_handleClick,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -117,13 +40,9 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 };
 
 
-function ajax_userinfo_button_handleClick(m,groupuuid,useruuid){
-	if(m=="add_userinfo"){
-		ajax_userinfo_edit({},"add");
-	}else if(m=="add_disable"){
-		ajax_userinfo_updateDisable(groupuuid,useruuid,1);
-	}else if(m=="add_enable"){
-		ajax_userinfo_updateDisable(groupuuid,useruuid,0);
+function ajax_right_button_handleClick(m,type){
+	if(m=="add_right"){
+		ajax_right_edit({type:type},"add");
 	}
 };
 
@@ -132,52 +51,27 @@ function ajax_userinfo_button_handleClick(m,groupuuid,useruuid){
  * @param formdata
  * @param operate
  */
-function ajax_userinfo_edit(formdata,operate){
-	
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/group/myList.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_uuid_data:data.list}), document.getElementById('div_body'));
-			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-	
-	
+function ajax_right_edit(formdata,operate){
+	React.render(React.createElement(Right_edit,{formdata:formdata}), document.getElementById('div_body'));
 };
 
-function ajax_userinfo_save(){
+function ajax_right_save(){
 $.AMUI.progress.start();
 	
-	  var objectForm = $('#editUserinfoForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/userinfo/add.json";
+//	  var objectForm = $('#editRightForm').serializeJson();
+//	  var jsonString=JSON.stringify(objectForm);
+      var url = hostUrl + "rest/right/save.json?"+$('#editRightForm').serialize();
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
-		data : jsonString,
+		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
 		dataType : "json",
 		contentType : false,  
 		success : function(data) {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
-				Queue.doBackFN();
+				ajax_right_list();
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -192,35 +86,182 @@ $.AMUI.progress.start();
 	});
 }
 
-function ajax_userinfo_updateDisable(groupuuid,useruuid,disable){
-	if(!groupuuid){
-		alert("ajax_userinfo_updateDisable:groupuuid is null!");
-		return;
-	}
+//right end
+
+
+//role
+function menu_role_list_fn() {
+	Queue.push(menu_role_list_fn);
+	ajax_role_list();
+};
+
+var role_list_type=null;
+function ajax_role_list(type) {
+	if(type)role_list_type=type;
+	else type=role_list_type;
+	if(!type)type="0";
 	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/userinfo/updateDisable.json";
-		$.ajax({
-			type : "POST",
-			url : url,
-			data : {useruuid:useruuid,disable:disable},
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					alert(data.ResMsg.message);
-					ajax_uesrinfo_listByGroup(groupuuid);
-				} else {
-					alert(data.ResMsg.message);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
+	var url = hostUrl + "rest/role/list.json?type="+type;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Role_EventsTable, {
+					type:type,
+					events: data.list,
+					handleClick:ajax_role_button_handleClick,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
 			}
-		});
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+function ajax_role_button_handleClick(m,type){
+	if(m=="add_role"){
+		ajax_role_edit({type:type},"add");
 	}
-//userinfo end
+};
+
+/**
+ * operate=add|edit
+ * @param formdata
+ * @param operate
+ */
+function ajax_role_edit(formdata,operate){
+	React.render(React.createElement(Role_edit,{formdata:formdata}), document.getElementById('div_body'));
+};
+
+function ajax_role_save(){
+$.AMUI.progress.start();
+	
+//	  var objectForm = $('#editRoleForm').serializeJson();
+//	  var jsonString=JSON.stringify(objectForm);
+      var url = hostUrl + "rest/role/save.json?"+$('#editRoleForm').serialize();
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_role_list();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+//role end
+
+
+
+//basedatatype
+function menu_basedatatype_list_fn() {
+	Queue.push(menu_basedatatype_list_fn);
+	ajax_basedatatype_list();
+};
+
+function ajax_basedatatype_list() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/basedatatype/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Basedatatype_EventsTable, {
+					events: data.list,
+					handleClick:ajax_basedatatype_button_handleClick,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+function ajax_basedatatype_button_handleClick(m){
+	if(m=="add_basedatatype"){
+		ajax_basedatatype_edit({},"add");
+	}
+};
+
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function ajax_basedatatype_edit(formdata,operate){
+	React.render(React.createElement(Basedatatype_edit,{formdata:formdata}), document.getElementById('div_body'));
+};
+
+function ajax_basedatatype_save(){
+$.AMUI.progress.start();
+	
+//	  var objectForm = $('#editBasedatatypeForm').serializeJson();
+//	  var jsonString=JSON.stringify(objectForm);
+    var url = hostUrl + "rest/basedatatype/save.json?"+$('#editBasedatatypeForm').serialize();
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_basedatatype_list();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+//basedatatype end
