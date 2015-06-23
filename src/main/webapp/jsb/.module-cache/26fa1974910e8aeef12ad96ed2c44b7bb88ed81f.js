@@ -322,14 +322,17 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 				 return;
 			 }
 			 var uuids=null;
+			 var imgs=null;
 			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
 			 $($(".G_ch_cook_item_checked")).each(function(){
 				 uuids+=this.title;
 					 if(uuids==null){
-						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
+						 uuids=this.title;
+						 imgs=this.children[0].name+"$"+this.children[1].title;
 					 }
 					 else{
-						 uuids+=','+this.title+"$"+this.children[0].name+"$"+this.children[1].title;; 
+						 uuids+=','+this.title; 
+						 imgs+=','+this.children[0].name+"$"+this.children[1].title;
 					 }
 //					 var tmpO={};
 //					 tmpO.uuid=this.title;
@@ -340,7 +343,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 					　   //遍历被选中CheckBox元素的集合 得到Value值
 				});
 			  
-			 this.props.handleClick(m,uuids);
+			 this.props.handleClick(m,uuids,imgArr);
 		 }
 	  },
 	  

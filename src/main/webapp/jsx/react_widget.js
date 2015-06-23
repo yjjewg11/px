@@ -322,25 +322,25 @@ var ChooseCook_Widget = React.createClass({
 				 return;
 			 }
 			 var uuids=null;
-			 var imgArr=[];
+			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
 			 $($(".G_ch_cook_item_checked")).each(function(){
 				 uuids+=this.title;
 					 if(uuids==null){
-						 uuids=this.title;
+						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
 					 }
 					 else{
-						 uuids+=','+this.title ; 
+						 uuids+=','+this.title+"$"+this.children[0].name+"$"+this.children[1].title;; 
 					 }
-					 var tmpO={};
-					 tmpO.uuid=this.title;
-					 tmpO.src=this.children[0].src;
-					 tmpO.name=this.children[1].title;
-					 
-					 imgArr.push(tmpO);
+//					 var tmpO={};
+//					 tmpO.uuid=this.title;
+//					 tmpO.src=this.children[0].src;
+//					 tmpO.name=this.children[1].title;
+//					 
+//					 imgArr.push(tmpO);
 					　   //遍历被选中CheckBox元素的集合 得到Value值
 				});
 			  
-			 this.props.handleClick(m,uuids,imgArr);
+			 this.props.handleClick(m,uuids);
 		 }
 	  },
 	  
@@ -449,7 +449,7 @@ var ChooseCook_Widget = React.createClass({
      	    		      	    var className = is_Checked ? 'G_ch_cook_item_checked' :'G_ch_cook_item';
      	 	            return (
      	 	            		<div id={"divCookItem_"+event.uuid} title={event.uuid} className={className} onClick={that.div_onClick.bind(this,"divCookItem_"+event.uuid)}>
- 		    	 	       			<img  src={G_imgPath+event.img} alt="图片不存在" title={event.name} />
+ 		    	 	       			<img  src={G_imgPath+event.img} name={event.img} alt="图片不存在" title={event.name} />
  		    	 	       			<span title={event.name}>{event.name}</span>
  		    	 	       		</div>		
      	 	            	);

@@ -322,14 +322,15 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 				 return;
 			 }
 			 var uuids=null;
+//			 var imgArr=[];
 			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
 			 $($(".G_ch_cook_item_checked")).each(function(){
 				 uuids+=this.title;
 					 if(uuids==null){
-						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
+						 uuids=this.title+"$"+this.children[1].title;
 					 }
 					 else{
-						 uuids+=','+this.title+"$"+this.children[0].name+"$"+this.children[1].title;; 
+						 uuids+=','+this.title+"$"+this.children[1].title ; 
 					 }
 //					 var tmpO={};
 //					 tmpO.uuid=this.title;
@@ -449,7 +450,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
      	    		      	    var className = is_Checked ? 'G_ch_cook_item_checked' :'G_ch_cook_item';
      	 	            return (
      	 	            		React.createElement("div", {id: "divCookItem_"+event.uuid, title: event.uuid, className: className, onClick: that.div_onClick.bind(this,"divCookItem_"+event.uuid)}, 
- 		    	 	       			React.createElement("img", {src: G_imgPath+event.img, name: event.img, alt: "图片不存在", title: event.name}), 
+ 		    	 	       			React.createElement("img", {src: G_imgPath+event.img, alt: "图片不存在", title: event.name}), 
  		    	 	       			React.createElement("span", {title: event.name}, event.name)
  		    	 	       		)		
      	 	            	);

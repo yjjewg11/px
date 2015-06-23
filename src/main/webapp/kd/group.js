@@ -1114,15 +1114,24 @@ function ajax_teachingplan_save(){
 
 
 //老师查询，条件groupuuid
-//
-function ajax_cookbookPlan_listByGroup(groupuuid) {
-	
+//weeknum:0.表示当前周.-1上周,1下周.2下下周
+//记录当前翻页的周数
+var g_cookbookPlan_week_point=0;
+function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
+	var now=new Date();
+	if(weeknum){
+		now=G_week.getDate(now,weeknum*7);
+	}else{
+		g_cookbookPlan_week_point=0;
+	}
+	var begDateStr=G_week.getWeek0(now);
+	var endDateStr=G_week.getWeek6(now);
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/cookbookplan/list.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {groupuuid:groupuuid},
+		data : {groupuuid:groupuuid,begDateStr:begDateStr,endDateStr:endDateStr},
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -1131,6 +1140,8 @@ function ajax_cookbookPlan_listByGroup(groupuuid) {
 				React.render(React.createElement(CookbookPlan_EventsTable, {
 					group_uuid:groupuuid,
 					events: data.list,
+					begDateStr:begDateStr,
+					endDateStr:endDateStr,
 					group_list:Store.getGroup(),
 					handleClick:btn_click_cookbookPlan,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -1243,9 +1254,33 @@ var url = hostUrl + "rest/cookbookPlan/"+uuid+".json";
 	});
 };
 
+/**
+ * 获取添加的食材图片id
+ * divid:div_cookPlan_time_1
+ */
+function cookbookPlan_getTimeImgUuid(divid){
+	  var checkeduuids =null;
+	  $("#div_cookPlan_"+divid+" > .G_cookplan_Img").each(function(){
+		  
+		  		if($(this).is(":hidden")){
+		  			return;
+		  		}
+				 if(checkeduuids==null)checkeduuids=this.title;
+				 else
+					 checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+			});
+	  return checkeduuids;
+}
+
 function ajax_cookbookPlan_save(){
 	$.AMUI.progress.start();
 	  var objectForm = $('#editCookbookPlanForm').serializeJson();
+	  
+	  objectForm.time_1=cookbookPlan_getTimeImgUuid("time_1");
+	  objectForm.time_2=cookbookPlan_getTimeImgUuid("time_2");
+	  objectForm.time_3=cookbookPlan_getTimeImgUuid("time_3");
+	  objectForm.time_4=cookbookPlan_getTimeImgUuid("time_4");
+	  objectForm.time_5=cookbookPlan_getTimeImgUuid("time_5");
 	  var jsonString=JSON.stringify(objectForm);
 var url = hostUrl + "rest/cookbookplan/save.json";
 	$.ajax({
@@ -1260,7 +1295,7 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				//alert(data.ResMsg.message);
-				Queue.doBackFN();
+				//Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

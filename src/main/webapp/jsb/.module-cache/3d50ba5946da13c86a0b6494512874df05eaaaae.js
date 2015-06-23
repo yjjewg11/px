@@ -1181,7 +1181,49 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 		  return cooks.split(",");
 		  
 	  },
-	  
+	  ajax_cookbookPlan_list:function(uuids){
+		  
+		  var imgArr=[];
+		  var tmpO={};
+		  	tmpO.uuid="abc1";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据1";
+			 
+			 imgArr.push(tmpO);
+			 tmpO={};
+				tmpO.uuid="abc2";
+			 tmpO.src=hostUrl+"i/header.png";
+			 tmpO.name="测试数据2";
+			
+			 imgArr.push(tmpO);
+		  return imgArr;
+		  
+			$.AMUI.progress.start();
+			var url = hostUrl + "rest/cookbook/list.json?type="+type;
+			$.ajax({
+				type : "GET",
+				url : url,
+				async: false,
+				data : "",
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						Store.setChooseCook(type,data.list);
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+","+textStatus+"="+errorThrown);
+					 console.log(url+',error：', obj);
+					 console.log(url+',error：', textStatus);
+					 console.log(url+',error：', errorThrown);
+				}
+			});
+		},
 		deleteImg:function(divid){
 			$("#"+divid).hide();
 		},
