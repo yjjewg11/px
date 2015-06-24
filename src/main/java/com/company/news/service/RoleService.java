@@ -1,7 +1,9 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Right;
 import com.company.news.entity.Role;
 import com.company.news.entity.RoleRightRelation;
+import com.company.news.jsonform.RoleJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -27,34 +30,35 @@ public class RoleService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public Role add(String name, String description,String type,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public Role add(RoleJsonform roleJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(roleJsonform.getName()) || roleJsonform.getName().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(roleJsonform.getDescription()) || roleJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (isExitSameRoleByname(name,null)) {
+		if (isExitSameRoleByname(roleJsonform.getName(),null)) {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
 		
-		if (StringUtils.isBlank(type)) {
+		if (roleJsonform.getType()==null) {
 			responseMessage.setMessage("type不能为空！");
 			return null;
 		}
 
 		Role role = new Role();
-		role.setDescription(description);
-		role.setName(name);
+		BeanUtils.copyProperties(role, roleJsonform);
 		role.setCreate_time(TimeUtils.getCurrentTimestamp());
-		role.setType(Integer.parseInt(type));
+		
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(role);
 		return role;
@@ -69,39 +73,35 @@ public class RoleService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public Role update(String uuid, String name, String description,String type,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public Role update(RoleJsonform roleJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(roleJsonform.getName()) || roleJsonform.getName().length() > 45) {
 			responseMessage.setMessage("角色名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(roleJsonform.getDescription()) || roleJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(uuid)) {
-			responseMessage.setMessage("ID不能为空！");
-			return null;
-		}
 
-		if (isExitSameRoleByname(name,uuid)) {
+		if (isExitSameRoleByname(roleJsonform.getName(),roleJsonform.getUuid())) {
 			responseMessage.setMessage("存在相同的角色名，");
 			return null;
 		}
 		
-		if (StringUtils.isBlank(type)) {
+		if (roleJsonform.getType()==null) {
 			responseMessage.setMessage("type不能为空！");
 			return null;
 		}
 
-		Role role = (Role) this.nSimpleHibernateDao.getObject(Role.class, uuid);
+		Role role = (Role) this.nSimpleHibernateDao.getObject(Role.class, roleJsonform.getUuid());
 		if (role != null) {
-			role.setDescription(description);
-			role.setName(name);
-			role.setType(Integer.parseInt(type));
+			BeanUtils.copyProperties(role, roleJsonform);
 			this.nSimpleHibernateDao.getHibernateTemplate().update(role);
 		}else{
 			responseMessage.setMessage("更新对象不存在，");

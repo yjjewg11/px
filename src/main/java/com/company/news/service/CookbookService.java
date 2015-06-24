@@ -20,6 +20,7 @@ import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.jsonform.CookbookJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -40,34 +41,33 @@ public class CookbookService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(String name, String img, String type,String groupuuid,
+	public boolean add(CookbookJsonform cookbook,
 			ResponseMessage responseMessage) throws Exception {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+		if (StringUtils.isBlank(cookbook.getName()) || cookbook.getName().length() > 45) {
 			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
 			return false;
 		}
 		
-		if (name.indexOf("$")>-1||name.indexOf(",")>-1) {
+		if (cookbook.getName().indexOf("$")>-1||cookbook.getName().indexOf(",")>-1) {
 			responseMessage.setMessage("名字中不能包含以下字符:$,");
 			return false;
 		}
 
-		if (StringUtils.isBlank(type)) {
+		if (cookbook.getType()==null) {
 			responseMessage.setMessage("type不能为空！");
 			return false;
 		}
 		
 		//避免NULL存在
-		if (StringUtils.isBlank(groupuuid)) {
-			groupuuid="";
+		if (StringUtils.isBlank(cookbook.getGroupuuid())) {
+			cookbook.setGroupuuid("");
 		}
 
+		
+		
 		Cookbook cb = new Cookbook();
 
-		cb.setName(name);
-		cb.setImg(img);
-		cb.setType(Integer.parseInt(type));
-		cb.setGroupuuid(groupuuid);
+		BeanUtils.copyProperties(cb, cookbook);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cb);
 

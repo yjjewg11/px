@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Right;
+import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.jsonform.RightJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.RightService;
 import com.company.news.vo.ResponseMessage;
@@ -22,7 +24,6 @@ public class RightController extends AbstractRESTController {
 
 	@Autowired
 	private RightService rightService;
-
 
 	/**
 	 * 教师注册
@@ -59,16 +60,26 @@ public class RightController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		RightJsonform rightJsonform;
 		try {
-			String uuid = request.getParameter("uuid");
+			rightJsonform = (RightJsonform) this.bodyJsonToFormObject(bodyJson,
+					RightJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		try {
+			String uuid = rightJsonform.getUuid();
 			Right right;
 			if (StringUtils.isEmpty(uuid))
-				right = rightService.add(request.getParameter("name"),
-						request.getParameter("description"),request.getParameter("type"), responseMessage);
+				right = rightService.add(rightJsonform, responseMessage);
 			else
-				right = rightService.update(request.getParameter("uuid"),
-						request.getParameter("name"),
-						request.getParameter("description"),request.getParameter("type"), responseMessage);
+				right = rightService.update(rightJsonform, responseMessage);
 			if (right != null)
 				model.addAttribute(right);
 			else

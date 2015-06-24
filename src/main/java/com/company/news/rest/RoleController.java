@@ -15,6 +15,8 @@ import com.company.news.entity.Right;
 import com.company.news.entity.Role;
 import com.company.news.entity.RoleRightRelation;
 import com.company.news.form.UserLoginForm;
+import com.company.news.jsonform.RightJsonform;
+import com.company.news.jsonform.RoleJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.RoleService;
 import com.company.news.vo.ResponseMessage;
@@ -61,16 +63,26 @@ public class RoleController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		RoleJsonform roleJsonform;
 		try {
-			String uuid = request.getParameter("uuid");
+			roleJsonform = (RoleJsonform) this.bodyJsonToFormObject(bodyJson,
+					RoleJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		try {
+			String uuid = roleJsonform.getUuid();
 			Role role;
 			if (StringUtils.isEmpty(uuid))
-				role = roleService.add(request.getParameter("name"),
-						request.getParameter("description"),request.getParameter("type"), responseMessage);
+				role = roleService.add(roleJsonform, responseMessage);
 			else
-				role = roleService.update(request.getParameter("uuid"),
-						request.getParameter("name"),
-						request.getParameter("description"),request.getParameter("type"), responseMessage);
+				role = roleService.update(roleJsonform, responseMessage);
 			if (role != null)
 				model.addAttribute(role);
 			else

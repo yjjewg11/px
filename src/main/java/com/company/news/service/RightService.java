@@ -1,11 +1,14 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Right;
+import com.company.news.jsonform.RightJsonform;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -23,33 +26,33 @@ public class RightService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public Right add(String name, String description,String type,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public Right add(RightJsonform rightJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(rightJsonform.getName()) || rightJsonform.getName().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(rightJsonform.getDescription()) || rightJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (isExitSameRightByname(name,null)) {
+		if (isExitSameRightByname(rightJsonform.getName(),null)) {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
 		
-		if (StringUtils.isBlank(type)) {
+		if (rightJsonform.getType()==null) {
 			responseMessage.setMessage("type不能为空！");
 			return null;
 		}
 
 		Right right = new Right();
-		right.setDescription(description);
-		right.setName(name);
-		right.setType(Integer.parseInt(type));
+		BeanUtils.copyProperties(right, rightJsonform);
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(right);
 		return right;
@@ -64,40 +67,36 @@ public class RightService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public Right update(String uuid, String name, String description,String type,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public Right update(RightJsonform rightJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(rightJsonform.getName()) || rightJsonform.getName().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(rightJsonform.getDescription()) || rightJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(uuid)) {
-			responseMessage.setMessage("ID不能为空！");
-			return null;
-		}
 
-		if (isExitSameRightByname(name,uuid)) {
+		if (isExitSameRightByname(rightJsonform.getName(),rightJsonform.getUuid())) {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
 		
-		if (StringUtils.isBlank(type)) {
+		if (rightJsonform.getType()==null) {
 			responseMessage.setMessage("type不能为空！");
 			return null;
 		}
 
 		Right right = (Right) this.nSimpleHibernateDao.getObject(Right.class,
-				uuid);
+				rightJsonform.getUuid());
 		if (right != null) {
-			right.setDescription(description);
-			right.setName(name);
-			right.setType(Integer.parseInt(type));
+			BeanUtils.copyProperties(right, rightJsonform);
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(right);
 		}else{

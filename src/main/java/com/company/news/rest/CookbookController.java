@@ -18,6 +18,8 @@ import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.jsonform.CookbookJsonform;
+import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.ClassService;
@@ -44,10 +46,21 @@ public class CookbookController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		CookbookJsonform cookbookJsonform;
 		try {
-			boolean flag = cookbookService.add(request.getParameter("name"),
-					request.getParameter("img"), request.getParameter("type"),request.getParameter("groupuuid"),
+			cookbookJsonform = (CookbookJsonform) this
+					.bodyJsonToFormObject(bodyJson, CookbookJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		
+		try {
+			boolean flag = cookbookService.add(cookbookJsonform,
 					responseMessage);
 
 			if (!flag)// 请求服务返回失败标示
