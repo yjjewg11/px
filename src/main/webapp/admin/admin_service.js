@@ -89,13 +89,14 @@ function ajax_right_edit(formdata,operate){
 function ajax_right_save(){
 $.AMUI.progress.start();
 	
-//	  var objectForm = $('#editRightForm').serializeJson();
-//	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/right/save.json?"+$('#editRightForm').serialize();
+	  var objectForm = $('#editRightForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+      var url = hostUrl + "rest/right/save.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:jsonString,
 		dataType : "json",
 		contentType : false,  
 		success : function(data) {
@@ -178,16 +179,17 @@ function ajax_role_edit(formdata,operate){
 };
 
 function ajax_role_save(){
-$.AMUI.progress.start();
 	
-//	  var objectForm = $('#editRoleForm').serializeJson();
-//	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/role/save.json?"+$('#editRoleForm').serialize();
+	$.AMUI.progress.start();
+	  var objectForm = $('#editRoleForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+      var url = hostUrl + "rest/role/save.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
 		dataType : "json",
+		data:jsonString,
 		contentType : false,  
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -267,13 +269,14 @@ function ajax_basedatatype_edit(formdata,operate){
 function ajax_basedatatype_save(){
 $.AMUI.progress.start();
 	
-//	  var objectForm = $('#editBasedatatypeForm').serializeJson();
-//	  var jsonString=JSON.stringify(objectForm);
-    var url = hostUrl + "rest/basedatatype/save.json?"+$('#editBasedatatypeForm').serialize();
+	  var objectForm = $('#editBasedatatypeForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+    var url = hostUrl + "rest/basedatatype/save.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:jsonString,
 		dataType : "json",
 		contentType : false,  
 		success : function(data) {

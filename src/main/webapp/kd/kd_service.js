@@ -1221,7 +1221,7 @@ var url = hostUrl + "rest/cookbookplan/delete.json?uuid="+uuid;
 function react_ajax_cookbookPlan_show(uuid){
 	Queue.push(function(){react_ajax_cookbookPlan_show(uuid)});
 	$.AMUI.progress.start();
-var url = hostUrl + "rest/cookbookPlan/"+uuid+".json";
+var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1252,7 +1252,7 @@ function react_ajax_cookbookPlan_edit(formdata,uuid){
 		return;
 	}
 	$.AMUI.progress.start();
-var url = hostUrl + "rest/cookbookPlan/"+uuid+".json";
+var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,

@@ -463,7 +463,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
      	 	          
 
     	    		
-    			      React.createElement("div", {id: "divCookItem_add", className: "G_ch_cook_item", onClick: w_ch_cook.add_img.bind(this,that.props.type,that.callbackFN)}, 
+    			      React.createElement("div", {id: "divCookItem_add", className: "G_ch_cook_item", onClick: w_ch_cook.add_img.bind(this,that.props.type)}, 
     					React.createElement("img", {src: hostUrl+"i/addCook.gif", alt: "本地上传"})
     				)
     	      )
