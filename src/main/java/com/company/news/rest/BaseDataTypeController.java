@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Group;
+import com.company.news.jsonform.BaseDataListJsonform;
+import com.company.news.jsonform.BaseDataTypeJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.BaseDataTypeService;
@@ -56,20 +58,26 @@ public class BaseDataTypeController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		BaseDataTypeJsonform baseDataTypeJsonform;
 		try {
-			String uuid = request.getParameter("uuid");
+			baseDataTypeJsonform = (BaseDataTypeJsonform) this.bodyJsonToFormObject(bodyJson,
+					BaseDataTypeJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		try {
+			String uuid = baseDataTypeJsonform.getUuid();
 			BaseDataType baseDataType;
 			if (StringUtils.isEmpty(uuid))
-				baseDataType = baseDataTypeService.add(
-						request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+				baseDataType = baseDataTypeService.add(baseDataTypeJsonform, responseMessage);
 			else
 
-				baseDataType = baseDataTypeService.update(
-						request.getParameter("uuid"),
-						request.getParameter("name"),
-						request.getParameter("description"), responseMessage);
+				baseDataType = baseDataTypeService.update(baseDataTypeJsonform, responseMessage);
 			if (baseDataType != null)
 				model.addAttribute(baseDataType);
 			else

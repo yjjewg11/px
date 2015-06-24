@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.news.entity.BaseDataList;
 import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Group;
+import com.company.news.jsonform.BaseDataListJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.jsonform.RightJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.BaseDataListService;
 import com.company.news.service.BaseDataTypeService;
@@ -46,16 +48,27 @@ public class BaseDataListController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		BaseDataListJsonform baseDataListJsonform;
+		try {
+			baseDataListJsonform = (BaseDataListJsonform) this.bodyJsonToFormObject(bodyJson,
+					BaseDataListJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
 
 		
 		try {
 			BaseDataList baseDatalist;
-			String uuid=request.getParameter("uuid");
+			String uuid=baseDataListJsonform.getUuid();
 			if(StringUtils.isEmpty(uuid))
-				baseDatalist = baseDataListService.add(request.getParameter("datavalue"),request.getParameter("description"),request.getParameter("datakey"),request.getParameter("typeuuid"),request.getParameter("enable"),responseMessage);
+				baseDatalist = baseDataListService.add(baseDataListJsonform,responseMessage);
 				else
-			baseDatalist = baseDataListService.update(request.getParameter("uuid"),request.getParameter("datavalue"),request.getParameter("description"),
-					request.getParameter("datakey"),request.getParameter("typeuuid"),request.getParameter("enable"),responseMessage);
+			baseDatalist = baseDataListService.update(baseDataListJsonform,responseMessage);
 			if(baseDatalist!=null)
 			model.addAttribute(baseDatalist);
 			else

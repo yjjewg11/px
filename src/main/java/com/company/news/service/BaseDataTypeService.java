@@ -1,12 +1,15 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Right;
+import com.company.news.jsonform.BaseDataTypeJsonform;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -24,27 +27,29 @@ public class BaseDataTypeService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public BaseDataType add(String name, String description,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public BaseDataType add(BaseDataTypeJsonform baseDataTypeJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(baseDataTypeJsonform.getName()) || baseDataTypeJsonform.getName().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(baseDataTypeJsonform.getDescription()) || baseDataTypeJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (isExitSameRightByname(name,null)) {
+		if (isExitSameRightByname(baseDataTypeJsonform.getName(),null)) {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
 
 		BaseDataType baseDataType = new BaseDataType();
-		baseDataType.setDescription(description);
-		baseDataType.setName(name);
+		BeanUtils.copyProperties(baseDataType, baseDataTypeJsonform);
+		
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(baseDataType);
 		return baseDataType;
@@ -59,34 +64,35 @@ public class BaseDataTypeService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public BaseDataType update(String uuid, String name, String description,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(name) || name.length() > 45) {
+	public BaseDataType update(BaseDataTypeJsonform baseDataTypeJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(baseDataTypeJsonform.getName()) || baseDataTypeJsonform.getName().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(description) || description.length() > 45) {
+		if (StringUtils.isBlank(baseDataTypeJsonform.getDescription()) || baseDataTypeJsonform.getDescription().length() > 45) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(uuid)) {
+		if (StringUtils.isBlank(baseDataTypeJsonform.getUuid())) {
 			responseMessage.setMessage("ID不能为空！");
 			return null;
 		}
 
-		if (isExitSameRightByname(name,uuid)) {
+		if (isExitSameRightByname(baseDataTypeJsonform.getName(),baseDataTypeJsonform.getUuid())) {
 			responseMessage.setMessage("存在相同的权限名，");
 			return null;
 		}
 
 		BaseDataType baseDataType = (BaseDataType) this.nSimpleHibernateDao.getObject(BaseDataType.class,
-				uuid);
+				baseDataTypeJsonform.getUuid());
 		if (baseDataType != null) {
-			baseDataType.setDescription(description);
-			baseDataType.setName(name);
+			BeanUtils.copyProperties(baseDataType, baseDataTypeJsonform);
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(baseDataType);
 		}else{
