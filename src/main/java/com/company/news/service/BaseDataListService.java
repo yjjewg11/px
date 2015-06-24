@@ -1,13 +1,16 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.BaseDataList;
 import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Right;
+import com.company.news.jsonform.BaseDataListJsonform;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -26,35 +29,32 @@ public class BaseDataListService extends AbstractServcice {
 	 * @param description
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public BaseDataList add(String datavalue, String description, String datakey,
-			String typeuuid, String enable, ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(datavalue) || datavalue.length() > 45) {
+	public BaseDataList add(BaseDataListJsonform baseDataListJsonform, ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(baseDataListJsonform.getDatavalue()) || baseDataListJsonform.getDatavalue().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(typeuuid)) {
+		if (StringUtils.isBlank(baseDataListJsonform.getTypeuuid())) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(datakey)) {
+		if (StringUtils.isBlank(baseDataListJsonform.getDatakey())) {
 			responseMessage.setMessage("KEY不能为空");
 			return null;
 		}
 
 		BaseDataList baseDataList = new BaseDataList();
 
-		if (StringUtils.isBlank(enable)) {
-			baseDataList.setEnable(1);
-		} else
-			baseDataList.setEnable(Integer.parseInt(enable));
-		baseDataList.setDatakey(Integer.parseInt(datakey));
+		if (baseDataListJsonform.getEnable()==null) {
+			baseDataListJsonform.setEnable(1);
+		} 
 
-		baseDataList.setDescription(description);
-		baseDataList.setTypeuuid(typeuuid);
-		baseDataList.setDatavalue(datavalue);
+		BeanUtils.copyProperties(baseDataList, baseDataListJsonform);
 
 		this.nSimpleHibernateDao.getHibernateTemplate().save(baseDataList);
 		return baseDataList;
@@ -71,37 +71,34 @@ public class BaseDataListService extends AbstractServcice {
 	 * @param enable
 	 * @param responseMessage
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public BaseDataList update(String uuid, String datavalue, String description,
-			String datakey, String typeuuid, String enable,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(datavalue) || datavalue.length() > 45) {
+	public BaseDataList update(BaseDataListJsonform baseDataListJsonform,
+			ResponseMessage responseMessage) throws IllegalAccessException, InvocationTargetException {
+		if (StringUtils.isBlank(baseDataListJsonform.getDatavalue()) || baseDataListJsonform.getDatavalue().length() > 45) {
 			responseMessage.setMessage("权限名不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(typeuuid)) {
+		if (StringUtils.isBlank(baseDataListJsonform.getTypeuuid())) {
 			responseMessage.setMessage("描述不能为空！，且长度不能超过45位！");
 			return null;
 		}
 
-		if (StringUtils.isBlank(datakey)) {
+		if (StringUtils.isBlank(baseDataListJsonform.getDatakey())) {
 			responseMessage.setMessage("KEY不能为空");
 			return null;
 		}
 
 		BaseDataList baseDataList = (BaseDataList) this.nSimpleHibernateDao
-				.getObject(BaseDataList.class, uuid);
+				.getObject(BaseDataList.class, baseDataListJsonform.getUuid());
 		if (baseDataList != null) {
-			if (StringUtils.isBlank(enable)) {
-				baseDataList.setEnable(enable_default);
-			} else
-				baseDataList.setEnable(Integer.parseInt(enable));
-			baseDataList.setDatakey(Integer.parseInt(datakey));
+			if (baseDataListJsonform.getEnable()==null) {
+				baseDataListJsonform.setEnable(enable_default);
+			} 
 
-			baseDataList.setDescription(description);
-			baseDataList.setTypeuuid(typeuuid);
-			baseDataList.setDatavalue(datavalue);
+			BeanUtils.copyProperties(baseDataList, baseDataListJsonform);
 			this.nSimpleHibernateDao.getHibernateTemplate()
 					.update(baseDataList);
 		}else{
