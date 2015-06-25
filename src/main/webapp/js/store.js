@@ -174,3 +174,33 @@ Date.prototype.Format = function (fmt) { //author: meizz
   if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
+
+
+//获取我的
+function ajax_group_myList_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/group/myList.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : "",
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setGroup(data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
