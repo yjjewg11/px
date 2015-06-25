@@ -24,7 +24,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 	      React.createElement("td", null, 
 	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right", checked: is_Checked?"checked":""})
 	      ), 
-        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, JSON.stringify(event))}, event.name)), 
+        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, event)}, event.name)), 
         React.createElement("td", null, event.description), 
         React.createElement("td", null, AdminVo.type(event.type))
       ) 
@@ -89,7 +89,7 @@ var Right_edit = React.createClass({displayName: "Right_edit",
     		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-    		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+    		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
     		      React.createElement("button", {type: "button", onClick: ajax_right_save, className: "am-btn am-btn-primary"}, "提交")
     		    )
 
@@ -235,7 +235,7 @@ render: function() {
   		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
   		      React.createElement("br", null), 
   		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-  		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+  		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
   		      React.createElement("button", {type: "button", onClick: ajax_role_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
 
@@ -363,7 +363,7 @@ return (
 		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
 		      React.createElement("button", {type: "button", onClick: ajax_basedatatype_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 

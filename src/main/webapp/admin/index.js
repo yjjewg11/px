@@ -26,20 +26,8 @@ function login_affter_init(){
 	var div_menu_data=[
 	        {
 		    "link": "##",
-		    "title": "权限角色",
-		    "subMenu": [
-		                {
-		                  "link": "##",
-		                  "fn":menu_right_list_fn,
-		                  "title": "权限管理"
-		                },
-		                {
-			                  "link": "##",
-			                  "fn":menu_role_list_fn,
-			                  "title": "角色管理"
-			                },
-		                ],
-		    "subCols": 2
+		    "title": "角色权限",
+		    "fn":menu_role_list_fn
 		   
 		  },
 		  {
