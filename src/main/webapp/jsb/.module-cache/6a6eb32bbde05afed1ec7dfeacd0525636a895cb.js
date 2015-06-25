@@ -136,7 +136,7 @@ var Div_login = React.createClass({displayName: "Div_login",
 		  },
 	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
-		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
+		 	o.pw_checked=cbox.prop("checked")?"checked":"";
 		    this.setState(o);
 	  },
 render: function() {
