@@ -85,17 +85,18 @@ public class UploadFileService extends AbstractServcice {
 
 		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
 				"c:/px_upload/");
+		String secondPath="";
 		String fileName =guid;
 		
 		if(SystemConstants.UploadFile_type_head.equals(type)){
-			fileName ="head_"+guid;
+			fileName =guid;
+			secondPath += "head/";
 			
-		}
-		if(SystemConstants.UploadFile_type_cook.equals(type)){
-			fileName ="cook_"+guid;
-			uploadPath += "cook/";
+		}else if(SystemConstants.UploadFile_type_cook.equals(type)){
+			fileName =guid;
+			secondPath += "cook/";
 		}else{
-			uploadPath += user.getUuid()+"/";
+			secondPath += user.getUuid()+"/";
 		};
 		
 		FileUtils.createDirIfNoExists(uploadPath);
@@ -103,7 +104,7 @@ public class UploadFileService extends AbstractServcice {
 
 		// 业务数据，关联用户保存
 
-		if (!FileUtils.saveFile(b, uploadPath, fileName)) {
+		if (!FileUtils.saveFile(b, uploadPath+secondPath, fileName)) {
 			responseMessage.setMessage("上载文件保存失败!");
 			return null;
 		}
@@ -114,7 +115,7 @@ public class UploadFileService extends AbstractServcice {
 		uploadFile.setFile_size(Long.valueOf(b.length));
 		uploadFile.setUser_uuid(user.getUuid());
 		uploadFile.setCreate_time(TimeUtils.getCurrentTimestamp());
-		uploadFile.setFile_path(uploadPath + fileName);
+		uploadFile.setFile_path(secondPath + fileName);
 		uploadFile.setContent_type(contentType);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(uploadFile);
 
@@ -194,13 +195,23 @@ public class UploadFileService extends AbstractServcice {
 		if(SystemConstants.UploadFile_type_head.equals(Integer.parseInt(type))){
 			fileName ="head_"+guid+file.getOriginalFilename();
 		}
-		uploadPath += user.getUuid()+"/";
+		String secondPath="";
+		
+		if(SystemConstants.UploadFile_type_head.equals(type)){
+			secondPath += "head/";
+			
+		}else if(SystemConstants.UploadFile_type_cook.equals(type)){
+			secondPath += "cook/";
+		}else{
+			secondPath += user.getUuid()+"/";
+		};
+		
 		FileUtils.createDirIfNoExists(uploadPath);
 		fileName = guid + "." + FilenameUtils.getExtension(fileName);
 
 		// 业务数据，关联用户保存
 
-		if (!FileUtils.saveFile(file.getInputStream(), uploadPath, fileName)) {
+		if (!FileUtils.saveFile(file.getInputStream(), uploadPath+secondPath, fileName)) {
 			responseMessage.setMessage("上载文件保存失败!");
 			return null;
 		}
@@ -241,7 +252,7 @@ public class UploadFileService extends AbstractServcice {
 		uploadFile.setFile_size(file.getSize());
 		uploadFile.setUser_uuid(user.getUuid());
 		uploadFile.setCreate_time(TimeUtils.getCurrentTimestamp());
-		uploadFile.setFile_path(uploadPath + fileName);
+		uploadFile.setFile_path(secondPath + fileName);
 		uploadFile.setContent_type(file.getContentType());
 		this.nSimpleHibernateDao.getHibernateTemplate().save(uploadFile);
 
@@ -320,7 +331,10 @@ public class UploadFileService extends AbstractServcice {
 			this.logger.info("uploadFile record is empty!");
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
-		boolean result = getStream(uploadFile.getFile_path(), response,
+		
+		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
+				"c:/px_upload/");
+		boolean result = getStream(uploadPath+uploadFile.getFile_path(), response,
 				contentType);
 		if (!result) {
 			this.logger.info("file not found.may be delete!");

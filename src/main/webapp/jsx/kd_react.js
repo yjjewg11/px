@@ -278,7 +278,7 @@ var Group_edit = React.createClass({
     		<input type="hidden" name="uuid"  value={o.uuid}/>
     	    <input type="hidden" name="type"  value={o.type}/>
     	      <label htmlFor="brand_name">品牌名:</label>
-    	      <input type="email" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	      <br/>
     	       <label htmlFor="company_name">机构全称:</label>
     	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
@@ -1081,7 +1081,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   <tr className={className} >
-    <td><a href={"javascript:btn_click_cookbookPlan(null,'"+event.uuid+"')"}>{G_week.getWeekStr(event.plandate)}</a></td>
+    <td><a href={"javascript:btn_click_cookbookPlan('edit',null,'"+event.uuid+"')"}>{G_week.getWeekStr(event.plandate)}</a></td>
     <td>{this.parseTimes(event.time_1)}</td>
     <td>{this.parseTimes(event.time_2)}</td>
     <td>{this.parseTimes(event.time_3)}</td>

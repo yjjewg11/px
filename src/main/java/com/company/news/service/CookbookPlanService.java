@@ -169,7 +169,7 @@ public class CookbookPlanService extends AbstractServcice {
 			for (String s : uuid) {
 				Cookbook cb = CommonsCache.getCookbook(s);
 				if (cb != null)
-					rs += (s+"$"+cb.getUuid() + "$" + cb.getName() + ",");
+					rs += (s+"$"+cb.getImg() + "$" + cb.getName() + ",");
 
 			}
 

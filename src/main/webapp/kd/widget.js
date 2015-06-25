@@ -82,19 +82,22 @@ var w_ch_cookAddImg={
 				alert("error:w_ch_cookAddImg.uuid is null!");
 				return;
 			}
-			
+			var objectForm={name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type};
+			 var jsonString=JSON.stringify(objectForm);
 		    var url = hostUrl + "rest/cookbook/save.json";
 			$.ajax({
 				type : "POST",
 				url : url,
 				dataType : "json",
-				data:{name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type},
+				contentType : false,  
+				processData: false,
+				data:jsonString,
 				 async: false,
 				success : function(data) {
 					$.AMUI.progress.done();
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
-						Store.setChooseCook(null);//
+						Store.setChooseCook(objectForm.type,null);//
 						if(w_ch_cookAddImg.callbackFN){
 							
 							w_ch_cookAddImg.callbackFN();
@@ -176,10 +179,12 @@ var w_ch_cook={
 		w_ch_cook.show();
 	},
 	add_img_callbackFN:function(uuid){
+		$("#"+this.div_id).html("");
 		w_ch_cook.reshowBygroup();
 	},
-	add_img:function(type){
-		w_ch_cookAddImg.open(w_ch_cook.add_img_callbackFN,type);
+	add_img:function(type,fn){
+		if(fn==null)fn=w_ch_cook.add_img_callbackFN;
+		w_ch_cookAddImg.open(fn,type);
 	},
 	show:function(){
 		

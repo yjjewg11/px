@@ -388,6 +388,14 @@ var ChooseCook_Widget = React.createClass({
 				tr.addClass("G_ch_cook_item_checked");
 			} 
     	},
+    	callbackFN:function(){
+    		var tmptype=this.props.type;
+			this.ajax_chooseCook_list(tmptype);
+			var lists=Store.getChooseCook(tmptype);
+			this.setState({
+	            items: lists,
+	        });
+    	},
     	 getInitialState: function() {
     		    return {
     	            items: [],
@@ -455,7 +463,7 @@ var ChooseCook_Widget = React.createClass({
      	 	          }
 
     	    		
-    			      <div id={"divCookItem_add"} className="G_ch_cook_item" onClick={w_ch_cook.add_img.bind(this,that.props.type)}>
+    			      <div id={"divCookItem_add"} className="G_ch_cook_item" onClick={w_ch_cook.add_img.bind(this,that.props.type,that.callbackFN)}>
     					<img src={hostUrl+"i/addCook.gif"} alt="本地上传" />
     				</div>
     	      </div>
