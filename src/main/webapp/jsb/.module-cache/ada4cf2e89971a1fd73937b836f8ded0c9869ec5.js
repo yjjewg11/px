@@ -123,7 +123,7 @@ var Div_login = React.createClass({displayName: "Div_login",
 	 getInitialState: function() {
 		    return this.props;
 		  },
-	 handleChange: function(event) { 
+	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
 		    this.setState(o); 
