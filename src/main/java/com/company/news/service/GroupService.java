@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Group;
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.Role;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
@@ -227,8 +228,8 @@ public class GroupService extends AbstractServcice {
 	 * 查询所有机构列表
 	 * @return
 	 */
-	public List<Group> query(){
-		return (List<Group>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group", null);
+	public List<Group4Q> query(){
+		return (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q", null);
 	}
 
 	

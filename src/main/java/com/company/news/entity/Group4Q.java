@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="px_group") 
-public class Group extends IdEntity{
+public class Group4Q extends IdEntity{
 	
 	  @Column
 	  private Timestamp create_time;//创建时间
@@ -22,16 +22,9 @@ public class Group extends IdEntity{
 	  private String map_point;//坐标
 	  @Column
 	  private String link_tel;//电话
-	  @Column
-	  private String description;//  
+ 
 	  
 
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
 	public String getLink_tel() {
 		return link_tel;
 	}

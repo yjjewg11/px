@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Group;
+import com.company.news.entity.Group4Q;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.GroupService;
@@ -124,7 +125,7 @@ public class GroupController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Group> list = groupService.query();
+		List<Group4Q> list = groupService.query();
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
