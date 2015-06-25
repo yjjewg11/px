@@ -56,7 +56,7 @@
         memoryStoreEvictionPolicy：缓存满了之后的淘汰算法。
     -->
 	<cache name="dbDataCache" maxElementsInMemory="1000"
-		eternal="true" overflowToDisk="false"
+		eternal="false" overflowToDisk="false"
 		timeToIdleSeconds="3600" memoryStoreEvictionPolicy="FIFO" />
 	<!-- acegi cache-->
 	<!--<cache name="userCache"
