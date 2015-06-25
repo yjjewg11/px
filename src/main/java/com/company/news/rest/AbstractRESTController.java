@@ -10,9 +10,11 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.entity.User;
+import com.company.news.query.PaginationData;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
 
@@ -35,6 +37,20 @@ public class AbstractRESTController   {
 	      e.printStackTrace();
 	    }
 	    model.addAttribute(RestConstants.Return_UserInfo,userInfoReturn);
+	  }
+	  
+	  /**
+	   * 
+	   * @param request
+	   */
+	  protected PaginationData getPaginationDataByRequest(HttpServletRequest request){
+		  PaginationData pd=new PaginationData();
+		  if(StringUtils.isNotBlank(request.getParameter("pageNo")))
+			  pd.setPageNo(Integer.parseInt(request.getParameter("pageNo")));
+		  if(StringUtils.isNotBlank(request.getParameter("pageSize")))
+			  pd.setPageSize(Integer.parseInt(request.getParameter("pageSize")));
+		  
+		  return pd;
 	  }
 	  
 	  /**
