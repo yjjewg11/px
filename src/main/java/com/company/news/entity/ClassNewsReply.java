@@ -20,6 +20,16 @@ public class ClassNewsReply extends IdEntity {
 	private String create_user;// 品牌名称
 	@Column
 	private String create_useruuid;// 公司全称
+	@Column
+	private Timestamp update_time;// 创建时间
+
+	public Timestamp getUpdate_time() {
+		return update_time;
+	}
+
+	public void setUpdate_time(Timestamp update_time) {
+		this.update_time = update_time;
+	}
 
 	public Timestamp getCreate_time() {
 		return create_time;
