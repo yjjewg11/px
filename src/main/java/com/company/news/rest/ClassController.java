@@ -140,7 +140,7 @@ public class ClassController extends AbstractRESTController {
 	public String queryClassByUseruuid(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<PClass> list = classService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
+		List list = classService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
