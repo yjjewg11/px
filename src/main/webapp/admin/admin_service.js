@@ -30,48 +30,9 @@ function ajax_userinfo_logout(){
 //userinfo end
 
 //right
-function menu_right_list_fn() {
-	Queue.push(menu_right_list_fn);
-	ajax_right_list();
-};
-
-var right_list_type=null;
-function ajax_right_list(type) {
-	if(type)right_list_type=type;
-	else type=right_list_type;
-	if(!type)type="0";
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/right/list.json?type="+type;
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Right_EventsTable, {
-					type:type,
-					events: data.list,
-					handleClick:ajax_right_button_handleClick,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
-
 
 function ajax_right_button_handleClick(m,type){
+	Queue.push(function(){ajax_right_button_handleClick(m,type)});
 	if(m=="add_right"){
 		ajax_right_edit({type:type},"add");
 	}
@@ -83,6 +44,8 @@ function ajax_right_button_handleClick(m,type){
  * @param operate
  */
 function ajax_right_edit(formdata,operate){
+	Queue.push(function(){ajax_right_edit(formdata,operate)});
+	if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
 	React.render(React.createElement(Right_edit,{formdata:formdata}), document.getElementById('div_body'));
 };
 
@@ -103,7 +66,10 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				ajax_right_list();
+				//ajax_right_list(); 
+				ADStore.setRightList(objectForm.type,null);
+				Queue.doBackFN();
+				
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -129,6 +95,7 @@ function menu_role_list_fn() {
 
 var role_list_type=null;
 function ajax_role_list(type) {
+	Queue.push(function(){ajax_role_list(type)});
 	if(type)role_list_type=type;
 	else type=role_list_type;
 	if(!type)type="0";
@@ -163,11 +130,54 @@ function ajax_role_list(type) {
 };
 
 
-function ajax_role_button_handleClick(m,type){
+function ajax_role_button_handleClick(m,type,uuids){
 	if(m=="add_role"){
 		ajax_role_edit({type:type},"add");
 	}
 };
+
+function btn_ajax_updateRight(roleuuid){
+	 var uuids=null;
+	 $("input[name='table_checkbox_right']").each(function(){
+		if(this.checked){
+			 if(uuids==null)uuids=this.value;
+			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+		}
+		});
+	  if(!uuids){
+		  alert("请勾选复选框！");
+		  return;
+	  }
+	  
+	$.AMUI.progress.start();
+      var url = hostUrl + "rest/role/updateRight.json";
+      var opt={
+    			type : "POST",
+    			url : url,
+    			processData: true, //设置 processData 选项为 false，防止自动转换数据格式。
+    			dataType : "json",
+    			data:{roleuuid:roleuuid,rightuuid:uuids},
+    			//contentType : false,  
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				// 登陆成功直接进入主页
+    				if (data.ResMsg.status == "success") {
+    				
+    					Queue.doBackFN();
+    				} else {
+    					alert(data.ResMsg.message);
+    				}
+    			},
+    			error : function( obj, textStatus, errorThrown ){
+    				$.AMUI.progress.done();
+    				alert(url+",error:"+textStatus);
+    				 console.log(url+',error：', obj);
+    				 console.log(url+',error：', textStatus);
+    				 console.log(url+',error：', errorThrown);
+    			}
+    		};
+	$.ajax(opt);
+}
 
 /**
  * operate=add|edit
@@ -176,6 +186,46 @@ function ajax_role_button_handleClick(m,type){
  */
 function ajax_role_edit(formdata,operate){
 	React.render(React.createElement(Role_edit,{formdata:formdata}), document.getElementById('div_body'));
+};
+/**
+ * operate=add|edit
+ * @param formdata
+ * @param operate
+ */
+function ajax_role_bind_right(formdata){
+	Queue.push(function(){ajax_role_bind_right(formdata)});
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/role/getRight.json?uuid="+formdata.uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				
+				React.render(React.createElement(Role_bind_right, {
+					formdata:formdata,
+					type:formdata.type,
+					events: ADStore.getRightList(formdata.type),
+					chooselist: JSON.stringify(data.list),
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+	
 };
 
 function ajax_role_save(){

@@ -24,7 +24,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 	      React.createElement("td", null, 
 	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right", checked: is_Checked?"checked":""})
 	      ), 
-        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, JSON.stringify(event))}, event.name)), 
+        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, event)}, event.name)), 
         React.createElement("td", null, event.description), 
         React.createElement("td", null, AdminVo.type(event.type))
       ) 
@@ -37,7 +37,6 @@ var Right_EventsTable = React.createClass({displayName: "Right_EventsTable",
 		  $('input[name="table_checkbox_right"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
   render: function() {
-	  var that=this;
     return (
     		React.createElement("div", null, 
       React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
@@ -53,7 +52,7 @@ var Right_EventsTable = React.createClass({displayName: "Right_EventsTable",
         ), 
         React.createElement("tbody", null, 
           this.props.events.map(function(event) {
-            return (React.createElement(Right_EventRow, {chooselist: that.props.chooselist, event: event}));
+            return (React.createElement(Right_EventRow, {key: event.id, event: event}));
           })
         )
       ), 
@@ -76,7 +75,7 @@ var Right_edit = React.createClass({displayName: "Right_edit",
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
     		  React.createElement("div", {className: "am-g"}, 
-    		    React.createElement("h1", null, "编辑权限-【", AdminVo.type(o.type), "】")
+    		    React.createElement("h1", null, "编辑权限")
     		  ), 
     		  React.createElement("hr", null)
     		), 
@@ -84,12 +83,17 @@ var Right_edit = React.createClass({displayName: "Right_edit",
     		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
     		  React.createElement("form", {id: "editRightForm", method: "post", className: "am-form"}, 
     			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-    			React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
+    		    React.createElement("div", {className: "am-form-group"}, 
+    		          React.createElement("select", {id: "type", name: "type", value: o.type, onChange: this.handleChange}, 
+    		          React.createElement("option", {value: "0"}, AdminVo.type(0)), 
+    		          React.createElement("option", {value: "1"}, AdminVo.type(1))
+    		          )
+    		        ), 
     		      React.createElement("label", {htmlFor: "name"}, "名字:"), 
     		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-    		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+    		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
     		      React.createElement("button", {type: "button", onClick: ajax_right_save, className: "am-btn am-btn-primary"}, "提交")
     		    )
 
@@ -117,10 +121,10 @@ render: function() {
     React.createElement("td", null, 
     React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
     ), 
-      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_edit.bind(this, event)}, event.name)), 
+      React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_role_edit.bind(this, event)}, event.name)), 
       React.createElement("td", null, event.description), 
       React.createElement("td", null, AdminVo.type(event.type)), 
-      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限"))
+      React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限"))
     ) 
   );
 }
@@ -171,7 +175,8 @@ render: function() {
   return (
   React.createElement("div", null, 
   React.createElement(AMUIReact.ButtonToolbar, null, 
-	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_role"), round: true}, "添加")
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_role"), round: true}, "添加"), 
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "role_bind_right"), round: true}, "绑定权限")
 	 ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -235,7 +240,7 @@ render: function() {
   		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
   		      React.createElement("br", null), 
   		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-  		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+  		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
   		      React.createElement("button", {type: "button", onClick: ajax_role_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
 
@@ -254,14 +259,17 @@ render: function() {
 	  var o = this.props.formdata;
   return (
   		React.createElement("div", null, 
-	  		React.createElement("div", {className: "header"}, 
-		  		  React.createElement("div", {className: "am-g"}, 
-		  		    React.createElement("h1", null, "角色绑定权限-【", AdminVo.type(o.type), "】-【", o.name, "】")
-		  		  )
-	  		), 
-  			React.createElement("button", {type: "button", onClick: btn_ajax_updateRight.bind(this, o.uuid), className: "am-btn am-btn-primary"}, "提交"), 
-	  		React.createElement(Right_EventsTable, React.__spread({},  this.props))
-	  	   
+  		React.createElement("div", {className: "header"}, 
+  		  React.createElement("div", {className: "am-g"}, 
+  		    React.createElement("h1", null, "角色绑定权限-", AdminVo.type(o.type), "-", o.name)
+  		  ), 
+  		  React.createElement("hr", null)
+  		), 
+  	  React.createElement("button", {type: "button", onClick: btn_ajax_updateRight.bind(this, o.uuid), className: "am-btn am-btn-primary"}, "提交"), 
+  		React.createElement("div", {className: "am-g"}, 
+  		React.createElement(Right_EventsTable, React.__spread({},  this.props))
+  	   )
+  	   
   	   )
   );
 }
@@ -363,7 +371,7 @@ return (
 		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "", placeholder: ""}), 
+		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
 		      React.createElement("button", {type: "button", onClick: ajax_basedatatype_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 

@@ -24,7 +24,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 	      React.createElement("td", null, 
 	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right", checked: is_Checked?"checked":""})
 	      ), 
-        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, JSON.stringify(event))}, event.name)), 
+        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this)}, event.name)), 
         React.createElement("td", null, event.description), 
         React.createElement("td", null, AdminVo.type(event.type))
       ) 
