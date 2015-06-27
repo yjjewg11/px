@@ -1,4 +1,7 @@
 function login_affter_init(){
+	   if ($.AMUI.fullscreen.enabled) {
+		    $.AMUI.fullscreen.request();
+		}
 	var div_header_props = {
 			  "title": Store.getCurGroup().company_name+"-"+Store.getUserinfo().name,
 			  "link": "#title-link",
@@ -23,7 +26,48 @@ function login_affter_init(){
 			};
 
 	//menu
+	
+	
+	var tmp_menu={
+	    "link": "##",
+	    "title": "切换学校",
+	    "subMenu": [
+	                {
+	                	"fn":menu_group_myList_fn,
+	                	  "link": "##",
+	                      "title": "校园列表"
+	                    },
+	                    {
+	                        "link": "##",
+	                        "title": "校园介绍"
+	                      },   
+	                {
+	                  "link": "##",
+	                  "title": "老师考勤"
+	                },
+	                {
+	                    "link": "##",
+	                    "title": "学生考勤"
+	                  }
+	                ],
+	    "subCols": 2
+	  }
 	var div_menu_data=[
+{
+    "link": "##",
+    "title": "切换学校",
+    "subMenu": [
+                {
+                  "link": "##",
+                  "title": "学校1(未)"
+                },
+                {
+                    "link": "##",
+                    "title": "学校2(未)"
+                  }
+                ],
+    "subCols": 2
+  },
 	           		{
 	        		    "link": "##",
 	        		    "title": "校园管理",
@@ -88,7 +132,7 @@ function login_affter_init(){
 	                        },
 	                {
 	                  "link": "##",
-	                  "title": "每日食谱",
+	                  "title": "食谱管理",
 	                  "fn":menu_cookbookPlan_list_fn,
 	                  "subCols": 2
 	                 // "channelLink": "进入栏目 »",
@@ -125,15 +169,16 @@ function login_affter_init(){
 	                       // "channelLink": "进入栏目 »",
 	                       
 	                      },
-	                      
+	                     
 	                        {
 	                            "link": "##",
-	                            "title": "家长互动",
+	                            "title": "互动",
 	                            "subMenu": [
 	                                        {
-	                                          "link": "##",
-	                                          "title": "班级圈"
-	                                        },
+	                                            "link": "##",
+	                                            "fn":menu_classnews_list_fn,
+	                                            "title": "班级互动"
+	                                          },
 	                                        {
 	                                            "link": "##",
 	                                            "title": "家长反馈"
@@ -221,27 +266,48 @@ var div_menu_handleClick = function(nav, index, e) {
 function menu_dohome(){
 	Queue.push(menu_dohome);
 	var div_Gallery_data=[
-	                      
+	                      {
+	                    	    "img": hostUrl+"i/header.png",
+	                    	    "link": "###",
+	                    	    "title": "我"
+	                    	  },
+
 	                    	  {
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "###",
-		                    	    "title": "我的通知公告"
+		                    	    "title": "班级圈"
+		                    	  },
+	                    	  {
+		                    	    "img": hostUrl+"i/header.png",
+		                    	    "link": "###",
+		                    	    "title": "家长互动"
 		                    	  },
 		                    	  {
 			                    	    "img": hostUrl+"i/header.png",
 			                    	    "link": "###",
 			                    	    "title": "我的班级通知"
 			                    	  },
-			                    	  {
-				                    	    "img": hostUrl+"i/header.png",
-				                    	    "link": "###",
-				                    	    "title": "我"
-				                    	  },
+			                    	 
 		                    	  {
 	                    	    "img": hostUrl+"i/header.png",
 	                    	    "link": "###",
-	                    	    "title": "点名"
+	                    	    "title": "签到"
 	                    	  },
+	                    	  {
+		                    	    "img": hostUrl+"i/header.png",
+		                    	    "link": "###",
+		                    	    "title": "花名册"
+		                    	  },
+		                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "###",
+			                    	    "title": "今日食谱"
+			                    	  },
+			                    	  {
+				                    	    "img": hostUrl+"i/header.png",
+				                    	    "link": "###",
+				                    	    "title": "教学计划"
+				                    	  },
 		                      {
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "###",

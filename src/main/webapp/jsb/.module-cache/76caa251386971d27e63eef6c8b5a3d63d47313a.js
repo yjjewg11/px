@@ -323,7 +323,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 			 }
 			 var uuids=null;
 			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
-			 $($(".G_ch_cook_item_checked")).each(function(){
+			 $(".G_ch_cook_item_checked").each(function(){
 					 if(uuids==null){
 						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
 					 }
@@ -338,7 +338,6 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 //					 imgArr.push(tmpO);
 					　   //遍历被选中CheckBox元素的集合 得到Value值
 				});
-			  
 			 this.props.handleClick(m,uuids);
 		 }
 	  },
@@ -380,10 +379,14 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
     	div_onClick:function(trid){
     		var tr=$("#"+trid);
     		
-    		if(tr.attr("class").indexOf("G_ch_cook_item_checked")>=0){ 
+    		if(tr.attr("class").indexOf("G_ch_cook_item_checked")>=0){//取消 
     			tr.removeClass("G_ch_cook_item_checked");
     			tr.addClass("G_ch_cook_item");
-			}else{ 
+			}else{ //选中
+				if($(".G_ch_cook_item_checked").length>=5){
+					  alert("最多选择5个");
+					  return;
+				}
 				tr.removeClass("G_ch_cook_item");
 				tr.addClass("G_ch_cook_item_checked");
 			} 

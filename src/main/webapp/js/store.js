@@ -33,8 +33,24 @@ var Store={
 	setChooseClass:function(groupuuid,v){
 		this.map["ChooseClass"+groupuuid]=v;
 	},
-	getChooseClass:function(groupuuid){
-		 return this.map["ChooseClass"+groupuuid];
+	//v:groupuuid
+	getChooseClass:function(v){
+		var key="ChooseClass"+v;
+		 if(this.map[key])return this.map[key];
+		 store_ajax_class_listByGroup(v);
+		 if(this.map[key])return this.map[key];
+		 return [];
+	},
+	getClassNameByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			var t_arr=this.getChooseClass(arr[i].uuid);
+			
+			for(var i=0;i<t_arr.length;i++){
+				if(uuid==t_arr[i].uuid)return t_arr[i].name;
+			}
+		}
+		return "";
 	},
 	/**
 	 * 设置人员选择控件到内存缓存。
@@ -78,22 +94,13 @@ var Store={
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];
-		 var o=$.AMUI.store.get("Group");
-		 if(o==null){
 			 //从后台重新获取
-			 ajax_group_myList_toStroe();
+			 store_ajax_group_myList_toStroe();
 			 if(this.map["Group"])return this.map["Group"];
-			 var o=$.AMUI.store.get("Group");
-		 }
-		 if(o==null){
-			 o=[];
-		 }
-		 return o;
+		 return [];
 	},
 	setGroup:function(v){
 		this.map["Group"]=v;
-		if(!Store.enabled())return;
-		$.AMUI.store.set("Group", v);
 	},
 	getUserinfo:function(){
 		 if(this.map["userinfo"])return this.map["userinfo"];
@@ -177,7 +184,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
 
 //获取我的
-function ajax_group_myList_toStroe() {
+function store_ajax_group_myList_toStroe() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/group/myList.json";
 	$.ajax({
@@ -190,6 +197,36 @@ function ajax_group_myList_toStroe() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setGroup(data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+
+function store_ajax_class_listByGroup(groupuuid){
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/class/list.json?groupuuid="+groupuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setChooseClass(groupuuid,data.list)
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

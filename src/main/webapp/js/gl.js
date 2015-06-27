@@ -132,3 +132,19 @@ var  Queue={
 		            return this.arr.pop();  
 		}	
 }
+
+var xhEditor_upImgOption={
+    upMultiple:false,
+	upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
+	onUpload:xhEditor_insertUpload,
+	html5Upload:false,
+	tools:'simple',
+	urlType:'rel'
+};
+
+
+//xhEditor编辑器图片上传回调函数
+function xhEditor_insertUpload(msg) {
+	msg=G_imgPath+msg[0];
+	//$("#xh_editor").append(msg);
+}

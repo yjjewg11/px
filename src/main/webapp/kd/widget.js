@@ -231,33 +231,6 @@ var w_ch_class={
 		w_ch_class.show();
 		
 	},	
-	ajax_chooseClass_listByGroup:function(groupuuid){
-		$.AMUI.progress.start();
-		var url = hostUrl + "rest/class/list.json?groupuuid="+groupuuid;
-		$.ajax({
-			type : "GET",
-			url : url,
-			async: false,
-			data : "",
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-					Store.setChooseClass(groupuuid,data.list)
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+","+textStatus+"="+errorThrown);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
-		});
-	},
 	reshowBygroup:function(groupuuid){
 		w_ch_class.groupuuid=groupuuid;
 		if(!w_ch_class.groupuuid){
@@ -268,10 +241,6 @@ var w_ch_class={
 	
 	show:function(){
 		var lists=Store.getChooseClass(w_ch_class.groupuuid);
-		if(!lists){
-			w_ch_class.ajax_chooseClass_listByGroup(w_ch_class.groupuuid);
-			lists=Store.getChooseClass(w_ch_class.groupuuid);
-		}
 		React.render(React.createElement(ChooseClass_EventsTable, {
 			group_uuid:w_ch_class.groupuuid,
 			group_list:Store.getGroup(),

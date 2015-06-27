@@ -86,12 +86,19 @@ public class ClassNewsReplyController extends AbstractRESTController {
 	public String getReplyByNewsuuid(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PaginationData pData=this.getPaginationDataByRequest(request);
-		
-		PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		return "";
+		try {
+			PaginationData pData=this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+	
 	}
 
 	/**

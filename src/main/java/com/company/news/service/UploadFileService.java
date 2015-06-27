@@ -25,6 +25,7 @@ import com.company.news.commons.util.FileUtils;
 import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.entity.UploadFile;
 import com.company.news.entity.User;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -171,10 +172,12 @@ public class UploadFileService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
+	private static String fileImgExt = ",jpg,jpeg,bmp,gif,png,";
 	public UploadFile uploadImg(String type,
 			CommonsMultipartFile file, ResponseMessage responseMessage,
 			HttpServletRequest request, User user) throws Exception {
 		if(StringUtils.isBlank(type)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage("type不能为空");
 			return null;
 		}
@@ -185,6 +188,7 @@ public class UploadFileService extends AbstractServcice {
 		Long maxfileSize = Long.valueOf(ProjectProperties.getProperty(
 				"UploadFilePath_maxSize_M", "2"));
 		if (fileSize > maxfileSize * 1024 * 1024) {
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage("上载文件太大，不能超过" + maxfileSize + "M");
 			return null;
 		}
@@ -192,16 +196,21 @@ public class UploadFileService extends AbstractServcice {
 		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
 				"c:/px_upload/");
 		String fileName = file.getOriginalFilename();
-		if(SystemConstants.UploadFile_type_head.equals(Integer.parseInt(type))){
-			fileName ="head_"+guid+file.getOriginalFilename();
-		}
+		String fileExt=FilenameUtils.getExtension(fileName);
 		String secondPath="";
-		
-		if(SystemConstants.UploadFile_type_head.equals(type)){
+		if(SystemConstants.UploadFile_type_head.equals(Integer.parseInt(type))){
 			secondPath += "head/";
 			
-		}else if(SystemConstants.UploadFile_type_cook.equals(type)){
+		}else if(SystemConstants.UploadFile_type_cook.equals(Integer.parseInt(type))){
 			secondPath += "cook/";
+		}else if(SystemConstants.UploadFile_type_xheditorimg.equals(Integer.parseInt(type))){
+			/*检查文件类型*/
+			if ((fileImgExt).indexOf("," + fileExt.toLowerCase() + ",") < 0){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("不允许上传此类型的文件");
+				return null;
+			}
+			secondPath += "xheditor/";
 		}else{
 			secondPath += user.getUuid()+"/";
 		};

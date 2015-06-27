@@ -157,11 +157,11 @@ render: function() {
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
- 	      <a  href="javascript:menu_kd_group_reg_fn();" >幼儿园注册</a>|
- 	     <a  href="javascript:menu_userinfo_reg_fn();" >老师注册</a>
+ 	     <a  href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>|
+ 	     <a  href="javascript:void(0);" onClick={menu_userinfo_reg_fn} >老师注册</a>
  	      <br/>
  	      
- 	     <a  href="http://120.25.248.31/px-rest/kd/" > <img src="ewm_kd.png" /></a>
+ 	     <a  href="http://120.25.248.31/px-rest/admin/" > <img src="ew_admin.png" /></a>
  	    
  			
  	    </form>

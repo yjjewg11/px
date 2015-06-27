@@ -1,4 +1,47 @@
-
+/**
+ * 保存通用方法
+var opt={
+	 formName:"editClassnewsForm",
+	 url:hostUrl + "rest/classnewsreply/save.json",
+	 cbFN:null,
+	 }
+	 ajax_abs_save(opt);
+ */
+function ajax_abs_save(opt){
+$.AMUI.progress.start();
+	
+	  var objectForm = $('#'+opt.formName).serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+	$.ajax({
+		type : "POST",
+		url : opt.url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				if(opt.cbFN){
+					opt.cbFN(data);
+				}else{
+					Queue.doBackFN();
+				}
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
 //用户登陆
 function ajax_userinfo_login() {
 	
@@ -191,13 +234,16 @@ function ajax_group_myList() {
 		}
 	});
 };
-function btn_group_myList(m){
+function btn_group_myList(m,formdata){
+	Queue.push(function(){btn_group_myList(m)});
 	if(m=="add_group"){
 		ajax_group_edit({"type":1,"brand_name":""});
+	}else if(m=="edit"){
+		ajax_group_edit(formdata);
 	}
 };
 function ajax_group_edit(data){
-	Queue.push(function(){ajax_group_edit(data)});
+
 	React.render(React.createElement(Group_edit,{formdata:data}), document.getElementById('div_body'));
 };
 
@@ -1011,7 +1057,6 @@ function react_ajax_teachingplan_delete(groupuuid,uuid){
 	});
 };
 function react_ajax_teachingplan_show(uuid){
-	Queue.push(function(){react_ajax_teachingplan_show(uuid)});
 	$.AMUI.progress.start();
   var url = hostUrl + "rest/teachingplan/"+uuid+".json";
 	$.ajax({
@@ -1305,3 +1350,171 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 }
 
 //cookbookPlan end
+
+
+
+
+//classnews
+function menu_classnews_list_fn() {
+	Queue.push(menu_classnews_list_fn);
+	ajax_classnews_list();
+};
+//记录当前翻页
+var g_classnews_pageNo_point=1;
+var g_classnews_classuuid=null;
+function ajax_classnews_list(classuuid,pageNo) {
+	if(!classuuid)classuuid=g_classnews_classuuid;
+	else g_classnews_classuuid=classuuid;
+	if(!pageNo)pageNo=1;
+	g_classnews_pageNo_point=pageNo;
+	
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/classnews/getClassNewsByClassuuid.json?uuid="+classuuid+"&pageNo="+pageNo;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Classnews_EventsTable, {
+					events: data.list,
+					class_list:Store.getChooseClass(Store.getCurGroup().uuid),
+					handleClick:btn_click_classnews,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+ function ajax_classnewsreply_list(newsuuid,list_div,pageNo){
+	 if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/classnewsreply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Classnewsreply_listshow, {
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+function btn_click_classnews(m,formdata){
+	Queue.push(function(){btn_click_classnews(m,formdata)});
+	ajax_classnews_edit(m,formdata);
+};
+
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function ajax_classnews_edit(m,formdata){
+	if(m=="add"){
+		React.render(React.createElement(Classnews_edit,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/classnews/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				if(m=="edit"){
+					React.render(React.createElement(Classnews_edit,{formdata:data.data}), document.getElementById('div_body'));
+				}else{
+					React.render(React.createElement(Classnews_show,{formdata:data.data}), document.getElementById('div_body'));
+				}
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+
+
+function ajax_classnewsreply_save(){
+	var opt={
+	 formName:"editClassnewsreplyForm",
+	 url:hostUrl + "rest/classnewsreply/save.json",
+	 cbFN:null,
+	 };
+	 ajax_abs_save(opt);
+}
+
+
+function ajax_classnews_save(){
+$.AMUI.progress.start();
+	
+	  var objectForm = $('#editClassnewsForm').serializeJson();
+	  var jsonString=JSON.stringify(objectForm);
+var url = hostUrl + "rest/classnews/save.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				Queue.doBackFN();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+
+
+//classnews end

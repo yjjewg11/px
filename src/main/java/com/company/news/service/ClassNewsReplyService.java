@@ -95,7 +95,7 @@ public class ClassNewsReplyService extends AbstractServcice {
 	public PageQueryResult query(String newsuuid, PaginationData pData) {
 		String hql="from ClassNewsReply where 1=1";	
 		if (StringUtils.isNotBlank(newsuuid))
-			hql+=" and  newsuuid="+newsuuid;
+			hql+=" and  newsuuid='"+newsuuid+"'";
 		
 		hql+=" order by create_time";
 		
