@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -161,13 +163,13 @@ public class ClassService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<PClass> queryClassByUseruuid(String useruuid) {
+	public List queryClassByUseruuid(String useruuid) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		String sql = "";
 		Query q = s
 				.createSQLQuery(
-						"select {t1.*} from px_userclassrelation t0,px_class {t1} where t0.classuuid={t1}.uuid and t0.useruuid='"
+						"select {t1.*} from px_userclassrelation t0,px_class t1 where t0.classuuid=t1.uuid and t0.useruuid='"
 								+ useruuid + "'").addEntity("t1", PClass.class);
 
 		return q.list();

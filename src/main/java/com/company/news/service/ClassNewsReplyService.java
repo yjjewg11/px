@@ -1,14 +1,11 @@
 package com.company.news.service;
 
-import java.util.List;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
-import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.jsonform.ClassNewsReplyJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
