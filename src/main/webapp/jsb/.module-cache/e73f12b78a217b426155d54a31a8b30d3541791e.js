@@ -200,7 +200,8 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
    	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小"), 
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnRotate_onClick, round: true}, "旋转")
   
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
@@ -549,7 +550,8 @@ var Upload_cookImg = React.createClass({displayName: "Upload_cookImg",
    	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小"), 
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnRotate_onClick, round: true}, "旋转")
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
    	   	)

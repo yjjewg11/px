@@ -891,7 +891,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  $('#announce_message').xheditor();
 		  return;
 		  if($.fn.xheditor){
 			  $('#announce_message').xheditor();
@@ -1485,7 +1485,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content').xheditor({tools:'simple'});
 	  },
 render: function() {
 	  var o = this.state;
@@ -1522,7 +1522,7 @@ return (
 var Classnews_show = React.createClass({displayName: "Classnews_show", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption);
 		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div);
 	},
 render: function() {
@@ -1582,8 +1582,8 @@ render: function() {
 		  this.props.events.data.map(function(event) {
 		      return (
 		    		  React.createElement("div", {className: "event"}, 
-		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}}), 
-		  		 React.createElement("strong", null, event.create_user+" | "+event.update_time)
+		  		   React.createElement("strong", null, event.create_user+" | "+event.update_time), 
+		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}})
 		  		 )
 		    		  )
 		  }), 

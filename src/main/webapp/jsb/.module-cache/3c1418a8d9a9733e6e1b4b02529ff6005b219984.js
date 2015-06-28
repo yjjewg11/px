@@ -157,7 +157,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
         	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
        },
        btnRotate_onClick: function(){
-        	 if(w_uploadImg.cropper)w_uploadImg.cropper.chRotate();
+        	 if(w_uploadImg.cropper)w_uploadImg.cropper.rotate();
        },
        btnCrop_onClick: function(){
     	   var img = w_uploadImg.cropper.getDataURL();
@@ -200,8 +200,10 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
    	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
    	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小"), 
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnRotate_onClick, round: true}, "旋转"), 
   
+   	 "w_uploadImg.cropper.zoomOut"
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
    	   	)
@@ -504,15 +506,11 @@ var Upload_cookImg = React.createClass({displayName: "Upload_cookImg",
         btnZoomOut_onClick: function(){
         	 if(w_ch_cookAddImg.cropper)w_ch_cookAddImg.cropper.zoomOut();
        },
-       btnRotate_onClick: function(){
-      	 if(w_ch_cookAddImg.cropper)w_ch_cookAddImg.cropper.chRotate();
-     },
        btnCrop_onClick: function(){
     	   var img = w_ch_cookAddImg.cropper.getDataURL();
     	   w_ch_cookAddImg.base64=img;
            $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
 	   },
-	   
        	 componentDidMount:function(){
            $('#upload_imgfile').on('change', function(){
                var reader = new FileReader();
@@ -547,9 +545,9 @@ var Upload_cookImg = React.createClass({displayName: "Upload_cookImg",
 	   	), 
    	React.createElement("div", {className: "action"}, 
    	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+   	    React.createElement("input", {type: "button", id: "btnCrop", value: "剪切", onClick: this.btnCrop_onClick}), 
+   	    React.createElement("input", {type: "button", id: "btnZoomIn", value: "放大", onClick: this.btnZoomIn_onClick}), 
+   	    React.createElement("input", {type: "button", id: "btnZoomOut", value: "缩小", onClick: this.btnZoomOut_onClick})
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
    	   	)

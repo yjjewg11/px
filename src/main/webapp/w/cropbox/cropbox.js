@@ -21,6 +21,7 @@
                 thumbBox : el.find(options.thumbBox),
                 spinner : el.find(options.spinner),
                 image : new Image(),
+                rotate:0,
                 getDataURL: function ()
                 {
                     var width = this.thumbBox.width(),
@@ -37,8 +38,18 @@
 
                     canvas.width = width;
                     canvas.height = height;
+
                     var context = canvas.getContext("2d");
+                   
+                   
+                   
                     context.drawImage(this.image, 0, 0, sw, sh, dx, dy, dw, dh);
+                    
+                    if(this.rotate){
+//                    	 /context.translate(dx+dw/2,dy+dh/2);
+                    	 context.rotate(this.rotate*Math.PI/180);
+                    	 context.drawImage(this.image,0,0);//context的drawImage()方法
+                    }
                     var imageData = canvas.toDataURL('image/png');
                     return imageData;
                 },
@@ -52,6 +63,23 @@
                         array.push(binary.charCodeAt(i));
                     }
                     return  new Blob([new Uint8Array(array)], {type: 'image/png'});
+                },
+                //add by lmq
+                //-ms-transform:rotate(90deg); /* IE 9 */
+                //-moz-transform:rotate(90deg); /* Firefox */
+                //-webkit-transform:rotate(90deg); /* Safari and Chrome */
+                //-o-transform:rotate(90deg); /* Opera */
+                chRotate: function(i)
+                {
+                	if(!i)i=90;
+                	if(!this.rotate)this.rotate=0;
+                	this.rotate=this.rotate+i;
+                	if(this.rotate==360)this.rotate=0;
+                	 el.css({
+                         '-ms-transform': 'rotate('+this.rotate+'deg)',
+                         '-moz-transform': 'rotate('+this.rotate+'deg)',
+                         '-webkit-transform': 'rotate('+this.rotate+'deg)',
+                         '-ms-transform': 'rotate('+this.rotate+'deg)'});
                 },
                 zoomIn: function ()
                 {
@@ -78,6 +106,7 @@
                     'background-position': pw + 'px ' + ph + 'px',
                     'background-repeat': 'no-repeat'});
             },
+          
             imgMouseDown = function(e)
             {
                 e.stopImmediatePropagation();
@@ -120,8 +149,10 @@
         obj.spinner.show();
         obj.image.onload = function() {
             obj.spinner.hide();
+            //add by lmq
+            obj.ratio=el.width()/ parseInt(obj.image.width);
             setBackground();
-
+           
             el.bind('mousedown', imgMouseDown);
             el.bind('mousemove', imgMouseMove);
             $(window).bind('mouseup', imgMouseUp);

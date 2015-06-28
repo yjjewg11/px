@@ -202,7 +202,7 @@ var Group_EventRow = React.createClass({
       <td > 
       <input type="checkbox" value={event.uuid} name="table_checkbox" />
       </td> 
-      <td  ><a href="javascript:void(0);" onClick={btn_group_myList.bind(this,"edit", event)}>{event.brand_name}</a></td>
+      <td  ><a href="javascript:void(0);" onClick={btn_click_group.bind(this,"edit", event)}>{event.brand_name}</a></td>
         <td  >{event.company_name}</td>
         <td > {event.link_tel}</td>
         <td >{event.address}</td>
@@ -214,8 +214,29 @@ var Group_EventRow = React.createClass({
 
 var Group_EventsTable = React.createClass({
 	handleClick: function(m) {
-		 if(this.props.handleClick){
-			 this.props.handleClick(m);
+		if(m=="add"){
+			btn_click_group(m,{});
+			 return;
+		 }if(m=="edit"){
+			
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个进行编辑！");
+					return;
+				}
+			  btn_click_group(m,{uuid:uuids});
 		 }
 	  },
 	  handleChange_checkbox_all:function(){
@@ -226,7 +247,7 @@ var Group_EventsTable = React.createClass({
     <div>
     <AMR_Sticky>
     <AMR_ButtonToolbar>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_group")} round>添加分校</AMR_Button>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
 	 </AMR_Sticky>
 	  <hr/>
@@ -261,6 +282,9 @@ var Group_edit = React.createClass({
 	 handleChange: function(event) {
 		    this.setState($('#editGroupForm').serializeJson());
 	  },
+	  componentDidMount:function(){
+		  $('#description').xheditor(xhEditor_upImgOption_mfull);
+	},
   render: function() {
 	  var o = this.state;
     return (
@@ -293,6 +317,8 @@ var Group_edit = React.createClass({
     	       <label htmlFor="link_tel">公司电话:</label>
     	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
     	      <br/>
+    	      <AMR_Input id="description" type="textarea" rows="10" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+    		  
     	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
     	     </form>
 
@@ -303,6 +329,26 @@ var Group_edit = React.createClass({
     );
   }
 }); 
+
+
+
+
+var Group_show = React.createClass({ 
+render: function() {
+	  var o = this.props.formdata;
+  return (
+		  <AMUIReact.Article
+		    title={o.brand_name}
+		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读0次"}>
+			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+		   </AMUIReact.Article>	
+		   
+		   
+  );
+}
+}); 
+
+//end group
 
 //userinfo
 var Userinfo_EventRow = React.createClass({ 
@@ -845,7 +891,7 @@ var Announcements_edit = React.createClass({
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor();
+		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 		  return;
 		  if($.fn.xheditor){
 			  $('#announce_message').xheditor();
@@ -1439,7 +1485,7 @@ var Classnews_edit = React.createClass({
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#classnews_content').xheditor({tools:'simple'});
+		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
 	  },
 render: function() {
 	  var o = this.state;
@@ -1476,7 +1522,7 @@ return (
 var Classnews_show = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption);
+		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div);
 	},
 render: function() {
@@ -1488,14 +1534,19 @@ render: function() {
 		    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读0次"}>
 			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		   </AMUIReact.Article>	
-		   
-		   <div id={this.classnewsreply_list_div}>
-		   		加载中...
+		   <div id="dianzan" class="dianzan">♡{o.dianzan}
+		   </div>
+		   <button type="button"  onClick={ajax_classnews_dianzan}  className="am-btn am-btn-primary">点赞</button>
+		   <div className="G_reply">
+			   <h4>回复</h4>
+			   <div id={this.classnewsreply_list_div}>
+			   		加载中...
+			   </div>
 		   </div>
 		   <form id="editClassnewsreplyForm" method="post" className="am-form">
 			<input type="hidden" name="newsuuid"  value={o.uuid}/>
 			<input type="hidden" name="uuid" />
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" />
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
 		      <button type="button"  onClick={ajax_classnewsreply_save}  className="am-btn am-btn-primary">提交</button>
 		      
 		    </form>
@@ -1530,8 +1581,10 @@ render: function() {
 		  <div>
 		  {this.props.events.data.map(function(event) {
 		      return (
-		  		   <lable>{event.create_user+" | "+event.update_time}</lable>
-		  		 <div dangerouslySetInnerHTML={{__html: event.content}}></div>
+		    		  <div className="event">
+		  		 <div  dangerouslySetInnerHTML={{__html: event.content}}></div>
+		  		 <strong>{event.create_user+" | "+event.update_time}</strong>
+		  		 </div>
 		    		  )
 		  })}
 		    {more_onClickButton}

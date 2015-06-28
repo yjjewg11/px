@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
-import com.company.news.entity.Role;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
@@ -230,6 +229,14 @@ public class GroupService extends AbstractServcice {
 	 */
 	public List<Group4Q> query(){
 		return (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q", null);
+	}
+	
+	/**
+	 * 查询所有机构列表
+	 * @return
+	 */
+	public Group get(String uuid){
+		return (Group)this.nSimpleHibernateDao.getObjectById(Group.class, uuid);
 	}
 
 	

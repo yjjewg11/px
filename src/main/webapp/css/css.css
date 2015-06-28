@@ -62,4 +62,11 @@
 .G_cookplan_Img_close{position:absolute; top:0px; right:0px;cursor: pointer;}
 
 .cls{clear:both;height:0px;}
-	
+
+
+/*ÆÀÂÛ*/
+.G_reply h4{ height:24px; color:#e6268c; border-bottom:1px solid #000;}
+
+.G_reply strong{ display: block;line-height:1.5;font-size:1.2rem; color:#999;}
+
+.G_reply .event{border-bottom:1px solid #9a9a9a;}

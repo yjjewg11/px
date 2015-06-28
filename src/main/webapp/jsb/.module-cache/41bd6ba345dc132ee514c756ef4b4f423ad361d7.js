@@ -892,16 +892,6 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	  },
 	  componentDidMount:function(){
 		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-		  return;
-		  if($.fn.xheditor){
-			  $('#announce_message').xheditor();
-		  }else{
-			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
-					loadJS('../js/xheditor/zh-cn.js');
-					$('#announce_message').xheditor();
-				});
-		  }
-		 
 
 	  },
 render: function() {
@@ -1485,7 +1475,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content').xheditor(xhEditor_upImgOption);
 	  },
 render: function() {
 	  var o = this.state;
@@ -1522,7 +1512,7 @@ return (
 var Classnews_show = React.createClass({displayName: "Classnews_show", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption);
 		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div);
 	},
 render: function() {

@@ -1,3 +1,6 @@
+/**
+ * Store.getGroup();
+ */
 var Store={
 	map:{},
 	clear:function(){
@@ -104,17 +107,12 @@ var Store={
 	},
 	getUserinfo:function(){
 		 if(this.map["userinfo"])return this.map["userinfo"];
-		 var o=$.AMUI.store.get("userinfo");
-		 if(o==null){
-			 //从后台重新获取
-			 o={};
-		 }
-		 return o;
+		 store_ajax_getUserinfo();
+		 if(this.map["userinfo"])return this.map["userinfo"];
+		 return {};
 	},
 	setUserinfo:function(v){
 		this.map["userinfo"]=v;
-		if(!Store.enabled())return;
-		$.AMUI.store.set("userinfo", v);
 	}
 };
 
@@ -241,3 +239,34 @@ function store_ajax_class_listByGroup(groupuuid){
 		}
 	});
 };
+
+
+function store_ajax_getUserinfo() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.userinfo)Store.setUserinfo(data.userinfo);
+				if(data.list)Store.setGroup(data.list);
+				menu_body_fn();
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+			
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}

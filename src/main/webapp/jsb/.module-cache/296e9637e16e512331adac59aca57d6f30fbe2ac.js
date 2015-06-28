@@ -891,7 +891,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  $('#announce_message').xheditor();
 		  return;
 		  if($.fn.xheditor){
 			  $('#announce_message').xheditor();
@@ -1485,7 +1485,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content').xheditor({tools:'simple'});
 	  },
 render: function() {
 	  var o = this.state;
@@ -1522,7 +1522,7 @@ return (
 var Classnews_show = React.createClass({displayName: "Classnews_show", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption);
 		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div);
 	},
 render: function() {
@@ -1534,9 +1534,6 @@ render: function() {
 		    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读0次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 		   ), 	
-		   React.createElement("div", {id: "dianzan", class: "dianzan"}, "♡", o.dianzan
-		   ), 
-		   React.createElement("button", {type: "button", onClick: ajax_classnews_dianzan, className: "am-btn am-btn-primary"}, "点赞"), 
 		   React.createElement("div", {className: "G_reply"}, 
 			   React.createElement("h4", null, "回复"), 
 			   React.createElement("div", {id: this.classnewsreply_list_div}, 
@@ -1546,7 +1543,7 @@ render: function() {
 		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
-			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content"}), 
 		      React.createElement("button", {type: "button", onClick: ajax_classnewsreply_save, className: "am-btn am-btn-primary"}, "提交")
 		      
 		    )
@@ -1582,8 +1579,8 @@ render: function() {
 		  this.props.events.data.map(function(event) {
 		      return (
 		    		  React.createElement("div", {className: "event"}, 
-		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}}), 
-		  		 React.createElement("strong", null, event.create_user+" | "+event.update_time)
+		  		   React.createElement("strong", null, event.create_user+" | "+event.update_time), 
+		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}})
 		  		 )
 		    		  )
 		  }), 

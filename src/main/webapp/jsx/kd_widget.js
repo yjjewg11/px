@@ -156,6 +156,9 @@ var Upload_headImg = React.createClass({
         btnZoomOut_onClick: function(){
         	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
        },
+       btnRotate_onClick: function(){
+        	 if(w_uploadImg.cropper)w_uploadImg.cropper.chRotate();
+       },
        btnCrop_onClick: function(){
     	   var img = w_uploadImg.cropper.getDataURL();
     	   w_uploadImg.base64=img;
@@ -195,9 +198,10 @@ var Upload_headImg = React.createClass({
 	   	</div>
    	<div className="action">
    	    <input type="file" id="upload_imgfile" accept="image/*" />
-   	    <input type="button" id="btnCrop" value="剪切"  onClick={this.btnCrop_onClick}/>
-   	    <input type="button" id="btnZoomIn" value="放大" onClick={this.btnZoomIn_onClick}/>
-   	    <input type="button" id="btnZoomOut" value="缩小" onClick={this.btnZoomOut_onClick}/>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} round>剪切</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} round>放大</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} round>缩小</AMUIReact_Button>
+  
    	</div>
    		<div className="cropped" id="upload_file_imageBox_cropped">
    	   	</div>
@@ -500,11 +504,15 @@ var Upload_cookImg = React.createClass({
         btnZoomOut_onClick: function(){
         	 if(w_ch_cookAddImg.cropper)w_ch_cookAddImg.cropper.zoomOut();
        },
+       btnRotate_onClick: function(){
+      	 if(w_ch_cookAddImg.cropper)w_ch_cookAddImg.cropper.chRotate();
+     },
        btnCrop_onClick: function(){
     	   var img = w_ch_cookAddImg.cropper.getDataURL();
     	   w_ch_cookAddImg.base64=img;
            $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
 	   },
+	   
        	 componentDidMount:function(){
            $('#upload_imgfile').on('change', function(){
                var reader = new FileReader();
@@ -539,9 +547,9 @@ var Upload_cookImg = React.createClass({
 	   	</div>
    	<div className="action">
    	    <input type="file" id="upload_imgfile" accept="image/*" />
-   	    <input type="button" id="btnCrop" value="剪切"  onClick={this.btnCrop_onClick}/>
-   	    <input type="button" id="btnZoomIn" value="放大" onClick={this.btnZoomIn_onClick}/>
-   	    <input type="button" id="btnZoomOut" value="缩小" onClick={this.btnZoomOut_onClick}/>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} round>剪切</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} round>放大</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} round>缩小</AMUIReact_Button>
    	</div>
    		<div className="cropped" id="upload_file_imageBox_cropped">
    	   	</div>

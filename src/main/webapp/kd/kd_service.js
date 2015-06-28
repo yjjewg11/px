@@ -205,6 +205,8 @@ function ajax_kd_group_reg() {
 	});
 }
 
+//group
+
 
 //获取我的
 function ajax_group_myList() {
@@ -234,6 +236,21 @@ function ajax_group_myList() {
 		}
 	});
 };
+
+function menu_group_change_fn(o){
+	Store.setCurGroup(o);
+	login_affter_init();
+}
+
+function menu_group_description_fn(uuid){
+	Queue.push(function(){menu_group_description_fn(uuid);});
+	if(!uuid)uuid=Store.getCurGroup().uuid;
+	ajax_group_edit("show",{uuid:uuid});
+	
+
+		
+};
+
 function btn_group_myList(m,formdata){
 	Queue.push(function(){btn_group_myList(m)});
 	if(m=="add_group"){
@@ -242,10 +259,50 @@ function btn_group_myList(m,formdata){
 		ajax_group_edit(formdata);
 	}
 };
-function ajax_group_edit(data){
 
-	React.render(React.createElement(Group_edit,{formdata:data}), document.getElementById('div_body'));
+function btn_click_group(m,formdata){
+	Queue.push(function(){btn_click_group(m,formdata)});
+	ajax_group_edit(m,formdata);
 };
+
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function ajax_group_edit(m,formdata){
+	if(m=="add"){
+		React.render(React.createElement(Group_edit,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/group/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				if(m=="edit"){
+					React.render(React.createElement(Group_edit,{formdata:data.data}), document.getElementById('div_body'));
+				}else{
+					React.render(React.createElement(Group_show,{formdata:data.data}), document.getElementById('div_body'));
+				}
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+
 
 function ajax_group_save(){
 $.AMUI.progress.start();
@@ -1482,6 +1539,10 @@ function ajax_classnewsreply_save(){
 	 ajax_abs_save(opt);
 }
 
+
+function ajax_classnews_dianzan(){
+	$('#dianzan').html($('#dianzan').html()+","+Store.getUserinfo().name);
+}
 
 function ajax_classnews_save(){
 $.AMUI.progress.start();

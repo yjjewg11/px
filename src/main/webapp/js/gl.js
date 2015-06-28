@@ -133,6 +133,14 @@ var  Queue={
 		}	
 }
 
+var xhEditor_upImgOption_mfull={
+	    upMultiple:false,
+		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
+		onUpload:xhEditor_insertUpload,
+		html5Upload:false,
+		tools:'mfull',
+		urlType:'rel'
+	};
 var xhEditor_upImgOption={
     upMultiple:false,
 	upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
@@ -141,7 +149,14 @@ var xhEditor_upImgOption={
 	tools:'simple',
 	urlType:'rel'
 };
-
+var xhEditor_upImgOption_emot={
+	    upMultiple:false,
+		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
+		onUpload:xhEditor_insertUpload,
+		html5Upload:false,
+		tools:'Emot,Img',
+		urlType:'rel'
+	};
 
 //xhEditor编辑器图片上传回调函数
 function xhEditor_insertUpload(msg) {
