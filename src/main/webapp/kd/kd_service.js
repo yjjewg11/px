@@ -1257,17 +1257,51 @@ function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
 	});
 };
 
-function btn_click_cookbookPlan(m,groupuuid,uuid){
-	Queue.push(function(){btn_click_cookbookPlan(m,groupuuid,uuid)});
-	if(m=="add"){
-		react_ajax_cookbookPlan_edit({groupuuid:groupuuid},null);
-	}else if(m=="edit"){
-		react_ajax_cookbookPlan_edit(null,uuid);
-	}else if(m=="del"){
-		//react_ajax_cookbookPlan_delete(groupuuid,uuid);
-	}
+
+
+function btn_click_cookbookPlan(m,formdata){
+	Queue.push(function(){btn_click_classnews(m,formdata)});
+	react_ajax_cookbookPlan_edit(m,formdata);
 };
 
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function react_ajax_cookbookPlan_edit(m,formdata){
+	if(m=="add"){
+		if(!formdata.groupuuid){
+			alert("新建食谱，学校id必填");
+			return;
+		}
+		React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:formdata}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/cookbookplan/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:data.data}), document.getElementById('div_body'));
+
+			} else {
+				alert("加载公司数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
 
 function react_ajax_cookbookPlan_delete(groupuuid,uuid){
 	
@@ -1307,37 +1341,6 @@ var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(CookbookPlanments_show,{data:data.data}), document.getElementById('div_body'));
-			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-};
-function react_ajax_cookbookPlan_edit(formdata,uuid){
-	if(!uuid){
-		if(!formdata.groupuuid){
-			alert("新建食谱，学校id必填");
-			return;
-		}
-		React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:formdata}), document.getElementById('div_body'));
-		return;
-	}
-	$.AMUI.progress.start();
-var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:data.data}), document.getElementById('div_body'));
 			} else {
 				alert("加载公司数据失败："+data.ResMsg.message);
 			}

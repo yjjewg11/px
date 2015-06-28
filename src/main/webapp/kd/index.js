@@ -198,7 +198,7 @@ function login_affter_init(){
 	                    {
 	                        "link": "##",
 	                        "fn":menu_userinfo_logout_fn,
-	                        "title": "注销(未)"
+	                        "title": "注销"
 	                      }
 	                  ]
 	                }

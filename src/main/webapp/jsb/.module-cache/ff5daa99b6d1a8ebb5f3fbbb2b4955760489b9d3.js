@@ -1115,7 +1115,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_cookbookPlan.bind( this, 'edit',event)}, G_week.getWeekStr(event.plandate))), 
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_cookbookPlan.bind( this, 'edit',null,event.uuid)}, G_week.getWeekStr(event.plandate))), 
     React.createElement("td", null, this.parseTimes(event.time_1)), 
     React.createElement("td", null, this.parseTimes(event.time_2)), 
     React.createElement("td", null, this.parseTimes(event.time_3)), 

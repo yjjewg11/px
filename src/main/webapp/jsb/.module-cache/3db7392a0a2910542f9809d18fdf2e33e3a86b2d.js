@@ -836,11 +836,13 @@ render: function() {
 	  ), 
 	  React.createElement("hr", null)
 	), 
+  React.createElement(AMR_Sticky, null, 
   React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "创建"), 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit"), round: true}, "编辑"), 
 	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
-	    ), 
+	    )
+	), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
     React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
@@ -1026,11 +1028,13 @@ React.createElement("div", {className: "header"},
 	  ), 
 	  React.createElement("hr", null)
 	), 
+React.createElement(AMR_Sticky, null, 
 React.createElement(AMR_ButtonToolbar, null, 
 	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add",null,this.props.classuuid), round: true}, "添加"), 
     React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
     React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")
-    ), 
+    )
+), 
 	  React.createElement("hr", null), 
   React.createElement(AMR_Table, React.__spread({},  this.props), 
     React.createElement("thead", null, 
@@ -1115,7 +1119,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_cookbookPlan.bind( this, 'edit',event)}, G_week.getWeekStr(event.plandate))), 
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_classnews_edit.bind( this, 'edit',null,event.uuid)}, G_week.getWeekStr(event.plandate))), 
     React.createElement("td", null, this.parseTimes(event.time_1)), 
     React.createElement("td", null, this.parseTimes(event.time_2)), 
     React.createElement("td", null, this.parseTimes(event.time_3)), 
@@ -1168,40 +1172,21 @@ React.createElement("hr", null)
   )
 );
 },
-
-
 handleClick: function(m) {
-	
-	
-	if(m=="add"){
-		btn_click_cookbookPlan(m,{groupuuid:$('#selectgroup_uuid').val()});
-		 return;
-	 }if(m=="edit"){
-		
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  if(!uuids&&uuids.indexOf(",")>-1){
-				alert("只能选择一个进行编辑！");
-				return;
-			}
-		  btn_click_cookbookPlan(m,{uuid:uuids});
-	 } else if(m=="pre"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
-		 return;
-	 }else if(m=="next"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
-		 return;
+	 if(this.props.handleClick){
+		 
+		 if(m=="add"){
+			 this.props.handleClick(m,$('#selectgroup_uuid').val());
+			 return;
+		 }else if(m=="pre"){
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
+			 return;
+		 }else if(m=="next"){
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+			 return;
+		 }
+		 
+		 
 	 }
 },
 //

@@ -2,7 +2,6 @@
 var AMUIReact_Table=AMUIReact.Table;
 var AMUIReact_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMUIReact_Button=AMUIReact.Button;
-var AMUIReact_Sticky=AMUIReact.Sticky;
 
 /**
  * ajax_chooseUser_edit
@@ -84,12 +83,10 @@ var ChooseUser_EventsTable = React.createClass({
 	  var that=this;
     return (
     <div>
-    <AMUIReact_Sticky>
     <AMUIReact_ButtonToolbar>
     <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
     <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
   </AMUIReact_ButtonToolbar>
-  </AMUIReact_Sticky>
   <div className="header">
   <div className="am-g">
     <h1>老师选择</h1>
@@ -273,11 +270,9 @@ var ChooseClass_EventsTable = React.createClass({
 	  var that=this;
     return (
     <div>
-    <AMUIReact_Sticky>
     <AMUIReact_ButtonToolbar>
     <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
   </AMUIReact_ButtonToolbar>
-  </AMUIReact_Sticky>
   <div className="header">
   <div className="am-g">
     <h1>班级选择</h1>

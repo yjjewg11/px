@@ -131,7 +131,6 @@ public class FileUtils {
           existFile.delete();
           file.renameTo(existFile);
         }
-        bos.close();
       }
       if (logger.isDebugEnabled()) {
         logger.debug("saveFile byte() - end");

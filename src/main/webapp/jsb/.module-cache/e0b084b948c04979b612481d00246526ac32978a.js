@@ -1115,7 +1115,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   React.createElement("tr", {className: className}, 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_cookbookPlan.bind( this, 'edit',event)}, G_week.getWeekStr(event.plandate))), 
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_classnews_edit.bind( this, 'edit',null,event.uuid)}, G_week.getWeekStr(event.plandate))), 
     React.createElement("td", null, this.parseTimes(event.time_1)), 
     React.createElement("td", null, this.parseTimes(event.time_2)), 
     React.createElement("td", null, this.parseTimes(event.time_3)), 
@@ -1168,40 +1168,21 @@ React.createElement("hr", null)
   )
 );
 },
-
-
 handleClick: function(m) {
-	
-	
-	if(m=="add"){
-		btn_click_cookbookPlan(m,{groupuuid:$('#selectgroup_uuid').val()});
-		 return;
-	 }if(m=="edit"){
-		
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  if(!uuids&&uuids.indexOf(",")>-1){
-				alert("只能选择一个进行编辑！");
-				return;
-			}
-		  btn_click_cookbookPlan(m,{uuid:uuids});
-	 } else if(m=="pre"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
-		 return;
-	 }else if(m=="next"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
-		 return;
+	 if(this.props.handleClick){
+		 
+		 if(m=="add"){
+			 this.props.handleClick(m,$('#selectgroup_uuid').val());
+			 return;
+		 }else if(m=="pre"){
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
+			 return;
+		 }else if(m=="next"){
+			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+			 return;
+		 }
+		 
+		 
 	 }
 },
 //

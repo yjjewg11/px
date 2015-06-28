@@ -245,11 +245,9 @@ var Group_EventsTable = React.createClass({
   render: function() {
     return (
     <div>
-    <AMR_Sticky>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
-	 </AMR_Sticky>
 	  <hr/>
       <AMR_Table {...this.props}>  
         <thead> 
@@ -535,13 +533,11 @@ var Class_EventsTable = React.createClass({
 render: function() {
   return (
   <div>
-  <AMR_Sticky>
   <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMR_Button>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit_class")} round>编辑</AMR_Button>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "graduate_class")} round>毕业</AMR_Button>
 	  </AMR_ButtonToolbar>
-	  </AMR_Sticky>
 	  <hr/>
 	  <div className="am-form-group">
     <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -670,11 +666,9 @@ var Class_students_manage = React.createClass({
 		var o=this.props.formdata;
 	  return (
 	  <div>
-	  <AMR_Sticky>
 	  <AMR_ButtonToolbar>
 		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
 		  </AMR_ButtonToolbar>
-		  </AMR_Sticky>
 		  <hr/>
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
@@ -842,13 +836,11 @@ render: function() {
 	  </div>
 	  <hr />
 	</div>
-  <AMR_Sticky>
   <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
 	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
 	    </AMR_ButtonToolbar>
-	</AMR_Sticky>
 	  <hr/>
 	  <div className="am-form-group">
     <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
@@ -1034,13 +1026,11 @@ return (
 	  </div>
 	  <hr />
 	</div>
-<AMR_Sticky>
 <AMR_ButtonToolbar>
 	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.classuuid)} round>添加</AMR_Button>
     <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
     <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>
     </AMR_ButtonToolbar>
-</AMR_Sticky>
 	  <hr/>
   <AMR_Table {...this.props}>  
     <thead> 
@@ -1125,7 +1115,7 @@ var className = event.highlight ? 'am-active' :
 
 return (
   <tr className={className} >
-    <td><a href="javascript:void(0);" onClick={ajax_classnews_edit.bind( this, 'edit',null,event.uuid)}>{G_week.getWeekStr(event.plandate)}</a></td>
+    <td><a href="javascript:void(0);" onClick={btn_click_cookbookPlan.bind( this, 'edit',event)}>{G_week.getWeekStr(event.plandate)}</a></td>
     <td>{this.parseTimes(event.time_1)}</td>
     <td>{this.parseTimes(event.time_2)}</td>
     <td>{this.parseTimes(event.time_3)}</td>
@@ -1178,21 +1168,40 @@ return (
   </div>
 );
 },
+
+
 handleClick: function(m) {
-	 if(this.props.handleClick){
-		 
-		 if(m=="add"){
-			 this.props.handleClick(m,$('#selectgroup_uuid').val());
-			 return;
-		 }else if(m=="pre"){
-			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
-			 return;
-		 }else if(m=="next"){
-			 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
-			 return;
-		 }
-		 
-		 
+	
+	
+	if(m=="add"){
+		btn_click_cookbookPlan(m,{groupuuid:$('#selectgroup_uuid').val()});
+		 return;
+	 }if(m=="edit"){
+		
+		 var uuids=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			
+			　if(this.checked){
+				 if(uuids==null)uuids=this.value;
+				 else
+				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+			　}
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  if(!uuids&&uuids.indexOf(",")>-1){
+				alert("只能选择一个进行编辑！");
+				return;
+			}
+		  btn_click_cookbookPlan(m,{uuid:uuids});
+	 } else if(m=="pre"){
+		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
+		 return;
+	 }else if(m=="next"){
+		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+		 return;
 	 }
 },
 //
