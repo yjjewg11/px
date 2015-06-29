@@ -200,6 +200,30 @@ public class ClassNewsService extends AbstractServcice {
 				"from ClassNewsDianzan where newsuuid=?", newsuuid);
 	}
 
+	/**
+	 * 删除 支持多个，用逗号分隔
+	 * 
+	 * @param uuid
+	 */
+	public boolean cancelDianzan(
+			ClassNewsDianzanJsonform classNewsDianzanJsonform,
+			ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(classNewsDianzanJsonform.getNewsuuid())) {
+
+			responseMessage.setMessage("Newsuuid不能为空！");
+			return false;
+		}
+
+		this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from ClassNewsDianzan where newsuuid=? and create_useruuid=?",
+						classNewsDianzanJsonform.getNewsuuid(),
+						classNewsDianzanJsonform.getCreate_useruuid());
+
+		return true;
+	}
+
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub

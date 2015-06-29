@@ -219,4 +219,47 @@ public class ClassNewsController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	
+	@RequestMapping(value = "/canceldianzan", method = RequestMethod.POST)
+	public String cancelDianzan(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		ClassNewsDianzanJsonform classNewsJsonform;
+		try {
+			classNewsJsonform = (ClassNewsDianzanJsonform) this
+					.bodyJsonToFormObject(bodyJson,
+							ClassNewsDianzanJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		// 设置当前用户
+		User user = this.getUserInfoBySession(request);
+		classNewsJsonform.setCreate_user(user.getName());
+		classNewsJsonform.setCreate_useruuid(user.getUuid());
+
+		try {
+			boolean flag;
+			flag = classNewsService.cancelDianzan(classNewsJsonform, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
+
 }
