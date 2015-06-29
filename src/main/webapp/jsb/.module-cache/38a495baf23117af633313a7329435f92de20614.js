@@ -494,7 +494,7 @@ var Basedatalist_EventsTable = React.createClass({displayName: "Basedatalist_Eve
           })
         )
       ), 
-      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.name}), className: "am-btn am-btn-primary"}, "添加")
+      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.uuid}), className: "am-btn am-btn-primary"}, "添加")
       )
     );
   }

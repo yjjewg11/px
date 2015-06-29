@@ -464,6 +464,7 @@ var Basedatalist_EventRow = React.createClass({displayName: "Basedatalist_EventR
     return (
 		 React.createElement("tr", null, 
         React.createElement("td", null, React.createElement("a", {href: "##", onClick: btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}, event.datakey)), 
+        React.createElement("td", null, event.datakey), 
         React.createElement("td", null, event.datavalue), 
         React.createElement("td", null, AdminVo.get("enable_"+event.enable)), 
         React.createElement("td", null, event.description)
@@ -483,7 +484,10 @@ var Basedatalist_EventsTable = React.createClass({displayName: "Basedatalist_Eve
             React.createElement("th", null, "Key"), 
             React.createElement("th", null, "显示名"), 
             React.createElement("th", null, 
+            React.createElement(AMUIReact.PopoverTrigger, {
+            popover: React.createElement(AMUIReact.Popover, null, "禁用状态不被显示")}, 
             "状态"
+          )
             ), 
             React.createElement("th", null, "描述")
           )
@@ -494,7 +498,7 @@ var Basedatalist_EventsTable = React.createClass({displayName: "Basedatalist_Eve
           })
         )
       ), 
-      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.name}), className: "am-btn am-btn-primary"}, "添加")
+      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.uuid}), className: "am-btn am-btn-primary"}, "添加")
       )
     );
   }
@@ -527,12 +531,11 @@ var Basedatatypelist_edit = React.createClass({displayName: "Basedatatypelist_ed
     		      React.createElement("input", {type: "text", name: "datakey", value: o.datakey, onChange: this.handleChange, placeholder: "不超过15位,一般是数字,[0-100]"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: "datavalue"}, "显示名:"), 
-    		      React.createElement("input", {type: "text", 	  value: o.datavalue, onChange: this.handleChange}), 
+    		      React.createElement("input", {type: "text", name: "datavalue", value: o.datavalue, onChange: this.handleChange}), 
     		      React.createElement("label", {htmlFor: "description"}, "描述:"), 
     		      React.createElement("input", {type: "text", name: "description", value: o.description, onChange: this.handleChange}), 
-    		      React.createElement("label", {htmlFor: "enable"}, "描述:"), 
+    		     
     		      React.createElement("div", {className: "am-form-group"}, 
-    		      
     		      React.createElement("select", {name: "enable", value: this.props.enable, onChange: this.handleChange}, 
     		      React.createElement("option", {value: "1"}, AdminVo.get("enable_1")), 
     		      React.createElement("option", {value: "0"}, AdminVo.get("enable_0"))

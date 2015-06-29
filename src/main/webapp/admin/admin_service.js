@@ -1,3 +1,103 @@
+
+
+function ajax_getUserinfo(isInit) {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.userinfo)Store.setUserinfo(data.userinfo);
+				if(data.list)Store.setGroup(data.list);
+				menu_body_fn();
+			} else {
+				if(!isInit)alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+			
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+
+function menu_userinfo_login_fn(){
+	Queue.push(menu_userinfo_login_fn);
+	var loginname = getCookie("bs_loginname");
+	var password = getCookie("bs_password");
+	var pw_checked = getCookie("pw_checked");
+	
+	React.render(React.createElement(Div_login,{loginname:loginname,password:password,pw_checked:pw_checked})
+			, document.getElementById('div_login'));
+	$("#div_seesion_body").hide();
+}
+//用户登陆
+function ajax_userinfo_login() {
+	
+	 var $btn = $("#btn_login");
+	  $btn.button('loading');
+	$.AMUI.progress.start();
+
+	var loginname = $("#loginname").val();
+	var password = $("#password").val();
+	if(password.length!=32){
+		 password=$.md5(password); 
+	}
+	
+	var url = hostUrl + "rest/userinfo/login.json?loginname=" + loginname + "&password="
+			+ password;
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				Store.clear();
+				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
+				setCookie("bs_loginname", loginname);
+				if($("#pw_checked")[0].checked){
+					setCookie("bs_password", password);
+					setCookie("pw_checked", "checked");
+				} else {
+					setCookie("bs_password", ""); 
+					setCookie("pw_checked", "");
+				}
+				Store.setUserinfo(data.userinfo);
+				Store.setGroup(data.list);
+				menu_body_fn();
+				
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+
+
 //userinfo
 
 function menu_userinfo_logout_fn(){
@@ -348,5 +448,73 @@ $.AMUI.progress.start();
 	});
 }
 
+/**
+ * operate=add|edit
+ * @param formdata
+ * @param operate
+ */
+function ajax_basedatatype_bind_basedatalist(formdata){
+	Queue.push(function(){ajax_basedatatype_bind_basedatalist(formdata)});
+	if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/basedatalist/getBaseDataListByTypeuuid.json?typeuuid="+formdata.name;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Basedatatype_bind_basedatalist, {
+					formdata:formdata,
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+	
+};
 //basedatatype end
+
+//basedatatypelist
+
+function btn_click_basedatatypelist(m,formdata){
+	Queue.push(function(){btn_click_basedatatypelist(m,formdata)});
+	if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
+	ajax_basedatatypelist_edit(m,formdata);
+};
+
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function ajax_basedatatypelist_edit(m,formdata){
+		React.render(React.createElement(Basedatatypelist_edit,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	
+	
+};
+
+function ajax_basedatatypelist_save(){
+	var opt={
+	 formName:"editBasedatatypelistForm",
+	 url:hostUrl + "rest/basedatalist/save.json",
+	 cbFN:null,
+	 };
+	G_ajax_abs_save(opt);
+}
+//basedatatypelist end
 

@@ -1,3 +1,61 @@
+//login
+var Div_login = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	 handleChange: function(event) { 
+		 var o=$('#login_form').serializeJson();
+		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
+		    this.setState(o); 
+	  },
+render: function() {
+	  var o = this.state;
+ return (
+ 		<div>
+ 		<div className="header">
+ 		  <div className="am-g">
+ 		 <h1>PX 管理云平台</h1>
+ 	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
+ 		  </div>
+ 		  <hr />
+ 		</div>
+ 		<div className="am-g">
+ 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+ 		 <form id="login_form" method="post" className="am-form">
+ 	      <label htmlFor="loginname">手机号:</label>
+ 	      <input type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+ 	      <br/>
+ 	      <label htmlFor="password">密码:</label>
+ 	      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
+ 	      <br/>
+ 	      <label htmlFor="pw_checked">
+ 	        <input id="pw_checked" name="pw_checked" type="checkbox"  checked={o.pw_checked=="checked"?"checked":""} onChange={this.handleChange}/>
+ 	        记住密码
+ 	      </label>
+ 	      <br />
+ 	      <div className="am-cf">
+ 	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
+ 	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
+ 	      </div>
+ 	      <br/>
+ 	      
+ 	     <a  href="http://120.25.248.31/px-rest/admin/" > <img src="ew_admin.png" /></a>
+ 	    
+ 			
+ 	    </form>
+ 	    <hr/>
+ 	    <p>© 2015 PX, Inc. </p>
+
+ 	     </div> 
+ 	   </div>
+ 	   
+ 	   </div>
+ );
+}
+}); 
+
+//end login
+
 
 
 //right
@@ -89,7 +147,7 @@ var Right_edit = React.createClass({
     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
     		      <br/>
     		       <label htmlFor="description">描述:</label>
-    		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="" placeholder=""/>
+    		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>
     		      <button type="button"  onClick={ajax_right_save}  className="am-btn am-btn-primary">提交</button>
     		    </form>
 
@@ -235,7 +293,7 @@ render: function() {
   		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
   		      <br/>
   		       <label htmlFor="description">描述:</label>
-  		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="" placeholder=""/>
+  		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>
   		      <button type="button"  onClick={ajax_role_save}  className="am-btn am-btn-primary">提交</button>
   		    </form>
 
@@ -288,6 +346,7 @@ return (
   </td>
     <td><a href="##" onClick={ajax_basedatatype_edit.bind(this, event)}>{event.name}</a></td>
     <td>{event.description}</td>
+    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}>绑定权限</a></td>
   </tr> 
 );
 }
@@ -325,6 +384,7 @@ return (
         </th>
         <th>名称</th>
         <th>描述</th>
+        <th>操作</th>
       </tr> 
     </thead>
     <tbody>
@@ -363,7 +423,7 @@ return (
 		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
 		      <br/>
 		       <label htmlFor="description">描述:</label>
-		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="" placeholder=""/>
+		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>
 		      <button type="button"  onClick={ajax_basedatatype_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
@@ -375,3 +435,119 @@ return (
 }
 }); 
 //end basedatatype
+
+// basedatatypelist
+var Basedatatype_bind_basedatalist = React.createClass({ 
+	
+render: function() {
+	  var o = this.props.formdata;
+  return (
+  		<div>
+	  		<div className="header">
+		  		  <div className="am-g">
+		  		    <h1>基础数据【{o.name}】</h1>
+		  		  </div>
+	  		</div>
+  			<button type="button"  onClick={btn_ajax_updateRight.bind(this, o.uuid)}  className="am-btn am-btn-primary">提交</button>
+	  		<Basedatalist_EventsTable {...this.props}/>
+	  	   
+  	   </div>
+  );
+}
+}); 
+
+var Basedatalist_EventRow = React.createClass({ 
+	
+  render: function() {
+    var event = this.props.event;
+
+    return (
+		 <tr>
+        <td><a href="##" onClick={btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}>{event.datakey}</a></td>
+        <td>{event.datavalue}</td>
+        <td>{AdminVo.get("enable_"+event.enable)}</td>
+        <td>{event.description}</td>
+      </tr> 
+    );
+  }
+}); 
+
+var Basedatalist_EventsTable = React.createClass({
+  render: function() {
+	  var that=this;
+    return (
+    		<div>
+      <AMUIReact.Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>Key</th>
+            <th>显示名</th>
+            <th>
+            状态
+            </th>
+            <th>描述</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Basedatalist_EventRow  event={event} />);
+          })}
+        </tbody>
+      </AMUIReact.Table>
+      <button type="button"  onClick={btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.name})}  className="am-btn am-btn-primary">添加</button>
+      </div>
+    );
+  }
+});
+    
+
+var Basedatatypelist_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editBasedatatypelistForm').serializeJson());
+	  },
+  render: function() {
+	  var o = this.state;
+    return (
+    		<div>
+    		<div className="header">
+    		  <div className="am-g">
+    		    <h1>编辑</h1>
+    		  </div>
+    		  <hr />
+    		</div>
+    		<div className="am-g">
+    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+    		  <form id="editBasedatatypelistForm" method="post" className="am-form">
+    			<input type="hidden" name="uuid"  value={o.uuid}/>
+    			<input type="hidden" name="typeuuid"  value={o.typeuuid}/>
+    		      <label htmlFor="datakey">key[数字1-100]:</label>
+    		      <input type="text" name="datakey"  value={o.datakey} onChange={this.handleChange} placeholder="不超过15位,一般是数字,[0-100]"/>
+    		      <br/>
+    		       <label htmlFor="datavalue">显示名:</label>
+    		      <input type="text" 	  value={o.datavalue} onChange={this.handleChange}/>
+    		      <label htmlFor="description">描述:</label>
+    		      <input type="text" name="description"  value={o.description} onChange={this.handleChange}/>
+    		      <label htmlFor="enable">描述:</label>
+    		      <div className="am-form-group">
+    		      
+    		      <select  name="enable" value={this.props.enable} onChange={this.handleChange}>
+    		      <option value="1" >{AdminVo.get("enable_1")}</option>
+    		      <option value="0" >{AdminVo.get("enable_0")}</option>
+    		      </select>
+    		    </div>
+    			      
+    		      
+    		      <button type="button"  onClick={ajax_basedatatypelist_save}  className="am-btn am-btn-primary">提交</button>
+    		    </form>
+
+    	     </div>
+    	   </div>
+    	   
+    	   </div>
+    );
+  }
+}); 
+//end basedatatypelist

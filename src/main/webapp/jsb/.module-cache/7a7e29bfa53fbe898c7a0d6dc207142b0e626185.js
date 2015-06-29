@@ -464,6 +464,7 @@ var Basedatalist_EventRow = React.createClass({displayName: "Basedatalist_EventR
     return (
 		 React.createElement("tr", null, 
         React.createElement("td", null, React.createElement("a", {href: "##", onClick: btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}, event.datakey)), 
+        React.createElement("td", null, event.datakey), 
         React.createElement("td", null, event.datavalue), 
         React.createElement("td", null, AdminVo.get("enable_"+event.enable)), 
         React.createElement("td", null, event.description)
@@ -494,7 +495,7 @@ var Basedatalist_EventsTable = React.createClass({displayName: "Basedatalist_Eve
           })
         )
       ), 
-      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.name}), className: "am-btn am-btn-primary"}, "添加")
+      React.createElement("button", {type: "button", onClick: btn_click_basedatatypelist.bind(this, "add",{typeuuid:this.props.formdata.uuid}), className: "am-btn am-btn-primary"}, "添加")
       )
     );
   }
