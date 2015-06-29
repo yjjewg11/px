@@ -59,6 +59,7 @@ public class CookbookPlanController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
@@ -111,6 +112,7 @@ public class CookbookPlanController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}

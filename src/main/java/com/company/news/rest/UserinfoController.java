@@ -12,9 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.news.entity.Group;
+import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
@@ -266,5 +265,47 @@ public class UserinfoController extends AbstractRESTController {
 		model.put(RestConstants.Return_JSESSIONID, session.getId());
 		
 		return true;
+	}
+	
+	
+	/**
+	 * 获取指定用户的角色
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getRole", method = RequestMethod.GET)
+	public String getRole(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		List<RoleUserRelation> list = userinfoService.getRoleuuid(request
+				.getParameter("userUuid"));
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	@RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+	public String updateRole(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			boolean flag = userinfoService.updateRoleRightRelation(
+					request.getParameter("roleuuids"),
+					request.getParameter("useruuid"), responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("更新成功");
+		return "";
 	}
 }

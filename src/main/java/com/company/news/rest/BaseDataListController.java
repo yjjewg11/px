@@ -76,6 +76,7 @@ public class BaseDataListController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
@@ -86,7 +87,7 @@ public class BaseDataListController extends AbstractRESTController {
 	}
 
     /**
-     * 获取机构信息
+     * 获取机构信息,Typeuuid保存typename
      * @param model
      * @param request
      * @return
@@ -113,6 +114,7 @@ public class BaseDataListController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}

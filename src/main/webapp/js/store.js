@@ -17,8 +17,16 @@ var Store={
 			}
 		return true;
 	},
-	
-	
+	getRoleList:function(){
+		 if(this.map["RoleList"])return this.map["RoleList"];
+			 //从后台重新获取
+			 store_ajax_RoleList_toStroe();
+			 if(this.map["RoleList"])return this.map["RoleList"];
+		 return [];
+	},
+	setRoleList:function(v){
+		this.map["RoleList"]=v;
+	},
 	/**
 	 * 设置班级选择控件到内存缓存。
 	 * @param v
@@ -270,3 +278,30 @@ function store_ajax_getUserinfo() {
 		}
 	});
 }
+
+
+function store_ajax_RoleList_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/role/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setRoleList(data.list)
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};

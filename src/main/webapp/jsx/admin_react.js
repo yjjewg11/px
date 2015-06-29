@@ -178,7 +178,8 @@ render: function() {
       <td><a href="javascript:void(0);" onClick={ajax_role_edit.bind(this, event)}>{event.name}</a></td>
       <td>{event.description}</td>
       <td>{AdminVo.type(event.type)}</td>
-      <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a></td>
+      <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a>
+      |<a href="javascript:void(0);" onClick={ajax_role_bind_user.bind(this, event)}>绑定用户</a></td>
     </tr> 
   );
 }
@@ -238,7 +239,12 @@ render: function() {
     <option value="1" >{AdminVo.type(1)}</option>
     </select>
   </div>
-	  
+  <div className="header">
+  <div className="am-g">
+    <h1>角色管理</h1>
+  </div>
+  <hr />
+</div>
     <AMUIReact.Table {...this.props}>  
       <thead> 
         <tr>
@@ -324,8 +330,7 @@ render: function() {
   );
 }
 }); 
-//end role
-//role bind right
+//end role 
 
 //end role bind right
 
@@ -346,7 +351,7 @@ return (
   </td>
     <td><a href="##" onClick={ajax_basedatatype_edit.bind(this, event)}>{event.name}</a></td>
     <td>{event.description}</td>
-    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}>绑定权限</a></td>
+    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}>详细</a></td>
   </tr> 
 );
 }
@@ -371,6 +376,12 @@ var Basedatatype_EventsTable = React.createClass({
 render: function() {
 return (
 <div>
+<div className="header">
+<div className="am-g">
+  <h1>编辑基础数据类型</h1>
+</div>
+<hr />
+</div>
 <AMUIReact.ButtonToolbar>
 	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "add_basedatatype")} round>添加</AMUIReact.Button>
 	 </AMUIReact.ButtonToolbar>
@@ -448,7 +459,7 @@ render: function() {
 		  		    <h1>基础数据【{o.name}】</h1>
 		  		  </div>
 	  		</div>
-  			<button type="button"  onClick={btn_ajax_updateRight.bind(this, o.uuid)}  className="am-btn am-btn-primary">提交</button>
+  			<button type="button"  onClick={Queue.doBackFN.bind(Queue)}  className="am-btn am-btn-primary">返回</button>
 	  		<Basedatalist_EventsTable {...this.props}/>
 	  	   
   	   </div>
@@ -523,11 +534,11 @@ var Basedatatypelist_edit = React.createClass({
     		  <form id="editBasedatatypelistForm" method="post" className="am-form">
     			<input type="hidden" name="uuid"  value={o.uuid}/>
     			<input type="hidden" name="typeuuid"  value={o.typeuuid}/>
-    		      <label htmlFor="datakey">key[数字1-100]:</label>
+    		      <label >key[数字1-100]:</label>
     		      <input type="text" name="datakey"  value={o.datakey} onChange={this.handleChange} placeholder="不超过15位,一般是数字,[0-100]"/>
     		      <br/>
-    		       <label htmlFor="datavalue">显示名:</label>
-    		      <input type="text" 	  value={o.datavalue} onChange={this.handleChange}/>
+    		       <label >显示名:</label>
+    		      <input type="text" name="datavalue"	  value={o.datavalue} onChange={this.handleChange}/>
     		      <label htmlFor="description">描述:</label>
     		      <input type="text" name="description"  value={o.description} onChange={this.handleChange}/>
     		      <label htmlFor="enable">描述:</label>
