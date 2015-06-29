@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.ClassNews;
+import com.company.news.entity.Cookbook;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
+import com.company.news.jsonform.ClassNewsDianzanJsonform;
 import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
@@ -59,18 +61,19 @@ public class ClassNewsController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-		
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
+
+		// 设置当前用户
+		User user = this.getUserInfoBySession(request);
 		classNewsJsonform.setCreate_user(user.getName());
 		classNewsJsonform.setCreate_useruuid(user.getUuid());
-		
+
 		try {
 			boolean flag;
-			if(StringUtils.isEmpty(classNewsJsonform.getUuid()))
-			    flag = classNewsService.add(classNewsJsonform, responseMessage);
+			if (StringUtils.isEmpty(classNewsJsonform.getUuid()))
+				flag = classNewsService.add(classNewsJsonform, responseMessage);
 			else
-				flag = classNewsService.update(classNewsJsonform, responseMessage);
+				flag = classNewsService.update(classNewsJsonform,
+						responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -85,7 +88,6 @@ public class ClassNewsController extends AbstractRESTController {
 		return "";
 	}
 
-
 	/**
 	 * 获取班级信息
 	 * 
@@ -94,13 +96,16 @@ public class ClassNewsController extends AbstractRESTController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getClassNewsByClassuuid", method = RequestMethod.GET)
-	public String getClassNewsByClassuuid(ModelMap model, HttpServletRequest request) {
+	public String getClassNewsByClassuuid(ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PaginationData pData=this.getPaginationDataByRequest(request);
-		
-		PageQueryResult pageQueryResult = classNewsService.query(request.getParameter("classuuid"), pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+
+		PageQueryResult pageQueryResult = classNewsService.query(
+				request.getParameter("classuuid"), pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
@@ -119,8 +124,8 @@ public class ClassNewsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
-			boolean flag = classNewsService.delete(request.getParameter("uuid"),
-					responseMessage);
+			boolean flag = classNewsService.delete(
+					request.getParameter("uuid"), responseMessage);
 			if (!flag)
 				return "";
 		} catch (Exception e) {
@@ -134,14 +139,13 @@ public class ClassNewsController extends AbstractRESTController {
 		responseMessage.setMessage("删除成功");
 		return "";
 	}
-	
 
-	
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+	public String get(@PathVariable String uuid, ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		ClassNews c;
+		ClassNewsJsonform c;
 		try {
 			c = classNewsService.get(uuid);
 		} catch (Exception e) {
@@ -150,7 +154,68 @@ public class ClassNewsController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-		model.addAttribute(RestConstants.Return_G_entity,c);
+		model.addAttribute(RestConstants.Return_G_entity, c);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+
+	@RequestMapping(value = "/dianzan", method = RequestMethod.POST)
+	public String dianzan(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		ClassNewsDianzanJsonform classNewsJsonform;
+		try {
+			classNewsJsonform = (ClassNewsDianzanJsonform) this
+					.bodyJsonToFormObject(bodyJson,
+							ClassNewsDianzanJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		// 设置当前用户
+		User user = this.getUserInfoBySession(request);
+		classNewsJsonform.setCreate_user(user.getName());
+		classNewsJsonform.setCreate_useruuid(user.getUuid());
+
+		try {
+			boolean flag;
+			flag = classNewsService.dianzan(classNewsJsonform, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
+
+	@RequestMapping(value = "/getDianzanByNewsuuid", method = RequestMethod.GET)
+	public String getDianzanByNewsuuid(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String newsuuid = request.getParameter("newsuuid");
+
+		List list;
+		try {
+			list = classNewsService.getDianzanByNewsuuid(newsuuid);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
