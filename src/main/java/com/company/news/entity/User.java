@@ -35,7 +35,8 @@ public class User extends IdEntity {
 	private Timestamp login_time;// 最后一次登录时间。
 	@Column
 	private Timestamp create_time;
-	
+	@Column
+	private String office;// 职位。
 	@Column
 	private Timestamp last_login_time;// 上一次登录时间
 	public Timestamp getLast_login_time() {
