@@ -6,9 +6,15 @@ var AdminVo={
 		 * @returns
 		 */
 	map:{
+		enable_0:"禁用",
+		enable_1:"启用",
+		
 		type_0:"云平台",
 		type_1:"幼儿园",
 		type_2:"培训"
+	},
+	get:function(t){
+		return this.map[t];
 	},
 	type:function(t){
 		return this.map["type_"+t];

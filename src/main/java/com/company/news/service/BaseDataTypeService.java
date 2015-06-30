@@ -92,6 +92,11 @@ public class BaseDataTypeService extends AbstractServcice {
 		BaseDataType baseDataType = (BaseDataType) this.nSimpleHibernateDao.getObject(BaseDataType.class,
 				baseDataTypeJsonform.getUuid());
 		if (baseDataType != null) {
+			if(!baseDataType.getName().equals(baseDataTypeJsonform.getName())){
+				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+						"update  BaseDataList set typeuuid=?  where typeuuid=?", baseDataTypeJsonform.getName(),baseDataType.getName());
+			}
+			
 			BeanUtils.copyProperties(baseDataType, baseDataTypeJsonform);
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(baseDataType);

@@ -15,7 +15,7 @@ $.AMUI.progress.start();
 	$.ajax({
 		type : "POST",
 		url : opt.url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data:jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -142,7 +142,7 @@ function ajax_userinfo_reg() {
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -180,7 +180,7 @@ function ajax_kd_group_reg() {
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -313,7 +313,7 @@ $.AMUI.progress.start();
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -404,17 +404,97 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 };
 
 
-function btn_click_userinfo(m,groupuuid,useruuid){
+function btn_click_userinfo(m,obj,usernames){
 	
-	Queue.push(function(){btn_click_userinfo(m,groupuuid,useruuid)});
-	if(m=="add_userinfo"){
-		ajax_userinfo_edit({group_uuid:groupuuid},"add");
-	}else if(m=="add_disable"){
-		ajax_userinfo_updateDisable(groupuuid,useruuid,1);
-	}else if(m=="add_enable"){
-		ajax_userinfo_updateDisable(groupuuid,useruuid,0);
+	Queue.push(function(){btn_click_userinfo(m,obj,usernames)});
+	if(m=="add"){
+		ajax_userinfo_edit(obj,"add");
+	}else if(m=="disable"){
+		ajax_userinfo_updateDisable(obj,1);
+	}else if(m=="enable"){
+		ajax_userinfo_updateDisable(obj,0);
+	}else if(m=="getRole"){
+		ajax_userinfo_getRole(obj,usernames);
 	}
 };
+function ajax_userinfo_getRole(useruuid,usernames){
+	Queue.push(function(){ajax_userinfo_getRole(useruuid,usernames)});
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				
+				React.render(React.createElement(Userinfo_getRole, {
+					formdata:{useruuid:useruuid,username:usernames},
+					events: Store.getRoleList(),
+					chooselist: JSON.stringify(data.list),
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+	
+};
+
+
+function btn_ajax_updateRole(useruuid){
+	 var uuids=null;
+	 $("input[name='table_checkbox_right']").each(function(){
+		if(this.checked){
+			 if(uuids==null)uuids=this.value;
+			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+		}
+		});
+	  if(!uuids){
+		  alert("请勾选复选框！");
+		  return;
+	  }
+	  
+	$.AMUI.progress.start();
+      var url = hostUrl + "rest/userinfo/updateRole.json";
+      var opt={
+    			type : "POST",
+    			url : url,
+    			processData: true, 
+    			dataType : "json",
+    			data:{useruuid:useruuid,roleuuids:uuids},
+    			//contentType : false,  
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				// 登陆成功直接进入主页
+    				if (data.ResMsg.status == "success") {
+    				
+    					Queue.doBackFN();
+    				} else {
+    					alert(data.ResMsg.message);
+    				}
+    			},
+    			error : function( obj, textStatus, errorThrown ){
+    				$.AMUI.progress.done();
+    				alert(url+",error:"+textStatus);
+    				 console.log(url+',error：', obj);
+    				 console.log(url+',error：', textStatus);
+    				 console.log(url+',error：', errorThrown);
+    			}
+    		};
+	$.ajax(opt);
+}
 
 /**
  * operate=add|edit
@@ -436,7 +516,7 @@ $.AMUI.progress.start();
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -490,11 +570,8 @@ function ajax_getUserinfo(isInit) {
 		}
 	});
 }
-function ajax_userinfo_updateDisable(groupuuid,useruuids,disable){
-	if(!groupuuid){
-		alert("ajax_userinfo_updateDisable:groupuuid is null!");
-		return;
-	}
+function ajax_userinfo_updateDisable(useruuids,disable){
+	
 	$.AMUI.progress.start();
 	      var url = hostUrl + "rest/userinfo/updateDisable.json";
 		$.ajax({
@@ -715,7 +792,7 @@ function btn_ajax_class_student_save(){
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -785,7 +862,7 @@ $.AMUI.progress.start();
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -984,7 +1061,7 @@ function ajax_announcements_save(){
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -1176,7 +1253,7 @@ function ajax_teachingplan_save(){
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data : jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -1384,7 +1461,7 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data :jsonString,
 		dataType : "json",
 		contentType : false,  
@@ -1556,7 +1633,7 @@ var url = hostUrl + "rest/classnews/save.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		processData: false, 
 		data:jsonString,
 		dataType : "json",
 		contentType : false,  

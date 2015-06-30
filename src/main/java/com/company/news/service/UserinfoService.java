@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Group;
+import com.company.news.entity.Right;
+import com.company.news.entity.RoleRightRelation;
+import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
@@ -284,5 +287,48 @@ public class UserinfoService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set disable=? where uuid in(?)",disable_i,PxStringUtil.StringDecComma(useruuids));
 		return true;
 	}
+	
+	
 
+	/**
+	 * 根据角色ID取权限列表
+	 * 
+	 * @param uuid
+	 */
+	public List<RoleUserRelation> getRoleuuid(String uuid) {
+		if (StringUtils.isBlank(uuid))
+			return null;
+
+		return (List<RoleUserRelation>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(
+						"from RoleUserRelation where useruuid=?", uuid);
+
+	}
+	/**
+	 * 
+	 * @param roleuuid
+	 * @param rightuuids
+	 */
+	public boolean updateRoleRightRelation(String roleuuids, String useruuid,
+			ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(useruuid)) {
+			responseMessage.setMessage("useruuids不能为空");
+			return false;
+		}
+		// 删除原有角色权限
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from RoleUserRelation where useruuid =?", useruuid);
+
+		if (StringUtils.isNotBlank(roleuuids)) {
+			String[] str = PxStringUtil.StringDecComma(roleuuids).split(",");
+				for (String s : str) {
+					RoleUserRelation r = new RoleUserRelation();
+					r.setRoleuuid(s);
+					r.setUseruuid(useruuid);
+					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+				}
+			}
+
+		return true;
+	}
 }

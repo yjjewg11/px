@@ -32,6 +32,13 @@ function login_affter_init(){
 		  },
 		  {
               "link": "##",
+              "title": "用户授权",
+              "fn":menu_basedatatype_list_fn,
+              "subCols": 2
+             // "channelLink": "进入栏目 »",
+            },
+		  {
+              "link": "##",
               "title": "基础数据",
               "fn":menu_basedatatype_list_fn,
               "subCols": 2

@@ -144,7 +144,7 @@ public class BaseDataListService extends AbstractServcice {
 		
 		return (List<BaseDataList>) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(
-						"from BaseDataList where typeuuid=?", typeuuid);
+						"from BaseDataList where typeuuid=? order by datavalue asc", typeuuid);
 
 	}
 
