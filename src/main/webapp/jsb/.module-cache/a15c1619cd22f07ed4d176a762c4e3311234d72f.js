@@ -20,7 +20,7 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
 		}
 	},
 	componentDidMount:function(){
-		$(".am-active input[type='checkbox']").prop("checked",true); 
+		$(".am-active > input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;

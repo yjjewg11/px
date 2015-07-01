@@ -3,16 +3,19 @@
  */
 
 var ChooseRight_EventRow = React.createClass({ 
-	tr_onClick:function(trid,cbid){
+	tr_onClick:function(trid,cbid,e){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
-		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
-			$(tr).removeClass("am-active");
+		if(tr.hasClass("am-active")){
+				cbox.prop("checked",false); 
+			tr.removeClass("am-active");
 		}else{
-			cbox.prop("checked", true); 
-			$(tr).addClass("am-active");
+				cbox.prop("checked", true); 
+			tr.addClass("am-active");
 		}
+	},
+	componentDidMount:function(){
+		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;
@@ -23,7 +26,7 @@ var ChooseRight_EventRow = React.createClass({
     return (
       <tr id={"tr_chright_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}>
       <td> 
-      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox" checked={is_Checked?"checked":""} />
+      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox"  />
       </td>
         <td>{event.name}</td>
         <td>{event.tel}</td>

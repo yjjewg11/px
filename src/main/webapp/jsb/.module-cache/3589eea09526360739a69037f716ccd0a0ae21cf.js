@@ -60,19 +60,16 @@ render: function() {
 
 //right
 var Right_EventRow = React.createClass({displayName: "Right_EventRow", 
-	tr_onClick:function(trid,cbid,e){
+	tr_onClick:function(trid,cbid){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
-		if(tr.hasClass("am-active")){
-				cbox.prop("checked",false); 
-			tr.removeClass("am-active");
+		if(cbox.prop("checked")){
+			cbox.prop("checked",false); 
+			$(tr).removeClass("am-active");
 		}else{
-				cbox.prop("checked", true); 
-			tr.addClass("am-active");
+			cbox.prop("checked", true); 
+			$(tr).addClass("am-active");
 		}
-	},
-	componentDidMount:function(){
-		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;
@@ -83,7 +80,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
     return (
 		 React.createElement("tr", {id: "tr_chright_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
 	      React.createElement("td", null, 
-	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right"})
+	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right", checked: is_Checked?"checked":""})
 	      ), 
         React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, JSON.stringify(event))}, event.name)), 
         React.createElement("td", null, event.description), 
@@ -181,8 +178,8 @@ render: function() {
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_edit.bind(this, event)}, event.name)), 
       React.createElement("td", null, event.description), 
       React.createElement("td", null, AdminVo.type(event.type)), 
-      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限")
-     )
+      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限"), 
+      React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_user.bind(this, event)}, "绑定用户"))
     ) 
   );
 }

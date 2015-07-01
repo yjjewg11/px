@@ -60,16 +60,19 @@ render: function() {
 
 //right
 var Right_EventRow = React.createClass({ 
-	tr_onClick:function(trid,cbid){
+	tr_onClick:function(trid,cbid,e){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
-		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
-			$(tr).removeClass("am-active");
+		if(tr.hasClass("am-active")){
+				cbox.prop("checked",false); 
+			tr.removeClass("am-active");
 		}else{
-			cbox.prop("checked", true); 
-			$(tr).addClass("am-active");
+				cbox.prop("checked", true); 
+			tr.addClass("am-active");
 		}
+	},
+	componentDidMount:function(){
+		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;
@@ -80,7 +83,7 @@ var Right_EventRow = React.createClass({
     return (
 		 <tr id={"tr_chright_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}>
 	      <td> 
-	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox_right" checked={is_Checked?"checked":""} />
+	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox_right"  />
 	      </td>
         <td><a href="##" onClick={ajax_right_edit.bind(this, JSON.stringify(event))}>{event.name}</a></td>
         <td>{event.description}</td>
@@ -179,7 +182,7 @@ render: function() {
       <td>{event.description}</td>
       <td>{AdminVo.type(event.type)}</td>
       <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a>
-      |<a href="javascript:void(0);" onClick={ajax_role_bind_user.bind(this, event)}>绑定用户</a></td>
+     </td>
     </tr> 
   );
 }

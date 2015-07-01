@@ -176,6 +176,31 @@ function login_affter_init(){
 	                           // "channelLink": "进入栏目 »",
 	                           
 	                          },
+	                          {
+		                            "link": "##",
+		                            "title": "仓库管理",
+		                            "subMenu": [
+		                                        {
+		                                            "link": "##",
+		                                            "title": "入库(未)"
+		                                          },
+		                                        {
+		                                            "link": "##",
+		                                            "title": "出库(未)"
+		                                          },
+		                                          {
+			                                            "link": "##",
+			                                            "title": "申请物品(未)"
+			                                          },
+		                                          {
+		                                              "link": "##",
+		                                              "title": "采购(未)"
+		                                            }
+		                                        ],
+		                            "subCols": 2
+		                           // "channelLink": "进入栏目 »",
+		                           
+		                          },
 	                        
 	                {
 	                  "link": "##",

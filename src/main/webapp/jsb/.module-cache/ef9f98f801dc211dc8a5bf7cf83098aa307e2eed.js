@@ -8,19 +8,16 @@ var AMUIReact_Button=AMUIReact.Button;
  */
 
 var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow", 
-	tr_onClick:function(trid,cbid,e){
+	tr_onClick:function(trid,cbid){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
-		if(tr.hasClass("am-active")){
-				cbox.prop("checked",false); 
+		if(cbox.hasClass("am-active")){
+			cbox.prop("checked",false); 
 			tr.removeClass("am-active");
 		}else{
-				cbox.prop("checked", true); 
+			cbox.prop("checked", true); 
 			tr.addClass("am-active");
 		}
-	},
-	componentDidMount:function(){
-		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;
@@ -31,7 +28,7 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
     return (
       React.createElement("tr", {id: "tr_chuser_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}, 
       React.createElement("td", null, 
-      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox"})
+      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox", checked: is_Checked?"checked":""})
       ), 
         React.createElement("td", null, event.name), 
         React.createElement("td", null, event.tel), 
@@ -226,6 +223,17 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
  */
 
 var ChooseClass_EventRow = React.createClass({displayName: "ChooseClass_EventRow", 
+	tr_onClick:function(trid,cbid){
+		var cbox=$("#"+cbid);
+		var tr=$("#"+trid);
+		if(cbox.hasClass("am-active")){
+			cbox.prop("checked",false); 
+			$(tr).removeClass("am-active");
+		}else{
+			cbox.prop("checked", true); 
+			$(tr).addClass("am-active");
+		}
+	},
   render: function() {
     var event = this.props.event;
     var className = event.highlight ? 'am-active' :
