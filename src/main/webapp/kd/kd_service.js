@@ -272,6 +272,7 @@ function btn_click_group(m,formdata){
 */
 function ajax_group_edit(m,formdata){
 	if(m=="add"){
+		formdata={type:"1"};
 		React.render(React.createElement(Group_edit,{formdata:formdata}), document.getElementById('div_body'));
 		return;
 	
@@ -368,6 +369,11 @@ function ajax_userinfo_logout(){
 //老师管理
 
 //老师查询，条件groupuuid
+function menu_userinfo_list_fn() {
+	Queue.push(menu_userinfo_list_fn);
+	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
+};
+
 //
 function ajax_uesrinfo_listByGroup(groupuuid) {
 	$.AMUI.progress.start();
@@ -385,6 +391,7 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 					group_list:Store.getGroup(),
 					events: data.list,
 					handleClick:btn_click_userinfo,
+					handleChange_selectgroup_uuid:ajax_uesrinfo_listByGroup,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				

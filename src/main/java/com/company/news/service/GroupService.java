@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.User;
@@ -132,7 +133,12 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		if (groupRegJsonform.getType()==null) {
-			responseMessage.setMessage("机构类型不能为空！");
+			groupRegJsonform.setType(SystemConstants.Group_type_1);//默认幼儿园
+//			responseMessage.setMessage("机构类型不能为空！");
+//			return false;
+		}
+		if(SystemConstants.Group_type_0.equals(groupRegJsonform.getType())){
+			responseMessage.setMessage("非法数据,异常注册");
 			return false;
 		}
 		

@@ -37,6 +37,7 @@ public class RoleController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public String delete(ModelMap model, HttpServletRequest request) {
+		
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);

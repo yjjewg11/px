@@ -67,8 +67,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  this.props.handleChange_selectgroup_uuid($('#selectgroup_uuid').val());
-		 // ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
   render: function() {
     return (

@@ -324,17 +324,12 @@ function menu_dohome(){
 }
 
 
-
+ 
 //group
 function menu_group_myList_fn() {
 	Queue.push(menu_group_myList_fn);
 	ajax_group_myList();
 }
-
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
 
 
 function menu_kd_group_reg_fn(){

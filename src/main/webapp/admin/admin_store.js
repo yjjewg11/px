@@ -14,7 +14,16 @@ var ADStore={
 			}
 		return true;
 	},
-	
+	getAllGroup:function(){
+		 if(this.map["AllGroup"])return this.map["AllGroup"];
+			 //从后台重新获取
+		 store_ajax_group_allList_toStroe();
+			 if(this.map["AllGroup"])return this.map["AllGroup"];
+		 return [];
+	},
+	setAllGroup:function(v){
+		this.map["AllGroup"]=v;
+	},
 	
 	/**
 	 * 设置人员选择控件到内存缓存。
@@ -127,6 +136,36 @@ function ajax_group_myList_toStroe() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setGroup(data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+
+function store_ajax_group_allList_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/group/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : "",
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				ADStore.setAllGroup(data.list);
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

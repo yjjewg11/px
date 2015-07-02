@@ -1,4 +1,10 @@
-
+var AMR_Table=AMUIReact.Table;
+var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
+var AMR_Button=AMUIReact.Button;
+var AMR_Sticky=AMUIReact.Sticky;
+var AMR_Panel=AMUIReact.Panel;
+var AMR_Gallery=AMUIReact.Gallery;
+var AMR_Input=AMUIReact.Input;
 //userinfo
 var Userinfo_EventRow = React.createClass({ 
   render: function() {
@@ -61,7 +67,8 @@ var Userinfo_EventsTable = React.createClass({
 	  },
 	  //
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
+		  this.props.handleChange_selectgroup_uuid($('#selectgroup_uuid').val());
+		 // ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
   render: function() {
     return (

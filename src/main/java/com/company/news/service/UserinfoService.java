@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Group;
 import com.company.news.entity.Right;
 import com.company.news.entity.RoleRightRelation;
 import com.company.news.entity.RoleUserRelation;
@@ -138,7 +140,7 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("用户名:"+loginname+",不存在!");
 			return false;
 		}
-
+		
 		boolean pwdIsTrue = false;
 		{
 			// 密码比较
@@ -171,6 +173,19 @@ public class UserinfoService extends AbstractServcice {
 			}
 
 		}
+		Boolean isAdmin=false;
+		//后台管理员登录
+		if(SystemConstants.Group_type_0.toString().equals(userLoginForm.getGrouptype())){
+			Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
+			String sql="";
+			List tmpList = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.type="+SystemConstants.Group_type_0+" t0.groupuuid={t1}.uuid and t0.useruuid='"+user.getUuid()+"'")
+					.addEntity("t1",Group.class).list();
+			if(tmpList.size()==0){
+				responseMessage.setMessage("不是合法用户,不能登录云平台管理");
+				return false;
+			}
+			isAdmin=true;
+		}
 
 		// 创建session
 		HttpSession session = SessionListener
@@ -191,6 +206,7 @@ public class UserinfoService extends AbstractServcice {
 				}
 				model.put(RestConstants.Return_JSESSIONID, session.getId());
 				model.put(RestConstants.Return_UserInfo, userInfoReturn);
+				session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 				return true;
 			}
 		}
@@ -201,6 +217,7 @@ public class UserinfoService extends AbstractServcice {
 		//this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 		SessionListener.putSessionByJSESSIONID(session);
 		session.setAttribute(RestConstants.Session_UserInfo, user);
+		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 		// 返回客户端用户信息放入Map
 		// putUserInfoReturnToModel(model, request);
 
