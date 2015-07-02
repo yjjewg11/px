@@ -86,7 +86,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
     return (
 		 React.createElement("tr", {name: "table_tr_checkbox_right", id: "tr_chright_"+event.uuid, className: className}, 
 	      React.createElement("td", {onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
-	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox"})
+	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right"})
 	      ), 
         React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.ajax_right_edit_onClick.bind(this, JSON.stringify(event))}, event.name)), 
         React.createElement("td", null, event.description), 
@@ -98,7 +98,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 
 var Right_EventsTable = React.createClass({displayName: "Right_EventsTable",
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  $('input[name="table_checkbox_right"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 		  if( $("#id_checkbox_all")[0].checked){
 			  $('tr[name="table_tr_checkbox_right"]').addClass("am-active");
 		  }else{

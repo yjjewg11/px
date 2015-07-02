@@ -146,9 +146,9 @@ public class RightService extends AbstractServcice {
 		String hql="from Right";
 		if(StringUtils.isNotBlank(type))
 			hql+=" where type="+type;
-		
+		hql+=" order by name asc";
 		return (List<Right>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from Right", null);
+				.find(hql, null);
 
 	}
 

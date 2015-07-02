@@ -222,9 +222,9 @@ var UserChooseRole_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
 
     return (
-		 <tr id={"tr_chright_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}>
+		 <tr name="table_tr_checkbox" name="table_tr_checkbox"  id={"tr_chright_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}>
 	      <td> 
-	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox_right" checked={is_Checked?"checked":""} />
+	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox" checked={is_Checked?"checked":""} />
 	      </td>
     <td>{event.name}</td>
     <td>{event.description}</td>
@@ -237,6 +237,11 @@ var UserChooseRole_EventRow = React.createClass({
 var UserChooseRole_EventsTable = React.createClass({
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  if( $("#id_checkbox_all")[0].checked){
+			  $('tr[name="table_tr_checkbox"]').addClass("am-active");
+		  }else{
+			  $('tr[name="table_tr_checkbox"]').removeClass("am-active");
+		  }
 	  },
 render: function() {
 	  var that=this;

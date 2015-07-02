@@ -202,7 +202,7 @@ function ajax_userinfo_getRole(useruuid,usernames){
 				
 				React.render(React.createElement(Userinfo_getRole, {
 					formdata:{useruuid:useruuid,username:usernames},
-					events: Store.getRoleList(),
+					events: ADStore.getRoleList(),
 					chooselist: JSON.stringify(data.list),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -225,7 +225,7 @@ function ajax_userinfo_getRole(useruuid,usernames){
 
 function btn_ajax_updateRole(useruuid){
 	 var uuids=null;
-	 $("input[name='table_checkbox_right']").each(function(){
+	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
 			 if(uuids==null)uuids=this.value;
 			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
@@ -279,11 +279,13 @@ function ajax_userinfo_edit(formdata,operate){
 
 //right
 
-function ajax_right_button_handleClick(m,type){
-	Queue.push(function(){ajax_right_button_handleClick(m,type)});
+function ajax_right_button_handleClick(m,formdata){
+	
+	Queue.push(function(){ajax_right_button_handleClick(m,formdata)});
 	if(m=="add_right"){
-		ajax_right_edit({type:type},"add");
+		formdata={type:formdata};
 	}
+	ajax_right_edit(formdata);
 };
 
 /**
@@ -292,7 +294,7 @@ function ajax_right_button_handleClick(m,type){
  * @param operate
  */
 function ajax_right_edit(formdata,operate){
-	Queue.push(function(){ajax_right_edit(formdata,operate)});
+	
 	if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
 	React.render(React.createElement(Right_edit,{formdata:formdata}), document.getElementById('div_body'));
 };
@@ -316,6 +318,7 @@ $.AMUI.progress.start();
 			if (data.ResMsg.status == "success") {
 				//ajax_right_list(); 
 				ADStore.setRightList(objectForm.type,null);
+				
 				Queue.doBackFN();
 				
 			} else {
@@ -386,7 +389,7 @@ function ajax_role_button_handleClick(m,type,uuids){
 
 function btn_ajax_updateRight(roleuuid){
 	 var uuids=null;
-	 $("input[name='table_checkbox_right']").each(function(){
+	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
 			 if(uuids==null)uuids=this.value;
 			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值

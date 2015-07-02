@@ -1,6 +1,5 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
-import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
@@ -78,9 +78,14 @@ public class GroupController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(ModelMap model, HttpServletRequest request) {
+		
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(!RightUtils.hasRight(RightConstants. KD_group_m,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
+}
+
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		GroupRegJsonform groupRegJsonform;

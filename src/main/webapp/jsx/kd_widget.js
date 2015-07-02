@@ -24,7 +24,7 @@ var ChooseUser_EventRow = React.createClass({
 	},
   render: function() {
     var event = this.props.event;
-    var is_Checked=this.props.checkedUseruuid.indexOf(event.uuid)>-1;
+    var is_Checked=this.props.checkedUseruuid&&this.props.checkedUseruuid.indexOf(event.uuid)>-1;
     var className = is_Checked ? 'am-active' :
       event.disabled ? 'am-disabled' : '';
 
@@ -256,7 +256,7 @@ var ChooseClass_EventsTable = React.createClass({
 	  },
 	  handleChange_selectgroup_uuid_chuser:function(){
 		  var v=$('#selectgroup_uuid_chuser').val();
-		  w_ch_user.reshowBygroup(v);
+		  w_ch_class.reshowBygroup(v);
 	  },
   render: function() {
 	  var that=this;

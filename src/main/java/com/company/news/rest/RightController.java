@@ -38,9 +38,9 @@ public class RightController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.AD_right_m,request)){
+		if(!RightUtils.hasRight(RightConstants.AD_right_del,request)){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage("无操作权限");
+			responseMessage.setMessage(RightConstants.Return_msg);
 		}
 	
 
@@ -68,6 +68,10 @@ public class RightController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
+		if(!RightUtils.hasRight(RightConstants.AD_right_m,request)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		RightJsonform rightJsonform;
 		try {

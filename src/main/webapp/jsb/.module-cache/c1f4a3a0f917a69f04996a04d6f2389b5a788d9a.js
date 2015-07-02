@@ -256,7 +256,7 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
 	  },
 	  handleChange_selectgroup_uuid_chuser:function(){
 		  var v=$('#selectgroup_uuid_chuser').val();
-		  w_ch_class.reshowBygroup(v);
+		  w_ch_user.reshowBygroup(v);
 	  },
   render: function() {
 	  var that=this;

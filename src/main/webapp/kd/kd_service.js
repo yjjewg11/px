@@ -462,7 +462,7 @@ function ajax_userinfo_getRole(useruuid,usernames){
 
 function btn_ajax_updateRole(useruuid){
 	 var uuids=null;
-	 $("input[name='table_checkbox_right']").each(function(){
+	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
 			 if(uuids==null)uuids=this.value;
 			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
@@ -480,7 +480,7 @@ function btn_ajax_updateRole(useruuid){
     			url : url,
     			processData: true, 
     			dataType : "json",
-    			data:{useruuid:useruuid,roleuuids:uuids},
+    			data:{type:1,useruuid:useruuid,roleuuids:uuids},
     			//contentType : false,  
     			success : function(data) {
     				$.AMUI.progress.done();

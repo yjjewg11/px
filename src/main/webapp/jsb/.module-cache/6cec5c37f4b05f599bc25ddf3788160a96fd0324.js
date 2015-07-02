@@ -24,7 +24,7 @@ var ChooseRight_EventRow = React.createClass({displayName: "ChooseRight_EventRow
       event.disabled ? 'am-disabled' : '';
 
     return (
-      React.createElement("tr", {name: "table_tr_checkbox_chright", id: "tr_chright_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
+      React.createElement("tr", {id: "tr_chright_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
       React.createElement("td", null, 
       React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox"})
       ), 
@@ -70,11 +70,6 @@ var ChooseRight_EventsTable = React.createClass({displayName: "ChooseRight_Event
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all_chright")[0].checked); 
-		  if( $("#id_checkbox_all_chright")[0].checked){
-			  $('tr[name="table_tr_checkbox_chright"]').addClass("am-active");
-		  }else{
-			  $('tr[name="table_tr_checkbox_chright"]').removeClass("am-active");
-		  }
 	  },
 	  //
 	  handleChange_selectgroup_uuid_chright:function(){

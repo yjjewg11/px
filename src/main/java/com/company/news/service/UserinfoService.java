@@ -14,18 +14,17 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
-import com.company.news.entity.Right;
-import com.company.news.entity.RoleRightRelation;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
+import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.UserInfoReturn;
@@ -105,6 +104,17 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 
+		//注册机构情况下,当前用户设置为管理员角色
+		if(userRegJsonform instanceof GroupRegJsonform){
+			GroupRegJsonform group=(GroupRegJsonform)userRegJsonform;
+			if(SystemConstants.Group_type_1.equals(group.getType())){
+				RoleUserRelation r = new RoleUserRelation();
+				r.setRoleuuid(RightConstants.Role_KD_admini);
+				r.setUseruuid(user.getUuid());
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+				
+			}
+		}
 		return true;
 	}
 
@@ -213,13 +223,16 @@ public class UserinfoService extends AbstractServcice {
 		if(SystemConstants.Group_type_0.toString().equals(userLoginForm.getGrouptype())){
 			Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
 			String sql="";
-			List tmpList = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.type="+SystemConstants.Group_type_0+" t0.groupuuid={t1}.uuid and t0.useruuid='"+user.getUuid()+"'")
+			List tmpList = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type="+SystemConstants.Group_type_0+" and t0.groupuuid={t1}.uuid and t0.useruuid='"+user.getUuid()+"'")
 					.addEntity("t1",Group.class).list();
 			if(tmpList.size()==0){
 				responseMessage.setMessage("不是合法用户,不能登录云平台管理");
 				return false;
 			}
+			
 			isAdmin=true;
+			
+			
 		}
 
 		// 创建session
@@ -260,7 +273,20 @@ public class UserinfoService extends AbstractServcice {
 		// putUserInfoReturnToModel(model, request);
 
 		model.put(RestConstants.Return_JSESSIONID, session.getId());
-		// model.put(RestConstants.Return_UserInfo, userInfoReturn);
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		
+		List tmpList1 = s.createSQLQuery("select t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"+user.getUuid()+"'")
+				.list();
+		
+		//测试数据,拥有所有权限
+		if("true".equals(ProjectProperties.getProperty(
+				"Debug_All_role", "false"))){
+			this.logger.warn("调试模式下面,用户有所有角色权限.");
+			tmpList1 = s.createSQLQuery("select name from px_right").list();
+		}
+		
+		session.setAttribute(RestConstants.Session_UserInfo_rights, tmpList1);
+		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 
 		return true;
 	}
@@ -370,16 +396,21 @@ public class UserinfoService extends AbstractServcice {
 	 * @param roleuuid
 	 * @param rightuuids
 	 */
-	public boolean updateRoleRightRelation(String roleuuids, String useruuid,
+	public boolean updateRoleRightRelation(String roleuuids, String useruuid,String type,
 			ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(useruuid)) {
 			responseMessage.setMessage("useruuids不能为空");
 			return false;
 		}
+		String whereType="";
+		if (!StringUtils.isBlank(type)) {
+			
+			 whereType=" and roleuuid in (select uuid from Role where type="+type+" ) ";
+		}
 		// 删除原有角色权限
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"delete from RoleUserRelation where useruuid =?", useruuid);
-
+		int tmpCout=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from RoleUserRelation where useruuid =? "+whereType, useruuid);
+		this.logger.info("delete from RoleUserRelation count="+tmpCout);
 		if (StringUtils.isNotBlank(roleuuids)) {
 			String[] str = PxStringUtil.StringDecComma(roleuuids).split(",");
 			for (String s : str) {

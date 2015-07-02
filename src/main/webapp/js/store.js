@@ -282,7 +282,7 @@ function store_ajax_getUserinfo() {
 
 function store_ajax_RoleList_toStroe() {
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/role/list.json";
+	var url = hostUrl + "rest/role/list.json?type=1";
 	$.ajax({
 		type : "GET",
 		url : url,

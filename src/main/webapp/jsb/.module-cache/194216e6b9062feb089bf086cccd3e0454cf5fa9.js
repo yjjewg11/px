@@ -71,9 +71,6 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 			tr.addClass("am-active");
 		}
 	},
-	ajax_right_edit_onClick:function(s){
-		ajax_right_button_handleClick("edit",s);
-	},
 	componentDidMount:function(){
 		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
@@ -84,11 +81,11 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
       event.disabled ? 'am-disabled' : '';
 
     return (
-		 React.createElement("tr", {name: "table_tr_checkbox_right", id: "tr_chright_"+event.uuid, className: className}, 
-	      React.createElement("td", {onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
-	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox"})
+		 React.createElement("tr", {id: "tr_chright_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
+	      React.createElement("td", null, 
+	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right"})
 	      ), 
-        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.ajax_right_edit_onClick.bind(this, JSON.stringify(event))}, event.name)), 
+        React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_right_edit.bind(this, JSON.stringify(event))}, event.name)), 
         React.createElement("td", null, event.description), 
         React.createElement("td", null, AdminVo.type(event.type))
       ) 
@@ -98,12 +95,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 
 var Right_EventsTable = React.createClass({displayName: "Right_EventsTable",
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-		  if( $("#id_checkbox_all")[0].checked){
-			  $('tr[name="table_tr_checkbox_right"]').addClass("am-active");
-		  }else{
-			  $('tr[name="table_tr_checkbox_right"]').removeClass("am-active");
-		  }
+		  $('input[name="table_checkbox_right"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
   render: function() {
 	  var that=this;
@@ -134,7 +126,9 @@ var Right_EventsTable = React.createClass({displayName: "Right_EventsTable",
     
 var Right_edit = React.createClass({displayName: "Right_edit", 
 	 getInitialState: function() {
-		    return this.props.formdata;
+		 formdata=this.props.formdata;
+		 if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
+		    return formdata;
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editRightForm').serializeJson());
@@ -360,7 +354,7 @@ return (
   React.createElement("td", null, 
   React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
   ), 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_basedatatype_edit.bind(this, event)}, event.name)), 
+    React.createElement("td", null, React.createElement("a", {href: "##", onClick: ajax_basedatatype_edit.bind(this, event)}, event.name)), 
     React.createElement("td", null, event.description), 
     React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}, "详细"))
   ) 
@@ -485,7 +479,7 @@ var Basedatalist_EventRow = React.createClass({displayName: "Basedatalist_EventR
 
     return (
 		 React.createElement("tr", null, 
-        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}, event.datakey)), 
+        React.createElement("td", null, React.createElement("a", {href: "##", onClick: btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}, event.datakey)), 
         React.createElement("td", null, event.datavalue), 
         React.createElement("td", null, AdminVo.get("enable_"+event.enable)), 
         React.createElement("td", null, event.description)

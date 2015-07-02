@@ -17,7 +17,7 @@ var ADStore={
 	getAllGroup:function(){
 		 if(this.map["AllGroup"])return this.map["AllGroup"];
 			 //从后台重新获取
-		 store_ajax_group_allList_toStroe();
+		 ADstore_ajax_group_allList_toStroe();
 			 if(this.map["AllGroup"])return this.map["AllGroup"];
 		 return [];
 	},
@@ -69,7 +69,7 @@ var ADStore={
 		var key="RightList"+v;
 		 if(this.map[key])return this.map[key];
 		 
-		 ajax_right_list(v);
+		 ADstore_ajax_right_list(v);
 		 if(this.map[key])return this.map[key];
 		 
 		 return [];
@@ -77,6 +77,16 @@ var ADStore={
 	setRightList:function(v,val){
 		var key="RightList"+v;
 		this.map[key]=val;
+	},
+	getRoleList:function(){
+		 if(this.map["RoleList"])return this.map["RoleList"];
+			 //从后台重新获取
+			 ADstore_ajax_RoleList_toStroe();
+			 if(this.map["RoleList"])return this.map["RoleList"];
+		 return [];
+	},
+	setRoleList:function(v){
+		this.map["RoleList"]=v;
 	},
 	getUserinfo:function(){
 		 if(this.map["userinfo"])return this.map["userinfo"];
@@ -93,7 +103,7 @@ var ADStore={
 		$.AMUI.store.set("userinfo", v);
 	}
 };
-function ajax_right_list(type) {
+function ADstore_ajax_right_list(type) {
 	if(!type)type="0";
 	$.AMUI.progress.start();
 	
@@ -153,7 +163,7 @@ function ajax_group_myList_toStroe() {
 
 
 
-function store_ajax_group_allList_toStroe() {
+function ADstore_ajax_group_allList_toStroe() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/group/list.json";
 	$.ajax({
@@ -169,6 +179,33 @@ function store_ajax_group_allList_toStroe() {
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+function ADstore_ajax_RoleList_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/role/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				ADStore.setRoleList(data.list)
+			} else {
+				alert(data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){

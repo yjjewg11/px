@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.Announcements;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.AnnouncementsService;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
@@ -36,9 +37,14 @@ public class AnnouncementsController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(ModelMap model, HttpServletRequest request) {
+		
+		
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		AnnouncementsJsonform announcementsJsonform;
@@ -109,7 +115,9 @@ public class AnnouncementsController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
+		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		try {
 			boolean flag = announcementsService.delete(request.getParameter("uuid"),
 					responseMessage);

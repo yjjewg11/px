@@ -71,6 +71,9 @@ var Right_EventRow = React.createClass({
 			tr.addClass("am-active");
 		}
 	},
+	ajax_right_edit_onClick:function(s){
+		ajax_right_button_handleClick("edit",s);
+	},
 	componentDidMount:function(){
 		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
@@ -81,11 +84,11 @@ var Right_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
 
     return (
-		 <tr id={"tr_chright_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}>
-	      <td> 
-	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox_right"  />
+		 <tr name="table_tr_checkbox_right" id={"tr_chright_"+event.uuid} className={className} >
+	      <td onClick={this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}> 
+	      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chright"+event.uuid} name="table_checkbox"  />
 	      </td>
-        <td><a href="##" onClick={ajax_right_edit.bind(this, JSON.stringify(event))}>{event.name}</a></td>
+        <td><a href="javascript:void(0);" onClick={this.ajax_right_edit_onClick.bind(this, JSON.stringify(event))}>{event.name}</a></td>
         <td>{event.description}</td>
         <td>{AdminVo.type(event.type)}</td>
       </tr> 
@@ -95,7 +98,12 @@ var Right_EventRow = React.createClass({
 
 var Right_EventsTable = React.createClass({
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox_right"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  if( $("#id_checkbox_all")[0].checked){
+			  $('tr[name="table_tr_checkbox_right"]').addClass("am-active");
+		  }else{
+			  $('tr[name="table_tr_checkbox_right"]').removeClass("am-active");
+		  }
 	  },
   render: function() {
 	  var that=this;
@@ -352,7 +360,7 @@ return (
   <td> 
   <input type="checkbox" value={event.uuid} name="table_checkbox" />
   </td>
-    <td><a href="##" onClick={ajax_basedatatype_edit.bind(this, event)}>{event.name}</a></td>
+    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_edit.bind(this, event)}>{event.name}</a></td>
     <td>{event.description}</td>
     <td><a href="javascript:void(0);" onClick={ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}>详细</a></td>
   </tr> 
@@ -477,7 +485,7 @@ var Basedatalist_EventRow = React.createClass({
 
     return (
 		 <tr>
-        <td><a href="##" onClick={btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}>{event.datakey}</a></td>
+        <td><a href="javascript:void(0);" onClick={btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}>{event.datakey}</a></td>
         <td>{event.datavalue}</td>
         <td>{AdminVo.get("enable_"+event.enable)}</td>
         <td>{event.description}</td>

@@ -224,7 +224,7 @@ var UserChooseRole_EventRow = React.createClass({displayName: "UserChooseRole_Ev
     return (
 		 React.createElement("tr", {name: "table_tr_checkbox", name: "table_tr_checkbox", id: "tr_chright_"+event.uuid, className: className, onClick: this.tr_onClick.bind(this,"tr_chright_"+event.uuid,"tb_cbox__chright"+event.uuid)}, 
 	      React.createElement("td", null, 
-	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox", checked: is_Checked?"checked":""})
+	      React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chright"+event.uuid, name: "table_checkbox_right", checked: is_Checked?"checked":""})
 	      ), 
     React.createElement("td", null, event.name), 
     React.createElement("td", null, event.description), 
