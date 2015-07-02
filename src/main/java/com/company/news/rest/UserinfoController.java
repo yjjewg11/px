@@ -308,4 +308,93 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setMessage("更新成功");
 		return "";
 	}
+	
+	
+	/**
+	 * 修改
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		// 默认注册未普通用户类型
+		userRegJsonform.setUuid(this.getUserInfoBySession(request).getUuid());
+
+		try {
+			boolean flag = userinfoService
+					.update(userRegJsonform, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
+	
+	/**
+	 * 修改
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updatepassword", method = RequestMethod.POST)
+	public String updatepassword(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		// 默认注册未普通用户类型
+		userRegJsonform.setUuid(this.getUserInfoBySession(request).getUuid());
+
+		try {
+			boolean flag = userinfoService
+					.updatePassword(userRegJsonform, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
 }

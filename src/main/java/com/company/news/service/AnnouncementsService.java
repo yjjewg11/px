@@ -169,7 +169,7 @@ public class AnnouncementsService extends AbstractServcice {
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 
-		hql += " order by create_time";
+		hql += " order by create_time desc";
 		return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 	}
 
@@ -185,7 +185,7 @@ public class AnnouncementsService extends AbstractServcice {
 		Query q = s
 				.createSQLQuery(
 						"select {t1.*} from px_announcementsto t0,px_announcements {t1} where t0.announcementsuuid={t1}.uuid and t0.classuuid='"
-								+ classuuid + "' order by {t1}.create_time")
+								+ classuuid + "' order by {t1}.create_time desc")
 				.addEntity("t1", Announcements4Q.class);
 
 		return q.list();
