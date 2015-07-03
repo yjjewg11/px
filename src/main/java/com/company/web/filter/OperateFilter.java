@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import com.company.common.Operate;
 import com.company.news.entity.User;
-import com.company.news.rest.util.RestUtil;
 import com.company.web.listener.SessionListener;
 
 
@@ -44,8 +43,7 @@ public class OperateFilter implements Filter {
 		operate.append("请求方法：" + httpServletRequest.getMethod()+operate_outline);
 		operate.append("请求模块：" + httpServletRequest.getPathInfo() + "?"
 				+ httpServletRequest.getQueryString()+operate_outline);
-		operate.append("请求body：" +  RestUtil.getJsonStringByRequest(httpServletRequest)+operate_outline);
-
+		
 		User user = SessionListener
 				.getUserInfoBySession((HttpServletRequest) request);
 		if (user != null){

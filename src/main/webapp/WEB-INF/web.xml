@@ -129,7 +129,11 @@
 		<init-param>
 			<param-name>includeFilters</param-name>
 			<param-value>
-				/userinfo/updatepassword.json,/group/list.json
+				/userinfo/updatepassword.json,/userinfo/updateDisable.json,
+				/userteacher/save.json,
+				/student/save.json,
+				/class/save.json,
+				/announcements/save.json
 			</param-value>
 		</init-param>
 	</filter>
