@@ -247,7 +247,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#commonform').serializeJson());
+		    this.setState($('#editClassStudentForm').serializeJson());
 	  },
 	render: function() {
 		 var o = this.state;
@@ -271,8 +271,8 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		      React.createElement("br", null), 
 		      React.createElement("label", null, "性别:"), 
 		      React.createElement("div", {className: "am-form-group"}, 
-		      React.createElement(AMUIReact.UCheck, {type: "radio", name: "sex", label: "男", value: "0", inline: true, defaultChecked: true, checked: o.sex==0, onChange: this.handleChange}), 
-		      React.createElement(AMUIReact.UCheck, {type: "radio", name: "sex", label: "女", value: "1", inline: true, checked: o.sex==1, onChange: this.handleChange})
+		      React.createElement(UCheck, {type: "radio", name: "sex", label: "男", value: "0", inline: true, checked: o.sex==0, onChange: this.handleChange}), 
+		      React.createElement(UCheck, {type: "radio", name: "sex", label: "女", value: "1", inline: true, checked: o.sex==1, onChange: this.handleChange})
 		      ), 
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "office"}, "职位:"), 

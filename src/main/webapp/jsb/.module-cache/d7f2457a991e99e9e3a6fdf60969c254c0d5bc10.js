@@ -241,16 +241,10 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 }); 
 
 
-//userinfo update
-var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update", 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#commonform').serializeJson());
-	  },
+//userinfo reg
+var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg", 
+	
 	render: function() {
-		 var o = this.state;
 	return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -261,24 +255,29 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+		    React.createElement("form", {id: "regform", method: "post", className: "am-form"}, 
+		    React.createElement("div", {className: "am-form-group"}, 
 		    
+		    React.createElement("select", {id: "reg_group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'sm'}"}, 
+		      this.props.group_list.map(function(event) {
+		          return (React.createElement("option", {value: event.uuid}, event.company_name));
+		        })
+		      )
+		        ), 
 		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
-		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
+		      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: ""}, "Email:"), 
-		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱"}), 
+		      React.createElement("input", {type: "email", name: "email", id: "email", placeholder: "输入邮箱", placeholder: ""}), 
 		      React.createElement("br", null), 
-		      React.createElement("label", null, "性别:"), 
-		      React.createElement("div", {className: "am-form-group"}, 
-		      React.createElement(AMUIReact.UCheck, {type: "radio", name: "sex", label: "男", value: "0", inline: true, defaultChecked: true, checked: o.sex==0, onChange: this.handleChange}), 
-		      React.createElement(AMUIReact.UCheck, {type: "radio", name: "sex", label: "女", value: "1", inline: true, checked: o.sex==1, onChange: this.handleChange})
-		      ), 
+		      React.createElement("label", {htmlFor: "name"}, "性别:"), 
+		      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "office"}, "职位:"), 
-		      React.createElement("input", {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
+		      React.createElement("input", {type: "text", name: "office", id: "office", placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
-		      React.createElement("button", {type: "button", onClick: ajax_userinfo_update, className: "am-btn am-btn-primary"}, "提交")
+		      React.createElement("button", {type: "button", onClick: ajax_userinfo_reg, className: "am-btn am-btn-primary"}, "注册"), 
+		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
 		    ), 
 		    React.createElement("hr", null)
 		  
@@ -289,7 +288,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 	}
 }); 
 
-//userinfo update end
+//userinfo reg end
 
 //role
 var UserChooseRole_EventRow = React.createClass({displayName: "UserChooseRole_EventRow", 

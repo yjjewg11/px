@@ -66,6 +66,7 @@ function ajax_userinfo_login() {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
 				Store.clear();
 				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
 				setCookie("bs_loginname", loginname);
@@ -249,7 +250,7 @@ function btn_ajax_updateRole(useruuid){
     				$.AMUI.progress.done();
     				// 登陆成功直接进入主页
     				if (data.ResMsg.status == "success") {
-    				
+    					G_msg_pop(data.ResMsg.message);
     					Queue.doBackFN();
     				} else {
     					alert(data.ResMsg.message);
@@ -316,7 +317,7 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//ajax_right_list(); 
+				G_msg_pop(data.ResMsg.message);
 				ADStore.setRightList(objectForm.type,null);
 				
 				Queue.doBackFN();
@@ -413,7 +414,7 @@ function btn_ajax_updateRight(roleuuid){
     				$.AMUI.progress.done();
     				// 登陆成功直接进入主页
     				if (data.ResMsg.status == "success") {
-    				
+    					G_msg_pop(data.ResMsg.message);
     					Queue.doBackFN();
     				} else {
     					alert(data.ResMsg.message);
@@ -496,6 +497,7 @@ function ajax_role_save(){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
 				ajax_role_list();
 			} else {
 				alert(data.ResMsg.message);
@@ -584,6 +586,7 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
 				ajax_basedatatype_list();
 			} else {
 				alert(data.ResMsg.message);

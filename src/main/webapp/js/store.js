@@ -1,5 +1,10 @@
 /**
- * Store.getGroup();
+ * Store.getGroup();//获取当前组织列表
+
+ * Store.getUserinfo();//获取当前用户
+ * 
+ * Store.getCurClass();//获取当前班级
+ * Store.getMyClassList();//获取我关联的班级(老师)
  */
 var Store={
 	map:{},
@@ -16,6 +21,16 @@ var Store={
 			  return false;
 			}
 		return true;
+	},
+	getMyClassList:function(){
+		 if(this.map["MyClass"])return this.map["MyClass"];
+			 //从后台重新获取
+			 store_ajax_MyClass_toStroe();
+			 if(this.map["MyClass"])return this.map["MyClass"];
+		 return [];
+	},
+	setMyClassList:function(v){
+		this.map["MyClass"]=v;
 	},
 	getRoleList:function(){
 		 if(this.map["RoleList"])return this.map["RoleList"];
@@ -262,7 +277,6 @@ function store_ajax_getUserinfo() {
 			if (data.ResMsg.status == "success") {
 				if(data.userinfo)Store.setUserinfo(data.userinfo);
 				if(data.list)Store.setGroup(data.list);
-				menu_body_fn();
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -292,6 +306,34 @@ function store_ajax_RoleList_toStroe() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setRoleList(data.list)
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+
+function store_ajax_MyClass_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/class/queryClassByUseruuid.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setMyClassList(data.list)
 			} else {
 				alert(data.ResMsg.message);
 			}

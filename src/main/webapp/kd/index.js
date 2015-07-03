@@ -122,7 +122,6 @@ function login_affter_init(){
 	                 // "channelLink": "进入栏目 »",
 	                 
 	                },
-	                  
 	                    {
 	                        "link": "##",
 	                        "title": "发布消息",
@@ -208,12 +207,14 @@ function login_affter_init(){
 	                  "subCols": 3,
 	                  "subMenu": [
 	                    {
+	                    	 "fn":menu_userinfo_update_fn,
 	                      "link": "##",
-	                      "title": "修改资料(未)"
+	                      "title": "修改资料"
 	                    },
 	                    {
+	                    	 "fn":menu_userinfo_updatepassword_fn,
 	                        "link": "##",
-	                        "title": "修改密码(未)"
+	                        "title": "修改密码"
 	                      },
 	                     
 	                    {
@@ -280,7 +281,7 @@ function menu_dohome(){
 
 	                    	  {
 		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "javascript:menu_classnews_list_fn();",
+		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
 	                    	  {

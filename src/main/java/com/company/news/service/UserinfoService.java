@@ -126,21 +126,21 @@ public class UserinfoService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(UserRegJsonform userRegJsonform,
+	public User update(UserRegJsonform userRegJsonform,
 			ResponseMessage responseMessage) throws Exception {
 
 		// name昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getName())
 				|| userRegJsonform.getName().length() > 15) {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
-			return false;
+			return null;
 		}
 
 		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
 				userRegJsonform.getUuid());
 		if (user == null) {
 			responseMessage.setMessage("user不存在！");
-			return false;
+			return null;
 		}
 
 		user.setName(userRegJsonform.getName());
@@ -151,7 +151,7 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
 
-		return true;
+		return user;
 	}
 
 	/**

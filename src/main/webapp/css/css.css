@@ -1,4 +1,20 @@
-  .header {
+.G_div_msg_pop{
+position:absolute; 
+height:60px; 
+width:200px; 
+margin:-100px 0px 0px -100px; 
+top: 30%; 
+left: 50%; 
+text-align: center; 
+padding: 0px; 
+background-color: #E0690C; 
+color: #fff;
+overflow: auto;
+display: none;
+z-index: 9999;
+}
+
+.header {
       text-align: center;
     }
     .header h1 {

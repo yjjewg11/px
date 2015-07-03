@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsDianzan;
+import com.company.news.entity.User;
 import com.company.news.jsonform.ClassNewsDianzanJsonform;
 import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.query.PageQueryResult;
@@ -98,11 +99,14 @@ public class ClassNewsService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(String classuuid, PaginationData pData) {
+	public PageQueryResult query(User user ,String type,String classuuid, PaginationData pData) {
 		String hql = "from ClassNews4Q where 1=1";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid=" + classuuid;
-
+		
+		if("myByTeacher".equals(type)){
+			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
+		}
 		hql += " order by create_time";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao

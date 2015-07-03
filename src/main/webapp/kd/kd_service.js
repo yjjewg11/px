@@ -1,47 +1,4 @@
-/**
- * 保存通用方法
-var opt={
-	 formName:"editClassnewsForm",
-	 url:hostUrl + "rest/classnewsreply/save.json",
-	 cbFN:null,
-	 }
-	 ajax_abs_save(opt);
- */
-function ajax_abs_save(opt){
-$.AMUI.progress.start();
-	
-	  var objectForm = $('#'+opt.formName).serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-	$.ajax({
-		type : "POST",
-		url : opt.url,
-		processData: false, 
-		data:jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				if(opt.cbFN){
-					opt.cbFN(data);
-				}else{
-					Queue.doBackFN();
-				}
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-}
+
 //用户登陆
 function ajax_userinfo_login() {
 	
@@ -188,7 +145,7 @@ function ajax_kd_group_reg() {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				menu_userinfo_login_fn();
 				
 			} else {
@@ -322,7 +279,7 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -486,7 +443,7 @@ function btn_ajax_updateRole(useruuid){
     				$.AMUI.progress.done();
     				// 登陆成功直接进入主页
     				if (data.ResMsg.status == "success") {
-    				
+    					G_msg_pop(data.ResMsg.message);
     					Queue.doBackFN();
     				} else {
     					alert(data.ResMsg.message);
@@ -531,7 +488,7 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -590,7 +547,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					alert(data.ResMsg.message);
+					G_msg_pop(data.ResMsg.message);
 					ajax_uesrinfo_listByGroup(groupuuid);
 				} else {
 					alert(data.ResMsg.message);
@@ -806,6 +763,7 @@ function btn_ajax_class_student_save(){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
 				react_ajax_class_students_manage(objectForm.classuuid);
 			} else {
 				alert(data.ResMsg.message);
@@ -877,8 +835,7 @@ $.AMUI.progress.start();
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
-				
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -911,7 +868,7 @@ function ajax_class_updateDisable(groupuuid,useruuid,disable){
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					alert(data.ResMsg.message);
+					G_msg_pop(data.ResMsg.message);
 					ajax_uesrinfo_listByGroup(groupuuid);
 				} else {
 					alert(data.ResMsg.message);
@@ -1076,7 +1033,7 @@ function ajax_announcements_save(){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -1268,7 +1225,7 @@ function ajax_teachingplan_save(){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -1476,7 +1433,7 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				//alert(data.ResMsg.message);
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -1496,24 +1453,36 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 //cookbookPlan end
 
 
-
+function menu_classnewsbyMy_list_fn() {
+	Queue.push(menu_classnewsbyMy_list_fn);
+	g_classnews_url=hostUrl + "rest/classnews/getClassNewsByMy.json";
+	g_classnews_class_list=Store.getMyClassList();
+	ajax_classnews_list();
+};
 
 //classnews
 function menu_classnews_list_fn() {
 	Queue.push(menu_classnews_list_fn);
+	g_classnews_url=hostUrl + "rest/classnews/getClassNewsByClassuuid.json";
+	g_classnews_class_list=Store.getChooseClass(Store.getCurGroup().uuid);
 	ajax_classnews_list();
 };
 //记录当前翻页
 var g_classnews_pageNo_point=1;
 var g_classnews_classuuid=null;
+var g_classnews_url=null;
+var g_classnews_class_list=null;
 function ajax_classnews_list(classuuid,pageNo) {
 	if(!classuuid)classuuid=g_classnews_classuuid;
 	else g_classnews_classuuid=classuuid;
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
-	
+	if(!g_classnews_url){
+		alert("ajax_classnews_list 缺少参数:g_classnews_url");
+		return;
+	}
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/classnews/getClassNewsByClassuuid.json?uuid="+classuuid+"&pageNo="+pageNo;
+	var url = g_classnews_url+"?uuid="+classuuid+"&pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1523,7 +1492,7 @@ function ajax_classnews_list(classuuid,pageNo) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Classnews_EventsTable, {
 					events: data.list,
-					class_list:Store.getChooseClass(Store.getCurGroup().uuid),
+					class_list:g_classnews_class_list,
 					handleClick:btn_click_classnews,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1585,6 +1554,10 @@ function btn_click_classnews(m,formdata){
 */
 function ajax_classnews_edit(m,formdata){
 	if(m=="add"){
+		if(!formdata.classuuid){
+			alert("请选择班级!");
+			return;
+		}
 		React.render(React.createElement(Classnews_edit,{formdata:formdata}), document.getElementById('div_body'));
 		return;
 	
@@ -1648,6 +1621,7 @@ var url = hostUrl + "rest/classnews/save.json";
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);

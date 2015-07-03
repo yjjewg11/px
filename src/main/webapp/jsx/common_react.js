@@ -202,6 +202,95 @@ var Userinfo_getRole = React.createClass({
 
 
 
+
+//Div_userinfo_updatepassword
+var Div_userinfo_updatepassword = React.createClass({ 
+	
+	render: function() {
+	return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>修改密码</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		    <form id="commonform" method="post" className="am-form">
+
+		      <label htmlFor="oldpassword">当前密码:</label>
+		      <input type="password" name="oldpassword"  />
+		      <br/>
+		      <label htmlFor="password">密码:</label>
+		      <input type="password" name="password"   />
+		      <br/>
+		      
+		      <label htmlFor="password1">重复密码:</label>
+		      <input type="password" name="password1"  />
+		      <br/>
+		      <button type="button" onClick={ajax_userinfo_updatepassword} className="am-btn am-btn-primary">提交</button>
+		    </form>
+		    <hr/>
+		  
+		  </div>
+		</div>
+		</div>
+	);
+	}
+}); 
+
+
+//userinfo update
+var Div_userinfo_update = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#commonform').serializeJson());
+	  },
+	render: function() {
+		 var o = this.state;
+	return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>修改资料</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		    <form id="commonform" method="post" className="am-form">
+		    
+		      <label htmlFor="name">昵称:</label>
+		      <input type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <br/>
+		       <label htmlFor="">Email:</label>
+		      <input type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
+		      <br/>
+		      <label >性别:</label>
+		      <div className="am-form-group">
+		      <AMUIReact.UCheck type="radio" name="sex" label="男" value="0" inline defaultChecked checked={o.sex==0}   onChange={this.handleChange} />
+		      <AMUIReact.UCheck type="radio" name="sex" label="女" value="1" inline checked={o.sex==1} onChange={this.handleChange}/>
+		      </div>
+		      <br/>
+		      <label htmlFor="office">职位:</label>
+		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <br/>
+		      <button type="button" onClick={ajax_userinfo_update} className="am-btn am-btn-primary">提交</button>
+		    </form>
+		    <hr/>
+		  
+		  </div>
+		</div>
+		</div>
+	);
+	}
+}); 
+
+//userinfo update end
+
 //role
 var UserChooseRole_EventRow = React.createClass({ 
 	tr_onClick:function(trid,cbid){

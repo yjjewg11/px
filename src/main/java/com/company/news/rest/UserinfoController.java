@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -339,16 +340,21 @@ public class UserinfoController extends AbstractRESTController {
 		userRegJsonform.setUuid(this.getUserInfoBySession(request).getUuid());
 
 		try {
-			boolean flag = userinfoService
+			User user = userinfoService
 					.update(userRegJsonform, responseMessage);
-			if (!flag)// 请求服务返回失败标示
+			if (user==null)// 请求服务返回失败标示
 				return "";
+			
+			//更新session中用户信息
+			HttpSession session=SessionListener.getSession(request);
+			session.setAttribute(RestConstants.Session_UserInfo, user);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
+
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("修改成功");

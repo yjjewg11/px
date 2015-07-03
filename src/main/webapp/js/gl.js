@@ -14,6 +14,15 @@ var G_def_headImgPath=hostUrl+"i/header.png";
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
 
 /**
+ * 成功消息提示,3秒后消失
+ * @param m
+ */
+function G_msg_pop(m){
+	$("#div_msg_pop").html("提示:"+m);
+	$("#div_msg_pop").show();
+	setTimeout(function(){$("#div_msg_pop").hide()},3000);
+}
+/**
  * 加载图片的地方执行一次。
  * 不传参数，则所有img替换。
  */
@@ -121,6 +130,9 @@ var  Queue={
 		},
 		push:function(o){
 			 this.isBack=false;
+			 if(this.arr.length>50){
+				 this.arr=this.arr.slice(40);//防止内存异常,最多保留50个.
+			 }
 			 //same operation ,no add
 			 // if(this.arr.length==0||this.arr[this.arr.length-1].name!=o.name)
 				  this.arr.push(o);

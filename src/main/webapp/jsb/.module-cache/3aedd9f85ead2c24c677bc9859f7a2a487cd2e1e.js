@@ -1385,7 +1385,7 @@ render: function() {
 		  React.createElement("div", null, 
 		  React.createElement(AMUIReact.Article, {
 		    title: o.title, 
-		    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}, 
+		    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读0次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 		   ), 	
 		   React.createElement("div", {id: "dianzan", class: "dianzan"}, "♡", o.dianzan

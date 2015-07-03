@@ -1303,6 +1303,7 @@ return (
 	  <label>{g_classnews_pageNo_point}\{maxPageNo}</label> 
 	    <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
 	      <select id="selectclass_uuid" name="class_uuid"  value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
+	      <option value="" >所有</option>
 	      {this.props.class_list.map(function(event) {
 	          return (<option value={event.uuid} >{event.name}</option>);
 	        })}
@@ -1384,7 +1385,7 @@ render: function() {
 		  <div>
 		  <AMUIReact.Article
 		    title={o.title}
-		    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读0次"}>
+		    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		   </AMUIReact.Article>	
 		   <div id="dianzan" class="dianzan">♡{o.dianzan}

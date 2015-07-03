@@ -103,7 +103,29 @@ public class ClassNewsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		PaginationData pData = this.getPaginationDataByRequest(request);
 
-		PageQueryResult pageQueryResult = classNewsService.query(
+		PageQueryResult pageQueryResult = classNewsService.query(null,null,
+				request.getParameter("classuuid"), pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 获取我的相关班级信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getClassNewsByMy", method = RequestMethod.GET)
+	public String getClassNewsByMy(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		User user = this.getUserInfoBySession(request);
+		PageQueryResult pageQueryResult = classNewsService.query(user,"myByTeacher",
 				request.getParameter("classuuid"), pData);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list,
 				pageQueryResult);
