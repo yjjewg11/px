@@ -1397,7 +1397,7 @@ render: function() {
 			  }), 
 		   	o.dianzan
 		   ), 
-		   React.createElement("button", {type: "button", onClick: ajax_classnews_dianzan.bind(this,o.uuid), className: "am-btn am-btn-primary"}, "点赞"), 
+		   React.createElement("button", {type: "button", onClick: ajax_classnews_dianzan, className: "am-btn am-btn-primary"}, "点赞"), 
 		   React.createElement("div", {className: "G_reply"}, 
 			   React.createElement("h4", null, "回复"), 
 			   React.createElement("div", {id: this.classnewsreply_list_div}, 

@@ -91,7 +91,68 @@ function ajax_userinfo_updatepassword() {
 		}
 	});
 }
-
+function ajax_userinfo_getRole(useruuid,usernames,roleList){
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				
+				React.render(React.createElement(Userinfo_getRole, {
+					formdata:{useruuid:useruuid,username:usernames},
+					events: roleList,
+					chooselist: JSON.stringify(data.list),
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+	
+};
+function ajax_userinfo_updateDisable(useruuids,disable){
+	var groupuuid=$('#selectgroup_uuid').val();
+	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/userinfo/updateDisable.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data : {useruuids:useruuids,disable:disable},
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					G_msg_pop(data.ResMsg.message);
+					ajax_uesrinfo_listByGroup(groupuuid);
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+",error:"+textStatus);
+				 console.log(url+',error：', obj);
+				 console.log(url+',error：', textStatus);
+				 console.log(url+',error：', errorThrown);
+			}
+		});
+	}
 
 
 function menu_userinfo_update_fn(){

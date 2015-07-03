@@ -1388,9 +1388,16 @@ render: function() {
 		    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		   </AMUIReact.Article>	
-		   <div id="dianzan" class="dianzan">♡{o.dianzan}
+		   <div id="dianzan" class="dianzan">♡
+		 
+		   {o.dianzanList.map(function(event) {
+			      return (
+			    		  <a href="javascript:void(0);">,{event}</a>
+			    		  )
+			  })}
+		   	{o.dianzan}
 		   </div>
-		   <button type="button"  onClick={ajax_classnews_dianzan}  className="am-btn am-btn-primary">点赞</button>
+		   <button type="button"  onClick={ajax_classnews_dianzan.bind(this,o.uuid)}  className="am-btn am-btn-primary">点赞</button>
 		   <div className="G_reply">
 			   <h4>回复</h4>
 			   <div id={this.classnewsreply_list_div}>

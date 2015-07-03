@@ -263,37 +263,13 @@ function ajax_group_edit(m,formdata){
 
 
 function ajax_group_save(){
-$.AMUI.progress.start();
 	
-	  var objectForm = $('#editGroupForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/group/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+    var opt={
+            formName: "editGroupForm",
+            url:hostUrl + "rest/group/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
 }
 //group end
 
@@ -344,7 +320,7 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Userinfo_EventsTable, {
-					groupuuid:groupuuid,
+					group_uuid:groupuuid,
 					group_list:Store.getGroup(),
 					events: data.list,
 					handleClick:btn_click_userinfo,
@@ -378,43 +354,10 @@ function btn_click_userinfo(m,obj,usernames){
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,0);
 	}else if(m=="getRole"){
-		ajax_userinfo_getRole(obj,usernames);
+		ajax_userinfo_getRole(obj,usernames, Store.getRoleList());
 	}
 };
-function ajax_userinfo_getRole(useruuid,usernames){
-	Queue.push(function(){ajax_userinfo_getRole(useruuid,usernames)});
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				
-				React.render(React.createElement(Userinfo_getRole, {
-					formdata:{useruuid:useruuid,username:usernames},
-					events: Store.getRoleList(),
-					chooselist: JSON.stringify(data.list),
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-	
-};
+
 
 
 function btn_ajax_updateRole(useruuid){
@@ -472,37 +415,12 @@ function ajax_userinfo_edit(formdata,operate){
 };
 
 function ajax_userinfo_save(){
-$.AMUI.progress.start();
-	
-	  var objectForm = $('#editUserinfoForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-      var url = hostUrl + "rest/userinfo/add.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+    var opt={
+            formName: "editUserinfoForm",
+            url:hostUrl + "rest/userinfo/add.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
 }
 
 function ajax_getUserinfo(isInit) {
@@ -534,35 +452,7 @@ function ajax_getUserinfo(isInit) {
 		}
 	});
 }
-function ajax_userinfo_updateDisable(useruuids,disable){
-	
-	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/userinfo/updateDisable.json";
-		$.ajax({
-			type : "POST",
-			url : url,
-			data : {useruuids:useruuids,disable:disable},
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					G_msg_pop(data.ResMsg.message);
-					ajax_uesrinfo_listByGroup(groupuuid);
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
-		});
-	}
+
 //userinfo end
 
 
@@ -588,7 +478,7 @@ function ajax_class_listByGroup(groupuuid) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_EventsTable, {
-					groupuuid:groupuuid,
+					group_uuid:groupuuid,
 					group_list:Store.getGroup(),
 					events: data.list,
 					handleClick:btn_click_class_list,
@@ -748,36 +638,16 @@ function btn_class_student_uploadHeadere(){
 }
 
 function btn_ajax_class_student_save(){
-	
-	$.AMUI.progress.start();
-	  var objectForm = $('#editClassStudentForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-    var url = hostUrl + "rest/student/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
+	var objectForm = $('#editClassStudentForm').serializeJson();
+    var opt={
+            formName: "editClassStudentForm",
+            url:hostUrl + "rest/student/save.json",
+            cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
 				react_ajax_class_students_manage(objectForm.classuuid);
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+            }
+            };
+G_ajax_abs_save(opt);
 }
 
 function react_ajax_class_edit_get(formdata,uuid){
@@ -819,37 +689,13 @@ function ajax_class_edit(formdata,operate){
 };
 
 function ajax_class_save(){
-	
-$.AMUI.progress.start();
-	  var objectForm = $('#editClassForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-    var url = hostUrl + "rest/class/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+    var opt={
+            formName: "editClassForm",
+            url:hostUrl + "rest/class/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
+
 }
 
 function ajax_class_updateDisable(groupuuid,useruuid,disable){
@@ -1018,36 +864,12 @@ function react_ajax_announce_edit(formdata,uuid){
 };
 
 function ajax_announcements_save(){
-	$.AMUI.progress.start();
-	  var objectForm = $('#editAnnouncementsForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-    var url = hostUrl + "rest/announcements/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+    var opt={
+            formName: "editAnnouncementsForm",
+            url:hostUrl + "rest/announcements/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
 }
 
 //announce end
@@ -1210,36 +1032,13 @@ function react_ajax_teachingplan_edit(formdata,uuid){
 };
 
 function ajax_teachingplan_save(){
-	$.AMUI.progress.start();
-	  var objectForm = $('#editTeachingplanForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-  var url = hostUrl + "rest/teachingplan/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+    var opt={
+            formName: "editTeachingplanForm",
+            url:hostUrl + "rest/teachingplan/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
+
 }
 
 //teachingplan end
@@ -1600,41 +1399,47 @@ function ajax_classnewsreply_save(){
 }
 
 
-function ajax_classnews_dianzan(){
-	$('#dianzan').html($('#dianzan').html()+","+Store.getUserinfo().name);
+function ajax_classnews_dianzan(newsuuid){
+	var objectForm={newsuuid:newsuuid};
+	var jsonString=JSON.stringify(objectForm);
+	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/classnews/dianzan.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			processData: false, 
+			data : jsonString,
+			dataType : "json",
+			contentType : false,  
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+",error:"+textStatus);
+				 console.log(url+',error：', obj);
+				 console.log(url+',error：', textStatus);
+				 console.log(url+',error：', errorThrown);
+			}
+		});
+	
+	
 }
 
 function ajax_classnews_save(){
-$.AMUI.progress.start();
-	
-	  var objectForm = $('#editClassnewsForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-var url = hostUrl + "rest/classnews/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data:jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+	var opt={
+			 formName:"editClassnewsForm",
+			 url:hostUrl + "rest/classnews/save.json",
+			 cbFN:null
+			 };
+	G_ajax_abs_save(opt);
 }
 
 

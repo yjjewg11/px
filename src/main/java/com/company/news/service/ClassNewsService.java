@@ -153,6 +153,10 @@ public class ClassNewsService extends AbstractServcice {
 		cnjf.setCount(countService.count(uuid,
 				countService.count_type_classnews));
 
+		
+		List dianzanList=this.nSimpleHibernateDao.getHibernateTemplate().find(
+				"select create_user from ClassNewsDianzan where newsuuid=?", uuid);
+		cnjf.setDianzanList(dianzanList);
 		return cnjf;
 
 	}

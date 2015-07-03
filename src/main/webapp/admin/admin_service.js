@@ -151,7 +151,7 @@ function ajax_uesrinfo_listByAllGroup(groupuuid) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Userinfo_EventsTable, {
-					groupuuid:groupuuid,
+					group_uuid:groupuuid,
 					group_list:ADStore.getAllGroup(),
 					events: data.list,
 					handleClick:btn_click_userinfo,
@@ -185,41 +185,17 @@ function btn_click_userinfo(m,obj,usernames){
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,0);
 	}else if(m=="getRole"){
-		ajax_userinfo_getRole(obj,usernames);
+		ajax_userinfo_getRole(obj,usernames,ADStore.getRoleList());
 	}
 };
-function ajax_userinfo_getRole(useruuid,usernames){
-	Queue.push(function(){ajax_userinfo_getRole(useruuid,usernames)});
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				
-				React.render(React.createElement(Userinfo_getRole, {
-					formdata:{useruuid:useruuid,username:usernames},
-					events: ADStore.getRoleList(),
-					chooselist: JSON.stringify(data.list),
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+/**
+ * operate=add|edit
+ * @param formdata
+ * @param operate
+ */
+function ajax_userinfo_edit(formdata,operate){
+	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:ADStore.getAllGroup()}), document.getElementById('div_body'));
+
 	
 };
 
@@ -266,16 +242,7 @@ function btn_ajax_updateRole(useruuid){
     		};
 	$.ajax(opt);
 }
-/**
- * operate=add|edit
- * @param formdata
- * @param operate
- */
-function ajax_userinfo_edit(formdata,operate){
-	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:ADStore.getAllGroup()}), document.getElementById('div_body'));
 
-	
-};
 //end user manage
 
 //right
