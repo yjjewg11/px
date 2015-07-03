@@ -272,6 +272,7 @@ function btn_click_group(m,formdata){
 */
 function ajax_group_edit(m,formdata){
 	if(m=="add"){
+		formdata={type:"1"};
 		React.render(React.createElement(Group_edit,{formdata:formdata}), document.getElementById('div_body'));
 		return;
 	
@@ -368,6 +369,11 @@ function ajax_userinfo_logout(){
 //老师管理
 
 //老师查询，条件groupuuid
+function menu_userinfo_list_fn() {
+	Queue.push(menu_userinfo_list_fn);
+	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
+};
+
 //
 function ajax_uesrinfo_listByGroup(groupuuid) {
 	$.AMUI.progress.start();
@@ -385,6 +391,7 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 					group_list:Store.getGroup(),
 					events: data.list,
 					handleClick:btn_click_userinfo,
+					handleChange_selectgroup_uuid:ajax_uesrinfo_listByGroup,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -455,7 +462,7 @@ function ajax_userinfo_getRole(useruuid,usernames){
 
 function btn_ajax_updateRole(useruuid){
 	 var uuids=null;
-	 $("input[name='table_checkbox_right']").each(function(){
+	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
 			 if(uuids==null)uuids=this.value;
 			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
@@ -473,7 +480,7 @@ function btn_ajax_updateRole(useruuid){
     			url : url,
     			processData: true, 
     			dataType : "json",
-    			data:{useruuid:useruuid,roleuuids:uuids},
+    			data:{type:1,useruuid:useruuid,roleuuids:uuids},
     			//contentType : false,  
     			success : function(data) {
     				$.AMUI.progress.done();

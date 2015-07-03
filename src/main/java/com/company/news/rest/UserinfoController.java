@@ -294,7 +294,8 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			boolean flag = userinfoService.updateRoleRightRelation(
 					request.getParameter("roleuuids"),
-					request.getParameter("useruuid"), responseMessage);
+					request.getParameter("useruuid"),
+					request.getParameter("type"),responseMessage);
 			if (!flag)
 				return "";
 		} catch (Exception e) {

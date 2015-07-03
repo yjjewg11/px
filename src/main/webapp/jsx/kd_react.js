@@ -215,7 +215,7 @@ var Group_EventRow = React.createClass({
 var Group_EventsTable = React.createClass({
 	handleClick: function(m) {
 		if(m=="add"){
-			btn_click_group(m,{});
+			btn_click_group(m,{type:"1"});
 			 return;
 		 }if(m=="edit"){
 			

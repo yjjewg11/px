@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Right;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.RightJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.RightService;
 import com.company.news.vo.ResponseMessage;
 
@@ -37,6 +38,11 @@ public class RightController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(!RightUtils.hasRight(RightConstants.AD_right_del,request)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
+	
 
 		try {
 			boolean flag = rightService.delete(request.getParameter("uuid"),
@@ -62,6 +68,10 @@ public class RightController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
+		if(!RightUtils.hasRight(RightConstants.AD_right_m,request)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		RightJsonform rightJsonform;
 		try {

@@ -11,14 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Teachingplan;
-import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.CookbookPlanJsonform;
-import com.company.news.jsonform.StudentJsonform;
 import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.service.CookbookPlanService;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.TeachingPlanService;
 import com.company.news.vo.ResponseMessage;
 
@@ -41,6 +38,12 @@ public class TeachingPlanController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		
+		if (!RightUtils.hasRight(RightConstants. KD_teachingplan_m ,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
+
+		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		TeachingPlanJsonform teachingPlanJsonform;

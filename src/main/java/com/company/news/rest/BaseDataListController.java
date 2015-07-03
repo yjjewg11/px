@@ -1,6 +1,5 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,15 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.BaseDataList;
-import com.company.news.entity.BaseDataType;
-import com.company.news.entity.Group;
 import com.company.news.jsonform.BaseDataListJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.jsonform.RightJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.BaseDataListService;
-import com.company.news.service.BaseDataTypeService;
-import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -48,6 +43,9 @@ public class BaseDataListController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(!RightUtils.hasRight(RightConstants.AD_basedata_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		BaseDataListJsonform baseDataListJsonform;
@@ -106,7 +104,9 @@ public class BaseDataListController extends AbstractRESTController {
     public String delete( ModelMap model,HttpServletRequest request) {
 		//返回消息体
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-		
+		if(!RightUtils.hasRight(RightConstants.AD_basedata_del,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+		}
 		try {
 			boolean flag=baseDataListService.delete(request.getParameter("uuid"), responseMessage);
 		    if(!flag)

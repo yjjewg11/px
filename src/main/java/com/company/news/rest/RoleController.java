@@ -11,13 +11,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.Right;
+import com.company.news.SystemConstants;
 import com.company.news.entity.Role;
 import com.company.news.entity.RoleRightRelation;
-import com.company.news.form.UserLoginForm;
-import com.company.news.jsonform.RightJsonform;
 import com.company.news.jsonform.RoleJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.RoleService;
 import com.company.news.vo.ResponseMessage;
 
@@ -37,10 +37,14 @@ public class RoleController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public String delete(ModelMap model, HttpServletRequest request) {
+		
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if (!RightUtils.hasRight(RightConstants. AD_role_del ,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
 
+		}
 		try {
 			boolean flag = roleService.delete(request.getParameter("uuid"),
 					responseMessage);
@@ -64,6 +68,10 @@ public class RoleController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if (!RightUtils.hasRight(RightConstants. AD_role_m ,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
+
+		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		RoleJsonform roleJsonform;
@@ -111,7 +119,14 @@ public class RoleController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Role> list = roleService.query(request.getParameter("type"));
+		String type=request.getParameter("type");
+		if(StringUtils.isBlank(type)||SystemConstants.Group_type_0.toString().equals(type)){
+			if(!RightUtils.isAdmin( request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+		}
+		List<Role> list = roleService.query(type);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

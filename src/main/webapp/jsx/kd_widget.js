@@ -8,27 +8,30 @@ var AMUIReact_Button=AMUIReact.Button;
  */
 
 var ChooseUser_EventRow = React.createClass({ 
-	tr_onClick:function(trid,cbid){
+	tr_onClick:function(trid,cbid,e){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
-		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
-			$(tr).removeClass("am-active");
+		if(tr.hasClass("am-active")){
+				cbox.prop("checked",false); 
+			tr.removeClass("am-active");
 		}else{
-			cbox.prop("checked", true); 
-			$(tr).addClass("am-active");
+				cbox.prop("checked", true); 
+			tr.addClass("am-active");
 		}
+	},
+	componentDidMount:function(){
+		$(".am-active input[type='checkbox']").prop("checked",true); 
 	},
   render: function() {
     var event = this.props.event;
-    var is_Checked=this.props.checkedUseruuid.indexOf(event.uuid)>-1;
+    var is_Checked=this.props.checkedUseruuid&&this.props.checkedUseruuid.indexOf(event.uuid)>-1;
     var className = is_Checked ? 'am-active' :
       event.disabled ? 'am-disabled' : '';
 
     return (
       <tr id={"tr_chuser_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}>
       <td> 
-      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chuser"+event.uuid} name="table_checkbox" checked={is_Checked?"checked":""} />
+      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chuser"+event.uuid} name="table_checkbox"  />
       </td>
         <td>{event.name}</td>
         <td>{event.tel}</td>
@@ -223,17 +226,6 @@ var Upload_headImg = React.createClass({
  */
 
 var ChooseClass_EventRow = React.createClass({ 
-	tr_onClick:function(trid,cbid){
-		var cbox=$("#"+cbid);
-		var tr=$("#"+trid);
-		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
-			$(tr).removeClass("am-active");
-		}else{
-			cbox.prop("checked", true); 
-			$(tr).addClass("am-active");
-		}
-	},
   render: function() {
     var event = this.props.event;
     var className = event.highlight ? 'am-active' :
@@ -264,7 +256,7 @@ var ChooseClass_EventsTable = React.createClass({
 	  },
 	  handleChange_selectgroup_uuid_chuser:function(){
 		  var v=$('#selectgroup_uuid_chuser').val();
-		  w_ch_user.reshowBygroup(v);
+		  w_ch_class.reshowBygroup(v);
 	  },
   render: function() {
 	  var that=this;

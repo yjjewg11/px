@@ -32,8 +32,8 @@ function login_affter_init(){
 		  },
 		  {
               "link": "##",
-              "title": "用户授权",
-              "fn":menu_basedatatype_list_fn,
+              "title": "用户管理",
+              "fn":menu_userinfo_list_fn,
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
@@ -153,10 +153,6 @@ function menu_group_myList_fn() {
 	ajax_group_myList();
 }
 
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
 
 
 function menu_kd_group_reg_fn(){
