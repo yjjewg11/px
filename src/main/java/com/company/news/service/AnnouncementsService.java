@@ -196,18 +196,31 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @param type
 	 * @return
 	 */
-	public List queryMyAnnouncements(String type, String groupuuid,
+	public List queryMyAnnouncements(User user,String type, String groupuuid,
 			String classuuid) {
-		if (StringUtils.isBlank(type))
-			return null;
+//		if (StringUtils.isBlank(type))
+//			return null;
 		// 查询班级公告
-		if (Integer.parseInt(type) == announcements_type_class) {
+		if (type!=null&&Integer.parseInt(type) == announcements_type_class) {
 			if (StringUtils.isBlank(classuuid))
 				return null;
 			return getAnnouncementsByClassuuid(classuuid);
 
-		} else {// 机构公告
-			return query(type, groupuuid);
+		} else {// 机构公告或老师公告
+
+			String hql = "from Announcements4Q where ";
+			if (StringUtils.isNotBlank(groupuuid))
+				hql += "groupuuid='" + groupuuid + "'";
+			else{
+				hql += "groupuuid in (select groupuuid from UserGroupRelation where useruuid='"+user.getUuid()+"')";
+			}
+			if (StringUtils.isNotBlank(type))
+				hql += " and type=" + type;
+			else{
+				hql += " and type!=" + announcements_type_class;
+			}
+			hql += " order by create_time desc";
+			return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 		}
 
 	}

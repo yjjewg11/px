@@ -148,7 +148,8 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String queryMyAnnouncements(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List list = announcementsService.queryMyAnnouncements(request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
+		User user = this.getUserInfoBySession(request);
+		List list = announcementsService.queryMyAnnouncements(user,request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

@@ -1,8 +1,9 @@
 /**
- * Store.getGroup();//获取当前组织列表
-
- * Store.getUserinfo();//获取当前用户
+ * Store.getCurGroup();//获取当前组织
  * 
+ * Store.getGroup();//获取当前组织列表
+*Store.getGroupNameByUuid(uuid);//
+ * Store.getUserinfo();//获取当前用户
  * Store.getCurClass();//获取当前班级
  * Store.getMyClassList();//获取我关联的班级(老师)
  */

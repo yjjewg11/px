@@ -87,7 +87,7 @@ var Userinfo_EventsTable = React.createClass({
 	    </AMR_ButtonToolbar>
 	  <hr/>
 	  <div className="am-form-group">
-      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
       {this.props.group_list.map(function(event) {
           return (<option value={event.uuid} >{event.company_name}</option>);
         })}
@@ -144,7 +144,7 @@ var Userinfo_edit = React.createClass({
     			<input type="hidden" name="uuid"  value={o.uuid}/>
     		     <input type="hidden" name="type"  value="1"/>
     		    <div className="am-form-group">
-    		          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={o.group_uuid} onChange={this.handleChange}>
+    		          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={o.group_uuid} onChange={this.handleChange}>
     		          {this.props.group_list.map(function(event) {
     		              return (<option value={event.uuid} >{event.company_name}</option>);
     		            })}

@@ -651,7 +651,12 @@ G_ajax_abs_save(opt);
 }
 
 function react_ajax_class_edit_get(formdata,uuid){
+	
+	
 	if(!uuid){
+		var userinfo=Store.getUserinfo();
+		formdata.headTeacher=userinfo.uuid;
+		formdata.headTeacher_name=userinfo.name;
 		React.render(React.createElement(Class_edit,{formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 		return;
 	}
@@ -755,6 +760,40 @@ function ajax_announce_listByGroup(groupuuid) {
 				React.render(React.createElement(Announcements_EventsTable, {
 					groupuuid:groupuuid,
 					group_list:Store.getGroup(),
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+//老师查询我相关的公告
+//
+function ajax_announce_Mylist() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/announcements/queryMyAnnouncements.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : null,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Announcements_mylist_EventsTable, {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1100,7 +1139,7 @@ function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
 
 
 function btn_click_cookbookPlan(m,formdata){
-	Queue.push(function(){btn_click_classnews(m,formdata)});
+	Queue.push(function(){btn_click_cookbookPlan(m,formdata)});
 	react_ajax_cookbookPlan_edit(m,formdata);
 };
 
@@ -1248,6 +1287,52 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 		}
 	});
 }
+
+
+function menu_cookbookPlan_dayShow_fn() {
+	Queue.push(menu_classnewsbyMy_list_fn);
+	ajax_cookbookPlan_dayShow(null);
+};
+//老师查询，条件groupuuid
+//num:0.表示当前.-1上,1下.2下下
+//记录当前翻页的周数
+var g_cookbookPlan_listToShow_point=0;
+function ajax_cookbookPlan_dayShow(num) {
+	var now=new Date();
+	if(!num){
+		num=0;
+		g_cookbookPlan_listToShow_point=0;
+	}
+	var begDateStr=G_week.getDateStr(now,num);
+	var endDateStr=begDateStr;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/cookbookplan/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {groupuuid:Store.getCurGroup().uuid,begDateStr:begDateStr,endDateStr:endDateStr},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.list==null)data.list=[];
+				var formdata=data.list[0];
+				React.render(React.createElement(CookbookPlan_showByOneDay,{ch_group:Store.getCurGroup(),ch_day:begDateStr,formdata:formdata}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
 
 //cookbookPlan end
 
