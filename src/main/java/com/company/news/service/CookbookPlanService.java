@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class CookbookPlanService extends AbstractServcice {
 			return false;
 		}
 
-		Date plandate = TimeUtils.string2Timestamp(null,
+		Timestamp plandate = TimeUtils.string2Timestamp(null,
 				cookbookPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
