@@ -950,10 +950,10 @@ React.createElement(AMR_ButtonToolbar, null,
 var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_showByOneDay", 
 	handleClick: function(m) {
 		if(m=="pre"){
-			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point);
+			ajax_Teachingplan_dayShow(--g_Teachingplan_listToShow_point);
 			 return;
 		 }else if(m=="next"){
-			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point);
+			 ajax_Teachingplan_dayShow(++g_Teachingplan_listToShow_point);
 			 return;
 		 }
 	},
@@ -965,7 +965,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
+	  var showDetail=null;
 	  if(!o){
 		  o={};
 	  }
@@ -981,7 +981,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上一天")
 		    ), 
 		    React.createElement(Col, {sm: 6}, 
-		    React.createElement("h1", null, "课程安排-【", this.props.ch_class.name, "】-", this.props.ch_day)
+		    React.createElement("h1", null, "【", this.props.ch_group.brand_name, "】-每日食谱-", this.props.ch_day)
 		    ), 
 		    React.createElement(Col, {sm: 3}, 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下一天")	
@@ -1377,7 +1377,7 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
+	  var showDetail=null;
 	  if(!o){
 		  o={};
 	  }

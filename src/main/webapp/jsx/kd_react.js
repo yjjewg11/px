@@ -942,6 +942,72 @@ return (
 }
 });
 
+
+
+/**
+ * 显示每天的教学计划
+ */
+var Teachingplan_showByOneDay = React.createClass({ 
+	handleClick: function(m) {
+		if(m=="pre"){
+			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point);
+			 return;
+		 }else if(m=="next"){
+			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point);
+			 return;
+		 }
+	},
+	componentDidMount: function() {
+		  if(!this.props.formdata){
+			  $("#div_detail").html("今日没有发布教学计划");
+		  }
+	    
+	  },
+	render: function() {
+	  var o = this.props.formdata;
+	  
+	  if(!o){
+		  o={};
+	  }
+	
+	  return (
+		<div>
+		
+		<div className="header">
+		  <div className="am-g">
+		  
+		  <Grid>
+		    <Col sm={3}>
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")}  round>上一天</AMR_Button>
+		    </Col>
+		    <Col sm={6}>
+		    <h1>课程安排-【{this.props.ch_class.name}】-{this.props.ch_day}</h1>
+		    </Col>
+		    <Col sm={3}>
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下一天</AMR_Button>	
+		    </Col>
+		  </Grid>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g" id="div_detail">
+		 <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		 <label>早上:</label> 
+		 <div className="g_teachingplan">
+			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}}></div>
+		 </div>
+		 <label>下午:</label> 
+		 <div className="g_teachingplan">
+			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}></div>
+		 </div>
+		</div> 
+		</div>
+	   
+	   </div>
+);
+}
+}); 
+
 var Teachingplan_edit = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -1107,20 +1173,12 @@ handleChange_selectgroup_uuid:function(){
 var CookbookPlan_edit_EventRow = React.createClass({
 	
 	 getInitialState: function() {
+		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
 		    return {
-	            items: []
+	            items: lists
 	        };
 		  },
-	componentDidMount: function() {
-		var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-		  if (this.isMounted()) {
-			   this.setState({
-		            items: lists
-		        });
-			   
-		  }
-	    
-	  },
+	
 	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
 	  cookbookPlan_timeStr_to_list:function(cooks){
 		  if(cooks==null)return [];
@@ -1252,32 +1310,29 @@ render: function() {
 }); 
 
 var CookbookPlanShow_EventRow = React.createClass({
-	
+	//第而
+		componentWillReceiveProps: function(nextProps) {
+			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+			  this.setState({
+				  items: lists
+			  });
+			},
 	 getInitialState: function() {
+		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
 		    return {
-	            items: []
+	            items: lists
 	        };
 		  },
-	componentDidMount: function() {
-		var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-		  if (this.isMounted()) {
-			   this.setState({
-		            items: lists
-		        });
-		  }
-	  },
 	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
 	  cookbookPlan_timeStr_to_list:function(cooks){
-		  if(cooks==null)return [];
+		  if(!cooks)return [];
 		  return cooks.split(",");
 		  
 	  },
 	  
 	  render: function() {
-		var that=this;
 	    return (
 	    		  <div id={"div_cookPlan_"+this.props.type}>
-	    		  
 	    		  {
 	    			  this.state.items.map(function(event) {
 	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
@@ -1314,45 +1369,17 @@ var CookbookPlan_showByOneDay = React.createClass({
 			 return;
 		 }
 	},
+	componentDidMount: function() {
+		  if(!this.props.formdata){
+			  $("#div_detail").html("今日没有发布食谱");
+		  }
+	    
+	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  var showDetail=null;
+	  
 	  if(!o){
-		  showDetail=<div className="am-g">
-		  		今日没有发布食谱
-		  </div>;
-		  
-	  }else{
-			//2015-07-04 00:00:00=>2015-07-04
-		  if(o.plandate)o.plandate=o.plandate.split(" ")[0];
- showDetail=<div className="am-g">
- <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
- <label>早餐:</label> 
- <CookbookPlanShow_EventRow  uuids={o.time_1}  type={"time_1"}/>
- <div className="cls"></div>
- <br/>
- <label>早上加餐:</label> 
- <CookbookPlanShow_EventRow  uuids={o.time_2}  type={"time_2"}/>
- <div className="cls"></div>
- <br/>
- <label>午餐:</label> 
- <CookbookPlanShow_EventRow  uuids={o.time_3}  type={"time_3"}/>
- <div className="cls"></div>
- <br/>
- <label>下午加餐:</label> 
- <CookbookPlanShow_EventRow  uuids={o.time_4}  type={"time_4"}/>
- <div className="cls"></div>
- <br/>
- <label>晚餐:</label> 
- <CookbookPlanShow_EventRow  uuids={o.time_5}  type={"time_5"}/>
- <div className="cls"></div>
- <br/>
- <label>营养分析:</label> 
- <div className="g_analysis">
-	<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.analysis)}}></div>
- </div>
-</div> 
-</div>;
+		  o={};
 	  }
 	
 	  return (
@@ -1375,7 +1402,34 @@ var CookbookPlan_showByOneDay = React.createClass({
 		  </div>
 		  <hr />
 		</div>
-		{showDetail}
+		<div className="am-g" id="div_detail">
+		 <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		 <label>早餐:</label> 
+		 <CookbookPlanShow_EventRow  uuids={o.time_1}  type={"time_1"}/>
+		 <div className="cls"></div>
+		 <br/>
+		 <label>早上加餐:</label> 
+		 <CookbookPlanShow_EventRow  uuids={o.time_2}  type={"time_2"}/>
+		 <div className="cls"></div>
+		 <br/>
+		 <label>午餐:</label> 
+		 <CookbookPlanShow_EventRow  uuids={o.time_3}  type={"time_3"}/>
+		 <div className="cls"></div>
+		 <br/>
+		 <label>下午加餐:</label> 
+		 <CookbookPlanShow_EventRow  uuids={o.time_4}  type={"time_4"}/>
+		 <div className="cls"></div>
+		 <br/>
+		 <label>晚餐:</label> 
+		 <CookbookPlanShow_EventRow  uuids={o.time_5}  type={"time_5"}/>
+		 <div className="cls"></div>
+		 <br/>
+		 <label>营养分析:</label> 
+		 <div className="g_analysis">
+			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.analysis)}}></div>
+		 </div>
+		</div> 
+		</div>
 	   
 	   </div>
 );

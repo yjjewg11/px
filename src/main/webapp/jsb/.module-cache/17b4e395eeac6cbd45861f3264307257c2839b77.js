@@ -942,72 +942,6 @@ React.createElement(AMR_ButtonToolbar, null,
 }
 });
 
-
-
-/**
- * 显示每天的教学计划
- */
-var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_showByOneDay", 
-	handleClick: function(m) {
-		if(m=="pre"){
-			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point);
-			 return;
-		 }else if(m=="next"){
-			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point);
-			 return;
-		 }
-	},
-	componentDidMount: function() {
-		  if(!this.props.formdata){
-			  $("#div_detail").html("今日没有发布教学计划");
-		  }
-	    
-	  },
-	render: function() {
-	  var o = this.props.formdata;
-	  
-	  if(!o){
-		  o={};
-	  }
-	
-	  return (
-		React.createElement("div", null, 
-		
-		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		  
-		  React.createElement(Grid, null, 
-		    React.createElement(Col, {sm: 3}, 
-		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上一天")
-		    ), 
-		    React.createElement(Col, {sm: 6}, 
-		    React.createElement("h1", null, "课程安排-【", this.props.ch_class.name, "】-", this.props.ch_day)
-		    ), 
-		    React.createElement(Col, {sm: 3}, 
-		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下一天")	
-		    )
-		  )
-		  ), 
-		  React.createElement("hr", null)
-		), 
-		React.createElement("div", {className: "am-g", id: "div_detail"}, 
-		 React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		 React.createElement("label", null, "早上:"), 
-		 React.createElement("div", {className: "g_teachingplan"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.morning)}})
-		 ), 
-		 React.createElement("label", null, "下午:"), 
-		 React.createElement("div", {className: "g_teachingplan"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.afternoon)}})
-		 )
-		)
-		)
-	   
-	   )
-);
-}
-}); 
-
 var Teachingplan_edit = React.createClass({displayName: "Teachingplan_edit", 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -1310,13 +1244,9 @@ render: function() {
 }); 
 
 var CookbookPlanShow_EventRow = React.createClass({displayName: "CookbookPlanShow_EventRow",
-	//第而
-		componentWillReceiveProps: function(nextProps) {
-			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-			  this.setState({
-				  items: lists
-			  });
-			},
+	shouldComponentUpdate: function(nextProps, nextState) {
+		  return false;
+		},
 	 getInitialState: function() {
 		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
 		    return {
@@ -1377,7 +1307,7 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
+	  var showDetail=null;
 	  if(!o){
 		  o={};
 	  }

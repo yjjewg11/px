@@ -6,6 +6,9 @@
  * Store.getUserinfo();//获取当前用户
  * Store.getCurClass();//获取当前班级
  * Store.getMyClassList();//获取我关联的班级(老师)
+ * Store.getCurMyClass();//获取我当前班级
+ * Store.getClassByUuid(uuid);//
+ * 
  */
 var Store={
 	map:{},
@@ -22,6 +25,25 @@ var Store={
 			  return false;
 			}
 		return true;
+	},
+	getCurMyClass:function(){
+		 if(this.map["CurMyClass"])return this.map["CurMyClass"];
+		 var o=$.AMUI.store.get("CurMyClass");
+		 if(o==null){
+			 var group=Store.getMyClassList();
+			 if(group.length>0){
+				 o=group[0];
+			 	Store.setCurMyClass(o);
+			 }else{
+			 	cur_group={};
+			 }
+		 }
+		 return o;
+	},
+	setCurMyClass:function(v){
+		this.map["CurMyClass"]=v;
+		if(!Store.enabled())return;
+		$.AMUI.store.set("CurMyClass", v);
 	},
 	getMyClassList:function(){
 		 if(this.map["MyClass"])return this.map["MyClass"];
@@ -78,6 +100,17 @@ var Store={
 			}
 		}
 		return "";
+	},
+	getClassByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			var t_arr=this.getChooseClass(arr[i].uuid);
+			
+			for(var i=0;i<t_arr.length;i++){
+				if(uuid==t_arr[i].uuid)return t_arr[i];
+			}
+		}
+		return {};
 	},
 	/**
 	 * 设置人员选择控件到内存缓存。

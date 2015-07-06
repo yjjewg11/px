@@ -1080,6 +1080,59 @@ G_ajax_abs_save(opt);
 
 }
 
+function menu_teachingplan_dayShow_fn() {
+	Queue.push(menu_teachingplan_dayShow_fn);
+	//ajax_teachingplan_dayShow(null,Store.getCurMyClass());
+	
+
+	w_ch_class.open(function(uuid,name){ajax_teachingplan_dayShow(null,{uuid:uuid,name:name})});
+};
+//老师查询，条件groupuuid
+//num:0.表示当前.-1上,1下.2下下
+//记录当前翻页的周数
+var g_teachingplan_listToShow_point=0;
+var g_cur_myclass=null;
+function ajax_teachingplan_dayShow(num,myclazz) {
+	
+	if(!myclazz)myclazz=g_cur_myclass;
+	else g_cur_myclass=myclazz;
+	
+	var now=new Date();
+	if(!num){
+		num=0;
+		g_teachingplan_listToShow_point=0;
+	}
+	g_classnews_class_list=Store.getMyClassList();
+	var begDateStr=G_week.getDateStr(now,num);
+	var endDateStr=begDateStr;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/teachingplan/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {classuuid:g_cur_myclass.uuid,begDateStr:begDateStr,endDateStr:endDateStr},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(data.list==null)data.list=[];
+				var formdata=data.list[0];
+				React.render(React.createElement(Teachingplan_showByOneDay,{ch_class:g_cur_myclass,ch_group:Store.getCurGroup(),ch_day:begDateStr,formdata:formdata}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
 //teachingplan end
 
 
