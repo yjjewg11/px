@@ -128,14 +128,17 @@ function login_affter_init(){
 	                        "subMenu": [
 	                                    {
 	                                      "fn":function(){menu_announce_list_fn(0)},
+	                                      "link": "##",
 	                                      "title": "校园公告"
 	                                    },
 	                                    {
 	                                    	  "fn":function(){menu_announce_list_fn(1)},
+	                                    	  "link": "##",
 	                                        "title": "老师公告"
 	                                      },
 	                                    {
 	                                    	  "fn":function(){menu_announce_list_fn(2)},
+	                                    	  "link": "##",
 	                                        "title": "班级通知"
 	                                      },
 	                                      {
@@ -284,16 +287,22 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
+		                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_announce_mylist_fn();",
+			                    	    "title": "公告"
+			                    },
+		                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+			                    	    "title": "今日食谱"
+			                    	  },
 	                    	  {
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "###",
 		                    	    "title": "家长互动(未)"
 		                    	  },
-		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
-			                    	    "link": "###",
-			                    	    "title": "我的班级通知(未)"
-			                    	  },
+		                    	 
 			                    	 
 		                    	  {
 	                    	    "img": hostUrl+"i/header.png",
@@ -305,11 +314,7 @@ function menu_dohome(){
 		                    	    "link": "###",
 		                    	    "title": "花名册(未)"
 		                    	  },
-		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
-			                    	    "link": "###",
-			                    	    "title": "今日食谱(未)"
-			                    	  },
+		                    	
 			                    	  {
 				                    	    "img": hostUrl+"i/header.png",
 				                    	    "link": "###",
@@ -362,6 +367,11 @@ function menu_announce_list_fn(types) {
 	announce_types=types;
 	Queue.push(menu_announce_list_fn);
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
+};
+
+function menu_announce_mylist_fn() {
+	Queue.push(menu_announce_mylist_fn);
+	ajax_announce_Mylist();
 };
 
 function menu_userinfo_reg_fn(){

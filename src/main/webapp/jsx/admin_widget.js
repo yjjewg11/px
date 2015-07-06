@@ -99,7 +99,7 @@ var ChooseRight_EventsTable = React.createClass({
   <hr />
 </div>
 	  <div className="am-form-group">
-      <select id="selectgroup_uuid_chright" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chright}>
+      <select id="selectgroup_uuid_chright" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chright}>
       {this.props.group_list.map(function(event) {
           return (<option value={event.uuid} >{event.company_name}</option>);
         })}

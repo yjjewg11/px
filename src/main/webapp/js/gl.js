@@ -1,3 +1,16 @@
+/**
+ * 
+ * G_textToHTML(s);纯文本转成HTML格式显示用
+ * G_week.   //日期转换 星期对象
+ * 
+ *模拟回退操作
+ * Queue.doBackFN();
+ * Queue.push(fn);
+ * 
+ * 编辑器公共配置
+ * xhEditor_
+ */
+
 (function($){
 $.fn.serializeJson=function(){
 var serializeObj={};
@@ -19,6 +32,8 @@ var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
  */
 function G_msg_pop(m){
 	$("#div_msg_pop").html("提示:"+m);
+	//$("#div_msg_pop").css("top",(100+$(document).scrollTop())+"px");
+	
 	$("#div_msg_pop").show();
 	setTimeout(function(){$("#div_msg_pop").hide()},3000);
 }
@@ -92,6 +107,21 @@ var G_week={
 		return G_week.getDateStr(d, 6-G_week.getWeekDayByDate(d));
 	}
 };
+
+function    G_textToHTML(str)  
+{  
+      var    s    =    "";  
+      if    (!str)    return    "";  
+      s    =    str.replace(/&/g,    "&gt;");  
+      s    =    s.replace(/ </g,        "&lt;");  
+      s    =    s.replace(/>/g,        "&gt;");  
+      s    =    s.replace(/    /g,        "&nbsp;");  
+      s    =    s.replace(/\'/g,      "'");  
+      s    =    s.replace(/\"/g,      "&quot;");  
+      s    =    s.replace(/\n/g,      " <br>");  
+      return    s;  
+}  
+
 function loadJS(url,callback,charset)
 {
 	var script = document.createElement('script');

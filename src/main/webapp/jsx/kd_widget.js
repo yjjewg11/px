@@ -97,7 +97,7 @@ var ChooseUser_EventsTable = React.createClass({
   <hr />
 </div>
 	  <div className="am-form-group">
-      <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
+      <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
       {this.props.group_list.map(function(event) {
           return (<option value={event.uuid} >{event.company_name}</option>);
         })}
@@ -272,7 +272,7 @@ var ChooseClass_EventsTable = React.createClass({
   <hr />
 </div>
 	  <div className="am-form-group">
-      <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'sm'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
+      <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
       {this.props.group_list.map(function(event) {
           return (<option value={event.uuid} >{event.company_name}</option>);
         })}
