@@ -12,7 +12,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import com.company.news.entity.Student;
 import com.company.news.entity.User;
+import com.company.news.jsonform.StudentJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.AbstractRESTController;
 
@@ -45,8 +47,13 @@ public class RestTest {
 	 * @method main
 	 */
 	public static void main(String[] args) throws Exception {
-		String bodyJson="{\"email\":\"\",\"group_uuid\":\"testuuid\"}";
-		UserRegJsonform	userRegJsonform = (UserRegJsonform)AbstractRESTController.bodyJsonToFormObject(bodyJson, UserRegJsonform.class);
-
+		Student student=new Student();
+		student.setAddress("1111");
+		
+		StudentJsonform j=new StudentJsonform();
+		BeanUtils.copyProperties(student, j);
+		
+		
+	System.out.print(student.getAddress());
 	}
 }
