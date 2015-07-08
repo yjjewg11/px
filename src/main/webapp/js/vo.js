@@ -9,6 +9,8 @@ var Vo={
 		ann_type_0:"全校公告",
 		ann_type_1:"老师通知",
 		ann_type_2:"班级通知",
+		ann_type_3:"招生计划",
+		ann_type_4:"文章分享",
 		type_0:"云平台",
 		type_1:"幼儿园",
 		type_2:"培训"
