@@ -1,10 +1,12 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +15,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.news.entity.Group;
+import com.company.news.SystemConstants;
+import com.company.news.commons.util.ExcelUtil;
 import com.company.news.entity.Student;
-import com.company.news.entity.User;
-import com.company.news.form.UserLoginForm;
-import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.StudentJsonform;
-import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.service.GroupService;
 import com.company.news.service.StudentService;
-import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/student")
@@ -62,26 +57,25 @@ public class StudentController extends AbstractRESTController {
 
 		try {
 			boolean flag;
-			if(StringUtils.isBlank(studentJsonform.getUuid()))			
-				flag= studentService.add(studentJsonform, responseMessage);
+			if (StringUtils.isBlank(studentJsonform.getUuid()))
+				flag = studentService.add(studentJsonform, responseMessage);
 			else
-				flag= studentService.update(studentJsonform, responseMessage);
+				flag = studentService.update(studentJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-	
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("增加成功");
 		return "";
 	}
-
 
 	/**
 	 * 获取机构信息
@@ -91,17 +85,21 @@ public class StudentController extends AbstractRESTController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getStudentByClassuuid", method = RequestMethod.GET)
-	public String getStudentByClassuuid(ModelMap model, HttpServletRequest request) {
+	public String getStudentByClassuuid(ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Student> list = studentService.query(request.getParameter("classuuid"));
+		List<Student> list = studentService.query(
+				request.getParameter("classuuid"),
+				request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
-	
+
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+	public String get(@PathVariable String uuid, ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		Student s;
@@ -110,12 +108,39 @@ public class StudentController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-		model.addAttribute(RestConstants.Return_G_entity,s);
+		model.addAttribute(RestConstants.Return_G_entity, s);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+
+	/**
+	 * 获取机构信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/exportStudentExcel", method = RequestMethod.GET)
+	public String exportStudentExcel(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		List<Student> list = studentService.query(
+				request.getParameter("classuuid"),
+				request.getParameter("groupuuid"));
+
+		try {
+			ExcelUtil.outputPrintWriterStream(response, "幼儿园基本情况登记表",list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
 }

@@ -131,13 +131,19 @@ public class StudentService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<Student> query(String classuuid) {
+	public List<Student> query(String classuuid,String groupuuid) {
+		String hql="from Student where 1=1";
+		
 		// Group_uuid昵称验证
-		if (StringUtils.isBlank(classuuid)) {
-			return null;
+		if (StringUtils.isNotBlank(classuuid)) {
+			hql+=" and classuuid='"+classuuid+"'";
 		}
-		return (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from Student where classuuid=?", classuuid);
+		
+		if (StringUtils.isNotBlank(groupuuid)) {
+			hql+=" and groupuuid='"+groupuuid+"'";
+		}		
+		
+		return (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 	}
 	
 	/**
