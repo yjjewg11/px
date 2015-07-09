@@ -147,6 +147,7 @@ public class UserinfoService extends AbstractServcice {
 		user.setSex(userRegJsonform.getSex());
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
+		user.setImg(userRegJsonform.getImg());
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
