@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -18,7 +19,9 @@ import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 @Service
 public class SmsService  extends AbstractServcice{
-  
+	@Autowired
+	private UserinfoService userinfoService;
+	
   private static long MINUTE = 1000 * 60L;
   private static long SMS_TIME_LIMIT = MINUTE * Long.valueOf(ProjectProperties.getProperty(
           "project.SMS.TIME_LIMIT", "5"));
@@ -46,6 +49,14 @@ public class SmsService  extends AbstractServcice{
       responseMessage.setMessage("电话号码不合法！");
       return model;
     }
+    
+    if(!userinfoService.isExitSameUserByLoginName(tel)){
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+        responseMessage.setMessage("电话号码未注册！");
+        return model;
+    }
+    
+    
     TelSmsCode smsdb=(TelSmsCode)this.nSimpleHibernateDao.getObjectByAttribute(TelSmsCode.class,"tel", tel);
     if(smsdb==null){
       smsdb=new TelSmsCode();
