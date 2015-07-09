@@ -1,4 +1,9 @@
 /**
+ * 
+ *1我的头像,2:菜谱
+* w_uploadImg.open(callbackFN,type);
+* w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
+
  * 保存通用方法
 var opt={
 	 formName:"editClassnewsForm",
@@ -45,6 +50,84 @@ $.AMUI.progress.start();
 }
 
 
+//uploadImg
+/**1我的头像,2:菜谱
+* w_uploadImg.open(callbackFN,type);
+* w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
+*/
+var w_uploadImg={
+		div_id:"div_widget_chooseUser",
+		div_body:"div_body",
+		cropper:null,
+		callbackFN:null,
+		type:1,
+		base64:null,
+		ajax_upload:function(){
+			$.AMUI.progress.start();
+		    var url = hostUrl + "rest/uploadFile/uploadBase64.json";
+			$.ajax({
+				type : "POST",
+				url : url,
+				dataType : "json",
+				data:{type:w_uploadImg.type,base64:w_uploadImg.base64},
+				 async: true,
+				success : function(data) {
+					$.AMUI.progress.done();
+					// 登陆成功直接进入主页
+					if (data.ResMsg.status == "success") {
+						if(w_uploadImg.callbackFN){
+							w_uploadImg.callbackFN(data.data.uuid);
+						}
+						w_uploadImg.hide();
+						
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+",error:"+textStatus);
+				}
+			});
+			
+		},
+		handleClick: function(m) {
+			if("cancel"==m){
+				w_uploadImg.hide();
+				return;
+				
+			} if("ok"==m){
+				if(w_uploadImg.base64==null){
+					alert("请先剪切图片，在提交。");
+					return;
+				}
+				w_uploadImg.ajax_upload();
+				
+			}
+			 
+     	  },
+		open:function(callbackFN,type){
+			if(!type)type=1;
+			w_uploadImg.type=type;
+			w_uploadImg.base64=null;
+			w_uploadImg.callbackFN=callbackFN;
+			w_uploadImg.show();
+		},
+		show:function(){
+			
+			React.render(React.createElement(Upload_headImg, {
+				responsive: true, bordered: true, striped :true,hover:true,striped:true
+				}), document.getElementById(w_ch_user.div_id));
+			$("#"+this.div_body).hide();
+			$("#"+this.div_id).show();
+			
+		},
+		
+		hide:function(callbackFN){
+			$("#"+this.div_body).show();
+			$("#"+this.div_id).html("");
+		}	
+}
 function menu_userinfo_updatepassword_fn(){
 	Queue.push(menu_userinfo_updatepassword_fn);
 	
@@ -61,6 +144,7 @@ function ajax_userinfo_updatepassword() {
 	  var objectForm = $('#commonform').serializeJson();
 	  if(objectForm.password!=objectForm.password1){
 		  alert("2次输入密码不匹配");
+		  return;
 	  }
 	  delete objectForm.password1;
 	  objectForm.oldpassword=$.md5(objectForm.oldpassword); 
@@ -174,4 +258,85 @@ function ajax_userinfo_update() {
 			 };
 	G_ajax_abs_save(opt);
 	
+}
+
+
+function menu_userinfo_updatePasswordBySms_fn(){
+	Queue.push(menu_userinfo_updatePasswordBySms_fn);
+	
+	React.render(React.createElement(Div_userinfo_updatePasswordBySms,null)
+			, document.getElementById('div_login'));
+}
+function ajax_sms_sendCode_byReset(){
+	  var url = hostUrl + "rest/sms/sendCode.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			data:{tel:$("#tel").val(),type:2},
+			 async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop(data.ResMsg.message);
+				} else {
+					alert("验证码发送失败："+data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+",error:"+textStatus);
+			}
+		});
+}
+
+
+//用户登陆
+function ajax_userinfo_updatePasswordBySms() {
+	$.AMUI.progress.start();
+	
+	// var data = $("#form1").serializeArray(); //自动将form表单封装成json
+//alert(JSON.stringify(data));
+	  var objectForm = $('#commonform').serializeJson();
+	  if(!objectForm.tel){
+		  alert("请输入手机号码!");
+		  return;
+	  }
+	  if(!objectForm.smscode){
+		  alert("请输入短信验证码!");
+		  return;
+	  }
+	  if(objectForm.password!=objectForm.password1){
+		  alert("2次输入密码不匹配!");
+		  return;
+	  }
+	  
+	  delete objectForm.password1;
+	  objectForm.password=$.md5(objectForm.password); 
+var jsonString=JSON.stringify(objectForm);
+var url = hostUrl + "rest/userinfo/updatePasswordBySms.json";
+			
+	$.ajax({
+		type : "POST",
+		url : url,
+		processData: false, 
+		data : jsonString,
+		dataType : "json",
+		contentType : false,  
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
+				Queue.doBackFN();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert("error:"+textStatus);
+		}
+	});
 }

@@ -40,7 +40,7 @@ var Div_userinfo_reg = React.createClass({
 		      <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
 		      <br/>
-		      <label htmlFor="name">昵称:</label>
+		      <label htmlFor="name">姓名:</label>
 		      <input type="text" name="name" id="name"  placeholder="必填，不超过15位"/>
 		      <br/>
 		       <label htmlFor="">Email:</label>
@@ -105,7 +105,7 @@ var Div_kd_group_reg = React.createClass({
 			      <label htmlFor="tel">手机号码:</label>
 			      <input type="text" name="tel" id="tel"  placeholder=""/>
 			      <br/>
-			      <label htmlFor="name">昵称:</label>
+			      <label htmlFor="name">姓名:</label>
 			      <input type="text" name="name" id="name"  placeholder="必填，不超过15位" />
 			      <br/>
 			       <label htmlFor="">Email:</label>
@@ -132,7 +132,7 @@ var Div_kd_group_reg = React.createClass({
 
 //kd group reg end
 
-//login
+//login   
 var Div_login = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props;
@@ -169,7 +169,7 @@ render: function() {
  	      <br />
  	      <div className="am-cf">
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
- 	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
+ 	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	      <a  href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>|
  	     <a  href="javascript:void(0);" onClick={menu_userinfo_reg_fn} >老师注册</a>

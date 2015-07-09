@@ -28,11 +28,11 @@ public class SmsController extends AbstractRESTController{
   private SmsService smsService;
   //@RequestParam("md5") String md5,@PathVariable("uuid") String uuid
   @RequestMapping(value = "/sendCode", method = RequestMethod.GET)
-  public String sendCode(ModelMap model, HttpServletRequest request,@RequestParam("tel") String tel) {
+  public String sendCode(ModelMap model, HttpServletRequest request,@RequestParam("tel") String tel,@RequestParam("type") Integer type) {
 
       // 清除原输入参数MAP
       model.clear();
-      smsService.sendCode(model, request,tel);
+      smsService.sendCode(model, request,tel,type);
       return "";
   }
 }

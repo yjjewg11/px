@@ -35,7 +35,7 @@ render: function() {
  	      React.createElement("br", null), 
  	      React.createElement("div", {className: "am-cf"}, 
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
- 	        React.createElement("input", {type: "button", name: "", value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
+ 	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
  	      React.createElement("br", null), 
  	      

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.TelSmsCode;
 import com.company.news.rest.RestConstants;
@@ -17,13 +18,15 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
+import com.ucpaas.restDemo.SysConfig;
+import com.ucpaas.restDemo.client.JsonReqClient;
 @Service
 public class SmsService  extends AbstractServcice{
 	@Autowired
 	private UserinfoService userinfoService;
 	
   private static long MINUTE = 1000 * 60L;
-  private static long SMS_TIME_LIMIT = MINUTE * Long.valueOf(ProjectProperties.getProperty(
+  public static long SMS_TIME_LIMIT = MINUTE * Long.valueOf(ProjectProperties.getProperty(
           "project.SMS.TIME_LIMIT", "5"));
   //key:tel,value[验证码,时间]
   private static ConcurrentMap<String, Long[]> smscodeMap = new ConcurrentHashMap<String, Long[]>();
@@ -34,14 +37,14 @@ public class SmsService  extends AbstractServcice{
    * @param tel
    * @return
    */
-  public ModelMap sendCode(ModelMap model, HttpServletRequest request, String tel) {
+  public ModelMap sendCode(ModelMap model, HttpServletRequest request, String tel,Integer type) {
     // TODO Auto-generated method stub
     ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
     
-//    String accountSid=SysConfig.getInstance().getProperty("accountSid");
-//    String token=SysConfig.getInstance().getProperty("token");
-//    String appId=SysConfig.getInstance().getProperty("appId");
-//    String templateId=SysConfig.getInstance().getProperty("templateId");
+    String accountSid=SysConfig.getInstance().getProperty("accountSid");
+    String token=SysConfig.getInstance().getProperty("token");
+    String appId=SysConfig.getInstance().getProperty("appId");
+    String templateId=SysConfig.getInstance().getProperty("templateId");
 //    
     
     if(!CommonsValidate.checkCellphone(tel)){
@@ -49,11 +52,14 @@ public class SmsService  extends AbstractServcice{
       responseMessage.setMessage("电话号码不合法！");
       return model;
     }
-    
-    if(!userinfoService.isExitSameUserByLoginName(tel)){
-        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-        responseMessage.setMessage("电话号码未注册！");
-        return model;
+    //2种情况,注册或找回密码使用.
+    //2:表示重置密码
+    if(SystemConstants.Sms_type_2.equals(type)){
+    	if(!userinfoService.isExitSameUserByLoginName(tel)){
+    		responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+    		responseMessage.setMessage("电话号码未注册！");
+    		return model;
+    	}
     }
     
     
@@ -74,10 +80,10 @@ public class SmsService  extends AbstractServcice{
   //4位随机数
     smsdb.setCode(RandomNumberGenerator.getRandomInt(4));
     String templateSms="亲，你的短信验证码为：{1}，请于{2}分钟内正确输入验证码.【问界家园】";
-    String parm= smsdb.getCode()+",30";
+    String parm= smsdb.getCode()+","+SMS_TIME_LIMIT;
   //亲，你的短信验证码为：{1}，请于{2}分钟内正确输入验证码
     try {
-//      String result=new JsonReqClient().templateSMS(accountSid, token, appId, templateId, smsdb.getTel(),parm);
+      String result=new JsonReqClient().templateSMS(accountSid, token, appId, templateId, smsdb.getTel(),parm);
       
       /**
        * result返回2中情况：
@@ -96,7 +102,6 @@ public class SmsService  extends AbstractServcice{
     }
 }
        */
-    	 String result="";
       this.logger.info("templateSMS Response content is: " + result);
       if(result==null||result.indexOf("\"000000\"")<0){
      // if(!"000000".equals(result)){

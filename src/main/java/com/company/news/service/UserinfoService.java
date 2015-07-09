@@ -508,23 +508,35 @@ public class UserinfoService extends AbstractServcice {
 				.getObjectByAttribute(TelSmsCode.class, "tel",
 						userRegJsonform.getTel());
 
+		if(smsdb==null){
+			responseMessage.setMessage("请重发验证码!");
+			return false;
+		}
+		
+		 long timeInterval=TimeUtils.getCurrentTimestamp().getTime()-smsdb.getCreatetime().getTime();
+	      if(timeInterval>SmsService.SMS_TIME_LIMIT){//防止暴力破解.
+	        responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+	        responseMessage.setMessage("验证码已经失效!");
+	        return false;
+	      }
 		// 验证码成功
 		if (smsdb != null
 				&& smsdb.getCode().equals(userRegJsonform.getSmscode())) {
-			if (!this.isExitSameUserByLoginName(userRegJsonform.getTel())) {
-				responseMessage
-						.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("电话号码不存在！");
-				return false;
-			}
+//			if (!this.isExitSameUserByLoginName(userRegJsonform.getTel())) {
+//				responseMessage
+//						.setStatus(RestConstants.Return_ResponseMessage_failed);
+//				responseMessage.setMessage("电话号码不存在！");
+//				return false;
+//			}
 
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"update User set password=? where loginname =?",
 					userRegJsonform.getPassword(), userRegJsonform.getTel());
+			//清除验证码,防止暴力破解.
+			this.nSimpleHibernateDao.delete(smsdb);
 			return true;
 
 		}
-
 		responseMessage.setMessage("短信验证码不正确！");
 		return false;
 
