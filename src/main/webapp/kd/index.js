@@ -17,12 +17,13 @@ function login_affter_init(){
 			    "right": [
 			      {
 			        "link": "#right-link",
-			        "icon": "bars"
+			        "title": "消息",
+			        "customIcon":hostUrl+"i/icon-msg.png"
 			      }
 			    ]
 			  }
 			};
-
+//envelope envelope-o envelope-square
 	//menu
 	var menu_data=[];
 	var t_menu=null;//第一级菜单
@@ -61,9 +62,14 @@ function login_affter_init(){
 	                                        "title": "校园介绍"
 	                                      },   
 	                                      {
-		                                        "link": "##",
-		                                        "title": "在线收费管理(未)"
-		                                      },
+	                	                      "link": "##",
+	                	                      "title": "老师管理",
+	                	                      "fn":menu_userinfo_list_fn,
+	                	                      "subCols": 2
+	                	                     // "channelLink": "进入栏目 »",
+	                	                    },
+	                                    
+		                                      
                                     {
                                       "link": "##",
                                       "title": "老师考勤(未)"
@@ -77,12 +83,9 @@ function login_affter_init(){
 	        		   
 	        		  },
 	        		  {
-	                      "link": "##",
-	                      "title": "老师管理",
-	                      "fn":menu_userinfo_list_fn,
-	                      "subCols": 2
-	                     // "channelLink": "进入栏目 »",
-	                    },
+                          "link": "##",
+                          "title": "收费管理(未)"
+                        },
 	                    {
 	                        "link": "##",
 	                        "title": "班级管理",
