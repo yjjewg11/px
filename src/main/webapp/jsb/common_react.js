@@ -101,7 +101,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
             React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
             ), 
             React.createElement("th", null, "帐号"), 
-            React.createElement("th", null, "昵称"), 
+            React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
             React.createElement("th", null, "性别"), 
@@ -153,7 +153,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
     		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
     		      React.createElement("br", null), 
-    		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
+    		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
     		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
@@ -249,6 +249,21 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 	 handleChange: function(event) {
 		    this.setState($('#commonform').serializeJson());
 	  },
+	 handle_uploadHeader: function(event) {
+			w_uploadImg.open(function(guid){
+				$("#img").val(guid);
+				 $("#img_head_image").attr("src",G_imgPath+guid); 
+				 G_img_down404("#img_head_image");
+			},1);
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.img;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
 	render: function() {
 		 var o = this.state;
 	return (
@@ -261,9 +276,15 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		  
 		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
-		    
-		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
+			React.createElement("input", {type: "hidden", name: "img", id: "img", value: o.img, onChange: this.handleChange}), 
+		    React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
+ 		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+ 		
+ 		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-primary"}, "上传头像"), 
+ 		   React.createElement("br", null), 
+		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: ""}, "Email:"), 
@@ -360,4 +381,138 @@ React.createElement("div", null,
 });
 //end Userinfo_getRole
 
+
+
+//Div_userinfo_updatePasswordBySms
+var Div_userinfo_updatePasswordBySms = React.createClass({displayName: "Div_userinfo_updatePasswordBySms", 
+	
+	render: function() {
+	return (
+		React.createElement("div", null, 
+		React.createElement("div", {className: "header"}, 
+		  React.createElement("div", {className: "am-g"}, 
+		    React.createElement("h1", null, "重置密码")
+		  ), 
+		  React.createElement("hr", null)
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+
+		    React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
+		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
+		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode_byReset, className: "am-btn am-btn-primary"}, "发送验证码"), 
+		      React.createElement("br", null), 
+		      React.createElement("label", {htmlFor: "smscode"}, "验证码:"), 
+		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: ""}), 
+		    
+		      React.createElement("br", null), 
+		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
+		      React.createElement("input", {type: "password", name: "password"}), 
+		      React.createElement("br", null), 
+		      
+		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
+		      React.createElement("input", {type: "password", name: "password1"}), 
+		      React.createElement("br", null), 
+		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatePasswordBySms, className: "am-btn am-btn-primary"}, "提交")
+		    ), 
+		    React.createElement("hr", null)
+		  
+		  )
+		)
+		)
+	);
+	}
+}); 
+
+
+
+//upload headImg
+var Upload_headImg_options =
+{
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: ''
+};
+var Upload_headImg = React.createClass({displayName: "Upload_headImg",
+   	handleClick: function(m) {
+   		w_uploadImg.handleClick(m);
+   	  },
+   	upload_file_onChange:function(){
+   	  var reader = new FileReader();
+      reader.onload = function(e) {
+    	  Upload_headImg_options.imgSrc = e.target.result;
+          w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
+      }
+      reader.readAsDataURL(this.files[0]);
+      this.files = [];
+   	},
+   	btnZoomIn_onClick: function(){
+   		if(w_uploadImg.cropper)w_uploadImg.cropper.zoomIn();
+    },
+    btnZoomOut_onClick: function(){
+    	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
+   },
+   btnRotate_onClick: function(){
+    	 if(w_uploadImg.cropper)w_uploadImg.cropper.chRotate();
+   },
+   btnCrop_onClick: function(){
+	   var img = w_uploadImg.cropper.getDataURL();
+	   w_uploadImg.base64=img;
+       $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
+   },
+   	 componentDidMount:function(){
+       $('#upload_imgfile').on('change', function(){
+           var reader = new FileReader();
+           reader.onload = function(e) {
+        	   Upload_headImg_options.imgSrc = e.target.result;
+        	   w_uploadImg.cropper = $('.imageBox').cropbox(Upload_headImg_options);
+           }
+           reader.readAsDataURL(this.files[0]);
+           this.files = [];
+       })
+
+         
+	  },
+     render: function() {
+    	 var spinner_divStyle={
+    			 display: "none"
+    	 };
+       return (
+       React.createElement("div", null, 
+  	
+     React.createElement("div", {className: "header"}, 
+     React.createElement("div", {className: "am-g"}, 
+       React.createElement("h1", null, "上传图片")
+     ), 
+     React.createElement("hr", null)
+   ), 
+   React.createElement("div", {className: "container"}, 
+
+   	React.createElement("div", {className: "imageBox", id: "upload_file_imageBox"}, 
+   	    React.createElement("div", {className: "thumbBox"}), 
+   	    React.createElement("div", {className: "spinner", style: spinner_divStyle}, "加载中...")
+   	), 
+	React.createElement("div", {className: "action"}, 
+	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+
+	), 
+		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
+	   	)
+	), 
+
+React.createElement(AMUIReact_ButtonToolbar, null, 
+React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
+React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+)
+         )
+       );
+     }
+});
+       
+       
+//end uploadImg
 

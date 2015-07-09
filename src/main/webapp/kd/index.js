@@ -254,11 +254,14 @@ var div_menu_handleClick = function(nav, index, e) {
 
 function menu_dohome(){
 	Queue.push(menu_dohome);
+	var myhead_img=hostUrl+"i/header.png";
+	var myhead_imgUuid=Store.getUserinfo().img;
+	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	var div_Gallery_data=[
 	                      {
-	                    	    "img": hostUrl+"i/header.png",
-	                    	    "link": "###",
-	                    	    "title": "我(未)"
+	                    	    "img": myhead_img,
+	                    	    "link": "javascript:menu_userinfo_update_fn();",
+	                    	    "title": "我"
 	                    	  },
 
 	                    	  {

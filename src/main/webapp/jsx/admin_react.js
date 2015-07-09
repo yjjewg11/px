@@ -35,7 +35,7 @@ render: function() {
  	      <br />
  	      <div className="am-cf">
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
- 	        <input type="button" name="" value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
+ 	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn}  value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	      <br/>
  	      

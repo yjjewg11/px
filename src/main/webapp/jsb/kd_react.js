@@ -40,7 +40,7 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
 		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
+		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 		      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: ""}, "Email:"), 
@@ -105,7 +105,7 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 			      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 			      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
 			      React.createElement("br", null), 
-			      React.createElement("label", {htmlFor: "name"}, "昵称:"), 
+			      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 			      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
 			      React.createElement("br", null), 
 			       React.createElement("label", {htmlFor: ""}, "Email:"), 
@@ -132,7 +132,7 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 
 //kd group reg end
 
-//login
+//login   
 var Div_login = React.createClass({displayName: "Div_login", 
 	 getInitialState: function() {
 		    return this.props;
@@ -169,7 +169,7 @@ render: function() {
  	      React.createElement("br", null), 
  	      React.createElement("div", {className: "am-cf"}, 
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
- 	        React.createElement("input", {type: "button", name: "", value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
+ 	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
  	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册"), "|", 
  	     React.createElement("a", {href: "javascript:void(0);", onClick: menu_userinfo_reg_fn}, "老师注册"), 

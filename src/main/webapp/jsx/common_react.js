@@ -101,7 +101,7 @@ var Userinfo_EventsTable = React.createClass({
             <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
             </th>
             <th>帐号</th>
-            <th>昵称</th>
+            <th>姓名</th>
             <th>电话</th>
             <th>邮箱</th>
             <th>性别</th>
@@ -153,7 +153,7 @@ var Userinfo_edit = React.createClass({
     		      <label htmlFor="tel">手机号码:</label>
     		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
     		      <br/>
-    		      <label htmlFor="name">昵称:</label>
+    		      <label htmlFor="name">姓名:</label>
     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
     		      <br/>
     		       <label htmlFor="">Email:</label>
@@ -249,6 +249,21 @@ var Div_userinfo_update = React.createClass({
 	 handleChange: function(event) {
 		    this.setState($('#commonform').serializeJson());
 	  },
+	 handle_uploadHeader: function(event) {
+			w_uploadImg.open(function(guid){
+				$("#img").val(guid);
+				 $("#img_head_image").attr("src",G_imgPath+guid); 
+				 G_img_down404("#img_head_image");
+			},1);
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.img;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
 	render: function() {
 		 var o = this.state;
 	return (
@@ -261,9 +276,15 @@ var Div_userinfo_update = React.createClass({
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  
 		    <form id="commonform" method="post" className="am-form">
-		    
-		      <label htmlFor="name">昵称:</label>
+			<input type="hidden" name="img" id="img" value={o.img} onChange={this.handleChange}/>
+		    <label htmlFor="nickname">头像:</label>
+ 		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+ 		
+ 		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-primary">上传头像</button>
+ 		   <br/>
+		      <label htmlFor="name">姓名:</label>
 		      <input type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
 		      <br/>
 		       <label htmlFor="">Email:</label>
@@ -360,4 +381,138 @@ return (
 });
 //end Userinfo_getRole
 
+
+
+//Div_userinfo_updatePasswordBySms
+var Div_userinfo_updatePasswordBySms = React.createClass({ 
+	
+	render: function() {
+	return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>重置密码</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		    <form id="commonform" method="post" className="am-form">
+
+		    <label htmlFor="tel">手机号码:</label>
+		      <input type="text" name="tel" id="tel"  placeholder=""/>
+		      <button type="button" onClick={ajax_sms_sendCode_byReset} className="am-btn am-btn-primary">发送验证码</button>
+		      <br/>
+		      <label htmlFor="smscode">验证码:</label>
+		      <input type="text" name="smscode" id="smscode"  placeholder=""/>
+		    
+		      <br/>
+		      <label htmlFor="password">密码:</label>
+		      <input type="password" name="password"   />
+		      <br/>
+		      
+		      <label htmlFor="password1">重复密码:</label>
+		      <input type="password" name="password1"  />
+		      <br/>
+		      <button type="button" onClick={ajax_userinfo_updatePasswordBySms} className="am-btn am-btn-primary">提交</button>
+		    </form>
+		    <hr/>
+		  
+		  </div>
+		</div>
+		</div>
+	);
+	}
+}); 
+
+
+
+//upload headImg
+var Upload_headImg_options =
+{
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: ''
+};
+var Upload_headImg = React.createClass({
+   	handleClick: function(m) {
+   		w_uploadImg.handleClick(m);
+   	  },
+   	upload_file_onChange:function(){
+   	  var reader = new FileReader();
+      reader.onload = function(e) {
+    	  Upload_headImg_options.imgSrc = e.target.result;
+          w_uploadImg.cropper = $('#upload_file_imageBox').cropbox(Upload_headImg_options);
+      }
+      reader.readAsDataURL(this.files[0]);
+      this.files = [];
+   	},
+   	btnZoomIn_onClick: function(){
+   		if(w_uploadImg.cropper)w_uploadImg.cropper.zoomIn();
+    },
+    btnZoomOut_onClick: function(){
+    	 if(w_uploadImg.cropper)w_uploadImg.cropper.zoomOut();
+   },
+   btnRotate_onClick: function(){
+    	 if(w_uploadImg.cropper)w_uploadImg.cropper.chRotate();
+   },
+   btnCrop_onClick: function(){
+	   var img = w_uploadImg.cropper.getDataURL();
+	   w_uploadImg.base64=img;
+       $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
+   },
+   	 componentDidMount:function(){
+       $('#upload_imgfile').on('change', function(){
+           var reader = new FileReader();
+           reader.onload = function(e) {
+        	   Upload_headImg_options.imgSrc = e.target.result;
+        	   w_uploadImg.cropper = $('.imageBox').cropbox(Upload_headImg_options);
+           }
+           reader.readAsDataURL(this.files[0]);
+           this.files = [];
+       })
+
+         
+	  },
+     render: function() {
+    	 var spinner_divStyle={
+    			 display: "none"
+    	 };
+       return (
+       <div>
+  	
+     <div className="header">
+     <div className="am-g">
+       <h1>上传图片</h1>
+     </div>
+     <hr />
+   </div>
+   <div className="container">
+
+   	<div className="imageBox" id="upload_file_imageBox">
+   	    <div className="thumbBox"></div>
+   	    <div className="spinner"  style={spinner_divStyle}>加载中...</div>
+   	</div>
+	<div className="action">
+	    <input type="file" id="upload_imgfile" accept="image/*" />
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} round>剪切</AMUIReact_Button>
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} round>放大</AMUIReact_Button>
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} round>缩小</AMUIReact_Button>
+
+	</div>
+		<div className="cropped" id="upload_file_imageBox_cropped">
+	   	</div>
+	</div>
+
+<AMUIReact_ButtonToolbar>
+<AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
+<AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+</AMUIReact_ButtonToolbar>
+         </div>
+       );
+     }
+});
+       
+       
+//end uploadImg
 
