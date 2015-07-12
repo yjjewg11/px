@@ -14,7 +14,7 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
- 		 <h1>PX 管理云平台</h1>
+ 		 <h1>问界科技管理云平台</h1>
  	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
  		  </div>
  		  <hr />
@@ -90,7 +90,7 @@ var Right_EventRow = React.createClass({
 	      </td>
         <td><a href="javascript:void(0);" onClick={this.ajax_right_edit_onClick.bind(this, JSON.stringify(event))}>{event.name}</a></td>
         <td>{event.description}</td>
-        <td>{AdminVo.type(event.type)}</td>
+        <td>{Vo.type(event.type)}</td>
       </tr> 
     );
   }
@@ -145,7 +145,7 @@ var Right_edit = React.createClass({
     		<div>
     		<div className="header">
     		  <div className="am-g">
-    		    <h1>编辑权限-【{AdminVo.type(o.type)}】</h1>
+    		    <h1>编辑权限-【{Vo.type(o.type)}】</h1>
     		  </div>
     		  <hr />
     		</div>
@@ -188,7 +188,7 @@ render: function() {
     </td>
       <td><a href="javascript:void(0);" onClick={ajax_role_edit.bind(this, event)}>{event.name}</a></td>
       <td>{event.description}</td>
-      <td>{AdminVo.type(event.type)}</td>
+      <td>{Vo.type(event.type)}</td>
       <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a>
      </td>
     </tr> 
@@ -246,8 +246,8 @@ render: function() {
 	  <hr/>
 	  <div className="am-form-group">
     <select id="select_role_type" name="group_uuid"  value={this.props.type} onChange={this.handleChange_select_role_type}>
-    <option value="0" >{AdminVo.type(0)}</option>
-    <option value="1" >{AdminVo.type(1)}</option>
+    <option value="0" >{Vo.type(0)}</option>
+    <option value="1" >{Vo.type(1)}</option>
     </select>
   </div>
   <div className="header">
@@ -302,8 +302,8 @@ render: function() {
   			<input type="hidden" name="uuid"  value={o.uuid}/>
   		    <div className="am-form-group">
   		          <select id="type" name="type"  value={o.type} onChange={this.handleChange}>
-  		          <option value="0" >{AdminVo.type(0)}</option>
-  		          <option value="1" >{AdminVo.type(1)}</option>
+  		          <option value="0" >{Vo.type(0)}</option>
+  		          <option value="1" >{Vo.type(1)}</option>
   		          </select>
   		        </div>
   		      <label htmlFor="name">名字:</label>
@@ -331,7 +331,7 @@ render: function() {
   		<div>
 	  		<div className="header">
 		  		  <div className="am-g">
-		  		    <h1>角色绑定权限-【{AdminVo.type(o.type)}】-【{o.name}】</h1>
+		  		    <h1>角色绑定权限-【{Vo.type(o.type)}】-【{o.name}】</h1>
 		  		  </div>
 	  		</div>
   			<button type="button"  onClick={btn_ajax_updateRight.bind(this, o.uuid)}  className="am-btn am-btn-primary">提交</button>
@@ -350,6 +350,9 @@ render: function() {
 
 //basedatatype
 var Basedatatype_EventRow = React.createClass({ 
+	handleClick: function(m,data) {
+		ajax_basedatatype_button_handleClick(m,data);
+	  },
 render: function() {
 var event = this.props.event;
 var className = event.highlight ? 'am-active' :
@@ -360,9 +363,9 @@ return (
   <td> 
   <input type="checkbox" value={event.uuid} name="table_checkbox" />
   </td>
-    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_edit.bind(this, event)}>{event.name}</a></td>
+    <td><a href="javascript:void(0);" onClick={this.handleClick.bind(this,"edit", event)}>{event.name}</a></td>
     <td>{event.description}</td>
-    <td><a href="javascript:void(0);" onClick={ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}>详细</a></td>
+    <td><a href="javascript:void(0);" onClick={this.handleClick.bind(this,"detail", event)}>详细</a></td>
   </tr> 
 );
 }
@@ -372,7 +375,7 @@ var Basedatatype_EventsTable = React.createClass({
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="add_basedatatype"){
-				 this.props.handleClick(m);
+				 ajax_basedatatype_button_handleClick(m,{})
 				 return;
 			 }
 		 }
@@ -487,7 +490,7 @@ var Basedatalist_EventRow = React.createClass({
 		 <tr>
         <td><a href="javascript:void(0);" onClick={btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}>{event.datakey}</a></td>
         <td>{event.datavalue}</td>
-        <td>{AdminVo.get("enable_"+event.enable)}</td>
+        <td>{Vo.get("enable_"+event.enable)}</td>
         <td>{event.description}</td>
       </tr> 
     );
@@ -556,8 +559,8 @@ var Basedatatypelist_edit = React.createClass({
     		      <div className="am-form-group">
     		      
     		      <select  name="enable" value={this.props.enable} onChange={this.handleChange}>
-    		      <option value="1" >{AdminVo.get("enable_1")}</option>
-    		      <option value="0" >{AdminVo.get("enable_0")}</option>
+    		      <option value="1" >{Vo.get("enable_1")}</option>
+    		      <option value="0" >{Vo.get("enable_0")}</option>
     		      </select>
     		    </div>
     			      
@@ -573,3 +576,142 @@ var Basedatatypelist_edit = React.createClass({
   }
 }); 
 //end basedatatypelist
+
+
+//accounts
+var Accounts_EventRow = React.createClass({ 
+render: function() {
+var event = this.props.event;
+var className = event.highlight ? 'am-active' :
+  event.disabled ? 'am-disabled' : '';
+
+return (
+  <tr className={className} >
+  <td > {Vo.get("AD_Accounts_type_"+event.type)}</td>
+  <td  >{event.title}</td>
+  <td > {event.num}</td>
+    <td  >{G_getDateYMD(event.accounts_time)}</td>
+    <td > {event.description}</td>
+    <td >{Store.getGroupNameByUuid(event.groupuuid)}</td>
+    <td >{event.create_user}</td>
+    <td >{event.create_time}</td>
+  </tr> 
+);
+}
+}); 
+
+var Accounts_EventsTable = React.createClass({
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_accounts(m,{groupuuid:$('#selectgroup_uuid' ).val()});
+			 return;
+		 }
+	  },
+	  handleChange_selectgroup_uuid: function(){
+		  ajax_accounts_listByGroup($( '#selectgroup_uuid' ).val());
+  },
+render: function() {
+return (
+<div>
+<div className="header">
+	  <div className="am-g">
+	    <h1>收支记录</h1>
+	  </div>
+	  <hr />
+	</div>
+<AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  <hr/>
+	  <div className="am-form-group">
+	    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+	    {this.props.group_list.map(function(event) {
+	        return (<option value={event.uuid} >{event.brand_name}</option>);
+	      })}
+	    </select>
+	  </div>
+  <AMR_Table {...this.props}>  
+    <thead> 
+      <tr>
+        <th>类型</th>
+        <th>内容</th>
+        <th>金额</th>
+        <th>收费时间</th>
+        <th>备注</th>
+        <th>学校</th>
+        <th>创建人</th>
+        <th>创建时间</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {this.props.events.map(function(event) {
+        return (<Accounts_EventRow key={event.id} event={event} />);
+      })}
+    </tbody>
+  </AMR_Table>
+  </div>
+);
+}
+});
+
+var Accounts_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAccountsForm').serializeJson());
+	  },
+	 
+render: function() {
+	  var o = this.state;
+return (
+		<div>
+		<div className="header">
+		  <div className="am-g">
+		    <h1>添加收支记录</h1>
+		  </div>
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		<form id="editAccountsForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		 <div className="am-form-group">
+	          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.groupuuid} onChange={this.handleChange}>
+	          {this.props.group_list.map(function(event) {
+	              return (<option value={event.uuid} >{event.brand_name}</option>);
+	            })}
+	          </select>
+	        </div> 
+		<label htmlFor="type">类型:</label>
+		 <div className="am-form-group">
+		<select id="type" name="type" data-am-selected="{btnSize: 'lg'}" value={o.type} onChange={this.handleChange}>
+		 {this.props.type_list.map(function(event) {
+             return (<option value={event.key} >{event.val}</option>);
+           })}
+      </select>
+      </div> 
+	      <br/>
+	    <label htmlFor="accounts_timeStr">收支日期:</label>
+	    <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
+	       <label htmlFor="title">内容:</label>
+	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="必填,不超过45位"/>
+	      <br/>
+	
+	       <label htmlFor="num">金额:</label>
+	      <input type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder="必填"/> 
+	    <label htmlFor="description">备注:</label>
+	      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+	      <br/>
+	      <button type="button"  onClick={ajax_accounts_saveAndAdd}  className="am-btn am-btn-primary">保存继续</button>
+	      <button type="button"  onClick={ajax_accounts_save}  className="am-btn am-btn-primary">保存返回</button>
+	     </form>
+
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+}); 
+//end accounts

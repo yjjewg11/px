@@ -1,28 +1,17 @@
 package com.company.news.service;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
-import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Accounts;
-import com.company.news.entity.Announcements;
-import com.company.news.entity.Announcements4Q;
-import com.company.news.entity.AnnouncementsTo;
-import com.company.news.entity.PClass;
-import com.company.news.entity.User;
+import com.company.news.entity.Student;
 import com.company.news.jsonform.AccountsJsonform;
-import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -80,6 +69,17 @@ public class AccountsService extends AbstractServcice {
 
 		accounts.setCreate_time(TimeUtils.getCurrentTimestamp());
 		accounts.setAccounts_time(accounts_time);
+		if (StringUtils.isNotEmpty(accountsJsonform.getStudentuuid())&&!"0".equals(accountsJsonform.getStudentuuid())) {
+			Student student=(Student)nSimpleHibernateDao.getObject(Student.class, accountsJsonform.getStudentuuid());
+			if(student==null){
+				responseMessage.setMessage("没有对应的学生数据,studentuuid="+accountsJsonform.getStudentuuid());
+				return false;
+			}
+			accounts.setStudentname(student.getName());
+		}
+		if ("0".equals(accountsJsonform.getClassuuid())) {
+			accounts.setClassuuid(null);
+		}
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(accounts);

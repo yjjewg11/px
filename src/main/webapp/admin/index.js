@@ -1,6 +1,6 @@
 function login_affter_init(){
 	var div_header_props = {
-			  "title": Store.getCurGroup().company_name+"-"+Store.getUserinfo().name,
+			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,
 			  "link": "#title-link",
 			  data: {
 			    "left": [
@@ -24,6 +24,11 @@ function login_affter_init(){
 
 	//menu
 	var div_menu_data=[
+	                   {
+	                          "link": "##",
+	                          "fn":menu_accounts_list_fn,
+	                          "title": "收支记录"
+	                        },
 	        {
 		    "link": "##",
 		    "title": "角色权限",
@@ -49,28 +54,27 @@ function login_affter_init(){
                 "title": "我",
                 "subCols": 3,
                 "subMenu": [
-                  {
-                    "link": "##",
-                    "title": "修改资料"
-                  },
-                  {
-                      "link": "##",
-                      "title": "修改密码"
-                    },
-                    {
-                        "link": "##",
-                        "title": "重置密码"
-                      },
-                  {
-                    "link": "##",
-                    "title": "设置"
-                  },
-                  {
-                      "link": "##",
-                      "fn":menu_userinfo_logout_fn,
-                      "title": "注销"
-                    }
-                ]
+    	                    {
+    	                    	 "fn":menu_userinfo_update_fn,
+    	                      "link": "##",
+    	                      "title": "修改资料"
+    	                    },
+    	                    {
+    	                    	 "fn":menu_userinfo_updatepassword_fn,
+    	                        "link": "##",
+    	                        "title": "修改密码"
+    	                      },
+    	                     
+    	                    {
+    	                      "link": "##",
+    	                      "title": "设置(未)"
+    	                    },
+    	                    {
+    	                        "link": "##",
+    	                        "fn":menu_userinfo_logout_fn,
+    	                        "title": "注销"
+    	                      }
+    	                  ]
               }
         
       ];

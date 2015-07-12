@@ -37,6 +37,11 @@ function G_msg_pop(m){
 	$("#div_msg_pop").show();
 	setTimeout(function(){$("#div_msg_pop").hide()},3000);
 }
+function G_getDateYMD(s){
+	//2015-07-04 00:00:00=>2015-07-04
+	if(!s)return "";
+	return s.split(" ")[0];
+}
 /**
  * 加载图片的地方执行一次。
  * 不传参数，则所有img替换。
@@ -180,6 +185,7 @@ var xhEditor_upImgOption_mfull={
 		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 		onUpload:xhEditor_insertUpload,
 		html5Upload:false,
+		height:'500',
 		tools:'mfull',
 		urlType:'rel'
 	};

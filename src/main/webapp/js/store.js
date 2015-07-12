@@ -8,6 +8,10 @@
  * Store.getMyClassList();//获取我关联的班级(老师)
  * Store.getCurMyClass();//获取我当前班级
  * Store.getClassByUuid(uuid);//
+ * Store.getChooseClass(uuid);根据组织id获取班级信息
+ * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
+ * 
+ * 
  * 
  */
 var Store={
@@ -19,12 +23,30 @@ var Store={
 		Store.map={};
 		Store.setCurGroup(null);
 	},
+	isDisableAlet:false,
 	enabled:function(){
 		if (!$.AMUI.store.enabled) {
-			  alert('你的浏览器禁用 LocalStorage，部分显示有问题，请启用LocalStorage');
+			  if(!Store.isDisableAlet)alert('你的浏览器禁用 LocalStorage，部分显示有问题，请启用LocalStorage');
+			  Store.isDisableAlet=true;
 			  return false;
 			}
 		return true;
+	},
+	getVo_map:function(){
+		if(!Store.enabled())return null;
+		$.AMUI.store.get("Vo_map");
+	},
+	getVo_md5:function(){
+		if(!Store.enabled())return null;
+		$.AMUI.store.get("Vo_md5");
+	},
+	setVo_map:function(map){
+		if(!Store.enabled())return;
+		$.AMUI.store.set("Vo_map", map);
+	},
+	setVo_md5:function(md5){
+		if(!Store.enabled())return;
+		$.AMUI.store.set("Vo_md5", md5);
 	},
 	getCurMyClass:function(){
 		 if(this.map["CurMyClass"])return this.map["CurMyClass"];
@@ -40,26 +62,38 @@ var Store={
 		 }
 		 return o;
 	},
+	setClassStudentsList:function(uuid,v){
+		this.map["ClassStudentsList"+uuid]=v;
+	},
+	getClassStudentsList:function(uuid){
+		  var key="ClassStudentsList"+uuid;
+		 if(this.map[key])return this.map[key];
+			 //从后台重新获取
+		 store_ajax_student_getStudentByClassuuid_toStroe(uuid);
+			 if(this.map[key])return this.map[key];
+		 return [];
+	},
+	
 	setCurMyClass:function(v){
 		this.map["CurMyClass"]=v;
-		if(!Store.enabled())return;
-		$.AMUI.store.set("CurMyClass", v);
 	},
 	getMyClassList:function(){
-		 if(this.map["MyClass"])return this.map["MyClass"];
+		  var key="MyClass";
+		 if(this.map[key])return this.map[key];
 			 //从后台重新获取
 			 store_ajax_MyClass_toStroe();
-			 if(this.map["MyClass"])return this.map["MyClass"];
+			 if(this.map[key])return this.map[key];
 		 return [];
 	},
 	setMyClassList:function(v){
 		this.map["MyClass"]=v;
 	},
 	getRoleList:function(){
-		 if(this.map["RoleList"])return this.map["RoleList"];
+		 var key="RoleList";
+		 if(this.map[key])return this.map[key];
 			 //从后台重新获取
 			 store_ajax_RoleList_toStroe();
-			 if(this.map["RoleList"])return this.map["RoleList"];
+			 if(this.map[key])return this.map[key];
 		 return [];
 	},
 	setRoleList:function(v){
@@ -84,6 +118,7 @@ var Store={
 	},
 	//v:groupuuid
 	getChooseClass:function(v){
+		if(!v)return [];
 		var key="ChooseClass"+v;
 		 if(this.map[key])return this.map[key];
 		 store_ajax_class_listByGroup(v);
@@ -91,6 +126,7 @@ var Store={
 		 return [];
 	},
 	getClassNameByUuid:function(uuid){
+		if(!uuid)return "";
 		var arr=this.getGroup();
 		for(var i=0;i<arr.length;i++){
 			var t_arr=this.getChooseClass(arr[i].uuid);
@@ -102,6 +138,7 @@ var Store={
 		return "";
 	},
 	getClassByUuid:function(uuid){
+		if(!uuid)return {};
 		var arr=this.getGroup();
 		for(var i=0;i<arr.length;i++){
 			var t_arr=this.getChooseClass(arr[i].uuid);
@@ -129,7 +166,7 @@ var Store={
 	getGroupNameByUuid:function(uuid){
 		var arr=this.getGroup();
 		for(var i=0;i<arr.length;i++){
-			if(uuid==arr[i].uuid)return arr[i].company_name;
+			if(uuid==arr[i].uuid)return arr[i].brand_name;
 		}
 		return "";
 	},
@@ -368,6 +405,35 @@ function store_ajax_MyClass_toStroe() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setMyClassList(data.list)
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+
+
+
+function store_ajax_student_getStudentByClassuuid_toStroe(uuid) {
+	$.AMUI.progress.start();
+	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setClassStudentsList(uuid,data.list)
 			} else {
 				alert(data.ResMsg.message);
 			}

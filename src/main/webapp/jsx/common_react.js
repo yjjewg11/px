@@ -22,7 +22,7 @@ var Userinfo_EventRow = React.createClass({
         <td>{event.tel}</td>
         <td>{event.email}</td>
         <td>{event.sex=="0"?"男":"女"}</td>
-        <td  className={"px_disable_"+event.disable}>{event.disable=="1"?"禁用":"正常"}</td>
+        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
         <td>{event.login_time}</td>
         <td>{event.create_time}</td>
       </tr> 

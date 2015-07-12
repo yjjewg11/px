@@ -32,7 +32,7 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 		    
 		    React.createElement("select", {id: "reg_group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}"}, 
 		      this.props.group_list.map(function(event) {
-		          return (React.createElement("option", {value: event.uuid}, event.company_name));
+		          return (React.createElement("option", {value: event.uuid}, event.brand_name));
 		        })
 		      )
 		        ), 
@@ -148,7 +148,7 @@ render: function() {
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
- 		 React.createElement("h1", null, "幼儿园老师登录"), 
+ 		 React.createElement("h1", null, "问界互动家园-幼儿园老师登录"), 
  	    React.createElement("p", null, "PX Background Management System", React.createElement("br", null), "快捷管理，大数据分析")
  		  ), 
  		  React.createElement("hr", null)
@@ -389,7 +389,7 @@ render: function() {
 	  React.createElement("div", {className: "am-form-group"}, 
     React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
     this.props.group_list.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.company_name));
+        return (React.createElement("option", {value: event.uuid}, event.brand_name));
       })
     )
   ), 
@@ -473,7 +473,7 @@ render: function() {
   		    React.createElement("div", {className: "am-form-group"}, 
   		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
   		          this.props.group_list.map(function(event) {
-  		              return (React.createElement("option", {value: event.uuid}, event.company_name));
+  		              return (React.createElement("option", {value: event.uuid}, event.brand_name));
   		            })
   		          )
   		        ), 
@@ -692,7 +692,7 @@ render: function() {
 	  React.createElement("div", {className: "am-form-group"}, 
     React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
     this.props.group_list.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.company_name));
+        return (React.createElement("option", {value: event.uuid}, event.brand_name));
       })
     )
   ), 
@@ -819,7 +819,7 @@ render: function() {
   		React.createElement("div", {className: "am-form-group"}, 
   		          React.createElement("select", {id: "group_uuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.group_uuid, onChange: this.handleChange}, 
   		          this.props.group_list.map(function(event) {
-  		              return (React.createElement("option", {value: event.uuid}, event.company_name));
+  		              return (React.createElement("option", {value: event.uuid}, event.brand_name));
   		            })
   		          )
   		        ), 
@@ -1101,7 +1101,7 @@ React.createElement("hr", null)
 	  React.createElement("div", {className: "am-form-group"}, 
   React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
   this.props.group_list.map(function(event) {
-      return (React.createElement("option", {value: event.uuid}, event.company_name));
+      return (React.createElement("option", {value: event.uuid}, event.brand_name));
     })
   )
 ), 
@@ -1679,3 +1679,176 @@ render: function() {
 }
 }); 
 //end classnews
+
+
+
+
+
+//accounts
+var Accounts_EventRow = React.createClass({displayName: "Accounts_EventRow", 
+render: function() {
+  var event = this.props.event;
+  var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+    React.createElement("tr", {className: className}, 
+    React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
+    React.createElement("td", null, event.title), 
+    React.createElement("td", null, " ", event.num), 
+      React.createElement("td", null, G_getDateYMD(event.accounts_time)), 
+     
+      React.createElement("td", null, " ", event.studentname), 
+      React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
+      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+      React.createElement("td", null, " ", event.description), 
+      React.createElement("td", null, event.create_user), 
+      React.createElement("td", null, event.create_time)
+    ) 
+  );
+}
+}); 
+
+var Accounts_EventsTable = React.createClass({displayName: "Accounts_EventsTable",
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_accounts(m,{groupuuid:$('#selectgroup_uuid' ).val()});
+			 return;
+		 }
+	  },
+	  handleChange_selectgroup_uuid: function(){
+		  ajax_accounts_listByGroup($( '#selectgroup_uuid' ).val());
+    },
+render: function() {
+  return (
+  React.createElement("div", null, 
+  React.createElement("div", {className: "header"}, 
+	  React.createElement("div", {className: "am-g"}, 
+	    React.createElement("h1", null, "收支记录")
+	  ), 
+	  React.createElement("hr", null)
+	), 
+  React.createElement(AMR_ButtonToolbar, null, 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+	  ), 
+	  React.createElement("hr", null), 
+	  React.createElement("div", {className: "am-form-group"}, 
+	    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
+	    this.props.group_list.map(function(event) {
+	        return (React.createElement("option", {value: event.uuid}, event.brand_name));
+	      })
+	    )
+	  ), 
+    React.createElement(AMR_Table, React.__spread({},  this.props), 
+      React.createElement("thead", null, 
+        React.createElement("tr", null, 
+          React.createElement("th", null, "类型"), 
+          React.createElement("th", null, "内容"), 
+          React.createElement("th", null, "金额"), 
+          React.createElement("th", null, "收费时间"), 
+          
+          React.createElement("th", null, "学生"), 
+          React.createElement("th", null, "班级"), 
+          React.createElement("th", null, "学校"), 
+          React.createElement("th", null, "备注"), 
+          React.createElement("th", null, "创建人"), 
+          React.createElement("th", null, "创建时间")
+        )
+      ), 
+      React.createElement("tbody", null, 
+        this.props.events.map(function(event) {
+          return (React.createElement(Accounts_EventRow, {key: event.id, event: event}));
+        })
+      )
+    )
+    )
+  );
+}
+});
+  
+var Accounts_edit = React.createClass({displayName: "Accounts_edit", 
+	 getInitialState: function() {
+		    return this.loadData(this.props.formdata);
+		  },
+	 handleChange: function(event) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	
+		    this.setState(this.loadData(formdata));
+	  },
+	  loadData:function(formdata){
+		  
+		  formdata.tmp_classList=Store.getChooseClass(formdata.groupuuid);
+		  if(formdata.classuuid){
+			  formdata.tmp_studentList=Store.getClassStudentsList(formdata.classuuid);
+		  }else{
+			  formdata.tmp_studentList=[];
+		  }
+		  return formdata;
+	  },
+	  
+render: function() {
+	  var o = this.state;
+  return (
+  		React.createElement("div", null, 
+  		React.createElement("div", {className: "header"}, 
+  		  React.createElement("div", {className: "am-g"}, 
+  		    React.createElement("h1", null, "收支记录")
+  		  ), 
+  		  React.createElement("hr", null)
+  		), 
+  		React.createElement("div", {className: "am-g"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
+  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+  		 React.createElement("div", {className: "am-form-group"}, 
+	          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
+	          this.props.group_list.map(function(event) {
+	              return (React.createElement("option", {value: event.uuid}, event.brand_name));
+	            })
+	          )
+	        ), 
+  		React.createElement("label", {htmlFor: "type"}, "收支类型:"), 
+  		 React.createElement("div", {className: "am-form-group"}, 
+  		React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'lg'}", value: o.type, onChange: this.handleChange}, 
+  		 this.props.type_list.map(function(event) {
+             return (React.createElement("option", {value: event.key}, event.val));
+           })
+        ), 
+        React.createElement("select", {id: "classuuid", name: "classuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.classuuid, onChange: this.handleChange}, 
+ 		React.createElement("option", {value: "0"}, "班级选择"), 
+ 		o.tmp_classList.map(function(event) {
+            return (React.createElement("option", {value: event.uuid}, event.name));
+          })
+       ), 
+       React.createElement("select", {id: "studentuuid", name: "studentuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.studentuuid, onChange: this.handleChange}, 
+   	React.createElement("option", {value: "0"}, "学生选择"), 
+   	o.tmp_studentList.map(function(event) {
+        return (React.createElement("option", {value: event.uuid}, event.name));
+      })
+      )
+        ), 
+  	      React.createElement("br", null), 
+ 	    
+  	    React.createElement("label", {htmlFor: "accounts_timeStr"}, "收支日期:"), 
+  	    React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_time, showTimePicker: false, onChange: this.handleChange}), 
+  	       React.createElement("label", {htmlFor: "title"}, "内容:"), 
+  	      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"}), 
+  	      React.createElement("br", null), 
+  	
+  	       React.createElement("label", {htmlFor: "num"}, "金额:"), 
+  	      React.createElement("input", {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: ""}), 
+  	    React.createElement("label", {htmlFor: "description"}, "备注:"), 
+	      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"}), 
+	      React.createElement("br", null), 
+	      React.createElement("button", {type: "button", onClick: ajax_accounts_saveAndAdd, className: "am-btn am-btn-primary"}, "保存继续"), 
+  	      React.createElement("button", {type: "button", onClick: ajax_accounts_save, className: "am-btn am-btn-primary"}, "保存返回")
+  	     )
+
+  	     )
+  	   )
+  	   
+  	   )
+  );
+}
+}); 
+//end accounts

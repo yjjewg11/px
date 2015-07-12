@@ -521,12 +521,17 @@ function ajax_basedatatype_list() {
 };
 
 
-function ajax_basedatatype_button_handleClick(m){
-	if(m=="add_basedatatype"){
-		ajax_basedatatype_edit({},"add");
+function ajax_basedatatype_button_handleClick(m,formdata){
+	Queue.push(function(){ajax_basedatatype_button_handleClick(m,formdata)});
+	if(m=="detail"){
+		ajax_basedatatype_bind_basedatalist(JSON.stringify(formdata));
+		return;
 	}
+	if(m=="add_basedatatype"){
+		formdata={};
+	}
+	ajax_basedatatype_edit(formdata,m);
 };
-
 /**
 * operate=add|edit
 * @param formdata
@@ -537,36 +542,13 @@ function ajax_basedatatype_edit(formdata,operate){
 };
 
 function ajax_basedatatype_save(){
-$.AMUI.progress.start();
 	
-	  var objectForm = $('#editBasedatatypeForm').serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
-    var url = hostUrl + "rest/basedatatype/save.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
-		data:jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				ajax_basedatatype_list();
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
+	  var opt={
+	          formName: "editBasedatatypeForm",
+	          url:hostUrl + "rest/basedatatype/save.json",
+	          cbFN:null
+	          };
+	G_ajax_abs_save(opt);
 }
 
 /**
@@ -575,7 +557,6 @@ $.AMUI.progress.start();
  * @param operate
  */
 function ajax_basedatatype_bind_basedatalist(formdata){
-	Queue.push(function(){ajax_basedatatype_bind_basedatalist(formdata)});
 	if(typeof(formdata)=='string')formdata=$.parseJSON(formdata);
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/basedatalist/getBaseDataListByTypeuuid.json?typeuuid="+formdata.name;
@@ -639,3 +620,80 @@ function ajax_basedatatypelist_save(){
 }
 //basedatatypelist end
 
+//accounts 
+function menu_accounts_list_fn() {
+	Queue.push(menu_accounts_list_fn);
+	ajax_accounts_listByGroup(Store.getCurGroup().uuid);
+};
+
+//
+function ajax_accounts_listByGroup(groupuuid) {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Accounts_EventsTable, {
+					group_uuid:groupuuid,
+					group_list:Store.getGroup(),
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+function btn_click_accounts(m,formdata){
+	Queue.push(function(){btn_click_accounts(m,formdata)});
+	ajax_accounts_edit(m,formdata);
+};
+
+/**
+* operate=add|edit
+* @param formdata
+* @param operate
+*/
+function ajax_accounts_edit(m,formdata){
+		React.render(React.createElement(Accounts_edit,{type_list: Vo.getTypeList("AD_Accounts_type"),	group_list:Store.getGroup(),formdata:formdata}), document.getElementById('div_body'));
+};
+
+function ajax_accounts_save(){
+  var opt={
+          formName: "editAccountsForm",
+          url:hostUrl + "rest/accounts/save.json",
+          cbFN:null
+          };
+G_ajax_abs_save(opt);
+}
+function ajax_accounts_saveAndAdd(){
+  var opt={
+          formName: "editAccountsForm",
+          url:hostUrl + "rest/accounts/save.json",
+          cbFN:function(data){
+          	G_msg_pop("保存成功!继续添加.");
+          	 var objectForm = $('#editAccountsForm').serializeJson();
+          	$('#editAccountsForm [name=title]').val("");
+         	$('#editAccountsForm [name=num]').val("");
+         	$('#editAccountsForm [name=description]').val("");
+          }
+          };
+G_ajax_abs_save(opt);
+}
+//accounts end

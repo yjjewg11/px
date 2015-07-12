@@ -10,9 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.news.entity.BaseDataList;
+import com.company.news.entity.BaseDataListCacheVO;
+import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.BaseDataListJsonform;
+import com.company.news.rest.util.MD5Until;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -124,5 +128,24 @@ public class BaseDataListController extends AbstractRESTController {
         return "";
     }
     
-
+	 /**
+     * 获取机构信息,Typeuuid保存typename
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getAllList", method = RequestMethod.GET)
+    public String getAllList( ModelMap model, HttpServletRequest request,@RequestParam(value="md5",required=false) String md5) {
+    	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
+    	
+        List<BaseDataListCacheVO> list=baseDataListService.getBaseDataAllList();
+        String md5Db=MD5Until.getMD5String(JSONUtils.getJsonString(list));
+        if(md5Db.equals(md5)){//一样,表示没变化,不反馈,节省流量
+        	list=null;
+        }
+        model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+        model.addAttribute(RestConstants.Return_ResponseMessage_md5,md5Db);
+        responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+        return "";
+    }
 }

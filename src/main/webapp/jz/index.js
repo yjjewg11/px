@@ -26,131 +26,41 @@ function login_affter_init(){
 //envelope envelope-o envelope-square
 	//menu
 	var menu_data=[];
-	var t_menu=null;//第一级菜单
-	var t_subMenu=null;//第二级子菜单
-	t_menu={
-	    "link": "##",
-	    "title": "切换分校"
-	  }
-	t_subMenu=[];
-	var t_group=Store.getGroup();
-	for(var i=0;i<t_group.length;i++){
-		t_subMenu.push({
-			"fn":menu_group_change_fn.bind(this,t_group[i]),
-		    "link": "##",
-		    "title": t_group[i].brand_name
-		  });
-	}
-	
-	t_menu.subMenu=t_subMenu;
-	menu_data.push(t_menu);
-	
-	
 	var div_menu_data=[
 	           		{
 	        		    "link": "##",
-	        		    "title": "校务管理",
+	        		    "title": "校园动态",
 	        		    "subMenu": [
-	        		                {
-	        		                	"fn":menu_group_myList_fn,
-	        		                	 "link": "##",
-	                                      "title": "校园列表"
-	                                    },
+	        		            
 	                                    {
 	                                    	 "fn":menu_group_description_fn,
 	                                        "link": "##",
 	                                        "title": "校园介绍"
 	                                      },   
 	                                      {
+		                                    	 "fn":menu_group_description_fn,
+		                                        "link": "##",
+		                                        "title": "招生宣传"
+		                                      },   
+	                                      {
 	                	                      "link": "##",
-	                	                      "title": "老师管理",
+	                	                      "title": "老师介绍",
 	                	                      "fn":menu_userinfo_list_fn
-	                	                    },
-		                                      
-                                    {
-                                      "link": "##",
-                                      "title": "老师考勤(未)"
-                                    },
-                                    {
-                                        "link": "##",
-                                        "title": "学生考勤(未)"
-                                      }
+	                	                    }
                                     ]
 	        		  },
-	                    {
-	                        "link": "##",
-	                        "fn":menu_class_list_fn,
-	                        "title": "班级管理"
-	                      },
-	                      {
-	                    	  "link": "##",
-	                    	   "fn":menu_teachingplan_list_fn,
-	                          "title": "课程安排",
-	                          "subCols": 2
-	                         // "channelLink": "进入栏目 »",
-	                         
-	                        },
-	                        {
-	                            "link": "##",
-	                            "fn":menu_accounts_list_fn,
-	                            "title": "收支记录"
-	                          },
-	                {
-	                  "link": "##",
-	                  "title": "食谱管理",
-	                  "fn":menu_cookbookPlan_list_fn,
-	                  "subCols": 2
-	                 // "channelLink": "进入栏目 »",
-	                 
-	                },
-	                    {
-	                        "link": "##",
-	                        "title": "发布消息",
-	                        "subMenu": [
-	                                    {
-	                                      "fn":function(){menu_announce_list_fn(0)},
-	                                      "link": "##",
-	                                      "title": "校园公告"
-	                                    },
-	                                    {
-	                                    	  "fn":function(){menu_announce_list_fn(1)},
-	                                    	  "link": "##",
-	                                        "title": "老师公告"
-	                                      },
-	                                    {
-	                                    	  "fn":function(){menu_announce_list_fn(2)},
-	                                    	  "link": "##",
-	                                        "title": "班级通知"
-	                                      },
-	                                      {
-	                                          "link": "##",
-	                                          "title": "招生计划(未)"
-	                                        },
-                                          {
-                                              "link": "##",
-                                              "title": "分享文章(未)"
-                                            }
-	                                    ]
-	                       
-	                      },
 	                     
 	                        {
 	                            "link": "##",
 	                            "title": "互动",
 	                            "subMenu": [
-	                                        {
-	                                            "link": "##",
-	                                            "fn":menu_classnews_list_fn,
-	                                            "title": "班级互动"
-	                                          },
-	                                          
 	  	                                    {
 	  	                                        "link": "##",
-	  	                                        "title": "邀请家长(未)"
+	  	                                        "title": "给老师写信"
 	  	                                      },
 	                                          {
 	                                            "link": "##",
-	                                            "title": "家长反馈(未)"
+	                                            "title": "给院长写信"
 	                                          }
 	                                        ]
 	                           
@@ -230,9 +140,8 @@ function menu_dohome(){
 	                      {
 	                    	    "img": myhead_img,
 	                    	    "link": "javascript:menu_userinfo_update_fn();",
-	                    	    "title": "我"
+	                    	    "title": "我的宝贝"
 	                    	  },
-
 	                    	  {
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
@@ -245,38 +154,34 @@ function menu_dohome(){
 			                    },
 			                    {
 		                    	    "img": hostUrl+"i/header.png",
+		                    	    "link": "###",
+		                    	    "title": "签到记录"
+		                    	  },
+			                    {
+		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
-		                    	    "title": "教学计划"
+		                    	    "title": "课程表"
 		                    	  },
 		                    	  {
 			                    	    "img": hostUrl+"i/header.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
-	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "家长互动(未)"
-		                    	  },
-		                    	 
-			                    	 
-		                    	  {
-	                    	    "img": hostUrl+"i/header.png",
-	                    	    "link": "###",
-	                    	    "title": "签到(未)"
-	                    	  },
-	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "花名册(未)"
-		                    	  },
-		                    	
-			                    	
-		                      {
-		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "我的班级(未)"
-		                    	  }
+			                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+			                    	    "title": "评价老师"
+			                    	  },
+			                    	  {
+				                    	    "img": hostUrl+"i/header.png",
+				                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+				                    	    "title": "我的关注"
+				                    	  },
+			                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+			                    	    "title": "精品文章"
+			                    	  }
 	                    	  ];
 	React.render(React.createElement(AMUIReact.Gallery,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }

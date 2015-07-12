@@ -8,8 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.BaseDataList;
-import com.company.news.entity.BaseDataType;
-import com.company.news.entity.Right;
+import com.company.news.entity.BaseDataListCacheVO;
 import com.company.news.jsonform.BaseDataListJsonform;
 import com.company.news.vo.ResponseMessage;
 
@@ -144,7 +143,19 @@ public class BaseDataListService extends AbstractServcice {
 		
 		return (List<BaseDataList>) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(
-						"from BaseDataList where typeuuid=? order by datavalue asc", typeuuid);
+						"from BaseDataList where typeuuid=? order by datakey asc", typeuuid);
+
+	}
+	
+	/**
+	 * 查询所有权限
+	 * 
+	 * @return
+	 */
+	public List<BaseDataListCacheVO> getBaseDataAllList() {
+		return (List<BaseDataListCacheVO>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(
+						"from BaseDataListCacheVO  order by datakey asc");
 
 	}
 

@@ -14,7 +14,7 @@ render: function() {
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
- 		 React.createElement("h1", null, "PX 管理云平台"), 
+ 		 React.createElement("h1", null, "问界科技管理云平台"), 
  	    React.createElement("p", null, "PX Background Management System", React.createElement("br", null), "快捷管理，大数据分析")
  		  ), 
  		  React.createElement("hr", null)
@@ -90,7 +90,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 	      ), 
         React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.ajax_right_edit_onClick.bind(this, JSON.stringify(event))}, event.name)), 
         React.createElement("td", null, event.description), 
-        React.createElement("td", null, AdminVo.type(event.type))
+        React.createElement("td", null, Vo.type(event.type))
       ) 
     );
   }
@@ -145,7 +145,7 @@ var Right_edit = React.createClass({displayName: "Right_edit",
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
     		  React.createElement("div", {className: "am-g"}, 
-    		    React.createElement("h1", null, "编辑权限-【", AdminVo.type(o.type), "】")
+    		    React.createElement("h1", null, "编辑权限-【", Vo.type(o.type), "】")
     		  ), 
     		  React.createElement("hr", null)
     		), 
@@ -188,7 +188,7 @@ render: function() {
     ), 
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_edit.bind(this, event)}, event.name)), 
       React.createElement("td", null, event.description), 
-      React.createElement("td", null, AdminVo.type(event.type)), 
+      React.createElement("td", null, Vo.type(event.type)), 
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限")
      )
     ) 
@@ -246,8 +246,8 @@ render: function() {
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
     React.createElement("select", {id: "select_role_type", name: "group_uuid", value: this.props.type, onChange: this.handleChange_select_role_type}, 
-    React.createElement("option", {value: "0"}, AdminVo.type(0)), 
-    React.createElement("option", {value: "1"}, AdminVo.type(1))
+    React.createElement("option", {value: "0"}, Vo.type(0)), 
+    React.createElement("option", {value: "1"}, Vo.type(1))
     )
   ), 
   React.createElement("div", {className: "header"}, 
@@ -302,8 +302,8 @@ render: function() {
   			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		    React.createElement("div", {className: "am-form-group"}, 
   		          React.createElement("select", {id: "type", name: "type", value: o.type, onChange: this.handleChange}, 
-  		          React.createElement("option", {value: "0"}, AdminVo.type(0)), 
-  		          React.createElement("option", {value: "1"}, AdminVo.type(1))
+  		          React.createElement("option", {value: "0"}, Vo.type(0)), 
+  		          React.createElement("option", {value: "1"}, Vo.type(1))
   		          )
   		        ), 
   		      React.createElement("label", {htmlFor: "name"}, "名字:"), 
@@ -331,7 +331,7 @@ render: function() {
   		React.createElement("div", null, 
 	  		React.createElement("div", {className: "header"}, 
 		  		  React.createElement("div", {className: "am-g"}, 
-		  		    React.createElement("h1", null, "角色绑定权限-【", AdminVo.type(o.type), "】-【", o.name, "】")
+		  		    React.createElement("h1", null, "角色绑定权限-【", Vo.type(o.type), "】-【", o.name, "】")
 		  		  )
 	  		), 
   			React.createElement("button", {type: "button", onClick: btn_ajax_updateRight.bind(this, o.uuid), className: "am-btn am-btn-primary"}, "提交"), 
@@ -350,6 +350,9 @@ render: function() {
 
 //basedatatype
 var Basedatatype_EventRow = React.createClass({displayName: "Basedatatype_EventRow", 
+	handleClick: function(m,data) {
+		ajax_basedatatype_button_handleClick(m,data);
+	  },
 render: function() {
 var event = this.props.event;
 var className = event.highlight ? 'am-active' :
@@ -360,9 +363,9 @@ return (
   React.createElement("td", null, 
   React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
   ), 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_basedatatype_edit.bind(this, event)}, event.name)), 
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.handleClick.bind(this,"edit", event)}, event.name)), 
     React.createElement("td", null, event.description), 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_basedatatype_bind_basedatalist.bind(this, JSON.stringify(event))}, "详细"))
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.handleClick.bind(this,"detail", event)}, "详细"))
   ) 
 );
 }
@@ -372,7 +375,7 @@ var Basedatatype_EventsTable = React.createClass({displayName: "Basedatatype_Eve
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="add_basedatatype"){
-				 this.props.handleClick(m);
+				 ajax_basedatatype_button_handleClick(m,{})
 				 return;
 			 }
 		 }
@@ -487,7 +490,7 @@ var Basedatalist_EventRow = React.createClass({displayName: "Basedatalist_EventR
 		 React.createElement("tr", null, 
         React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_basedatatypelist.bind(this,"edit", JSON.stringify(event))}, event.datakey)), 
         React.createElement("td", null, event.datavalue), 
-        React.createElement("td", null, AdminVo.get("enable_"+event.enable)), 
+        React.createElement("td", null, Vo.get("enable_"+event.enable)), 
         React.createElement("td", null, event.description)
       ) 
     );
@@ -556,8 +559,8 @@ var Basedatatypelist_edit = React.createClass({displayName: "Basedatatypelist_ed
     		      React.createElement("div", {className: "am-form-group"}, 
     		      
     		      React.createElement("select", {name: "enable", value: this.props.enable, onChange: this.handleChange}, 
-    		      React.createElement("option", {value: "1"}, AdminVo.get("enable_1")), 
-    		      React.createElement("option", {value: "0"}, AdminVo.get("enable_0"))
+    		      React.createElement("option", {value: "1"}, Vo.get("enable_1")), 
+    		      React.createElement("option", {value: "0"}, Vo.get("enable_0"))
     		      )
     		    ), 
     			      
@@ -573,3 +576,142 @@ var Basedatatypelist_edit = React.createClass({displayName: "Basedatatypelist_ed
   }
 }); 
 //end basedatatypelist
+
+
+//accounts
+var Accounts_EventRow = React.createClass({displayName: "Accounts_EventRow", 
+render: function() {
+var event = this.props.event;
+var className = event.highlight ? 'am-active' :
+  event.disabled ? 'am-disabled' : '';
+
+return (
+  React.createElement("tr", {className: className}, 
+  React.createElement("td", null, " ", Vo.get("AD_Accounts_type_"+event.type)), 
+  React.createElement("td", null, event.title), 
+  React.createElement("td", null, " ", event.num), 
+    React.createElement("td", null, G_getDateYMD(event.accounts_time)), 
+    React.createElement("td", null, " ", event.description), 
+    React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+    React.createElement("td", null, event.create_user), 
+    React.createElement("td", null, event.create_time)
+  ) 
+);
+}
+}); 
+
+var Accounts_EventsTable = React.createClass({displayName: "Accounts_EventsTable",
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_accounts(m,{groupuuid:$('#selectgroup_uuid' ).val()});
+			 return;
+		 }
+	  },
+	  handleChange_selectgroup_uuid: function(){
+		  ajax_accounts_listByGroup($( '#selectgroup_uuid' ).val());
+  },
+render: function() {
+return (
+React.createElement("div", null, 
+React.createElement("div", {className: "header"}, 
+	  React.createElement("div", {className: "am-g"}, 
+	    React.createElement("h1", null, "收支记录")
+	  ), 
+	  React.createElement("hr", null)
+	), 
+React.createElement(AMR_ButtonToolbar, null, 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+	  ), 
+	  React.createElement("hr", null), 
+	  React.createElement("div", {className: "am-form-group"}, 
+	    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
+	    this.props.group_list.map(function(event) {
+	        return (React.createElement("option", {value: event.uuid}, event.brand_name));
+	      })
+	    )
+	  ), 
+  React.createElement(AMR_Table, React.__spread({},  this.props), 
+    React.createElement("thead", null, 
+      React.createElement("tr", null, 
+        React.createElement("th", null, "类型"), 
+        React.createElement("th", null, "内容"), 
+        React.createElement("th", null, "金额"), 
+        React.createElement("th", null, "收费时间"), 
+        React.createElement("th", null, "备注"), 
+        React.createElement("th", null, "学校"), 
+        React.createElement("th", null, "创建人"), 
+        React.createElement("th", null, "创建时间")
+      )
+    ), 
+    React.createElement("tbody", null, 
+      this.props.events.map(function(event) {
+        return (React.createElement(Accounts_EventRow, {key: event.id, event: event}));
+      })
+    )
+  )
+  )
+);
+}
+});
+
+var Accounts_edit = React.createClass({displayName: "Accounts_edit", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAccountsForm').serializeJson());
+	  },
+	 
+render: function() {
+	  var o = this.state;
+return (
+		React.createElement("div", null, 
+		React.createElement("div", {className: "header"}, 
+		  React.createElement("div", {className: "am-g"}, 
+		    React.createElement("h1", null, "添加收支记录")
+		  ), 
+		  React.createElement("hr", null)
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
+		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+		 React.createElement("div", {className: "am-form-group"}, 
+	          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
+	          this.props.group_list.map(function(event) {
+	              return (React.createElement("option", {value: event.uuid}, event.brand_name));
+	            })
+	          )
+	        ), 
+		React.createElement("label", {htmlFor: "type"}, "类型:"), 
+		 React.createElement("div", {className: "am-form-group"}, 
+		React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'lg'}", value: o.type, onChange: this.handleChange}, 
+		 this.props.type_list.map(function(event) {
+             return (React.createElement("option", {value: event.key}, event.val));
+           })
+      )
+      ), 
+	      React.createElement("br", null), 
+	    React.createElement("label", {htmlFor: "accounts_timeStr"}, "收支日期:"), 
+	    React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_time, showTimePicker: false, onChange: this.handleChange}), 
+	       React.createElement("label", {htmlFor: "title"}, "内容:"), 
+	      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "必填,不超过45位"}), 
+	      React.createElement("br", null), 
+	
+	       React.createElement("label", {htmlFor: "num"}, "金额:"), 
+	      React.createElement("input", {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: "必填"}), 
+	    React.createElement("label", {htmlFor: "description"}, "备注:"), 
+	      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"}), 
+	      React.createElement("br", null), 
+	      React.createElement("button", {type: "button", onClick: ajax_accounts_saveAndAdd, className: "am-btn am-btn-primary"}, "保存继续"), 
+	      React.createElement("button", {type: "button", onClick: ajax_accounts_save, className: "am-btn am-btn-primary"}, "保存返回")
+	     )
+
+	     )
+	   )
+	   
+	   )
+);
+}
+}); 
+//end accounts

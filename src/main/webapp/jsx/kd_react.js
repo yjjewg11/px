@@ -32,7 +32,7 @@ var Div_userinfo_reg = React.createClass({
 		    
 		    <select id="reg_group_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" >
 		      {this.props.group_list.map(function(event) {
-		          return (<option value={event.uuid} >{event.company_name}</option>);
+		          return (<option value={event.uuid} >{event.brand_name}</option>);
 		        })}
 		      </select>
 		        </div>
@@ -148,7 +148,7 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
- 		 <h1>幼儿园老师登录</h1>
+ 		 <h1>问界互动家园-幼儿园老师登录</h1>
  	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
  		  </div>
  		  <hr />
@@ -318,7 +318,7 @@ var Group_edit = React.createClass({
     	       <label htmlFor="link_tel">公司电话:</label>
     	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
     	      <br/>
-    	      <AMR_Input id="description" type="textarea" rows="10" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
     		  
     	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
     	     </form>
@@ -389,7 +389,7 @@ render: function() {
 	  <div className="am-form-group">
     <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
     {this.props.group_list.map(function(event) {
-        return (<option value={event.uuid} >{event.company_name}</option>);
+        return (<option value={event.uuid} >{event.brand_name}</option>);
       })}
     </select>
   </div>
@@ -473,7 +473,7 @@ render: function() {
   		    <div className="am-form-group">
   		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.groupuuid} onChange={this.handleChange}>
   		          {this.props.group_list.map(function(event) {
-  		              return (<option value={event.uuid} >{event.company_name}</option>);
+  		              return (<option value={event.uuid} >{event.brand_name}</option>);
   		            })}
   		          </select>
   		        </div>
@@ -692,7 +692,7 @@ render: function() {
 	  <div className="am-form-group">
     <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
     {this.props.group_list.map(function(event) {
-        return (<option value={event.uuid} >{event.company_name}</option>);
+        return (<option value={event.uuid} >{event.brand_name}</option>);
       })}
     </select>
   </div>
@@ -819,7 +819,7 @@ render: function() {
   		<div className="am-form-group">
   		          <select id="group_uuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.group_uuid} onChange={this.handleChange}>
   		          {this.props.group_list.map(function(event) {
-  		              return (<option value={event.uuid} >{event.company_name}</option>);
+  		              return (<option value={event.uuid} >{event.brand_name}</option>);
   		            })}
   		          </select>
   		        </div>
@@ -1101,7 +1101,7 @@ return (
 	  <div className="am-form-group">
   <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
   {this.props.group_list.map(function(event) {
-      return (<option value={event.uuid} >{event.company_name}</option>);
+      return (<option value={event.uuid} >{event.brand_name}</option>);
     })}
   </select>
 </div>
@@ -1679,3 +1679,176 @@ render: function() {
 }
 }); 
 //end classnews
+
+
+
+
+
+//accounts
+var Accounts_EventRow = React.createClass({ 
+render: function() {
+  var event = this.props.event;
+  var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+    <tr className={className} >
+    <td > {Vo.get("KD_Accounts_type_"+event.type)}</td>
+    <td  >{event.title}</td>
+    <td > {event.num}</td>
+      <td  >{G_getDateYMD(event.accounts_time)}</td>
+     
+      <td > {event.studentname}</td>
+      <td > {Store.getClassByUuid(event.classuuid).name}</td>
+      <td >{Store.getGroupNameByUuid(event.groupuuid)}</td>
+      <td > {event.description}</td>
+      <td >{event.create_user}</td>
+      <td >{event.create_time}</td>
+    </tr> 
+  );
+}
+}); 
+
+var Accounts_EventsTable = React.createClass({
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_accounts(m,{groupuuid:$('#selectgroup_uuid' ).val()});
+			 return;
+		 }
+	  },
+	  handleChange_selectgroup_uuid: function(){
+		  ajax_accounts_listByGroup($( '#selectgroup_uuid' ).val());
+    },
+render: function() {
+  return (
+  <div>
+  <div className="header">
+	  <div className="am-g">
+	    <h1>收支记录</h1>
+	  </div>
+	  <hr />
+	</div>
+  <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  <hr/>
+	  <div className="am-form-group">
+	    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+	    {this.props.group_list.map(function(event) {
+	        return (<option value={event.uuid} >{event.brand_name}</option>);
+	      })}
+	    </select>
+	  </div>
+    <AMR_Table {...this.props}>  
+      <thead> 
+        <tr>
+          <th>类型</th>
+          <th>内容</th>
+          <th>金额</th>
+          <th>收费时间</th>
+          
+          <th>学生</th>
+          <th>班级</th>
+          <th>学校</th>
+          <th>备注</th>
+          <th>创建人</th>
+          <th>创建时间</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {this.props.events.map(function(event) {
+          return (<Accounts_EventRow key={event.id} event={event} />);
+        })}
+      </tbody>
+    </AMR_Table>
+    </div>
+  );
+}
+});
+  
+var Accounts_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.loadData(this.props.formdata);
+		  },
+	 handleChange: function(event) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	
+		    this.setState(this.loadData(formdata));
+	  },
+	  loadData:function(formdata){
+		  
+		  formdata.tmp_classList=Store.getChooseClass(formdata.groupuuid);
+		  if(formdata.classuuid){
+			  formdata.tmp_studentList=Store.getClassStudentsList(formdata.classuuid);
+		  }else{
+			  formdata.tmp_studentList=[];
+		  }
+		  return formdata;
+	  },
+	  
+render: function() {
+	  var o = this.state;
+  return (
+  		<div>
+  		<div className="header">
+  		  <div className="am-g">
+  		    <h1>收支记录</h1>
+  		  </div>
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		<form id="editAccountsForm" method="post" className="am-form">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
+  		 <div className="am-form-group">
+	          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.groupuuid} onChange={this.handleChange}>
+	          {this.props.group_list.map(function(event) {
+	              return (<option value={event.uuid} >{event.brand_name}</option>);
+	            })}
+	          </select>
+	        </div> 
+  		<label htmlFor="type">收支类型:</label>
+  		 <div className="am-form-group">
+  		<select id="type" name="type" data-am-selected="{btnSize: 'lg'}" value={o.type} onChange={this.handleChange}>
+  		 {this.props.type_list.map(function(event) {
+             return (<option value={event.key} >{event.val}</option>);
+           })}
+        </select>
+        <select id="classuuid" name="classuuid" data-am-selected="{btnSize: 'lg'}" value={o.classuuid} onChange={this.handleChange}>
+ 		<option value="0" >班级选择</option>
+ 		{o.tmp_classList.map(function(event) {
+            return (<option value={event.uuid} >{event.name}</option>);
+          })}
+       </select>
+       <select id="studentuuid" name="studentuuid" data-am-selected="{btnSize: 'lg'}" value={o.studentuuid} onChange={this.handleChange}>
+   	<option value="0" >学生选择</option>
+   	{o.tmp_studentList.map(function(event) {
+        return (<option value={event.uuid} >{event.name}</option>);
+      })}
+      </select>
+        </div> 
+  	      <br/>
+ 	    
+  	    <label htmlFor="accounts_timeStr">收支日期:</label>
+  	    <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
+  	       <label htmlFor="title">内容:</label>
+  	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
+  	      <br/>
+  	
+  	       <label htmlFor="num">金额:</label>
+  	      <input type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder=""/> 
+  	    <label htmlFor="description">备注:</label>
+	      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+	      <br/>
+	      <button type="button"  onClick={ajax_accounts_saveAndAdd}  className="am-btn am-btn-primary">保存继续</button>
+  	      <button type="button"  onClick={ajax_accounts_save}  className="am-btn am-btn-primary">保存返回</button>
+  	     </form>
+
+  	     </div>
+  	   </div>
+  	   
+  	   </div>
+  );
+}
+}); 
+//end accounts
