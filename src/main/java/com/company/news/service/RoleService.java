@@ -218,7 +218,7 @@ public class RoleService extends AbstractServcice {
 			String[] str = PxStringUtil.StringDecComma(rightuuids).split(",");
 			for (String s : str) {
 				RoleRightRelation r = new RoleRightRelation();
-				Right right=CommonsCache.getRight(s);
+				Right right=(Right) CommonsCache.get(s,Right.class);
 				if(right!=null)
 				{
 				r.setRightname(right.getName());
