@@ -23,7 +23,7 @@ public class CommonsCache{
 		Element e = dbDataCache.get(uuid);
 
 		if (e != null)
-			return (User) e.getObjectValue();
+			return e.getObjectValue();
 		else {
 			Object object =nSimpleHibernateDao.getObject(clazz, uuid);
 			if (object != null)
