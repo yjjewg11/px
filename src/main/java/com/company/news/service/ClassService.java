@@ -224,17 +224,17 @@ public class ClassService extends AbstractServcice {
 		String headTeacher_name = "";
 		String teacher_name = "";
 		for (UserClassRelation u : l) {
-			User user = CommonsCache.getUser(u.getUseruuid());
+			User user = (User) CommonsCache.get(u.getUseruuid(),User.class);
 			if (user != null) {
 				if (u.getType().intValue() == class_usertype_head) {
 
 					headTeacher += (u.getUseruuid() + ",");
-					headTeacher_name += (CommonsCache.getUser(u.getUseruuid())
+					headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(),User.class))
 							.getName() + ",");
 
 				} else {
 					teacher += (u.getUseruuid() + ",");
-					teacher_name += (CommonsCache.getUser(u.getUseruuid())
+					teacher_name += (((User)CommonsCache.get(u.getUseruuid(),User.class))
 							.getName() + ",");
 				}
 			}

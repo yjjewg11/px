@@ -504,11 +504,13 @@ public class UserinfoService extends AbstractServcice {
 			return false;
 		}
 
-		TelSmsCode smsdb = (TelSmsCode) this.nSimpleHibernateDao
-				.getObjectByAttribute(TelSmsCode.class, "tel",
-						userRegJsonform.getTel());
-
-		if(smsdb==null){
+		List<TelSmsCode> list=(List<TelSmsCode>) this.nSimpleHibernateDao.getHibernateTemplate().find("from TelSmsCode where tel=? and type=? order by createtime desc", userRegJsonform.getTel(),SmsService.SMS_TYPE_USER);
+		
+		TelSmsCode smsdb;
+		if(list!=null&&list.size()>0)
+			smsdb=list.get(0);
+		else
+		{
 			responseMessage.setMessage("请重发验证码!");
 			return false;
 		}

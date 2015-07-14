@@ -55,7 +55,7 @@ public class MessageService extends AbstractServcice {
 			return false;
 		}
 
-		User user = CommonsCache.getUser(messageJsonform.getRevice_useruuid());
+		User user = (User) CommonsCache.get(messageJsonform.getRevice_useruuid(),User.class);
 		if (user == null) {
 			responseMessage.setMessage("user 不存在！");
 			return false;
