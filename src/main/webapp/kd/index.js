@@ -65,16 +65,8 @@ function login_affter_init(){
 	                	                      "link": "##",
 	                	                      "title": "老师管理",
 	                	                      "fn":menu_userinfo_list_fn
-	                	                    },
-		                                      
-                                    {
-                                      "link": "##",
-                                      "title": "老师考勤(未)"
-                                    },
-                                    {
-                                        "link": "##",
-                                        "title": "学生考勤(未)"
-                                      }
+	                	                    }
+	                                    
                                     ]
 	        		  },
 	                    {

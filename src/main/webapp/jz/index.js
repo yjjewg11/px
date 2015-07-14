@@ -29,25 +29,7 @@ function login_affter_init(){
 	var div_menu_data=[
 	           		{
 	        		    "link": "##",
-	        		    "title": "校园动态",
-	        		    "subMenu": [
-	        		            
-	                                    {
-	                                    	 "fn":menu_group_description_fn,
-	                                        "link": "##",
-	                                        "title": "校园介绍"
-	                                      },   
-	                                      {
-		                                    	 "fn":menu_group_description_fn,
-		                                        "link": "##",
-		                                        "title": "招生宣传"
-		                                      },   
-	                                      {
-	                	                      "link": "##",
-	                	                      "title": "老师介绍",
-	                	                      "fn":menu_userinfo_list_fn
-	                	                    }
-                                    ]
+	        		    "title": "幼儿园介绍"
 	        		  },
 	                     
 	                        {
@@ -181,7 +163,11 @@ function menu_dohome(){
 			                    	    "img": hostUrl+"i/header.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "精品文章"
-			                    	  }
+			                    	  },{
+				                    	    "img": hostUrl+"i/header.png",
+				                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+				                    	    "title": "特长课程"
+				                    	  }
 	                    	  ];
 	React.render(React.createElement(AMUIReact.Gallery,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }

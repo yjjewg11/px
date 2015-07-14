@@ -180,7 +180,7 @@ render: function() {
  			
  	    ), 
  	    React.createElement("hr", null), 
- 	    React.createElement("p", null, "© 2015 成都问界科技股份有限公司 ")
+ 	    React.createElement("p", null, "© 2015 成都问界科技有限公司 ")
 
  	     )
  	   )
@@ -318,7 +318,7 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     	       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
     	      React.createElement("input", {type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
     	      React.createElement("br", null), 
-    	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "10", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
+    	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
     		  
     	      React.createElement("button", {type: "button", onClick: ajax_group_save, className: "am-btn am-btn-primary"}, "提交")
     	     )
