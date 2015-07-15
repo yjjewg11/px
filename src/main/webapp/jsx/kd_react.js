@@ -584,10 +584,25 @@ render: function() {
  		   <br/>
  		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
 		      <br/>
+		      <label htmlFor="nickname">妈妈姓名:</label>
+ 		      <input type="text"  name="ma_name" id="ma_name" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		      <label htmlfor="nickname">爸爸姓名:</label>
+ 		      <input type="text" name="ba_name" id="ba_name" value={o.ba_name} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>
+ 		      <label htmlfor="nickname">家庭住址:</label>
+ 		      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>		     
+ 		      <label htmlfor="nickname">爸爸的工作:</label>
+ 		      <input type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>		     
+ 		      <label htmlfor="nickname">妈妈的工作:</label>
+ 		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>		      		      
 		      <label htmlFor="nickname">妈妈电话:</label>
  		      <input type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		     <label htmlFor="nickname">爸爸电话:</label>
+ 		      <label htmlFor="nickname">爸爸电话:</label>
 		      <input type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 		      <label htmlFor="nickname">奶奶电话:</label>
@@ -599,13 +614,20 @@ render: function() {
 		      <label htmlFor="nickname">外婆电话:</label>
  		      <input type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		     <label htmlFor="nickname">外公电话:</label>
+ 		      <label htmlFor="nickname">外公电话:</label>
 		      <input type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 		      <label htmlFor="nickname">其他电话:</label>
 		      <input type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
-		      
+	 		   <AMUIReact.Input type="textarea"
+		 	 	      label="说明"
+		 	 	    	 name="birthday"
+		 	 	      labelClassName="am-u-sm-2"
+		 	 	      placeholder="备注"
+		 	 	      wrapperClassName="am-u-sm-10"
+		 	 	      amSize="lg" />
+	 		  <br/>
  		      <button type="button"  onClick={btn_ajax_class_student_save}  className="am-btn am-btn-primary">提交</button>
  		    </form>
 
