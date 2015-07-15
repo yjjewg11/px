@@ -18,8 +18,8 @@ import com.company.news.service.ClassNewsReplyService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/classnewsreply")
-public class ClassNewsReplyController extends AbstractRESTController {
+@RequestMapping(value = "/reply")
+public class ReplyController extends AbstractRESTController {
 
 	@Autowired
 	private ClassNewsReplyService classNewsReplyService;
