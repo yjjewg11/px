@@ -35,14 +35,14 @@ import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/classnews")
+@RequestMapping(value = "/dianzan")
 public class DianzanController extends AbstractRESTController {
 
 	@Autowired
 	private ClassNewsDianzanService classNewsDianzanService;
 
-	@RequestMapping(value = "/dianzan", method = RequestMethod.POST)
-	public String dianzan(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -83,8 +83,8 @@ public class DianzanController extends AbstractRESTController {
 		return "";
 	}
 
-	@RequestMapping(value = "/getDianzanByNewsuuid", method = RequestMethod.GET)
-	public String getDianzanByNewsuuid(ModelMap model,
+	@RequestMapping(value = "/getByNewsuuid", method = RequestMethod.GET)
+	public String getByNewsuuid(ModelMap model,
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -104,8 +104,8 @@ public class DianzanController extends AbstractRESTController {
 	}
 	
 	
-	@RequestMapping(value = "/canceldianzan", method = RequestMethod.POST)
-	public String cancelDianzan(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String delete(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
