@@ -24,6 +24,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class ClassNewsService extends AbstractServcice {
+	public static final int USER_type_default = 0;// 0:老师
 	@Autowired
 	private CountService countService;
 
@@ -55,6 +56,7 @@ public class ClassNewsService extends AbstractServcice {
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		cn.setReply_time(TimeUtils.getCurrentTimestamp());
+		cn.setUsertype(USER_type_default);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 
@@ -153,84 +155,11 @@ public class ClassNewsService extends AbstractServcice {
 		cnjf.setCount(countService.count(uuid,
 				countService.count_type_classnews));
 
-		
-		List dianzanList=this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"select create_user from ClassNewsDianzan where newsuuid=?", uuid);
-		cnjf.setDianzanList(dianzanList);
 		return cnjf;
 
 	}
 
-	/**
-	 * 
-	 * @param classNewsDianzanJsonform
-	 * @param responseMessage
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean dianzan(ClassNewsDianzanJsonform classNewsDianzanJsonform,
-			ResponseMessage responseMessage) throws Exception {
-		if (StringUtils.isBlank(classNewsDianzanJsonform.getNewsuuid())) {
-			responseMessage.setMessage("Newsuuid不能为空！");
-			return false;
-		}
 
-		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from ClassNewsDianzan where newsuuid=? and create_useruuid=?",
-				classNewsDianzanJsonform.getNewsuuid(),
-				classNewsDianzanJsonform.getCreate_useruuid());
-		if (list != null && list.size() > 0) {
-			responseMessage.setMessage("不能重复点赞！");
-			return false;
-		} else {
-			ClassNewsDianzan cndz = new ClassNewsDianzan();
-			BeanUtils.copyProperties(cndz, classNewsDianzanJsonform);
-			cndz.setCreate_time(TimeUtils.getCurrentTimestamp());
-			this.nSimpleHibernateDao.getHibernateTemplate().save(cndz);
-		}
-
-		return true;
-	}
-
-	/**
-	 * 
-	 * @param classNewsDianzanJsonform
-	 * @param responseMessage
-	 * @return
-	 * @throws Exception
-	 */
-	public List getDianzanByNewsuuid(String newsuuid) throws Exception {
-		if (StringUtils.isBlank(newsuuid)) {
-			return null;
-		}
-
-		return this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from ClassNewsDianzan where newsuuid=?", newsuuid);
-	}
-
-	/**
-	 * 删除 支持多个，用逗号分隔
-	 * 
-	 * @param uuid
-	 */
-	public boolean cancelDianzan(
-			ClassNewsDianzanJsonform classNewsDianzanJsonform,
-			ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(classNewsDianzanJsonform.getNewsuuid())) {
-
-			responseMessage.setMessage("Newsuuid不能为空！");
-			return false;
-		}
-
-		this.nSimpleHibernateDao
-				.getHibernateTemplate()
-				.bulkUpdate(
-						"delete from ClassNewsDianzan where newsuuid=? and create_useruuid=?",
-						classNewsDianzanJsonform.getNewsuuid(),
-						classNewsDianzanJsonform.getCreate_useruuid());
-
-		return true;
-	}
 
 	@Override
 	public Class getEntityClass() {
