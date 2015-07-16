@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -37,6 +38,8 @@ public class AbstractRESTController   {
 	      e.printStackTrace();
 	    }
 	    model.addAttribute(RestConstants.Return_UserInfo,userInfoReturn);
+	    HttpSession session =SessionListener.getSession(request);
+	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
 	  }
 	  
 	  /**

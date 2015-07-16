@@ -24,6 +24,7 @@ import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.validate.CommonsValidate;
@@ -295,8 +296,8 @@ public class UserinfoService extends AbstractServcice {
 			this.logger.warn("调试模式下面,用户有所有角色权限.");
 			tmpList1 = s.createSQLQuery("select name from px_right").list();
 		}
-
-		session.setAttribute(RestConstants.Session_UserInfo_rights, tmpList1);
+		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(tmpList1, ","));
+		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
 		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 
 		return true;
