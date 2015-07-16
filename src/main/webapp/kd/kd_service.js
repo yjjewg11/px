@@ -556,8 +556,7 @@ function ajax_class_students_edit(formdata,uuid){
 	});
 };
 function react_ajax_class_students_manage(uuid){
-	
-	
+	Queue.push(function(){react_ajax_class_students_manage(uuid)});
 	$.AMUI.progress.start();
 	
 	var formdata=null;

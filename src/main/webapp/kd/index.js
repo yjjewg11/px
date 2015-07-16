@@ -23,15 +23,23 @@ function login_affter_init(){
 			    ]
 			  }
 			};
+	
+
+	
 //envelope envelope-o envelope-square
 	//menu
+	//——————————————————————————————————————————————————————————————————权限管理————————————————————————————————————————————————————————
+	
 	var menu_data=[];
 	var t_menu=null;//第一级菜单
 	var t_subMenu=null;//第二级子菜单
+	
+	
+	//切换分校
 	t_menu={
 	    "link": "##",
 	    "title": "切换分校"
-	  }
+	  };
 	t_subMenu=[];
 	var t_group=Store.getGroup();
 	for(var i=0;i<t_group.length;i++){
@@ -40,92 +48,129 @@ function login_affter_init(){
 		    "link": "##",
 		    "title": t_group[i].brand_name
 		  });
-	}
+	};
 	
 	t_menu.subMenu=t_subMenu;
 	menu_data.push(t_menu);
+	//切换分校  end
 	
 	
+	//校务管理
+	t_menu={
+		    "link": "##",
+		    "title": "校务管理",
+		    "subMenu": [
+		                {
+		                	"fn":menu_group_myList_fn,
+		                	 "link": "##",
+                              "title": "校园列表"
+                            },
+                            {
+                            	 "fn":menu_group_description_fn,
+                                "link": "##",
+                                "title": "校园介绍"
+                              }
+                            
+                        ]
+		  };
+	if(G_user_hasRight("KD_group_m")){
+		menu_data.push(t_menu);
+	}
+	//校务管理 end 
+
+	
+	//发布消息权限管理	
+	t_menu={
+            
+                "link": "##",
+                "title": "发布消息",
+                "subMenu": [
+                            {
+                              "fn":function(){menu_announce_list_fn(0)},
+                              "link": "##",
+                              "title": "校园公告"
+                            },
+                            {
+                            	  "fn":function(){menu_announce_list_fn(1)},
+                            	  "link": "##",
+                                "title": "老师公告"
+                              },
+                          
+                              {
+                            	  "fn":function(){menu_announce_list_fn(3)},
+                                  "link": "##",
+                                  "title": "招生计划(未)"
+                                },
+                              {
+                                  "fn":function(){menu_announce_list_fn(4)},
+                                  "link": "##",
+                                  "title": "分享文章(未)"
+                                }
+                            ]
+               
+              
+		  };
+	
+	if(G_user_hasRight("KD_announce_m")){
+		menu_data.push(t_menu);
+	}
+	//发布消息权限管理end	
+	
+	//食谱管理
+	t_menu={
+                "link": "##",
+                "title": "食谱管理",
+                "fn":menu_cookbookPlan_list_fn,
+                "subCols": 2
+               // "channelLink": "进入栏目 »", 
+		  }
+	
+	if(G_user_hasRight("KD_cookbookplan_m")){
+		menu_data.push(t_menu);
+	}
+	//食谱管理end
+	
+	//教学课程管理
+	t_menu={
+      	   		"link": "##",
+      	   		"fn":menu_teachingplan_list_fn,
+      	   		"title": "课程安排",
+      	   		"subCols": 2
+        // "channelLink": "进入栏目 »",
+		  }
+	
+	if(G_user_hasRight("KD_teachingplan_m")){
+		menu_data.push(t_menu);
+	}
+	//教学课程管理end
+	//——————————————————————————————————————————————————————————————————权限管理end————————————————————————————————————————————————————————	
+	
+	
+	
+
+
 	var div_menu_data=[
-	           		{
-	        		    "link": "##",
-	        		    "title": "校务管理",
-	        		    "subMenu": [
-	        		                {
-	        		                	"fn":menu_group_myList_fn,
-	        		                	 "link": "##",
-	                                      "title": "校园列表"
-	                                    },
-	                                    {
-	                                    	 "fn":menu_group_description_fn,
-	                                        "link": "##",
-	                                        "title": "校园介绍"
-	                                      },   
-	                                      {
-	                	                      "link": "##",
-	                	                      "title": "老师管理",
-	                	                      "fn":menu_userinfo_list_fn
-	                	                    }
-	                                    
-                                    ]
-	        		  },
+	           		
+	        		  
+	        		  {
+	                      "link": "##",
+	                      "title": "老师管理",
+	                      "fn":menu_userinfo_list_fn
+	                    },
 	                    {
 	                        "link": "##",
 	                        "fn":menu_class_list_fn,
 	                        "title": "班级管理"
 	                      },
 	                      {
-	                    	  "link": "##",
-	                    	   "fn":menu_teachingplan_list_fn,
-	                          "title": "课程安排",
-	                          "subCols": 2
-	                         // "channelLink": "进入栏目 »",
+
 	                         
 	                        },
 	                        {
 	                            "link": "##",
 	                            "fn":menu_accounts_list_fn,
 	                            "title": "收支记录"
-	                          },
-	                {
-	                  "link": "##",
-	                  "title": "食谱管理",
-	                  "fn":menu_cookbookPlan_list_fn,
-	                  "subCols": 2
-	                 // "channelLink": "进入栏目 »",
-	                 
-	                },
-	                    {
-	                        "link": "##",
-	                        "title": "发布消息",
-	                        "subMenu": [
-	                                    {
-	                                      "fn":function(){menu_announce_list_fn(0)},
-	                                      "link": "##",
-	                                      "title": "校园公告"
-	                                    },
-	                                    {
-	                                    	  "fn":function(){menu_announce_list_fn(1)},
-	                                    	  "link": "##",
-	                                        "title": "老师公告"
-	                                      },
-	                                    {
-	                                    	  "fn":function(){menu_announce_list_fn(2)},
-	                                    	  "link": "##",
-	                                        "title": "班级通知"
-	                                      },
-	                                      {
-	                                          "link": "##",
-	                                          "title": "招生计划(未)"
-	                                        },
-                                          {
-                                              "link": "##",
-                                              "title": "分享文章(未)"
-                                            }
-	                                    ]
-	                       
-	                      },
-	                     
+	                          },                     
 	                        {
 	                            "link": "##",
 	                            "title": "互动",
@@ -270,7 +315,7 @@ function menu_dohome(){
 		                    	    "title": "我的班级(未)"
 		                    	  }
 	                    	  ];
-	React.render(React.createElement(AMUIReact.Gallery,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
+	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 
 
@@ -283,7 +328,7 @@ function menu_group_myList_fn() {
 
 
 function menu_kd_group_reg_fn(){
-	Queue.push(menu_class_list_fn);
+	Queue.push(menu_kd_group_reg_fn);
 	React.render(React.createElement(Div_kd_group_reg,null)
 			, document.getElementById('div_login'));
 	$("#div_seesion_body").hide();
@@ -305,7 +350,7 @@ function menu_cookbookPlan_list_fn(){
 	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
 }
 
-//类型'0:普通通知 1:内部通知 2：班级通知',
+//类型'0:普通通知 1:内部通知 2：班级通知,3:"招生计划"4:"文章分享',
 var announce_types=1;
 function menu_announce_list_fn(types) {
 	announce_types=types;

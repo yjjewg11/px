@@ -712,7 +712,7 @@ render: function() {
 	    ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
+    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.groupuuid, onChange: this.handleChange_selectgroup_uuid}, 
     this.props.group_list.map(function(event) {
         return (React.createElement("option", {value: event.uuid}, event.brand_name));
       })
@@ -1874,3 +1874,24 @@ render: function() {
 }
 }); 
 //end accounts
+
+
+
+
+//Div_body_index reg
+var Div_body_index = React.createClass({displayName: "Div_body_index", 
+	componentDidMount:function(){
+		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
+	},
+	render: function() {
+	return (
+		React.createElement("div", null, 
+		React.createElement("div", {id: "baidu_dup_1110291"}), 
+		React.createElement(AMUIReact.Gallery, React.__spread({},   this.props))
+		)
+		
+	);
+	}
+}); 
+
+//userinfo reg end

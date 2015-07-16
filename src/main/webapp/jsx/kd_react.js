@@ -712,7 +712,7 @@ render: function() {
 	    </AMR_ButtonToolbar>
 	  <hr/>
 	  <div className="am-form-group">
-    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.groupuuid} onChange={this.handleChange_selectgroup_uuid}>
     {this.props.group_list.map(function(event) {
         return (<option value={event.uuid} >{event.brand_name}</option>);
       })}
@@ -1874,3 +1874,24 @@ render: function() {
 }
 }); 
 //end accounts
+
+
+
+
+//Div_body_index reg
+var Div_body_index = React.createClass({ 
+	componentDidMount:function(){
+		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
+	},
+	render: function() {
+	return (
+		<div>
+		<div id="baidu_dup_1110291"></div>
+		<AMUIReact.Gallery  {...this.props} />
+		</div>
+		
+	);
+	}
+}); 
+
+//userinfo reg end

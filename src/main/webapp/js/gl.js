@@ -27,6 +27,14 @@ var G_def_headImgPath=hostUrl+"i/header.png";
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
 
 /**
+ * 判断用户是否有该权限
+ * @param m
+ */
+function G_user_hasRight(s){
+	return true;
+}
+
+/**
  * 成功消息提示,3秒后消失
  * @param m
  */
