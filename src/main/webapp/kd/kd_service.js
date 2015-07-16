@@ -1532,7 +1532,7 @@ function ajax_classnewsreply_save(){
 	 url:hostUrl + "rest/classnewsreply/save.json",
 	 cbFN:null,
 	 };
-	 ajax_abs_save(opt);
+	 G_ajax_abs_save(opt);
 }
 
 
