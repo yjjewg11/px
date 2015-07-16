@@ -183,10 +183,12 @@ function login_affter_init(){
 	                                          
 	  	                                    {
 	  	                                        "link": "##",
+	  	                                     // "fn":menu_classnews_list_fn,
 	  	                                        "title": "邀请家长(未)"
 	  	                                      },
 	                                          {
 	                                            "link": "##",
+	                                          //  "fn":menu_classnews_list_fn,
 	                                            "title": "家长反馈(未)"
 	                                          }
 	                                        ]

@@ -32,6 +32,10 @@ var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
  */
 function G_user_hasRight(s){
 	return true;
+	if(Store.getUserRights().indexOf(","+s+",")>-1){
+		return true;
+	}
+	return false;
 }
 
 /**

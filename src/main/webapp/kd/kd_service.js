@@ -1447,35 +1447,6 @@ function ajax_classnews_list(classuuid,pageNo) {
 	});
 };
 
- function ajax_classnewsreply_list(newsuuid,list_div,pageNo){
-	 if(!pageNo)pageNo=1;
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/classnewsreply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Classnewsreply_listshow, {
-					events: data.list,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById(list_div));
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
 
 
 function btn_click_classnews(m,formdata){
@@ -1512,6 +1483,8 @@ function ajax_classnews_edit(m,formdata){
 				if(m=="edit"){
 					React.render(React.createElement(Classnews_edit,{formdata:data.data}), document.getElementById('div_body'));
 				}else{
+					
+					data.data.dianzanList=commons_ajax_dianzan_getByNewsuuid(formdata.uuid);
 					React.render(React.createElement(Classnews_show,{formdata:data.data}), document.getElementById('div_body'));
 				}
 			} else {
@@ -1526,49 +1499,7 @@ function ajax_classnews_edit(m,formdata){
 };
 
 
-function ajax_classnewsreply_save(){
-	var opt={
-	 formName:"editClassnewsreplyForm",
-	 url:hostUrl + "rest/classnewsreply/save.json",
-	 cbFN:null,
-	 };
-	 G_ajax_abs_save(opt);
-}
 
-
-function ajax_classnews_dianzan(newsuuid){
-	var objectForm={newsuuid:newsuuid};
-	var jsonString=JSON.stringify(objectForm);
-	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/classnews/dianzan.json";
-		$.ajax({
-			type : "POST",
-			url : url,
-			processData: false, 
-			data : jsonString,
-			dataType : "json",
-			contentType : false,  
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
-		});
-	
-	
-}
 
 function ajax_classnews_save(){
 	var opt={

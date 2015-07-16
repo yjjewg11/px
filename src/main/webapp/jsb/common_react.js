@@ -516,3 +516,67 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
        
 //end uploadImg
 
+
+//点赞模板
+var Common_Dianzan_show = React.createClass({displayName: "Common_Dianzan_show", 
+render: function() {
+	 var dianzanList=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+  return (
+		   React.createElement("div", {id: "dianzan", class: "dianzan"}, "♡", 
+		   dianzanList.map(function(event) {
+			      return (
+			    		  React.createElement("a", {href: "javascript:void(0);"}, ",", event.create_user)
+			    		  )
+			  }), 
+		   React.createElement("button", {type: "button", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type), className: "am-btn am-btn-primary"}, "点赞")
+		   )
+		   
+  );
+}
+}); 
+
+//评论模板
+var Common_reply_list = React.createClass({displayName: "Common_reply_list", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+	},
+	componentDidMount:function(){
+		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+	},
+render: function() {
+  return (
+		  React.createElement("div", {className: "G_reply"}, 
+		   React.createElement("h4", null, "评论"), 
+		   React.createElement("div", {id: this.classnewsreply_list_div}, 
+		   		"加载中..."
+		   )
+	   )
+		   
+  );
+}
+}); 
+
+//我要评论模块 
+var Common_reply_save = React.createClass({displayName: "Common_reply_save", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+render: function() {
+  return (
+		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
+			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
+			React.createElement("input", {type: "hidden", name: "uuid"}), 
+			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 
+			
+			
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+		      React.createElement("button", {type: "button", onClick: common_ajax_reply_save, className: "am-btn am-btn-primary"}, "提交")
+		      
+		    )	   
+  );
+}
+}); 
+
+

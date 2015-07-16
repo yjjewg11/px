@@ -1448,7 +1448,7 @@ function ajax_classnews_list(classuuid,pageNo) {
 	});
 };
 
- function ajax_classnewsreply_list(newsuuid,list_div,pageNo){
+ function commons_ajax_reply_list(newsuuid,list_div,pageNo){
 	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/classnewsreply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
@@ -1527,7 +1527,7 @@ function ajax_classnews_edit(m,formdata){
 };
 
 
-function ajax_classnewsreply_save(){
+function common_ajax_reply_save(){
 	var opt={
 	 formName:"editClassnewsreplyForm",
 	 url:hostUrl + "rest/classnewsreply/save.json",
@@ -1537,7 +1537,7 @@ function ajax_classnewsreply_save(){
 }
 
 
-function ajax_classnews_dianzan(newsuuid){
+function common_ajax_dianzan_save(newsuuid){
 	var objectForm={newsuuid:newsuuid};
 	var jsonString=JSON.stringify(objectForm);
 	$.AMUI.progress.start();
