@@ -4,13 +4,13 @@
  * Store.getGroup();//获取当前组织列表
 *Store.getGroupNameByUuid(uuid);//
  * Store.getUserinfo();//获取当前用户
- * Store.getCurClass();//获取当前班级
+ * Store.getUserRights();//获取当前班级
  * Store.getMyClassList();//获取我关联的班级(老师)
  * Store.getCurMyClass();//获取我当前班级
  * Store.getClassByUuid(uuid);//
  * Store.getChooseClass(uuid);根据组织id获取班级信息
  * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
- * 
+ * Store.getUserRights();//获取当前用户的权限信息
  * 
  * 
  */
@@ -31,6 +31,16 @@ var Store={
 			  return false;
 			}
 		return true;
+	},
+	setUserRights:function(v){
+		this.map["UserRights"]=v;
+	},
+	getUserRights:function(){
+		return this.map["UserRights"];
+	},
+	getUserRights:function(){
+		if(!Store.enabled())return null;
+		$.AMUI.store.get("Vo_md5");
 	},
 	getVo_map:function(){
 		if(!Store.enabled())return null;

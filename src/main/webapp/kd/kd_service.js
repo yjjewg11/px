@@ -36,6 +36,9 @@ function ajax_userinfo_login() {
 				}
 				Store.setUserinfo(data.userinfo);
 				Store.setGroup(data.list);
+				Store.setUserRights(data.S_User_rights);
+				
+				
 				menu_body_fn();
 				
 				
