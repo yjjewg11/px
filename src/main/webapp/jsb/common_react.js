@@ -83,7 +83,8 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
 	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
 	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限")
+	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
+	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 	    ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -144,11 +145,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
     		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
     		    React.createElement("div", {className: "am-form-group"}, 
-    		          React.createElement("select", {id: "group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: o.group_uuid, onChange: this.handleChange}, 
-    		          this.props.group_list.map(function(event) {
-    		              return (React.createElement("option", {value: event.uuid}, event.company_name));
-    		            })
-    		          )
+    		    React.createElement(AMUIReact.Selected, {multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
     		        ), 
     		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
     		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
@@ -166,7 +163,10 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
     		      React.createElement("input", {type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
     		      React.createElement("br", null), 
-    		      React.createElement("button", {type: "button", onClick: ajax_userinfo_save, className: "am-btn am-btn-primary"}, "提交")
+    		      React.createElement("label", {htmlFor: "office"}, "职位:"), 
+    		      React.createElement("input", {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange}), 
+    		      React.createElement("br", null), 
+    		      React.createElement("button", {type: "button", onClick: ajax_userinfo_saveByAdmin, className: "am-btn am-btn-primary"}, "提交")
     		    )
 
     	     )

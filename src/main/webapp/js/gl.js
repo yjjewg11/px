@@ -31,6 +31,7 @@ var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
  * @param m
  */
 function G_user_hasRight(s){
+	console.log("权限判断参数S",s);
 	return true;
 	if(Store.getUserRights().indexOf(","+s+",")>-1){
 		return true;

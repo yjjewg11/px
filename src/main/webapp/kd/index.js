@@ -1,5 +1,6 @@
 function login_affter_init(){
-	 
+//    var layer = BitmapFactory.createButton({id: "bg",x: 0,y: 172,src: "shade0"});
+//    this.addChild(layer);
 	var div_header_props = {
 			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,
 			  "link": "#title-link",
@@ -73,6 +74,12 @@ function login_affter_init(){
                             
                         ]
 		  };
+	/*
+	 * 调用G_user_hasRight（）;
+	 * 根据项目常量表对应权限检查是否拥有此权限;
+	 * true-信息添加至队列中;
+	 * false-没有此权限不予以添加绘制；
+	 */
 	if(G_user_hasRight("KD_group_m")){
 		menu_data.push(t_menu);
 	}
@@ -110,7 +117,12 @@ function login_affter_init(){
                
               
 		  };
-	
+	/*
+	 * 调用G_user_hasRight（）;
+	 * 根据项目常量表对应权限检查是否拥有此权限;
+	 * true-信息添加至队列中;
+	 * false-没有此权限不予以添加绘制；
+	 */
 	if(G_user_hasRight("KD_announce_m")){
 		menu_data.push(t_menu);
 	}
@@ -138,7 +150,12 @@ function login_affter_init(){
       	   		"subCols": 2
         // "channelLink": "进入栏目 »",
 		  }
-	
+	/*
+	 * 调用G_user_hasRight（）;
+	 * 根据项目常量表对应权限检查是否拥有此权限;
+	 * true-信息添加至队列中;
+	 * false-没有此权限不予以添加绘制；
+	 */
 	if(G_user_hasRight("KD_teachingplan_m")){
 		menu_data.push(t_menu);
 	}
@@ -162,10 +179,10 @@ function login_affter_init(){
 	                        "fn":menu_class_list_fn,
 	                        "title": "班级管理"
 	                      },
-	                      {
-
-	                         
-	                        },
+//	                      {
+//
+//	                         
+//	                        },
 	                        {
 	                            "link": "##",
 	                            "fn":menu_accounts_list_fn,

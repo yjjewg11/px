@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -19,6 +19,8 @@ import com.company.news.entity.User;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
@@ -439,6 +441,103 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
+	
+	
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		User a;
+		try {
+			a = userinfoService.get(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		
+		
+		List list = new ArrayList();
+		try {
+			list = groupService.getGroupByUseruuid(a.getUuid());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+		}
+		model.addAttribute("mygroup_uuids", StringUtils.join(list, ","));
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 组织注册
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/saveByAdmin", method = RequestMethod.POST)
+	public String saveByAdmin(ModelMap model, HttpServletRequest request) {
+		
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+
+		if(!RightUtils.hasRight(RightConstants. KD_teacher_m,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
+}
+
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		// type 添加用户时需要指定用户类型
+		if (userRegJsonform.getType() == null) {
+			responseMessage.setMessage("用户类型不能为空！");
+			return "";
+		}
+		
+		//设置当前用户
+		User user=this.getUserInfoBySession(request);
+		try {
+			if(StringUtils.isEmpty(userRegJsonform.getUuid())){
+				boolean flag = userinfoService
+						.reg(userRegJsonform, responseMessage);
+				if (!flag)// 请求服务返回失败标示
+					return "";
+			}
+			else{
+				User user1 = userinfoService.update(userRegJsonform, responseMessage);
+				if (user1==null)// 请求服务返回失败标示
+					return "";
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
