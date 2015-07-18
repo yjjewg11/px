@@ -1,6 +1,5 @@
 function login_affter_init(){
-//    var layer = BitmapFactory.createButton({id: "bg",x: 0,y: 172,src: "shade0"});
-//    this.addChild(layer);
+	Vo.init();
 	var div_header_props = {
 			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,
 			  "link": "#title-link",
@@ -418,5 +417,8 @@ function index_init(){
 		}
 	  ajax_getUserinfo(true);
 }
-index_init();
+
+window.onload=function(){ 
+	index_init();
+} 
 

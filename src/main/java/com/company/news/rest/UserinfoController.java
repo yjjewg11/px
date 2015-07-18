@@ -251,8 +251,13 @@ public class UserinfoController extends AbstractRESTController {
 			HttpServletRequest request,ResponseMessage responseMessage){
 		List list = new ArrayList();
 		try {
-			list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
-					request).getUuid());
+			if(RightUtils.isAdmin(request)){
+				list = groupService.getGroupByUseruuidByAdmin(this.getUserInfoBySession(
+						request).getUuid());
+			}else{
+				list = groupService.getKDGroupByUseruuid(this.getUserInfoBySession(
+						request).getUuid());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
