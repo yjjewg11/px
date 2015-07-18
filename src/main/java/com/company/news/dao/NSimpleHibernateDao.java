@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
+import com.company.news.entity.Parent;
+import com.company.news.entity.User;
 import com.company.news.json.JSONUtils;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -148,6 +150,26 @@ public class NSimpleHibernateDao extends HibernateDaoSupport {
     }
 
     return null;
+  }
+  
+  /**
+   * 判断家长用户是否注册
+   * @param tel
+   * @return
+   */
+  public boolean isRegBy_parentTel(String tel) {
+	  if( this.getObjectByAttribute(Parent.class,"loginname", tel)==null)return false;
+	  return true;
+  }
+  
+  /**
+   * 判断老师用户是否注册
+   * @param tel
+   * @return
+   */
+  public boolean isRegBy_UserTel(String tel) {
+	  if( this.getObjectByAttribute(User.class,"loginname", tel)==null)return false;
+	  return true;
   }
 
   /**
