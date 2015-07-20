@@ -74,7 +74,7 @@ public class ClassNewsDianzanService extends AbstractServcice {
 		}
 
 		return this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from ClassNewsDianzan where newsuuid=?", newsuuid);
+				"from ClassNewsDianzanOfShow where newsuuid=?", newsuuid);
 	}
 
 	/**

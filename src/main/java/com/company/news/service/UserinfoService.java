@@ -14,8 +14,12 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Announcements;
+import com.company.news.entity.AnnouncementsTo;
 import com.company.news.entity.Group;
+import com.company.news.entity.PClass;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
@@ -28,6 +32,7 @@ import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.validate.CommonsValidate;
+import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.UserInfoReturn;
 import com.company.plugin.security.LoginLimit;
@@ -99,12 +104,16 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
 
-		// 保存用户机构关联表
-		UserGroupRelation userGroupRelation = new UserGroupRelation();
-		userGroupRelation.setUseruuid(user.getUuid());
-		userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
-		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		
+		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
+		for(int i=0;i<groupStrArr.length;i++){
+			// 保存用户机构关联表
+			UserGroupRelation userGroupRelation = new UserGroupRelation();
+			userGroupRelation.setUseruuid(user.getUuid());
+			userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		}
 
 		// 注册机构情况下,当前用户设置为管理员角色
 		if (userRegJsonform instanceof GroupRegJsonform) {
@@ -150,6 +159,61 @@ public class UserinfoService extends AbstractServcice {
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
 		user.setImg(userRegJsonform.getImg());
+
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
+
+		return user;
+	}
+	
+	/**
+	 * 管理员修改用户信息
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public User updateByAdmin(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+
+		// name昵称验证
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
+			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
+			return null;
+		}
+		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
+				userRegJsonform.getUuid());
+		if (user == null) {
+			responseMessage.setMessage("user不存在！");
+			return null;
+		}
+
+		user.setName(userRegJsonform.getName());
+		user.setSex(userRegJsonform.getSex());
+		user.setEmail(userRegJsonform.getEmail());
+		user.setOffice(userRegJsonform.getOffice());
+		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+			responseMessage.setMessage("关联机构不能为空！");
+			return null;
+		}
+		
+		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from UserGroupRelation where useruuid =?", user.getUuid());
+		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
+		
+		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
+		for(int i=0;i<groupStrArr.length;i++){
+			// 保存用户机构关联表
+			UserGroupRelation userGroupRelation = new UserGroupRelation();
+			userGroupRelation.setUseruuid(user.getUuid());
+			userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		}
+
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
@@ -542,6 +606,18 @@ public class UserinfoService extends AbstractServcice {
 		}
 		responseMessage.setMessage("短信验证码不正确！");
 		return false;
+
+	}
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 * @throws Exception
+	 */
+	public User get(String uuid) throws Exception {
+		return (User) this.nSimpleHibernateDao
+				.getObjectById(User.class, uuid);
 
 	}
 }

@@ -98,4 +98,3 @@ function Vo_ajax_MyClass_toVo() {
 	});
 };
 
-Vo.init();

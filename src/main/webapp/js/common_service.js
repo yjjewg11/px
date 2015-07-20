@@ -1,5 +1,5 @@
 /**
- * 
+ * 公用模板
  *1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
@@ -41,10 +41,10 @@ $.AMUI.progress.start();
 		},
 		error : function( obj, textStatus, errorThrown ){
 			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
+			 alert(opt.url+",error:"+textStatus);
+			 console.log(opt.url+',error：', obj);
+			 console.log(opt.url+',error：', textStatus);
+			 console.log(opt.url+',error：', errorThrown);
 		}
 	});
 }
@@ -339,4 +339,108 @@ var url = hostUrl + "rest/userinfo/updatePasswordBySms.json";
 			alert("error:"+textStatus);
 		}
 	});
+}
+
+//获取班级信息公用模板方法 return 出去做
+function commons_ajax_dianzan_getByNewsuuid(newsuuid){
+	var reObj=[];
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/dianzan/getByNewsuuid.json?newsuuid="+newsuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				reObj=data.list;
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+	
+	return reObj;
+};
+
+function common_ajax_dianzan_save(newsuuid,type){
+	var objectForm={newsuuid:newsuuid,type:type};
+	var jsonString=JSON.stringify(objectForm);
+	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/dianzan/save.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			processData: false, 
+			data : jsonString,
+			dataType : "json",
+			contentType : false,  
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+",error:"+textStatus);
+				 console.log(url+',error：', obj);
+				 console.log(url+',error：', textStatus);
+				 console.log(url+',error：', errorThrown);
+			}
+		});
+	
+	
+}
+
+
+
+function commons_ajax_reply_list(newsuuid,list_div,pageNo){
+	 if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/reply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Classnewsreply_listshow, {
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+//我要评论保存操作
+function common_ajax_reply_save(){
+	var opt={
+	 formName:"editClassnewsreplyForm",
+	 url:hostUrl + "rest/reply/save.json",
+	 cbFN:null,
+	 };
+	Queue.push(null);
+	 G_ajax_abs_save(opt);
 }

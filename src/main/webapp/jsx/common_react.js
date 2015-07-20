@@ -84,6 +84,7 @@ var Userinfo_EventsTable = React.createClass({
 	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
 	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
 	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
+	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
 	    </AMR_ButtonToolbar>
 	  <hr/>
 	  <div className="am-form-group">
@@ -144,11 +145,7 @@ var Userinfo_edit = React.createClass({
     			<input type="hidden" name="uuid"  value={o.uuid}/>
     		     <input type="hidden" name="type"  value="1"/>
     		    <div className="am-form-group">
-    		          <select id="group_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={o.group_uuid} onChange={this.handleChange}>
-    		          {this.props.group_list.map(function(event) {
-    		              return (<option value={event.uuid} >{event.company_name}</option>);
-    		            })}
-    		          </select>
+    		    <AMUIReact.Selected  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
     		        </div>
     		      <label htmlFor="tel">手机号码:</label>
     		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
@@ -166,7 +163,10 @@ var Userinfo_edit = React.createClass({
     		      <label htmlFor="password1">重复密码:</label>
     		      <input type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
     		      <br/>
-    		      <button type="button"  onClick={ajax_userinfo_save}  className="am-btn am-btn-primary">提交</button>
+    		      <label htmlFor="office">职位:</label>
+    		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
+    		      <br/>
+    		      <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">提交</button>
     		    </form>
 
     	     </div>
@@ -515,4 +515,68 @@ var Upload_headImg = React.createClass({
        
        
 //end uploadImg
+
+
+//点赞模板
+var Common_Dianzan_show = React.createClass({ 
+render: function() {
+	 var dianzanList=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+  return (
+		   <div id="dianzan" class="dianzan">♡
+		   {dianzanList.map(function(event) {
+			      return (
+			    		  <a href="javascript:void(0);">,{event.create_user}</a>
+			    		  )
+			  })}
+		   <button type="button"  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type)}  className="am-btn am-btn-primary">点赞</button>
+		   </div>
+		   
+  );
+}
+}); 
+
+//评论模板
+var Common_reply_list = React.createClass({ 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+	},
+	componentDidMount:function(){
+		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+	},
+render: function() {
+  return (
+		  <div className="G_reply">
+		   <h4>评论</h4>
+		   <div id={this.classnewsreply_list_div}>
+		   		加载中...
+		   </div>
+	   </div>
+		   
+  );
+}
+}); 
+
+//我要评论模块 
+var Common_reply_save = React.createClass({ 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+render: function() {
+  return (
+		   <form id="editClassnewsreplyForm" method="post" className="am-form">
+			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
+			<input type="hidden" name="uuid" />
+			<input type="hidden" name="type"  value={this.props.uuid}/>
+			
+			
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
+		      <button type="button"  onClick={common_ajax_reply_save}  className="am-btn am-btn-primary">提交</button>
+		      
+		    </form>	   
+  );
+}
+}); 
+
 

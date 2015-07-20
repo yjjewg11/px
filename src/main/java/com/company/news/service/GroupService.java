@@ -247,10 +247,10 @@ public class GroupService extends AbstractServcice {
 
 	
 	/**
-	 * 查询指定用户的机构列表
+	 * 查询指定用户的机构列表(管理员登录方式)
 	 * @return
 	 */
-	public List getGroupByUseruuid(String uuid){
+	public List getGroupByUseruuidByAdmin(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
 		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
@@ -259,7 +259,31 @@ public class GroupService extends AbstractServcice {
 		return q.list();
 	}
 
+	/**
+	 * 查询指定用户的机构列表
+	 * @return
+	 */
+	public List getGroupByUseruuid(String uuid){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+				.addEntity("t1",Group4Q.class);
+		
+		return q.list();
+	}
 
+	/**
+	 * 查询指定用户的机构列表(幼儿园)
+	 * @return
+	 */
+	public List getKDGroupByUseruuid(String uuid){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+				.addEntity("t1",Group4Q.class);
+		
+		return q.list();
+	}
 
 	/**
 	 * 品牌名是否存在

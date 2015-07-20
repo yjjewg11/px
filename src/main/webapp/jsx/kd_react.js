@@ -712,7 +712,7 @@ render: function() {
 	    </AMR_ButtonToolbar>
 	  <hr/>
 	  <div className="am-form-group">
-    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+    <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.groupuuid} onChange={this.handleChange_selectgroup_uuid}>
     {this.props.group_list.map(function(event) {
         return (<option value={event.uuid} >{event.brand_name}</option>);
       })}
@@ -866,16 +866,22 @@ render: function() {
 
 
 
-
+//主页公告添加模板
 var Announcements_show = React.createClass({ 
 render: function() {
 	  var o = this.props.data;
   return (
+		  <div>
 		  <AMUIReact.Article
 		    title={o.title}
 		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time}>
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-		   </AMUIReact.Article>	
+		   </AMUIReact.Article>
+		   //点赞回复模板
+			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+			  <Common_reply_list uuid={o.uuid}  type={0}/>
+			  <Common_reply_save uuid={o.uuid}  type={0}/>
+		   </div>
   );
 }
 }); 
@@ -1620,13 +1626,10 @@ return (
 
 
 var Classnews_show = React.createClass({ 
-	classnewsreply_list_div:"classnewsreply_list_div",
-	componentDidMount:function(){
-		  $('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
-		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div);
-	},
 render: function() {
 	  var o = this.props.formdata;
+	 
+	  if(!o.dianzanList)o.dianzanList=[];
   return (
 		  <div>
 		  <AMUIReact.Article
@@ -1634,29 +1637,9 @@ render: function() {
 		    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		   </AMUIReact.Article>	
-		   <div id="dianzan" class="dianzan">♡
-		 
-		   {o.dianzanList.map(function(event) {
-			      return (
-			    		  <a href="javascript:void(0);">,{event}</a>
-			    		  )
-			  })}
-		   	{o.dianzan}
-		   </div>
-		   <button type="button"  onClick={ajax_classnews_dianzan.bind(this,o.uuid)}  className="am-btn am-btn-primary">点赞</button>
-		   <div className="G_reply">
-			   <h4>回复</h4>
-			   <div id={this.classnewsreply_list_div}>
-			   		加载中...
-			   </div>
-		   </div>
-		   <form id="editClassnewsreplyForm" method="post" className="am-form">
-			<input type="hidden" name="newsuuid"  value={o.uuid}/>
-			<input type="hidden" name="uuid" />
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
-		      <button type="button"  onClick={ajax_classnewsreply_save}  className="am-btn am-btn-primary">提交</button>
-		      
-		    </form>
+		  <Common_Dianzan_show uuid={o.uuid} type={0} />
+		  <Common_reply_list uuid={o.uuid}  type={0}/>
+		  <Common_reply_save uuid={o.uuid}  type={0}/>
 		    </div>
 		   
   );
@@ -1668,7 +1651,7 @@ render: function() {
 var Classnewsreply_listshow = React.createClass({ 
 	classnewsreply_list_div:null,
 	more_onClick:function(pageNo){
-		  ajax_classnewsreply_list(this.props.formdata.uuid,this.classnewsreply_list_div,pageNo);
+		  commons_ajax_reply_list(this.props.formdata.uuid,this.classnewsreply_list_div,pageNo);
 	},
 render: function() {
 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.events.pageNo;
@@ -1874,3 +1857,24 @@ render: function() {
 }
 }); 
 //end accounts
+
+
+
+
+//Div_body_index reg
+var Div_body_index = React.createClass({ 
+	componentDidMount:function(){
+		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
+	},
+	render: function() {
+	return (
+		<div>
+		<div id="baidu_dup_1110291"></div>
+		<AMUIReact.Gallery  {...this.props} />
+		</div>
+		
+	);
+	}
+}); 
+
+//userinfo reg end

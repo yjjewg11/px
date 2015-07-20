@@ -73,7 +73,7 @@ function ajax_loaddata_group_list_for_userinfo_reg() {
 				$("#div_seesion_body").hide();
 				
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -254,7 +254,7 @@ function ajax_group_edit(m,formdata){
 					React.render(React.createElement(Group_show,{formdata:data.data}), document.getElementById('div_body'));
 				}
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -312,6 +312,7 @@ function menu_userinfo_list_fn() {
 
 //
 function ajax_uesrinfo_listByGroup(groupuuid) {
+//	if(groupuuid2!=undefined){
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
 	$.ajax({
@@ -344,21 +345,23 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 			 console.log(url+',error：', errorThrown);
 		}
 	});
+//	}
 };
 
-
+//老师管理Button事件 添加、启用、禁用、分配、修改;
 function btn_click_userinfo(m,obj,usernames){
-	
 	Queue.push(function(){btn_click_userinfo(m,obj,usernames)});
 	if(m=="add"){
 		ajax_userinfo_edit(obj,"add");
 	}else if(m=="disable"){
-		ajax_userinfo_updateDisable(obj,1);
+		ajax_userinfo_updateDisable(obj,1);		
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,0);
 	}else if(m=="getRole"){
 		ajax_userinfo_getRole(obj,usernames, Store.getRoleList());
-	}
+	}else if(m=="edit"){
+		ajax_userinfo_edit({uuid:obj},"edit");
+	};
 };
 
 
@@ -407,20 +410,59 @@ function btn_ajax_updateRole(useruuid){
 }
 
 /**
+ * 将幼儿园列表转换成select要求的数据模型
+ * @param group_list
+ * @returns {Array}
+ */
+function selected_dataModel_change_grouplist(group_list){
+	var arr=[];
+	if(!group_list)return arr;
+	for(var i=0;i<group_list.length;i++){
+		arr.push( {value: group_list[i].uuid, label:group_list[i].brand_name})
+	}
+	return arr;
+}
+
+/**
  * operate=add|edit
  * @param formdata
  * @param operate
+ * 老师管理-添加与修改
  */
-function ajax_userinfo_edit(formdata,operate){
-	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
-
+function ajax_userinfo_edit(formdata,m){
+	if(m=="add"){
+		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
 	
 };
 
-function ajax_userinfo_save(){
+function ajax_userinfo_saveByAdmin(){
     var opt={
             formName: "editUserinfoForm",
-            url:hostUrl + "rest/userinfo/add.json",
+            url:hostUrl + "rest/userinfo/saveByAdmin.json",
             cbFN:null
             };
 G_ajax_abs_save(opt);
@@ -458,7 +500,16 @@ function ajax_getUserinfo(isInit) {
 
 //userinfo end
 
+/**
+ * operate=add|edit
+ * @param formdata
+ * @param operate
+ */
+function ajax_userinfo_reviseing(formdata,operate){
+	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
 
+	
+};
 
 //class
 
@@ -549,7 +600,7 @@ function ajax_class_students_edit(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_student_edit,{formdata:data.data}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -559,8 +610,7 @@ function ajax_class_students_edit(formdata,uuid){
 	});
 };
 function react_ajax_class_students_manage(uuid){
-	
-	
+	Queue.push(function(){react_ajax_class_students_manage(uuid)});
 	$.AMUI.progress.start();
 	
 	var formdata=null;
@@ -576,7 +626,7 @@ function react_ajax_class_students_manage(uuid){
 			if (data.ResMsg.status == "success") {
 				formdata=data.data;
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -599,7 +649,7 @@ function react_ajax_class_students_manage(uuid){
 			if (data.ResMsg.status == "success") {
 				students=data.list;
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -676,7 +726,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -868,7 +918,7 @@ function react_ajax_announce_show(uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Announcements_show,{data:data.data}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -895,7 +945,7 @@ function react_ajax_announce_edit(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Announcements_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1032,7 +1082,7 @@ function react_ajax_teachingplan_show(uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teachingplanments_show,{data:data.data}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1063,7 +1113,7 @@ function react_ajax_teachingplan_edit(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teachingplan_edit,{formdata:data.data}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1228,7 +1278,7 @@ function react_ajax_cookbookPlan_edit(m,formdata){
 				React.render(React.createElement(CookbookPlan_edit,{group_list:Store.getGroup(),formdata:data.data}), document.getElementById('div_body'));
 
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1277,7 +1327,7 @@ var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(CookbookPlanments_show,{data:data.data}), document.getElementById('div_body'));
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1451,35 +1501,6 @@ function ajax_classnews_list(classuuid,pageNo) {
 	});
 };
 
- function ajax_classnewsreply_list(newsuuid,list_div,pageNo){
-	 if(!pageNo)pageNo=1;
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/classnewsreply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Classnewsreply_listshow, {
-					events: data.list,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById(list_div));
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
 
 
 function btn_click_classnews(m,formdata){
@@ -1516,10 +1537,12 @@ function ajax_classnews_edit(m,formdata){
 				if(m=="edit"){
 					React.render(React.createElement(Classnews_edit,{formdata:data.data}), document.getElementById('div_body'));
 				}else{
+					
+					data.data.dianzanList=commons_ajax_dianzan_getByNewsuuid(formdata.uuid);
 					React.render(React.createElement(Classnews_show,{formdata:data.data}), document.getElementById('div_body'));
 				}
 			} else {
-				alert("加载公司数据失败："+data.ResMsg.message);
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){
@@ -1530,49 +1553,7 @@ function ajax_classnews_edit(m,formdata){
 };
 
 
-function ajax_classnewsreply_save(){
-	var opt={
-	 formName:"editClassnewsreplyForm",
-	 url:hostUrl + "rest/classnewsreply/save.json",
-	 cbFN:null,
-	 };
-	 ajax_abs_save(opt);
-}
 
-
-function ajax_classnews_dianzan(newsuuid){
-	var objectForm={newsuuid:newsuuid};
-	var jsonString=JSON.stringify(objectForm);
-	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/classnews/dianzan.json";
-		$.ajax({
-			type : "POST",
-			url : url,
-			processData: false, 
-			data : jsonString,
-			dataType : "json",
-			contentType : false,  
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
-		});
-	
-	
-}
 
 function ajax_classnews_save(){
 	var opt={
