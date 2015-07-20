@@ -69,13 +69,14 @@ public class StudentService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 
 		//添加学生关联联系人表
-		if(CommonsValidate.checkCellphone(student.getBa_tel())){
-			StudentContactRealation studentContactRealation=new StudentContactRealation();
-			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
-			studentContactRealation.setTel(student.getBa_tel());
-			studentContactRealation.setType(SystemConstants.USER_type_ba);
-			studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
-		}
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ba, student.getBa_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ma, student.getMa_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ye, student.getYe_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_nai, student.getNai_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waigong, student.getWaigong_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waipo, student.getWaipo_tel());
+		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_other, student.getOther_tel());
+		
 		return true;
 	}
 
