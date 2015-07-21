@@ -17,7 +17,7 @@ public class RightUtils {
 	 */
 	public static boolean hasRight(String rightName,HttpServletRequest request){
 		HttpSession session =SessionListener.getSession(request);
-		List rights=(List)session.getAttribute(RestConstants.Session_UserInfo_rights);
+		String rights=(String)session.getAttribute(RestConstants.Session_UserInfo_rights);
 		 if(rights.contains(rightName)){
 			 return true;
 		 }
