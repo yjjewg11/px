@@ -43,6 +43,7 @@ public class RoleController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if (!RightUtils.hasRight(RightConstants. AD_role_del ,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
+            return "";
 
 		}
 		try {
@@ -70,6 +71,7 @@ public class RoleController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if (!RightUtils.hasRight(RightConstants. AD_role_m ,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
+            return "";
 
 		}
 		// 请求消息体

@@ -503,6 +503,7 @@ public class UserinfoController extends AbstractRESTController {
 
 		if(!RightUtils.hasRight(RightConstants. KD_teacher_m,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
+            return "";
 }
 
 		// 请求消息体

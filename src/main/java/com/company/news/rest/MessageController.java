@@ -47,6 +47,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
@@ -117,6 +118,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		try {
 			boolean flag = messageService.delete(request.getParameter("uuid"),
@@ -151,6 +153,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		try {
 			boolean flag = messageService.read(request.getParameter("uuid"),

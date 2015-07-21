@@ -19,6 +19,7 @@ public class RightConstants {
 	static public String AD_role_del="AD_role_del";//角色管理(删)
 	static public String AD_basedata_m="AD_basedata_m";//基础数据权限(增改)
 		static public String AD_basedata_del="AD_basedata_del";//基础数据权限(删)
+		static public String AD_class_m="AD_class_m";//	班级管理员权限-增傻查改
 	static public String KD_group_m="KD_group_m";//添加分校权限
 	static public String KD_announce_m="KD_announce_m";//发布消息权限(增改)
 	static public String KD_cookbookplan_m="KD_cookbookplan_m";//发布每日食谱
@@ -26,6 +27,9 @@ public class RightConstants {
 	static public String KD_teachingplan_m="KD_teachingplan_m";//教学计划
 	static public String KD_teacher_m="KD_teacher_m";//添加老师权限	
 	static public String KD_accounts_m="KD_accounts_m";//添加账目权限
+	
+	
+	
 	
 	
 }

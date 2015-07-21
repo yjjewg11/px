@@ -311,10 +311,14 @@ function menu_dohome(){
 	                    	  {
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "###",
-		                    	    "title": "家长互动(未)"
+		                    	    "title": "我的信箱(未)"
 		                    	  },
 		                    	 
-			                    	 
+		                    	  {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "###",
+			                    	    "title": "家长通讯录(未)"
+			                    	  }, 
 		                    	  {
 	                    	    "img": hostUrl+"i/header.png",
 	                    	    "link": "###",
