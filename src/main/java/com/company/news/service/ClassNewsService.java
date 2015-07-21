@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsDianzan;
 import com.company.news.entity.User;
@@ -153,7 +154,7 @@ public class ClassNewsService extends AbstractServcice {
 
 		// 计数
 		cnjf.setCount(countService.count(uuid,
-				countService.count_type_classnews));
+				SystemConstants.common_type_hudong));
 
 		return cnjf;
 
