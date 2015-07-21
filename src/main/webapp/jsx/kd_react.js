@@ -11,7 +11,6 @@ var Grid=AMUIReact.Grid;
 var Col=AMUIReact.Col;
 
 
-
 //userinfo reg
 var Div_userinfo_reg = React.createClass({ 
 	
@@ -368,7 +367,7 @@ render: function() {
     <td> 
     <input type="checkbox" value={event.uuid} name="table_checkbox" />
     </td>
-      <td><a href="javascript:void(0);"  onClick={react_ajax_class_students_manage.bind(this, event.uuid)}>{event.name}</a></td>
+      <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage.bind(this, event.uuid)}>{event.name}</a></td>
       <td>{event.createUser}</td>
       <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
       <td>{event.create_time}</td>
@@ -531,7 +530,7 @@ var Class_students_manage = React.createClass({
 	});
 
 
-
+//编辑学生信息
 var Class_student_edit = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -622,7 +621,7 @@ render: function() {
 		      <br/>
 	 		   <AMUIReact.Input type="textarea"
 		 	 	      label="说明"
-		 	 	    	 name="birthday"
+		 	 	    	 name="note"
 		 	 	      labelClassName="am-u-sm-2"
 		 	 	      placeholder="备注"
 		 	 	      wrapperClassName="am-u-sm-10"
@@ -1878,3 +1877,54 @@ var Div_body_index = React.createClass({
 }); 
 
 //userinfo reg end
+
+//班级管理中查看学生信息
+var Class_student_look_info =React.createClass({
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.headimg;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
+		render: function() {
+	     var o =this.state;
+	     console.log("0000",o);
+		 return (
+		 		<div>
+			    <AMUIReact.List static>
+			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
+				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+				  <br/>
+			      <AMUIReact.ListItem>姓名:{o.name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸电话:{o.ba_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爷爷电话:{o.ye_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>奶奶电话:{o.nai_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>外公电话:{o.waigong_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>外婆电话:{o.waipo_tel}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
+			      <AMUIReact.ListItem>
+			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
+			      </AMUIReact.ListItem>			      
+			      
+			      </AMUIReact.List>
+		 	     </div> 
+		     );
+	        }
+		 });

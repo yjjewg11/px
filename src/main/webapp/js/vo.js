@@ -49,7 +49,7 @@ var Vo={
 		Vo.init();
 		return Vo.map["KD_ann_type_"+t];
 	}
-}
+};
 
 function Vo_ajax_MyClass_toVo() {
 	if(!Vo.md5){

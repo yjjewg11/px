@@ -9,12 +9,14 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import net.sf.json.util.JSONUtils;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.entity.User;
+import com.company.news.json.NpmsDateMorpher;
 import com.company.news.query.PaginationData;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
@@ -110,8 +112,8 @@ public class AbstractRESTController   {
 //	    jsonConfig.registerJsonValueProcessor(Timestamp.class, new JsonDateValueProcessor() );
 	//    
 	//  //  jsonObject = JSONObject.fromObject(bodyJson, jsonConfig);
-//	    JSONUtils.getMorpherRegistry().registerMorpher(
-//	      new NpmsDateMorpher(new String[] {"yyyy-MM-dd HH:mm:ss" }));
+	    JSONUtils.getMorpherRegistry().registerMorpher(
+	      new NpmsDateMorpher(new String[] {"yyyy-MM-dd HH:mm:ss" }));
 	    jsonObject = JSONObject.fromObject(bodyJson);
 	    return  JSONObject.toBean(jsonObject,clazz);
 //	    return JSONObject.toBean(jsonObject, clazz);

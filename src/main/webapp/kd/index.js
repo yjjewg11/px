@@ -261,7 +261,7 @@ var div_menu_handleClick = function(nav, index, e) {
 			 nav.fn();
 			 
 		 }
-		  console.log('点击的链接为：', nav);
+		  console.log('点击的链接为1：', nav);
 	  } else {
 	    e.preventDefault();
 	    if( typeof  nav.fn=="function"){
@@ -270,7 +270,7 @@ var div_menu_handleClick = function(nav, index, e) {
 			 nav.fn();
 			 
 		 }
-	    console.log('点击的链接为：', nav);
+	    console.log('点击的链接为2：', nav);
 	    // do something
 	    // this.closeAll(); //关闭二级菜单
 	  }
@@ -329,8 +329,8 @@ function menu_dohome(){
 			                    	
 		                      {
 		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "我的班级(未)"
+		                    	    "link": "javascript:menu_class_list_fn()",
+		                    	    "title": "我的班级"
 		                    	  }
 	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
