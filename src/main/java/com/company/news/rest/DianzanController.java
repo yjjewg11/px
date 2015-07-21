@@ -19,6 +19,7 @@ import com.company.news.entity.ClassNewsDianzan;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
+import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassNewsDianzanJsonform;
 import com.company.news.jsonform.ClassNewsJsonform;
@@ -93,12 +94,20 @@ public class DianzanController extends AbstractRESTController {
 		List list;
 		try {
 			list = classNewsDianzanService.getDianzanByNewsuuid(newsuuid);
-			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			
+			Boolean canDianzan=true;
+			if(list.size()>0){
+				User user = this.getUserInfoBySession(request);
+				canDianzan=classNewsDianzanService.canDianzan(newsuuid,user.getUuid());
+			}
+			model.addAttribute("names", StringUtils.join(list,","));
+			model.addAttribute("canDianzan", canDianzan);
+			model.addAttribute(RestConstants.Return_ResponseMessage_count, list.size());
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

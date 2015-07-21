@@ -49,6 +49,7 @@ public class BaseDataListController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		if(!RightUtils.hasRight(RightConstants.AD_basedata_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
@@ -110,6 +111,7 @@ public class BaseDataListController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
 		if(!RightUtils.hasRight(RightConstants.AD_basedata_del,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		try {
 			boolean flag=baseDataListService.delete(request.getParameter("uuid"), responseMessage);

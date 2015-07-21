@@ -42,6 +42,7 @@ public class TeachingPlanController extends AbstractRESTController {
 		
 		if (!RightUtils.hasRight(RightConstants. KD_teachingplan_m ,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
+            return "";
 
 		}
 		// 请求消息体

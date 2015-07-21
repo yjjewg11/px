@@ -41,6 +41,7 @@ public class RightController extends AbstractRESTController {
 		if(!RightUtils.hasRight(RightConstants.AD_right_del,request)){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 	
 
@@ -71,6 +72,7 @@ public class RightController extends AbstractRESTController {
 		if(!RightUtils.hasRight(RightConstants.AD_right_m,request)){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
 		}
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		RightJsonform rightJsonform;

@@ -18,6 +18,8 @@ import com.company.news.jsonform.BaseDataListJsonform;
 import com.company.news.jsonform.BaseDataTypeJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.BaseDataTypeService;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
@@ -58,6 +60,12 @@ public class BaseDataTypeController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		if(!RightUtils.hasRight(RightConstants.AD_basedata_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
+		
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		BaseDataTypeJsonform baseDataTypeJsonform;

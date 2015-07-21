@@ -74,9 +74,26 @@ public class ClassNewsDianzanService extends AbstractServcice {
 		}
 
 		return this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from ClassNewsDianzanOfShow where newsuuid=?", newsuuid);
+				"select create_user from ClassNewsDianzanOfShow where newsuuid=?", newsuuid);
 	}
 
+	/**
+	 * 判断是否能点赞
+	 * @param classNewsDianzanJsonform
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean canDianzan(String newsuuid,String create_useruuid) throws Exception {
+
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(
+				"select newsuuid from ClassNewsDianzan where newsuuid=? and create_useruuid=?",
+				newsuuid,create_useruuid);
+		if (list != null && list.size() > 0) {
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * 删除 支持多个，用逗号分隔
 	 * 

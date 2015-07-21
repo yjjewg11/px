@@ -19,6 +19,8 @@ import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.ClassService;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
@@ -93,6 +95,15 @@ public class ClassController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		
+		String groupuuid=request.getParameter("groupuuid");
+		if(StringUtils.isBlank(groupuuid)){//查询全部班级时,只有管理员可以.
+			if(!RightUtils.isAdmin(request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+		}
 		List<PClass> list = classService.query(request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -111,7 +122,11 @@ public class ClassController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
+		if(!RightUtils.hasRight(RightConstants.AD_class_m,request)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
 		try {
 			boolean flag = classService.delete(request.getParameter("uuid"),
 					responseMessage);
