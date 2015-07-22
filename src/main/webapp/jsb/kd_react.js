@@ -11,7 +11,6 @@ var Grid=AMUIReact.Grid;
 var Col=AMUIReact.Col;
 
 
-
 //userinfo reg
 var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg", 
 	
@@ -531,7 +530,7 @@ var Class_students_manage = React.createClass({displayName: "Class_students_mana
 	});
 
 
-
+//编辑学生信息
 var Class_student_edit = React.createClass({displayName: "Class_student_edit", 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -622,7 +621,7 @@ render: function() {
 		      React.createElement("br", null), 
 	 		   React.createElement(AMUIReact.Input, {type: "textarea", 
 		 	 	      label: "说明", 
-		 	 	    	 name: "birthday", 
+		 	 	    	 name: "note", 
 		 	 	      labelClassName: "am-u-sm-2", 
 		 	 	      placeholder: "备注", 
 		 	 	      wrapperClassName: "am-u-sm-10", 
@@ -1878,3 +1877,53 @@ var Div_body_index = React.createClass({displayName: "Div_body_index",
 }); 
 
 //userinfo reg end
+
+//班级管理中查看学生信息
+var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.headimg;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
+		render: function() {
+	     var o =this.state;
+		 return (
+		 		React.createElement("div", null, 
+			    React.createElement(AMUIReact.List, {static: true}, 
+			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
+				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+				  React.createElement("br", null), 
+			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
+			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
+			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
+			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
+			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
+			      React.createElement(AMUIReact.ListItem, null, 
+			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
+			      )			      
+			      
+			      )
+		 	     ) 
+		     );
+	        }
+		 });

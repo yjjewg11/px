@@ -1541,7 +1541,7 @@ function common_ajax_dianzan_save(newsuuid){
 	var objectForm={newsuuid:newsuuid};
 	var jsonString=JSON.stringify(objectForm);
 	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/classnews/dianzan.json";
+	      var url = hostUrl + "rest/dianzan/save.json";
 		$.ajax({
 			type : "POST",
 			url : url,

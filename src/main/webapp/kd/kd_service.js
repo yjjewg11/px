@@ -581,7 +581,6 @@ function class_students_manage_onClick(m,classuuid){
 		ajax_class_students_edit({classuuid:classuuid,sex:0},null);
 	}
 };
-
 function ajax_class_students_edit(formdata,uuid){
 	if(!uuid){
 		React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
@@ -609,6 +608,7 @@ function ajax_class_students_edit(formdata,uuid){
 		}
 	});
 };
+//班级学生详细信息
 function react_ajax_class_students_manage(uuid){
 	Queue.push(function(){react_ajax_class_students_manage(uuid)});
 	$.AMUI.progress.start();
@@ -665,14 +665,14 @@ function react_ajax_class_students_manage(uuid){
 //  	    "img": hostUrl+"i/header.png",
 //	    "title": "刘小二"
 //	  }];
+//   根据班级Info信息绘制学生列表详情
 	if(students){
 		for(var i=0;i<students.length;i++){
 			var tmp=students[i];
 			tmp.img=G_def_headImgPath;
 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
 			tmp.title=tmp.name;
-			tmp.link= "javascript:ajax_class_students_edit(null,'"+tmp.uuid+"')"
-			
+			tmp.link= "javascript:ajax_class_students_look_info(null,'"+tmp.uuid+"')";
 		}
 	}
 	
@@ -685,7 +685,7 @@ function btn_class_student_uploadHeadere(){
 		$("#headimg").val(guid);
 		 $("#img_head_image").attr("src",G_imgPath+guid); 
 		 G_img_down404("#img_head_image");
-	})
+	});
 	
 	
 }
@@ -1653,3 +1653,31 @@ function ajax_accounts_saveAndAdd(){
 G_ajax_abs_save(opt);
 }
 //accounts end
+//班级管理详细学生信息调用的服务器请求以及公共INFO模板Function;
+function ajax_class_students_look_info(formdata,uuid){
+	if(!uuid){
+		React.render(React.createElement( Class_student_look_info,{formdata:formdata}), document.getElementById('div_body'));
+		return;
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/student/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
