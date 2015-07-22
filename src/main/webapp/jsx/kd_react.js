@@ -1878,7 +1878,11 @@ var Div_body_index = React.createClass({
 
 //userinfo reg end
 
-//班级管理中查看学生信息
+/*班级管理中查看学生信息
+ * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
+ * <AMUIReact.ListItem>调用的为AMUIReact中的List列表标签；
+ * 
+ * */
 var Class_student_look_info =React.createClass({
 	 getInitialState: function() {
 		    return this.props.formdata;

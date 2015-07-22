@@ -335,7 +335,12 @@ function menu_dohome(){
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "javascript:menu_class_list_fn()",
 		                    	    "title": "我的班级"
-		                    	  }
+		                    	  },
+		                      {	
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_class_tel_fn()",
+			                    	    "title": "通讯录"
+			                       }
 	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
@@ -414,7 +419,15 @@ function menu_body_fn (){
 	login_affter_init();
 	menu_dohome();
 }
+/* 首页学生通讯录功能方法
+ * @ajax_class_listByTel:
+ * 
+ * 
+ * */
+function menu_class_tel_fn() {
 
+    alert("正在开发中");
+};
 function index_init(){
 	  if ($.AMUI.fullscreen.enabled) {
 		    $.AMUI.fullscreen.request();
