@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.entity.Message;
+import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.jsonform.MessageJsonform;
@@ -66,7 +67,7 @@ public class MessageController extends AbstractRESTController {
 		messageJsonform.setSend_user(user.getName());
 		messageJsonform.setSend_useruuid(user.getUuid());
 		messageJsonform.setType(SystemConstants.Message_type_1);//
-		
+		messageJsonform.setTitle(SystemConstants.Message_title_xinxiang);
 		try {
 			boolean flag;
 			    flag = messageService.add(messageJsonform, responseMessage);
@@ -163,21 +164,46 @@ public class MessageController extends AbstractRESTController {
 	}
 	
 	/**
-	 * 查询我的及时消息
 	 * 
+	 * 查询我的及时消息
 	 * @param model
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/queryMyTimely", method = RequestMethod.GET)
-	public String queryMyTimely(ModelMap model, HttpServletRequest request) {
+	public String queryMessageByMy(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		//设置当前用户
 		User user=this.getUserInfoBySession(request);
 		
 		PaginationData pData = this.getPaginationDataByRequest(request);
-		PageQueryResult pageQueryResult= messageService.query(SystemConstants.Message_type_0.toString(),user.getUuid(),pData);
+		PageQueryResult pageQueryResult= messageService.query(null,user.getUuid(),pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 查询我(老师)和家长的信件
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryByParent", method = RequestMethod.GET)
+	public String queryByParent(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		User user=this.getUserInfoBySession(request);
+		String parent_uuid=request.getParameter("uuid");
+		if(StringUtils.isBlank(parent_uuid)){
+			responseMessage.setMessage("参数必填:uuid");
+			return "";
+		}
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		PageQueryResult pageQueryResult= messageService.queryMessageByTeacher(user.getUuid(),parent_uuid,pData);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

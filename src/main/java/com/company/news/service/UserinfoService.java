@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -45,7 +46,7 @@ import com.company.web.listener.SessionListener;
  */
 @Service
 public class UserinfoService extends AbstractServcice {
-	public static final int USER_disable_default = 0;// 电话号码，验证。默认0，0:启用。1:禁用
+	public static final int USER_disable_default = 0;// 电话号码，验证。默认0，0:启用。1:禁用,
 	public static final int USER_tel_verify_default = 0;// 是否被管理员封号。0：不封。1：封号，不允许登录。
 
 	// 20150610 去掉对用户表的TYPE定义，默认都为0
@@ -54,7 +55,12 @@ public class UserinfoService extends AbstractServcice {
 
 	// 用户状态
 	public static final int USER_disable_true = 1;// 禁用
-
+	// 用户状态
+	public static final int USER_disable_0 = 0;// 启用
+	// 用户状态
+	public static final int USER_disable_2 = 2;//注册用户带审核.
+	@Autowired
+	private SmsService smsService;
 	/**
 	 * 用户注册
 	 * 
@@ -90,6 +96,101 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("电话号码已被注册！");
 			return false;
 		}
+		
+		// TEL格式验证
+				if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+					responseMessage.setMessage("电话号码格式不正确！");
+					return false;
+				}
+				// 注册机构情况下,当前用户设置为管理员角色.需要验证码
+				if (userRegJsonform instanceof GroupRegJsonform) {
+
+					if(!smsService.VerifySmsCode(responseMessage, userRegJsonform.getTel(), userRegJsonform.getSmscode())){
+						return false;
+					}
+				}
+		
+
+		User user = new User();
+
+		BeanUtils.copyProperties(user, userRegJsonform);
+		user.setLoginname(userRegJsonform.getTel());
+		user.setCreate_time(TimeUtils.getCurrentTimestamp());
+		user.setDisable(USER_disable_default);
+		user.setLogin_time(TimeUtils.getCurrentTimestamp());
+		user.setTel_verify(USER_tel_verify_default);
+		user.setSex(0);
+
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
+
+		
+		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
+		for(int i=0;i<groupStrArr.length;i++){
+			// 保存用户机构关联表
+			UserGroupRelation userGroupRelation = new UserGroupRelation();
+			userGroupRelation.setUseruuid(user.getUuid());
+			userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		}
+
+		// 注册机构情况下,当前用户设置为管理员角色
+		if (userRegJsonform instanceof GroupRegJsonform) {
+			GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
+			if (SystemConstants.Group_type_1.equals(group.getType())) {
+				RoleUserRelation r = new RoleUserRelation();
+				r.setRoleuuid(RightConstants.Role_KD_admini);
+				r.setUseruuid(user.getUuid());
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+
+			}
+		}
+		return true;
+	}
+	/**
+	 * 用户注册
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean add(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+
+		// TEL格式验证
+		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码格式不正确！");
+			return false;
+		}
+
+		// name昵称验证
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
+			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
+			return false;
+		}
+
+		// Group_uuid昵称验证
+		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+			responseMessage.setMessage("关联机构不能为空！");
+			return false;
+		}
+
+		// 用户名是否存在
+		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码已被注册！");
+			return false;
+		}
+		
+		// TEL格式验证
+				if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+					responseMessage.setMessage("电话号码格式不正确！");
+					return false;
+				}
+
+		
 
 		User user = new User();
 
@@ -155,10 +256,10 @@ public class UserinfoService extends AbstractServcice {
 		}
 
 		user.setName(userRegJsonform.getName());
-		user.setSex(userRegJsonform.getSex());
+		//user.setSex(userRegJsonform.getSex());
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
-		user.setImg(userRegJsonform.getImg());
+		//user.setImg(userRegJsonform.getImg());
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);

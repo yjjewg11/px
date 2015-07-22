@@ -124,13 +124,33 @@ var Userinfo_EventsTable = React.createClass({
     
 var Userinfo_edit = React.createClass({ 
 	 getInitialState: function() {
+			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editUserinfoForm').serializeJson());
 	  },
+	  handleChange_Selected: function(event) {
+			 $('#group_uuid').val(event);
+			    this.setState($('#editUserinfoForm').serializeJson());
+		  },
   render: function() {
 	  var o = this.state;
+	  var passwordDiv=null;
+	  if(!o.uuid){
+		  passwordDiv=(
+				  <div>
+				  <label htmlFor="password">密码:</label>
+    		      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
+    		      <br/>
+    		      
+    		      <label htmlFor="password1">重复密码:</label>
+    		      <input type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
+    		      <br/>
+				  </div>
+				  );
+	  }
+	  
     return (
     		<div>
     		<div className="header">
@@ -144,8 +164,9 @@ var Userinfo_edit = React.createClass({
     		  <form id="editUserinfoForm" method="post" className="am-form">
     			<input type="hidden" name="uuid"  value={o.uuid}/>
     		     <input type="hidden" name="type"  value="1"/>
+    			 <input type="hidden" id="group_uuid" name="group_uuid"  value=""/>
     		    <div className="am-form-group">
-    		    <AMUIReact.Selected  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
+    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} maxHeight="350"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
     		        </div>
     		      <label htmlFor="tel">手机号码:</label>
     		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
@@ -156,13 +177,7 @@ var Userinfo_edit = React.createClass({
     		       <label htmlFor="">Email:</label>
     		      <input type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
     		      <br/>
-    		      <label htmlFor="password">密码:</label>
-    		      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
-    		      <br/>
-    		      
-    		      <label htmlFor="password1">重复密码:</label>
-    		      <input type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
-    		      <br/>
+    		      {passwordDiv}
     		      <label htmlFor="office">职位:</label>
     		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
     		      <br/>

@@ -277,6 +277,11 @@ var div_menu_handleClick = function(nav, index, e) {
 	};
 
 function menu_dohome(){
+	
+	
+	$("#div_body").show();
+	$("#div_widget_chooseUser").html("");
+	$("#div_widget_chooseCook").html("");
 	Queue.push(menu_dohome);
 	var myhead_img=hostUrl+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
