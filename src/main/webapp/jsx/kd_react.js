@@ -1896,7 +1896,6 @@ var Class_student_look_info =React.createClass({
 	  },
 		render: function() {
 	     var o =this.state;
-	     console.log("0000",o);
 		 return (
 		 		<div>
 			    <AMUIReact.List static>

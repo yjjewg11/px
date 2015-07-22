@@ -519,17 +519,23 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
 
 //点赞模板
 var Common_Dianzan_show = React.createClass({displayName: "Common_Dianzan_show", 
-render: function() {
-	 var dianzanList=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+
+render: function() {	
+	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props);
   return (
 		   React.createElement("div", {id: "dianzan", class: "dianzan"}, "♡", 
-		   dianzanList.map(function(event) {
-			      return (
-			    		  React.createElement("a", {href: "javascript:void(0);"}, ",", event.create_user)
-			    		  )
-			  }), 
-		   React.createElement("button", {type: "button", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type), className: "am-btn am-btn-primary"}, "点赞")
+		   dianzanObject.names, ",等一共", dianzanObject.count, "人点赞", 
+		   React.createElement(AMUIReact.Button, {onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan), amStyle: dianzanObject.canDianzan?"primary":"warning"}, dianzanObject.canDianzan?"点赞":"取消点赞")		   
 		   )
+//		   <div id="delete_dianzan" class="delete_dianzan">
+//		   {dianzanList.map(function(event) {
+//			      return (
+//			    		  <a href="javascript:void(0);">,{event.create_user}</a>
+//			    		  )
+//			  })}		   
+//		   <button type="button2"  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type)}  className="am-btn am-btn-primary">取消点赞</button>
+
+
 		   
   );
 }

@@ -342,6 +342,7 @@ var url = hostUrl + "rest/userinfo/updatePasswordBySms.json";
 }
 
 //获取班级信息公用模板方法 return 出去做
+//dianzan/getByNewsuuid
 function commons_ajax_dianzan_getByNewsuuid(newsuuid){
 	var reObj=[];
 	$.AMUI.progress.start();
@@ -355,7 +356,7 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				reObj=data.list;
+				reObj=data;
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -368,12 +369,18 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
 	
 	return reObj;
 };
-
-function common_ajax_dianzan_save(newsuuid,type){
-	var objectForm={newsuuid:newsuuid,type:type};
+/*
+ * 点赞功能模板服务器请求
+ * @canDianzan：根据Data数据中的是否可以点赞判断进行请求 ;
+ * True表示可以点赞,false表示点赞过了.可以取消点赞;
+ * @newsuuid:哪篇文章的ID;
+ * @type:哪个模板的点赞功能;
+ */
+function common_ajax_dianzan_save(newsuuid,type,canDianzan){
+	var objectForm={newsuuid:newsuuid,type:type,canDianzan:canDianzan};
 	var jsonString=JSON.stringify(objectForm);
 	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/dianzan/save.json";
+	var url =hostUrl +canDianzan?"rest/dianzan/save.json":"/rest/dianzan/delete.json";
 		$.ajax({
 			type : "POST",
 			url : url,
