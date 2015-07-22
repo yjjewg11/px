@@ -143,4 +143,23 @@ public class StudentController extends AbstractRESTController {
 	}
 
 
+	/**
+	 * 查询我学生相关的家长通讯录.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/parentContactByMyStudent", method = RequestMethod.GET)
+	public String myList(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		List list = studentService.parentContactByMyStudent();
+		
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 }

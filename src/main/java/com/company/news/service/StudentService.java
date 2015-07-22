@@ -9,14 +9,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.ParentStudentRelation;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
-import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
+import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -69,13 +70,13 @@ public class StudentService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 
 		//添加学生关联联系人表
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ba, student.getBa_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ma, student.getMa_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ye, student.getYe_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_nai, student.getNai_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waigong, student.getWaigong_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waipo, student.getWaipo_tel());
-		this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_other, student.getOther_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_ye, student.getYe_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_nai, student.getNai_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_waigong, student.getWaigong_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_waipo, student.getWaipo_tel());
+		this.updateStudentContactRealation(student, SystemConstants.USER_type_other, student.getOther_tel());
 		
 		return true;
 	}
@@ -111,13 +112,13 @@ public class StudentService extends AbstractServcice {
 			this.nSimpleHibernateDao.getHibernateTemplate().update(student);
 
 			
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ba, student.getBa_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ma, student.getMa_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_ye, student.getYe_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_nai, student.getNai_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waigong, student.getWaigong_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_waipo, student.getWaipo_tel());
-			this.updateStudentContactRealation(student.getUuid(), SystemConstants.USER_type_other, student.getOther_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_ye, student.getYe_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_nai, student.getNai_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_waigong, student.getWaigong_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_waipo, student.getWaipo_tel());
+			this.updateStudentContactRealation(student, SystemConstants.USER_type_other, student.getOther_tel());
 			
 			
 			return true;
@@ -136,16 +137,20 @@ public class StudentService extends AbstractServcice {
 	 * @param type
 	 * @return
 	 */
-	public StudentContactRealation updateStudentContactRealation(String student_uuid,Integer type,String tel)  throws Exception {
+	public StudentContactRealation updateStudentContactRealation(Student student,Integer type,String tel)  throws Exception {
 		if(!CommonsValidate.checkCellphone(tel)){
 			return null;
 		}
+		String student_uuid=student.getUuid();
 		StudentContactRealation studentContactRealation= this.getStudentContactRealationBy(student_uuid, type);
 		if(studentContactRealation==null){//不存在,则新建.
 			if(!CommonsValidate.checkCellphone(tel))return null;
 			studentContactRealation=new StudentContactRealation();
-			studentContactRealation.setStudent_uuid(student_uuid);
+			studentContactRealation.setStudent_uuid(student.getUuid());
+			studentContactRealation.setStudent_name(student.getName());
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
+			
+			
 			studentContactRealation.setTel(tel);
 			studentContactRealation.setType(type);
 			studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
@@ -189,6 +194,33 @@ public class StudentService extends AbstractServcice {
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		}
 		
+		
+		//1:妈妈,2:爸爸,3:爷爷,4:奶奶,5:外公,6:外婆,7:其他
+		switch (type) {
+		case 1:
+			studentContactRealation.setTypename("妈妈");
+			break;
+		case 2:
+			studentContactRealation.setTypename("爸爸");
+			break;
+		case 3:
+			studentContactRealation.setTypename("爷爷");
+			break;
+		case 4:
+			studentContactRealation.setTypename("奶奶");
+			break;
+		case 5:
+			studentContactRealation.setTypename("外公");
+			break;
+		case 6:
+			studentContactRealation.setTypename("外婆");
+			break;
+		case 7:
+			studentContactRealation.setTypename("其他");
+			break;
+		default:
+			break;
+		}
 		nSimpleHibernateDao.save(studentContactRealation);
 		return studentContactRealation;
 	}
@@ -240,6 +272,17 @@ public class StudentService extends AbstractServcice {
 	 */
 	public Student get(String uuid)throws Exception{
 		return (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List parentContactByMyStudent() {
+		//student_uuid in(select uuid from Student classuuid in("+StringOperationUtil.dateStr)+"))
+		String hql="from StudentContactRealation  where 1=1 order  by student_uuid,type";
+		this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		return null;
 	}
 
 }
