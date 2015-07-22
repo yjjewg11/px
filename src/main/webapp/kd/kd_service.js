@@ -511,11 +511,12 @@ function ajax_userinfo_reviseing(formdata,operate){
 	
 };
 
-//class
 
-
-//班级查询，条件groupuuid
-//
+/*
+ * 班级管理 edit服务器请求
+ * @edit老师编辑状态进入可以编辑模式;
+ * @请求数据成功后执行Class_EventsTable方法绘制
+ * */
 function ajax_class_listByGroup(groupuuid) {
 	if(!groupuuid){
 		alert("ajax_class_listByGroup groupuuid is null.");
@@ -608,8 +609,15 @@ function ajax_class_students_edit(formdata,uuid){
 		}
 	});
 };
-//班级学生详细信息
-function react_ajax_class_students_manage(uuid){
+/*
+* 我的班级（主页） show服务器请求；
+* @show老师查看状态进入查看学生详情;
+* @Class_students_show:绘制班级方法；
+* @绘制3级界面学生列表页面；
+* @3级界面绘制完成后绑定事件点击ajax_class_students_look_info
+*   跳转学生详情绘制界面；
+* */
+function react_ajax_class_students_manage(uuid,m){
 	Queue.push(function(){react_ajax_class_students_manage(uuid)});
 	$.AMUI.progress.start();
 	
@@ -666,17 +674,68 @@ function react_ajax_class_students_manage(uuid){
 //	    "title": "刘小二"
 //	  }];
 //   根据班级Info信息绘制学生列表详情
+	
+	if(m=="show"){
+		if(students){
+			for(var i=0;i<students.length;i++){
+				var tmp=students[i];
+				tmp.img=G_def_headImgPath;
+				if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+				tmp.title=tmp.name;
+				tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"')";
+			}
+		}
+		
+		React.render(React.createElement(Class_students_show,{formdata:formdata,students:students}), document.getElementById('div_body'));
+
+		return ;
+	}
+	
 	if(students){
 		for(var i=0;i<students.length;i++){
 			var tmp=students[i];
 			tmp.img=G_def_headImgPath;
 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
 			tmp.title=tmp.name;
-			tmp.link= "javascript:ajax_class_students_look_info(null,'"+tmp.uuid+"')";
+			tmp.link= "javascript:ajax_class_students_edit(null,'"+tmp.uuid+"')";
 		}
 	}
 	
 	React.render(React.createElement(Class_students_manage,{formdata:formdata,students:students}), document.getElementById('div_body'));
+};
+
+
+
+/*
+ * 主页我的班级界面下的二级界面学生详细信息
+ * @服务器请求:POST rest/student/{uuid}.json;
+ * formdata:null（传空值做保护机制）；
+ * uuid:用户ID;
+ * @根据数据在 Kd_react做绘制处理 
+ * */
+function ajax_class_students_look_info(uuid){
+	
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/student/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
 };
 
 function btn_class_student_uploadHeadere(){
@@ -1652,15 +1711,16 @@ function ajax_accounts_saveAndAdd(){
             };
 G_ajax_abs_save(opt);
 }
-//accounts end
-//班级管理详细学生信息调用的服务器请求以及公共INFO模板Function;
-function ajax_class_students_look_info(formdata,uuid){
-	if(!uuid){
-		React.render(React.createElement( Class_student_look_info,{formdata:formdata}), document.getElementById('div_body'));
-		return;
-	}
+/*
+ * 首页家长通讯录功能；
+ *@服务器请求：POST rest/student/parentContactByMyStudent.json
+ *@Class_student_tel:开始绘制方法;
+ *@formdata:data.list:服务器取回的学生数组数据
+ * */
+function ajax_parentContactByMyStudent(){
+	
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/"+uuid+".json";
+    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1670,7 +1730,7 @@ function ajax_class_students_look_info(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+				React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1681,3 +1741,5 @@ function ajax_class_students_look_info(formdata,uuid){
 		}
 	});
 };
+
+

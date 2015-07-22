@@ -316,8 +316,8 @@ function menu_dohome(){
 		                    	 
 		                    	  {
 			                    	    "img": hostUrl+"i/header.png",
-			                    	    "link": "###",
-			                    	    "title": "家长通讯录(未)"
+			                    	    "link": "javascript:parentContactByMyStudent()",
+			                    	    "title": "家长通讯录"
 			                    	  }, 
 		                    	  {
 	                    	    "img": hostUrl+"i/header.png",
@@ -333,14 +333,9 @@ function menu_dohome(){
 			                    	
 		                      {
 		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "javascript:menu_class_list_fn()",
+		                    	    "link": "javascript:menu_class_students_fn()",
 		                    	    "title": "我的班级"
-		                    	  },
-		                      {	
-			                    	    "img": hostUrl+"i/header.png",
-			                    	    "link": "javascript:menu_class_tel_fn()",
-			                    	    "title": "通讯录"
-			                       }
+		                    	  }
 	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
@@ -360,15 +355,29 @@ function menu_kd_group_reg_fn(){
 			, document.getElementById('div_login'));
 	$("#div_seesion_body").hide();
 }
-//班级管理
+
+/*
+ * 班级管理 edit
+ * @edit老师编辑状态进入可以编辑模式;
+ * */
 function menu_class_list_fn() {
 	Queue.push(menu_class_list_fn);
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
 
+/*
+* 我的班级（主页） show
+* @show老师查看状态进入查看学生详情;
+* */
+function menu_class_students_fn() {
+	Queue.push(menu_class_students_fn);
+	w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
+	
+};
+
 function menu_teachingplan_list_fn(){
 	//first 选择班级
-	w_ch_class.open(ajax_teachingplan_listByClass);
+	 w_ch_class.open(ajax_teachingplan_listByClass);
 	Queue.push(ajax_teachingplan_listByClass);
 }
 
@@ -420,14 +429,15 @@ function menu_body_fn (){
 	menu_dohome();
 }
 /* 首页学生通讯录功能方法
- * @ajax_class_listByTel:
- * 
- * 
+ * @parentContactByMyStudent:和服务器请求名字保持一致;
+ * @ajax_parentContactByMyStudent:准备发请求处理；
+ * @Queue.push():页面Push然后可以实现回退功能；
  * */
-function menu_class_tel_fn() {
-
-    alert("正在开发中");
+function parentContactByMyStudent() {
+	Queue.push(parentContactByMyStudent);
+	ajax_parentContactByMyStudent();
 };
+
 function index_init(){
 	  if ($.AMUI.fullscreen.enabled) {
 		    $.AMUI.fullscreen.request();
@@ -437,5 +447,5 @@ function index_init(){
 
 window.onload=function(){ 
 	index_init();
-} 
+}; 
 
