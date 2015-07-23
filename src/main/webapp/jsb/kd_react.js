@@ -889,6 +889,10 @@ render: function() {
 	    );
 	  }
 	  });
+  /*
+   * （首页）公告功能绘制
+   * 
+   * */
   var Announcements_mylist_EventsTable = React.createClass({displayName: "Announcements_mylist_EventsTable",
   render: function() {
     return (
@@ -2021,8 +2025,11 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		    	this.props.formdata.map(function(event) {
 		            return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
 		            React.createElement(AMR_ButtonToolbar, null, 
-		            React.createElement(AMUIReact.Button, {amStyle: "primary"}, "电话"), 			            
-		            React.createElement(AMUIReact.Button, {amStyle: "success"}, "短信")	
+		            React.createElement(AMUIReact.Button, {amStyle: "primary"}, "电话"), 	
+		            React.createElement("a", {href: "wtai://wp//mc;"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
+		            
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message, amStyle: "success"}, "@信息")	
+		            
 		            )
 		            ));
 		          })		      			      
@@ -2032,3 +2039,22 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	        }
 		 });
 
+
+/* 首页家长通讯录功能2级发信息界面功能
+ * @ 绘制 
+ * */
+var Class_student_tel_message =React.createClass({displayName: "Class_student_tel_message",	 
+	render: function() {
+     var o =this.state;	
+	 return (
+	 		React.createElement("div", null, 
+		    React.createElement(AMUIReact.List, {static: true}, 
+	    	this.props.formdata.list.map(function(event) {
+	            return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message));
+	          })		      			      
+		      ), 
+			  React.createElement(Common_reply_save, {uuid: "ba5ce3c4-9571-4994-a898-35ba41340c34", type: 0})
+	 	     ) 
+	     );
+        }
+	 });

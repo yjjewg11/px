@@ -112,9 +112,7 @@ function login_affter_init(){
                                   "link": "##",
                                   "title": "分享文章(未)"
                                 }
-                            ]
-               
-              
+                            ]                   
 		  };
 	/*
 	 * 调用G_user_hasRight（）;
@@ -244,9 +242,9 @@ function login_affter_init(){
 
 }
 
-/**
+/*
  * 显示bodydiv,隐藏其他所有控件div
- */
+**/
 function body_show(){
 	 w_ch_user.hide();
 	 w_ch_cook.hide();
@@ -346,31 +344,29 @@ function menu_dohome(){
 }
 
 
- 
-//group
-function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn);
-	ajax_group_myList();
-}
-
-
 function menu_kd_group_reg_fn(){
 	Queue.push(menu_kd_group_reg_fn);
 	React.render(React.createElement(Div_kd_group_reg,null)
 			, document.getElementById('div_login'));
 	$("#div_seesion_body").hide();
-}
+};
+
+//——————————————————标头——————————————————
+
+// @Queue.push()方法Push
+//实现页面缓存然后可以实现回退功能；
 
 /*
- * 老师管理管理功能
+ * (标头)老师管理管理功能
  * @跳转kd_service发服务器请求
  * */
 function menu_userinfo_list_fn() {
 	Queue.push(menu_userinfo_list_fn);
 	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
 };
+
 /*
- * 班级管理 edit
+ * (标头)班级管理 edit
  * @跳转kd_service发服务器请求
  * @edit老师编辑状态进入可以编辑模式;
  * */
@@ -380,28 +376,29 @@ function menu_class_list_fn() {
 };
 
 /*
-* 我的班级（主页） show
-* @跳转kd_service发服务器请求
-* @show老师查看状态进入查看学生详情;
-* */
-function menu_class_students_fn() {
-	Queue.push(menu_class_students_fn);
-	w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
-	
-};
-
+ * (标头)课程安排功能
+ * @跳转kd_service发服务器请求
+ * */
 function menu_teachingplan_list_fn(){
 	//first 选择班级
 	 w_ch_class.open(ajax_teachingplan_listByClass);
 	Queue.push(ajax_teachingplan_listByClass);
 }
 
+/*
+ * (标头)食谱管理功能
+ * @跳转kd_service发服务器请求
+ * */
 function menu_cookbookPlan_list_fn(){
 	Queue.push(menu_cookbookPlan_list_fn);
 	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
 }
 
-//类型'0:普通通知 1:内部通知 2：班级通知,3:"招生计划"4:"文章分享',
+/*
+ * (标头)发布消息功能
+ * @types- 0:校园公告 1:老师公告 2：班级通知,3:"招生计划"4:"分享文章' 
+ * @跳转kd_service发服务器请求
+ * */
 var announce_types=1;
 function menu_announce_list_fn(types) {
 	announce_types=types;
@@ -409,9 +406,49 @@ function menu_announce_list_fn(types) {
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
 };
 
+/*
+ * (标头)校务管理的校园列表功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_group_myList_fn() {
+	Queue.push(menu_group_myList_fn);
+	ajax_group_myList();
+}
+
+/*
+ * (标头)我功能中的注销用户
+ * @ajax_userinfo_logout()：注销；
+ * */
+function menu_userinfo_logout_fn(){
+	ajax_userinfo_logout();
+}
+
+//——————————————————首页大图标——————————————————
+/*
+ * （首页）公告功能方法；
+ * @跳转kd_service发服务器请求
+ * */
 function menu_announce_mylist_fn() {
 	Queue.push(menu_announce_mylist_fn);
 	ajax_announce_Mylist();
+};
+/* （首页）学生通讯录功能方法
+ * @parentContactByMyStudent:和服务器请求名字保持一致;
+ * @跳转kd_service发服务器请求
+ * */
+function parentContactByMyStudent() {
+	Queue.push(parentContactByMyStudent);
+	ajax_parentContactByMyStudent();
+};
+/*
+* （首页）我的班级 show
+* @跳转kd_service发服务器请求
+* @show老师查看状态进入查看学生详情;
+* */
+function menu_class_students_fn() {
+	Queue.push(menu_class_students_fn);
+	w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
+	
 };
 
 function menu_userinfo_reg_fn(){
@@ -431,10 +468,6 @@ function menu_userinfo_login_fn(){
 	$("#div_seesion_body").hide();
 }
 
-
-function menu_userinfo_logout_fn(){
-	ajax_userinfo_logout();
-}
 function menu_body_fn (){
 	
 	$("#div_seesion_body").show();
@@ -443,15 +476,6 @@ function menu_body_fn (){
 	login_affter_init();
 	menu_dohome();
 }
-/* 首页学生通讯录功能方法
- * @parentContactByMyStudent:和服务器请求名字保持一致;
- * @ajax_parentContactByMyStudent:准备发请求处理；
- * @Queue.push():页面Push然后可以实现回退功能；
- * */
-function parentContactByMyStudent() {
-	Queue.push(parentContactByMyStudent);
-	ajax_parentContactByMyStudent();
-};
 
 function index_init(){
 	  if ($.AMUI.fullscreen.enabled) {

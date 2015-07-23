@@ -168,7 +168,7 @@ function ajax_kd_group_reg() {
 //group
 
 
-//获取我的
+//校务管理的校园列表功能
 function ajax_group_myList() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/group/myList.json";
@@ -508,7 +508,7 @@ function ajax_userinfo_reviseing(formdata,operate){
 
 
 /*
- * 班级管理 edit服务器请求
+ * 班级管理（编辑） edit服务器请求
  * @edit老师编辑状态进入可以编辑模式;
  * @请求数据成功后执行Class_EventsTable方法绘制
  * */
@@ -886,9 +886,10 @@ function ajax_announce_listByGroup(groupuuid) {
 	});
 };
 
-
-//老师查询我相关的公告
-//
+/*
+ * （首页）公告功能服务器请求
+ * 
+ * */
 function ajax_announce_Mylist() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/queryMyAnnouncements.json";
@@ -957,6 +958,7 @@ function react_ajax_announce_delete(groupuuid,uuid){
 		}
 	});
 };
+//公告二级绑定事件 公告详情；
 function react_ajax_announce_show(uuid){
 	Queue.push(function(){react_ajax_announce_show(uuid)});
 	$.AMUI.progress.start();
@@ -1026,11 +1028,11 @@ G_ajax_abs_save(opt);
 
 
 
-//teachingplan
+/*
+ * 课程安排功能服务器请求
+ * @weeknum:0.表示当前周.-1上周,1下周.2下下周
+ * */
 
-
-//老师查询，条件groupuuid
-//weeknum:0.表示当前周.-1上周,1下周.2下下周
 //记录当前翻页的周数
 var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
@@ -1240,15 +1242,13 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 		}
 	});
 };
-//teachingplan end
 
 
+/*
+ * 课程安排功能服务器请求
+ * @weeknum:0.表示当前周.-1上周,1下周.2下下周
+ * */
 
-//cookbookPlan
-
-
-//老师查询，条件groupuuid
-//weeknum:0.表示当前周.-1上周,1下周.2下下周
 //记录当前翻页的周数
 var g_cookbookPlan_week_point=0;
 function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
@@ -1711,7 +1711,13 @@ G_ajax_abs_save(opt);
  *@服务器请求：POST rest/student/parentContactByMyStudent.json
  *@Class_student_tel:开始绘制方法;
  *@formdata:data.list:服务器取回的学生数组数据
+ *(未开发完一键电话未调试);
  * */
+//大图标统一定义一个菜单;
+function menu_parentContactByMyStudent_fn() {
+	Queue.push(menu_parentContactByMyStudent_fn);
+	ajax_parentContactByMyStudent();
+};
 function ajax_parentContactByMyStudent(){
 	
 	$.AMUI.progress.start();
@@ -1736,5 +1742,45 @@ function ajax_parentContactByMyStudent(){
 		}
 	});
 };
+
+/* 首页家长通讯录功能2级发信息界面功能服务器请求
+ *   (未开发完服务器数据为本地死数据);
+ * */
+function ajax_parentContactByMyStudent_message(){
+	$.AMUI.progress.start();
+$.ajax({
+
+	success : function() {
+		var formdata={"list":[{"name":"参谋将军","message":"一乡二里共三夫子不识四书五经六 竟敢教七八九子 十分大胆"},{"name":"华安","message":"十室九贫凑得八两七钱六分五毫四厘尚且三心二意 一等下流 "},{"name":"参谋将军","message":"鱼肥果熟入我肚 "},{"name":"华安","message":"你老娘来亲下厨 "}]};
+		$.AMUI.progress.done();
+
+	React.render(React.createElement( Class_student_tel_message,{formdata:formdata}), document.getElementById('div_body'));
+	}
+});
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement( xxxxxxxxx,{formdata:data.list}), document.getElementById('div_body'));
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : function( obj, textStatus, errorThrown ){
+//			$.AMUI.progress.done();
+//			alert(url+",error:"+textStatus);
+//		}
+//	});
+   };
+
+
+
 
 
