@@ -112,6 +112,14 @@ var w_uploadImg={
 			w_uploadImg.type=type;
 			w_uploadImg.base64=null;
 			w_uploadImg.callbackFN=callbackFN;
+			//andorid手机有该方法,这用andorid上传头像.
+			try{
+				if(window.JavaScriptCall){
+					JavaScriptCall.selectHeadPic();
+					return;
+				}
+			}catch(e){
+			}
 			w_uploadImg.show();
 		},
 		show:function(){
