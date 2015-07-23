@@ -29,9 +29,16 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
     );
   }
 }); 
-
+/*
+ * 老师管理服务器请求后绘制处理方法；
+ * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+ * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+ * @调用LIS.events.map方法循环绘制老师数组； 
+ * @</select>下拉多选框;
+ * */
 var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable",
 	handleClick: function(m) {
+		
 		 if(m=="add"){
 			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val()});
 			 return;
@@ -65,10 +72,8 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
-	  //
 	  handleChange_selectgroup_uuid:function(){
 		  this.props.handleChange_selectgroup_uuid($('#selectgroup_uuid').val());
-		 // ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val());
 	  },
   render: function() {
     return (
@@ -79,6 +84,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     ), 
     React.createElement("hr", null)
     ), 
+    "//老师管理的五个按钮标签绘制-添加、启用、禁用、分配权限、修改；", 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
 	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
@@ -121,7 +127,11 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     );
   }
 });
-    
+/*
+* 老师管理Button事件(添加和修改按钮绘制与标签事件处理)；
+* @formdata:选中的老师对象；
+* @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+* */    
 var Userinfo_edit = React.createClass({displayName: "Userinfo_edit", 
 	 getInitialState: function() {
 			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
@@ -191,7 +201,6 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     );
   }
 }); 
-//end userinfo
 
 //Userinfo_getRole
 
@@ -533,10 +542,15 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
 
 
 //点赞模板
+/*
+ * 
+ * 
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ **/
 var Common_Dianzan_show = React.createClass({displayName: "Common_Dianzan_show", 
 
 render: function() {	
-	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props);
+	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
   return (
 		   React.createElement("div", {id: "dianzan", class: "dianzan"}, "♡", 
 		   dianzanObject.names, ",等一共", dianzanObject.count, "人点赞", 
@@ -549,8 +563,6 @@ render: function() {
 //			    		  )
 //			  })}		   
 //		   <button type="button2"  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type)}  className="am-btn am-btn-primary">取消点赞</button>
-
-
 		   
   );
 }

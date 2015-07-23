@@ -362,7 +362,16 @@ function menu_kd_group_reg_fn(){
 }
 
 /*
+ * 老师管理管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_userinfo_list_fn() {
+	Queue.push(menu_userinfo_list_fn);
+	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
+};
+/*
  * 班级管理 edit
+ * @跳转kd_service发服务器请求
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn() {
@@ -372,6 +381,7 @@ function menu_class_list_fn() {
 
 /*
 * 我的班级（主页） show
+* @跳转kd_service发服务器请求
 * @show老师查看状态进入查看学生详情;
 * */
 function menu_class_students_fn() {

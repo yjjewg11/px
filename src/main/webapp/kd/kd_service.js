@@ -302,17 +302,14 @@ function ajax_userinfo_logout(){
 		}
 	});
 }
-//老师管理
-
-//老师查询，条件groupuuid
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
-
-//
+/*
+ * 老师管理功能（获取用户列表服务器请求）；
+ * @Userinfo_EventsTable
+ * @btn_click_userinfo（绑定在对象上事件）；
+ * 并且先在公共模板common_react的
+ * @Userinfo_EventsTable方法中继续做下一步处理;
+ * */
 function ajax_uesrinfo_listByGroup(groupuuid) {
-//	if(groupuuid2!=undefined){
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
 	$.ajax({
@@ -345,7 +342,6 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 			 console.log(url+',error：', errorThrown);
 		}
 	});
-//	}
 };
 
 //老师管理Button事件 添加、启用、禁用、分配、修改;
@@ -363,7 +359,42 @@ function btn_click_userinfo(m,obj,usernames){
 		ajax_userinfo_edit({uuid:obj},"edit");
 	};
 };
-
+/*
+ * 老师管理Button事件(添加和修改按钮功能)；
+ * @formdata:选中的老师对象；
+ * @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+ * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
+ * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
+ * */
+function ajax_userinfo_edit(formdata,m){
+	if(m=="add"){
+		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+	
+};
 
 
 function btn_ajax_updateRole(useruuid){
@@ -422,42 +453,6 @@ function selected_dataModel_change_grouplist(group_list){
 	}
 	return arr;
 }
-
-/**
- * operate=add|edit
- * @param formdata
- * @param operate
- * 老师管理-添加与修改
- */
-function ajax_userinfo_edit(formdata,m){
-	if(m=="add"){
-		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
-		return;
-	
-	}
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-	
-};
 
 function ajax_userinfo_saveByAdmin(){
     var opt={
@@ -1674,11 +1669,11 @@ function btn_click_accounts(m,formdata){
 	ajax_accounts_edit(m,formdata);
 };
 
-/**
+/*
 * operate=add|edit
 * @param formdata
 * @param operate
-*/
+* */
 function ajax_accounts_edit(m,formdata){
 		React.render(React.createElement(Accounts_edit,{
 			type_list: Vo.getTypeList("KD_Accounts_type"),
