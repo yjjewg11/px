@@ -168,7 +168,7 @@ function ajax_kd_group_reg() {
 //group
 
 
-//获取我的
+//校务管理的校园列表功能
 function ajax_group_myList() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/group/myList.json";
@@ -302,17 +302,14 @@ function ajax_userinfo_logout(){
 		}
 	});
 }
-//老师管理
-
-//老师查询，条件groupuuid
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
-};
-
-//
+/*
+ * 老师管理功能（获取用户列表服务器请求）；
+ * @Userinfo_EventsTable
+ * @btn_click_userinfo（绑定在对象上事件）；
+ * 并且先在公共模板common_react的
+ * @Userinfo_EventsTable方法中继续做下一步处理;
+ * */
 function ajax_uesrinfo_listByGroup(groupuuid) {
-//	if(groupuuid2!=undefined){
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
 	$.ajax({
@@ -345,7 +342,6 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 			 console.log(url+',error：', errorThrown);
 		}
 	});
-//	}
 };
 
 //老师管理Button事件 添加、启用、禁用、分配、修改;
@@ -363,7 +359,42 @@ function btn_click_userinfo(m,obj,usernames){
 		ajax_userinfo_edit({uuid:obj},"edit");
 	};
 };
-
+/*
+ * 老师管理Button事件(添加和修改按钮功能)；
+ * @formdata:选中的老师对象；
+ * @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+ * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
+ * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
+ * */
+function ajax_userinfo_edit(formdata,m){
+	if(m=="add"){
+		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+		return;
+	
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+	
+};
 
 
 function btn_ajax_updateRole(useruuid){
@@ -423,42 +454,6 @@ function selected_dataModel_change_grouplist(group_list){
 	return arr;
 }
 
-/**
- * operate=add|edit
- * @param formdata
- * @param operate
- * 老师管理-添加与修改
- */
-function ajax_userinfo_edit(formdata,m){
-	if(m=="add"){
-		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
-		return;
-	
-	}
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:selected_dataModel_change_grouplist(Store.getGroup())}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-	
-};
-
 function ajax_userinfo_saveByAdmin(){
     var opt={
             formName: "editUserinfoForm",
@@ -511,11 +506,12 @@ function ajax_userinfo_reviseing(formdata,operate){
 	
 };
 
-//class
 
-
-//班级查询，条件groupuuid
-//
+/*
+ * 班级管理（编辑） edit服务器请求
+ * @edit老师编辑状态进入可以编辑模式;
+ * @请求数据成功后执行Class_EventsTable方法绘制
+ * */
 function ajax_class_listByGroup(groupuuid) {
 	if(!groupuuid){
 		alert("ajax_class_listByGroup groupuuid is null.");
@@ -608,8 +604,15 @@ function ajax_class_students_edit(formdata,uuid){
 		}
 	});
 };
-//班级学生详细信息
-function react_ajax_class_students_manage(uuid){
+/*
+* 我的班级（主页） show服务器请求；
+* @show老师查看状态进入查看学生详情;
+* @Class_students_show:绘制班级方法；
+* @绘制3级界面学生列表页面；
+* @3级界面绘制完成后绑定事件点击ajax_class_students_look_info
+*   跳转学生详情绘制界面；
+* */
+function react_ajax_class_students_manage(uuid,m){
 	Queue.push(function(){react_ajax_class_students_manage(uuid)});
 	$.AMUI.progress.start();
 	
@@ -666,17 +669,68 @@ function react_ajax_class_students_manage(uuid){
 //	    "title": "刘小二"
 //	  }];
 //   根据班级Info信息绘制学生列表详情
+	
+	if(m=="show"){
+		if(students){
+			for(var i=0;i<students.length;i++){
+				var tmp=students[i];
+				tmp.img=G_def_headImgPath;
+				if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+				tmp.title=tmp.name;
+				tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"')";
+			}
+		}
+		
+		React.render(React.createElement(Class_students_show,{formdata:formdata,students:students}), document.getElementById('div_body'));
+
+		return ;
+	}
+	
 	if(students){
 		for(var i=0;i<students.length;i++){
 			var tmp=students[i];
 			tmp.img=G_def_headImgPath;
 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
 			tmp.title=tmp.name;
-			tmp.link= "javascript:ajax_class_students_look_info(null,'"+tmp.uuid+"')";
+			tmp.link= "javascript:ajax_class_students_edit(null,'"+tmp.uuid+"')";
 		}
 	}
 	
 	React.render(React.createElement(Class_students_manage,{formdata:formdata,students:students}), document.getElementById('div_body'));
+};
+
+
+
+/*
+ * 主页我的班级界面下的二级界面学生详细信息
+ * @服务器请求:POST rest/student/{uuid}.json;
+ * formdata:null（传空值做保护机制）；
+ * uuid:用户ID;
+ * @根据数据在 Kd_react做绘制处理 
+ * */
+function ajax_class_students_look_info(uuid){
+	
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/student/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
 };
 
 function btn_class_student_uploadHeadere(){
@@ -832,9 +886,10 @@ function ajax_announce_listByGroup(groupuuid) {
 	});
 };
 
-
-//老师查询我相关的公告
-//
+/*
+ * （首页）公告功能服务器请求
+ * 
+ * */
 function ajax_announce_Mylist() {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/queryMyAnnouncements.json";
@@ -903,6 +958,7 @@ function react_ajax_announce_delete(groupuuid,uuid){
 		}
 	});
 };
+//公告二级绑定事件 公告详情；
 function react_ajax_announce_show(uuid){
 	Queue.push(function(){react_ajax_announce_show(uuid)});
 	$.AMUI.progress.start();
@@ -972,11 +1028,11 @@ G_ajax_abs_save(opt);
 
 
 
-//teachingplan
+/*
+ * 课程安排功能服务器请求
+ * @weeknum:0.表示当前周.-1上周,1下周.2下下周
+ * */
 
-
-//老师查询，条件groupuuid
-//weeknum:0.表示当前周.-1上周,1下周.2下下周
 //记录当前翻页的周数
 var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
@@ -1186,15 +1242,13 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 		}
 	});
 };
-//teachingplan end
 
 
+/*
+ * 课程安排功能服务器请求
+ * @weeknum:0.表示当前周.-1上周,1下周.2下下周
+ * */
 
-//cookbookPlan
-
-
-//老师查询，条件groupuuid
-//weeknum:0.表示当前周.-1上周,1下周.2下下周
 //记录当前翻页的周数
 var g_cookbookPlan_week_point=0;
 function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
@@ -1615,11 +1669,11 @@ function btn_click_accounts(m,formdata){
 	ajax_accounts_edit(m,formdata);
 };
 
-/**
+/*
 * operate=add|edit
 * @param formdata
 * @param operate
-*/
+* */
 function ajax_accounts_edit(m,formdata){
 		React.render(React.createElement(Accounts_edit,{
 			type_list: Vo.getTypeList("KD_Accounts_type"),
@@ -1652,15 +1706,22 @@ function ajax_accounts_saveAndAdd(){
             };
 G_ajax_abs_save(opt);
 }
-//accounts end
-//班级管理详细学生信息调用的服务器请求以及公共INFO模板Function;
-function ajax_class_students_look_info(formdata,uuid){
-	if(!uuid){
-		React.render(React.createElement( Class_student_look_info,{formdata:formdata}), document.getElementById('div_body'));
-		return;
-	}
+/*
+ * 首页家长通讯录功能；
+ *@服务器请求：POST rest/student/parentContactByMyStudent.json
+ *@Class_student_tel:开始绘制方法;
+ *@formdata:data.list:服务器取回的学生数组数据
+ *(未开发完一键电话未调试);
+ * */
+//大图标统一定义一个菜单;
+function menu_parentContactByMyStudent_fn() {
+	Queue.push(menu_parentContactByMyStudent_fn);
+	ajax_parentContactByMyStudent();
+};
+function ajax_parentContactByMyStudent(){
+	
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/"+uuid+".json";
+    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1670,7 +1731,7 @@ function ajax_class_students_look_info(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+				React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1681,3 +1742,45 @@ function ajax_class_students_look_info(formdata,uuid){
 		}
 	});
 };
+
+/* 首页家长通讯录功能2级发信息界面功能服务器请求
+ *   (未开发完服务器数据为本地死数据);
+ * */
+function ajax_parentContactByMyStudent_message(){
+	$.AMUI.progress.start();
+$.ajax({
+
+	success : function() {
+		var formdata={"list":[{"name":"参谋将军","message":"一乡二里共三夫子不识四书五经六 竟敢教七八九子 十分大胆"},{"name":"华安","message":"十室九贫凑得八两七钱六分五毫四厘尚且三心二意 一等下流 "},{"name":"参谋将军","message":"鱼肥果熟入我肚 "},{"name":"华安","message":"你老娘来亲下厨 "}]};
+		$.AMUI.progress.done();
+
+	React.render(React.createElement( Class_student_tel_message,{formdata:formdata}), document.getElementById('div_body'));
+	}
+});
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement( xxxxxxxxx,{formdata:data.list}), document.getElementById('div_body'));
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : function( obj, textStatus, errorThrown ){
+//			$.AMUI.progress.done();
+//			alert(url+",error:"+textStatus);
+//		}
+//	});
+   };
+
+
+
+
+
