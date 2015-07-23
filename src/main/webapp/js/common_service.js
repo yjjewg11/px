@@ -50,6 +50,7 @@ $.AMUI.progress.start();
 }
 
 
+
 //uploadImg
 /**1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);
