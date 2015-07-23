@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
@@ -78,6 +80,7 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		UserRegJsonform userRegJsonform;
@@ -171,14 +174,16 @@ public class UserinfoController extends AbstractRESTController {
 		}
 
 		// type 添加用户时需要指定用户类型
-		if (userRegJsonform.getType() == null) {
-			responseMessage.setMessage("用户类型不能为空！");
-			return "";
-		}
+//		if (userRegJsonform.getType() == null) {
+//			responseMessage.setMessage("用户类型不能为空！");
+//			return "";
+//		}
+		// 默认添加普通用户类型,管理员只有一个.
+		userRegJsonform.setType(UserinfoService.USER_type_teacher);
 
 		try {
 			boolean flag = userinfoService
-					.reg(userRegJsonform, responseMessage);
+					.add(userRegJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -473,15 +478,20 @@ public class UserinfoController extends AbstractRESTController {
 		model.addAttribute(RestConstants.Return_G_entity,a);
 		
 		
-		List list = new ArrayList();
+		List<Group4Q> list = new ArrayList();
+		String mygroup_uuids="";
 		try {
 			list = groupService.getGroupByUseruuid(a.getUuid());
+			for(Group4Q o:list){
+				mygroup_uuids+=o.getUuid()+",";
+			}
+			mygroup_uuids=StringOperationUtil.trimSeparatorChars(mygroup_uuids);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setMessage(e.getMessage());
 		}
-		model.addAttribute("mygroup_uuids", StringUtils.join(list, ","));
+		model.addAttribute("mygroup_uuids",mygroup_uuids);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

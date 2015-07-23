@@ -68,7 +68,6 @@ public class MessageService extends AbstractServcice {
 
 		return true;
 	}
-
 	/**
 	 * 查询所有通知
 	 * 
@@ -88,6 +87,25 @@ public class MessageService extends AbstractServcice {
 				.findByPaginationToHql(hql, pData);
 		return pageQueryResult;
 	}
+	/**
+	 * 查询我(家长)和老师所有信件
+	 * 
+	 * @return
+	 */
+	public PageQueryResult queryMessageByTeacher(String useruuid,String parentuuid,PaginationData pData) {
+		String hql = "from Message where isdelete=" + announcements_isdelete_no;
+			hql += " and type=1" ;
+			hql += " and (" ;
+				hql += "  (revice_useruuid='" + useruuid + "' and send_useruuid='" + parentuuid + "')";//家长发给我的.
+				hql += " or (send_useruuid='" + useruuid + "' and revice_useruuid='" + parentuuid + "')";//我发给家长的.
+			hql += "  )" ;
+		hql += " order by create_time desc";
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		return pageQueryResult;
+	}
+	
+	
 
 	/**
 	 * 删除 支持多个，用逗号分隔

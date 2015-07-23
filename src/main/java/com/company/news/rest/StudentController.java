@@ -151,7 +151,7 @@ public class StudentController extends AbstractRESTController {
 	 * @return
 	 */
 	@RequestMapping(value = "/parentContactByMyStudent", method = RequestMethod.GET)
-	public String myList(ModelMap model, HttpServletRequest request) {
+	public String parentContactByMyStudent(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		

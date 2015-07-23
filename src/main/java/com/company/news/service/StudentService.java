@@ -280,7 +280,7 @@ public class StudentService extends AbstractServcice {
 	 */
 	public List parentContactByMyStudent() {
 		//student_uuid in(select uuid from Student classuuid in("+StringOperationUtil.dateStr)+"))
-		String hql="from StudentContactRealation  where 1=1 order  by student_uuid,type";
+		String hql="from StudentContactRealation  where 1=1 order  by student_name,type";
 		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 	}
 

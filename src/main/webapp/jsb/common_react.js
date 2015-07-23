@@ -124,13 +124,33 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     
 var Userinfo_edit = React.createClass({displayName: "Userinfo_edit", 
 	 getInitialState: function() {
+			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editUserinfoForm').serializeJson());
 	  },
+	  handleChange_Selected: function(event) {
+			 $('#group_uuid').val(event);
+			    this.setState($('#editUserinfoForm').serializeJson());
+		  },
   render: function() {
 	  var o = this.state;
+	  var passwordDiv=null;
+	  if(!o.uuid){
+		  passwordDiv=(
+				  React.createElement("div", null, 
+				  React.createElement("label", {htmlFor: "password"}, "密码:"), 
+    		      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+    		      React.createElement("br", null), 
+    		      
+    		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
+    		      React.createElement("input", {type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
+    		      React.createElement("br", null)
+				  )
+				  );
+	  }
+	  
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -144,8 +164,9 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form"}, 
     			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
     		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
+    			 React.createElement("input", {type: "hidden", id: "group_uuid", name: "group_uuid", value: ""}), 
     		    React.createElement("div", {className: "am-form-group"}, 
-    		    React.createElement(AMUIReact.Selected, {multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
+    		    React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, maxHeight: "350", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
     		        ), 
     		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
     		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
@@ -156,13 +177,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
     		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
     		      React.createElement("br", null), 
-    		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
-    		      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
-    		      React.createElement("br", null), 
-    		      
-    		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-    		      React.createElement("input", {type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
-    		      React.createElement("br", null), 
+    		      passwordDiv, 
     		      React.createElement("label", {htmlFor: "office"}, "职位:"), 
     		      React.createElement("input", {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange}), 
     		      React.createElement("br", null), 
