@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
@@ -15,6 +16,7 @@ import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
+import com.company.news.iservice.PushMsgIservice;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.AnnouncementsVo;
@@ -30,6 +32,9 @@ public class AnnouncementsService extends AbstractServcice {
 	public static final int announcements_type_class = 2;// 班级
 	public static final int announcements_type_general = 0;// 默认公开通知
 	public static final int announcements_type_secret = 1;// 机密
+	
+	@Autowired
+	public PushMsgIservice pushMsgIservice;
 
 	/**
 	 * 增加
@@ -66,6 +71,16 @@ public class AnnouncementsService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(announcements);
 
+		// 如果类型是班级通知
+				if (announcements.getType().intValue() == 0) {//全校公告
+					pushMsgIservice.androidPushMsgToAll_to_teacher("校园公告:"+announcements.getTitle());
+					pushMsgIservice.androidPushMsgToAll_to_parent("校园公告:"+announcements.getTitle());
+					
+				}else if (announcements.getType().intValue() == 1) {//老师公告
+					pushMsgIservice.androidPushMsgToAll_to_teacher("老师公告:"+announcements.getTitle());
+					
+				}
+	
 		// 如果类型是班级通知
 		if (announcements.getType().intValue() == this.announcements_type_class) {
 			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
@@ -295,6 +310,14 @@ public class AnnouncementsService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return User.class;
+	}
+
+	public PushMsgIservice getPushMsgIservice() {
+		return pushMsgIservice;
+	}
+
+	public void setPushMsgIservice(PushMsgIservice pushMsgIservice) {
+		this.pushMsgIservice = pushMsgIservice;
 	}
 
 }

@@ -50,6 +50,7 @@ $.AMUI.progress.start();
 }
 
 
+
 //uploadImg
 /**1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);
@@ -111,6 +112,14 @@ var w_uploadImg={
 			w_uploadImg.type=type;
 			w_uploadImg.base64=null;
 			w_uploadImg.callbackFN=callbackFN;
+			//andorid手机有该方法,这用andorid上传头像.
+			try{
+				if(window.JavaScriptCall){
+					JavaScriptCall.selectHeadPic();
+					return;
+				}
+			}catch(e){
+			}
 			w_uploadImg.show();
 		},
 		show:function(){
@@ -208,6 +217,12 @@ function ajax_userinfo_getRole(useruuid,usernames,roleList){
 	});
 	
 };
+/*
+ * 老师管理Button事件(启用和禁用按钮功能)；
+ * @useruuids:选中的老师对象；
+ * @disable：是启用还是禁用功能；1-启用  0-禁用；
+ * @ajax_uesrinfo_listByGroup：服务器请求处理结束后调回最初方法做数据更新；
+ * */
 function ajax_userinfo_updateDisable(useruuids,disable){
 	var groupuuid=$('#selectgroup_uuid').val();
 	$.AMUI.progress.start();
@@ -375,12 +390,14 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
  * True表示可以点赞,false表示点赞过了.可以取消点赞;
  * @newsuuid:哪篇文章的ID;
  * @type:哪个模板的点赞功能;
+ * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
  */
 function common_ajax_dianzan_save(newsuuid,type,canDianzan){
+	var that=this;
 	var objectForm={newsuuid:newsuuid,type:type,canDianzan:canDianzan};
 	var jsonString=JSON.stringify(objectForm);
 	$.AMUI.progress.start();
-	var url =hostUrl +canDianzan?"rest/dianzan/save.json":"/rest/dianzan/delete.json";
+	var url =hostUrl +(canDianzan?"rest/dianzan/save.json":"rest/dianzan/delete.json");
 		$.ajax({
 			type : "POST",
 			url : url,
@@ -392,7 +409,9 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan){
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
+					that.forceUpdate();
+
+					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
 				} else {
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);

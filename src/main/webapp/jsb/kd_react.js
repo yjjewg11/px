@@ -637,6 +637,134 @@ render: function() {
  );
 }
 }); 
+var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.headimg;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
+		render: function() {
+	     var o =this.state;
+		 return (
+		 		React.createElement("div", null, 
+			    React.createElement(AMUIReact.List, {static: true}, 
+			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
+				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+				  React.createElement("br", null), 
+			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
+			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
+			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
+			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
+			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
+			      React.createElement(AMUIReact.ListItem, null, 
+			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
+			      )			      
+			      
+			      )
+		 	     ) 
+		     );
+	        }
+		 });
+/*
+* 我的班级（主页） show绘制2级界面班级选择绘制；
+* @show老师查看状态进入查看学生详情;
+* @Class_students_show（kd_service中服务器请求时调用）;
+* */
+var Class_students_show= React.createClass({displayName: "Class_students_show",
+	 componentDidMount:function(){
+			 G_img_down404();
+
+	  },
+	render: function() {
+		var o=this.props.formdata;
+	  return (
+	  React.createElement("div", null, 
+	 
+		  React.createElement(AMR_Panel, null, 
+			  React.createElement(AMR_Grid, {className: "doc-g"}, 
+			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
+			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
+			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)
+			  )
+		  ), 
+		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 3, md: 4, lg: 6})
+	    )
+	  );
+	}
+	});
+/*班级管理中查看学生信息
+ * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
+ * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
+ * 
+ * */
+var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassStudentForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+		  var imgGuid=this.state.headimg;
+		 if(imgGuid){
+			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 G_img_down404("#img_head_image");
+		 }
+
+	  },
+		render: function() {
+	     var o =this.state;
+		 return (
+		 		React.createElement("div", null, 
+			    React.createElement(AMUIReact.List, {static: true}, 
+			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
+				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+				  React.createElement("br", null), 
+			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
+			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
+			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
+			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
+			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
+			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
+			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
+			      React.createElement(AMUIReact.ListItem, null, 
+			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
+			      )			      
+			      
+			      )
+		 	     ) 
+		     );
+	        }
+		 });
 //end class
 
 
@@ -761,6 +889,10 @@ render: function() {
 	    );
 	  }
 	  });
+  /*
+   * （首页）公告功能绘制
+   * 
+   * */
   var Announcements_mylist_EventsTable = React.createClass({displayName: "Announcements_mylist_EventsTable",
   render: function() {
     return (
@@ -1876,54 +2008,53 @@ var Div_body_index = React.createClass({displayName: "Div_body_index",
 	}
 }); 
 
-//userinfo reg end
-
-//班级管理中查看学生信息
-var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editClassStudentForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-		  var imgGuid=this.state.headimg;
-		 if(imgGuid){
-			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-			 G_img_down404("#img_head_image");
-		 }
-
-	  },
+/*
+ * 通讯录学生家长联系详情绘制；
+ * @{this.props.formdata.map(function(event)：
+ * 封装好的一个MAP方法只对数组起作用，其内部自己For循环;
+ * @event:Map方法用event.XX调用数组内 数据；
+ * @amStyle:按钮颜色；
+ * */
+var Class_student_tel =React.createClass({displayName: "Class_student_tel",
+	 
 		render: function() {
-	     var o =this.state;
+	     var o =this.state;	
 		 return (
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true}, 
-			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
-				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-				  React.createElement("br", null), 
-			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
-			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
-			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
-			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
-			      React.createElement(AMUIReact.ListItem, null, 
-			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
-			      )			      
-			      
+		    	this.props.formdata.map(function(event) {
+		            return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
+		            React.createElement(AMR_ButtonToolbar, null, 
+		            React.createElement(AMUIReact.Button, {amStyle: "primary"}, "电话"), 	
+		            React.createElement("a", {href: "wtai://wp//mc;"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
+		            
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message, amStyle: "success"}, "@信息")	
+		            
+		            )
+		            ));
+		          })		      			      
 			      )
 		 	     ) 
 		     );
 	        }
 		 });
+
+
+/* 首页家长通讯录功能2级发信息界面功能
+ * @ 绘制 
+ * */
+var Class_student_tel_message =React.createClass({displayName: "Class_student_tel_message",	 
+	render: function() {
+     var o =this.state;	
+	 return (
+	 		React.createElement("div", null, 
+		    React.createElement(AMUIReact.List, {static: true}, 
+	    	this.props.formdata.list.map(function(event) {
+	            return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message));
+	          })		      			      
+		      ), 
+			  React.createElement(Common_reply_save, {uuid: "ba5ce3c4-9571-4994-a898-35ba41340c34", type: 0})
+	 	     ) 
+	     );
+        }
+	 });
