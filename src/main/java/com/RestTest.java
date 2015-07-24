@@ -5,18 +5,14 @@
  */
 package com;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.Date;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.company.news.entity.Student;
-import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
-import com.company.news.jsonform.UserRegJsonform;
-import com.company.news.rest.AbstractRESTController;
 
 
 public class RestTest {
@@ -47,6 +43,19 @@ public class RestTest {
 	 * @method main
 	 */
 	public static void main(String[] args) throws Exception {
+ 
+        Date person = new Date();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
+        objectOutputStream.writeObject(person);    
+        String serStr = byteArrayOutputStream.toString("ISO-8859-1");  
+        serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
+          
+        objectOutputStream.close();  
+        byteArrayOutputStream.close(); 
+		
+        
+		
 		Student student=new Student();
 		student.setAddress("1111");
 		
@@ -54,6 +63,6 @@ public class RestTest {
 		BeanUtils.copyProperties(student, j);
 		
 		
-	System.out.print(student.getAddress());
+	System.out.print(serStr);
 	}
 }
