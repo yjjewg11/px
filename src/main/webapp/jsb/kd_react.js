@@ -1779,41 +1779,6 @@ render: function() {
 
 
 
-var Classnewsreply_listshow = React.createClass({displayName: "Classnewsreply_listshow", 
-	classnewsreply_list_div:null,
-	more_onClick:function(pageNo){
-		  commons_ajax_reply_list(this.props.formdata.uuid,this.classnewsreply_list_div,pageNo);
-	},
-render: function() {
-	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.events.pageNo;
-	  var o = this.props.events;
-	  var totalCount=this.props.events.totalCount;
-		var pageSize=this.props.events.pageSize;
-		var maxPageNo=Math.floor(totalCount/pageSize)+1;
-		var next_disabled=this.props.events.pageNo>=maxPageNo;
-		var more_onClickButton;
-		if (next_disabled) {
-			more_onClickButton = null;
-
-		} else {
-			more_onClickButton =   React.createElement("button", {id: "btn_more_onClick_"+o.pageNo, type: "button", onClick: this.more_onClick.bind(this,o.pageNo+1), className: "am-btn am-btn-primary"}, "加载更多");
-		}
-  return (
-		  React.createElement("div", null, 
-		  this.props.events.data.map(function(event) {
-		      return (
-		    		  React.createElement("div", {className: "event"}, 
-		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}}), 
-		  		 React.createElement("strong", null, event.create_user+" | "+event.update_time)
-		  		 )
-		    		  )
-		  }), 
-		    more_onClickButton
-		    )
-		   
-  );
-}
-}); 
 //end classnews
 
 

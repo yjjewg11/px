@@ -179,6 +179,7 @@ public class StudentService extends AbstractServcice {
 		//判断电话,是否已经注册,来设置状态.
 		if(parent!=null){
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_1);
+			studentContactRealation.setParent_uuid(parent.getUuid());
 			{
 				// 保存家长-学生关联表
 				ParentStudentRelation parentStudentRelation = new ParentStudentRelation();
