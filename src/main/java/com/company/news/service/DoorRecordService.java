@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.common.SerializableUtil;
 import com.company.news.SystemConstants;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
@@ -27,6 +28,8 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class DoorRecordService extends AbstractServcice {
+	@Autowired
+	private GroupService groupService;
 
 	/**
 	 * 用户注册
@@ -42,17 +45,35 @@ public class DoorRecordService extends AbstractServcice {
 			responseMessage.setMessage("Groupuuid不能为空！");
 			return false;
 		}
-		
-		if(list!=null&&list.size()>0)
-			for(DoorRecord d:list){
-				this.nSimpleHibernateDao.getHibernateTemplate().save(d);
-			}
 
-		
-		return true;
+		Group group = groupService.get(doorRecordJsonform.getGroupuuid());
+		if (group == null) {
+			responseMessage.setMessage("GROUP不存在！");
+			return false;
+		}
+
+		if (!group.getPrivate_key().equals(doorRecordJsonform.getPrivate_key())) {
+			responseMessage.setMessage("Private_key密钥不匹配！");
+			return false;
+		}
+
+		try {
+			List<DoorRecord> list = (List<DoorRecord>) SerializableUtil
+					.StringToObject(doorRecordJsonform.getRecordlist());
+
+			if (list != null && list.size() > 0)
+				for (DoorRecord d : list) {
+					d.setGroupuuid(doorRecordJsonform.getGroupuuid());
+					this.nSimpleHibernateDao.getHibernateTemplate().save(d);
+				}
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseMessage.setMessage(e.getMessage());
+			return false;
+		}
 	}
-	
-
 
 	@Override
 	public Class getEntityClass() {

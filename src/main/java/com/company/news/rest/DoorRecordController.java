@@ -51,22 +51,9 @@ public class DoorRecordController extends AbstractRESTController {
 			return "";
 		}
 
-		ObjectInputStream oin;
-		List<DoorRecord> list;
 		try {
-			oin = new ObjectInputStream(new ByteArrayInputStream(
-					doorRecordJsonform.getRecordlist().getBytes()));
-
-			list = (List<DoorRecord>) oin.readObject();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
-
-		try {
-			boolean flag = doorRecordService.insert(list, responseMessage);
+			boolean flag = doorRecordService.insert(doorRecordJsonform,
+					responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -79,7 +66,7 @@ public class DoorRecordController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("注册成功");
+		responseMessage.setMessage("写入成功");
 		return "";
 	}
 
