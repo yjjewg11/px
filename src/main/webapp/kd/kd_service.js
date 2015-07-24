@@ -1718,7 +1718,7 @@ G_ajax_abs_save(opt);
     *@服务器请求：POST rest/student/parentContactByMyStudent.json
     *@Class_student_tel:开始绘制方法;
     *@formdata:data.list:服务器取回的学生数组数据
-    *(未开发完一键电话未调试);
+    *
     * */
    //大图标统一定义一个菜单;
    function menu_parentContactByMyStudent_fn() {
@@ -1749,33 +1749,44 @@ G_ajax_abs_save(opt);
    		}
    	});
    };
-
-   /* 首页家长通讯录功能2级发信息界面功能服务器请求
-    *  @parent_uuid:每个用户的ID；
-    *  @pageNo：信息翻页页数-此处默认为第一页；
+   /* (首页)家长通讯录功能发信息界面功能<创建舞台>
+    * 因有添加加载信息功能所以创建一个舞台然后把每一次添加的DIV添加到舞台上；
     * */
-   function ajax_parentContactByMyStudent_message(parent_uuid){
+   function ajax_parentContactByMyStudent_message_list(parent_uuid){
+		React.render(React.createElement( ParentContactByMyStudent_message_list,{parent_uuid:parent_uuid}), document.getElementById('div_body'));
+	   	
+      };
+   /* 首页家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
+    *  @parent_uuid:每个用户的ID；
+    *  
+    * */
+   function ajax_message_queryByParent(parent_uuid,list_div,pageNo){
+	   var re_data=null;
+	   if(!pageNo)pageNo=1;
    	$.AMUI.progress.start();
    $.ajax({
-
    	success : function() {
-   	//var formdata={"list":[{"name":"参谋将军","message":"一乡二里共三夫子不识四书五经六 竟敢教七八九子 十分大胆"},{"name":"华安","message":"十室九贫凑得八两七钱六分五毫四厘尚且三心二意 一等下流 "},{"name":"参谋将军","message":"鱼肥果熟入我肚 "},{"name":"华安","message":"你老娘来亲下厨 "}]};
    		$.AMUI.progress.done();
-
    	}
    });
    	$.AMUI.progress.start();
-       var url = hostUrl + "rest/student/queryByParent.json?parent_uuid="+parent_uuid+"&pageNo=1";
+       var url = hostUrl + "rest/message/queryByParent.json?uuid="+parent_uuid+"&pageNo="+pageNo;
    	$.ajax({
    		type : "GET",
    		url : url,
    		dataType : "json",
-   		 async: true,
+   		 async: false,
    		success : function(data) {
    			$.AMUI.progress.done();
    			// 登陆成功直接进入主页
    			if (data.ResMsg.status == "success") {
-   				React.render(React.createElement( Class_student_tel_message,{formdata:data.list,pageNo:1}), document.getElementById('div_body'));
+   				React.render(React.createElement(Message_queryByParent_listpage, {
+					events: data.list,
+					parent_uuid:parent_uuid,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				re_data=data.list;
+				
    			} else {
    				alert("加载数据失败："+data.ResMsg.message);
    			}
@@ -1785,4 +1796,22 @@ G_ajax_abs_save(opt);
    			alert(url+",error:"+textStatus);
    		}
    	});
+   	
+   	return re_data;
       };
+      /*我要发信息保存操作
+       * @opt：高级封装做处理 直接把表单和URL地址送进去
+       * @formName:表单信息
+       * @直接传给服务器，服务器根据自己需要的从form表单取参数；
+       * */
+      function ajax_parent_message_save(){
+      	var opt={
+      	 formName:"editForm",
+      	 url:hostUrl + "rest/message/saveToParent.json",
+      	 cbFN:function(data){
+      		 G_msg_pop(data.ResMsg.message);
+      		// if(callback)callback();
+      	 }
+      	 };
+      	 G_ajax_abs_save(opt);
+      }

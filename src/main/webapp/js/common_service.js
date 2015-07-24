@@ -464,7 +464,7 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo){
 	var re_data=null;
 	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/reply/getReplyByNewsuuid.json?pageSize=1&newsuuid="+newsuuid+"&pageNo="+pageNo;
+	var url = hostUrl + "rest/reply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,

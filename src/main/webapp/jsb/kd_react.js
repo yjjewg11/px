@@ -1835,9 +1835,6 @@ render: function() {
 }); 
 //end accounts
 
-
-
-
 //Div_body_index reg
 var Div_body_index = React.createClass({displayName: "Div_body_index", 
 	componentDidMount:function(){
@@ -1874,7 +1871,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		            React.createElement(AMR_ButtonToolbar, null, 
 		            React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message.bind(this,event.parent_uuid), amStyle: "success"}, "@信息")	
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid), amStyle: "success"}, "@信息")	
 		            
 		            )
 		            ));
@@ -1884,25 +1881,86 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		     );
 	        }
 		 });
-/* 首页家长通讯录功能2级发信息界面功能
- * @ 绘制 
+/* 
+ * 家长通讯录中的<信息>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * */
-var Class_student_tel_message =React.createClass({displayName: "Class_student_tel_message",	 
+var ParentContactByMyStudent_message_list = React.createClass({displayName: "ParentContactByMyStudent_message_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
+	},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (
+		  React.createElement("div", null, 
+		   React.createElement("div", {id: this.classnewsreply_list_div}
+		   
+		   ), 
+			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+			React.createElement(Parent_message_save, {uuid: this.props.parent_uuid})
+			)
+			
+  );
+}
+}); 
+/*
+ * 我要发信息模块；(家长通讯录发信息)
+ * */
+var Parent_message_save = React.createClass({displayName: "Parent_message_save", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+	reply_save_btn_click:function(){
+		ajax_parent_message_save();
+	},
+render: function() {
+  return (
+		   React.createElement("form", {id: "editForm", method: "post", className: "am-form"}, 
+			React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.uuid}), 
+			
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
+		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
+		      
+		    )	   
+  );
+}
+}); 
+/* 首页家长通讯录功能2级发信息界面功能
+ * @ 绘制 信息
+ * */
+var Message_queryByParent_listpage =React.createClass({displayName: "Message_queryByParent_listpage",	 
 	render: function() {
-     var o =this.state;	
-	 return (
-	 		React.createElement("div", null, 
-		    React.createElement(AMUIReact.List, {static: true}, 
-	    	this.props.formdata.list.map(function(event) {
-	            return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message));
-	          })		      			      
-		      ), 
-			  React.createElement(Common_reply_save, {uuid: "ba5ce3c4-9571-4994-a898-35ba41340c34", type: 0})
-	 	     ) 
-	     );
-        }
-	 });
-
+	  return (
+			  React.createElement("div", null, 
+			 
+			  this.props.events.data.map(function(event) {
+			      return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message))
+			  })
+			    )
+			   
+	  );
+	}
+})
 /*
  *(校务管理)<校园列表>绘制 ;
  *@handleClick:绑定的事件根据M来区分点击事件并做处理；
