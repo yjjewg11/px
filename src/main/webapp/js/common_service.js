@@ -17,13 +17,18 @@ $.AMUI.progress.start();
 	
 	  var objectForm = $('#'+opt.formName).serializeJson();
 	  var jsonString=JSON.stringify(objectForm);
+	  var async=true;
+	  if(opt.async===false){
+		  async=opt.async;
+	  }
 	$.ajax({
 		type : "POST",
 		url : opt.url,
 		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
 		data:jsonString,
 		dataType : "json",
-		contentType : false,  
+		contentType : false, 
+		async:async,
 		success : function(data) {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
@@ -55,6 +60,8 @@ $.AMUI.progress.start();
 /**1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
+* 
+* w_uploadImg.base64.ajax_uploadByphone(base64);
 */
 var w_uploadImg={
 		div_id:"div_widget_chooseUser",
@@ -63,6 +70,35 @@ var w_uploadImg={
 		callbackFN:null,
 		type:1,
 		base64:null,
+		ajax_uploadByphone:function(base64){
+			$.AMUI.progress.start();
+		    var url = hostUrl + "rest/uploadFile/uploadBase64.json";
+			$.ajax({
+				type : "POST",
+				url : url,
+				dataType : "json",
+				data:{type:w_uploadImg.type,base64:base64},
+				 async: true,
+				success : function(data) {
+					$.AMUI.progress.done();
+					// 登陆成功直接进入主页
+					if (data.ResMsg.status == "success") {
+						if(w_uploadImg.callbackFN){
+							w_uploadImg.callbackFN(data.data.uuid);
+						}
+						w_uploadImg.hide();
+						
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+",error:"+textStatus);
+				}
+			});
+			
+		},
 		ajax_upload:function(){
 			$.AMUI.progress.start();
 		    var url = hostUrl + "rest/uploadFile/uploadBase64.json";
@@ -112,14 +148,7 @@ var w_uploadImg={
 			w_uploadImg.type=type;
 			w_uploadImg.base64=null;
 			w_uploadImg.callbackFN=callbackFN;
-			//andorid手机有该方法,这用andorid上传头像.
-			try{
-				if(window.JavaScriptCall){
-					JavaScriptCall.selectHeadPic();
-					return;
-				}
-			}catch(e){
-			}
+			if(G_CallPhoneFN.selectHeadPic())return;
 			w_uploadImg.show();
 		},
 		show:function(){
@@ -432,21 +461,24 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan){
 
 
 function commons_ajax_reply_list(newsuuid,list_div,pageNo){
+	var re_data=null;
 	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/reply/getReplyByNewsuuid.json?newsuuid="+newsuuid+"&pageNo="+pageNo;
+	var url = hostUrl + "rest/reply/getReplyByNewsuuid.json?pageSize=1&newsuuid="+newsuuid+"&pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,
 		dataType : "json",
+		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Classnewsreply_listshow, {
+				React.render(React.createElement(Common_Classnewsreply_listshow, {
 					events: data.list,
+					newsuuid:newsuuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				
+				re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -459,14 +491,17 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo){
 			 console.log(url+',error：', errorThrown);
 		}
 	});
+	return re_data;
 };
 //我要评论保存操作
-function common_ajax_reply_save(){
+function common_ajax_reply_save(callback){
 	var opt={
 	 formName:"editClassnewsreplyForm",
 	 url:hostUrl + "rest/reply/save.json",
-	 cbFN:null,
+	 cbFN:function(data){
+		 G_msg_pop(data.ResMsg.message);
+		 if(callback)callback();
+	 }
 	 };
-	Queue.push(null);
 	 G_ajax_abs_save(opt);
 }

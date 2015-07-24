@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.User;
@@ -78,6 +79,7 @@ public class GroupService extends AbstractServcice {
 
 		BeanUtils.copyProperties(group, groupRegJsonform);
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
+		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
@@ -153,7 +155,7 @@ public class GroupService extends AbstractServcice {
 		BeanUtils.copyProperties(group, groupRegJsonform);
 
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
-
+		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
 		
@@ -218,7 +220,10 @@ public class GroupService extends AbstractServcice {
 			
 		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
 		if (group != null) {
-			BeanUtils.copyProperties(group, groupRegJsonform);
+			group.setAddress(groupRegJsonform.getAddress());
+			group.setDescription(groupRegJsonform.getDescription());
+			group.setLink_tel(groupRegJsonform.getLink_tel());
+			group.setMap_point(groupRegJsonform.getMap_point());
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(group);
 		}else{

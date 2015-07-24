@@ -1660,41 +1660,6 @@ render: function() {
 
 
 
-var Classnewsreply_listshow = React.createClass({ 
-	classnewsreply_list_div:null,
-	more_onClick:function(pageNo){
-		  commons_ajax_reply_list(this.props.formdata.uuid,this.classnewsreply_list_div,pageNo);
-	},
-render: function() {
-	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.events.pageNo;
-	  var o = this.props.events;
-	  var totalCount=this.props.events.totalCount;
-		var pageSize=this.props.events.pageSize;
-		var maxPageNo=Math.floor(totalCount/pageSize)+1;
-		var next_disabled=this.props.events.pageNo>=maxPageNo;
-		var more_onClickButton;
-		if (next_disabled) {
-			more_onClickButton = null;
-
-		} else {
-			more_onClickButton =   <button id={"btn_more_onClick_"+o.pageNo} type="button"  onClick={this.more_onClick.bind(this,o.pageNo+1)}  className="am-btn am-btn-primary">加载更多</button>;
-		}
-  return (
-		  <div>
-		  {this.props.events.data.map(function(event) {
-		      return (
-		    		  <div className="event">
-		  		 <div  dangerouslySetInnerHTML={{__html: event.content}}></div>
-		  		 <strong>{event.create_user+" | "+event.update_time}</strong>
-		  		 </div>
-		    		  )
-		  })}
-		    {more_onClickButton}
-		    </div>
-		   
-  );
-}
-}); 
 //end classnews
 
 
