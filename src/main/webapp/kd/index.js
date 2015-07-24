@@ -407,7 +407,7 @@ function menu_announce_list_fn(types) {
 };
 
 /*
- * (标头)校务管理的校园列表功能
+ * (标头)<校务管理>校园列表功能
  * @跳转kd_service发服务器请求
  * */
 function menu_group_myList_fn() {

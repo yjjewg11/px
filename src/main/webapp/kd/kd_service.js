@@ -165,117 +165,12 @@ function ajax_kd_group_reg() {
 	});
 }
 
-//group
 
-
-//校务管理的校园列表功能
-function ajax_group_myList() {
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/group/myList.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : "",
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				Store.setGroup(data.list);
-				React.render(React.createElement(Group_EventsTable, {events: data.list,handleClick:btn_group_myList, responsive: true, bordered: true, striped :true,hover:true,striped:true}), document.getElementById('div_body'));
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
 
 function menu_group_change_fn(o){
 	Store.setCurGroup(o);
 	login_affter_init();
 }
-
-function menu_group_description_fn(uuid){
-	Queue.push(function(){menu_group_description_fn(uuid);});
-	if(!uuid)uuid=Store.getCurGroup().uuid;
-	ajax_group_edit("show",{uuid:uuid});
-	
-
-		
-};
-
-function btn_group_myList(m,formdata){
-	Queue.push(function(){btn_group_myList(m)});
-	if(m=="add_group"){
-		ajax_group_edit({"type":1,"brand_name":""});
-	}else if(m=="edit"){
-		ajax_group_edit(formdata);
-	}
-};
-
-function btn_click_group(m,formdata){
-	Queue.push(function(){btn_click_group(m,formdata)});
-	ajax_group_edit(m,formdata);
-};
-
-/**
-* operate=add|edit
-* @param formdata
-* @param operate
-*/
-function ajax_group_edit(m,formdata){
-	if(m=="add"){
-		formdata={type:"1"};
-		React.render(React.createElement(Group_edit,{formdata:formdata}), document.getElementById('div_body'));
-		return;
-	
-	}
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/group/"+formdata.uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				if(m=="edit"){
-					React.render(React.createElement(Group_edit,{formdata:data.data}), document.getElementById('div_body'));
-				}else{
-					React.render(React.createElement(Group_show,{formdata:data.data}), document.getElementById('div_body'));
-				}
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-};
-
-
-function ajax_group_save(){
-	
-    var opt={
-            formName: "editGroupForm",
-            url:hostUrl + "rest/group/save.json",
-            cbFN:null
-            };
-G_ajax_abs_save(opt);
-}
-//group end
-
 //userinfo
 
 
@@ -346,7 +241,7 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 
 //老师管理Button事件 添加、启用、禁用、分配、修改;
 function btn_click_userinfo(m,obj,usernames){
-	Queue.push(function(){btn_click_userinfo(m,obj,usernames)});
+	Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
 	if(m=="add"){
 		ajax_userinfo_edit(obj,"add");
 	}else if(m=="disable"){
@@ -449,7 +344,7 @@ function selected_dataModel_change_grouplist(group_list){
 	var arr=[];
 	if(!group_list)return arr;
 	for(var i=0;i<group_list.length;i++){
-		arr.push( {value: group_list[i].uuid, label:group_list[i].brand_name})
+		arr.push( {value: group_list[i].uuid, label:group_list[i].brand_name});
 	}
 	return arr;
 }
@@ -552,7 +447,7 @@ function ajax_class_listByGroup(groupuuid) {
 
 
 function btn_click_class_list(m,groupuuid,uuids){
-	Queue.push(function(){btn_click_class_list(m,groupuuid,uuids)});
+	Queue.push(function(){btn_click_class_list(m,groupuuid,uuids);});
 	if(m=="add_class"){
 		react_ajax_class_edit_get({groupuuid:groupuuid},null);
 	}else if(m=="edit_class"){
@@ -613,7 +508,7 @@ function ajax_class_students_edit(formdata,uuid){
 *   跳转学生详情绘制界面；
 * */
 function react_ajax_class_students_manage(uuid,m){
-	Queue.push(function(){react_ajax_class_students_manage(uuid)});
+	Queue.push(function(){react_ajax_class_students_manage(uuid);});
 	$.AMUI.progress.start();
 	
 	var formdata=null;
@@ -923,7 +818,7 @@ function ajax_announce_Mylist() {
 
 
 function btn_click_announce(m,groupuuid,uuid){
-	Queue.push(function(){btn_click_announce(m,groupuuid,uuid)});
+	Queue.push(function(){btn_click_announce(m,groupuuid,uuid);});
 	if(m=="add"){
 		react_ajax_announce_edit({group_uuid:groupuuid,type:announce_types},null);
 	}else if(m=="edit"){
@@ -960,7 +855,7 @@ function react_ajax_announce_delete(groupuuid,uuid){
 };
 //公告二级绑定事件 公告详情；
 function react_ajax_announce_show(uuid){
-	Queue.push(function(){react_ajax_announce_show(uuid)});
+	Queue.push(function(){react_ajax_announce_show(uuid);});
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/announcements/"+uuid+".json";
 	$.ajax({
@@ -1089,7 +984,7 @@ function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
 
 
 function btn_click_teachingplan(m,uuid,classuuid){
-	Queue.push(function(){btn_click_teachingplan(m,uuid,classuuid)});
+	Queue.push(function(){btn_click_teachingplan(m,uuid,classuuid);});
 	if(m=="add"){
 		react_ajax_teachingplan_edit({classuuid:classuuid},null);
 	}else if(m=="edit"){
@@ -1194,7 +1089,7 @@ function menu_teachingplan_dayShow_fn() {
 	//ajax_teachingplan_dayShow(null,Store.getCurMyClass());
 	
 
-	w_ch_class.open(function(uuid,name){ajax_teachingplan_dayShow(null,{uuid:uuid,name:name})});
+	w_ch_class.open(function(uuid,name){ajax_teachingplan_dayShow(null,{uuid:uuid,name:name});});
 };
 //老师查询，条件groupuuid
 //num:0.表示当前.-1上,1下.2下下
@@ -1299,7 +1194,7 @@ function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
 
 
 function btn_click_cookbookPlan(m,formdata){
-	Queue.push(function(){btn_click_cookbookPlan(m,formdata)});
+	Queue.push(function(){btn_click_cookbookPlan(m,formdata);});
 	react_ajax_cookbookPlan_edit(m,formdata);
 };
 
@@ -1367,7 +1262,7 @@ var url = hostUrl + "rest/cookbookplan/delete.json?uuid="+uuid;
 	});
 };
 function react_ajax_cookbookPlan_show(uuid){
-	Queue.push(function(){react_ajax_cookbookPlan_show(uuid)});
+	Queue.push(function(){react_ajax_cookbookPlan_show(uuid);});
 	$.AMUI.progress.start();
 var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
 	$.ajax({
@@ -1558,7 +1453,7 @@ function ajax_classnews_list(classuuid,pageNo) {
 
 
 function btn_click_classnews(m,formdata){
-	Queue.push(function(){btn_click_classnews(m,formdata)});
+	Queue.push(function(){btn_click_classnews(m,formdata);});
 	ajax_classnews_edit(m,formdata);
 };
 
@@ -1665,7 +1560,7 @@ function ajax_accounts_listByGroup(groupuuid) {
 };
 
 function btn_click_accounts(m,formdata){
-	Queue.push(function(){btn_click_accounts(m,formdata)});
+	Queue.push(function(){btn_click_accounts(m,formdata);});
 	ajax_accounts_edit(m,formdata);
 };
 
@@ -1706,81 +1601,184 @@ function ajax_accounts_saveAndAdd(){
             };
 G_ajax_abs_save(opt);
 }
-/*
- * 首页家长通讯录功能；
- *@服务器请求：POST rest/student/parentContactByMyStudent.json
- *@Class_student_tel:开始绘制方法;
- *@formdata:data.list:服务器取回的学生数组数据
- *(未开发完一键电话未调试);
- * */
-//大图标统一定义一个菜单;
-function menu_parentContactByMyStudent_fn() {
-	Queue.push(menu_parentContactByMyStudent_fn);
-	ajax_parentContactByMyStudent();
-};
-function ajax_parentContactByMyStudent(){
-	
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-};
 
-/* 首页家长通讯录功能2级发信息界面功能服务器请求
- *   (未开发完服务器数据为本地死数据);
- * */
-function ajax_parentContactByMyStudent_message(){
-	$.AMUI.progress.start();
-$.ajax({
+   /*
+    *(校务管理)<校园列表>服务器 ;
+    *@Group_EventsTable:kd_react开始绘制
+    * */
+   function ajax_group_myList() {
+   	$.AMUI.progress.start();
+   	var url = hostUrl + "rest/group/myList.json";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		data : "",
+   		dataType : "json",
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			if (data.ResMsg.status == "success") {
+   				Store.setGroup(data.list);
+   				React.render(React.createElement(Group_EventsTable, {events: data.list,handleClick:btn_group_myList, responsive: true, bordered: true, striped :true,hover:true,striped:true}), document.getElementById('div_body'));
+   			} else {
+   				alert(data.ResMsg.message);
+   				G_resMsg_filter(data.ResMsg);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+","+textStatus+"="+errorThrown);
+   			 console.log(url+',error：', obj);
+   			 console.log(url+',error：', textStatus);
+   			 console.log(url+',error：', errorThrown);
+   		}
+   	});
+   };
+   /*
+    *(校务管理) return出来的按钮事件绑定公共方法；
+    *@ajax_group_edit：点击事件后下一步服务器处理公共方法；
+    * */
+   function btn_click_group(m,formdata){
+	   	Queue.push(function(){btn_click_group(m,formdata);});
+	   	ajax_group_edit(m,formdata);
+	   };
+   /*
+   * (校务管理)公共模板 服务器请求
+   * @add：Group_edit-添加分校绘制界面；
+   * @edit：修改；
+   */
+   function ajax_group_edit(m,formdata){
+   	if(m=="add"){
+   		formdata={type:"1"};
+   		React.render(React.createElement(Group_edit,{formdata:formdata}), document.getElementById('div_body'));
+   		return;
+   		}
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/group/"+formdata.uuid+".json";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		dataType : "json",
+   		 async: true,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			// 登陆成功直接进入主页
+   			if (data.ResMsg.status == "success") {
+   				if(m=="edit"){
+   					React.render(React.createElement(Group_edit,{formdata:data.data}), document.getElementById('div_body'));
+   				}else{
+   					React.render(React.createElement(Group_show,{formdata:data.data}), document.getElementById('div_body'));
+   				}
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+",error:"+textStatus);
+   		}
+   	});
+   };
+   /*
+    * （校务管理）校园介绍功能；
+    * @ajax_group_edit
+    * */
+   function menu_group_description_fn(uuid){
+   	Queue.push(function(){menu_group_description_fn(uuid);});
+   	if(!uuid)uuid=Store.getCurGroup().uuid;
+   	ajax_group_edit("show",{uuid:uuid});
+   	
 
-	success : function() {
-		var formdata={"list":[{"name":"参谋将军","message":"一乡二里共三夫子不识四书五经六 竟敢教七八九子 十分大胆"},{"name":"华安","message":"十室九贫凑得八两七钱六分五毫四厘尚且三心二意 一等下流 "},{"name":"参谋将军","message":"鱼肥果熟入我肚 "},{"name":"华安","message":"你老娘来亲下厨 "}]};
-		$.AMUI.progress.done();
-
-	React.render(React.createElement( Class_student_tel_message,{formdata:formdata}), document.getElementById('div_body'));
-	}
-});
-//	$.AMUI.progress.start();
-//    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
-//	$.ajax({
-//		type : "GET",
-//		url : url,
-//		dataType : "json",
-//		 async: true,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				React.render(React.createElement( xxxxxxxxx,{formdata:data.list}), document.getElementById('div_body'));
-//			} else {
-//				alert("加载数据失败："+data.ResMsg.message);
-//			}
-//		},
-//		error : function( obj, textStatus, errorThrown ){
-//			$.AMUI.progress.done();
-//			alert(url+",error:"+textStatus);
-//		}
-//	});
+   		
    };
 
+   function btn_group_myList(m,formdata){
+   	Queue.push(function(){btn_group_myList(m);});
+   	if(m=="add_group"){
+   		ajax_group_edit({"type":1,"brand_name":""});
+   	}else if(m=="edit"){
+   		ajax_group_edit(formdata);
+   	}
+   };
 
+   function ajax_group_save(){
+   	
+       var opt={
+               formName: "editGroupForm",
+               url:hostUrl + "rest/group/save.json",
+               cbFN:null
+               };
+   G_ajax_abs_save(opt);
+   }
+   /*
+    * 首页家长通讯录功能；
+    *@服务器请求：POST rest/student/parentContactByMyStudent.json
+    *@Class_student_tel:开始绘制方法;
+    *@formdata:data.list:服务器取回的学生数组数据
+    *(未开发完一键电话未调试);
+    * */
+   //大图标统一定义一个菜单;
+   function menu_parentContactByMyStudent_fn() {
+   	Queue.push(menu_parentContactByMyStudent_fn);
+   	ajax_parentContactByMyStudent();
+   };
+   function ajax_parentContactByMyStudent(){
+   	
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/student/parentContactByMyStudent.json";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		dataType : "json",
+   		 async: true,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			// 登陆成功直接进入主页
+   			if (data.ResMsg.status == "success") {
+   				React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+",error:"+textStatus);
+   		}
+   	});
+   };
 
+   /* 首页家长通讯录功能2级发信息界面功能服务器请求
+    *  @parent_uuid:每个用户的ID；
+    *  @pageNo：信息翻页页数-此处默认为第一页；
+    * */
+   function ajax_parentContactByMyStudent_message(parent_uuid){
+   	$.AMUI.progress.start();
+   $.ajax({
 
+   	success : function() {
+   	//var formdata={"list":[{"name":"参谋将军","message":"一乡二里共三夫子不识四书五经六 竟敢教七八九子 十分大胆"},{"name":"华安","message":"十室九贫凑得八两七钱六分五毫四厘尚且三心二意 一等下流 "},{"name":"参谋将军","message":"鱼肥果熟入我肚 "},{"name":"华安","message":"你老娘来亲下厨 "}]};
+   		$.AMUI.progress.done();
 
+   	}
+   });
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/student/queryByParent.json?parent_uuid="+parent_uuid+"&pageNo=1";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		dataType : "json",
+   		 async: true,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			// 登陆成功直接进入主页
+   			if (data.ResMsg.status == "success") {
+   				React.render(React.createElement( Class_student_tel_message,{formdata:data.list,pageNo:1}), document.getElementById('div_body'));
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+",error:"+textStatus);
+   		}
+   	});
+      };

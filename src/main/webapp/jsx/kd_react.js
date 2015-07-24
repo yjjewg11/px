@@ -214,125 +214,6 @@ var Group_EventRow = React.createClass({
   }
 }); 
 
-var Group_EventsTable = React.createClass({
-	handleClick: function(m) {
-		if(m=="add"){
-			btn_click_group(m,{type:"1"});
-			 return;
-		 }if(m=="edit"){
-			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_group(m,{uuid:uuids});
-		 }
-	  },
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
-  render: function() {
-    return (
-    <div>
-    <AMR_ButtonToolbar>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
-	  </AMR_ButtonToolbar>
-	  <hr/>
-      <AMR_Table {...this.props}>  
-        <thead> 
-          <tr>
-          <th>  
-          <input type="checkbox" id="id_checkbox_all"   onChange={this.handleChange_checkbox_all}  />
-          </th>
-            <th>品牌名</th>
-            <th>机构全称</th>
-            <th>电话</th>
-            <th>公司地址</th>
-            <th>创建时间</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {this.props.events.map(function(event) {
-            return (<Group_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-});
-    
-var Group_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editGroupForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-		  $('#description').xheditor(xhEditor_upImgOption_mfull);
-	},
-  render: function() {
-	  var o = this.state;
-    return (
-    		<div>
-    		<div className="header">
-    		  <div className="am-g">
-    		    <h1>编辑</h1>
-    		  </div>
-    		  <hr />
-    		</div>
-    		<div className="am-g">
-    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-    		  
-    		<form id="editGroupForm" method="post" className="am-form">
-    		<input type="hidden" name="uuid"  value={o.uuid}/>
-    	    <input type="hidden" name="type"  value={o.type}/>
-    	      <label htmlFor="brand_name">品牌名:</label>
-    	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	      <br/>
-    	       <label htmlFor="company_name">机构全称:</label>
-    	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	      <br/>
-    	       <label htmlFor="address">公司地址:</label>
-    	      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
-    	      <br/>
-    	       <label htmlFor="map_point">地址坐标:</label>
-    	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
-    	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-    	      <br/>
-    	       <label htmlFor="link_tel">公司电话:</label>
-    	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-    	      <br/>
-    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-    		  
-    	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
-    	     </form>
-
-    	     </div>
-    	   </div>
-    	   
-    	   </div>
-    );
-  }
-}); 
-
-
-
-
 var Group_show = React.createClass({ 
 render: function() {
 	  var o = this.props.formdata;
@@ -2014,9 +1895,10 @@ var Div_body_index = React.createClass({
  * 封装好的一个MAP方法只对数组起作用，其内部自己For循环;
  * @event:Map方法用event.XX调用数组内 数据；
  * @amStyle:按钮颜色；
+ * @parent_uuid:老师给每个用户的ID发message时需要的参数;
+ * web页面一键电话功能<a href={"tel:"+event.tel}></a>;
  * */
-var Class_student_tel =React.createClass({
-	 
+var Class_student_tel =React.createClass({	 
 		render: function() {
 	     var o =this.state;	
 		 return (
@@ -2025,10 +1907,9 @@ var Class_student_tel =React.createClass({
 		    	{this.props.formdata.map(function(event) {
 		            return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
 		            <AMR_ButtonToolbar>
-		            <AMUIReact.Button amStyle="primary">电话</AMUIReact.Button>	
-		            <a href={"wtai://wp//mc;"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
+		            <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
 		            
-		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message} amStyle="success">@信息</AMUIReact.Button>	
+		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message.bind(this,event.parent_uuid)} amStyle="success">@信息</AMUIReact.Button>	
 		            
 		            </AMR_ButtonToolbar>
 		            </AMUIReact.ListItem>);
@@ -2038,8 +1919,6 @@ var Class_student_tel =React.createClass({
 		     );
 	        }
 		 });
-
-
 /* 首页家长通讯录功能2级发信息界面功能
  * @ 绘制 
  * */
@@ -2058,3 +1937,128 @@ var Class_student_tel_message =React.createClass({
 	     );
         }
 	 });
+
+/*
+ *(校务管理)<校园列表>绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@add:添加分校;
+ *@edit:
+ * */
+var Group_EventsTable = React.createClass({
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_group(m,{type:"1"});
+			 return;
+		 }if(m=="edit"){
+			
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个进行编辑！");
+					return;
+				}
+			  btn_click_group(m,{uuid:uuids});
+		 }
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+  render: function() {
+    return (
+    <div>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  <hr/>
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+          <th>  
+          <input type="checkbox" id="id_checkbox_all"   onChange={this.handleChange_checkbox_all}  />
+          </th>
+            <th>品牌名</th>
+            <th>机构全称</th>
+            <th>电话</th>
+            <th>公司地址</th>
+            <th>创建时间</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Group_EventRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+    /*
+     * (校务管理)<校园列表>添加分校绘制界面；
+     * */    
+    var Group_edit = React.createClass({ 
+    	 getInitialState: function() {
+    		    return this.props.formdata;
+    		  },
+    	 handleChange: function(event) {
+    		    this.setState($('#editGroupForm').serializeJson());
+    	  },
+    	  componentDidMount:function(){
+    		  $('#description').xheditor(xhEditor_upImgOption_mfull);
+    	},
+      render: function() {
+    	  var o = this.state;
+        return (
+        		<div>
+        		<div className="header">
+        		  <div className="am-g">
+        		    <h1>编辑</h1>
+        		  </div>
+        		  <hr />
+        		</div>
+        		<div className="am-g">
+        		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+        		  
+        		<form id="editGroupForm" method="post" className="am-form">
+        		<input type="hidden" name="uuid"  value={o.uuid}/>
+        	    <input type="hidden" name="type"  value={o.type}/>
+        	      <label htmlFor="brand_name">品牌名:</label>
+        	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+        	      <br/>
+        	       <label htmlFor="company_name">机构全称:</label>
+        	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+        	      <br/>
+        	       <label htmlFor="address">公司地址:</label>
+        	      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+        	      <br/>
+        	       <label htmlFor="map_point">地址坐标:</label>
+        	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
+        	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+        	      <br/>
+        	       <label htmlFor="link_tel">公司电话:</label>
+        	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+        	      <br/>
+        	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+        		  
+        	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
+        	     </form>
+
+        	     </div>
+        	   </div>
+        	   
+        	   </div>
+        );
+      }
+    }); 
