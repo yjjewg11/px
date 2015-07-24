@@ -38,6 +38,7 @@ function ajax_userinfo_login() {
 				Store.setGroup(data.list);
 				Store.setUserRights(data.S_User_rights);
 				
+				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
 				
 				menu_body_fn();
 				
@@ -291,6 +292,7 @@ function ajax_userinfo_logout(){
 		success : function(data) {
 			$.AMUI.progress.done();
 			menu_userinfo_login_fn();
+			G_CallPhoneFN.jsessionToPhone("");
 		},
 		error : function( obj, textStatus, errorThrown ){
 			$.AMUI.progress.done();
@@ -476,6 +478,8 @@ function ajax_getUserinfo(isInit) {
 			if (data.ResMsg.status == "success") {
 				if(data.userinfo)Store.setUserinfo(data.userinfo);
 				if(data.list)Store.setGroup(data.list);
+				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
+				
 				menu_body_fn();
 			} else {
 				if(!isInit)alert(data.ResMsg.message);

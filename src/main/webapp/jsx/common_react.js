@@ -568,23 +568,58 @@ render: function() {
 }
 }); 
 
+
+var Common_Classnewsreply_listshow = React.createClass({ 
+	
+render: function() {
+  return (
+		  <div>
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		  <div className="event">
+		  		 <div  dangerouslySetInnerHTML={{__html: event.content}}></div>
+		  		 <strong>{event.create_user+" | "+event.update_time}</strong>
+		  		 </div>
+		    		  )
+		  })}
+		
+		    </div>
+		   
+  );
+}
+}); 
 //评论模板
 var Common_reply_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentWillReceiveProps:function(){
-		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+		this.load_more_data();
 	},
 	componentDidMount:function(){
-		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
 	},
 render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (
 		  <div className="G_reply">
 		   <h4>评论</h4>
 		   <div id={this.classnewsreply_list_div}>
-		   		加载中...
 		   </div>
-	   </div>
+			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
+			</div>
 		   
   );
 }
@@ -596,6 +631,9 @@ var Common_reply_save = React.createClass({
 	componentDidMount:function(){
 		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
+	reply_save_btn_click:function(){
+		common_ajax_reply_save(this.props.reply_save_callback);
+	},
 render: function() {
   return (
 		   <form id="editClassnewsreplyForm" method="post" className="am-form">
@@ -605,7 +643,7 @@ render: function() {
 			
 			
 			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
-		      <button type="button"  onClick={common_ajax_reply_save}  className="am-btn am-btn-primary">提交</button>
+		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>
 		      
 		    </form>	   
   );

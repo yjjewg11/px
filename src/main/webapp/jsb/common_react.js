@@ -568,23 +568,58 @@ render: function() {
 }
 }); 
 
+
+var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 
+	
+render: function() {
+  return (
+		  React.createElement("div", null, 
+		  this.props.events.data.map(function(event) {
+		      return (
+		    		  React.createElement("div", {className: "event"}, 
+		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}}), 
+		  		 React.createElement("strong", null, event.create_user+" | "+event.update_time)
+		  		 )
+		    		  )
+		  })
+		
+		    )
+		   
+  );
+}
+}); 
 //评论模板
 var Common_reply_list = React.createClass({displayName: "Common_reply_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentWillReceiveProps:function(){
-		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+		this.load_more_data();
 	},
 	componentDidMount:function(){
-		  commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div);
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
 	},
 render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (
 		  React.createElement("div", {className: "G_reply"}, 
 		   React.createElement("h4", null, "评论"), 
-		   React.createElement("div", {id: this.classnewsreply_list_div}, 
-		   		"加载中..."
-		   )
-	   )
+		   React.createElement("div", {id: this.classnewsreply_list_div}
+		   ), 
+			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")
+			)
 		   
   );
 }
@@ -596,6 +631,9 @@ var Common_reply_save = React.createClass({displayName: "Common_reply_save",
 	componentDidMount:function(){
 		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
+	reply_save_btn_click:function(){
+		common_ajax_reply_save(this.props.reply_save_callback);
+	},
 render: function() {
   return (
 		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
@@ -605,7 +643,7 @@ render: function() {
 			
 			
 			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
-		      React.createElement("button", {type: "button", onClick: common_ajax_reply_save, className: "am-btn am-btn-primary"}, "提交")
+		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
 		      
 		    )	   
   );
