@@ -28,7 +28,7 @@ function login_affter_init(){
 	
 //envelope envelope-o envelope-square
 	//menu
-	//——————————————————————————————————————————————————————————————————权限管理————————————————————————————————————————————————————————
+	//—————————————————————权限管理—————————————————————
 	
 	var menu_data=[];
 	var t_menu=null;//第一级菜单
@@ -92,23 +92,23 @@ function login_affter_init(){
                 "title": "发布消息",
                 "subMenu": [
                             {
-                              "fn":function(){menu_announce_list_fn(0)},
+                              "fn":function(){menu_announce_list_fn(0);},
                               "link": "##",
                               "title": "校园公告"
                             },
                             {
-                            	  "fn":function(){menu_announce_list_fn(1)},
+                            	  "fn":function(){menu_announce_list_fn(1);},
                             	  "link": "##",
                                 "title": "老师公告"
                               },
                           
                               {
-                            	  "fn":function(){menu_announce_list_fn(3)},
+                            	  "fn":function(){menu_announce_list_fn(3);},
                                   "link": "##",
                                   "title": "招生计划(未)"
                                 },
                               {
-                                  "fn":function(){menu_announce_list_fn(4)},
+                                  "fn":function(){menu_announce_list_fn(4);},
                                   "link": "##",
                                   "title": "分享文章(未)"
                                 }
@@ -132,7 +132,7 @@ function login_affter_init(){
                 "fn":menu_cookbookPlan_list_fn,
                 "subCols": 2
                // "channelLink": "进入栏目 »", 
-		  }
+		  };
 	
 	if(G_user_hasRight("KD_cookbookplan_m")){
 		menu_data.push(t_menu);
@@ -146,7 +146,7 @@ function login_affter_init(){
       	   		"title": "课程安排",
       	   		"subCols": 2
         // "channelLink": "进入栏目 »",
-		  }
+		  };
 	/*
 	 * 调用G_user_hasRight（）;
 	 * 根据项目常量表对应权限检查是否拥有此权限;
@@ -157,7 +157,7 @@ function login_affter_init(){
 		menu_data.push(t_menu);
 	}
 	//教学课程管理end
-	//——————————————————————————————————————————————————————————————————权限管理end————————————————————————————————————————————————————————	
+	//——————————————————————————权限管理end—————————————————————————————————	
 	
 	
 	
@@ -407,7 +407,7 @@ function menu_announce_list_fn(types) {
 };
 
 /*
- * (标头)校务管理的校园列表功能
+ * (标头)<校务管理>校园列表功能
  * @跳转kd_service发服务器请求
  * */
 function menu_group_myList_fn() {

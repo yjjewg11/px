@@ -214,125 +214,6 @@ var Group_EventRow = React.createClass({displayName: "Group_EventRow",
   }
 }); 
 
-var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
-	handleClick: function(m) {
-		if(m=="add"){
-			btn_click_group(m,{type:"1"});
-			 return;
-		 }if(m=="edit"){
-			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_group(m,{uuid:uuids});
-		 }
-	  },
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
-  render: function() {
-    return (
-    React.createElement("div", null, 
-    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加分校")
-	  ), 
-	  React.createElement("hr", null), 
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-          React.createElement("th", null, 
-          React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-          ), 
-            React.createElement("th", null, "品牌名"), 
-            React.createElement("th", null, "机构全称"), 
-            React.createElement("th", null, "电话"), 
-            React.createElement("th", null, "公司地址"), 
-            React.createElement("th", null, "创建时间")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Group_EventRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-});
-    
-var Group_edit = React.createClass({displayName: "Group_edit", 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editGroupForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-		  $('#description').xheditor(xhEditor_upImgOption_mfull);
-	},
-  render: function() {
-	  var o = this.state;
-    return (
-    		React.createElement("div", null, 
-    		React.createElement("div", {className: "header"}, 
-    		  React.createElement("div", {className: "am-g"}, 
-    		    React.createElement("h1", null, "编辑")
-    		  ), 
-    		  React.createElement("hr", null)
-    		), 
-    		React.createElement("div", {className: "am-g"}, 
-    		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-    		  
-    		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-    		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-    	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-    	      React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
-    	      React.createElement("input", {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
-    	      React.createElement("br", null), 
-    	       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
-    	      React.createElement("input", {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
-    	      React.createElement("br", null), 
-    	       React.createElement("label", {htmlFor: "address"}, "公司地址:"), 
-    	      React.createElement("input", {type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"}), 
-    	      React.createElement("br", null), 
-    	       React.createElement("label", {htmlFor: "map_point"}, "地址坐标:"), 
-    	      React.createElement("input", {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
-    	      React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取"), 
-    	      React.createElement("br", null), 
-    	       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
-    	      React.createElement("input", {type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
-    	      React.createElement("br", null), 
-    	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
-    		  
-    	      React.createElement("button", {type: "button", onClick: ajax_group_save, className: "am-btn am-btn-primary"}, "提交")
-    	     )
-
-    	     )
-    	   )
-    	   
-    	   )
-    );
-  }
-}); 
-
-
-
-
 var Group_show = React.createClass({displayName: "Group_show", 
 render: function() {
 	  var o = this.props.formdata;
@@ -1954,9 +1835,6 @@ render: function() {
 }); 
 //end accounts
 
-
-
-
 //Div_body_index reg
 var Div_body_index = React.createClass({displayName: "Div_body_index", 
 	componentDidMount:function(){
@@ -1979,9 +1857,10 @@ var Div_body_index = React.createClass({displayName: "Div_body_index",
  * 封装好的一个MAP方法只对数组起作用，其内部自己For循环;
  * @event:Map方法用event.XX调用数组内 数据；
  * @amStyle:按钮颜色；
+ * @parent_uuid:老师给每个用户的ID发message时需要的参数;
+ * web页面一键电话功能<a href={"tel:"+event.tel}></a>;
  * */
-var Class_student_tel =React.createClass({displayName: "Class_student_tel",
-	 
+var Class_student_tel =React.createClass({displayName: "Class_student_tel",	 
 		render: function() {
 	     var o =this.state;	
 		 return (
@@ -1990,10 +1869,9 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		    	this.props.formdata.map(function(event) {
 		            return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
 		            React.createElement(AMR_ButtonToolbar, null, 
-		            React.createElement(AMUIReact.Button, {amStyle: "primary"}, "电话"), 	
-		            React.createElement("a", {href: "wtai://wp//mc;"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
+		            React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message, amStyle: "success"}, "@信息")	
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid), amStyle: "success"}, "@信息")	
 		            
 		            )
 		            ));
@@ -2003,23 +1881,207 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		     );
 	        }
 		 });
-
-
-/* 首页家长通讯录功能2级发信息界面功能
- * @ 绘制 
+/* 
+ * 家长通讯录中的<信息>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * */
-var Class_student_tel_message =React.createClass({displayName: "Class_student_tel_message",	 
+var ParentContactByMyStudent_message_list = React.createClass({displayName: "ParentContactByMyStudent_message_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
+	},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (
+		  React.createElement("div", null, 
+		   React.createElement("div", {id: this.classnewsreply_list_div}
+		   
+		   ), 
+			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+			React.createElement(Parent_message_save, {uuid: this.props.parent_uuid})
+			)
+			
+  );
+}
+}); 
+/*
+ * 我要发信息模块；(家长通讯录发信息)
+ * */
+var Parent_message_save = React.createClass({displayName: "Parent_message_save", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+	reply_save_btn_click:function(){
+		ajax_parent_message_save();
+	},
+render: function() {
+  return (
+		   React.createElement("form", {id: "editForm", method: "post", className: "am-form"}, 
+			React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.uuid}), 
+			
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
+		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
+		      
+		    )	   
+  );
+}
+}); 
+/* 首页家长通讯录功能2级发信息界面功能
+ * @ 绘制 信息
+ * */
+var Message_queryByParent_listpage =React.createClass({displayName: "Message_queryByParent_listpage",	 
 	render: function() {
-     var o =this.state;	
-	 return (
-	 		React.createElement("div", null, 
-		    React.createElement(AMUIReact.List, {static: true}, 
-	    	this.props.formdata.list.map(function(event) {
-	            return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message));
-	          })		      			      
-		      ), 
-			  React.createElement(Common_reply_save, {uuid: "ba5ce3c4-9571-4994-a898-35ba41340c34", type: 0})
-	 	     ) 
-	     );
-        }
-	 });
+	  return (
+			  React.createElement("div", null, 
+			 
+			  this.props.events.data.map(function(event) {
+			      return (React.createElement(AMUIReact.ListItem, null, event.name, ":", event.message))
+			  })
+			    )
+			   
+	  );
+	}
+})
+/*
+ *(校务管理)<校园列表>绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@add:添加分校;
+ *@edit:
+ * */
+var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_group(m,{type:"1"});
+			 return;
+		 }if(m=="edit"){
+			
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个进行编辑！");
+					return;
+				}
+			  btn_click_group(m,{uuid:uuids});
+		 }
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+  render: function() {
+    return (
+    React.createElement("div", null, 
+    React.createElement(AMR_ButtonToolbar, null, 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加分校")
+	  ), 
+	  React.createElement("hr", null), 
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+          React.createElement("th", null, 
+          React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+          ), 
+            React.createElement("th", null, "品牌名"), 
+            React.createElement("th", null, "机构全称"), 
+            React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "公司地址"), 
+            React.createElement("th", null, "创建时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Group_EventRow, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+    /*
+     * (校务管理)<校园列表>添加分校绘制界面；
+     * */    
+    var Group_edit = React.createClass({displayName: "Group_edit", 
+    	 getInitialState: function() {
+    		    return this.props.formdata;
+    		  },
+    	 handleChange: function(event) {
+    		    this.setState($('#editGroupForm').serializeJson());
+    	  },
+    	  componentDidMount:function(){
+    		  $('#description').xheditor(xhEditor_upImgOption_mfull);
+    	},
+      render: function() {
+    	  var o = this.state;
+        return (
+        		React.createElement("div", null, 
+        		React.createElement("div", {className: "header"}, 
+        		  React.createElement("div", {className: "am-g"}, 
+        		    React.createElement("h1", null, "编辑")
+        		  ), 
+        		  React.createElement("hr", null)
+        		), 
+        		React.createElement("div", {className: "am-g"}, 
+        		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+        		  
+        		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+        		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+        	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
+        	      React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
+        	      React.createElement("input", {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
+        	      React.createElement("br", null), 
+        	       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
+        	      React.createElement("input", {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
+        	      React.createElement("br", null), 
+        	       React.createElement("label", {htmlFor: "address"}, "公司地址:"), 
+        	      React.createElement("input", {type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"}), 
+        	      React.createElement("br", null), 
+        	       React.createElement("label", {htmlFor: "map_point"}, "地址坐标:"), 
+        	      React.createElement("input", {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
+        	      React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取"), 
+        	      React.createElement("br", null), 
+        	       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
+        	      React.createElement("input", {type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
+        	      React.createElement("br", null), 
+        	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
+        		  
+        	      React.createElement("button", {type: "button", onClick: ajax_group_save, className: "am-btn am-btn-primary"}, "提交")
+        	     )
+
+        	     )
+        	   )
+        	   
+        	   )
+        );
+      }
+    }); 

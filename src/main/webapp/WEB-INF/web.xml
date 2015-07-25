@@ -113,7 +113,8 @@
 			<param-value>
 				/userinfo/login.json,/userinfo/reg.json,/userinfo/updatePasswordBySms.json,
 				/uploadFile/getImgFile.json,/sms/sendCode.json,
-				/group/reg.json,/group/list.json,/basedatalist/getAllList.json
+				/group/reg.json,/group/list.json,/basedatalist/getAllList.json,
+				/doorrecord/insert.json
 			</param-value>
 		</init-param>
 	</filter>
