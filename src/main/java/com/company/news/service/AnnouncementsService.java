@@ -168,6 +168,15 @@ public class AnnouncementsService extends AbstractServcice {
 						announcementsTo);
 			}
 		}
+		
+		if (announcements.getType().intValue() == 0) {//全校公告
+			pushMsgIservice.androidPushMsgToAll_to_teacher("校园公告:"+announcements.getTitle());
+			pushMsgIservice.androidPushMsgToAll_to_parent("校园公告:"+announcements.getTitle());
+			
+		}else if (announcements.getType().intValue() == 1) {//老师公告
+			pushMsgIservice.androidPushMsgToAll_to_teacher("老师公告:"+announcements.getTitle());
+			
+		}
 
 		return true;
 	}

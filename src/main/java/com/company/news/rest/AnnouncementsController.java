@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.rest.util.RestUtil;
@@ -172,6 +173,7 @@ public class AnnouncementsController extends AbstractRESTController {
 				responseMessage.setMessage("数据不存在.");
 				return "";
 			}
+			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

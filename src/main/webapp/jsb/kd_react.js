@@ -1005,7 +1005,7 @@ render: function() {
 		  React.createElement("div", null, 
 		  React.createElement(AMUIReact.Article, {
 		    title: o.title, 
-		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time}, 
+		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
 		   ), 
 		   "//点赞回复模板", 
@@ -1765,7 +1765,7 @@ render: function() {
 		  React.createElement("div", null, 
 		  React.createElement(AMUIReact.Article, {
 		    title: o.title, 
-		    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}, 
+		    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+this.props.count+"次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 		   ), 	
 		  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 

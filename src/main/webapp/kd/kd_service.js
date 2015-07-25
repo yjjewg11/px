@@ -976,7 +976,7 @@ function react_ajax_announce_show(uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_show,{data:data.data}), document.getElementById('div_body'));
+				React.render(React.createElement(Announcements_show,{data:data.data,count:data.count}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1597,7 +1597,7 @@ function ajax_classnews_edit(m,formdata){
 				}else{
 					
 					data.data.dianzanList=commons_ajax_dianzan_getByNewsuuid(formdata.uuid);
-					React.render(React.createElement(Classnews_show,{formdata:data.data}), document.getElementById('div_body'));
+					React.render(React.createElement(Classnews_show,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
 				}
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);

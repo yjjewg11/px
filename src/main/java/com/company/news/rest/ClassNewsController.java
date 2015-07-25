@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.Group;
@@ -27,6 +29,7 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.ClassNewsService;
 import com.company.news.service.ClassService;
+import com.company.news.service.CountService;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
@@ -172,6 +175,10 @@ public class ClassNewsController extends AbstractRESTController {
 		ClassNewsJsonform c;
 		try {
 			c = classNewsService.get(uuid);
+			//定义接口,返回浏览总数.
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_hudong));
+			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getClassNewsByUuid(uuid));
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -180,9 +187,11 @@ public class ClassNewsController extends AbstractRESTController {
 			return "";
 		}
 		model.addAttribute(RestConstants.Return_G_entity, c);
+		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
-
+	@Autowired
+	private CountService countService;
 
 }

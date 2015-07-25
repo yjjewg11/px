@@ -1,30 +1,20 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Right;
 import com.company.news.entity.User;
-import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserGroupRelation;
-import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -130,7 +120,15 @@ public class CookbookPlanService extends AbstractServcice {
 			c.setTime_2(this.makeCookbookName(c.getTime_2()));
 			c.setTime_3(this.makeCookbookName(c.getTime_3()));
 			c.setTime_4(this.makeCookbookName(c.getTime_4()));
-			c.setTime_5(this.makeCookbookName(c.getTime_5()));			
+			c.setTime_5(this.makeCookbookName(c.getTime_5()));	
+//			
+//
+//			c.setList_time_1(this.getCookbookList(c.getTime_1()));
+//			c.setList_time_2(this.getCookbookList(c.getTime_2()));
+//			c.setList_time_3(this.getCookbookList(c.getTime_3()));
+//			c.setList_time_4(this.getCookbookList(c.getTime_4()));
+//			c.setList_time_5(this.getCookbookList(c.getTime_5()));
+
 		}
 		
 		return list;
@@ -151,12 +149,38 @@ public class CookbookPlanService extends AbstractServcice {
 			c.setTime_3(this.makeCookbookName(c.getTime_3()));
 			c.setTime_4(this.makeCookbookName(c.getTime_4()));
 			c.setTime_5(this.makeCookbookName(c.getTime_5()));
+//
+//			c.setList_time_1(this.getCookbookList(c.getTime_1()));
+//			c.setList_time_2(this.getCookbookList(c.getTime_2()));
+//			c.setList_time_3(this.getCookbookList(c.getTime_3()));
+//			c.setList_time_4(this.getCookbookList(c.getTime_4()));
+//			c.setList_time_5(this.getCookbookList(c.getTime_5()));
 
 		}
 		return c;
 
 	}
 
+	
+	/**
+	 * 
+	 * @param uuids
+	 * @return
+	 * 食材uuid$图片uuid$食材名字
+	 */
+	private List getCookbookList(String uuids) {
+		List list=new ArrayList();
+		if (StringUtils.isNotBlank(uuids)) {
+			String[] uuid = uuids.split(",");
+			for (String s : uuid) {
+				Cookbook cb = (Cookbook) CommonsCache.get(s,Cookbook.class);
+				list.add(cb);
+
+			}
+		}
+		return list;
+
+	}
 	/**
 	 * 
 	 * @param uuids

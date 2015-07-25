@@ -1,5 +1,7 @@
 package com.company.news.iservice;
 
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,9 +108,13 @@ public class PushMsgIservice {
 
 			try {
 				// 4. specify request arguments
+				
+				JSONObject notification = new JSONObject();
+				notification.put("title", "问界互动家园");
+				notification.put("description",msg);
 				PushMsgToAllRequest request = new PushMsgToAllRequest()
-						.addMsgExpires(new Integer(3600)).addMessageType(0)//1：通知,0:透传消息. 默认为0 注：IOS只有通知.
-						.addMessage(msg) //添加透传消息
+						.addMsgExpires(new Integer(3600)).addMessageType(1)//1：通知,0:透传消息. 默认为0 注：IOS只有通知.
+						.addMessage(notification.toString()) //添加透传消息
 						.addSendTime(System.currentTimeMillis() / 1000 + 120) // 设置定时推送时间，必需超过当前时间一分钟，单位秒.实例2分钟后推送
 						.addDeviceType(3);
 				// 5. http request

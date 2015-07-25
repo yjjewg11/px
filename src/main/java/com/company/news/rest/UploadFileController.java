@@ -28,6 +28,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.company.news.ContentTypeConstants;
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.UploadFile;
 import com.company.news.form.UploadFileForm;
 import com.company.news.rest.util.RestUtil;
@@ -104,6 +105,7 @@ public class UploadFileController extends AbstractRESTController {
 				return "";
 			
 			model.addAttribute(RestConstants.Return_G_entity,uploadFile);
+			model.addAttribute(RestConstants.Return_G_imgUrl,PxStringUtil.imgUrlByUuid(uploadFile.getUuid()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,6 +138,8 @@ public class UploadFileController extends AbstractRESTController {
 				return "";
 			
 			model.addAttribute(RestConstants.Return_G_entity,uploadFile);
+			model.addAttribute(RestConstants.Return_G_imgUrl,PxStringUtil.imgUrlByUuid(uploadFile.getUuid()));
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

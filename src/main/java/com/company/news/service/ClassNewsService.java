@@ -152,9 +152,9 @@ public class ClassNewsService extends AbstractServcice {
 		ClassNewsJsonform cnjf = new ClassNewsJsonform();
 		BeanUtils.copyProperties(cnjf, cn);
 
-		// 计数
-		cnjf.setCount(countService.count(uuid,
-				SystemConstants.common_type_hudong));
+//		// 计数
+//		cnjf.setCount(countService.count(uuid,
+//				SystemConstants.common_type_hudong));
 
 		return cnjf;
 
