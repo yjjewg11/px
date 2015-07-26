@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +30,14 @@ import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
+import com.company.news.vo.TeacherPhone;
 import com.company.news.vo.UserInfoReturn;
 import com.company.plugin.security.LoginLimit;
 import com.company.web.listener.SessionListener;
@@ -442,7 +445,6 @@ public class UserinfoService extends AbstractServcice {
 		// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 		SessionListener.putSessionByJSESSIONID(session);
 		session.setAttribute(RestConstants.Session_UserInfo, user);
-		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 		// 返回客户端用户信息放入Map
 		// putUserInfoReturnToModel(model, request);
 
@@ -450,7 +452,7 @@ public class UserinfoService extends AbstractServcice {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession();
 
-		List tmpList1 = s
+		List rightList = s
 				.createSQLQuery(
 						"select t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"
 								+ user.getUuid() + "'").list();
@@ -459,12 +461,17 @@ public class UserinfoService extends AbstractServcice {
 		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
 				"false"))) {
 			this.logger.warn("调试模式下面,用户有所有角色权限.");
-			tmpList1 = s.createSQLQuery("select name from px_right").list();
+			rightList = s.createSQLQuery("select name from px_right").list();
 		}
-		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(tmpList1, ","));
+		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+		
+
+		String hql="select uuid from UserGroupRelation where  useruuid=?";
+		List listGroupuuids=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, user.getUuid());
+		
 		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
 		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-
+		session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
 		return true;
 	}
 
@@ -720,5 +727,24 @@ public class UserinfoService extends AbstractServcice {
 		return (User) this.nSimpleHibernateDao
 				.getObjectById(User.class, uuid);
 
+	}
+	/**
+	 * 获取我关联幼儿园的所有用户的通信录
+	 * @param uuid
+	 * @return
+	 */
+	public List getAllTeacherPhoneListByUseruuid(String uuid) {
+		String hql = "from User where uuid in (select useruuid from UserClassRelation where groupuuid in (select groupuuid from UserClassRelation where useruuid='"+uuid+"'))";
+		List<User> userList=(List<User> )this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		List list=new ArrayList();
+		for (User user : userList) {
+			TeacherPhone teacherPhone=new TeacherPhone();
+			teacherPhone.setType(SystemConstants.TeacherPhone_type_1);
+			teacherPhone.setTeacher_uuid(user.getUuid());
+			teacherPhone.setName(user.getName());
+			teacherPhone.setTel(user.getTel());
+			list.add(teacherPhone);
+		}
+		return list;
 	}
 }

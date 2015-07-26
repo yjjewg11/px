@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
@@ -121,6 +123,19 @@ public class CookbookPlanService extends AbstractServcice {
 			c.setTime_3(this.makeCookbookName(c.getTime_3()));
 			c.setTime_4(this.makeCookbookName(c.getTime_4()));
 			c.setTime_5(this.makeCookbookName(c.getTime_5()));	
+			
+			c.setShare_url(PxStringUtil.getCookbookPlanByUuid(c.getUuid()));
+			try {
+				c.setCount(countService.count(c.getUuid(), SystemConstants.common_type_shipu));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			c.setList_time_1(this.getCookbookList(c.getTime_1()));
+			c.setList_time_2(this.getCookbookList(c.getTime_2()));
+			c.setList_time_3(this.getCookbookList(c.getTime_3()));
+			c.setList_time_4(this.getCookbookList(c.getTime_4()));
+			c.setList_time_5(this.getCookbookList(c.getTime_5()));
 //			
 //
 //			c.setList_time_1(this.getCookbookList(c.getTime_1()));
@@ -133,6 +148,8 @@ public class CookbookPlanService extends AbstractServcice {
 		
 		return list;
 	}
+	 @Autowired
+     private CountService countService ;
 
 	/**
 	 * 

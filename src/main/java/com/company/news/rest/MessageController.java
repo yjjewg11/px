@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.CommonsCache;
+import com.company.news.entity.Group;
 import com.company.news.entity.Message;
-import com.company.news.entity.Parent;
 import com.company.news.entity.User;
-import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
-import com.company.news.service.AnnouncementsService;
+import com.company.news.service.GroupService;
 import com.company.news.service.MessageService;
-import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/message")
@@ -34,8 +34,8 @@ public class MessageController extends AbstractRESTController {
 
 	@Autowired
 	private MessageService messageService;
-
-	
+	@Autowired
+	public GroupService groupService;
 	/**
 	 * 给老家长写信
 	 * 
@@ -209,6 +209,132 @@ public class MessageController extends AbstractRESTController {
 		return "";
 	}
 
+	
+	/**
+	 * 查询我(家长)和园长的信件
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryByParentAndLeader", method = RequestMethod.GET)
+	public String queryByLeader(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		User user=this.getUserInfoBySession(request);
+		String parent_uuid=request.getParameter("parent_uuid");
+		if(StringUtils.isBlank(parent_uuid)){
+			responseMessage.setMessage("参数必填:parent_uuid");
+			return "";
+		}
+		String group_uuid=request.getParameter("group_uuid");
+		if(StringUtils.isBlank(group_uuid)){
+			responseMessage.setMessage("参数必填:group_uuid");
+			return "";
+		}
+		String groupUuids=this.getMyGroupUuidsBySession(request);
+		if(groupUuids==null||!groupUuids.contains(group_uuid)){
+			responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+group_uuid);
+			return "";
+		}
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		PageQueryResult pageQueryResult= messageService.queryByParentAndLeader(group_uuid,parent_uuid,pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 查询我(家长)和园长的信件
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryLeaderMsgByParents", method = RequestMethod.GET)
+	public String queryLeaderMsgByParents(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		User user=this.getUserInfoBySession(request);
+		
+//		String group_uuid=request.getParameter("group_uuid");
+//		if(StringUtils.isBlank(group_uuid)){
+//			responseMessage.setMessage("参数必填:group_uuid");
+//			return "";
+//		}
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		List list= messageService.queryLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 园长写信给家长
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/saveLeaderToParent", method = RequestMethod.POST)
+	public String saveLeaderToParent(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		MessageJsonform messageJsonform;
+		try {
+			messageJsonform = (MessageJsonform) this.bodyJsonToFormObject(
+					bodyJson, MessageJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+		
+		if(StringUtils.isBlank(messageJsonform.getSend_useruuid())){
+			responseMessage.setMessage("send_useruuid 不能为空,需要填写幼儿园uuid");
+			return "";
+		}
+		//设置当前用户
+				User user=this.getUserInfoBySession(request);
+		if(!groupService.isMyGroupUuid(messageJsonform.getSend_useruuid(), user.getUuid())){
+			responseMessage.setMessage("send_useruuid无效.不是这个幼儿园的老师:"+messageJsonform.getSend_useruuid());
+			return "";
+		}
+		Group group=(Group)CommonsCache.get(messageJsonform.getSend_useruuid(), Group.class);
+
+		if(group==null){
+			responseMessage.setMessage("send_useruuid无效.没有对应的幼儿园.:"+messageJsonform.getSend_useruuid());
+			return "";
+		}
+		messageJsonform.setSend_user(group.getBrand_name()+"园长");
+		messageJsonform.setSend_useruuid(group.getUuid());
+		messageJsonform.setType(SystemConstants.Message_type_2);//
+		messageJsonform.setTitle(SystemConstants.Message_title_xinxiang);
+		try {
+			boolean flag;
+			    flag = messageService.add(messageJsonform, responseMessage);
+
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
+		return "";
+	}
 	/**
 	 * 班级删除
 	 * 

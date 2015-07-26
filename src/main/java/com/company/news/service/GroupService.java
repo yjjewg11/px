@@ -233,6 +233,18 @@ public class GroupService extends AbstractServcice {
 		return true;
 	}
 	
+	/**
+	 * 判断我是不是合法的用户,判断是不是当前幼儿园的老师
+	 * @param groupuuid
+	 * @param useruuid
+	 * @return
+	 */
+	public boolean isMyGroupUuid(String groupuuid,String useruuid){
+		String hql="select uuid from UserGroupRelation where groupuuid=? and useruuid=?";
+		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, groupuuid,useruuid);
+		if(list.size()==0)return false;
+		return true;
+	}
 	
 	/**
 	 * 查询所有机构列表

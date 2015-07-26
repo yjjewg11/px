@@ -446,45 +446,55 @@ render: function() {
  		      <label htmlFor="name">姓名:</label>
  		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
-
  		     <label htmlFor="nickname">昵称:</label>
 		      <input type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
 		      <br/>
+		      <label htmlFor="nickname">头像:</label>
+	 		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+	 		   <br/>
+	 		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+			      <br/>
+			      
 		      <AMUIReact.FormGroup>
 		      <label>单选：</label>
 		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
 		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
 		    </AMUIReact.FormGroup>
 		      <label htmlFor="birthday">生日:</label>
-
 			<AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
  		      <br/>
- 		     <label htmlFor="nickname">头像:</label>
- 		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
- 		   <br/>
- 		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+			 <label htmlFor="birthday">身份证:</label>
+			<input type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
 		      <br/>
+ 		    
+		      <fieldset>
+		      <legend>爸爸妈妈信息</legend>
 		      <label htmlFor="nickname">妈妈姓名:</label>
- 		      <input type="text"  name="ma_name" id="ma_name" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
+ 		      <input type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
+ 		     <label htmlFor="nickname">妈妈电话:</label>
+		      <input type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+		      <label htmlfor="nickname">妈妈的工作:</label>
+ 		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
+ 		      <br/>		      		      
+		     
  		      <label htmlfor="nickname">爸爸姓名:</label>
- 		      <input type="text" name="ba_name" id="ba_name" value={o.ba_name} onChange={this.handleChange} placeholder=""/>
+ 		      <input type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		      <label htmlfor="nickname">家庭住址:</label>
- 		      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
- 		      <br/>		     
+ 		     <label htmlFor="nickname">爸爸电话:</label>
+		      <input type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/>
+ 		          
  		      <label htmlfor="nickname">爸爸的工作:</label>
  		      <input type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
  		      <br/>		     
- 		      <label htmlfor="nickname">妈妈的工作:</label>
- 		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
- 		      <br/>		      		      
-		      <label htmlFor="nickname">妈妈电话:</label>
- 		      <input type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
- 		      <br/>
- 		      <label htmlFor="nickname">爸爸电话:</label>
-		      <input type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
-		      <br/>
+ 		     <label htmlfor="nickname">家庭住址:</label>
+		      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+		      <br/>		
+		    </fieldset>
+		    <fieldset>
+		      <legend>其他信息</legend>
 		      <label htmlFor="nickname">奶奶电话:</label>
  		      <input type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
  		      <br/>
@@ -508,6 +518,7 @@ render: function() {
 		 	 	      wrapperClassName="am-u-sm-10"
 		 	 	      amSize="lg" />
 	 		  <br/>
+	 		 </fieldset>
  		      <button type="button"  onClick={btn_ajax_class_student_save}  className="am-btn am-btn-primary">提交</button>
  		    </form>
 

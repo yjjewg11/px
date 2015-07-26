@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -7,13 +8,18 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Message;
 import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
+import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.GourpLeaderMsgVO;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -176,6 +182,50 @@ public class MessageService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return User.class;
+	}
+	public PageQueryResult queryByParentAndLeader(String group_uuid,
+			String parent_uuid, PaginationData pData) {
+		String hql = "from Message where isdelete=" + announcements_isdelete_no;
+		hql += " and type=2" ;
+		hql += " and (" ;
+			hql += "  (revice_useruuid='" + group_uuid + "' and send_useruuid='" + parent_uuid + "')";//家长发给我的.
+			hql += " or (send_useruuid='" + group_uuid + "' and revice_useruuid='" + parent_uuid + "')";//我发给家长的.
+		hql += "  )" ;
+	hql += " order by create_time desc";
+	PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+			.findByPaginationToHql(hql, pData);
+	return pageQueryResult;
+	}
+	/**
+	 * 获取家长写信给幼儿园的数据.
+	 * @param group_uuid
+	 * @param parent_uuid
+	 * @param pData
+	 * @return
+	 */
+	public List queryLeaderMsgByParents(String group_uuids,
+			 PaginationData pData) {
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type=2 ";
+		sql += " and (" ;
+		sql += "  revice_useruuid=(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
+//		sql += " or send_useruuid(" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
+		sql += "  )" ;
+		sql+="GROUP BY revice_useruuid,send_useruuid";
+		sql += " order by revice_useruuid desc";
+		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
+		List relList=new ArrayList();
+		for(Object[] o:list){
+			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
+			vo.setRevice_useruuid(o[0]+"");
+			vo.setRevice_user(o[1]+"");
+			vo.setSend_useruuid(o[2]+"");
+			vo.setSend_user(o[3]+"");
+			vo.setCount(o[4]+"");
+			relList.add(vo);
+		}
+		
+		
+	return relList;
 	}
 
 }

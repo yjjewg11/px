@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.ParentStudentRelation;
@@ -60,7 +61,7 @@ public class StudentService extends AbstractServcice {
 			return false;
 		}
 
-
+		studentJsonform.setHeadimg(PxStringUtil.imgUrlToUuid(studentJsonform.getHeadimg()));
 		Student student = new Student();
 
 		BeanUtils.copyProperties(student, studentJsonform);
@@ -98,7 +99,7 @@ public class StudentService extends AbstractServcice {
 		Student old_student=new Student();
 		ConvertUtils.register(new DateConverter(null), java.util.Date.class); 
 		BeanUtils.copyProperties(old_student, student);
-		
+		studentJsonform.setHeadimg(PxStringUtil.imgUrlToUuid(studentJsonform.getHeadimg()));
 		if (student != null) {
 			BeanUtils.copyProperties(student, studentJsonform);
 			//设置不能被修改的字段

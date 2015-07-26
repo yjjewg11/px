@@ -40,7 +40,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	handleClick: function(m) {
 		
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val()});
+			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val(),office:"老师"});
 			 return;
 		 }
 		 var uuids=null;
@@ -84,7 +84,6 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     ), 
     React.createElement("hr", null)
     ), 
-    "//老师管理的五个按钮标签绘制-添加、启用、禁用、分配权限、修改；", 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
 	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
@@ -176,7 +175,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
     			 React.createElement("input", {type: "hidden", id: "group_uuid", name: "group_uuid", value: ""}), 
     		    React.createElement("div", {className: "am-form-group"}, 
-    		    React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, maxHeight: "350", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
+    		    React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
     		        ), 
     		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
     		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 

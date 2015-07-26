@@ -144,7 +144,7 @@ public class BaseDataTypeService extends AbstractServcice {
 	 */
 	public List<BaseDataType> query() {
 		return (List<BaseDataType>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from BaseDataType", null);
+				.find("from BaseDataType order by name", null);
 
 	}
 

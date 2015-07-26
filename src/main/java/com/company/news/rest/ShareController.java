@@ -19,6 +19,7 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.Announcements;
+import com.company.news.entity.BaseDataList;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
@@ -44,6 +45,41 @@ public class ShareController extends AbstractRESTController {
 	 @Autowired
      private CountService countService ;
 
+	 
+
+		/**
+		 * 获取表情列表(url)
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/getEmot", method = RequestMethod.GET)
+		public String getEmot(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			try {
+				List<BaseDataList> list= (List<BaseDataList>) this.nSimpleHibernateDao
+						.getHibernateTemplate().find(
+								"from BaseDataList where typeuuid='emot' and enable=1 order by datakey asc");
+				this.nSimpleHibernateDao
+				.getHibernateTemplate().clear();
+				String share_url_getEmot=ProjectProperties.getProperty("share_url_getEmot", "http://120.25.248.31/px-rest/w/xheditor/xheditor_emot/default/");
+				for(BaseDataList o:list){
+					//o.getDescription()=laugh.gif
+					o.setDescription(share_url_getEmot+o.getDescription());
+				}
+				
+				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
 	/**
 	 * 全校公告
 	 * @param model

@@ -68,7 +68,16 @@ public class AbstractRESTController   {
 		    // 返回用户信息
 		    return user;
 		  }
-	  
+	  /**
+	   * 获取我的幼儿园列表.
+	   * uuid1,uuid2
+	   * @param request
+	   * @return uuid1,uuid2
+	   */
+	  protected String getMyGroupUuidsBySession(HttpServletRequest request){
+		  HttpSession session =SessionListener.getSession(request);
+		    return (String)session.getAttribute(RestConstants.Session_MygroupUuids);
+		  }
 	  /**
 	   * 
 	   * @param bodyJson

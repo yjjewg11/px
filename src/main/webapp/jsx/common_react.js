@@ -40,7 +40,7 @@ var Userinfo_EventsTable = React.createClass({
 	handleClick: function(m) {
 		
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val()});
+			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val(),office:"老师"});
 			 return;
 		 }
 		 var uuids=null;
@@ -84,7 +84,6 @@ var Userinfo_EventsTable = React.createClass({
     </div>
     <hr />
     </div>
-    //老师管理的五个按钮标签绘制-添加、启用、禁用、分配权限、修改；
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
 	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
@@ -176,7 +175,7 @@ var Userinfo_edit = React.createClass({
     		     <input type="hidden" name="type"  value="1"/>
     			 <input type="hidden" id="group_uuid" name="group_uuid"  value=""/>
     		    <div className="am-form-group">
-    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} maxHeight="350"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
+    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
     		        </div>
     		      <label htmlFor="tel">手机号码:</label>
     		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
