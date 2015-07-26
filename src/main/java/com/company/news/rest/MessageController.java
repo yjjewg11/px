@@ -302,11 +302,12 @@ public class MessageController extends AbstractRESTController {
 			return "";
 		}
 		//设置当前用户
-				User user=this.getUserInfoBySession(request);
-		if(!groupService.isMyGroupUuid(messageJsonform.getSend_useruuid(), user.getUuid())){
-			responseMessage.setMessage("send_useruuid无效.不是这个幼儿园的老师:"+messageJsonform.getSend_useruuid());
+		String groupUuids=this.getMyGroupUuidsBySession(request);
+		if(groupUuids==null||!groupUuids.contains(messageJsonform.getSend_useruuid())){
+			responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+messageJsonform.getSend_useruuid());
 			return "";
 		}
+		
 		Group group=(Group)CommonsCache.get(messageJsonform.getSend_useruuid(), Group.class);
 
 		if(group==null){

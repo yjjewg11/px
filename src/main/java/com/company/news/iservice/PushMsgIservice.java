@@ -39,7 +39,7 @@ public class PushMsgIservice {
 	  public void androidPushMsgToAll_to_teacher(String msg) throws Exception{
 		  
 		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "El4au0Glwr7Xt8sPgZFg2UP7");
-		  String secretKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
+		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
 		  this.androidPushMsgToAll(msg, apiKey, secretKey);
 	  }
 
@@ -52,8 +52,8 @@ public class PushMsgIservice {
 	   */
 	  public void androidPushMsgToAll_to_parent(String msg)throws Exception{
 		  
-		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "El4au0Glwr7Xt8sPgZFg2UP7");
-		  String secretKey = ProjectProperties.getProperty("baidu_apiKey_parent", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
+		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "p9DUFwCzoUaKenaB5ovHch0G");
+		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_parent", "GUHR0mniN15LvML8OWnm3GzMdXsVEGbD");
 		  this.androidPushMsgToAll(msg, apiKey, secretKey);
 	  }
 	  /**
