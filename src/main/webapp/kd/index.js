@@ -176,10 +176,6 @@ function login_affter_init(){
 	                        "fn":menu_class_list_fn,
 	                        "title": "班级管理"
 	                      },
-//	                      {
-//
-//	                         
-//	                        },
 	                        {
 	                            "link": "##",
 	                            "fn":menu_accounts_list_fn,
@@ -231,7 +227,12 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                }
+	                },
+                    {
+                        "link": "##",
+                        "fn":menu_queryLeaderMsgByParents_message_fn,
+                        "title": "园长信箱"
+                      }
 	                
 	              ];
 	
@@ -417,11 +418,19 @@ function menu_group_myList_fn() {
 
 /*
  * (标头)我功能中的注销用户
- * @ajax_userinfo_logout()：注销；
+ * @ ajax_userinfo_logout：注销；
  * */
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
+
+/*
+ * (标头)<园长信箱>校园列表功能 
+ * */
+function menu_queryLeaderMsgByParents_message_fn() {
+	Queue.push(menu_queryLeaderMsgByParents_message_fn);
+	ajax_queryLeaderMsgByParents_message();
+};
 
 //——————————————————首页大图标——————————————————
 /*
@@ -433,7 +442,6 @@ function menu_announce_mylist_fn() {
 	ajax_announce_Mylist();
 };
 /* （首页）学生通讯录功能方法
- * @parentContactByMyStudent:和服务器请求名字保持一致;
  * @跳转kd_service发服务器请求
  * */
 function parentContactByMyStudent() {

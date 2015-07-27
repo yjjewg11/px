@@ -819,10 +819,17 @@ var Announcements_edit = React.createClass({
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-          w_img_upload_nocut.bind_onchange("#announce_message" ,function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
-          });
+		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  return;
+		  if($.fn.xheditor){
+			  $('#announce_message').xheditor();
+		  }else{
+			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
+					loadJS('../js/xheditor/zh-cn.js');
+					$('#announce_message').xheditor();
+				});
+		  }
+		 
 
 	  },
 render: function() {
@@ -868,8 +875,7 @@ render: function() {
   		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
   		      <br/>
   		    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
-  		    {G_upload_img_Div} 
-  		    <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
+  		      <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
   		    </form>
 
   	     </div>
@@ -1608,13 +1614,7 @@ var Classnews_edit = React.createClass({
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
-		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
-			  editor.pasteHTML('<img  width="198" height="198" src="'+imgurl+'"/>') 
-		  });
-		 
-		  
-		  
+		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
 	  },
 render: function() {
 	  var o = this.state;
@@ -1635,7 +1635,6 @@ return (
 		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过128位"/>
 		      <br/>
 		      <AMR_Input id="classnews_content" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
-		      {G_upload_img_Div}
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
@@ -1862,124 +1861,6 @@ var Div_body_index = React.createClass({
 	);
 	}
 }); 
-
-/*
- * 通讯录学生家长联系详情绘制；
- * @{this.props.formdata.map(function(event)：
- * 封装好的一个MAP方法只对数组起作用，其内部自己For循环;
- * @event:Map方法用event.XX调用数组内 数据；
- * @amStyle:按钮颜色；
- * @parent_uuid:老师给每个用户的ID发message时需要的参数;
- * web页面一键电话功能<a href={"tel:"+event.tel}></a>;
- * */
-var Class_student_tel =React.createClass({	 
-		render: function() {
-	     var o =this.state;	
-		 return (
-		 		<div>
-			    <AMUIReact.List static>
-		    	{this.props.formdata.map(function(event) {
-		            return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
-		            <AMR_ButtonToolbar>
-		            <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
-		            
-		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid)} amStyle="success">@信息</AMUIReact.Button>	
-		            
-		            </AMR_ButtonToolbar>
-		            </AMUIReact.ListItem>);
-		          })}		      			      
-			      </AMUIReact.List>
-		 	     </div> 
-		     );
-	        }
-		 });
-/* 
- * 家长通讯录中的<信息>绘制舞台
- * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
- * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
- * */
-var ParentContactByMyStudent_message_list = React.createClass({ 
-	load_more_btn_id:"load_more_",
-	pageNo:1,
-	classnewsreply_list_div:"classnewsreply_list_div",
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
-	componentDidMount:function(){
-		this.load_more_data();
-	},
-	load_more_data:function(){
-		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}
-		  
-		  this.pageNo++;
-	},
-	reply_save_callback:function(){
-		this.forceUpdate();
-	},
-render: function() {
-	this.load_more_btn_id="load_more_"+this.props.uuid;
-  return (
-		  <div>
-		   <div id={this.classnewsreply_list_div}>
-		   
-		   </div>
-			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-			<Parent_message_save uuid={this.props.parent_uuid} />
-			</div>
-			
-  );
-}
-}); 
-/*
- * 我要发信息模块；(家长通讯录发信息)
- * */
-var Parent_message_save = React.createClass({ 
-	classnewsreply_list_div:"classnewsreply_list_div",
-	componentDidMount:function(){
-		  var editor=$( '#classnews_content_replay' ).xheditor(xhEditor_upImgOption_emot);
-          w_img_upload_nocut.bind_onchange("#file_img_upload" , function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+ '"/>')
-          });
-
-	},
-	reply_save_btn_click:function(){
-		ajax_parent_message_save();
-	},
-render: function() {
-  return (
-		   <form id="editForm" method="post" className="am-form">
-			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
-			
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
-		      
-				{G_upload_img_Div}
-
-			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
-		      
-		    </form>	   
-  );
-}
-}); 
-/* 首页家长通讯录功能2级发信息界面功能
- * @ 绘制 信息
- * */
-var Message_queryByParent_listpage =React.createClass({	 
-	render: function() {
-	  return (
-			  <div>
-			 
-			  {this.props.events.data.map(function(event) {
-			      return (<AMUIReact.ListItem>{event.name}:{event.message}</AMUIReact.ListItem>)
-			  })}
-			    </div>
-			   
-	  );
-	}
-})
 /*
  *(校务管理)<校园列表>绘制 ;
  *@handleClick:绑定的事件根据M来区分点击事件并做处理；
@@ -2058,11 +1939,7 @@ var Group_EventsTable = React.createClass({
     		    this.setState($('#editGroupForm').serializeJson());
     	  },
     	  componentDidMount:function(){
-    		  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-              w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                    editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
-              });
-
+    		  $('#description').xheditor(xhEditor_upImgOption_mfull);
     	},
       render: function() {
     	  var o = this.state;
@@ -2097,7 +1974,7 @@ var Group_EventsTable = React.createClass({
         	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
         	      <br/>
         	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-        	  		{G_upload_img_Div}
+        		  
         	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
         	     </form>
 
@@ -2108,3 +1985,236 @@ var Group_EventsTable = React.createClass({
         );
       }
     }); 
+
+//——————————————————————————家长通讯录<绘制>—————————————————————————— 
+/*
+ * 通讯录学生家长联系详情绘制；
+ * @{this.props.formdata.map(function(event)：
+ * 封装好的一个MAP方法只对数组起作用，其内部自己For循环;
+ * @event:Map方法用event.XX调用数组内 数据；
+ * @amStyle:按钮颜色；
+ * @parent_uuid:老师给每个用户的ID发message时需要的参数;
+ * web页面一键电话功能<a href={"tel:"+event.tel}></a>;
+ * */
+var Class_student_tel =React.createClass({	 
+		render: function() {
+	     var o =this.state;	
+		 return (
+		 		<div>
+			    <AMUIReact.List static>
+		    	{this.props.formdata.map(function(event) {
+		            return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
+		            <AMR_ButtonToolbar>
+		            <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
+		            
+		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid)} amStyle="success">@信息</AMUIReact.Button>	
+		            
+		            </AMR_ButtonToolbar>
+		            </AMUIReact.ListItem>);
+		          })}		      			      
+			      </AMUIReact.List>
+		 	     </div> 
+		     );
+	        }
+		 });
+/* 
+ * 家长通讯录中的<信息>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @Parent_message_save我要保存模板；
+ * */
+var ParentContactByMyStudent_message_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
+	},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (
+		  <div>
+		   <div id={this.classnewsreply_list_div}>
+		   
+		   </div>
+			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
+			<Parent_message_save uuid={this.props.parent_uuid} />
+			</div>
+			
+  );
+}
+}); 
+
+/*
+ * 我要发信息模块；(家长通讯录发信息)
+ * */
+var Parent_message_save = React.createClass({ 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+	reply_save_btn_click:function(){
+		ajax_parent_message_save();
+	},
+render: function() {
+  return (
+		   <form id="editForm" method="post" className="am-form">
+			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
+			
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
+		      
+		    </form>	   
+  );
+}
+}); 
+/* 首页家长通讯录功能2级发信息界面功能
+ * @ 绘制 信息
+ * */
+var Message_queryByParent_listpage =React.createClass({	 
+	render: function() {
+	  return (
+			  <div>
+			 
+			  {this.props.events.data.map(function(event) {
+			      return (<AMUIReact.ListItem>{event.name}:{event.message}</AMUIReact.ListItem>)
+			  })}
+			    </div>
+			   
+	  );
+	}
+})
+   
+
+//——————————————————————————园长信箱<绘制>——————————————————————————        
+    /*
+     * <园长信箱>一层界面绘制;
+     * @send_user:家长名字；
+     * @send_useruuid:幼儿园ID；
+     * @revice_useruuid：家长ID；
+     * @ajax_boss_message_list绑定事件然后开始绘制舞台；
+     * */
+    var Boss_student_tel =React.createClass({	 
+    		render: function() {
+    	     var o =this.state;	
+    		 return (
+    		 		<div>
+    			    <AMUIReact.List static>
+    		    	{this.props.formdata.map(function(event) {
+    		            return (<AMUIReact.ListItem>家长{event.send_user}的信息    
+    		            <AMR_ButtonToolbar>		            
+    		            <AMUIReact.Button  onClick={ajax_boss_message_list.bind(this,event.send_useruuid,event.revice_useruuid)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
+    		            </AMR_ButtonToolbar>	
+            
+    		            </AMUIReact.ListItem>);
+    		          })}		      			      
+    			      </AMUIReact.List>
+    		 	     </div> 
+    		     );
+    	        }
+    		 });
+/* 
+ * <园长信箱>绘制舞台
+ * @ajax_message_queryByParent：园长信箱2层详情界面服务器请求‘
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @revice_useruuid:家长ID；
+ * @send_useruuid:幼儿园ID；
+ * @Boss_message_save我要保存模板
+ * */
+var Boss_message_stage = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_boss_message(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	reply_save_callback:function(){
+		this.forceUpdate();
+	},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (
+		  <div>
+		   <div id={this.classnewsreply_list_div}>
+		   
+		   </div>
+			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
+			<Boss_message_save send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
+			</div>
+			
+  );
+}
+}); 
+
+/*
+ *<园长信箱>发送信息模板
+ *@ajax_boss_message_save：发送信息服务器请求；
+ * * @revice_useruuid:家长ID；
+ * @send_useruuid:幼儿园ID；
+ * */
+var Boss_message_save = React.createClass({ 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+	reply_save_btn_click:function(){
+		ajax_boss_message_save();
+	},
+render: function() {
+  return (
+		   <form id="editForm" method="post" className="am-form">
+		   <input type="hidden" name="revice_useruuid"  value={this.props.revice_useruuid}/>
+			<input type="hidden" name="send_useruuid"  value={this.props.send_useruuid}/>			
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
+		      
+		    </form>	   
+  );
+}
+}); 
+
+
+/* <园长信箱>2层发信息详情界面绘制；
+ * @send_user：信息者名字；
+ * @message：信息内容；
+ * */
+var Message_queryLeaderMsgByParents_listpage =React.createClass({	 
+	render: function() {
+	  return (
+			  <div>			 
+			  {this.props.events.data.map(function(event) {
+			      return (<AMUIReact.ListItem>{event.send_user}:{event.message}</AMUIReact.ListItem>)
+			  })}
+			    </div>
+			   
+	  );
+	}
+})

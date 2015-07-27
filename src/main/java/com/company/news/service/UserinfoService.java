@@ -466,7 +466,7 @@ public class UserinfoService extends AbstractServcice {
 		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
 		
 
-		String hql="select uuid from UserGroupRelation where  useruuid=?";
+		String hql="select groupuuid from UserGroupRelation where  useruuid=?";
 		List listGroupuuids=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, user.getUuid());
 		
 		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);

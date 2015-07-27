@@ -1713,6 +1713,9 @@ G_ajax_abs_save(opt);
                };
    G_ajax_abs_save(opt);
    }
+   
+   
+ //———————————————————————————————————家长通讯录—————————————————————————    
    /*
     * 首页家长通讯录功能；
     *@服务器请求：POST rest/student/parentContactByMyStudent.json
@@ -1799,12 +1802,13 @@ G_ajax_abs_save(opt);
    	
    	return re_data;
       };
+      
       /*我要发信息保存操作
        * @opt：高级封装做处理 直接把表单和URL地址送进去
        * @formName:表单信息
        * @直接传给服务器，服务器根据自己需要的从form表单取参数；
        * */
-      function ajax_parent_message_save(){
+      function ajax_arent_message_save(){
       	var opt={
       	 formName:"editForm",
       	 url:hostUrl + "rest/message/saveToParent.json",
@@ -1815,3 +1819,102 @@ G_ajax_abs_save(opt);
       	 };
       	 G_ajax_abs_save(opt);
       }
+ 
+      
+//———————————————————————————————————园长信箱—————————————————————————      
+ /*(标头)<园长信箱>（服务器请求）-取出所有家长和园长沟通讯息List；
+  * 调用Boss_student_tel绘制一层界面；
+  * */ 
+  function ajax_queryLeaderMsgByParents_message(){    	     	   	
+	   	$.AMUI.progress.start();
+	       var url = hostUrl + "rest/message/queryLeaderMsgByParents.json";
+	   	$.ajax({
+	   		type : "GET",
+	   		url : url,
+	   		dataType : "json",
+	   		 async: true,
+	   		success : function(data) {
+	   			$.AMUI.progress.done();
+	   			if (data.ResMsg.status == "success") {
+	   				React.render(React.createElement( Boss_student_tel,{formdata:data.list}), document.getElementById('div_body'));
+	   			} else {
+	   				alert("加载数据失败："+data.ResMsg.message);
+	   			}
+	   		},
+	   		error : function( obj, textStatus, errorThrown ){
+	   			$.AMUI.progress.done();
+	   			alert(url+",error:"+textStatus);
+	   		}
+	   	});
+	   };
+   /* (标头)<园长信箱>创建舞台
+    * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
+    *@Boss_message_list准备开始绘制舞台  
+    * * @revice_useruuid:家长ID；
+    * @send_useruuid:幼儿园ID；
+    * */
+   function ajax_boss_message_list(send_useruuid,revice_useruuid){
+		React.render(React.createElement( Boss_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+	   };
+		   
+		   
+   /* (标头)<园长信箱>(服务器请求)-绘制每一个Div信息放置在舞台上；
+    * * @revice_useruuid:家长ID；
+    * @send_useruuid:幼儿园ID；
+    * */
+   function ajax_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
+	   var re_data=null;
+	   if(!pageNo)pageNo=1;
+   	$.AMUI.progress.start();
+   $.ajax({
+   	success : function() {
+   		$.AMUI.progress.done();
+   	}
+   });
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/message/queryByParentAndLeader.json?group_uuid="+send_useruuid+"&parent_uuid="+revice_useruuid;
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		dataType : "json",
+   		 async: false,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			// 登陆成功直接进入主页
+   			if (data.ResMsg.status == "success") {
+   				React.render(React.createElement(Message_queryLeaderMsgByParents_listpage, {
+					events: data.list,
+					send_useruuid:send_useruuid,
+					revice_useruuid:revice_useruuid,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				re_data=data.list;
+				
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+",error:"+textStatus);
+	   		}
+	   	});
+	   	
+	   	return re_data;
+	      };
+  
+  /*(标头)<园长信箱>(服务器请求)-我要发送信息
+   * @opt：高级封装做处理 直接把表单和URL地址送进去
+   * @formName:表单信息
+   * @直接传给服务器，服务器根据自己需要的从form表单取参数；
+   * */
+  function ajax_boss_message_save(){
+  	var opt={
+  	 formName:"editForm",
+  	 url:hostUrl + "rest/message/saveLeaderToParent.json",
+  	 cbFN:function(data){
+  		 G_msg_pop(data.ResMsg.message);
+  	 }
+  	 };
+  	 G_ajax_abs_save(opt);
+  }    	   
