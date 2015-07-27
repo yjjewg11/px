@@ -1808,7 +1808,7 @@ G_ajax_abs_save(opt);
        * @formName:表单信息
        * @直接传给服务器，服务器根据自己需要的从form表单取参数；
        * */
-      function ajax_arent_message_save(){
+      function ajax_parent_message_save(){
       	var opt={
       	 formName:"editForm",
       	 url:hostUrl + "rest/message/saveToParent.json",
