@@ -207,8 +207,8 @@ public class MessageService extends AbstractServcice {
 			 PaginationData pData) {
 		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type=2 ";
 		sql += " and (" ;
-		sql += "  revice_useruuid=(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
-//		sql += " or send_useruuid(" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
+		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
+//		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
 		sql += " order by revice_useruuid desc";
