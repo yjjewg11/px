@@ -27,9 +27,6 @@ public class RightConstants {
 	static public String KD_teachingplan_m="KD_teachingplan_m";//教学计划
 	static public String KD_teacher_m="KD_teacher_m";//添加老师权限	
 	static public String KD_accounts_m="KD_accounts_m";//添加账目权限
-	
-	
-	
-	
+	static public String KD_Leader_Msg_m="KD_Leader_Msg_m";//园长信箱
 	
 }
