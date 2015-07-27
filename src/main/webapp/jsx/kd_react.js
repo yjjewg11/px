@@ -2116,7 +2116,7 @@ var Message_queryByParent_listpage =React.createClass({
      * @revice_useruuid：家长ID；
      * @ajax_boss_message_list绑定事件然后开始绘制舞台；
      * */
-    var Boss_student_tel =React.createClass({	 
+    var Boss_student_tel =React.createClass({ 	 
     		render: function() {
     	     var o =this.state;	
     		 return (
