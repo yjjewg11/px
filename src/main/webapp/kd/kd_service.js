@@ -1799,6 +1799,7 @@ G_ajax_abs_save(opt);
    	
    	return re_data;
       };
+      
       /*我要发信息保存操作
        * @opt：高级封装做处理 直接把表单和URL地址送进去
        * @formName:表单信息
