@@ -71,15 +71,12 @@ public class AnnouncementsService extends AbstractServcice {
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(announcements);
-
 		// 如果类型是班级通知
-				if (announcements.getType().intValue() == 0) {//全校公告
-					pushMsgIservice.androidPushMsgToAll_to_teacher("校园公告:"+announcements.getTitle());
-					pushMsgIservice.androidPushMsgToAll_to_parent("校园公告:"+announcements.getTitle());
-					
-				}else if (announcements.getType().intValue() == 1) {//老师公告
-					pushMsgIservice.androidPushMsgToAll_to_teacher("老师公告:"+announcements.getTitle());
-					
+				if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+				}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 				}
 	
 		// 如果类型是班级通知
@@ -144,38 +141,13 @@ public class AnnouncementsService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
 
-		// 删除原来已发通知
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"delete from AnnouncementsTo where announcementsuuid=?",
-				announcements.getUuid());
-
-		// 如果类型是班级通知
-		if (announcements.getType().intValue() == this.announcements_type_class) {
-			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
-				responseMessage.setMessage("Classuuids不能为空！");
-				return false;
-			}
-
-			String[] classuuid = announcementsJsonform.getClassuuids().split(
-					",");
-			for (String s : classuuid) {
-				// 保存用户机构关联表
-				AnnouncementsTo announcementsTo = new AnnouncementsTo();
-				announcementsTo.setClassuuid(s);
-				announcementsTo.setAnnouncementsuuid(announcements.getUuid());
-				// 有事务管理，统一在Controller调用时处理异常
-				this.nSimpleHibernateDao.getHibernateTemplate().save(
-						announcementsTo);
-			}
-		}
 		
-		if (announcements.getType().intValue() == 0) {//全校公告
-			pushMsgIservice.androidPushMsgToAll_to_teacher("校园公告:"+announcements.getTitle());
-			pushMsgIservice.androidPushMsgToAll_to_parent("校园公告:"+announcements.getTitle());
-			
-		}else if (announcements.getType().intValue() == 1) {//老师公告
-			pushMsgIservice.androidPushMsgToAll_to_teacher("老师公告:"+announcements.getTitle());
-			
+		
+		if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+		}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 		}
 
 		return true;
