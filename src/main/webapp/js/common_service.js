@@ -54,8 +54,83 @@ $.AMUI.progress.start();
 	});
 }
 
-
-
+/**
+ * 上传不用裁剪的图片,只是压缩上传
+ */
+w_img_upload_nocut={
+		div_id:"div_widget_chooseUser",
+		div_body:"div_body",
+		cropper:null,
+		callbackFN:null,
+		type:4,
+		base64:null,
+		bind_onchange:function(fileId,callbackFN){
+			w_img_upload_nocut.callbackFN=callbackFN;
+			if(window.JavaScriptCall){
+				$(fileId).bind("click", function(){
+					//优先调用手机
+	            	G_CallPhoneFN.selectImgPic();
+				});
+				return;
+			}
+			$(fileId).bind("change", function(){
+				 lrz(this.files[0], {
+			            before: function() {
+			                console.log('压缩开始');
+			            },
+			            fail: function(err) {
+			                console.error(err);
+			            },
+			            always: function() {
+			                console.log('压缩结束');
+			            },
+			            done: function (results) {
+			            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+			            console.log(results);
+			            /*
+			            var data = {
+			                    base64: results.base64,
+			                    size: results.base64.length // 校验用，防止未完整接收
+			                };*/
+				            if(results&&results.base64){
+				            	
+				            	w_img_upload_nocut.ajax_uploadByphone(results.base64);
+				            }
+			            }
+			            });//end done fn
+			
+				
+				
+			  });//end change
+		},
+		ajax_uploadByphone:function(base64){
+			$.AMUI.progress.start();
+		    var url = hostUrl + "rest/uploadFile/uploadBase64.json";
+			$.ajax({
+				type : "POST",
+				url : url,
+				dataType : "json",
+				data:{type:w_img_upload_nocut.type,base64:base64},
+				 async: true,
+				success : function(data) {
+					$.AMUI.progress.done();
+					// 登陆成功直接进入主页
+					if (data.ResMsg.status == "success") {
+						if(w_img_upload_nocut.callbackFN){
+							w_img_upload_nocut.callbackFN(data.imgUrl);
+						}
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				error : function( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					alert(url+",error:"+textStatus);
+				}
+			});
+			
+		}
+};
 //uploadImg
 /**1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);

@@ -819,17 +819,10 @@ var Announcements_edit = React.createClass({
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-		  return;
-		  if($.fn.xheditor){
-			  $('#announce_message').xheditor();
-		  }else{
-			  loadJS("../js/xheditor/xheditor-1.2.2.min.js",function(){
-					loadJS('../js/xheditor/zh-cn.js');
-					$('#announce_message').xheditor();
-				});
-		  }
-		 
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+          w_img_upload_nocut.bind_onchange("#announce_message" ,function(imgurl){
+                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+          });
 
 	  },
 render: function() {
@@ -875,6 +868,7 @@ render: function() {
   		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
   		      <br/>
   		    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+ 			{G_upload_img_Div} 
   		      <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
   		    </form>
 
@@ -1614,8 +1608,12 @@ var Classnews_edit = React.createClass({
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  $('#classnews_content').xheditor(xhEditor_upImgOption_emot);
-	  },
+		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
+			  editor.pasteHTML('<img  width="198" height="198" src="'+imgurl+'"/>') 
+		  });
+		
+	},
 render: function() {
 	  var o = this.state;
 return (
@@ -1635,6 +1633,7 @@ return (
 		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过128位"/>
 		      <br/>
 		      <AMR_Input id="classnews_content" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
+  			{G_upload_img_Div}
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
@@ -1939,7 +1938,10 @@ var Group_EventsTable = React.createClass({
     		    this.setState($('#editGroupForm').serializeJson());
     	  },
     	  componentDidMount:function(){
-    		  $('#description').xheditor(xhEditor_upImgOption_mfull);
+    			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+              w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                    editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+              });
     	},
       render: function() {
     	  var o = this.state;
@@ -1974,7 +1976,7 @@ var Group_EventsTable = React.createClass({
         	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
         	      <br/>
         	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-        		  
+        		  	{G_upload_img_Div}
         	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
         	     </form>
 
@@ -2066,7 +2068,11 @@ render: function() {
 var Parent_message_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		 var editor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+               editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+         });
+
 	},
 	reply_save_btn_click:function(){
 		ajax_parent_message_save();
@@ -2077,6 +2083,7 @@ render: function() {
 			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
 			
 			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+   {G_upload_img_Div}
 		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
 		      
 		    </form>	   
@@ -2109,7 +2116,7 @@ var Message_queryByParent_listpage =React.createClass({
      * @revice_useruuid：家长ID；
      * @ajax_boss_message_list绑定事件然后开始绘制舞台；
      * */
-    var Boss_student_tel =React.createClass({	 
+    var Boss_student_tel =React.createClass({ 	 
     		render: function() {
     	     var o =this.state;	
     		 return (

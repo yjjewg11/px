@@ -104,7 +104,7 @@ public class ClassNewsService extends AbstractServcice {
 	 * @return
 	 */
 	public PageQueryResult query(User user ,String type,String classuuid, PaginationData pData) {
-		String hql = "from ClassNews4Q where 1=1";
+		String hql = "from ClassNews where 1=1";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid=" + classuuid;
 		

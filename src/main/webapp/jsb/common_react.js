@@ -5,6 +5,11 @@ var AMR_Sticky=AMUIReact.Sticky;
 var AMR_Panel=AMUIReact.Panel;
 var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
+
+var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera"})
+if(window.JavaScriptCall){
+	G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload", round: true}, "上传图片")
+}
 //userinfo
 var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow", 
   render: function() {
@@ -628,7 +633,12 @@ render: function() {
 var Common_reply_save = React.createClass({displayName: "Common_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
-		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		
+		  var editor=$( '#classnews_content_replay' ).xheditor(xhEditor_upImgOption_emot);
+          w_img_upload_nocut.bind_onchange("#file_img_upload" , function(imgurl){
+                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+ '"/>')
+          });
+
 	},
 	reply_save_btn_click:function(){
 		common_ajax_reply_save(this.props.reply_save_callback);
@@ -642,7 +652,8 @@ render: function() {
 			
 			
 			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
-		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
+			G_upload_img_Div, 
+			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
 		      
 		    )	   
   );

@@ -211,11 +211,12 @@ var xhEditor_upImgOption={
 	urlType:'rel'
 };
 var xhEditor_upImgOption_emot={
-	    upMultiple:false,
-		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
-		onUpload:xhEditor_insertUpload,
-		html5Upload:false,
-		tools:'Emot,Img',
+	    //upMultiple:false,
+		//upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
+		//onUpload:xhEditor_insertUpload,
+		//html5Upload:false,
+		//tools:'Emot,Img',
+		tools:'Emot',
 		urlType:'rel'
 	};
 
