@@ -5,6 +5,7 @@ var AMR_Sticky=AMUIReact.Sticky;
 var AMR_Panel=AMUIReact.Panel;
 var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
+var PxInput=AMUIReact.Input;
 
 var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera"})
 if(window.JavaScriptCall){
@@ -155,16 +156,15 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		  passwordDiv=(
 				  React.createElement("div", null, 
 				  React.createElement("label", {htmlFor: "password"}, "密码:"), 
-    		      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
     		      React.createElement("br", null), 
     		      
     		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-    		      React.createElement("input", {type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
+    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
     		      React.createElement("br", null)
 				  )
 				  );
 	  }
-	  
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -183,13 +183,13 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		    React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
     		        ), 
     		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
-    		      React.createElement("input", {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
+    		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
     		      React.createElement("br", null), 
     		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
+    		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
     		      React.createElement("br", null), 
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
-    		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
+    		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
     		      React.createElement("br", null), 
     		      passwordDiv, 
     		      React.createElement("label", {htmlFor: "office"}, "职位:"), 
@@ -248,14 +248,14 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
 
 		      React.createElement("label", {htmlFor: "oldpassword"}, "当前密码:"), 
-		      React.createElement("input", {type: "password", name: "oldpassword"}), 
+		      React.createElement(PxInput, {icon: "lock", type: "password", name: "oldpassword"}), 
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
-		      React.createElement("input", {type: "password", name: "password"}), 
+		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password"}), 
 		      React.createElement("br", null), 
 		      
 		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-		      React.createElement("input", {type: "password", name: "password1"}), 
+		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password1"}), 
 		      React.createElement("br", null), 
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatepassword, className: "am-btn am-btn-primary"}, "提交")
 		    ), 
@@ -313,10 +313,10 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
  		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-primary"}, "上传头像"), 
  		   React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
+		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: ""}, "Email:"), 
-		      React.createElement("input", {type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱"}), 
+		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱"}), 
 		      React.createElement("br", null), 
 		      React.createElement("label", null, "性别:"), 
 		      React.createElement("div", {className: "am-form-group"}, 

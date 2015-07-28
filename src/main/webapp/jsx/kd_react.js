@@ -9,6 +9,7 @@ var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
 var Grid=AMUIReact.Grid;
 var Col=AMUIReact.Col;
+var PxInput=AMUIReact.Input;
 
 
 //userinfo reg
@@ -63,9 +64,6 @@ var Div_userinfo_reg = React.createClass({
 	);
 	}
 }); 
-
-//userinfo reg end
-
 //kd group reg
 var Div_kd_group_reg = React.createClass({ 
 	
@@ -444,71 +442,72 @@ render: function() {
  		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
  		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
  		      <label htmlFor="name">姓名:</label>
- 		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
- 		      <br/>
- 		     <label htmlFor="nickname">昵称:</label>
-		      <input type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
-		      <br/>
-		      <label htmlFor="nickname">头像:</label>
-	 		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+ 		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
+ 		       <br/>
+ 		       <label htmlFor="nickname">昵称:</label>
+ 		       <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
+		       <br/>
+		       <label htmlFor="nickname">头像:</label>
+	 		   <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
 	 		   <br/>
 	 		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
-			      <br/>
+			   <br/>
 			      
 		      <AMUIReact.FormGroup>
 		      <label>单选：</label>
 		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
 		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-		    </AMUIReact.FormGroup>
+		      </AMUIReact.FormGroup>
+		      
 		      <label htmlFor="birthday">生日:</label>
-			<AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
- 		      <br/>
-			 <label htmlFor="birthday">身份证:</label>
-			<input type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
-		      <br/>
- 		    
+			  <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
+			  <br/>
+			 
+			  <label htmlFor="birthday">身份证:</label>
+			  <input  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
+		      <br/> 		    
+		      
 		      <fieldset>
 		      <legend>爸爸妈妈信息</legend>
+		      
 		      <label htmlFor="nickname">妈妈姓名:</label>
- 		      <input type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
+ 		      <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		     <label htmlFor="nickname">妈妈电话:</label>
-		      <input type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <label htmlFor="nickname">妈妈电话:</label>
+		      <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 		      <label htmlfor="nickname">妈妈的工作:</label>
  		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
- 		      <br/>		      		      
-		     
+ 		      <br/>		      		      		     		       		      
  		      <label htmlfor="nickname">爸爸姓名:</label>
- 		      <input type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange} placeholder=""/>
+ 		      <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		     <label htmlFor="nickname">爸爸电话:</label>
-		      <input type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
-		      <br/>
- 		          
+ 		      <label htmlFor="nickname">爸爸电话:</label>
+		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+		      <br/> 		          
  		      <label htmlfor="nickname">爸爸的工作:</label>
  		      <input type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
  		      <br/>		     
- 		     <label htmlfor="nickname">家庭住址:</label>
-		      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+ 		      <label htmlfor="nickname">家庭住址:</label>
+		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
 		      <br/>		
-		    </fieldset>
-		    <fieldset>
+		      </fieldset>
+		      <fieldset>
 		      <legend>其他信息</legend>
 		      <label htmlFor="nickname">奶奶电话:</label>
- 		      <input type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
  		      <br/>
- 		     <label htmlFor="nickname">爷爷电话:</label>
-		      <input type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <label htmlFor="nickname">爷爷电话:</label>
+		      <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 		      <label htmlFor="nickname">外婆电话:</label>
- 		      <input type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
+ 		      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
  		      <br/>
  		      <label htmlFor="nickname">外公电话:</label>
-		      <input type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
+		      <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 		      <label htmlFor="nickname">其他电话:</label>
-		      <input type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
+		      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
 		      <br/>
 	 		   <AMUIReact.Input type="textarea"
 		 	 	      label="说明"
@@ -1077,7 +1076,7 @@ return (
 		<input type="hidden" name="uuid"  value={o.uuid}/>
 		<input type="hidden" name="classuuid"  value={o.classuuid}/>
 		 <label htmlFor="name">日期:</label>
-		 <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
 		      <br/>
 	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
 		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
@@ -1300,9 +1299,9 @@ render: function() {
 	  if (o.uuid) {//只读
 		//2015-07-04 00:00:00=>2015-07-04
 		  o.plandate=o.plandate.split(" ")[0];
-		  plandateStr_div = <input type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
+		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
 	  } else {
-		  plandateStr_div = <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
+		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
 	  }
 	  return (
 		<div>
@@ -1822,7 +1821,7 @@ render: function() {
   	      <br/>
  	    
   	    <label htmlFor="accounts_timeStr">收支日期:</label>
-  	    <AMUIReact.DateTimeInput format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
+  	    <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
   	       <label htmlFor="title">内容:</label>
   	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
   	      <br/>
@@ -1966,14 +1965,14 @@ var Group_EventsTable = React.createClass({
         	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
         	      <br/>
         	       <label htmlFor="address">公司地址:</label>
-        	      <input type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+        	      <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
         	      <br/>
         	       <label htmlFor="map_point">地址坐标:</label>
         	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
         	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
         	      <br/>
         	       <label htmlFor="link_tel">公司电话:</label>
-        	      <input type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+        	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
         	      <br/>
         	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
         		  	{G_upload_img_Div}
@@ -2044,8 +2043,14 @@ var ParentContactByMyStudent_message_list = React.createClass({
 		  
 		  this.pageNo++;
 	},
-	reply_save_callback:function(){
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
 		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
 	},
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -2055,7 +2060,7 @@ render: function() {
 		   
 		   </div>
 			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-			<Parent_message_save uuid={this.props.parent_uuid} />
+			<Parent_message_save parent_React={this} uuid={this.props.parent_uuid} />
 			</div>
 			
   );
@@ -2075,7 +2080,7 @@ var Parent_message_save = React.createClass({
 
 	},
 	reply_save_btn_click:function(){
-		ajax_parent_message_save();
+		ajax_parent_message_save(this.props.parent_React);
 	},
 render: function() {
   return (
@@ -2099,7 +2104,7 @@ var Message_queryByParent_listpage =React.createClass({
 			  <div>
 			 
 			  {this.props.events.data.map(function(event) {
-			      return (<AMUIReact.ListItem>{event.name}:{event.message}</AMUIReact.ListItem>)
+			      return (<AMUIReact.ListItem>{event.send_user}:{event.message}</AMUIReact.ListItem>)
 			  })}
 			    </div>
 			   
@@ -2112,8 +2117,8 @@ var Message_queryByParent_listpage =React.createClass({
     /*
      * <园长信箱>一层界面绘制;
      * @send_user:家长名字；
-     * @send_useruuid:幼儿园ID；
-     * @revice_useruuid：家长ID；
+     * @revice_useruuid:收件人ID；
+     * @send_useruuid:发送者ID；
      * @ajax_boss_message_list绑定事件然后开始绘制舞台；
      * */
     var Boss_student_tel =React.createClass({ 	 
@@ -2140,9 +2145,11 @@ var Message_queryByParent_listpage =React.createClass({
  * @ajax_message_queryByParent：园长信箱2层详情界面服务器请求‘
  * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
- * @revice_useruuid:家长ID；
- * @send_useruuid:幼儿园ID；
+ * @revice_useruuid:收件人ID；
+ * @send_useruuid:发送者ID；
  * @Boss_message_save我要保存模板
+ * this.forceUpdate()强制刷新页面；
+ * this.props.parentReact.forceUpdate();
  * */
 var Boss_message_stage = React.createClass({ 
 	load_more_btn_id:"load_more_",
@@ -2163,8 +2170,14 @@ var Boss_message_stage = React.createClass({
 		  
 		  this.pageNo++;
 	},
-	reply_save_callback:function(){
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
 		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
 	},
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -2174,7 +2187,7 @@ render: function() {
 		   
 		   </div>
 			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-			<Boss_message_save send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
+			<Boss_message_save parent_React={this} send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
 			</div>
 			
   );
@@ -2184,25 +2197,25 @@ render: function() {
 /*
  *<园长信箱>发送信息模板
  *@ajax_boss_message_save：发送信息服务器请求；
- * * @revice_useruuid:家长ID；
- * @send_useruuid:幼儿园ID；
+ * @revice_useruuid:收件人ID；
+ * @send_useruuid:发送者ID；
+ * 此处因园长回信息所以参数ID相反；
  * */
 var Boss_message_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
 		$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
-	reply_save_btn_click:function(){
-		ajax_boss_message_save();
+	reply_boss_save_btn_click:function(){
+		ajax_boss_message_save(this.props.parent_React);
 	},
 render: function() {
   return (
 		   <form id="editForm" method="post" className="am-form">
-		   <input type="hidden" name="revice_useruuid"  value={this.props.revice_useruuid}/>
-			<input type="hidden" name="send_useruuid"  value={this.props.send_useruuid}/>			
+		   <input type="hidden" name="revice_useruuid"  value={this.props.send_useruuid}/>
+			<input type="hidden" name="send_useruuid"  value={this.props.revice_useruuid}/>			
 			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
-		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
-		      
+		      <button type="button"  onClick={this.reply_boss_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>		      
 		    </form>	   
   );
 }
