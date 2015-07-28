@@ -2194,8 +2194,7 @@ render: function() {
 		   React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.revice_useruuid}), 
 			React.createElement("input", {type: "hidden", name: "send_useruuid", value: this.props.send_useruuid}), 			
 			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
-		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
-		      
+		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")		      
 		    )	   
   );
 }
