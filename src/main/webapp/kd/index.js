@@ -16,7 +16,7 @@ function login_affter_init(){
 			    ],
 			    "right": [
 			      {
-			        "link": "#right-link",
+			        "link": "javascript:menu_queryMyTimely_fn",
 			        "title": "消息",
 			        "customIcon":hostUrl+"i/icon-msg.png"
 			      }
@@ -27,7 +27,7 @@ function login_affter_init(){
 
 	
 //envelope envelope-o envelope-square
-	//menu
+	//menu 
 	//—————————————————————权限管理—————————————————————
 	
 	var menu_data=[];
@@ -156,6 +156,23 @@ function login_affter_init(){
 	if(G_user_hasRight("KD_teachingplan_m")){
 		menu_data.push(t_menu);
 	}
+	
+	
+	//园长信箱
+	t_menu={
+        "link": "##",
+        "fn":menu_queryLeaderMsgByParents_message_fn,
+        "title": "园长信箱"
+      };
+	/*
+	 * 调用G_user_hasRight（）;
+	 * 根据项目常量表对应权限检查是否拥有此权限;
+	 * true-信息添加至队列中;
+	 * false-没有此权限不予以添加绘制；
+	 */
+	if(G_user_hasRight("KD_Leader_Msg_m")){
+		menu_data.push(t_menu);
+	}
 	//教学课程管理end
 	//——————————————————————————权限管理end—————————————————————————————————	
 	
@@ -227,12 +244,7 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                },
-                    {
-                        "link": "##",
-                        "fn":menu_queryLeaderMsgByParents_message_fn,
-                        "title": "园长信箱"
-                      }
+	                }
 	                
 	              ];
 	
@@ -353,10 +365,17 @@ function menu_kd_group_reg_fn(){
 };
 
 //——————————————————标头——————————————————
+/*
+ * (标头)查看消息功能;
+ * 
+ * */
+function menu_queryMyTimely_fn() {
+	Queue.push(menu_queryMyTimely_fn);
+	ajax_queryMyTimely_myList();
+};
 
 // @Queue.push()方法Push
 //实现页面缓存然后可以实现回退功能；
-
 /*
  * (标头)老师管理管理功能
  * @跳转kd_service发服务器请求

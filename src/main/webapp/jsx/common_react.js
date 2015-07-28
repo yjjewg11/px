@@ -5,6 +5,7 @@ var AMR_Sticky=AMUIReact.Sticky;
 var AMR_Panel=AMUIReact.Panel;
 var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
+var PxInput=AMUIReact.Input;
 
 var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" />
 if(window.JavaScriptCall){
@@ -155,16 +156,15 @@ var Userinfo_edit = React.createClass({
 		  passwordDiv=(
 				  <div>
 				  <label htmlFor="password">密码:</label>
-    		      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
+    		      <PxInput  icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
     		      <br/>
     		      
     		      <label htmlFor="password1">重复密码:</label>
-    		      <input type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
+    		      <PxInput  icon="lock" type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
     		      <br/>
 				  </div>
 				  );
 	  }
-	  
     return (
     		<div>
     		<div className="header">
@@ -183,13 +183,13 @@ var Userinfo_edit = React.createClass({
     		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
     		        </div>
     		      <label htmlFor="tel">手机号码:</label>
-    		      <input type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
+    		      <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
     		      <br/>
     		      <label htmlFor="name">姓名:</label>
-    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
+    		      <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
     		      <br/>
     		       <label htmlFor="">Email:</label>
-    		      <input type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
+    		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
     		      <br/>
     		      {passwordDiv}
     		      <label htmlFor="office">职位:</label>
@@ -248,14 +248,14 @@ var Div_userinfo_updatepassword = React.createClass({
 		    <form id="commonform" method="post" className="am-form">
 
 		      <label htmlFor="oldpassword">当前密码:</label>
-		      <input type="password" name="oldpassword"  />
+		      <PxInput  icon="lock" type="password" name="oldpassword"  />
 		      <br/>
 		      <label htmlFor="password">密码:</label>
-		      <input type="password" name="password"   />
+		      <PxInput  icon="lock" type="password" name="password"   />
 		      <br/>
 		      
 		      <label htmlFor="password1">重复密码:</label>
-		      <input type="password" name="password1"  />
+		      <PxInput  icon="lock" type="password" name="password1"  />
 		      <br/>
 		      <button type="button" onClick={ajax_userinfo_updatepassword} className="am-btn am-btn-primary">提交</button>
 		    </form>
@@ -313,10 +313,10 @@ var Div_userinfo_update = React.createClass({
  		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-primary">上传头像</button>
  		   <br/>
 		      <label htmlFor="name">姓名:</label>
-		      <input type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
 		      <br/>
 		       <label htmlFor="">Email:</label>
-		      <input type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
+		      <PxInput icon="envelope" type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
 		      <br/>
 		      <label >性别:</label>
 		      <div className="am-form-group">
