@@ -824,7 +824,7 @@ function ajax_announce_Mylist() {
 function btn_click_announce(m,groupuuid,uuid){
 	Queue.push(function(){btn_click_announce(m,groupuuid,uuid);});
 	if(m=="add"){
-		react_ajax_announce_edit({group_uuid:groupuuid,type:announce_types},null);
+		react_ajax_announce_edit({groupuuid:groupuuid,type:announce_types},null);
 	}else if(m=="edit"){
 		react_ajax_announce_edit(null,uuid);
 	}else if(m=="del"){

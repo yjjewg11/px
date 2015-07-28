@@ -854,7 +854,7 @@ render: function() {
   		<input type="hidden" name="isimportant"  value={o.isimportant}/>
   		
   		<div className="am-form-group">
-  		          <select id="group_uuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.group_uuid} onChange={this.handleChange}>
+  		          <select id="groupuuid" name="groupuuid" data-am-selected="{btnSize: 'lg'}" value={o.groupuuid} onChange={this.handleChange}>
   		          {this.props.group_list.map(function(event) {
   		              return (<option value={event.uuid} >{event.brand_name}</option>);
   		            })}

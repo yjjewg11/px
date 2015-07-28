@@ -854,7 +854,7 @@ render: function() {
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
   		
   		React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "group_uuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.group_uuid, onChange: this.handleChange}, 
+  		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
   		          this.props.group_list.map(function(event) {
   		              return (React.createElement("option", {value: event.uuid}, event.brand_name));
   		            })

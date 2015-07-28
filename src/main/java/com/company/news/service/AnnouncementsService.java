@@ -74,7 +74,7 @@ public class AnnouncementsService extends AbstractServcice {
 		// 如果类型是班级通知
 				if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
 					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+					pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 				}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
 					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 				}
