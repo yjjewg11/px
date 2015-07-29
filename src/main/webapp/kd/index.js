@@ -16,7 +16,7 @@ function login_affter_init(){
 			    ],
 			    "right": [
 			      {
-			        "link": "javascript:menu_queryMyTimely_fn",
+			        "link": "javascript:menu_queryMyTimely_fn()",
 			        "title": "消息",
 			        "customIcon":hostUrl+"i/icon-msg.png"
 			      }
@@ -105,12 +105,12 @@ function login_affter_init(){
                               {
                             	  "fn":function(){menu_announce_list_fn(3);},
                                   "link": "##",
-                                  "title": "招生计划(未)"
+                                  "title": "招生计划"
                                 },
                               {
                                   "fn":function(){menu_announce_list_fn(4);},
                                   "link": "##",
-                                  "title": "分享文章(未)"
+                                  "title": "分享文章"
                                 }
                             ]                   
 		  };
@@ -366,7 +366,7 @@ function menu_kd_group_reg_fn(){
 
 //——————————————————标头——————————————————
 /*
- * (标头)查看消息功能;
+ * (标头)查看即时消息功能;
  * 
  * */
 function menu_queryMyTimely_fn() {

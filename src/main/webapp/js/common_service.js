@@ -136,7 +136,7 @@ w_img_upload_nocut={
 * w_uploadImg.open(callbackFN,type);
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
 * 
-* w_uploadImg.base64.ajax_uploadByphone(base64);
+* w_uploadImg.ajax_uploadByphone(base64);
 */
 var w_uploadImg={
 		div_id:"div_widget_chooseUser",

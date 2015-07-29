@@ -5,22 +5,44 @@
  * 
  * 选择上图图片,回调方法,只压缩和调整方向.
  * G_jsCallBack.ajax_uploadByphone(base64);
+ * G_jsCallBack.queryMyTimely_myList（）；即时消息
+ * G_jsCallBack.userinfo_logout();注销用户
  */
 var G_jsCallBack={
-	
+		/**
+		 * 即时消息
+		 * @param base64
+		 */
+		queryMyTimely_myList:function(base64){
+		
+			ajax_queryMyTimely_myList();
+	},
+		/**
+		 * 注销用户
+		 * @param base64
+		 */
+		userinfo_logout:function(base64){
+		
+		menu_userinfo_logout_fn();
+	},
 		/**
 		 * 调用选择头像图片,裁剪和调整方向,回调方法.
 		 * @param base64
 		 */
 	selectPic_callback:function(base64){
+		
 		w_img_upload_nocut.ajax_uploadByphone(results.base64);
 	},
+	
+	
+	
 		/**
 		 * 选择上图图片,回调方法,只压缩和调整方向.
 		 * @param base64
 		 */
 	selectHeadPic_callback:function(base64){
-		w_uploadImg.base64.ajax_uploadByphone(base64);
+		//console.log('base64='+ base64);
+		w_uploadImg.ajax_uploadByphone(base64);
 	}
 }
 
