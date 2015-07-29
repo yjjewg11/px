@@ -146,7 +146,7 @@ render: function() {
  		<div className="header">
  		  <div className="am-g">
  		 <h1>问界互动家园-幼儿园老师登录</h1>
- 	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
+ 	    <p>WenJie Interactive Home <br/>快捷管理，大数据分析</p>
  		  </div>
  		  <hr />
  		</div>
@@ -177,8 +177,7 @@ render: function() {
  			
  	    </form>
  	    <hr/>
- 	    <p>© 2015 成都问界科技有限公司 </p>
-
+ 	   <p>© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1</p>
  	     </div> 
  	   </div>
  	   

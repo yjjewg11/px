@@ -11,7 +11,7 @@
  * Store.getChooseClass(uuid);根据组织id获取班级信息
  * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
  * Store.getUserRights();//获取当前用户的权限信息
- * 
+ * Store.clear();
  * 
  */
 var Store={
@@ -216,6 +216,9 @@ var Store={
 		 return {};
 	},
 	setUserinfo:function(v){
+		var tmp=this.map["userinfo"];
+		if(tmp&&v&&tmp.loginname==v.loginname)return;
+		Store.clear();
 		this.map["userinfo"]=v;
 	}
 };

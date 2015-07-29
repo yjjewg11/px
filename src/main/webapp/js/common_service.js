@@ -251,9 +251,6 @@ function menu_userinfo_updatepassword_fn(){
 //用户登陆
 function ajax_userinfo_updatepassword() {
 	$.AMUI.progress.start();
-	
-	// var data = $("#form1").serializeArray(); //自动将form表单封装成json
-//alert(JSON.stringify(data));
 	  var objectForm = $('#commonform').serializeJson();
 	  if(objectForm.password!=objectForm.password1){
 		  alert("2次输入密码不匹配");
