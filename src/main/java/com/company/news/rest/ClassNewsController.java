@@ -1,10 +1,10 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
+import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,22 +15,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.ClassNews;
-import com.company.news.entity.Cookbook;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
 import com.company.news.entity.User;
-import com.company.news.jsonform.ClassNewsDianzanJsonform;
 import com.company.news.jsonform.ClassNewsJsonform;
-import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.ClassNewsService;
-import com.company.news.service.ClassService;
 import com.company.news.service.CountService;
-import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -69,7 +60,7 @@ public class ClassNewsController extends AbstractRESTController {
 		User user = this.getUserInfoBySession(request);
 		classNewsJsonform.setCreate_user(user.getName());
 		classNewsJsonform.setCreate_useruuid(user.getUuid());
-
+	
 		try {
 			boolean flag;
 			if (StringUtils.isEmpty(classNewsJsonform.getUuid()))

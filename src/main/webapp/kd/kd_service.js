@@ -824,7 +824,7 @@ function ajax_announce_Mylist() {
 function btn_click_announce(m,groupuuid,uuid){
 	Queue.push(function(){btn_click_announce(m,groupuuid,uuid);});
 	if(m=="add"){
-		react_ajax_announce_edit({group_uuid:groupuuid,type:announce_types},null);
+		react_ajax_announce_edit({groupuuid:groupuuid,type:announce_types},null);
 	}else if(m=="edit"){
 		react_ajax_announce_edit(null,uuid);
 	}else if(m=="del"){
@@ -1713,11 +1713,40 @@ G_ajax_abs_save(opt);
                };
    G_ajax_abs_save(opt);
    }
-   
+   /*
+    * （首页）查看我的消息服务请求；
+    * 
+    * */
+   function ajax_queryMyTimely_myList() {
+   	$.AMUI.progress.start();
+   	var url = hostUrl + "rest/message/queryMyTimely.json";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		data : null,
+   		dataType : "json",
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			if (data.ResMsg.status == "success") {
+   				alert("开发一半未完成");
+   	//React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error : function( obj, textStatus, errorThrown ){
+   			$.AMUI.progress.done();
+   			alert(url+","+textStatus+"="+errorThrown);
+   			 console.log(url+',error：', obj);
+   			 console.log(url+',error：', textStatus);
+   			 console.log(url+',error：', errorThrown);
+   		}
+   	});
+   };
    
  //———————————————————————————————————家长通讯录—————————————————————————    
    /*
-    * 首页家长通讯录功能；
+    * （首页）家长通讯录功能；
     *@服务器请求：POST rest/student/parentContactByMyStudent.json
     *@Class_student_tel:开始绘制方法;
     *@formdata:data.list:服务器取回的学生数组数据
@@ -1759,7 +1788,7 @@ G_ajax_abs_save(opt);
 		React.render(React.createElement( ParentContactByMyStudent_message_list,{parent_uuid:parent_uuid}), document.getElementById('div_body'));
 	   	
       };
-   /* 首页家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
+   /* （首页）家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
     *  @parent_uuid:每个用户的ID；
     *  
     * */
@@ -1803,22 +1832,27 @@ G_ajax_abs_save(opt);
    	return re_data;
       };
       
-      /*我要发信息保存操作
-       * @opt：高级封装做处理 直接把表单和URL地址送进去
-       * @formName:表单信息
-       * @直接传给服务器，服务器根据自己需要的从form表单取参数；
-       * */
-      function ajax_parent_message_save(){
-      	var opt={
-      	 formName:"editForm",
-      	 url:hostUrl + "rest/message/saveToParent.json",
-      	 cbFN:function(data){
-      		 G_msg_pop(data.ResMsg.message);
-      		// if(callback)callback();
-      	 }
-      	 };
-      	 G_ajax_abs_save(opt);
-      }
+  /*首页家长通讯录功
+   * 我要发信息保存操作
+   * @opt：高级封装做处理 直接把表单和URL地址送进去
+   * @formName:表单信息
+   * @直接传给服务器，服务器根据自己需要的从form表单取参数；
+   * */
+  function ajax_parent_message_save(that){
+  	var opt={
+  	 formName:"editForm",
+  	 url:hostUrl + "rest/message/saveToParent.json",
+  	 cbFN:function(data){
+			if (data.ResMsg.status == "success") {
+				that.refresh_data();
+		} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}		 		
+  	  }
+  	 };
+  	 G_ajax_abs_save(opt);
+  }
  
       
 //———————————————————————————————————园长信箱—————————————————————————      
@@ -1850,8 +1884,8 @@ G_ajax_abs_save(opt);
    /* (标头)<园长信箱>创建舞台
     * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
     *@Boss_message_list准备开始绘制舞台  
-    * * @revice_useruuid:家长ID；
-    * @send_useruuid:幼儿园ID；
+	* @revice_useruuid:收件人ID；
+	* @send_useruuid:发送者ID；
     * */
    function ajax_boss_message_list(send_useruuid,revice_useruuid){
 		React.render(React.createElement( Boss_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
@@ -1859,8 +1893,8 @@ G_ajax_abs_save(opt);
 		   
 		   
    /* (标头)<园长信箱>(服务器请求)-绘制每一个Div信息放置在舞台上；
-    * * @revice_useruuid:家长ID；
-    * @send_useruuid:幼儿园ID；
+    * @revice_useruuid:收件人ID；
+    * @send_useruuid:发送者ID；
     * */
    function ajax_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
 	   var re_data=null;
@@ -1908,13 +1942,20 @@ G_ajax_abs_save(opt);
    * @formName:表单信息
    * @直接传给服务器，服务器根据自己需要的从form表单取参数；
    * */
-  function ajax_boss_message_save(){
+  function ajax_boss_message_save(that){
   	var opt={
   	 formName:"editForm",
   	 url:hostUrl + "rest/message/saveLeaderToParent.json",
   	 cbFN:function(data){
-  		 G_msg_pop(data.ResMsg.message);
-  	 }
+			if (data.ResMsg.status == "success") {
+				that.refresh_data();
+		} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		
+  		
+  	  }
   	 };
   	 G_ajax_abs_save(opt);
   }    	   

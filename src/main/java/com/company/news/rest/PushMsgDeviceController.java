@@ -33,8 +33,6 @@ public class PushMsgDeviceController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String saveToTeacher(ModelMap model, HttpServletRequest request) {
-		
-		
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -59,13 +57,15 @@ public class PushMsgDeviceController extends AbstractRESTController {
 			jsonform.setStatus(0);
 		}
 		jsonform.setType(SystemConstants.PushMsgDevice_type_1);
+		
 		if(!SystemConstants.PushMsgDevice_device_type_android.equals(jsonform.getDevice_type())
 				&&!SystemConstants.PushMsgDevice_device_type_ios.equals(jsonform.getDevice_type())){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage("参数无效:device_type="+jsonform.getDevice_type());
 			return "";
 		}
-		
+		//监听所有我关联的组织
+		jsonform.setGroup_uuid(this.getMyGroupUuidsBySession(request));
 		try {
 			boolean flag;
 			    flag = pushMsgDeviceService.save(jsonform, responseMessage);

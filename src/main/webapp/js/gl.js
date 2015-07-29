@@ -200,7 +200,7 @@ var xhEditor_upImgOption_mfull={
 		html5Upload:false,
 		height:'500',
 		tools:'mfull',
-		urlType:'rel'
+		urlType:'abs'
 	};
 var xhEditor_upImgOption={
     upMultiple:false,
@@ -208,7 +208,7 @@ var xhEditor_upImgOption={
 	onUpload:xhEditor_insertUpload,
 	html5Upload:false,
 	tools:'simple',
-	urlType:'rel'
+	urlType:'abs'
 };
 var xhEditor_upImgOption_emot={
 	    //upMultiple:false,
@@ -217,7 +217,7 @@ var xhEditor_upImgOption_emot={
 		//html5Upload:false,
 		//tools:'Emot,Img',
 		tools:'Emot',
-		urlType:'rel'
+		urlType:'abs'
 	};
 
 //xhEditor编辑器图片上传回调函数
