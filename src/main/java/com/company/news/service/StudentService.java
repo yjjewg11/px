@@ -9,16 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
-import com.company.news.entity.ParentStudentRelation;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
-import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -138,7 +135,7 @@ public class StudentService extends AbstractServcice {
 	 * @param type
 	 * @return
 	 */
-	public StudentContactRealation updateStudentContactRealation(Student student,Integer type,String tel)  throws Exception {
+	private StudentContactRealation updateStudentContactRealation(Student student,Integer type,String tel)  throws Exception {
 		if(!CommonsValidate.checkCellphone(tel)){
 			return null;
 		}
@@ -150,7 +147,7 @@ public class StudentService extends AbstractServcice {
 			studentContactRealation.setStudent_uuid(student.getUuid());
 			studentContactRealation.setStudent_name(student.getName());
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
-			
+			studentContactRealation.setGroupuuid(student.getGroupuuid());
 			
 			studentContactRealation.setTel(tel);
 			studentContactRealation.setType(type);
@@ -180,18 +177,7 @@ public class StudentService extends AbstractServcice {
 		//判断电话,是否已经注册,来设置状态.
 		if(parent!=null){
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_1);
-			studentContactRealation.setParent_uuid(parent.getUuid());
-			{
-				// 保存家长-学生关联表
-				ParentStudentRelation parentStudentRelation = new ParentStudentRelation();
-				parentStudentRelation.setParentuuid(parent.getUuid());
-				parentStudentRelation.setStudentuuid(student_uuid);
-				parentStudentRelation.setType(type);
-				// 有事务管理，统一在Controller调用时处理异常
-				this.nSimpleHibernateDao.getHibernateTemplate().save(
-						parentStudentRelation);
-			}
-			
+			studentContactRealation.setParent_uuid(parent.getUuid());			
 		}else{
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		}
@@ -284,6 +270,22 @@ public class StudentService extends AbstractServcice {
 		//student_uuid in(select uuid from Student classuuid in("+StringOperationUtil.dateStr)+"))
 		String hql="from StudentContactRealation  where 1=1 order  by student_name,type";
 		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+	}
+	
+	/**
+	 * 根据电话号码,机构UUID,获取绑定该学生的家长账号
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public Student getStudentByIdNoAndGroup(String idNo,String groupuuid) {
+		
+		List<Student> list= (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from Student  where idcard=? and groupuuid=?)", idNo,groupuuid);
+		if(list!=null&&list.size()>0)
+			return list.get(0);
+		else
+			return null;
 	}
 
 }
