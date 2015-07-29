@@ -10,6 +10,7 @@ var AMR_Input=AMUIReact.Input;
 var Grid=AMUIReact.Grid;
 var Col=AMUIReact.Col;
 var PxInput=AMUIReact.Input;
+var AMR_Span=AMUIReact.span;
 
 
 //userinfo reg
@@ -1597,7 +1598,10 @@ return (
 );
 }
 });
-
+/*
+ * 班级互动
+ * 
+ * */
 var Classnews_edit = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -1624,11 +1628,19 @@ return (
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  
+	      <select id="selectclass_uuid" name="class_uuid"  value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
+	      <option value="" >所有</option>
+	      {this.props.mycalsslist.map(function(event) {
+	          return (<option value={event.uuid} >{event.name}</option>);
+	        })}
+	      </select>
+	      
 		  <form id="editClassnewsForm" method="post" className="am-form">
 			<input type="hidden" name="uuid"  value={o.uuid}/>
 			<input type="hidden" name="classuuid"  value={o.classuuid}/>
 			<label htmlFor="title">标题:</label>
-		      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过128位"/>
+		      <input type="text" name="title" id="tit le" value={o.title} onChange={this.handleChange} placeholder="不超过128位"/>
 		      <br/>
 		      <AMR_Input id="classnews_content" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
   			{G_upload_img_Div}
@@ -2237,3 +2249,53 @@ var Message_queryLeaderMsgByParents_listpage =React.createClass({
 	  );
 	}
 })
+
+
+
+//——————————————————————————查看即时消息<绘制>——————————————————————————   
+/* <查看即时消息>信息详情界面绘制；
+ * @send_user：信息者名字；
+ * @
+ * @
+ * @
+ * */
+
+var Message_queryMyTimely_myList =React.createClass({	 
+	render: function() {
+		  return (
+			 <div>			 
+				  {this.props.formdata.data.map(function(event) {
+					  return(
+							  
+					<article className="am-comment-highlight">
+					  <div className="am-comment-main">
+						  <header className="am-comment-hd">
+						  <div className="am-comment-meta">
+						  <a href="#link-to-user" className="am-comment-author">{event.title}：</a>消息发送于 
+						  <time>{event.create_time}</time></div>
+						  </header>
+						  <div className="am-comment-bd" onClick={this.ajax_State_style.bind(this,event.type,event.rel_uuid)}>{event.message}</div>
+					  </div>
+					</article>)						
+				  })}
+				  
+			 </div>				   
+		 
+		  );
+		}
+	})
+
+
+
+//<div class="am-form-group am-form-warning">
+//  <label class="am-form-label" for="doc-ipt-warning">验证警告</label>
+//  <input type="text" id="doc-ipt-warning" class="am-form-field">
+//</div>
+//<div class="am-form-group am-form-error">
+//  <label class="am-form-label" for="doc-ipt-error">验证失败</label>
+//  <input type="text" id="doc-ipt-error" class="am-form-field">
+//</div>
+//</form>
+
+
+

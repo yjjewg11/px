@@ -1349,7 +1349,7 @@ var url = hostUrl + "rest/cookbookplan/save.json";
 
 
 function menu_cookbookPlan_dayShow_fn() {
-	Queue.push(menu_classnewsbyMy_list_fn);
+	Queue.push(menu_cookbookPlan_dayShow_fn);
 	ajax_cookbookPlan_dayShow(null);
 };
 //老师查询，条件groupuuid
@@ -1394,7 +1394,10 @@ function ajax_cookbookPlan_dayShow(num) {
 };
 
 //cookbookPlan end
-
+/*
+ * （首页）班级互动；
+ * @g_classnews_class_list（我的班级列表取成全局变量）;
+ * */
 
 function menu_classnewsbyMy_list_fn() {
 	Queue.push(menu_classnewsbyMy_list_fn);
@@ -1458,7 +1461,7 @@ function ajax_classnews_list(classuuid,pageNo) {
 
 function btn_click_classnews(m,formdata){
 	Queue.push(function(){btn_click_classnews(m,formdata);});
-	ajax_classnews_edit(m,formdata);
+	ajax_classnews_edit(m,formdata,g_classnews_class_list);
 };
 
 /**
@@ -1466,13 +1469,13 @@ function btn_click_classnews(m,formdata){
 * @param formdata
 * @param operate
 */
-function ajax_classnews_edit(m,formdata){
+function ajax_classnews_edit(m,formdata,mycalsslist){
 	if(m=="add"){
 		if(!formdata.classuuid){
 			alert("请选择班级!");
 			return;
 		}
-		React.render(React.createElement(Classnews_edit,{formdata:formdata}), document.getElementById('div_body'));
+		React.render(React.createElement(Classnews_edit,{formdata:formdata,mycalsslist:mycalsslist}), document.getElementById('div_body'));
 		return;
 	
 	}
@@ -1485,12 +1488,11 @@ function ajax_classnews_edit(m,formdata){
 		 async: true,
 		success : function(data) {
 			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
+			// 登陆成功直接进入主页 
 			if (data.ResMsg.status == "success") {
 				if(m=="edit"){
-					React.render(React.createElement(Classnews_edit,{formdata:data.data}), document.getElementById('div_body'));
+					React.render(React.createElement(Classnews_edit,{formdata:data.data,mycalsslist:mycalsslist}), document.getElementById('div_body'));
 				}else{
-					
 					data.data.dianzanList=commons_ajax_dianzan_getByNewsuuid(formdata.uuid);
 					React.render(React.createElement(Classnews_show,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
 				}
@@ -1713,13 +1715,15 @@ G_ajax_abs_save(opt);
                };
    G_ajax_abs_save(opt);
    }
+   
+//———————————————————————————————————即时消息—————————————————————————    
    /*
-    * （首页）查看我的消息服务请求；
+    * （首页）查看我的消息(服务请求)；
     * 
     * */
    function ajax_queryMyTimely_myList() {
    	$.AMUI.progress.start();
-   	var url = hostUrl + "rest/message/queryMyTimely.json";
+   	var url = hostUrl + "rest/pushMessage/queryMy.json";
    	$.ajax({
    		type : "GET",
    		url : url,
@@ -1728,8 +1732,7 @@ G_ajax_abs_save(opt);
    		success : function(data) {
    			$.AMUI.progress.done();
    			if (data.ResMsg.status == "success") {
-   				alert("开发一半未完成");
-   	//React.render(React.createElement( Class_student_tel,{formdata:data.list}), document.getElementById('div_body'));
+   		  React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), document.getElementById('div_body'));
    			} else {
    				alert("加载数据失败："+data.ResMsg.message);
    			}
@@ -1744,9 +1747,55 @@ G_ajax_abs_save(opt);
    	});
    };
    
+   
+   
+   /*
+    * （首页）查看我的消息(舞台跳转)；
+    * @thpe:0:公告,3:精品文章.4:招生计划.5:课程表.6:食谱.99:班级互动.10:html类型,直接去url地址,调用浏览器显示;
+    * @reluuid:与type配合确定某个模块的详细的uuid.用于跳转到该模块的详细显示;
+    * */    
+   function ajax_State_style(type,reluuid){
+	 switch (type)   
+	   {
+	       case 0:                                 
+	    	   react_ajax_announce_show(reluuid);   //(已验证功能);   
+	           break;                                              
+	       case 3:                                          
+	    	   react_ajax_announce_show(reluuid);   //(未验证功能);
+	       break;
+	   case 4:                                          
+		   	   react_ajax_announce_show(reluuid);   //(未验证功能);  
+	       break;
+	   case 5:                                          
+		   	   Teachingplan_showByOneDay(reluuid);  //(未验证功能);
+	       break;
+	   case 6:                                          
+		       ajax_cookbookPlan_dayShow(reluuid);  //(未验证功能);
+	       break;
+	   case 99:                                          
+		       ajax_classnews_list(reluuid);        //(未验证功能);
+	       break;
+	   case 10:                                          
+	           Console.WriteLine("Case 2");         //(未验证功能);
+	       break;
+	   default:            
+	       Styte.out.println("此信息为非法信息，请联系管理员！");
+	           break;
+	   }
+	   
+   }  
+   
+   
+   
+   
+   
+   
+   
+   
+   
  //———————————————————————————————————家长通讯录—————————————————————————    
    /*
-    * （首页）家长通讯录功能；
+    * （首页）家长通讯录功能；服务器请求
     *@服务器请求：POST rest/student/parentContactByMyStudent.json
     *@Class_student_tel:开始绘制方法;
     *@formdata:data.list:服务器取回的学生数组数据
@@ -1832,7 +1881,7 @@ G_ajax_abs_save(opt);
    	return re_data;
       };
       
-  /*首页家长通讯录功
+  /*首页家长通讯录功 服务器请求
    * 我要发信息保存操作
    * @opt：高级封装做处理 直接把表单和URL地址送进去
    * @formName:表单信息
