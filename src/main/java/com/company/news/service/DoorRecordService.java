@@ -118,9 +118,8 @@ public class DoorRecordService extends AbstractServcice {
 				doorUserJsonform.getIdNo(), doorUserJsonform.getGroupuuid());
 		if (s == null) {
 			responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
-					+ ",未匹配到对应的账号！");
-			return false;
-		}
+					+ ",未匹配到对应的账号,不需要绑定！");
+		}else{
 
 		StudentBindJsonform studentBindJsonform = new StudentBindJsonform();
 		studentBindJsonform.setCardid(doorUserJsonform.getCardid());
@@ -130,11 +129,12 @@ public class DoorRecordService extends AbstractServcice {
 		studentBindJsonform.setStudentuuid(s.getUuid());
 
 		//调用绑定服务
-		if (studentBindService.add(studentBindJsonform, responseMessage)) {
-			return true;
-		} else
+		studentBindService.add(studentBindJsonform, responseMessage);
+		responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
+				+ ",绑定成功！");
+		}
 
-			return false;
+		return true;
 
 	}
 

@@ -111,7 +111,7 @@ public class DoorRecordController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("写入成功");
+		//responseMessage.setMessage("写入成功");
 		return "";
 	}
 
