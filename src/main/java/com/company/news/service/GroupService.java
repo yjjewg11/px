@@ -70,10 +70,10 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
-			responseMessage.setMessage("机构名已被注册！");
-			return false;
-		}
+//		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
+//			responseMessage.setMessage("机构名已被注册！");
+//			return false;
+//		}
 		
 		Group group = new Group();
 
