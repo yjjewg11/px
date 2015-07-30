@@ -1496,7 +1496,7 @@ React.createElement("tr", {className: className},
 React.createElement("td", null, 
 React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
 ), 
-  React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_classnews.bind(this,"show", event)}, event.title)), 
+  React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_classnews.bind(this,"show",event)}, event.title)), 
   React.createElement("td", null, event.create_user), 
   React.createElement("td", null, event.update_time), 
   React.createElement("td", null, event.reply_time)
@@ -1506,12 +1506,14 @@ React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_
 }
 }); 
 /*
- * 班级 互动
+ * 班级 互动1
+ * @selectclass_uuid_val:设置一变量当下拉框Val改变时赋值于classuuid;
  * */
 var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTable",
+	selectclass_uuid_val:null,
 	handleClick: function(m) {
 		if(m=="add"){
-			 btn_click_classnews(m,{classuuid:$('#selectclass_uuid').val()});
+			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }if(m=="edit"){
 			
@@ -1551,8 +1553,9 @@ var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTab
 	  handleChange_select_classnews_type:function(){
 		  ajax_classnews_list($('#select_classnews_type').val());
 	  },
-	  handleChange_selectclass_uuid:function(){
-		  ajax_classnews_list($('#selectclass_uuid').val());
+	  handleChange_selectclass_uuid:function(val){
+		  this.selectclass_uuid_val=val;
+		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
 render: function() {
 	var totalCount=this.props.events.totalCount;
@@ -1573,14 +1576,8 @@ React.createElement(AMUIReact.ButtonToolbar, null,
 	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
 	    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
 
-      React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.class_list, btnStyle: "primary", value: this.props.classuuid}), 	    
-	    
-	    React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
-	      React.createElement("option", {value: ""}, "所有"), 
-	      this.props.class_list.map(function(event) {
-	          return (React.createElement("option", {value: event.uuid}, event.name));
-	        })
-	      ), 
+      React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 	    
+
 	      
 	      
 	      
@@ -1607,15 +1604,24 @@ React.createElement(AMUIReact.Table, React.__spread({},  this.props),
 }
 });
 /*
- * 班级互动
- * 
+ * 班级互动2
+ * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+ * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+ * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
  * */
 var Classnews_edit = React.createClass({displayName: "Classnews_edit", 
+	selectclass_uuid_val:null,
 	 getInitialState: function() {
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editClassnewsForm').serializeJson());
+	  },
+	  handleChange_selectclass_uuid:function(val){
+		  this.selectclass_uuid_val=val;
+		  this.props.formdata.classuuid=val
+			 $('#classuuid').val(val);
+			    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
@@ -1626,6 +1632,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	},
 render: function() {
 	  var o = this.state;
+	  console.log("classuuid=",this.props.formdata.classuuid,"   o.classuuid=",o.classuuid,"   o.uuid",o.uuid);
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -1635,16 +1642,13 @@ return (
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 		  
-	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
-	      React.createElement("option", {value: ""}, "所有"), 
-	      this.props.mycalsslist.map(function(event) {
-	          return (React.createElement("option", {value: event.uuid}, event.name));
-	        })
-	      ), 	      
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+	      
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: this.props.formdata.classuuid}), 	    
+  
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-			React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+			React.createElement("input", {type: "hidden", name: "classuuid", value: this.props.formdata.classuuid}), 
 			React.createElement("label", {htmlFor: "title"}, "标题:"), 
 		      React.createElement("input", {type: "text", name: "title", id: "tit le", value: o.title, onChange: this.handleChange, placeholder: "不超过128位"}), 
 		      React.createElement("br", null), 
