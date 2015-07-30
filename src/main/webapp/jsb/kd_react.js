@@ -147,7 +147,7 @@ render: function() {
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
  		 React.createElement("h1", null, "问界互动家园-幼儿园老师登录"), 
- 	    React.createElement("p", null, "PX Background Management System", React.createElement("br", null), "快捷管理，大数据分析")
+ 	    React.createElement("p", null, "WenJie Interactive Home ", React.createElement("br", null), "快捷管理，大数据分析")
  		  ), 
  		  React.createElement("hr", null)
  		), 
@@ -1505,7 +1505,9 @@ React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_
 );
 }
 }); 
-
+/*
+ * 班级 互动
+ * */
 var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTable",
 	handleClick: function(m) {
 		if(m=="add"){
@@ -1570,12 +1572,18 @@ React.createElement(AMUIReact.ButtonToolbar, null,
 	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this, "pre"), round: true}, "« 上一页"), 
 	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
 	    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
-	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
+
+      React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.class_list, btnStyle: "primary", value: this.props.classuuid}), 	    
+	    
+	    React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
 	      React.createElement("option", {value: ""}, "所有"), 
 	      this.props.class_list.map(function(event) {
 	          return (React.createElement("option", {value: event.uuid}, event.name));
 	        })
 	      ), 
+	      
+	      
+	      
 React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
   React.createElement("thead", null, 
     React.createElement("tr", null, 
@@ -1633,8 +1641,7 @@ return (
 	      this.props.mycalsslist.map(function(event) {
 	          return (React.createElement("option", {value: event.uuid}, event.name));
 	        })
-	      ), 
-	      
+	      ), 	      
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 

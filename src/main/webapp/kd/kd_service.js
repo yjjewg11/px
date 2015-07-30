@@ -224,8 +224,8 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 					handleClick:btn_click_userinfo,
 					handleChange_selectgroup_uuid:ajax_uesrinfo_listByGroup,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
+					
+				}), document.getElementById('div_body'));
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1491,6 +1491,7 @@ function ajax_classnews_edit(m,formdata,mycalsslist){
 			// 登陆成功直接进入主页 
 			if (data.ResMsg.status == "success") {
 				if(m=="edit"){
+					
 					React.render(React.createElement(Classnews_edit,{formdata:data.data,mycalsslist:mycalsslist}), document.getElementById('div_body'));
 				}else{
 					data.data.dianzanList=commons_ajax_dianzan_getByNewsuuid(formdata.uuid);

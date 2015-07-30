@@ -1505,7 +1505,9 @@ return (
 );
 }
 }); 
-
+/*
+ * 班级 互动
+ * */
 var Classnews_EventsTable = React.createClass({
 	handleClick: function(m) {
 		if(m=="add"){
@@ -1570,12 +1572,18 @@ return (
 	  <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this, "pre")} round>&laquo; 上一页</AMR_Button>
 	  <label>{g_classnews_pageNo_point}\{maxPageNo}</label> 
 	    <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
-	      <select id="selectclass_uuid" name="class_uuid"  value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
+
+      <AMUIReact.Selected id="selectclass_uuid" name="class_uuid" onChange={this.handleChange_selectclass_uuid} btnWidth="300"  data={this.props.class_list} btnStyle="primary" value={this.props.classuuid} />	    
+	    
+	    <select id="selectclass_uuid" name="class_uuid"  value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
 	      <option value="" >所有</option>
 	      {this.props.class_list.map(function(event) {
 	          return (<option value={event.uuid} >{event.name}</option>);
 	        })}
 	      </select>
+	      
+	      
+	      
 <AMUIReact.Table {...this.props}>  
   <thead> 
     <tr>
@@ -1633,8 +1641,7 @@ return (
 	      {this.props.mycalsslist.map(function(event) {
 	          return (<option value={event.uuid} >{event.name}</option>);
 	        })}
-	      </select>
-	      
+	      </select>	      
 		  <form id="editClassnewsForm" method="post" className="am-form">
 			<input type="hidden" name="uuid"  value={o.uuid}/>
 			<input type="hidden" name="classuuid"  value={o.classuuid}/>
