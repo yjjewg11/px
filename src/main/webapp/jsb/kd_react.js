@@ -178,8 +178,7 @@ render: function() {
  			
  	    ), 
  	    React.createElement("hr", null), 
- 	    React.createElement("p", null, "© 2015 成都问界科技有限公司 ")
-
+ 	   React.createElement("p", null, "© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1")
  	     )
  	   )
  	   
