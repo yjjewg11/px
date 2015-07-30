@@ -1628,9 +1628,8 @@ return (
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		  
-	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 		  
+	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
 	      React.createElement("option", {value: ""}, "所有"), 
 	      this.props.mycalsslist.map(function(event) {
 	          return (React.createElement("option", {value: event.uuid}, event.name));

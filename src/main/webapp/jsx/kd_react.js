@@ -1628,9 +1628,8 @@ return (
 		  <hr />
 		</div>
 		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  
-	      <select id="selectclass_uuid" name="class_uuid"  value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">		  
+	      <select id="selectclass_uuid" name="class_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.class_uuid} onChange={this.handleChange_selectclass_uuid}>
 	      <option value="" >所有</option>
 	      {this.props.mycalsslist.map(function(event) {
 	          return (<option value={event.uuid} >{event.name}</option>);
