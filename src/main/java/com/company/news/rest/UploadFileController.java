@@ -78,7 +78,7 @@ public class UploadFileController extends AbstractRESTController {
 	public String getImg(@RequestParam("uuid") String uuid, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		uploadFileService.down(uuid, response, ContentTypeConstants.Image_gif);
+		uploadFileService.down(uuid,request.getParameter("type"), response, ContentTypeConstants.Image_gif);
 		return "";
 	}
 
