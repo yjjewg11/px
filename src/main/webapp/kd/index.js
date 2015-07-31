@@ -310,17 +310,17 @@ function menu_dohome(){
 		                    	    "title": "班级互动"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/gonggao.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
 			                    {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/jiaoyujihua.png",
 		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
 		                    	    "title": "教学计划"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/daily_diet.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
@@ -336,7 +336,7 @@ function menu_dohome(){
 			                    	    "title": "家长通讯录"
 			                    	  }, 
 		                    	  {
-	                    	    "img": hostUrl+"i/header.png",
+	                    	    "img": hostUrl+"i/qiandao.png",
 	                    	    "link": "###",
 	                    	    "title": "签到(未)"
 	                    	  },

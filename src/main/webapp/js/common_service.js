@@ -54,6 +54,25 @@ $.AMUI.progress.start();
 	});
 }
 
+
+
+/*
+ * 将幼儿园列表转换成select要求的数据模型
+ * @arrlist  数组
+ * @id {Array} 需要转换数组中哪一个属性名
+ * @name       需要转换数组中哪一个属性名
+ */
+function G_selected_dataModelArray_byArray(arrlist,id,name){
+	var arr=[];
+	if(!arrlist)return arr;
+	for(var i=0;i<arrlist.length;i++){
+		var tmp=arrlist[i];
+		arr.push( {value: tmp[id], label:tmp[name]});
+	}
+	return arr;
+}
+
+
 /**
  * 上传不用裁剪的图片,只是压缩上传
  */
