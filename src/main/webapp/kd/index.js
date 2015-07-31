@@ -244,7 +244,12 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                }
+	                },      	
+	                {
+	                      "link": "##",
+	                      "title": "后台用户统计",
+	                      "fn":menu_query_list_fn
+	                    }
 	                
 	              ];
 	
@@ -451,6 +456,15 @@ function menu_queryLeaderMsgByParents_message_fn() {
 	ajax_queryLeaderMsgByParents_message();
 };
 
+/*
+ * (标头)后台统计数据
+ * @跳转kd_service发服务器请求
+ * */
+function menu_query_list_fn() {
+	Queue.push(menu_query_list_fn);
+	//ajax_query_listByGroup(Store.getCurGroup().uuid,Store.getChooseClass(Store.getCurGroup().uuid));
+	ajax_student_query();
+};
 //——————————————————首页大图标——————————————————
 /*
  * （首页）公告功能方法；

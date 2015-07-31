@@ -1995,3 +1995,233 @@ G_ajax_abs_save(opt);
   	 };
   	 G_ajax_abs_save(opt);
   }    	   
+//——————————————————————————后台统计数据——————————————————————————
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /*
+   * 后台统计数据（获取用户列表服务器请求）；
+   * 
+   * */
+  var g_student_query_groupuuid="";
+  var g_student_query_classuuid="";
+  var g_student_query_pageNo="";
+  function ajax_student_query(groupuuid,classuuid,pageNo) {
+	  if(!groupuuid)groupuuid="";
+	  if(!classuuid)classuuid="";
+	  if(!pageNo)pageNo="";
+	  g_student_query_groupuuid=groupuuid;
+	  g_student_query_classuuid=classuuid;
+	  g_student_query_pageNo=pageNo;
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&pageNo="+pageNo;
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(Query_EventsTable, {
+	  					group_uuid:groupuuid,
+	  					class_uuid:classuuid,
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+	  					class_list:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+	  					events: data.list.data,
+	  					//handleClick:ajax_userinfo_edit,
+	  					//handleChange_selectgroup_uuid:ajax_uesrinfo_listByGroup,
+	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	  					
+	  				}), document.getElementById('div_body'));
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+","+textStatus+"="+errorThrown);
+				 console.log(url+',error：', obj);
+				 console.log(url+',error：', textStatus);
+				 console.log(url+',error：', errorThrown);
+			}
+		});
+	};
+//function btn_click_userinfo(m,obj,usernames){
+//Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
+//if(m=="add"){
+//	ajax_userinfo_edit(obj,"add");
+//}else if(m=="disable"){
+//	ajax_userinfo_updateDisable(obj,1);		
+//}else if(m=="enable"){
+//	ajax_userinfo_updateDisable(obj,0);
+//}else if(m=="getRole"){
+//	ajax_userinfo_getRole(obj,usernames, Store.getRoleList());
+//}else if(m=="edit"){
+//	ajax_userinfo_edit({uuid:obj},"edit");
+//};
+//};
+
+//  //老师管理Button事件 添加、启用、禁用、分配、修改;
+//  function btn_click_userinfo(m,obj,usernames){
+//  	Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
+//  	if(m=="add"){
+//  		ajax_userinfo_edit(obj,"add");
+//  	}else if(m=="disable"){
+//  		ajax_userinfo_updateDisable(obj,1);		
+//  	}else if(m=="enable"){
+//  		ajax_userinfo_updateDisable(obj,0);
+//  	}else if(m=="getRole"){
+//  		ajax_userinfo_getRole(obj,usernames, Store.getRoleList());
+//  	}else if(m=="edit"){
+//  		ajax_userinfo_edit({uuid:obj},"edit");
+//  	};
+//  };
+  /*
+   * 老师管理Button事件(添加和修改按钮功能)；
+   * @formdata:选中的老师对象；
+   * @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+   * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
+   * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
+   * */
+//  function ajax_userinfo_edit(formdata,m){
+//  	if(m=="add"){
+//  		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")}), document.getElementById('div_body'));
+//  		return;
+//  	
+//  	}
+//  	$.AMUI.progress.start();
+//      var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+//  	$.ajax({
+//  		type : "GET",
+//  		url : url,
+//  		dataType : "json",
+//  		 async: true,
+//  		success : function(data) {
+//  			$.AMUI.progress.done();
+//  			// 登陆成功直接进入主页
+//  			if (data.ResMsg.status == "success") {
+//  				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")}), document.getElementById('div_body'));
+//  			} else {
+//  				alert("加载数据失败："+data.ResMsg.message);
+//  			}
+//  		},
+//  		error : function( obj, textStatus, errorThrown ){
+//  			$.AMUI.progress.done();
+//  			alert(url+",error:"+textStatus);
+//  		}
+//  	});
+//  	
+//  };
+

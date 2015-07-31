@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.ClassNews;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -286,6 +290,23 @@ public class StudentService extends AbstractServcice {
 			return list.get(0);
 		else
 			return null;
+	}
+
+	public PageQueryResult queryByPage(String groupuuid,String classuuid, PaginationData pData) {
+		String hql = "from Student where 1=1";
+		if (StringUtils.isNotBlank(groupuuid))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		
+		hql += " order by groupuuid,classuuid,name";
+		
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		
+		
+		return pageQueryResult;
 	}
 
 }

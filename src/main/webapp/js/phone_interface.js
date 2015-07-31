@@ -7,8 +7,26 @@
  * G_jsCallBack.ajax_uploadByphone(base64);
  * G_jsCallBack.queryMyTimely_myList（）；即时消息
  * G_jsCallBack.userinfo_logout();注销用户
+ * userinfo_update（）修改资料；
+ * userinfo_updatepassword（）；修改密码
  */
 var G_jsCallBack={
+		/**
+		 * 修改资料
+		 * @param base64
+		 */
+		userinfo_update:function(base64){
+		
+			Div_userinfo_update();
+	},
+	/**
+	 * 修改密码
+	 * @param base64
+	 */
+	userinfo_updatepassword:function(base64){
+	
+		Div_userinfo_updatepassword();
+},
 		/**
 		 * 即时消息
 		 * @param base64
