@@ -1,9 +1,12 @@
 package com.company.news.service;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +15,7 @@ import jcifs.smb.SmbFileInputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,8 +44,8 @@ import com.company.news.vo.ResponseMessage;
 public class UploadFileService extends AbstractServcice {
 	private static Logger logger = LoggerFactory
 			.getLogger(UploadFileService.class);
-
-	
+    private static final String oldImgFlag="old";
+    private static final String imgFormat="png";
 	/**
 	 * 上载附件
 	 * 
@@ -53,7 +57,6 @@ public class UploadFileService extends AbstractServcice {
 	 */
 	public UploadFile uploadImg(String base64,Integer type, ResponseMessage responseMessage,
 			HttpServletRequest request, User user) throws Exception {
-		String extension="png";
 		String contentType=null;
 		if(StringUtils.isEmpty(base64)){
 			 responseMessage.setMessage("上传内容是空的！");
@@ -63,7 +66,7 @@ public class UploadFileService extends AbstractServcice {
 	        if (base64 != null) {  
 	        	String tmpbase64=base64.substring(base64.indexOf(";base64,")+";base64,".length());
 	        	contentType=base64.substring("data:".length(),base64.indexOf(";base64,"));
-	        	extension=contentType.substring("image/".length());
+	        	//extension=contentType.substring("image/".length());
 	        	
 	            BASE64Decoder decoder = new BASE64Decoder();  
 	            try {  
@@ -101,11 +104,21 @@ public class UploadFileService extends AbstractServcice {
 		};
 		
 		FileUtils.createDirIfNoExists(uploadPath);
-		fileName = fileName + "." + extension;
+		fileName = fileName + "." + imgFormat;
+		
+		//原始文件名
+		String oldFileName =  guid + "-"+oldImgFlag+"." + imgFormat;
+		
+		//生成缩略图
+		BufferedImage thumbnail =
+		  Scalr.resize(ImageIO.read(new ByteArrayInputStream(b)), Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH,
+				  this.getThumbSize(type)[0],  this.getThumbSize(type)[1], Scalr.OP_ANTIALIAS);
+		
+		ImageIO.write(thumbnail, "png", new File(uploadPath+secondPath+fileName));
 
 		// 业务数据，关联用户保存
 
-		if (!FileUtils.saveFile(b, uploadPath+secondPath, fileName)) {
+		if (!FileUtils.saveFile(b, uploadPath+secondPath, oldFileName)) {
 			responseMessage.setMessage("上载文件保存失败!");
 			return null;
 		}
@@ -182,6 +195,8 @@ public class UploadFileService extends AbstractServcice {
 			return null;
 		}
 		
+		int t=Integer.parseInt(type);
+		
 		String guid = new UUIDGenerator().generate().toString();
 
 		long fileSize = file.getSize();
@@ -198,12 +213,12 @@ public class UploadFileService extends AbstractServcice {
 		String fileName = file.getOriginalFilename();
 		String fileExt=FilenameUtils.getExtension(fileName);
 		String secondPath="";
-		if(SystemConstants.UploadFile_type_head.equals(Integer.parseInt(type))){
+		if(SystemConstants.UploadFile_type_head.equals(t)){
 			secondPath += "head/";
 			
-		}else if(SystemConstants.UploadFile_type_cook.equals(Integer.parseInt(type))){
+		}else if(SystemConstants.UploadFile_type_cook.equals(t)){
 			secondPath += "cook/";
-		}else if(SystemConstants.UploadFile_type_xheditorimg.equals(Integer.parseInt(type))){
+		}else if(SystemConstants.UploadFile_type_xheditorimg.equals(t)){
 			/*检查文件类型*/
 			if ((fileImgExt).indexOf("," + fileExt.toLowerCase() + ",") < 0){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
@@ -217,10 +232,17 @@ public class UploadFileService extends AbstractServcice {
 		
 		FileUtils.createDirIfNoExists(uploadPath);
 		fileName = guid + "." + FilenameUtils.getExtension(fileName);
-
-		// 业务数据，关联用户保存
-
-		if (!FileUtils.saveFile(file.getInputStream(), uploadPath+secondPath, fileName)) {
+		//原始文件名
+		String oldFileName =  guid + "-"+oldImgFlag+"." + FilenameUtils.getExtension(fileName);
+		
+		//生成缩略图
+		BufferedImage thumbnail =
+		  Scalr.resize(ImageIO.read(file.getInputStream()), Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH,
+				  this.getThumbSize(t)[0],  this.getThumbSize(t)[1], Scalr.OP_ANTIALIAS);
+		
+		ImageIO.write(thumbnail, imgFormat, new File(uploadPath+secondPath+fileName));
+		
+		if (!FileUtils.saveFile(file.getInputStream(), uploadPath+secondPath, oldFileName)) {
 			responseMessage.setMessage("上载文件保存失败!");
 			return null;
 		}
@@ -328,7 +350,7 @@ public class UploadFileService extends AbstractServcice {
 	 *             Sun, 17 May 2015 05:52:13 GMT Server : Apache-Coyote/1.1
 	 *             Transfer-Encoding : chunked
 	 */
-	public void down(String uuid, HttpServletResponse response,
+	public void down(String uuid,String type, HttpServletResponse response,
 			String contentType) throws Exception {
 		// ResponseMessage responseMessage =
 		// RestUtil.addResponseMessageForModelMap(model);
@@ -343,7 +365,11 @@ public class UploadFileService extends AbstractServcice {
 		
 		String uploadPath = ProjectProperties.getProperty("UploadFilePath",
 				"c:/px_upload/");
-		boolean result = getStream(uploadPath+uploadFile.getFile_path(), response,
+		String filePath=uploadPath+uploadFile.getFile_path();
+		if(StringUtils.isNotBlank(type)&&type.equals(oldImgFlag))
+			filePath=filePath.split("\\.")[0]+"-"+oldImgFlag+"."+imgFormat;
+			
+		boolean result = getStream(filePath, response,
 				contentType);
 		if (!result) {
 			this.logger.info("file not found.may be delete!");
@@ -485,6 +511,23 @@ public class UploadFileService extends AbstractServcice {
 			logger.debug("getStreamInfo(ActionMapping, ActionForm, HttpServletRequest, HttpServletResponse) - end");
 		}
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private int[] getThumbSize(int type){
+		//默认
+		int[] size = {80,80};
+		if(SystemConstants.UploadFile_type_head.equals(type)){
+			size =new int[]{100,100};
+		}else if(SystemConstants.UploadFile_type_cook.equals(type)){
+			size = new int[]{120,120};
+		}else if(SystemConstants.UploadFile_type_xheditorimg.equals(type)){
+			size = new int[]{160,160};
+		}
+		return size;
 	}
 
 	@Override
