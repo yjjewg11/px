@@ -147,7 +147,7 @@ render: function() {
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
  		 React.createElement("h1", null, "问界互动家园-幼儿园老师登录"), 
- 	    React.createElement("p", null, "PX Background Management System", React.createElement("br", null), "快捷管理，大数据分析")
+ 	    React.createElement("p", null, "WenJie Interactive Home ", React.createElement("br", null), "快捷管理，大数据分析")
  		  ), 
  		  React.createElement("hr", null)
  		), 
@@ -1496,7 +1496,7 @@ React.createElement("tr", {className: className},
 React.createElement("td", null, 
 React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
 ), 
-  React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_classnews.bind(this,"show", event)}, event.title)), 
+  React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_classnews.bind(this,"show",event)}, event.title)), 
   React.createElement("td", null, event.create_user), 
   React.createElement("td", null, event.update_time), 
   React.createElement("td", null, event.reply_time)
@@ -1505,11 +1505,15 @@ React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_
 );
 }
 }); 
-
+/*
+ * 班级 互动1
+ * @selectclass_uuid_val:设置一变量当下拉框Val改变时赋值于classuuid;
+ * */
 var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTable",
+	selectclass_uuid_val:null,
 	handleClick: function(m) {
 		if(m=="add"){
-			 btn_click_classnews(m,{classuuid:$('#selectclass_uuid').val()});
+			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }if(m=="edit"){
 			
@@ -1549,8 +1553,9 @@ var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTab
 	  handleChange_select_classnews_type:function(){
 		  ajax_classnews_list($('#select_classnews_type').val());
 	  },
-	  handleChange_selectclass_uuid:function(){
-		  ajax_classnews_list($('#selectclass_uuid').val());
+	  handleChange_selectclass_uuid:function(val){
+		  this.selectclass_uuid_val=val;
+		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
 render: function() {
 	var totalCount=this.props.events.totalCount;
@@ -1570,12 +1575,12 @@ React.createElement(AMUIReact.ButtonToolbar, null,
 	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this, "pre"), round: true}, "« 上一页"), 
 	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
 	    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
-	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
-	      React.createElement("option", {value: ""}, "所有"), 
-	      this.props.class_list.map(function(event) {
-	          return (React.createElement("option", {value: event.uuid}, event.name));
-	        })
-	      ), 
+
+      React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 	    
+
+	      
+	      
+	      
 React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
   React.createElement("thead", null, 
     React.createElement("tr", null, 
@@ -1599,15 +1604,24 @@ React.createElement(AMUIReact.Table, React.__spread({},  this.props),
 }
 });
 /*
- * 班级互动
- * 
+ * 班级互动2
+ * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+ * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+ * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
  * */
 var Classnews_edit = React.createClass({displayName: "Classnews_edit", 
+	selectclass_uuid_val:null,
 	 getInitialState: function() {
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
 		    this.setState($('#editClassnewsForm').serializeJson());
+	  },
+	  handleChange_selectclass_uuid:function(val){
+		  this.selectclass_uuid_val=val;
+		  this.props.formdata.classuuid=val
+			 $('#classuuid').val(val);
+			    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
@@ -1618,6 +1632,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	},
 render: function() {
 	  var o = this.state;
+	  console.log("classuuid=",this.props.formdata.classuuid,"   o.classuuid=",o.classuuid,"   o.uuid",o.uuid);
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -1628,17 +1643,12 @@ return (
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		  
-	      React.createElement("select", {id: "selectclass_uuid", name: "class_uuid", value: this.props.class_uuid, onChange: this.handleChange_selectclass_uuid}, 
-	      React.createElement("option", {value: ""}, "所有"), 
-	      this.props.mycalsslist.map(function(event) {
-	          return (React.createElement("option", {value: event.uuid}, event.name));
-	        })
-	      ), 
 	      
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: this.props.formdata.classuuid}), 	    
+  
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-			React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+			React.createElement("input", {type: "hidden", name: "classuuid", value: this.props.formdata.classuuid}), 
 			React.createElement("label", {htmlFor: "title"}, "标题:"), 
 		      React.createElement("input", {type: "text", name: "title", id: "tit le", value: o.title, onChange: this.handleChange, placeholder: "不超过128位"}), 
 		      React.createElement("br", null), 
@@ -2286,16 +2296,166 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
 	})
 
 
+	
+	
+	
+	
+	
+	
 
-//<div class="am-form-group am-form-warning">
-//  <label class="am-form-label" for="doc-ipt-warning">验证警告</label>
-//  <input type="text" id="doc-ipt-warning" class="am-form-field">
-//</div>
-//<div class="am-form-group am-form-error">
-//  <label class="am-form-label" for="doc-ipt-error">验证失败</label>
-//  <input type="text" id="doc-ipt-error" class="am-form-field">
-//</div>
-//</form>
+/*
+ * 后台统计数据服务器请求后绘制处理方法；
+ * @</select>下拉多选框;
+ * */
+var Query_EventsTable = React.createClass({displayName: "Query_EventsTable",
+	group_uuid:null,
+	classuuid:null,
+	handleChange_stutent_Selected: function(val) {
+		  this.group_uuid=val;
+		  ajax_student_query(this.group_uuid,this.classuuid);
+	  }, 
+	  handleChange_class_Selected: function(val) {
+		  this.classuuid=val;
+		  ajax_student_query(this.group_uuid,this.classuuid);
+		  }, 
+render: function() {
+    return (
+    React.createElement("div", null, 
+    React.createElement("div", {className: "header"}, 
+    React.createElement("div", {className: "am-g"}, 
+      React.createElement("h1", null, "学生管理")
+    ), 
+    React.createElement("hr", null)
+    ), 
+	  React.createElement("hr", null), 	  
+	  React.createElement("div", {className: "am-form-group"}, 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "300", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
 
+	  ), 	  
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "帐号"), 
+            React.createElement("th", null, "姓名"), 
+            React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "邮箱"), 
+            React.createElement("th", null, "性别"), 
+            React.createElement("th", null, "状态"), 
+            React.createElement("th", null, "登录时间"), 
+            React.createElement("th", null, "创建时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Query_EventRow, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*
+ * 后台统计数据在表单上绘制详细内容;
+ * */
+
+var Query_EventRow = React.createClass({displayName: "Query_EventRow", 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	      React.createElement("tr", {className: className}, 
+	        React.createElement("td", null, event.loginname), 
+	        React.createElement("td", null, event.name), 
+	        React.createElement("td", null, event.tel), 
+	        React.createElement("td", null, event.email), 
+	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
+	        React.createElement("td", null, event.login_time), 
+	        React.createElement("td", null, event.create_time)
+	      ) 
+	    );
+	  }
+	}); 
+
+///*
+//* 老师管理Button事件(添加和修改按钮绘制与标签事件处理)；
+//* @formdata:选中的老师对象；
+//* @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+//* */    
+//var Userinfo_edit = React.createClass({ 
+//	 getInitialState: function() {
+//			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editUserinfoForm').serializeJson());
+//	  },
+//	  handleChange_Selected: function(event) {
+//			 $('#group_uuid').val(event);
+//			    this.setState($('#editUserinfoForm').serializeJson());
+//		  },
+//  render: function() {
+//	  var o = this.state;
+//	  var passwordDiv=null;
+//	  if(!o.uuid){
+//		  passwordDiv=(
+//				  <div>
+//				  <label htmlFor="password">密码:</label>
+//    		      <PxInput  icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
+//    		      <br/>
+//    		      
+//    		      <label htmlFor="password1">重复密码:</label>
+//    		      <PxInput  icon="lock" type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
+//    		      <br/>
+//				  </div>
+//				  );
+//	  }
+//    return (
+//    		<div>
+//    		<div className="header">
+//    		  <div className="am-g">
+//    		    <h1>编辑</h1>
+//    		  </div>
+//    		  <hr />
+//    		</div>
+//    		<div className="am-g">
+//    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+//    		  <form id="editUserinfoForm" method="post" className="am-form">
+//    			<input type="hidden" name="uuid"  value={o.uuid}/>
+//    		     <input type="hidden" name="type"  value="1"/>
+//    			 <input type="hidden" id="group_uuid" name="group_uuid"  value=""/>
+//    		    <div className="am-form-group">
+//    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
+//    		        </div>
+//    		      <label htmlFor="tel">手机号码:</label>
+//    		      <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
+//    		      <br/>
+//    		      <label htmlFor="name">姓名:</label>
+//    		      <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
+//    		      <br/>
+//    		       <label htmlFor="">Email:</label>
+//    		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
+//    		      <br/>
+//    		      {passwordDiv}
+//    		      <label htmlFor="office">职位:</label>
+//    		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
+//    		      <br/>
+//    		      <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">提交</button>
+//    		    </form>
+//
+//    	     </div>
+//    	   </div>
+//    	   
+//    	   </div>
+//    );
+//  }
+//}); 
+
+//userinfo
 
 

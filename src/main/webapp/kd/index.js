@@ -244,7 +244,12 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                }
+	                },      	
+	                {
+	                      "link": "##",
+	                      "title": "后台用户统计",
+	                      "fn":menu_query_list_fn
+	                    }
 	                
 	              ];
 	
@@ -310,17 +315,17 @@ function menu_dohome(){
 		                    	    "title": "班级互动"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/gonggao.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
 			                    {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/jiaoyujihua.png",
 		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
 		                    	    "title": "教学计划"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/daily_diet.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
@@ -336,7 +341,7 @@ function menu_dohome(){
 			                    	    "title": "家长通讯录"
 			                    	  }, 
 		                    	  {
-	                    	    "img": hostUrl+"i/header.png",
+	                    	    "img": hostUrl+"i/qiandao.png",
 	                    	    "link": "###",
 	                    	    "title": "签到(未)"
 	                    	  },
@@ -451,6 +456,15 @@ function menu_queryLeaderMsgByParents_message_fn() {
 	ajax_queryLeaderMsgByParents_message();
 };
 
+/*
+ * (标头)后台统计数据
+ * @跳转kd_service发服务器请求
+ * */
+function menu_query_list_fn() {
+	Queue.push(menu_query_list_fn);
+	//ajax_query_listByGroup(Store.getCurGroup().uuid,Store.getChooseClass(Store.getCurGroup().uuid));
+	ajax_student_query();
+};
 //——————————————————首页大图标——————————————————
 /*
  * （首页）公告功能方法；
