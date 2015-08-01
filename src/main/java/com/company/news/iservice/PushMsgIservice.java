@@ -168,8 +168,8 @@ public class PushMsgIservice {
 	   */
 	  public void androidPushMsgToSingleDevice_to_parentByChannelId(String title,String msg,String channelId)throws Exception{
 		  
-		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "El4au0Glwr7Xt8sPgZFg2UP7");
-		  String secretKey = ProjectProperties.getProperty("baidu_apiKey_parent", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
+		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "p9DUFwCzoUaKenaB5ovHch0G");
+		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_parent", "GUHR0mniN15LvML8OWnm3GzMdXsVEGbD");
 		  this.androidPushMsgToSingleDevice(title,msg, channelId, apiKey, secretKey);
 	  }
 	  
@@ -182,7 +182,7 @@ public class PushMsgIservice {
 	  public void androidPushMsgToSingleDevice_to_TeacherByChannelId(String title,String msg,String channelId)throws Exception{
 		  
 		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "El4au0Glwr7Xt8sPgZFg2UP7");
-		  String secretKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
+		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
 		  this.androidPushMsgToSingleDevice(title,msg, channelId, apiKey, secretKey);
 	  }
 	  	
@@ -279,6 +279,7 @@ public class PushMsgIservice {
 				notification.put("title", title);
 				notification.put("description",msg);
 				PushMsgToSingleDeviceRequest request = new PushMsgToSingleDeviceRequest()
+					.addChannelId(channelId)
 						.addMsgExpires(new Integer(3600)).addMessageType(1)//1：通知,0:透传消息. 默认为0 注：IOS只有通知.
 						.addMessage(notification.toString()) //添加透传消息
 						.addDeviceType(3);
