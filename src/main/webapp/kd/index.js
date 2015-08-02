@@ -103,14 +103,14 @@ function login_affter_init(){
                               },
                           
                               {
-                            	  "fn":function(){menu_announce_list_fn(3);},
+                            	  "fn":function(){menu_announce_list_fn(4);},
                                   "link": "##",
                                   "title": "招生计划"
                                 },
                               {
-                                  "fn":function(){menu_announce_list_fn(4);},
+                                  "fn":function(){menu_announce_list_fn(3);},
                                   "link": "##",
-                                  "title": "分享文章"
+                                  "title": "精品文章"
                                 }
                             ]                   
 		  };
@@ -212,12 +212,7 @@ function login_affter_init(){
 	  	                                        "link": "##",
 	  	                                     // "fn":menu_classnews_list_fn,
 	  	                                        "title": "邀请家长(未)"
-	  	                                      },
-	                                          {
-	                                            "link": "##",
-	                                          //  "fn":menu_classnews_list_fn,
-	                                            "title": "家长反馈(未)"
-	                                          }
+	  	                                      }
 	                                        ]
 	                           
 	                          },
@@ -350,7 +345,11 @@ function menu_dohome(){
 		                    	    "link": "###",
 		                    	    "title": "花名册(未)"
 		                    	  },
-		                    	
+		                    	  {
+		                    		  "img": hostUrl+"i/header.png",
+	                                  "link": "javascript:menu_article_list_fn()",
+	                                  "title": "精品文章"
+	                                },
 			                    	
 		                      {
 		                    	    "img": hostUrl+"i/header.png",
@@ -421,7 +420,7 @@ function menu_cookbookPlan_list_fn(){
 
 /*
  * (标头)发布消息功能
- * @types- 0:校园公告 1:老师公告 2：班级通知,3:"招生计划"4:"分享文章' 
+ * @types- 0:校园公告 1:老师公告 2：班级通知,4:"招生计划"3:"分享文章' 
  * @跳转kd_service发服务器请求
  * */
 var announce_types=1;
@@ -431,6 +430,13 @@ function menu_announce_list_fn(types) {
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
 };
 
+/**
+ * 精品文章
+ * /share/articleList.json
+ */
+function menu_article_list_fn(){
+	menu_announce_list_fn(3);
+}
 /*
  * (标头)<校务管理>校园列表功能
  * @跳转kd_service发服务器请求
@@ -519,6 +525,7 @@ function menu_body_fn (){
 }
 
 function index_init(){
+	G_CallPhoneFN.hideLoadingDialog();
 	  if ($.AMUI.fullscreen.enabled) {
 		    $.AMUI.fullscreen.request();
 		}

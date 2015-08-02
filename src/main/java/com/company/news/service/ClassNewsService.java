@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsDianzan;
@@ -78,6 +79,7 @@ public class ClassNewsService extends AbstractServcice {
 	 */
 	public boolean update(ClassNewsJsonform classNewsJsonform,
 			ResponseMessage responseMessage) throws Exception {
+		
 		if (StringUtils.isBlank(classNewsJsonform.getTitle())
 				|| classNewsJsonform.getTitle().length() > 128) {
 			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
@@ -119,8 +121,10 @@ public class ClassNewsService extends AbstractServcice {
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
+		this.nSimpleHibernateDao.getHibernateTemplate().clear();
 		for(ClassNews o:list){
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
+			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
 			try {
 				o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 			} catch (Exception e) {
@@ -165,6 +169,7 @@ public class ClassNewsService extends AbstractServcice {
 		ClassNewsJsonform cnjf = new ClassNewsJsonform();
 		BeanUtils.copyProperties(cnjf, cn);
 
+		cnjf.setContent(MyUbbUtils.myUbbTohtml(cnjf.getContent()));
 //		// 计数
 //		cnjf.setCount(countService.count(uuid,
 //				SystemConstants.common_type_hudong));

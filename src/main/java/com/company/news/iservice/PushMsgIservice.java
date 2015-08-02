@@ -105,7 +105,7 @@ public class PushMsgIservice {
 	String sql = "";
 	Query q = s
 			.createSQLQuery(
-					"select parentuuid from px_parentstudentrelation t0,px_student t1 where t0.studentuuid=t1.uuid and t1.groupuuid='"
+					"select parent_uuid from px_studentcontactrealation  where groupuuid='"
 							+ group_uuid + "'");
 	List<String> list=q.list();
 		  for(String o:list){

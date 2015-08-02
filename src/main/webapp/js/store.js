@@ -217,9 +217,12 @@ var Store={
 	},
 	setUserinfo:function(v){
 		var tmp=this.map["userinfo"];
+		this.map["userinfo"]=v;
+		//不相同,表示其他用户登录,则清空.
 		if(tmp&&v&&tmp.loginname==v.loginname)return;
 		Store.clear();
 		this.map["userinfo"]=v;
+		
 	}
 };
 

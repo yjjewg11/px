@@ -148,16 +148,6 @@ public class StudentService extends AbstractServcice {
 		if(studentContactRealation==null){//不存在,则新建.
 			if(!CommonsValidate.checkCellphone(tel))return null;
 			studentContactRealation=new StudentContactRealation();
-			studentContactRealation.setStudent_uuid(student.getUuid());
-			studentContactRealation.setStudent_name(student.getName());
-			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
-			studentContactRealation.setGroupuuid(student.getGroupuuid());
-			
-			studentContactRealation.setTel(tel);
-			studentContactRealation.setType(type);
-			studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
-			
-			
 		}else{
 			//验证失败则,表示删除关联关系.
 			if(!CommonsValidate.checkCellphone(tel)){
@@ -165,17 +155,19 @@ public class StudentService extends AbstractServcice {
 				return null;
 			}
 			//一样则表示不变,直接返回.
-			if(tel.equals(studentContactRealation.getTel())){
+			if(tel.equals(studentContactRealation.getTel())
+					&&student.getName().equals(studentContactRealation.getStudent_name())){
 				return studentContactRealation;
-			}else{
-				// 删除原来
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-						"delete from ParentStudentRelation where studentuuid=? and type=?",
-						student_uuid, type);
 			}
-			
-			studentContactRealation.setTel(tel);
 		}
+		studentContactRealation.setStudent_uuid(student.getUuid());
+		studentContactRealation.setStudent_name(student.getName());
+		studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
+		studentContactRealation.setGroupuuid(student.getGroupuuid());
+		
+		studentContactRealation.setTel(tel);
+		studentContactRealation.setType(type);
+		studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		
 		Parent parent=(Parent)nSimpleHibernateDao.getObjectByAttribute(Parent.class,"loginname", tel);
 		//判断电话,是否已经注册,来设置状态.

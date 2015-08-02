@@ -338,6 +338,7 @@ function btn_ajax_updateRole(useruuid){
 }
 
 function ajax_userinfo_saveByAdmin(){
+	if($("#password")[0])$("#password").val($.md5($("#password").val()));
     var opt={
             formName: "editUserinfoForm",
             url:hostUrl + "rest/userinfo/saveByAdmin.json",
