@@ -5,27 +5,37 @@
  * 
  * 选择上图图片,回调方法,只压缩和调整方向.
  * G_jsCallBack.ajax_uploadByphone(base64);
- * G_jsCallBack.queryMyTimely_myList（）；即时消息
+ * G_jsCallBack.queryMyTimely_myList()；即时消息
  * G_jsCallBack.userinfo_logout();注销用户
- * userinfo_update（）修改资料；
- * userinfo_updatepassword（）；修改密码
+ * G_jsCallBack.user_info_update()修改资料；
+ * G_jsCallBack.user_info_updatepassword()；修改密码
+ * G_jsCallBack.QueuedoBackFN()；修改密码
  */
 var G_jsCallBack={
-		/**
-		 * 修改资料
-		 * @param base64
-		 */
-		userinfo_update:function(base64){
-		
-			Div_userinfo_update();
-	},
+		//Queue.doBackFN()
+	/**
+	 * 回退方法
+	 * @param base64
+	 */
+		QueuedoBackFN:function(base64){
+	
+		Queue.doBackFN();
+},	
+	/**
+	 * 修改资料
+	 * @param base64
+	 */
+	user_info_update:function(base64){
+	
+		menu_userinfo_update_fn();
+},
 	/**
 	 * 修改密码
 	 * @param base64
 	 */
-	userinfo_updatepassword:function(base64){
+	user_info_updatepassword:function(base64){
 	
-		Div_userinfo_updatepassword();
+		menu_userinfo_updatepassword_fn();
 },
 		/**
 		 * 即时消息
@@ -76,6 +86,8 @@ var G_jsCallBack={
  * G_CallPhoneFN.hideLoadingDialog();
  * 登录后,将sessionid传给手机
  * G_CallPhoneFN.jsessionToPhone(JSESSIONID);
+ * G_CallPhoneFN.finishProject();
+ * 手机回退按键退到最后调用此方法是否是要退出了;
  
 window.JavaScriptCall={
 		selectImgPic:function(){alert("ddd");},
@@ -91,6 +103,23 @@ var G_CallPhoneFN={
 			if(window.JavaScriptCall){
 				return true;
 			}
+			return false;
+		},
+		/**
+		 * 回退方法finishProject()
+
+		 * @returns {Boolean}
+		 */
+		finishProject:function(){
+			try{
+				if(window.JavaScriptCall){
+					JavaScriptCall.finishProject();
+					return true;
+				}
+			}catch(e){
+				  console.log('Exception:JavaScriptCall.finishProject()=', e.message);
+			}
+			console.log('window.finishProject==false');
 			return false;
 		},
 		/**

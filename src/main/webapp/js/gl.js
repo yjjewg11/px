@@ -167,6 +167,10 @@ var  Queue={
 			//If it is not back after the operation, first throw away the current operation. To perform the last operation.
 			if(!this.isBack)this.pop();
 			this.isBack=true;
+			if(this.arr.length==0){
+				G_CallPhoneFN.finishProject();
+				return;
+			}
 			var tmp=this.pop();
 			if(tmp&&typeof tmp=='function'){
 				tmp();
