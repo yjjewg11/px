@@ -528,54 +528,7 @@ render: function() {
  );
 }
 }); 
-var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editClassStudentForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-		  var imgGuid=this.state.headimg;
-		 if(imgGuid){
-			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-			 G_img_down404("#img_head_image");
-		 }
 
-	  },
-		render: function() {
-	     var o =this.state;
-		 return (
-		 		React.createElement("div", null, 
-			    React.createElement(AMUIReact.List, {static: true}, 
-			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
-				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-				  React.createElement("br", null), 
-			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
-			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
-			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
-			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
-			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
-			      React.createElement(AMUIReact.ListItem, null, 
-			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
-			      )			      
-			      
-			      )
-		 	     ) 
-		     );
-	        }
-		 });
 /*
 * 我的班级（主页） show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
@@ -627,11 +580,11 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	     var o =this.state;
 		 return (
 		 		React.createElement("div", null, 
-			    React.createElement(AMUIReact.List, {static: true}, 
+			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
 			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
 				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
 				  React.createElement("br", null), 
-			      React.createElement(AMUIReact.ListItem, null, "姓名:", o.name), 
+			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
 			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
@@ -892,8 +845,7 @@ render: function() {
 		    title: o.title, 
 		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
-		   ), 
-		   "//点赞回复模板", 
+		     ), 
 			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Common_reply_save, {uuid: o.uuid, type: 0})
@@ -1608,6 +1560,7 @@ React.createElement(AMUIReact.Table, React.__spread({},  this.props),
  * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
  * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
  * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+ * @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
  * */
 var Classnews_edit = React.createClass({displayName: "Classnews_edit", 
 	selectclass_uuid_val:null,
@@ -1625,8 +1578,17 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
-		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
-			  editor.pasteHTML('<img  width="198" height="198" src="'+imgurl+'"/>') 
+		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
+				
+		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
+			  ////data.data.uuid,data.imgUrl
+			  //
+			 var imgs=$('#imgs').val();
+			 var imgs=imgs+","+uuid;
+			 $('#imgs').val(imgs);
+			 
+			 $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');
+			
 		  });
 		
 	},
@@ -1648,12 +1610,15 @@ return (
   
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 
+			
 			React.createElement("input", {type: "hidden", name: "classuuid", value: this.props.formdata.classuuid}), 
 			React.createElement("label", {htmlFor: "title"}, "标题:"), 
 		      React.createElement("input", {type: "text", name: "title", id: "tit le", value: o.title, onChange: this.handleChange, placeholder: "不超过128位"}), 
 		      React.createElement("br", null), 
-		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
   			G_upload_img_Div, 
+		      React.createElement("div", {id: "show_imgList"}), 
 		      React.createElement("button", {type: "button", onClick: ajax_classnews_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 

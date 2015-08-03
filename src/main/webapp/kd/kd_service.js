@@ -205,8 +205,10 @@ function ajax_userinfo_logout(){
  * @btn_click_userinfo（绑定在对象上事件）；
  * 并且先在公共模板common_react的
  * @Userinfo_EventsTable方法中继续做下一步处理;
+ * Queue.push@点击学校后进入下个页面返回后学校为最新点击后的学校;
  * */
 function ajax_uesrinfo_listByGroup(groupuuid) {
+	Queue.push(function(){ajax_uesrinfo_listByGroup(groupuuid);});
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
 	$.ajax({
@@ -243,6 +245,7 @@ function ajax_uesrinfo_listByGroup(groupuuid) {
 
 //老师管理Button事件 添加、启用、禁用、分配、修改;
 function btn_click_userinfo(m,obj,usernames){
+	console.log("测试202",m,obj,usernames);
 	Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
 	if(m=="add"){
 		ajax_userinfo_edit(obj,"add");
@@ -1458,10 +1461,10 @@ function btn_click_classnews(m,formdata){
 */
 function ajax_classnews_edit(m,formdata,mycalsslist){
 	if(m=="add"){
-		if(!formdata.classuuid){
-			alert("请选择班级!");
-			return;
-		}
+//		if(!formdata.classuuid){
+//			alert("请选择班级!");
+//			return;
+//		}
 		React.render(React.createElement(Classnews_edit,{formdata:formdata,mycalsslist:G_selected_dataModelArray_byArray(mycalsslist,"uuid","name")}), document.getElementById('div_body'));
 		return;
 	
