@@ -7,8 +7,8 @@
  * G_jsCallBack.ajax_uploadByphone(base64);
  * G_jsCallBack.queryMyTimely_myList（）；即时消息
  * G_jsCallBack.userinfo_logout();注销用户
- * userinfo_update（）修改资料；
- * userinfo_updatepassword（）；修改密码
+ * G_jsCallBack.userinfo_update()修改资料；
+ * G_jsCallBack.userinfo_updatepassword()；修改密码
  */
 var G_jsCallBack={
 		/**
@@ -17,7 +17,7 @@ var G_jsCallBack={
 		 */
 		userinfo_update:function(base64){
 		
-			Div_userinfo_update();
+			menu_userinfo_update_fn();
 	},
 	/**
 	 * 修改密码
@@ -25,7 +25,7 @@ var G_jsCallBack={
 	 */
 	userinfo_updatepassword:function(base64){
 	
-		Div_userinfo_updatepassword();
+		menu_userinfo_updatepassword_fn();
 },
 		/**
 		 * 即时消息
