@@ -1,9 +1,14 @@
 package com.company.news.service;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
+import com.company.news.commons.util.MyUbbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.jsonform.ClassNewsReplyJsonform;
@@ -98,7 +103,12 @@ public class ClassNewsReplyService extends AbstractServcice {
 		hql+=" order by create_time";
 		
 		PageQueryResult pageQueryResult= this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		List<ClassNewsReply> list=pageQueryResult.getData();
 		
+		this.nSimpleHibernateDao.getHibernateTemplate().clear();
+		for(ClassNewsReply o:list){
+			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
+		}
 		return pageQueryResult;
 				
 	}

@@ -1,8 +1,5 @@
 package com.company.news.rest;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.SystemConstants;
 import com.company.news.commons.util.ExcelUtil;
 import com.company.news.entity.Student;
 import com.company.news.jsonform.StudentJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
@@ -93,6 +91,42 @@ public class StudentController extends AbstractRESTController {
 				request.getParameter("classuuid"),
 				request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 *
+	 * 我关联学校所有学生查询服务器
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/query", method = RequestMethod.GET)
+	public String query(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		
+		
+		String groupuuid=request.getParameter("groupuuid");
+		String classuuid=request.getParameter("classuuid");
+		
+		
+		if(StringUtils.isBlank(groupuuid)){
+			groupuuid=this.getMyGroupUuidsBySession(request);
+		}else{
+			String groupUuids=this.getMyGroupUuidsBySession(request);
+			if(groupUuids==null||!groupUuids.contains(groupuuid)){
+				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+groupuuid);
+				return "";
+			}
+		}
+		
+		PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

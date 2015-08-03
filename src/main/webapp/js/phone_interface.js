@@ -7,8 +7,26 @@
  * G_jsCallBack.ajax_uploadByphone(base64);
  * G_jsCallBack.queryMyTimely_myList（）；即时消息
  * G_jsCallBack.userinfo_logout();注销用户
+ * userinfo_update（）修改资料；
+ * userinfo_updatepassword（）；修改密码
  */
 var G_jsCallBack={
+		/**
+		 * 修改资料
+		 * @param base64
+		 */
+		userinfo_update:function(base64){
+		
+			Div_userinfo_update();
+	},
+	/**
+	 * 修改密码
+	 * @param base64
+	 */
+	userinfo_updatepassword:function(base64){
+	
+		Div_userinfo_updatepassword();
+},
 		/**
 		 * 即时消息
 		 * @param base64
@@ -52,6 +70,10 @@ var G_jsCallBack={
  * G_CallPhoneFN.selectHeadPic();
  * 调用上传图片,要求不剪切,只压缩在800k以内,并可以调整方向
  * G_CallPhoneFN.selectImgPic();
+ * 判断是否是手机app应用内嵌调用
+ * G_CallPhoneFN.isPhoneApp();
+ * 隐藏应用的弹出的加载层.
+ * G_CallPhoneFN.hideLoadingDialog();
  * 登录后,将sessionid传给手机
  * G_CallPhoneFN.jsessionToPhone(JSESSIONID);
  
@@ -61,6 +83,32 @@ window.JavaScriptCall={
 };*/
 var G_CallPhoneFN={
 	
+		/**
+		 * 判断是否是手机app应用内嵌调用
+		 * @returns {Boolean}
+		 */
+		isPhoneApp:function(){
+			if(window.JavaScriptCall){
+				return true;
+			}
+			return false;
+		},
+		/**
+		 * 隐藏应用的弹出的加载层.
+		 * @returns {Boolean}
+		 */
+		hideLoadingDialog:function(){
+			try{
+				if(window.JavaScriptCall){
+					JavaScriptCall.hideLoadingDialog();
+					return true;
+				}
+			}catch(e){
+				  console.log('Exception:JavaScriptCall.hideLoadingDialog()=', e.message);
+			}
+			console.log('window.hideLoadingDialog==false');
+			return false;
+		},
 		/**
 		 * 调用选择上传图片的回调
 		 * @returns {Boolean}

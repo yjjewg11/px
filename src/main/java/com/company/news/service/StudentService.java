@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.ClassNews;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -144,16 +148,6 @@ public class StudentService extends AbstractServcice {
 		if(studentContactRealation==null){//不存在,则新建.
 			if(!CommonsValidate.checkCellphone(tel))return null;
 			studentContactRealation=new StudentContactRealation();
-			studentContactRealation.setStudent_uuid(student.getUuid());
-			studentContactRealation.setStudent_name(student.getName());
-			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
-			studentContactRealation.setGroupuuid(student.getGroupuuid());
-			
-			studentContactRealation.setTel(tel);
-			studentContactRealation.setType(type);
-			studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
-			
-			
 		}else{
 			//验证失败则,表示删除关联关系.
 			if(!CommonsValidate.checkCellphone(tel)){
@@ -161,17 +155,19 @@ public class StudentService extends AbstractServcice {
 				return null;
 			}
 			//一样则表示不变,直接返回.
-			if(tel.equals(studentContactRealation.getTel())){
+			if(tel.equals(studentContactRealation.getTel())
+					&&student.getName().equals(studentContactRealation.getStudent_name())){
 				return studentContactRealation;
-			}else{
-				// 删除原来
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-						"delete from ParentStudentRelation where studentuuid=? and type=?",
-						student_uuid, type);
 			}
-			
-			studentContactRealation.setTel(tel);
 		}
+		studentContactRealation.setStudent_uuid(student.getUuid());
+		studentContactRealation.setStudent_name(student.getName());
+		studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
+		studentContactRealation.setGroupuuid(student.getGroupuuid());
+		
+		studentContactRealation.setTel(tel);
+		studentContactRealation.setType(type);
+		studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		
 		Parent parent=(Parent)nSimpleHibernateDao.getObjectByAttribute(Parent.class,"loginname", tel);
 		//判断电话,是否已经注册,来设置状态.
@@ -286,6 +282,23 @@ public class StudentService extends AbstractServcice {
 			return list.get(0);
 		else
 			return null;
+	}
+
+	public PageQueryResult queryByPage(String groupuuid,String classuuid, PaginationData pData) {
+		String hql = "from Student where 1=1";
+		if (StringUtils.isNotBlank(groupuuid))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		
+		hql += " order by groupuuid,classuuid,name";
+		
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		
+		
+		return pageQueryResult;
 	}
 
 }

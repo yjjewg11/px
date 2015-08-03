@@ -10,6 +10,7 @@ import com.company.common.SerializableUtil;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
 import com.company.news.entity.Student;
+import com.company.news.iservice.StudentSignRecordIservice;
 import com.company.news.jsonform.DoorRecordJsonform;
 import com.company.news.jsonform.DoorUserJsonform;
 import com.company.news.jsonform.StudentBindJsonform;
@@ -28,7 +29,8 @@ public class DoorRecordService extends AbstractServcice {
 	private StudentService studentService;
 	@Autowired
 	private StudentBindService studentBindService;
-
+	@Autowired
+	StudentSignRecordIservice studentSignRecordIservice;
 	/**
 	 * 用户注册
 	 * 
@@ -63,6 +65,9 @@ public class DoorRecordService extends AbstractServcice {
 				for (DoorRecord d : list) {
 					d.setGroupuuid(doorRecordJsonform.getGroupuuid());
 					this.nSimpleHibernateDao.getHibernateTemplate().save(d);
+					//添加打卡记录.用于查询学生打卡记录
+					studentSignRecordIservice.add(d);
+					
 				}
 
 			return true;

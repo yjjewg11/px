@@ -313,7 +313,7 @@ public class UserinfoService extends AbstractServcice {
 			// 保存用户机构关联表
 			UserGroupRelation userGroupRelation = new UserGroupRelation();
 			userGroupRelation.setUseruuid(user.getUuid());
-			userGroupRelation.setGroupuuid(userRegJsonform.getGroup_uuid());
+			userGroupRelation.setGroupuuid(groupStrArr[i]);
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 		}
