@@ -15,7 +15,7 @@ var G_jsCallBack={
 		 * 修改资料
 		 * @param base64
 		 */
-		userinfo_update:function(base64){
+		user_info_update:function(base64){
 		
 			menu_userinfo_update_fn();
 	},
@@ -23,7 +23,7 @@ var G_jsCallBack={
 	 * 修改密码
 	 * @param base64
 	 */
-	userinfo_updatepassword:function(base64){
+	user_info_updatepassword:function(base64){
 	
 		menu_userinfo_updatepassword_fn();
 },
