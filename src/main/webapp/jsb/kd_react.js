@@ -169,13 +169,8 @@ render: function() {
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
- 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册"), "|", 
- 	     React.createElement("a", {href: "javascript:void(0);", onClick: menu_userinfo_reg_fn}, "老师注册"), 
- 	      React.createElement("br", null), 
- 	      
- 	     React.createElement("a", {href: "http://120.25.248.31/px-rest/kd/"}, " ", React.createElement("img", {src: "ewm_kd.png"}))
- 	    
- 			
+ 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册"), 
+ 	      React.createElement("br", null)
  	    ), 
  	    React.createElement("hr", null), 
  	   React.createElement("p", null, "© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1")
