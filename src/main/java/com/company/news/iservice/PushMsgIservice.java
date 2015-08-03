@@ -25,6 +25,7 @@ import com.baidu.yun.push.model.PushMsgToSingleDeviceRequest;
 import com.baidu.yun.push.model.PushMsgToSingleDeviceResponse;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.IOSPushUtils;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.PushMessage;
 import com.company.news.entity.Student;
@@ -47,7 +48,7 @@ public class PushMsgIservice {
 	   * @return
 	   */
 	  public List getChannelIdBy(String device_type,Integer type,String group_uuid){
-		  String hql = "select device_id from PushMsgDevice where status=0 and device_type='" + device_type+"'";
+		  String hql = "select distinct device_id from PushMsgDevice where status=0 and device_type='" + device_type+"'";
 			hql += " and type="+type;
 			hql += " and group_uuid=?";
 			
@@ -124,6 +125,8 @@ public class PushMsgIservice {
 		  
 		  this.logger.info("pushMsgToAll_to_parent count="+list.size());
 		  this.androidPushMsgToAll_to_parent(group_uuid,title,msg);
+		  
+		 
 	  }
 
 	  
@@ -132,15 +135,35 @@ public class PushMsgIservice {
 	   * @param msg
 	   * @return
 	   */
-	  public void androidPushMsgToAll_to_teacher(String group_uuid,String title,String msg) throws Exception{
+	  public void androidPushMsgToAll_to_teacher(final String group_uuid,final String title,final String msg) throws Exception{
 		  
 //		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "El4au0Glwr7Xt8sPgZFg2UP7");
 //		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
 //		  this.androidPushMsgToAll(msg, apiKey, secretKey);
-		  List<String> list=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_android,SystemConstants.PushMsgDevice_type_1,group_uuid);
-		  for(String o :list){
-			  this.androidPushMsgToSingleDevice_to_TeacherByChannelId(title,msg, o);
-		  }
+		   final List<String> anroidlist=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_android,SystemConstants.PushMsgDevice_type_1,group_uuid);
+		  //1.发布
+		   final List<String> iosList=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_ios,SystemConstants.PushMsgDevice_type_1,group_uuid);
+		   final PushMsgIservice that=this;
+	        new Thread(new Runnable(){
+	            public void run() {
+	                        try {
+	                        	 for(String o :anroidlist){
+	                        		 that.androidPushMsgToSingleDevice_to_TeacherByChannelId(title,msg, o);
+	                   		  }
+	                        } catch (Exception e) {
+	                            e.printStackTrace();
+	                        }
+	                        try {
+
+	                        	that.iosPushMsgToSingleDevice_to_TeacherByChannelId(title, msg, iosList);
+	                        } catch (Exception e) {
+	                            e.printStackTrace();
+	                        }
+	                    }
+	        }).start();
+		 
+		  
+		  
 	  }
 
 	 
@@ -150,16 +173,59 @@ public class PushMsgIservice {
 	   * @param msg
 	   * @return
 	   */
-	  public void androidPushMsgToAll_to_parent(String group_uuid,String title,String msg)throws Exception{
+	  public void androidPushMsgToAll_to_parent(final String group_uuid,final String title,final String msg)throws Exception{
 		  
 //		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "p9DUFwCzoUaKenaB5ovHch0G");
 //		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_parent", "GUHR0mniN15LvML8OWnm3GzMdXsVEGbD");
 //		  this.androidPushMsgToAll(msg, apiKey, secretKey);
 		  
-		  List<String> list=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_android,SystemConstants.PushMsgDevice_type_0,group_uuid);
-		  for(String o :list){
-			  this.androidPushMsgToSingleDevice_to_parentByChannelId(title,msg, o);
-		  }
+		   final List<String> anroidlist=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_android,SystemConstants.PushMsgDevice_type_0,group_uuid);
+			  //1.发布
+			   final List<String> iosList=getChannelIdBy(SystemConstants.PushMsgDevice_device_type_ios,SystemConstants.PushMsgDevice_type_0,group_uuid);
+			   final PushMsgIservice that=this;
+		        new Thread(new Runnable(){
+		            public void run() {
+		                        try {
+		                        	 for(String o :anroidlist){
+		                        		 that.androidPushMsgToSingleDevice_to_TeacherByChannelId(title,msg, o);
+		                   		  }
+		                        } catch (Exception e) {
+		                            e.printStackTrace();
+		                        }
+		                        try {
+
+		                        	that.iosPushMsgToSingleDevice_to_TeacherByChannelId(title, msg, iosList);
+		                        } catch (Exception e) {
+		                            e.printStackTrace();
+		                        }
+		                    }
+		        }).start();
+	  }
+	  
+	  
+	  /**
+	   * 广播所有ios消息_给所有家长
+	   * @param msg
+	   * @return
+	   */
+	  public void iosPushMsgToSingleDevice_to_parentByChannelId(String title,String msg,List deviceTokenList)throws Exception{
+		  
+		  String p12FileName = ProjectProperties.getProperty("iosCert_parent", "wenjie_jiazhangtong_push_aps_dev.p12");
+		  String p12Pass = ProjectProperties.getProperty("iosCert_pwd_parent", "wenjie_123456");
+		 IOSPushUtils.pushIosMsgByToken(p12FileName, p12Pass, msg, deviceTokenList);
+	  }
+	  
+
+	  /**
+	   * 广播所有ios消息_给所有家长
+	   * @param msg
+	   * @return
+	   */
+	  public void iosPushMsgToSingleDevice_to_TeacherByChannelId(String title,String msg,List deviceTokenList)throws Exception{
+		  
+		  String p12FileName = ProjectProperties.getProperty("iosCert_teacher", "wenjie_jiazhangtong_push_aps_dev.p12");
+		  String p12Pass = ProjectProperties.getProperty("iosCert_pwd_teacher", "wenjie_123456");
+		 IOSPushUtils.pushIosMsgByToken(p12FileName, p12Pass, msg, deviceTokenList);
 	  }
 	  /**
 	   * 广播所有android消息_给所有家长
