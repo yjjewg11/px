@@ -101,9 +101,17 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		try {
+			List list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 
@@ -153,9 +161,17 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String queryMyAnnouncements(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		User user = this.getUserInfoBySession(request);
-		List list = announcementsService.queryMyAnnouncements(user,request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		try {
+			User user = this.getUserInfoBySession(request);
+			List list = announcementsService.queryMyAnnouncements(user,request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
