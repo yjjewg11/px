@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
+import com.company.news.entity.User4Q;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
@@ -116,16 +117,24 @@ public class UserinfoController extends AbstractRESTController {
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	public String logout(ModelMap model, HttpServletRequest request) {
 		// 创建session
-		HttpSession session = SessionListener.getSession(request);
-		if (session != null) {
-			// UserInfo
-			// userInfo=(UserInfo)session.getAttribute(RestConstants.Session_UserInfo);
-			session.invalidate();
-		}
-
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		try {
+			HttpSession session = SessionListener.getSession(request);
+			if (session != null) {
+				// UserInfo
+				// userInfo=(UserInfo)session.getAttribute(RestConstants.Session_UserInfo);
+				session.invalidate();
+			}
+
+			
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
 		// responseMessage.setMessage(new Message("失败消息!", "Failure message"));
 		return "";
 	}
@@ -141,10 +150,17 @@ public class UserinfoController extends AbstractRESTController {
 	public String getUserinfo(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		boolean flag = this.getUserAndGroup(model, request, responseMessage);
-		if (!flag)// 请求服务返回失败标示
+		try {
+			boolean flag = this.getUserAndGroup(model, request, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
 			return "";
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		}
 		return "";
 	}
 
@@ -209,15 +225,30 @@ public class UserinfoController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		String groupuuid = request.getParameter("groupuuid");
-		List<User> list;
-		if (StringUtils.isEmpty(groupuuid))// 查询所有用户
-			list = userinfoService.query();
-		else
-			list = userinfoService.getUserByGroupuuid(groupuuid);
+		try {
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			List<User4Q> list;
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+					groupuuid=this.getMyGroupUuidsBySession(request);
+					if (StringUtils.isEmpty(groupuuid)){
+						responseMessage.setMessage("非法用户,没有关联的学校!");
+						return "";
+					}
+				}
+			
+			}
+			list = userinfoService.getUserByGroupuuid(groupuuid,name);
 
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 

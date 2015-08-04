@@ -16,26 +16,21 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Announcements;
-import com.company.news.entity.AnnouncementsTo;
 import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
+import com.company.news.entity.User4Q;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
-import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.validate.CommonsValidate;
-import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
 import com.company.news.vo.UserInfoReturn;
@@ -504,8 +499,8 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<User> query() {
-		return (List<User>) this.nSimpleHibernateDao.getHibernateTemplate()
+	public List<User4Q> query() {
+		return (List<User4Q>) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("from User", null);
 	}
 
@@ -514,14 +509,18 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<User> getUserByGroupuuid(String uuid) {
+	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
-		String sql = "";
+		String sql = "select {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+="and t0.groupuuid='"+ group_uuid + "'";
+		}
+		if(StringUtils.isNotBlank(name)){
+			sql+=" and {t1}.name like '%"+name+"%'";
+		}
 		Query q = s
-				.createSQLQuery(
-						"select {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid and t0.groupuuid='"
-								+ uuid + "'").addEntity("t1", User.class);
+				.createSQLQuery(sql).addEntity("t1", User4Q.class);
 
 		return q.list();
 	}
