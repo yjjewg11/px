@@ -44,25 +44,10 @@ public class RestTest {
 	 */
 	public static void main(String[] args) throws Exception {
  
-        Date person = new Date();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
-        objectOutputStream.writeObject(person);    
-        String serStr = byteArrayOutputStream.toString("ISO-8859-1");  
-        serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
-          
-        objectOutputStream.close();  
-        byteArrayOutputStream.close(); 
-		
-        
-		
-		Student student=new Student();
-		student.setAddress("1111");
-		
-		StudentJsonform j=new StudentJsonform();
-		BeanUtils.copyProperties(student, j);
+		String[] keys="fsadf/dafdf.kf".split("/");
 		
 		
-	System.out.print(serStr);
+		
+	System.out.print(keys.length);
 	}
 }
