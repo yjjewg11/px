@@ -24,7 +24,7 @@ return serializeObj;
 
 var hostUrl='/px-rest/';
 var G_def_headImgPath=hostUrl+"i/header.png";
-var G_imgPath=hostUrl+"rest/uploadFile/getImgFile.json?uuid=";
+var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
 
 /**
  * 判断用户是否有该权限
