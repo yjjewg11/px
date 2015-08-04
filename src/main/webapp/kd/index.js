@@ -242,7 +242,7 @@ function login_affter_init(){
 	                },      	
 	                {
 	                      "link": "##",
-	                      "title": "后台用户统计",
+	                      "title": "学生列表",
 	                      "fn":menu_query_list_fn
 	                    }
 	                
@@ -305,27 +305,27 @@ function menu_dohome(){
 	                    	  },
 
 	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/hudong.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/gonggao.png",
+			                    	    "img": hostUrl+"i/gonggao2.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
 			                    {
-		                    	    "img": hostUrl+"i/jiaoyujihua.png",
+		                    	    "img": hostUrl+"i/kechengbiao.png",
 		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
 		                    	    "title": "教学计划"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/daily_diet.png",
+			                    	    "img": hostUrl+"i/meirisipu.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
 	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/icon-msg.png",
 		                    	    "link": "###",
 		                    	    "title": "我的信箱(未)"
 		                    	  },
@@ -346,7 +346,7 @@ function menu_dohome(){
 		                    	    "title": "花名册(未)"
 		                    	  },
 		                    	  {
-		                    		  "img": hostUrl+"i/header.png",
+		                    		  "img": hostUrl+"i/jpwz.png",
 	                                  "link": "javascript:menu_article_list_fn()",
 	                                  "title": "精品文章"
 	                                },
@@ -355,8 +355,78 @@ function menu_dohome(){
 		                    	    "img": hostUrl+"i/header.png",
 		                    	    "link": "javascript:menu_class_students_fn()",
 		                    	    "title": "我的班级"
-		                    	  }
+		                    	  },
+	  		                    {
+			                    	    "img": hostUrl+"i/header.png",
+			                    	    "link": "javascript:menu_Teacher_tel_fn()",
+			                    	    "title": "老师通讯录"
+			                    }
 	                    	  ];
+//	var div_Gallery_data=[
+//	                      {
+//	                    	    "img": myhead_img,
+//	                    	    "link": "javascript:menu_userinfo_update_fn();",
+//	                    	    "title": "我"
+//	                    	  },
+//
+//	                    	  {
+//		                    	    "img": hostUrl+"i/gonggao2.png",
+//		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
+//		                    	  
+//		                    	  },
+//		                    	  {
+//			                    	    "img": hostUrl+"i/gonggao2.png",
+//			                    	    "link": "javascript:menu_announce_mylist_fn();",
+//			                    	
+//			                    },
+//			                    {
+//		                    	    "img": hostUrl+"i/gonggao2.png",
+//		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
+//		                    	 
+//		                    	  },
+//		                    	  {
+//			                    	    "img": hostUrl+"i/gonggao2.png",
+//			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+//			                    	  
+//			                    	  },
+//	                    	  {
+//		                    	    "img": hostUrl+"i/gonggao2.png",
+//		                    	    "link": "###",
+//		                    	    
+//		                    	  },
+//		                    	 
+//		                    	  {
+//			                    	    "img": hostUrl+"i/gonggao2.png",
+//			                    	    "link": "javascript:parentContactByMyStudent()",
+//			                    	  
+//			                    	  }, 
+//		                    	  {
+//	                    	    "img": hostUrl+"i/gonggao2.png",
+//	                    	    "link": "###",
+//	                    	   
+//	                    	  },
+//	                    	  {
+//		                    	    "img": hostUrl+"i/gonggao2.png",
+//		                    	    "link": "###",
+//		                    	   
+//		                    	  },
+//		                    	  {
+//		                    		  "img": hostUrl+"i/gonggao2.png",
+//	                                  "link": "javascript:menu_article_list_fn()",
+//	                                 
+//	                                },
+//			                    	
+//		                      {
+//		                    	    "img": hostUrl+"i/gonggao2.png",
+//		                    	    "link": "javascript:menu_class_students_fn()",
+//		                    	   
+//		                    	  },
+//	  		                    {
+//			                    	    "img": hostUrl+"i/gonggao2.png",
+//			                    	    "link": "javascript:menu_class_students_fn()",
+//
+//			                    }
+//	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 
@@ -462,12 +532,11 @@ function menu_queryLeaderMsgByParents_message_fn() {
 };
 
 /*
- * (标头)后台统计数据
+ * (标头)学生列表
  * @跳转kd_service发服务器请求
  * */
 function menu_query_list_fn() {
 	Queue.push(menu_query_list_fn);
-	//ajax_query_listByGroup(Store.getCurGroup().uuid,Store.getChooseClass(Store.getCurGroup().uuid));
 	ajax_student_query();
 };
 //——————————————————首页大图标——————————————————
@@ -497,6 +566,14 @@ function menu_class_students_fn() {
 	
 };
 
+/*
+ * （首页）老师通讯录；
+ * @跳转kd_service发服务器请求
+ * */
+function menu_Teacher_tel_fn() {
+	Queue.push(menu_Teacher_tel_fn);
+	ajax_Teacher_listByGroup(Store.getCurGroup().uuid);
+};
 function menu_userinfo_reg_fn(){
 	
 	ajax_loaddata_group_list_for_userinfo_reg();

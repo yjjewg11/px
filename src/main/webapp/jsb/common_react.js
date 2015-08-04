@@ -60,8 +60,8 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 				 else{
 					 uuids+=','+this.value ;  
 					 usernames+=','+this.alt;
-				 }
-			　}
+				 };
+			　};
 			});
 		  if(!uuids){
 			  alert("请勾选复选框！");
@@ -79,7 +79,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
 	  handleChange_selectgroup_uuid:function(){
-		  this.props.handleChange_selectgroup_uuid($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
 	  },
   render: function() {
     return (
@@ -97,9 +97,14 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
 	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 	    ), 
+	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+	      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
+		  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
       React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
+      
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })
