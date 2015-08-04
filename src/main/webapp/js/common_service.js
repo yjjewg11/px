@@ -136,7 +136,9 @@ w_img_upload_nocut={
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
 						if(w_img_upload_nocut.callbackFN){
-							w_img_upload_nocut.callbackFN(data.imgUrl);
+							//data.data.uuid,data.imgUrl
+							//w_img_upload_nocut.callbackFN(data);
+							w_img_upload_nocut.callbackFN(data.imgUrl,data.data.uuid);
 						}
 					} else {
 						alert(data.ResMsg.message);

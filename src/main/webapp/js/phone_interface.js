@@ -113,7 +113,7 @@ var G_CallPhoneFN={
 		finishProject:function(){
 			try{
 				if(window.JavaScriptCall){
-					JavaScriptCall.finishProject();
+					JavaScriptCall.finishProject();					
 					return true;
 				}
 			}catch(e){

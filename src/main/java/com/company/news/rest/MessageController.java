@@ -155,11 +155,19 @@ public class MessageController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		PageQueryResult pageQueryResult= messageService.query(request.getParameter("type"),request.getParameter("useruuid"),pData);
-	
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		try {
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult= messageService.query(request.getParameter("type"),request.getParameter("useruuid"),pData);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 	
@@ -174,13 +182,21 @@ public class MessageController extends AbstractRESTController {
 	public String queryMessageByMy(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		PageQueryResult pageQueryResult= messageService.query(null,user.getUuid(),pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult= messageService.query(null,user.getUuid(),pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 	
@@ -195,17 +211,25 @@ public class MessageController extends AbstractRESTController {
 	public String queryByParent(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		String parent_uuid=request.getParameter("uuid");
-		if(StringUtils.isBlank(parent_uuid)){
-			responseMessage.setMessage("参数必填:uuid");
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			String parent_uuid=request.getParameter("uuid");
+			if(StringUtils.isBlank(parent_uuid)){
+				responseMessage.setMessage("参数必填:uuid");
+				return "";
+			}
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult= messageService.queryMessageByTeacher(user.getUuid(),parent_uuid,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		PageQueryResult pageQueryResult= messageService.queryMessageByTeacher(user.getUuid(),parent_uuid,pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
 
@@ -221,27 +245,35 @@ public class MessageController extends AbstractRESTController {
 	public String queryByLeader(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		String parent_uuid=request.getParameter("parent_uuid");
-		if(StringUtils.isBlank(parent_uuid)){
-			responseMessage.setMessage("参数必填:parent_uuid");
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			String parent_uuid=request.getParameter("parent_uuid");
+			if(StringUtils.isBlank(parent_uuid)){
+				responseMessage.setMessage("参数必填:parent_uuid");
+				return "";
+			}
+			String group_uuid=request.getParameter("group_uuid");
+			if(StringUtils.isBlank(group_uuid)){
+				responseMessage.setMessage("参数必填:group_uuid");
+				return "";
+			}
+			String groupUuids=this.getMyGroupUuidsBySession(request);
+			if(groupUuids==null||!groupUuids.contains(group_uuid)){
+				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+group_uuid);
+				return "";
+			}
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult= messageService.queryByParentAndLeader(group_uuid,parent_uuid,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
-		String group_uuid=request.getParameter("group_uuid");
-		if(StringUtils.isBlank(group_uuid)){
-			responseMessage.setMessage("参数必填:group_uuid");
-			return "";
-		}
-		String groupUuids=this.getMyGroupUuidsBySession(request);
-		if(groupUuids==null||!groupUuids.contains(group_uuid)){
-			responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+group_uuid);
-			return "";
-		}
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		PageQueryResult pageQueryResult= messageService.queryByParentAndLeader(group_uuid,parent_uuid,pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
 	
@@ -256,18 +288,26 @@ public class MessageController extends AbstractRESTController {
 	public String queryLeaderMsgByParents(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			
 //		String group_uuid=request.getParameter("group_uuid");
 //		if(StringUtils.isBlank(group_uuid)){
 //			responseMessage.setMessage("参数必填:group_uuid");
 //			return "";
 //		}
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		List list= messageService.queryLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			List list= messageService.queryLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 	

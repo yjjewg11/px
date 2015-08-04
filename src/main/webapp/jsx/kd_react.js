@@ -169,13 +169,8 @@ render: function() {
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
- 	      <a  href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>|
- 	     <a  href="javascript:void(0);" onClick={menu_userinfo_reg_fn} >老师注册</a>
+ 	      <a  href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>
  	      <br/>
- 	      
- 	     <a  href="http://120.25.248.31/px-rest/kd/" > <img src="ewm_kd.png" /></a>
- 	    
- 			
  	    </form>
  	    <hr/>
  	   <p>© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1</p>
@@ -528,54 +523,7 @@ render: function() {
  );
 }
 }); 
-var Class_student_look_info =React.createClass({
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editClassStudentForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-		  var imgGuid=this.state.headimg;
-		 if(imgGuid){
-			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-			 G_img_down404("#img_head_image");
-		 }
 
-	  },
-		render: function() {
-	     var o =this.state;
-		 return (
-		 		<div>
-			    <AMUIReact.List static>
-			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
-				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-				  <br/>
-			      <AMUIReact.ListItem>姓名:{o.name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爸爸电话:{o.ba_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爷爷电话:{o.ye_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>奶奶电话:{o.nai_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>外公电话:{o.waigong_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>外婆电话:{o.waipo_tel}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
-			      <AMUIReact.ListItem>
-			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
-			      </AMUIReact.ListItem>			      
-			      
-			      </AMUIReact.List>
-		 	     </div> 
-		     );
-	        }
-		 });
 /*
 * 我的班级（主页） show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
@@ -627,11 +575,11 @@ var Class_student_look_info =React.createClass({
 	     var o =this.state;
 		 return (
 		 		<div>
-			    <AMUIReact.List static>
+			    <AMUIReact.List static border striped>
 			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
 				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
 				  <br/>
-			      <AMUIReact.ListItem>姓名:{o.name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
@@ -892,8 +840,7 @@ render: function() {
 		    title={o.title}
 		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-		   </AMUIReact.Article>
-		   //点赞回复模板
+		     </AMUIReact.Article>
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
 			  <Common_reply_list uuid={o.uuid}  type={0}/>
 			  <Common_reply_save uuid={o.uuid}  type={0}/>
@@ -1608,6 +1555,7 @@ return (
  * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
  * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
  * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+ * @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
  * */
 var Classnews_edit = React.createClass({ 
 	selectclass_uuid_val:null,
@@ -1625,8 +1573,17 @@ var Classnews_edit = React.createClass({
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
-		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
-			  editor.pasteHTML('<img  width="198" height="198" src="'+imgurl+'"/>') 
+		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
+				
+		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
+			  ////data.data.uuid,data.imgUrl
+			  //
+			 var imgs=$('#imgs').val();
+			 var imgs=imgs+","+uuid;
+			 $('#imgs').val(imgs);
+			 
+			 $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');
+			
 		  });
 		
 	},
@@ -1648,12 +1605,15 @@ return (
   
 		  <form id="editClassnewsForm" method="post" className="am-form">
 			<input type="hidden" name="uuid"  value={o.uuid}/>
+			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>
+			
 			<input type="hidden" name="classuuid"  value={this.props.formdata.classuuid}/>
 			<label htmlFor="title">标题:</label>
 		      <input type="text" name="title" id="tit le" value={o.title}  onChange={this.handleChange} placeholder="不超过128位"/>
 		      <br/>
-		      <AMR_Input id="classnews_content" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
+		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
   			{G_upload_img_Div}
+		      <div id="show_imgList"></div>
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 

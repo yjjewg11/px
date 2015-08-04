@@ -86,7 +86,8 @@ public class MessageService extends AbstractServcice {
 			hql += " and type=" + type;
 		if (StringUtils.isNotBlank(useruuid))
 			hql += " and revice_useruuid='" + useruuid + "'";
-		hql += " order by create_time desc";
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
 		
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
@@ -105,7 +106,8 @@ public class MessageService extends AbstractServcice {
 				hql += "  (revice_useruuid='" + useruuid + "' and send_useruuid='" + parentuuid + "')";//家长发给我的.
 				hql += " or (send_useruuid='" + useruuid + "' and revice_useruuid='" + parentuuid + "')";//我发给家长的.
 			hql += "  )" ;
-		hql += " order by create_time desc";
+			pData.setOrderFiled("create_time");
+			pData.setOrderType("desc");
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
 		return pageQueryResult;
@@ -191,7 +193,8 @@ public class MessageService extends AbstractServcice {
 			hql += "  (revice_useruuid='" + group_uuid + "' and send_useruuid='" + parent_uuid + "')";//家长发给我的.
 			hql += " or (send_useruuid='" + group_uuid + "' and revice_useruuid='" + parent_uuid + "')";//我发给家长的.
 		hql += "  )" ;
-	hql += " order by create_time desc";
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
 	PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 			.findByPaginationToHql(hql, pData);
 	return pageQueryResult;

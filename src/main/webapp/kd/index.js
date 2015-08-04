@@ -385,7 +385,6 @@ function menu_queryMyTimely_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
 	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
 };
 
