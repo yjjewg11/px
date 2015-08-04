@@ -18,6 +18,7 @@ import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ui.ModelMap;
 
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.User;
 import com.company.news.json.NpmsDateMorpher;
 import com.company.news.query.PaginationData;
@@ -44,6 +45,7 @@ public class AbstractRESTController   {
 	    UserInfoReturn userInfoReturn = new UserInfoReturn();
 	    try {
 	      BeanUtils.copyProperties(userInfoReturn, user);
+	      userInfoReturn.setImg(PxStringUtil.imgUrlByUuid(userInfoReturn.getImg()));
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }

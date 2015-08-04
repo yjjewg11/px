@@ -23,9 +23,11 @@ return serializeObj;
 })(jQuery);
 
 var hostUrl='/px-rest/';
-var G_def_headImgPath=hostUrl+"i/header.png";
+var hostUrlCDN='/px-rest/';
+var G_def_headImgPath=hostUrlCDN+"i/header.png";
+//取消G_imgPath
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
-
+G_imgPath="";
 /**
  * 判断用户是否有该权限
  * @param m

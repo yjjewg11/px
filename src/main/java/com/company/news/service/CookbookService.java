@@ -16,6 +16,7 @@ import com.company.news.entity.Cookbook;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Right;
+import com.company.news.entity.Student;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserGroupRelation;
@@ -63,6 +64,7 @@ public class CookbookService extends AbstractServcice {
 			cookbook.setGroupuuid("");
 		}
 
+		cookbook.setImg(PxStringUtil.imgUrlToUuid(cookbook.getImg()));
 		
 		
 		Cookbook cb = new Cookbook();
@@ -85,11 +87,34 @@ public class CookbookService extends AbstractServcice {
 		String hql="";
 		if(StringUtils.isNotBlank(groupuuid))
 			hql+=" and (groupuuid='"+groupuuid+"' or groupuuid='')";
-			return (List<Cookbook>) this.nSimpleHibernateDao
-					.getHibernateTemplate().find("from Cookbook where type=?"+hql,
+		List<Cookbook> list= (List<Cookbook>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find("from Cookbook where type=?"+hql+" order by name",
 							type);
+		warpVoList(list);
+		
+		return list;
 	}
-
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private Cookbook warpVo(Cookbook o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setImg(PxStringUtil.imgSmallUrlByUuid(o.getImg()));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<Cookbook> warpVoList(List<Cookbook> list){
+		for(Cookbook o:list){
+			warpVo(o);
+		}
+		return list;
+	}
 	/**
 	 * 删除 支持多个，用逗号分隔
 	 * 

@@ -218,31 +218,27 @@ var ChooseClass_EventsTable = React.createClass({
 
 var ChooseCook_Widget = React.createClass({
 	handleClick: function(m) {
-		 if(this.props.handleClick){
 			 if(m=="cancel"){
-				 this.props.handleClick(m);
+				 w_ch_cook.handleClick(m);
 				 return;
 			 }
 			 var uuids=null;
-			 //rs += (cb.getUuid() + "$" + cb.getName() + ",");
+			 //list<cookbook>
+			 var imgArr=[];
 			 $($(".G_ch_cook_item_checked")).each(function(){
-					 if(uuids==null){
-						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
-					 }
-					 else{
-						 uuids+=','+this.title+"$"+this.children[0].name+"$"+this.children[1].title;; 
-					 }
-//					 var tmpO={};
-//					 tmpO.uuid=this.title;
-//					 tmpO.src=this.children[0].src;
-//					 tmpO.name=this.children[1].title;
-//					 
-//					 imgArr.push(tmpO);
-					　   //遍历被选中CheckBox元素的集合 得到Value值
+//					 if(uuids==null){
+//						 uuids=this.title+"$"+this.children[0].name+"$"+this.children[1].title;
+//					 }
+//					 else{
+//						 uuids+=','+this.title+"$"+this.children[0].name+"$"+this.children[1].title;; 
+//					 }
+					 var tmpO={};
+					 tmpO.uuid=this.title;
+					 tmpO.img=this.children[0].src;
+					 tmpO.name=this.children[1].title;
+					 imgArr.push(tmpO);
 				});
-			  
-			 this.props.handleClick(m,uuids);
-		 }
+			 w_ch_cook.handleClick(m,imgArr);
 	  },
 	  
 	  

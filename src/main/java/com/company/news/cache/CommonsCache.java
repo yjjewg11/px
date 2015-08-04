@@ -24,8 +24,11 @@ public class CommonsCache  implements CacheInterface{
 			return e.getObjectValue();
 		else {
 			Object object =nSimpleHibernateDao.getObject(clazz, uuid);
-			if (object != null)
+			if (object != null){
+				nSimpleHibernateDao.getHibernateTemplate().evict(object);
 				put(uuid, object);
+			}
+				
 			return object;
 		}
 	}

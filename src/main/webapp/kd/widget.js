@@ -159,10 +159,19 @@ var w_ch_cook={
 	callbackFN:null,
 	checkedClassuuid:null,
 	checkeduuids:null,
+	/**
+	 * 
+	 * @param m
+	 * @param uuids:list<cookbook>
+	 * 最多6个.
+	 */
 	handleClick:function(m,uuids){
 		w_ch_cook.hide();
 		if(m=="cancel")return;
-		
+		if(uuids&&uuids.length>6){
+			G_msg_pop("最多选择6个食谱!");
+			return;
+		}
 		if(w_ch_cook.callbackFN){
 			w_ch_cook.callbackFN(uuids);
 		}

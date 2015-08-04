@@ -226,7 +226,7 @@ public class StudentService extends AbstractServcice {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return User.class;
+		return Student.class;
 	}
 
 	/**
@@ -246,7 +246,11 @@ public class StudentService extends AbstractServcice {
 			hql+=" and groupuuid='"+groupuuid+"'";
 		}		
 		
-		return (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		 
+		warpVoList(list);
+		 
+		 return list;
 	}
 	
 	/**
@@ -255,7 +259,10 @@ public class StudentService extends AbstractServcice {
 	 * @return
 	 */
 	public Student get(String uuid)throws Exception{
-		return (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+		Student o= (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		warpVo(o);
+		return o;
 	}
 
 	/**
@@ -279,7 +286,7 @@ public class StudentService extends AbstractServcice {
 		List<Student> list= (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("from Student  where idcard=? and groupuuid=?)", idNo,groupuuid);
 		if(list!=null&&list.size()>0)
-			return list.get(0);
+			return warpVo(list.get(0));
 		else
 			return null;
 	}
@@ -296,9 +303,32 @@ public class StudentService extends AbstractServcice {
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
-		
+		this.warpVoList(pageQueryResult.getData());
 		
 		return pageQueryResult;
+	}
+	
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private Student warpVo(Student o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setHeadimg(PxStringUtil.imgUrlByUuid(o.getHeadimg()));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<Student> warpVoList(List<Student> list){
+		for(Student o:list){
+			warpVo(o);
+		}
+		return list;
 	}
 
 }
