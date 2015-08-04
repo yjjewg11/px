@@ -291,12 +291,14 @@ public class StudentService extends AbstractServcice {
 			return null;
 	}
 
-	public PageQueryResult queryByPage(String groupuuid,String classuuid, PaginationData pData) {
+	public PageQueryResult queryByPage(String groupuuid,String classuuid,String  name ,PaginationData pData) {
 		String hql = "from Student where 1=1";
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		if (StringUtils.isNotBlank(name))
+			hql += " and  name  like '%"+name+"%' ";
 		
 		hql += " order by groupuuid,classuuid,name";
 		

@@ -60,8 +60,8 @@ var Userinfo_EventsTable = React.createClass({
 				 else{
 					 uuids+=','+this.value ;  
 					 usernames+=','+this.alt;
-				 }
-			　}
+				 };
+			　};
 			});
 		  if(!uuids){
 			  alert("请勾选复选框！");
@@ -79,7 +79,7 @@ var Userinfo_EventsTable = React.createClass({
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
 	  handleChange_selectgroup_uuid:function(){
-		  this.props.handleChange_selectgroup_uuid($('#selectgroup_uuid').val());
+		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
 	  },
   render: function() {
     return (
@@ -97,9 +97,14 @@ var Userinfo_EventsTable = React.createClass({
 	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
 	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
 	    </AMR_ButtonToolbar>
+	      <form id="editGroupForm" method="post" className="am-form">
+	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+		  </form>
 	  <hr/>
 	  <div className="am-form-group">
       <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+      
       {this.props.group_list.map(function(event) {
           return (<option value={event.uuid} >{event.company_name}</option>);
         })}

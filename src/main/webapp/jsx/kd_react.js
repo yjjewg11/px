@@ -2275,22 +2275,28 @@ var Message_queryMyTimely_myList =React.createClass({
 	
 	
 	
-
+//——————————————————————————学生列表<绘制>——————————————————————————  
 /*
- * 后台统计数据服务器请求后绘制处理方法；
+ * 学生列表服务器请求后绘制处理方法；
  * @</select>下拉多选框;
+ * @handleChange_stutent_Selected:学校查询；
+ * @handleChange_class_Selected::班级查询；
+ * @btn_query_click:名字查找；
  * */
-var Query_EventsTable = React.createClass({
+var Query_stutent_list = React.createClass({
 	group_uuid:null,
 	classuuid:null,
 	handleChange_stutent_Selected: function(val) {
 		  this.group_uuid=val;
-		  ajax_student_query(this.group_uuid,this.classuuid);
+		  ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
 	  }, 
 	  handleChange_class_Selected: function(val) {
 		  this.classuuid=val;
-		  ajax_student_query(this.group_uuid,this.classuuid);
+		  ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
 		  }, 
+		btn_query_click:function(){
+			 ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
+		},
 render: function() {
     return (
     <div>
@@ -2302,10 +2308,96 @@ render: function() {
     </div>
 	  <hr/>	  
 	  <div className="am-form-group">
+		<form id="editGroupForm" method="post" className="am-form">
 	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="300"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
 	  <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
-
+      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="学生姓名"/>	  
+	  <button type="button"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+	
+	  </form>
 	  </div>	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>姓名</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>身份证</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_EventRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*
+ * 学生列表在表单上绘制详细内容;
+ * */
+
+var Query_EventRow = React.createClass({ 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	      <tr className={className} >
+	        <td>{event.name}</td>
+	        <td>{event.nickname}</td>
+	        <td>{event.sex=="0"?"男":"女"}</td>
+	        <td>{event.birthday}</td>
+	        <td>{event.idcard}</td>
+	      </tr> 
+	    );
+	  }
+	}); 
+
+
+
+
+
+//——————————————————————————老师通讯录<绘制>——————————————————————————  
+/*
+ *老师通讯录服务器请求后绘制处理方法；
+ * @handleChange_selectgroup_uuid:搜索和换学校后更新页面
+ * @调用LIS.events.map方法循环绘制老师数组； 
+ * @</select>下拉多选框;
+ * */
+var Teacher_info_tel = React.createClass({
+	  handleChange_selectgroup_uuid:function(){
+		  ajax_Teacher_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+	  },
+  render: function() {
+    return (
+    <div>
+    <div className="header">
+    <div className="am-g">
+      <h1>用户管理</h1>
+    </div>
+    <hr />
+    </div>
+
+	      <form id="editGroupForm" method="post" className="am-form">
+	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+		  </form>
+	  <hr/>
+	  <div className="am-form-group">
+      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
+      
+      {this.props.group_list.map(function(event) {
+          return (<option value={event.uuid} >{event.company_name}</option>);
+        })}
+      </select>
+    </div>
+	  
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
@@ -2321,7 +2413,7 @@ render: function() {
         </thead>
         <tbody>
           {this.props.events.map(function(event) {
-            return (<Query_EventRow key={event.id} event={event} />);
+            return (<Teacherinfo_EventRow key={event.id} event={event} />);
           })}
         </tbody>
       </AMR_Table>
@@ -2329,12 +2421,11 @@ render: function() {
     );
   }
 });
-    
 /*
- * 后台统计数据在表单上绘制详细内容;
+ * 老师通讯录表单详情内容绘制;
+ * 
  * */
-
-var Query_EventRow = React.createClass({ 
+var Teacherinfo_EventRow = React.createClass({ 
 	  render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
@@ -2354,81 +2445,3 @@ var Query_EventRow = React.createClass({
 	    );
 	  }
 	}); 
-
-///*
-//* 老师管理Button事件(添加和修改按钮绘制与标签事件处理)；
-//* @formdata:选中的老师对象；
-//* @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
-//* */    
-//var Userinfo_edit = React.createClass({ 
-//	 getInitialState: function() {
-//			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
-//		    return this.props.formdata;
-//		  },
-//	 handleChange: function(event) {
-//		    this.setState($('#editUserinfoForm').serializeJson());
-//	  },
-//	  handleChange_Selected: function(event) {
-//			 $('#group_uuid').val(event);
-//			    this.setState($('#editUserinfoForm').serializeJson());
-//		  },
-//  render: function() {
-//	  var o = this.state;
-//	  var passwordDiv=null;
-//	  if(!o.uuid){
-//		  passwordDiv=(
-//				  <div>
-//				  <label htmlFor="password">密码:</label>
-//    		      <PxInput  icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
-//    		      <br/>
-//    		      
-//    		      <label htmlFor="password1">重复密码:</label>
-//    		      <PxInput  icon="lock" type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
-//    		      <br/>
-//				  </div>
-//				  );
-//	  }
-//    return (
-//    		<div>
-//    		<div className="header">
-//    		  <div className="am-g">
-//    		    <h1>编辑</h1>
-//    		  </div>
-//    		  <hr />
-//    		</div>
-//    		<div className="am-g">
-//    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-//    		  <form id="editUserinfoForm" method="post" className="am-form">
-//    			<input type="hidden" name="uuid"  value={o.uuid}/>
-//    		     <input type="hidden" name="type"  value="1"/>
-//    			 <input type="hidden" id="group_uuid" name="group_uuid"  value=""/>
-//    		    <div className="am-form-group">
-//    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
-//    		        </div>
-//    		      <label htmlFor="tel">手机号码:</label>
-//    		      <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
-//    		      <br/>
-//    		      <label htmlFor="name">姓名:</label>
-//    		      <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
-//    		      <br/>
-//    		       <label htmlFor="">Email:</label>
-//    		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
-//    		      <br/>
-//    		      {passwordDiv}
-//    		      <label htmlFor="office">职位:</label>
-//    		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
-//    		      <br/>
-//    		      <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">提交</button>
-//    		    </form>
-//
-//    	     </div>
-//    	   </div>
-//    	   
-//    	   </div>
-//    );
-//  }
-//}); 
-
-//userinfo
-
-

@@ -112,9 +112,10 @@ public class StudentController extends AbstractRESTController {
 		
 		String groupuuid=request.getParameter("groupuuid");
 		String classuuid=request.getParameter("classuuid");
+		String name=request.getParameter("name");
 		
-		
-		if(StringUtils.isBlank(groupuuid)){
+		  
+		if(StringUtils.isBlank(groupuuid)){ 
 			groupuuid=this.getMyGroupUuidsBySession(request);
 		}else{
 			String groupUuids=this.getMyGroupUuidsBySession(request);
@@ -124,7 +125,8 @@ public class StudentController extends AbstractRESTController {
 			}
 		}
 		
-		PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,pData);
+		
+		PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,name,pData);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list,
 				pageQueryResult);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
