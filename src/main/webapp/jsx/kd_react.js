@@ -897,7 +897,6 @@ var Teachingplan_EventsTable = React.createClass({
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
-	  //
 	  handleChange_selectgroup_uuid:function(){
 		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
 	  },
@@ -1604,7 +1603,6 @@ var Classnews_edit = React.createClass({
 	},
 render: function() {
 	  var o = this.state;
-	  console.log("classuuid=",this.props.formdata.classuuid,"   o.classuuid=",o.classuuid,"   o.uuid",o.uuid);
 return (
 		<div>
 		<div className="header">
@@ -1993,11 +1991,18 @@ var Group_EventsTable = React.createClass({
  * @parent_uuid:老师给每个用户的ID发message时需要的参数;
  * web页面一键电话功能<a href={"tel:"+event.tel}></a>;
  * */
-var Class_student_tel =React.createClass({	 
+var Class_student_tel =React.createClass({
+	  handleChange_selectgroup_uuid:function(){
+	  //ajax_Teacher_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+	  },
 		render: function() {
 	     var o =this.state;	
 		 return (
 		 		<div>
+			      <form id="editGroupForm" method="post" className="am-form">
+			      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+				  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+				  </form>
 			    <AMUIReact.List static>
 		    	{this.props.formdata.map(function(event) {
 		            return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
@@ -2117,7 +2122,7 @@ var Message_queryByParent_listpage =React.createClass({
      * @send_useruuid:发送者ID；
      * @ajax_boss_message_list绑定事件然后开始绘制舞台；
      * */
-    var Boss_student_tel =React.createClass({ 	 
+    var Boss_student_tel =React.createClass({
     		render: function() {
     	     var o =this.state;	
     		 return (
@@ -2136,6 +2141,21 @@ var Message_queryByParent_listpage =React.createClass({
     		     );
     	        }
     		 });
+
+/*
+ * <园长信箱>如果没有数据则绘制文字提示用户
+ * */
+var Boss_student_tel2 =React.createClass({
+		render: function() {
+		 return (
+				 <div className="am-g">
+				  <h1>园长信箱暂无信件！</h1>
+				  </div>
+		     );
+	        }
+		 });
+
+
 /* 
  * <园长信箱>绘制舞台
  * @ajax_message_queryByParent：园长信箱2层详情界面服务器请求‘
@@ -2304,7 +2324,7 @@ render: function() {
     <div>
     <div className="header">
     <div className="am-g">
-      <h1>学生管理</h1>
+      <h1>学生列表</h1>
     </div>
     <hr />
     </div>
@@ -2339,12 +2359,17 @@ render: function() {
   }
 });
     
-/*
+/*ajax_class_students_look_info  	
  * 学生列表在表单上绘制详细内容;
- * 暂时添加点击事件 后续还未开发； 
+ * 点击后直接调用学生详情方法
+ * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
  * */
 
 var Query_EventRow = React.createClass({ 
+	btn_students_list_click:function(uuid){
+		Queue.push(function(){btn_students_list_click(uuid);});
+		ajax_class_students_look_info(uuid)
+	},
 	  render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
@@ -2352,7 +2377,7 @@ var Query_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
+	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid)}>{event.name}</a></td>
 	        <td>{event.nickname}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td>{event.birthday}</td>
@@ -2382,7 +2407,7 @@ var Teacher_info_tel = React.createClass({
     <div>
     <div className="header">
     <div className="am-g">
-      <h1>用户管理</h1>
+      <h1>老师通讯录</h1>
     </div>
     <hr />
     </div>
@@ -2423,6 +2448,7 @@ var Teacher_info_tel = React.createClass({
 });
 /*
  * 老师通讯录表单详情内容绘制;
+ * 一键拨号
  * 暂时添加点击事件 后续还未开发； 
  * */
 var Teacherinfo_EventRow = React.createClass({ 
@@ -2434,7 +2460,7 @@ var Teacherinfo_EventRow = React.createClass({
 	    return (
 	      <tr className={className} >
 	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
-	        <td>{event.tel}</td>
+	        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
@@ -2442,3 +2468,260 @@ var Teacherinfo_EventRow = React.createClass({
 	    );
 	  }
 	}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//var CookbookPlan_edit = React.createClass({ 
+//	 getInitialState: function() {
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editCookbookPlanForm').serializeJson());
+//	  },
+//	 
+//render: function() {
+//	  var o = this.state;
+//	  
+//	  var plandateStr_div;
+//	  if (o.uuid) {//只读
+//		//2015-07-04 00:00:00=>2015-07-04
+//		  o.plandate=o.plandate.split(" ")[0];
+//		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
+//	  } else {
+//		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
+//	  }
+//	  return (
+//		<div>
+//		<div className="header">
+//		  <div className="am-g">
+//		    <h1>【{Store.getGroupNameByUuid(o.groupuuid)}】-每日食谱-编辑</h1>
+//		  </div>
+//		  <hr />
+//		</div>
+//		<div className="am-g">
+//		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+//		  <form id="editCookbookPlanForm" method="post" className="am-form">
+//		<input type="hidden" name="uuid"  value={o.uuid}/>
+//		<input type="hidden" name="groupuuid"  value={o.groupuuid}/>
+//		<input type="hidden" name="type"  value="1"/>
+//		        <label htmlFor="name">日期:</label>
+//				 {plandateStr_div}  
+//				 <br/>
+//		      <label>早餐:</label> 
+//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
+//		      <div className="cls"></div>
+//		      <br/>
+//		      <label>早上加餐:</label> 
+//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
+//		      <div className="cls"></div>
+//		      <br/>
+//		      <label>午餐:</label> 
+//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
+//		      <div className="cls"></div>
+//		      <br/>
+//		      <label>下午加餐:</label> 
+//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
+//		      <div className="cls"></div>
+//		      <br/>
+//		      <label>晚餐:</label> 
+//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
+//		      <div className="cls"></div>
+//		      <br/>
+//		      <AMR_Input  name="analysis" type="textarea" rows="2" label="营养分析:" placeholder="填写内容" value={o.analysis} onChange={this.handleChange}/>
+//				
+//		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>
+//		    </form>
+//
+//	     </div> 
+//	   </div>
+//	   
+//	   </div>
+//);
+//}
+//}); 
+
+//var CookbookPlanShow_EventRow = React.createClass({
+//	//第而.//使用list<cookbook>
+//		componentWillReceiveProps: function(nextProps) {
+//			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+//			  this.setState({
+//				  items: lists
+//			  });
+//			},
+//	 getInitialState: function() {
+//		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+//		    return {
+//	            items: lists
+//	        };
+//		  },
+//	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
+//		  //list
+//	  cookbookPlan_timeStr_to_list:function(cooks){
+//		  if(!cooks)cooks=[];
+//		  return cooks;
+//		 // if(!cooks)return [];
+//		 // return cooks.split(",");
+//		  
+//	  },
+//	  
+//	  render: function() {
+//	    return (
+//	    		  <div id={"div_cookPlan_"+this.props.type}>
+//	    		  {
+//	    			  this.state.items.map(function(event) {
+//	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
+////	    				  var arr=event.split("$");
+////	    				  if(arr.length!=3)return;
+//	    				  //直接使用list<cookbook>
+//	    				  var t_uuid=event.uuid;
+//	    				  var t_imguuid=event.img;
+//	    				  var t_name=event.name;
+//	    					 return (
+//	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
+//	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
+//	    		    	 	       			<span >{t_name}</span>
+//	    		    	 	       		</div>		
+//	     	 	            	);
+//	    				
+//	    			 })//end map
+//	    		  } 
+//	    		</div>
+//		
+//	  )
+//	  }
+//	});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//var CookbookPlan_edit_EventRow = React.createClass({
+//	
+//	 getInitialState: function() {
+//		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+//		    return {
+//	            items: lists
+//	        };
+//		  },
+//	  cookbookPlan_timeStr_to_list:function(cooks){
+//		  if(!cooks) cooks=[];
+//		  return cooks;
+//	  },
+//	  
+//		deleteImg:function(divid){
+//			$("#"+divid).hide();
+//		},
+//		 btn_addCookplan: function(divid) {
+//			 var that=this;
+//			  var checkeduuids =null;
+//			  $("#"+divid+" > .G_cookplan_Img").each(function(){
+//				  		if($(this).is(":hidden")){
+//				  			return;
+//				  		}
+//						 if(checkeduuids==null)checkeduuids=this.title;
+//						 else
+//						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+//					});
+//			w_ch_cook.open(function(cooks){
+//				  that.setState({
+//			            items: that.cookbookPlan_timeStr_to_list(cooks)
+//			        });
+//				  $(".G_cookplan_Img").show();
+//				  
+//			  },checkeduuids);
+//		  },
+//	  render: function() {
+//		var that=this;
+//	    return (
+//	    		  <div id={"div_cookPlan_"+this.props.type}>
+//	    		  
+//	    		  {
+//	    			  this.state.items.map(function(event) {
+//	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
+//	    				//  var arr=event.split("$");
+//	    				  //if(arr.length!=3)return;
+//	    				  //使用list<cookbook>
+//	    				  if(!event)return;
+//	    				  var t_uuid=event.uuid;
+//	    				  var t_imguuid=event.img;
+//	    				  var t_name=event.name;
+// 	    					 return (
+// 	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
+// 	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={t_imguuid} alt="图片不存在" title={t_name} />
+// 	    		    	 	       			<div className="G_cookplan_Img_close"  onClick={that.deleteImg.bind(this,"div_cookPlan_Item_"+t_uuid)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
+// 	    		    	 	       			<span >{t_name}</span>
+// 	    		    	 	       		</div>		
+// 	     	 	            	);
+// 	     	 	          
+// 	    				
+// 	    			 })//end map
+//	    		  } 
+//	    		  <button type="button"  onClick={that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type)}  className="am-btn am-btn-primary">添加</button> 
+// 	    		</div>
+//		
+//	  )
+//	  }
+//	});

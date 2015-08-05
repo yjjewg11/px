@@ -82,6 +82,9 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 		//  this.setState(v);
 		  w_ch_user.reshowBygroup(v);
 	  },
+	  handleChange_selectgroup_uuid:function(){
+		  w_ch_user.ajax_chooseUser_listByGroup($('#selectgroup_uuid_chuser').val(),$('#sutdent_name').val());
+	  },
   render: function() {
 	  var that=this;
     return (
@@ -95,6 +98,10 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
     React.createElement("h1", null, "老师选择")
   ), 
   React.createElement("hr", null)
+), 
+React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
+React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
       React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 

@@ -1739,40 +1739,44 @@ G_ajax_abs_save(opt);
    	});
    };
    
-   
-   
    /*
     * （首页）查看我的消息(舞台跳转)；
-    * @thpe:0:公告,3:精品文章.4:招生计划.5:课程表.6:食谱.99:班级互动.10:html类型,直接去url地址,调用浏览器显示;
+    * @thpe:0:公告,1:内部通知（教师可见）,3:精品文章.4:招生计划 5:课程表 6:食谱,7:精品课程,99:班级互动.10:html类型,直接去url地址,调用浏览器显示;
     * @reluuid:与type配合确定某个模块的详细的uuid.用于跳转到该模块的详细显示;
     * */    
    function ajax_State_style(type,reluuid){
 	 switch (type)   
 	   {
-	       case 0:                                 
-	    	   react_ajax_announce_show(reluuid);   //(已验证功能);   
-	           break;                                              
-	       case 3:                                          
-	    	   react_ajax_announce_show(reluuid);   //(未验证功能);
-	       break;
+       case 0:                                 
+    	       react_ajax_announce_show(reluuid);   //(公告);   
+           break;      
+       case 1:                                 
+	           react_ajax_announce_show(reluuid);   //(老师公告);   
+           break;   
+       case 3:                                          
+    	       react_ajax_announce_show(reluuid);   //(精品文章);
+           break;
 	   case 4:                                          
-		   	   react_ajax_announce_show(reluuid);   //(未验证功能);  
+		   	   react_ajax_announce_show(reluuid);   //(招生计划);  
 	       break;
 	   case 5:                                          
-		   	   Teachingplan_showByOneDay(reluuid);  //(未验证功能);
+		   	   Teachingplan_showByOneDay(reluuid);  //(课程表);
 	       break;
 	   case 6:                                          
-		       ajax_cookbookPlan_dayShow(reluuid);  //(未验证功能);
+		       ajax_cookbookPlan_dayShow(reluuid);  //(食谱);
 	       break;
+	   case 7:                                          
+		   Console.WriteLine("Case 7");             //(精品课程);
+           break;
 	   case 99:                                          
-		       ajax_classnews_list(reluuid);        //(未验证功能);
+		       ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	   case 10:                                          
-	           Console.WriteLine("Case 2");         //(未验证功能);
+	           Console.WriteLine("Case 10");         //(未验证功能);
 	       break;
 	   default:            
 	       Styte.out.println("此信息为非法信息，请联系管理员！");
-	           break;
+	       break;
 	   }
 	   
    }  
@@ -1914,7 +1918,13 @@ G_ajax_abs_save(opt);
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
-	   				React.render(React.createElement( Boss_student_tel,{formdata:data.list}), document.getElementById('div_body'));
+	   				if(data.list.length!=0){
+		   				React.render(React.createElement( Boss_student_tel,{formdata:data.list}), document.getElementById('div_body'));	
+	   				}else{
+	   					G_msg_pop("暂无园长信箱数据!");
+		   				React.render(React.createElement( Boss_student_tel2), document.getElementById('div_body'));
+	   				}
+
 	   			} else {
 	   				alert("加载数据失败："+data.ResMsg.message);
 	   			}
