@@ -82,6 +82,9 @@ var ChooseUser_EventsTable = React.createClass({
 		//  this.setState(v);
 		  w_ch_user.reshowBygroup(v);
 	  },
+	  handleChange_selectgroup_uuid:function(){
+		  w_ch_user.ajax_chooseUser_listByGroup($('#selectgroup_uuid_chuser').val(),$('#sutdent_name').val());
+	  },
   render: function() {
 	  var that=this;
     return (
@@ -96,6 +99,10 @@ var ChooseUser_EventsTable = React.createClass({
   </div>
   <hr />
 </div>
+<form id="editGroupForm" method="post" className="am-form">
+<input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+<button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+</form>
 	  <div className="am-form-group">
       <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
       {this.props.group_list.map(function(event) {

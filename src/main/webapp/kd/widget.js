@@ -304,9 +304,10 @@ var w_ch_user={
 		w_ch_user.show();
 		
 	},	
-	ajax_chooseUser_listByGroup:function(groupuuid){
+	ajax_chooseUser_listByGroup:function(groupuuid,name){
+		if(!name)name="";
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
+		var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid+"&name="+name;
 		$.ajax({
 			type : "GET",
 			url : url,
@@ -316,7 +317,7 @@ var w_ch_user={
 			success : function(data) {
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
-					Store.setChooseUer(groupuuid,data.list)
+					Store.setChooseUer(groupuuid,data.list);
 				} else {
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
