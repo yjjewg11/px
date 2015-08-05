@@ -757,7 +757,10 @@ render: function() {
     );
   }
   });
-  
+/*
+ * 公告精品文章 添加等
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
 var Announcements_edit = React.createClass({displayName: "Announcements_edit", 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -767,10 +770,9 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-          w_img_upload_nocut.bind_onchange("#announce_message" ,function(imgurl){
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
           });
-
 	  },
 render: function() {
 	  var o = this.state;
@@ -2339,6 +2341,7 @@ render: function() {
     
 /*
  * 学生列表在表单上绘制详细内容;
+ * 暂时添加点击事件 后续还未开发； 
  * */
 
 var Query_EventRow = React.createClass({displayName: "Query_EventRow", 
@@ -2349,7 +2352,7 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
 
 	    return (
 	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, event.name), 
+	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.nickname), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", null, event.birthday), 
@@ -2401,14 +2404,11 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
-            React.createElement("th", null, "帐号"), 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
             React.createElement("th", null, "性别"), 
-            React.createElement("th", null, "状态"), 
-            React.createElement("th", null, "登录时间"), 
-            React.createElement("th", null, "创建时间")
+            React.createElement("th", null, "状态")
           )
         ), 
         React.createElement("tbody", null, 
@@ -2423,7 +2423,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
 });
 /*
  * 老师通讯录表单详情内容绘制;
- * 
+ * 暂时添加点击事件 后续还未开发； 
  * */
 var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow", 
 	  render: function() {
@@ -2433,14 +2433,11 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 	    return (
 	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, event.loginname), 
-	        React.createElement("td", null, event.name), 
+	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
-	        React.createElement("td", null, event.login_time), 
-	        React.createElement("td", null, event.create_time)
+	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
 	      ) 
 	    );
 	  }

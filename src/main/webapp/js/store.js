@@ -141,8 +141,8 @@ var Store={
 		for(var i=0;i<arr.length;i++){
 			var t_arr=this.getChooseClass(arr[i].uuid);
 			
-			for(var i=0;i<t_arr.length;i++){
-				if(uuid==t_arr[i].uuid)return t_arr[i].name;
+			for(var j=0;j<t_arr.length;j++){
+				if(uuid==t_arr[j].uuid)return t_arr[j].name;
 			}
 		}
 		return "";

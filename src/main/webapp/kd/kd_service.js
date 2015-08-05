@@ -739,11 +739,10 @@ function ajax_class_updateDisable(groupuuid,useruuid,disable){
 
 
 
-//announce
-
-
-//老师查询，条件groupuuid
-//
+/*
+ * (标头)发布消息功能
+ * @types- 0-校园公告,1-老师公告 2-班级通知,3-"分享文章',4-"招生计划"
+ * */
 function ajax_announce_listByGroup(groupuuid) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/list.json";

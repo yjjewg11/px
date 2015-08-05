@@ -757,7 +757,10 @@ render: function() {
     );
   }
   });
-  
+/*
+ * 公告精品文章 添加等
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
 var Announcements_edit = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props.formdata;
@@ -767,10 +770,9 @@ var Announcements_edit = React.createClass({
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-          w_img_upload_nocut.bind_onchange("#announce_message" ,function(imgurl){
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
           });
-
 	  },
 render: function() {
 	  var o = this.state;
@@ -2339,6 +2341,7 @@ render: function() {
     
 /*
  * 学生列表在表单上绘制详细内容;
+ * 暂时添加点击事件 后续还未开发； 
  * */
 
 var Query_EventRow = React.createClass({ 
@@ -2349,7 +2352,7 @@ var Query_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-	        <td>{event.name}</td>
+	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.nickname}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td>{event.birthday}</td>
@@ -2401,14 +2404,11 @@ var Teacher_info_tel = React.createClass({
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
-            <th>帐号</th>
             <th>姓名</th>
             <th>电话</th>
             <th>邮箱</th>
             <th>性别</th>
             <th>状态</th>
-            <th>登录时间</th>
-            <th>创建时间</th>
           </tr> 
         </thead>
         <tbody>
@@ -2423,7 +2423,7 @@ var Teacher_info_tel = React.createClass({
 });
 /*
  * 老师通讯录表单详情内容绘制;
- * 
+ * 暂时添加点击事件 后续还未开发； 
  * */
 var Teacherinfo_EventRow = React.createClass({ 
 	  render: function() {
@@ -2433,14 +2433,11 @@ var Teacherinfo_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-	        <td>{event.loginname}</td>
-	        <td>{event.name}</td>
+	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.tel}</td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
-	        <td>{event.login_time}</td>
-	        <td>{event.create_time}</td>
 	      </tr> 
 	    );
 	  }
