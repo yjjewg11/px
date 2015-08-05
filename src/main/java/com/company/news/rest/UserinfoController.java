@@ -578,7 +578,7 @@ public class UserinfoController extends AbstractRESTController {
 					return "";
 			}
 			else{
-				User user1 = userinfoService.update(userRegJsonform, responseMessage);
+				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage);
 				if (user1==null)// 请求服务返回失败标示
 					return "";
 			}

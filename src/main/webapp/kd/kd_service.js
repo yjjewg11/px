@@ -1503,6 +1503,14 @@ function ajax_classnews_edit(m,formdata,mycalsslist){
 
 
 function ajax_classnews_save(){
+	
+	  var imgs="";
+	  $(".G_cookplan_Img_img").each(function(){
+		  imgs+=","+$(this).attr("src");
+		});
+	  
+	  $('#imgs').val(imgs);
+	  
 	var opt={
 			 formName:"editClassnewsForm",
 			 url:hostUrl + "rest/classnews/save.json",

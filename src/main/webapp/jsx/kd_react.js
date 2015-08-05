@@ -1565,6 +1565,26 @@ return (
 );
 }
 });
+
+
+
+/**
+ * 班级互动可删除图片显示.
+ */
+var ClassNews_Img_canDel = React.createClass({
+		deleteImg:function(divid){
+			$("#"+divid).remove();
+		},
+			
+	  render: function() {
+		 return (
+            		<div  className="G_cookplan_Img" >
+  	 	       			<img className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
+  	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
+  	 	       		</div>		
+            	)
+	  }
+	});
 /*
  * 班级互动2
  * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
@@ -1586,20 +1606,42 @@ var Classnews_edit = React.createClass({
 			 $('#classuuid').val(val);
 			    this.setState($('#editClassnewsForm').serializeJson());
 	  },
+	  
+	  imgDivNum:0,
+	  getNewImgDiv(){
+		  this.imgDivNum++;
+		return "Classnews_edit_"+this.imgDivNum;  
+	  },
+	  
+	  addShowImg:function(url){
+		  var divid=this.getNewImgDiv();
+		  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");
+		  
+	
+		  React.render(React.createElement(ClassNews_Img_canDel, {
+				url: url,parentDivId:divid
+				}), document.getElementById(divid));  
+	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
-				
+		 var that=this;
+		 
+		 //已经有的图片,显示出来.
+		 
 		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
 			  ////data.data.uuid,data.imgUrl
-			  //
-			 var imgs=$('#imgs').val();
-			 var imgs=imgs+","+uuid;
-			 $('#imgs').val(imgs);
-			 
-			 $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');
+			 that.addShowImg(imgurl);
+			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');
 			
 		  });
+		 
+		//已经有的图片,显示出来.
+		 if(!$('#imgs').val())return;
+		 var imgArr=$('#imgs').val().split(",");
+		 for(var i=0;i<imgArr.length;i++){
+			 this.addShowImg(imgArr[i]);
+		 }
 		
 	},
 render: function() {
@@ -1624,11 +1666,11 @@ return (
 			
 			<input type="hidden" name="classuuid"  value={this.props.formdata.classuuid}/>
 			<label htmlFor="title">标题:</label>
-		      <input type="text" name="title" id="tit le" value={o.title}  onChange={this.handleChange} placeholder="不超过128位"/>
+		      <input type="text" name="title" id="title" value={o.title}  onChange={this.handleChange} placeholder="不超过128位"/>
 		      <br/>
 		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
   			{G_upload_img_Div}
-		      <div id="show_imgList"></div>
+		      <div id="show_imgList"></div><br/>
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
