@@ -78,15 +78,15 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
 	  },
   render: function() {
     return (
     React.createElement("div", null, 
     React.createElement("div", {className: "header"}, 
     React.createElement("div", {className: "am-g"}, 
-      React.createElement("h1", null, "用户管理")
+      React.createElement("h1", null, "老师管理")
     ), 
     React.createElement("hr", null)
     ), 
@@ -103,12 +103,8 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 		  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
-      
-      this.props.group_list.map(function(event) {
-          return (React.createElement("option", {value: event.uuid}, event.company_name));
-        })
-      )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
+
     ), 
 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -156,6 +152,8 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		  },
   render: function() {
 	  var o = this.state;
+	  var sex=this.props.sex;
+	  console.log("SEX",sex);
 	  var passwordDiv=null;
 	  if(!o.uuid){
 		  passwordDiv=(
@@ -193,6 +191,11 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
     		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
     		      React.createElement("br", null), 
+    		      React.createElement(AMUIReact.FormGroup, null, 
+    		      React.createElement("label", null, "单选："), 
+    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: sex==0?"checked":""}), 
+    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: sex==1?"checked":""})
+    		      ), 
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
     		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
     		      React.createElement("br", null), 

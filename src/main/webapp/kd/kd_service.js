@@ -225,7 +225,7 @@ function ajax_uesrinfo_listByGroup(groupuuid,name) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Userinfo_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					events: data.list,
 					handleClick:btn_click_userinfo,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -250,7 +250,7 @@ function ajax_uesrinfo_listByGroup(groupuuid,name) {
 function btn_click_userinfo(m,obj,usernames){
 	Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
 	if(m=="add"){
-		ajax_userinfo_edit(obj,"add");
+		ajax_userinfo_edit(obj,"add",1);
 	}else if(m=="disable"){
 		ajax_userinfo_updateDisable(obj,1);		
 	}else if(m=="enable"){
@@ -258,7 +258,7 @@ function btn_click_userinfo(m,obj,usernames){
 	}else if(m=="getRole"){
 		ajax_userinfo_getRole(obj,usernames, Store.getRoleList());
 	}else if(m=="edit"){
-		ajax_userinfo_edit({uuid:obj},"edit");
+		ajax_userinfo_edit({uuid:obj},"edit",1);
 	};
 };
 /*
@@ -268,9 +268,12 @@ function btn_click_userinfo(m,obj,usernames){
  * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
  * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
  * */
-function ajax_userinfo_edit(formdata,m){
+var g_teacher_sex="";
+function ajax_userinfo_edit(formdata,m,sex){
+	  if(!sex)sex="";
+	  g_teacher_sex=sex;
 	if(m=="add"){
-		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")}), document.getElementById('div_body'));
+		React.render(React.createElement(Userinfo_edit,{formdata:formdata,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),sex:g_teacher_sex}), document.getElementById('div_body'));
 		return;
 	
 	}
@@ -285,7 +288,7 @@ function ajax_userinfo_edit(formdata,m){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")}), document.getElementById('div_body'));
+				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -420,7 +423,7 @@ function ajax_class_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					events: data.list,
 					handleClick:btn_click_class_list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -655,7 +658,10 @@ function react_ajax_class_edit_get(formdata,uuid){
 		var userinfo=Store.getUserinfo();
 		formdata.headTeacher=userinfo.uuid;
 		formdata.headTeacher_name=userinfo.name;
-		React.render(React.createElement(Class_edit,{formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
+		React.render(React.createElement(Class_edit,{
+			formdata:formdata,
+			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+			}), document.getElementById('div_body'));
 		return;
 	}
 	$.AMUI.progress.start();
@@ -669,7 +675,10 @@ function react_ajax_class_edit_get(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Class_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
+				React.render(React.createElement(Class_edit,{
+					formdata:data.data,
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -756,7 +765,7 @@ function ajax_announce_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Announcements_EventsTable, {
 					groupuuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -889,7 +898,10 @@ function react_ajax_announce_edit(formdata,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_edit,{formdata:data.data,group_list:Store.getGroup()}), document.getElementById('div_body'));
+				React.render(React.createElement(Announcements_edit,{
+					formdata:data.data,
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+					}),document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1166,7 +1178,7 @@ function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
 					events: data.list,
 					begDateStr:begDateStr,
 					endDateStr:endDateStr,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					handleClick:btn_click_cookbookPlan,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1545,7 +1557,7 @@ function ajax_accounts_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Accounts_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1579,7 +1591,8 @@ function ajax_accounts_edit(m,formdata){
 		React.render(React.createElement(Accounts_edit,{
 			type_list: Vo.getTypeList("KD_Accounts_type"),
 			class_list:Store.getChooseClass(formdata.groupuuid),
-			group_list:Store.getGroup(),formdata:formdata
+			group_list:Store.getGroup(),
+			formdata:formdata
 			}),
 			document.getElementById('div_body'));
 };
@@ -2046,8 +2059,8 @@ G_ajax_abs_save(opt);
 	  g_student_query_pageNo=pageNo;
 		$.AMUI.progress.start();
 		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
-		$.ajax({
-			type : "GET",
+		$.ajax({          
+			type : "GET",  
 			url : url,
 			dataType : "json",
 			success : function(data) {
@@ -2099,7 +2112,7 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 	  if(!name)name="";
 	  g_teacher_query_name=name;
 	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
-	Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
+	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid+"&name="+name;
 	$.ajax({
@@ -2112,7 +2125,7 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
 					group_uuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					

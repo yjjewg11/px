@@ -252,7 +252,7 @@ var w_ch_class={
 		var lists=Store.getChooseClass(w_ch_class.groupuuid);
 		React.render(React.createElement(ChooseClass_EventsTable, {
 			group_uuid:w_ch_class.groupuuid,
-			group_list:Store.getGroup(),
+			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 			events: lists,
 			handleClick:w_ch_class.handleClick,
 			responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -304,10 +304,10 @@ var w_ch_user={
 		w_ch_user.show();
 		
 	},	
-	ajax_chooseUser_listByGroup:function(groupuuid,name){
-		if(!name)name="";
+	ajax_chooseUser_listByGroup:function(groupuuid){
+	
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid+"&name="+name;
+		var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
 		$.ajax({
 			type : "GET",
 			url : url,
@@ -332,11 +332,13 @@ var w_ch_user={
 			}
 		});
 	},
-	reshowBygroup:function(groupuuid){
+	username:null,
+	reshowBygroup:function(groupuuid,name){
 		w_ch_user.groupuuid=groupuuid;
 		if(!w_ch_user.groupuuid){
 			alert("w_ch_user.reshowBygroup groupuuid is null!");
 		}
+		w_ch_user.username=name;
 		w_ch_user.show();
 	},
 	show:function(){
@@ -345,10 +347,20 @@ var w_ch_user={
 			w_ch_user.ajax_chooseUser_listByGroup(w_ch_user.groupuuid);
 			users=Store.getChooseUer(w_ch_user.groupuuid);
 		}
+		
+		if(w_ch_user.username){
+			var users_byName=[];
+			for(var i=0;i<users.length;i++){
+				if(users[i].name.indexOf(w_ch_user.username)>-1){
+					users_byName.push(users[i]);
+				}
+			}
+			users=users_byName;
+		}
 //		for(var i=0;i<100;i++)users.push(Store.getUserinfo());
 		React.render(React.createElement(ChooseUser_EventsTable, {
 			group_uuid:w_ch_user.groupuuid,
-			group_list:Store.getGroup(),
+			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 			events: users,
 			checkedUseruuid:w_ch_user.checkedUseruuid,
 			handleClick:w_ch_user.handleClick,
@@ -366,7 +378,7 @@ var w_ch_user={
 		$("#"+this.div_id).html("");
 		$("#"+this.div_id).hide();
 	}
-}
+};
 
 //chooseUser end
 
