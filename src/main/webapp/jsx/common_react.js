@@ -637,14 +637,6 @@ render: function() {
 //我要评论模块 
 var Common_reply_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
-	componentDidMount:function(){
-		
-		  var editor=$( '#classnews_content_replay' ).xheditor(xhEditor_upImgOption_emot);
-          w_img_upload_nocut.bind_onchange("#file_img_upload" , function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+ '"/>')
-          });
-
-	},
 	reply_save_btn_click:function(){
 		common_ajax_reply_save(this.props.reply_save_callback);
 	},
@@ -657,7 +649,7 @@ render: function() {
 			
 			
 			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
-			{G_upload_img_Div}
+
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>
 		      
 		    </form>	   

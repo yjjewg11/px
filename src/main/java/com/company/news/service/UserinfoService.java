@@ -290,7 +290,7 @@ public class UserinfoService extends AbstractServcice {
 		}
 
 		user.setName(userRegJsonform.getName());
-		user.setSex(userRegJsonform.getSex());
+		//user.setSex(userRegJsonform.getSex());
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
 		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {

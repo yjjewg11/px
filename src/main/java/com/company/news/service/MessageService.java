@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Cookbook;
 import com.company.news.entity.Message;
 import com.company.news.entity.Parent;
 import com.company.news.entity.User;
@@ -92,6 +94,7 @@ public class MessageService extends AbstractServcice {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
+		warpVoList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	/**
@@ -110,6 +113,8 @@ public class MessageService extends AbstractServcice {
 			pData.setOrderType("desc");
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
+		
+		warpVoList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	
@@ -150,7 +155,7 @@ public class MessageService extends AbstractServcice {
 	public Message get(String uuid) throws Exception {
 		Message message = (Message) this.nSimpleHibernateDao.getObjectById(
 				Message.class, uuid);
-
+		warpVo(message);
 		return message;
 	}
 
@@ -229,6 +234,28 @@ public class MessageService extends AbstractServcice {
 		
 		
 	return relList;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private Message warpVo(Message o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		o.setMessage(MyUbbUtils.myUbbTohtml(o.getMessage()));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<Message> warpVoList(List<Message> list){
+		for(Message o:list){
+			warpVo(o);
+		}
+		return list;
 	}
 
 }

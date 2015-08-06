@@ -58,7 +58,6 @@ public class ClassNewsService extends AbstractServcice {
 		ClassNews cn = new ClassNews();
 
 		BeanUtils.copyProperties(cn, classNewsJsonform);
-
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		cn.setReply_time(TimeUtils.getCurrentTimestamp());
@@ -90,6 +89,7 @@ public class ClassNewsService extends AbstractServcice {
 				ClassNews.class, classNewsJsonform.getUuid());
 
 		if (cn != null) {
+			cn.setImgs(classNewsJsonform.getImgs());
 			cn.setContent(classNewsJsonform.getContent());
 			cn.setTitle(classNewsJsonform.getTitle());
 			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
@@ -171,6 +171,7 @@ public class ClassNewsService extends AbstractServcice {
 		BeanUtils.copyProperties(cnjf, cn);
 
 		cnjf.setContent(MyUbbUtils.myUbbTohtml(cnjf.getContent()));
+		cnjf.setImgs(PxStringUtil.imgUrlByUuid(cn.getImgs()));
 //		// 计数
 //		cnjf.setCount(countService.count(uuid,
 //				SystemConstants.common_type_hudong));
