@@ -1607,7 +1607,7 @@ var Classnews_edit = React.createClass({
 	  },
 	  
 	  imgDivNum:0,
-	  getNewImgDiv(){
+	  getNewImgDiv:function(){
 		  this.imgDivNum++;
 		return "Classnews_edit_"+this.imgDivNum;  
 	  },
