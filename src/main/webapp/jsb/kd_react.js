@@ -256,7 +256,8 @@ render: function() {
   React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级"), 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit_class"), round: true}, "编辑"), 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "graduate_class"), round: true}, "毕业")
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "graduate_class"), round: true}, "毕业"), 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "flower_name"), round: true}, "下载花名册")
 	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -290,6 +291,21 @@ handleClick: function(m) {
 		 if(m=="add_class"){
 			 this.props.handleClick(m,this.props.group_uuid);
 			 return;
+		 }else if(m=="flower_name"){
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请选择你要下载的班级花名册！");
+				  return;
+			  }
+			 ajax_flowername_download(this.props.group_uuid,uuids);
 		 }
 		 var uuids=null;
 		 $($("input[name='table_checkbox']")).each(function(){
@@ -1779,16 +1795,34 @@ var Accounts_edit = React.createClass({displayName: "Accounts_edit",
 	 getInitialState: function() {
 		    return this.loadData(this.props.formdata);
 		  },
-	 handleChange: function(event) {
+	  handleChange_groupuuid: function(v) {
 		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	formdata.groupuuid=v;
+		 	formdata.classuuid="";
+		 	formdata.studentuuid="";
 		 	
 		    this.setState(this.loadData(formdata));
 	  },
+	  handleChange_type: function(v) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	formdata.type=v;
+		    this.setState(this.loadData(formdata));
+	  },
+	  handleChange_classuuid: function(v) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	formdata.classuuid=v;
+		 	formdata.studentuuid="";
+		    this.setState(this.loadData(formdata));
+	  },
+	  handleChange_studentuuid: function(v) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		 	formdata.studentuuid=v;
+		    this.setState(this.loadData(formdata));
+	  },
 	  loadData:function(formdata){
-		  
-		  formdata.tmp_classList=Store.getChooseClass(formdata.groupuuid);
+		  formdata.tmp_classList=G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name");
 		  if(formdata.classuuid){
-			  formdata.tmp_studentList=Store.getClassStudentsList(formdata.classuuid);
+			  formdata.tmp_studentList=	G_selected_dataModelArray_byArray(Store.getClassStudentsList(formdata.classuuid),"uuid","name")
 		  }else{
 			  formdata.tmp_studentList=[];
 		  }
@@ -1796,7 +1830,18 @@ var Accounts_edit = React.createClass({displayName: "Accounts_edit",
 	  },
 	  
 render: function() {
-	  var o = this.state;
+	  var o = this.state;	  
+//		o.tmp_classList.unshift({value:"0",label:"班级选择"});
+//		o.tmp_studentList.unshift({value:"0",label:"学生选择"});
+//		if(!o.classuuid){			
+//			o.classuuid="0";
+//		};
+//		if(!o.studentuuid){			
+//			o.studentuuid="0";
+//		};
+		if(!o.type){			
+			o.type="0";
+		};
   return (
   		React.createElement("div", null, 
   		React.createElement("div", {className: "header"}, 
@@ -1808,33 +1853,19 @@ render: function() {
   		React.createElement("div", {className: "am-g"}, 
   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
   		React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
-  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-  		 React.createElement("div", {className: "am-form-group"}, 
-	          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
-	          this.props.group_list.map(function(event) {
-	              return (React.createElement("option", {value: event.uuid}, event.brand_name));
-	            })
-	          )
+  			React.createElement("div", {className: "am-form-group"}, 
+  		React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.handleChange_groupuuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid+""})	
+  			          
 	        ), 
   		React.createElement("label", {htmlFor: "type"}, "收支类型:"), 
   		 React.createElement("div", {className: "am-form-group"}, 
-  		React.createElement("select", {id: "type", name: "type", "data-am-selected": "{btnSize: 'lg'}", value: o.type, onChange: this.handleChange}, 
-  		 this.props.type_list.map(function(event) {
-             return (React.createElement("option", {value: event.key}, event.val));
-           })
-        ), 
-        React.createElement("select", {id: "classuuid", name: "classuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.classuuid, onChange: this.handleChange}, 
- 		React.createElement("option", {value: "0"}, "班级选择"), 
- 		o.tmp_classList.map(function(event) {
-            return (React.createElement("option", {value: event.uuid}, event.name));
-          })
-       ), 
-       React.createElement("select", {id: "studentuuid", name: "studentuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.studentuuid, onChange: this.handleChange}, 
-   	React.createElement("option", {value: "0"}, "学生选择"), 
-   	o.tmp_studentList.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.name));
-      })
-      )
+   		React.createElement(AMUIReact.Selected, {name: "type", onChange: this.handleChange_type, btnWidth: "200", multiple: false, data: this.props.type_list, btnStyle: "primary", value: o.type+""}), 	 
+   	 React.createElement("br", null), 
+   		React.createElement(AMUIReact.Selected, {name: "classuuid", placeholder: "班级选择", onChange: this.handleChange_classuuid, btnWidth: "200", multiple: false, data: o.tmp_classList, btnStyle: "primary", value: o.classuuid+""}), 	 
+   	 React.createElement("br", null), 
+   		React.createElement(AMUIReact.Selected, {name: "studentuuid", placeholder: "学生选择", onChange: this.handleChange_studentuuid, btnWidth: "200", multiple: false, data: o.tmp_studentList, btnStyle: "primary", value: o.studentuuid+""})	 
+
+
         ), 
   	      React.createElement("br", null), 
  	    
@@ -2361,10 +2392,6 @@ render: function() {
 	if(this.props.class_uuid==""){			
 		this.props.class_uuid="1";
 	};
-	console.log("1",this.props.group_uuid);
-	console.log("2",this.props.class_uuid);
-	console.log("3",this.props.group_list);
-	console.log("4",this.props.class_list);
 
     return (
     React.createElement("div", null, 

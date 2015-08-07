@@ -161,7 +161,7 @@ public class StudentController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/exportStudentExcel", method = RequestMethod.GET)
+	@RequestMapping(value = "/exportStudentExcel", method = RequestMethod.POST)
 	public String exportStudentExcel(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);

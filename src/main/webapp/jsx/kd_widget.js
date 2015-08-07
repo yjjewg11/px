@@ -103,13 +103,6 @@ var ChooseUser_EventsTable = React.createClass({
 </form>
 	  <div className="am-form-group">
 		  <AMUIReact.Selected id="selectgroup_uuid_chuser" name="group_uuid" onChange={this.handleChange_selectgroup_uuid_chuser} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid?this.props.group_uuid:""} />	  
-	  
-	  
-      <select id="selectgroup_uuid_chuser" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid?this.props.group_uuid:""} onChange={this.handleChange_selectgroup_uuid_chuser}>
-      {this.props.group_list.map(function(event) {
-          return (<option value={event.uuid} >{event.company_name}</option>);
-        })}
-      </select>
       
       
       

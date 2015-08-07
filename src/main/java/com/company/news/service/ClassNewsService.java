@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
@@ -20,6 +21,7 @@ import com.company.news.jsonform.ClassNewsDianzanJsonform;
 import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -111,8 +113,7 @@ public class ClassNewsService extends AbstractServcice {
 	public PageQueryResult query(User user ,String type,String classuuid, PaginationData pData) {
 		String hql = "from ClassNews where 1=1";
 		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  classuuid=" + classuuid;
-		
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
 		if("myByTeacher".equals(type)){
 			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
 		}

@@ -1417,12 +1417,14 @@ function menu_classnews_list_fn() {
 	ajax_classnews_list();
 };
 //记录当前翻页
+
+	  
 var g_classnews_pageNo_point=1;
 var g_classnews_classuuid=null;
 var g_classnews_url=null;
 var g_classnews_class_list=null;
 function ajax_classnews_list(classuuid,pageNo) {
-	if(!classuuid)classuuid=g_classnews_classuuid;
+	if(!classuuid)classuuid="";
 	else g_classnews_classuuid=classuuid;
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
@@ -1431,7 +1433,7 @@ function ajax_classnews_list(classuuid,pageNo) {
 		return;
 	}
 	$.AMUI.progress.start();
-	var url = g_classnews_url+"?uuid="+classuuid+"&pageNo="+pageNo;
+	var url = g_classnews_url+"?classuuid="+classuuid+"&pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1511,7 +1513,19 @@ function ajax_classnews_edit(m,formdata,mycalsslist){
 	});
 };
 
-
+/**
+* 花名册下载
+* @param formdata
+* @param operate
+*/
+function ajax_flowername_download (groupuuid,classuuid){
+	var inputs;
+	var url = hostUrl + "rest/student/exportStudentExcel.json?groupuuid="+groupuuid+"&classuuid="+classuuid;
+	   inputs+='<input type="hidden" groupuuid="'+ groupuuid +'" classuuid="'+ classuuid +'" />'; 
+       // request发送请求
+	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
+     .appendTo('body').submit().remove();
+};
 
 
 function ajax_classnews_save(){
@@ -1582,16 +1596,22 @@ function btn_click_accounts(m,formdata){
 	ajax_accounts_edit(m,formdata);
 };
 
-/*
+/*		
 * operate=add|edit
 * @param formdata
 * @param operate
+* @type_list:收费类型数组;
+* @group_list:机构数组;
+* @class_list:班级
 * */
 function ajax_accounts_edit(m,formdata){
-		React.render(React.createElement(Accounts_edit,{
-			type_list: Vo.getTypeList("KD_Accounts_type"),
-			class_list:Store.getChooseClass(formdata.groupuuid),
-			group_list:Store.getGroup(),
+  
+	  if(!formdata.groupuuid)formdata.groupuuid="";
+	  if(!formdata.classuuid)formdata.classuuid="";
+	  if(!formdata.studentuuid)formdata.studentuuid="";
+	React.render(React.createElement(Accounts_edit,{
+			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
+			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 			formdata:formdata
 			}),
 			document.getElementById('div_body'));
