@@ -180,7 +180,7 @@ var w_uploadImg={
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
 						if(w_uploadImg.callbackFN){
-							w_uploadImg.callbackFN(data.data.uuid);
+							w_uploadImg.callbackFN(data.imgUrl,data.data.uuid);
 						}
 						w_uploadImg.hide();
 						
@@ -209,7 +209,7 @@ var w_uploadImg={
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
 						if(w_uploadImg.callbackFN){
-							w_uploadImg.callbackFN(data.data.uuid);
+							w_uploadImg.callbackFN(data.imgUrl,data.data.uuid);
 						}
 						w_uploadImg.hide();
 						

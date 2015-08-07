@@ -4,7 +4,7 @@
  * G_jsCallBack.selectHeadPic_callback(base64);
  * 
  * 选择上图图片,回调方法,只压缩和调整方向.
- * G_jsCallBack.ajax_uploadByphone(base64);
+ * G_jsCallBack.selectPic_callback(base64);
  * G_jsCallBack.queryMyTimely_myList()；即时消息
  * G_jsCallBack.userinfo_logout();注销用户
  * G_jsCallBack.user_info_update()修改资料；
@@ -53,21 +53,22 @@ var G_jsCallBack={
 		
 		menu_userinfo_logout_fn();
 	},
-		/**
-		 * 调用选择头像图片,裁剪和调整方向,回调方法.
-		 * @param base64
-		 */
+		
+	/**
+	 * 选择上图图片,回调方法,只压缩和调整方向.
+	 * @param base64
+	 */
 	selectPic_callback:function(base64){
 		
-		w_img_upload_nocut.ajax_uploadByphone(results.base64);
+		w_img_upload_nocut.ajax_uploadByphone(base64);
 	},
 	
 	
 	
-		/**
-		 * 选择上图图片,回调方法,只压缩和调整方向.
-		 * @param base64
-		 */
+	/**
+	 * 调用选择头像图片,裁剪和调整方向,回调方法.
+	 * @param base64
+	 */
 	selectHeadPic_callback:function(base64){
 		//console.log('base64='+ base64);
 		w_uploadImg.ajax_uploadByphone(base64);
