@@ -67,7 +67,7 @@ function G_selected_dataModelArray_byArray(arrlist,id,name){
 	if(!arrlist)return arr;
 	for(var i=0;i<arrlist.length;i++){
 		var tmp=arrlist[i];
-		arr.push( {value: tmp[id], label:tmp[name]});
+		arr.push( {value: tmp[id]+"", label:tmp[name]});
 	}
 	return arr;
 }
