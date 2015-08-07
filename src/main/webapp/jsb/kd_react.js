@@ -260,11 +260,7 @@ render: function() {
 	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
-    this.props.group_list.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.brand_name));
-      })
-    )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
   ), 
 	  
     React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -292,7 +288,7 @@ handleClick: function(m) {
 	 if(this.props.handleClick){
 		 
 		 if(m=="add_class"){
-			 this.props.handleClick(m,$('#selectgroup_uuid').val());
+			 this.props.handleClick(m,this.props.group_uuid);
 			 return;
 		 }
 		 var uuids=null;
@@ -309,15 +305,15 @@ handleClick: function(m) {
 			  return;
 		  }
 		  
-		 this.props.handleClick(m,$('#selectgroup_uuid').val(),uuids);
+		 this.props.handleClick(m,this.props.group_uuid,uuids);
 	 }
  },
  handleChange_checkbox_all:function(){
 	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
  },
  //
- handleChange_selectgroup_uuid:function(){
-	  ajax_class_listByGroup($('#selectgroup_uuid').val());
+ handleChange_selectgroup_uuid:function(val){
+	  ajax_class_listByGroup(val);
  }
 });
   
@@ -344,12 +340,10 @@ render: function() {
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
   		    React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
-  		          this.props.group_list.map(function(event) {
-  		              return (React.createElement("option", {value: event.uuid}, event.brand_name));
-  		            })
-  		          )
-  		        ), 
+  		    
+  		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})
+      
+  		    ), 
   		    
   		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
   		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45位！"}), 
@@ -357,11 +351,11 @@ render: function() {
   		   
 		      React.createElement("label", {htmlFor: "name"}, "班主任:"), 
 	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
-			      React.createElement("input", {type: "text", id: "headTeacher_name", value: o.headTeacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"headTeacher","headTeacher_name",$('#selectgroup_uuid').val()), placeholder: ""}), 
+			      React.createElement("input", {type: "text", id: "headTeacher_name", value: o.headTeacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid), placeholder: ""}), 
 			      React.createElement("br", null), 
 			      React.createElement("label", {htmlFor: "name"}, "其他老师:"), 
 		  		    React.createElement("input", {type: "hidden", name: "teacher", id: "teacher", value: o.teacher, onChange: this.handleChange}), 
-				      React.createElement("input", {type: "text", id: "teacher_name", value: o.teacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"teacher","teacher_name",$('#selectgroup_uuid').val()), placeholder: ""}), 
+				      React.createElement("input", {type: "text", id: "teacher_name", value: o.teacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid), placeholder: ""}), 
 				      React.createElement("br", null), 
   		      React.createElement("button", {type: "button", onClick: ajax_class_save, className: "am-btn am-btn-primary"}, "提交")
   		    )
@@ -659,8 +653,8 @@ var Announcements_EventsTable = React.createClass({displayName: "Announcements_E
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
 	  //
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_announce_listByGroup(val);
 	  },
 render: function() {
   return (
@@ -678,11 +672,8 @@ render: function() {
 	    ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.groupuuid, onChange: this.handleChange_selectgroup_uuid}, 
-    this.props.group_list.map(function(event) {
-        return (React.createElement("option", {value: event.uuid}, event.brand_name));
-      })
-    )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+ 
   ), 
 	  
     React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -804,12 +795,10 @@ render: function() {
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
   		
   		React.createElement("div", {className: "am-form-group"}, 
-  		          React.createElement("select", {id: "groupuuid", name: "groupuuid", "data-am-selected": "{btnSize: 'lg'}", value: o.groupuuid, onChange: this.handleChange}, 
-  		          this.props.group_list.map(function(event) {
-  		              return (React.createElement("option", {value: event.uuid}, event.brand_name));
-  		            })
-  		          )
-  		        ), 
+  	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
+
+  		          
+  		          ), 
   		        
   		    type_div, 
   		    
@@ -1094,11 +1083,7 @@ React.createElement("div", {className: "am-g"},
 React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
-  React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
-  this.props.group_list.map(function(event) {
-      return (React.createElement("option", {value: event.uuid}, event.brand_name));
-    })
-  )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
 ), 
 	  
   React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -1128,7 +1113,7 @@ handleClick: function(m) {
 	
 	
 	if(m=="add"){
-		btn_click_cookbookPlan(m,{groupuuid:$('#selectgroup_uuid').val()});
+		btn_click_cookbookPlan(m,{groupuuid:this.props.group_uuid});
 		 return;
 	 }if(m=="edit"){
 		
@@ -1151,16 +1136,16 @@ handleClick: function(m) {
 			}
 		  btn_click_cookbookPlan(m,{uuid:uuids});
 	 } else if(m=="pre"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),--g_cookbookPlan_week_point);
+		 ajax_cookbookPlan_listByGroup(this.props.group_uuid,--g_cookbookPlan_week_point);
 		 return;
 	 }else if(m=="next"){
-		 ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),++g_cookbookPlan_week_point);
+		 ajax_cookbookPlan_listByGroup(this.props.group_uuid,++g_cookbookPlan_week_point);
 		 return;
 	 }
 },
 //
-handleChange_selectgroup_uuid:function(){
-	ajax_cookbookPlan_listByGroup($('#selectgroup_uuid').val(),g_cookbookPlan_week_point);
+handleChange_selectgroup_uuid:function(val){
+	ajax_cookbookPlan_listByGroup(val,g_cookbookPlan_week_point);
 }
 });
 
@@ -1667,11 +1652,12 @@ return (
 		      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "不超过128位"}), 
 		      React.createElement("br", null), 
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
-  			G_upload_img_Div, 
+
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
+		      React.createElement("div", {className: "cls"}), 
+  			  G_upload_img_Div, 
 		      React.createElement("button", {type: "button", onClick: ajax_classnews_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
-
 	     )
 	   )
 	   
@@ -1739,12 +1725,12 @@ render: function() {
 var Accounts_EventsTable = React.createClass({displayName: "Accounts_EventsTable",
 	handleClick: function(m) {
 		if(m=="add"){
-			btn_click_accounts(m,{groupuuid:$('#selectgroup_uuid' ).val()});
+			btn_click_accounts(m,{groupuuid:this.props.group_uuid});
 			 return;
 		 }
 	  },
-	  handleChange_selectgroup_uuid: function(){
-		  ajax_accounts_listByGroup($( '#selectgroup_uuid' ).val());
+	  handleChange_selectgroup_uuid: function(val){
+		  ajax_accounts_listByGroup(val);
     },
 render: function() {
   return (
@@ -1760,11 +1746,7 @@ render: function() {
 	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-	    React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
-	    this.props.group_list.map(function(event) {
-	        return (React.createElement("option", {value: event.uuid}, event.brand_name));
-	      })
-	    )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})	  
 	  ), 
     React.createElement(AMR_Table, React.__spread({},  this.props), 
       React.createElement("thead", null, 
@@ -2349,19 +2331,41 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
  * */
 var Query_stutent_list = React.createClass({displayName: "Query_stutent_list",
 	group_uuid:null,
-	classuuid:null,
+	class_uuid:null,
 	handleChange_stutent_Selected: function(val) {
-		  this.group_uuid=val;
-		  ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
+		  if(val=="0"){
+			  this.group_uuid="";
+		  }else{
+			  this.group_uuid=val;
+		  };
+		  this.class_uuid="";
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
 	  }, 
 	  handleChange_class_Selected: function(val) {
-		  this.classuuid=val;
-		  ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
+		  if(val=="1"){
+			  this.class_uuid="";
+		  }else{
+			  this.class_uuid=val;
+		  };
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
 		  }, 
 		btn_query_click:function(){
-			 ajax_student_query(this.group_uuid,this.classuuid,$('#sutdent_name').val());
+			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
 		},
 render: function() {
+	this.props.group_list.unshift({value:"0",label:"所有"});
+	this.props.class_list.unshift({value:"1",label:"所有"});
+	if(this.props.group_uuid==""){			
+		this.props.group_uuid="0";
+	};
+	if(this.props.class_uuid==""){			
+		this.props.class_uuid="1";
+	};
+	console.log("1",this.props.group_uuid);
+	console.log("2",this.props.class_uuid);
+	console.log("3",this.props.group_list);
+	console.log("4",this.props.class_list);
+
     return (
     React.createElement("div", null, 
     React.createElement("div", {className: "header"}, 
@@ -2373,8 +2377,8 @@ render: function() {
 	  React.createElement("hr", null), 	  
 	  React.createElement("div", {className: "am-form-group"}, 
 		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "300", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 
       React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "学生姓名"}), 	  
 	  React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
 	
@@ -2441,8 +2445,8 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
  * @</select>下拉多选框;
  * */
 var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_Teacher_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_Teacher_listByGroup(val,$('#sutdent_name').val());
 	  },
   render: function() {
     return (
@@ -2460,12 +2464,8 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
 		  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid, onChange: this.handleChange_selectgroup_uuid}, 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
       
-      this.props.group_list.map(function(event) {
-          return (React.createElement("option", {value: event.uuid}, event.company_name));
-        })
-      )
     ), 
 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -2510,260 +2510,3 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 	    );
 	  }
 	}); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//var CookbookPlan_edit = React.createClass({ 
-//	 getInitialState: function() {
-//		    return this.props.formdata;
-//		  },
-//	 handleChange: function(event) {
-//		    this.setState($('#editCookbookPlanForm').serializeJson());
-//	  },
-//	 
-//render: function() {
-//	  var o = this.state;
-//	  
-//	  var plandateStr_div;
-//	  if (o.uuid) {//只读
-//		//2015-07-04 00:00:00=>2015-07-04
-//		  o.plandate=o.plandate.split(" ")[0];
-//		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
-//	  } else {
-//		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
-//	  }
-//	  return (
-//		<div>
-//		<div className="header">
-//		  <div className="am-g">
-//		    <h1>【{Store.getGroupNameByUuid(o.groupuuid)}】-每日食谱-编辑</h1>
-//		  </div>
-//		  <hr />
-//		</div>
-//		<div className="am-g">
-//		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-//		  <form id="editCookbookPlanForm" method="post" className="am-form">
-//		<input type="hidden" name="uuid"  value={o.uuid}/>
-//		<input type="hidden" name="groupuuid"  value={o.groupuuid}/>
-//		<input type="hidden" name="type"  value="1"/>
-//		        <label htmlFor="name">日期:</label>
-//				 {plandateStr_div}  
-//				 <br/>
-//		      <label>早餐:</label> 
-//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
-//		      <div className="cls"></div>
-//		      <br/>
-//		      <label>早上加餐:</label> 
-//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
-//		      <div className="cls"></div>
-//		      <br/>
-//		      <label>午餐:</label> 
-//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
-//		      <div className="cls"></div>
-//		      <br/>
-//		      <label>下午加餐:</label> 
-//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
-//		      <div className="cls"></div>
-//		      <br/>
-//		      <label>晚餐:</label> 
-//		      <CookbookPlan_edit_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
-//		      <div className="cls"></div>
-//		      <br/>
-//		      <AMR_Input  name="analysis" type="textarea" rows="2" label="营养分析:" placeholder="填写内容" value={o.analysis} onChange={this.handleChange}/>
-//				
-//		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>
-//		    </form>
-//
-//	     </div> 
-//	   </div>
-//	   
-//	   </div>
-//);
-//}
-//}); 
-
-//var CookbookPlanShow_EventRow = React.createClass({
-//	//第而.//使用list<cookbook>
-//		componentWillReceiveProps: function(nextProps) {
-//			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-//			  this.setState({
-//				  items: lists
-//			  });
-//			},
-//	 getInitialState: function() {
-//		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-//		    return {
-//	            items: lists
-//	        };
-//		  },
-//	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
-//		  //list
-//	  cookbookPlan_timeStr_to_list:function(cooks){
-//		  if(!cooks)cooks=[];
-//		  return cooks;
-//		 // if(!cooks)return [];
-//		 // return cooks.split(",");
-//		  
-//	  },
-//	  
-//	  render: function() {
-//	    return (
-//	    		  <div id={"div_cookPlan_"+this.props.type}>
-//	    		  {
-//	    			  this.state.items.map(function(event) {
-//	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
-////	    				  var arr=event.split("$");
-////	    				  if(arr.length!=3)return;
-//	    				  //直接使用list<cookbook>
-//	    				  var t_uuid=event.uuid;
-//	    				  var t_imguuid=event.img;
-//	    				  var t_name=event.name;
-//	    					 return (
-//	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
-//	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
-//	    		    	 	       			<span >{t_name}</span>
-//	    		    	 	       		</div>		
-//	     	 	            	);
-//	    				
-//	    			 })//end map
-//	    		  } 
-//	    		</div>
-//		
-//	  )
-//	  }
-//	});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//var CookbookPlan_edit_EventRow = React.createClass({
-//	
-//	 getInitialState: function() {
-//		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-//		    return {
-//	            items: lists
-//	        };
-//		  },
-//	  cookbookPlan_timeStr_to_list:function(cooks){
-//		  if(!cooks) cooks=[];
-//		  return cooks;
-//	  },
-//	  
-//		deleteImg:function(divid){
-//			$("#"+divid).hide();
-//		},
-//		 btn_addCookplan: function(divid) {
-//			 var that=this;
-//			  var checkeduuids =null;
-//			  $("#"+divid+" > .G_cookplan_Img").each(function(){
-//				  		if($(this).is(":hidden")){
-//				  			return;
-//				  		}
-//						 if(checkeduuids==null)checkeduuids=this.title;
-//						 else
-//						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
-//					});
-//			w_ch_cook.open(function(cooks){
-//				  that.setState({
-//			            items: that.cookbookPlan_timeStr_to_list(cooks)
-//			        });
-//				  $(".G_cookplan_Img").show();
-//				  
-//			  },checkeduuids);
-//		  },
-//	  render: function() {
-//		var that=this;
-//	    return (
-//	    		  <div id={"div_cookPlan_"+this.props.type}>
-//	    		  
-//	    		  {
-//	    			  this.state.items.map(function(event) {
-//	    				  //rs += (cb.getUuid() + "$" + cb.getName() + ",");
-//	    				//  var arr=event.split("$");
-//	    				  //if(arr.length!=3)return;
-//	    				  //使用list<cookbook>
-//	    				  if(!event)return;
-//	    				  var t_uuid=event.uuid;
-//	    				  var t_imguuid=event.img;
-//	    				  var t_name=event.name;
-// 	    					 return (
-// 	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
-// 	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={t_imguuid} alt="图片不存在" title={t_name} />
-// 	    		    	 	       			<div className="G_cookplan_Img_close"  onClick={that.deleteImg.bind(this,"div_cookPlan_Item_"+t_uuid)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
-// 	    		    	 	       			<span >{t_name}</span>
-// 	    		    	 	       		</div>		
-// 	     	 	            	);
-// 	     	 	          
-// 	    				
-// 	    			 })//end map
-//	    		  } 
-//	    		  <button type="button"  onClick={that.btn_addCookplan.bind(this,"div_cookPlan_"+that.props.type)}  className="am-btn am-btn-primary">添加</button> 
-// 	    		</div>
-//		
-//	  )
-//	  }
-//	});

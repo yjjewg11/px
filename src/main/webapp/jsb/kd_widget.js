@@ -77,13 +77,11 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all_chuser")[0].checked); 
 	  },
 	  //
-	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
-		//  this.setState(v);
-		  w_ch_user.reshowBygroup(v);
+	  handleChange_selectgroup_uuid_chuser:function(val){
+		  w_ch_user.reshowBygroup(val);
 	  },
 	  handleChange_selectgroup_uuid:function(){
-		  w_ch_user.ajax_chooseUser_listByGroup($('#selectgroup_uuid_chuser').val(),$('#sutdent_name').val());
+		  w_ch_user.reshowBygroup($('#selectgroup_uuid_chuser').val(),$('#sutdent_name').val());
 	  },
   render: function() {
 	  var that=this;
@@ -104,11 +102,17 @@ React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_n
 React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
+		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid_chuser", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid_chuser, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid?this.props.group_uuid:""}), 	  
+	  
+	  
       React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
       this.props.group_list.map(function(event) {
           return (React.createElement("option", {value: event.uuid}, event.company_name));
         })
       )
+      
+      
+      
     ), 
 	  
       React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
@@ -172,9 +176,8 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
 			 }
 		 }
 	  },
-	  handleChange_selectgroup_uuid_chuser:function(){
-		  var v=$('#selectgroup_uuid_chuser').val();
-		  w_ch_class.reshowBygroup(v);
+	  handleChange_selectgroup_uuid_chuser:function(val){
+		  w_ch_class.reshowBygroup(val);
 	  },
   render: function() {
 	  var that=this;
@@ -190,11 +193,7 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
   React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
-      React.createElement("select", {id: "selectgroup_uuid_chuser", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}", value: this.props.group_uuid?this.props.group_uuid:"", onChange: this.handleChange_selectgroup_uuid_chuser}, 
-      this.props.group_list.map(function(event) {
-          return (React.createElement("option", {value: event.uuid}, event.company_name));
-        })
-      )
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid_chuser", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid_chuser, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid?this.props.group_uuid:""})
     ), 
 	  
       React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
