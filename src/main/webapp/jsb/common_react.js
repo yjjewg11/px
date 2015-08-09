@@ -35,6 +35,7 @@ var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
     );
   }
 }); 
+//——————————————————————————老师管理——————————————————————————
 /*
  * 老师管理服务器请求后绘制处理方法；
  * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
@@ -46,7 +47,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	handleClick: function(m) {
 		
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val(),office:"老师"});
+			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
 			 return;
 		 }
 		 var uuids=null;

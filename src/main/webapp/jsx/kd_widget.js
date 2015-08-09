@@ -154,13 +154,8 @@ var ChooseClass_EventRow = React.createClass({
     );
   }
 }); 
-
+//课程安排
 var ChooseClass_EventsTable = React.createClass({
-//	 getInitialState: function() {
-//		 	alert(this.props.group_uuid);
-//		    return this.props.group_uuid;
-//		  },
-//	
 	handleClick: function(m) {
 		 if(this.props.handleClick){
 			 if(m=="cancel"){
