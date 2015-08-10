@@ -35,6 +35,7 @@ var Userinfo_EventRow = React.createClass({
     );
   }
 }); 
+//——————————————————————————老师管理——————————————————————————
 /*
  * 老师管理服务器请求后绘制处理方法；
  * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
@@ -46,7 +47,7 @@ var Userinfo_EventsTable = React.createClass({
 	handleClick: function(m) {
 		
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:$('#selectgroup_uuid').val(),office:"老师"});
+			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
 			 return;
 		 }
 		 var uuids=null;
@@ -78,15 +79,15 @@ var Userinfo_EventsTable = React.createClass({
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_uesrinfo_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
 	  },
   render: function() {
     return (
     <div>
     <div className="header">
     <div className="am-g">
-      <h1>用户管理</h1>
+      <h1>老师管理</h1>
     </div>
     <hr />
     </div>
@@ -103,12 +104,8 @@ var Userinfo_EventsTable = React.createClass({
 		  </form>
 	  <hr/>
 	  <div className="am-form-group">
-      <select id="selectgroup_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" value={this.props.group_uuid} onChange={this.handleChange_selectgroup_uuid}>
-      
-      {this.props.group_list.map(function(event) {
-          return (<option value={event.uuid} >{event.company_name}</option>);
-        })}
-      </select>
+	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+
     </div>
 	  
       <AMR_Table {...this.props}>  
@@ -156,6 +153,8 @@ var Userinfo_edit = React.createClass({
 		  },
   render: function() {
 	  var o = this.state;
+	  var sex=this.props.sex;
+	  console.log("SEX",sex);
 	  var passwordDiv=null;
 	  if(!o.uuid){
 		  passwordDiv=(
@@ -193,6 +192,11 @@ var Userinfo_edit = React.createClass({
     		      <label htmlFor="name">姓名:</label>
     		      <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
     		      <br/>
+    		      <AMUIReact.FormGroup>
+    		      <label>单选：</label>
+    		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={sex==0?"checked":""}  />
+    		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={sex==1?"checked":""}  />
+    		      </AMUIReact.FormGroup>
     		       <label htmlFor="">Email:</label>
     		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
     		      <br/>

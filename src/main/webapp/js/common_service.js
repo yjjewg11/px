@@ -67,7 +67,7 @@ function G_selected_dataModelArray_byArray(arrlist,id,name){
 	if(!arrlist)return arr;
 	for(var i=0;i<arrlist.length;i++){
 		var tmp=arrlist[i];
-		arr.push( {value: tmp[id], label:tmp[name]});
+		arr.push( {value: tmp[id]+"", label:tmp[name]});
 	}
 	return arr;
 }
@@ -377,8 +377,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 
 
 function menu_userinfo_update_fn(){
-	Queue.push(menu_userinfo_update_fn);
-	
+	Queue.push(menu_userinfo_update_fn);	
 	React.render(React.createElement(Div_userinfo_update,{formdata:Store.getUserinfo()})
 			, document.getElementById('div_body'));
 }

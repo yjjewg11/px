@@ -239,11 +239,11 @@ public class StudentService extends AbstractServcice {
 		
 		// Group_uuid昵称验证
 		if (StringUtils.isNotBlank(classuuid)) {
-			hql+=" and classuuid='"+classuuid+"'";
+			hql+=" and classuuid in ("+DBUtil.stringsToWhereInValue(classuuid)+")";
 		}
 		
 		if (StringUtils.isNotBlank(groupuuid)) {
-			hql+=" and groupuuid='"+groupuuid+"'";
+			hql+=" and groupuuid in ("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		}		
 		
 		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
