@@ -198,4 +198,26 @@ public class StudentController extends AbstractRESTController {
 		return "";
 	}
 	
+	
+	/**
+	 * 邀请家长
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/inviteParents", method = RequestMethod.POST)
+	public String inviteParents(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String tels=request.getParameter("tels");
+		
+		
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 }

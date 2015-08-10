@@ -135,26 +135,8 @@ React.createElement("button", {type: "button", onClick: this.handleChange_select
     
 
 
-//chooseClass 
-/**
- * ajax_chooseClass_edit
- */
 
-var ChooseClass_EventRow = React.createClass({displayName: "ChooseClass_EventRow", 
-  render: function() {
-    var event = this.props.event;
-    var className = event.highlight ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
-
-    return (
-      React.createElement("tr", {className: className, onClick: w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}, 
-        React.createElement("td", null, event.name), 
-        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid))
-      ) 
-    );
-  }
-}); 
-//课程安排
+//课程安排绘制
 var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_EventsTable",
 	handleClick: function(m) {
 		 if(this.props.handleClick){
@@ -201,6 +183,25 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
     );
   }
 });
+  //chooseClass 
+/**
+ * ajax_chooseClass_edit
+ */
+
+var ChooseClass_EventRow = React.createClass({displayName: "ChooseClass_EventRow", 
+  render: function() {
+    var event = this.props.event;
+    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+
+    return (
+      React.createElement("tr", {className: className, onClick: w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}, 
+        React.createElement("td", null, event.name), 
+        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid))
+      ) 
+    );
+  }
+}); 
 //end chooseClass
 
     

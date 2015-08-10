@@ -153,8 +153,6 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		  },
   render: function() {
 	  var o = this.state;
-	  var sex=this.props.sex;
-	  console.log("SEX",sex);
 	  var passwordDiv=null;
 	  if(!o.uuid){
 		  passwordDiv=(
@@ -194,8 +192,8 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     		      React.createElement("br", null), 
     		      React.createElement(AMUIReact.FormGroup, null, 
     		      React.createElement("label", null, "单选："), 
-    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: sex==0?"checked":""}), 
-    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: sex==1?"checked":""})
+    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
     		      ), 
     		       React.createElement("label", {htmlFor: ""}, "Email:"), 
     		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
@@ -215,9 +213,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
   }
 }); 
 
-//Userinfo_getRole
-
-
+//分配权限 ;
 var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole", 
 	
 	render: function() {
@@ -240,9 +236,8 @@ var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole",
 
 
 
-//Div_userinfo_updatepassword
-var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_updatepassword", 
-	
+//修改密码
+var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_updatepassword", 	
 	render: function() {
 	return (
 		React.createElement("div", null, 
@@ -278,7 +273,7 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 }); 
 
 
-//userinfo update
+////修改资料
 var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update", 
 	 getInitialState: function() {
 		    return this.props.formdata;
