@@ -30,9 +30,6 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class AnnouncementsService extends AbstractServcice {
-	public static final int announcements_type_class = 2;// 班级
-	public static final int announcements_type_general = 0;// 默认公开通知
-	public static final int announcements_type_secret = 1;// 机密
 	
 	@Autowired
 	public PushMsgIservice pushMsgIservice;
@@ -80,7 +77,7 @@ public class AnnouncementsService extends AbstractServcice {
 				}
 	
 		// 如果类型是班级通知
-		if (announcements.getType().intValue() == this.announcements_type_class) {
+		if (announcements.getType().intValue() == SystemConstants.common_type_banjitongzhi) {
 			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
 				responseMessage.setMessage("Classuuids不能为空！");
 				return false;
@@ -198,7 +195,7 @@ public class AnnouncementsService extends AbstractServcice {
 //		if (StringUtils.isBlank(type))
 //			return null;
 		// 查询班级公告
-		if (type!=null&&Integer.parseInt(type) == announcements_type_class) {
+		if (type!=null&&Integer.parseInt(type) == SystemConstants.common_type_banjitongzhi) {
 			if (StringUtils.isBlank(classuuid))
 				return null;
 			return getAnnouncementsByClassuuid(classuuid);
@@ -214,7 +211,7 @@ public class AnnouncementsService extends AbstractServcice {
 			if (StringUtils.isNotBlank(type))
 				hql += " and type=" + type;
 			else{
-				hql += " and type!=" + announcements_type_class;
+				hql += " and type!=" + SystemConstants.common_type_banjitongzhi;
 			}
 			hql += " order by create_time desc";
 			return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
