@@ -24,9 +24,11 @@ import com.company.news.entity.ClassNews;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Group;
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.CountService;
@@ -309,5 +311,78 @@ public class ShareController extends AbstractRESTController {
 		}
 		return list;
 
+	}
+	
+
+	/**
+	 * 获取幼儿园介绍
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getKDInfo", method = RequestMethod.GET)
+	public String getKDInfo(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		Group a=null;
+		try {
+			a = (Group)nSimpleHibernateDao.getObject(Group.class,uuid);
+			if(a==null){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_Kindergarten_introduction));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "/404";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getKDInfo";
+	}
+
+	/**
+	 * 获取招生计划,只查询最新的一篇
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getRecruitBygroupuuid", method = RequestMethod.GET)
+	public String getRecruit(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		Announcements a=null;
+		try {
+			String hql = "from Announcements where type= "+SystemConstants.common_type_zhaoshengjihua;
+			if (StringUtils.isNotBlank(uuid)){
+				hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(uuid)+")";
+			}
+			hql+=" order by create_time desc";
+			List list= nSimpleHibernateDao.getHibernateTemplate().find(hql);
+			if(list==null||list.size()==0){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+			a=(Announcements)list.get(0);
+			model.put("group",CommonsCache.get(a.getGroupuuid(), Group4Q.class));
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(a.getUuid(), SystemConstants.common_type_zhaoshengjihua));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "/404";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getRecruitBygroupuuid";
 	}
 }
