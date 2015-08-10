@@ -1,5 +1,6 @@
 function login_affter_init(){
 	Vo.init();
+	//主页顶部按钮；
 	var div_header_props = {
 			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,
 			  "link": "#title-link",
@@ -26,9 +27,8 @@ function login_affter_init(){
 	
 
 	
-//envelope envelope-o envelope-square
-	//menu 
-	//—————————————————————权限管理—————————————————————
+
+//±±±±±±±±±±±±±±±±±±±±±±±权限管理±±±±±±±±±±±±±±±±±±±±±±±±±±
 	
 	var menu_data=[];
 	var t_menu=null;//第一级菜单
@@ -52,10 +52,15 @@ function login_affter_init(){
 	
 	t_menu.subMenu=t_subMenu;
 	menu_data.push(t_menu);
-	//切换分校  end
 	
 	
-	//校务管理
+/*
+ * 调用G_user_hasRight（）;
+ * 根据项目常量表对应权限检查是否拥有此权限;
+ * true-信息添加至队列中;
+ * false-没有此权限不予以添加绘制；
+ */
+//————————————校务管理<权限>——————————
 	t_menu={
 		    "link": "##",
 		    "title": "校务管理",
@@ -73,113 +78,83 @@ function login_affter_init(){
                             
                         ]
 		  };
-	/*
-	 * 调用G_user_hasRight（）;
-	 * 根据项目常量表对应权限检查是否拥有此权限;
-	 * true-信息添加至队列中;
-	 * false-没有此权限不予以添加绘制；
-	 */
 	if(G_user_hasRight("KD_group_m")){
 		menu_data.push(t_menu);
 	}
-	//校务管理 end 
 
-	
-	//发布消息权限管理	
+//————————————发布消息<权限>——————————	
 	t_menu={
-            
-                "link": "##",
-                "title": "发布消息",
-                "subMenu": [
-                            {
-                              "fn":function(){menu_announce_list_fn(0);},
-                              "link": "##",
-                              "title": "校园公告"
-                            },
-                            {
-                            	  "fn":function(){menu_announce_list_fn(1);},
-                            	  "link": "##",
-                                "title": "老师公告"
-                              },
-                          
-                              {
-                            	  "fn":function(){menu_announce_list_fn(4);},
-                                  "link": "##",
-                                  "title": "招生计划"
-                                },
-                              {
-                                  "fn":function(){menu_announce_list_fn(3);},
-                                  "link": "##",
-                                  "title": "精品文章"
-                                }
-                            ]                   
+	        
+	            "link": "##",
+	            "title": "发布消息",
+	            "subMenu": [
+	                        {
+	                          "fn":function(){menu_announce_list_fn(0);},
+	                          "link": "##",
+	                          "title": "校园公告"
+	                        },
+	                        {
+	                        	  "fn":function(){menu_announce_list_fn(1);},
+	                        	  "link": "##",
+	                            "title": "老师公告"
+	                          },
+	                      
+	                          {
+	                        	  "fn":function(){menu_announce_list_fn(4);},
+	                              "link": "##",
+	                              "title": "招生计划"
+	                            },
+	                          {
+	                              "fn":function(){menu_announce_list_fn(3);},
+	                              "link": "##",
+	                              "title": "精品文章"
+	                            }
+	                        ]                   
 		  };
-	/*
-	 * 调用G_user_hasRight（）;
-	 * 根据项目常量表对应权限检查是否拥有此权限;
-	 * true-信息添加至队列中;
-	 * false-没有此权限不予以添加绘制；
-	 */
 	if(G_user_hasRight("KD_announce_m")){
 		menu_data.push(t_menu);
 	}
-	//发布消息权限管理end	
+
 	
-	//食谱管理
+//————————————食谱管理<权限>——————————	
 	t_menu={
                 "link": "##",
                 "title": "食谱管理",
                 "fn":menu_cookbookPlan_list_fn,
                 "subCols": 2
-               // "channelLink": "进入栏目 »", 
 		  };
 	
 	if(G_user_hasRight("KD_cookbookplan_m")){
 		menu_data.push(t_menu);
 	}
-	//食谱管理end
 	
-	//教学课程管理
+	
+//————————————课程安排<权限>——————————		
 	t_menu={
       	   		"link": "##",
       	   		"fn":menu_teachingplan_list_fn,
       	   		"title": "课程安排",
       	   		"subCols": 2
-        // "channelLink": "进入栏目 »",
 		  };
-	/*
-	 * 调用G_user_hasRight（）;
-	 * 根据项目常量表对应权限检查是否拥有此权限;
-	 * true-信息添加至队列中;
-	 * false-没有此权限不予以添加绘制；
-	 */
 	if(G_user_hasRight("KD_teachingplan_m")){
 		menu_data.push(t_menu);
 	}
 	
-	
-	//园长信箱
+//————————————园长信箱<权限>——————————		
 	t_menu={
         "link": "##",
         "fn":menu_queryLeaderMsgByParents_message_fn,
         "title": "园长信箱"
       };
-	/*
-	 * 调用G_user_hasRight（）;
-	 * 根据项目常量表对应权限检查是否拥有此权限;
-	 * true-信息添加至队列中;
-	 * false-没有此权限不予以添加绘制；
-	 */
 	if(G_user_hasRight("KD_Leader_Msg_m")){
 		menu_data.push(t_menu);
 	}
-	//教学课程管理end
-	//——————————————————————————权限管理end—————————————————————————————————	
+
 	
 	
 	
 
-
+//±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data=[
 	           		
 	        		  
@@ -215,8 +190,7 @@ function login_affter_init(){
 	  	                                      }
 	                                        ]
 	                           
-	                          },
-	                       
+	                          },	                       
 	                        
 	                {
 	                  "link": "##",
@@ -287,6 +261,9 @@ var div_menu_handleClick = function(nav, index, e) {
 	  }
 	};
 
+	
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±±图标按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 function menu_dohome(){
 	
 	
@@ -362,71 +339,6 @@ function menu_dohome(){
 			                    	    "title": "老师通讯录"
 			                    }
 	                    	  ];
-//	var div_Gallery_data=[
-//	                      {
-//	                    	    "img": myhead_img,
-//	                    	    "link": "javascript:menu_userinfo_update_fn();",
-//	                    	    "title": "我"
-//	                    	  },
-//
-//	                    	  {
-//		                    	    "img": hostUrl+"i/gonggao2.png",
-//		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
-//		                    	  
-//		                    	  },
-//		                    	  {
-//			                    	    "img": hostUrl+"i/gonggao2.png",
-//			                    	    "link": "javascript:menu_announce_mylist_fn();",
-//			                    	
-//			                    },
-//			                    {
-//		                    	    "img": hostUrl+"i/gonggao2.png",
-//		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
-//		                    	 
-//		                    	  },
-//		                    	  {
-//			                    	    "img": hostUrl+"i/gonggao2.png",
-//			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
-//			                    	  
-//			                    	  },
-//	                    	  {
-//		                    	    "img": hostUrl+"i/gonggao2.png",
-//		                    	    "link": "###",
-//		                    	    
-//		                    	  },
-//		                    	 
-//		                    	  {
-//			                    	    "img": hostUrl+"i/gonggao2.png",
-//			                    	    "link": "javascript:parentContactByMyStudent()",
-//			                    	  
-//			                    	  }, 
-//		                    	  {
-//	                    	    "img": hostUrl+"i/gonggao2.png",
-//	                    	    "link": "###",
-//	                    	   
-//	                    	  },
-//	                    	  {
-//		                    	    "img": hostUrl+"i/gonggao2.png",
-//		                    	    "link": "###",
-//		                    	   
-//		                    	  },
-//		                    	  {
-//		                    		  "img": hostUrl+"i/gonggao2.png",
-//	                                  "link": "javascript:menu_article_list_fn()",
-//	                                 
-//	                                },
-//			                    	
-//		                      {
-//		                    	    "img": hostUrl+"i/gonggao2.png",
-//		                    	    "link": "javascript:menu_class_students_fn()",
-//		                    	   
-//		                    	  },
-//	  		                    {
-//			                    	    "img": hostUrl+"i/gonggao2.png",
-//			                    	    "link": "javascript:menu_class_students_fn()",
-//
-//			                    }
-//	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 
@@ -438,18 +350,60 @@ function menu_kd_group_reg_fn(){
 	$("#div_seesion_body").hide();
 };
 
-//——————————————————标头——————————————————
+//±±±±±±±±±±±±±±±±±±±±标头±±±±±±±±±±±±±±±±±±±±
+//@Queue.push()方法Push
+//实现页面缓存然后可以实现回退功能；
 /*
- * (标头)查看即时消息功能;
- * 
+ *<查看即时消息>
+ * @跳转kd_service发服务器请求
  * */
 function menu_queryMyTimely_fn() {
 	Queue.push(menu_queryMyTimely_fn);
 	ajax_queryMyTimely_myList();
 };
-
-// @Queue.push()方法Push
-//实现页面缓存然后可以实现回退功能；
+/*
+ * (校务管理)<校园列表>
+ * @跳转kd_service发服务器请求
+ * */
+function menu_group_myList_fn() {
+	Queue.push(menu_group_myList_fn);
+	ajax_group_myList();
+}
+/*
+ * (发布消息)<校园公告><老师公告><精品文章><招生计划>
+ * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
+ * @跳转kd_service发服务器请求
+ * */
+var announce_types=1;
+function menu_announce_list_fn(types) {
+	announce_types=types;
+	Queue.push(menu_announce_list_fn);
+	ajax_announce_listByGroup(Store.getCurGroup().uuid);
+};
+/*
+ * (标头)食谱管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_cookbookPlan_list_fn(){
+	Queue.push(menu_cookbookPlan_list_fn);
+	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
+}
+/*
+ * (标头)课程安排功能
+ * @跳转widget发服务器请求
+ * */
+function menu_teachingplan_list_fn(){
+	Queue.push(ajax_teachingplan_listByClass);
+	 w_ch_class.open(ajax_teachingplan_listByClass);
+}
+/*
+ * (标头)<园长信箱>
+ * @跳转kd_service发服务器请求
+ * */
+function menu_queryLeaderMsgByParents_message_fn() {
+	Queue.push(menu_queryLeaderMsgByParents_message_fn);
+	ajax_queryLeaderMsgByParents_message();
+};
 /*
  * (标头)老师管理管理功能
  * @跳转kd_service发服务器请求
@@ -457,7 +411,6 @@ function menu_queryMyTimely_fn() {
 function menu_userinfo_list_fn() {
 	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
 };
-
 /*
  * (标头)班级管理 edit
  * @跳转kd_service发服务器请求
@@ -467,37 +420,32 @@ function menu_class_list_fn() {
 	Queue.push(menu_class_list_fn);
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
-
 /*
- * (标头)课程安排功能
+ * (标头)收支管理
  * @跳转kd_service发服务器请求
  * */
-function menu_teachingplan_list_fn(){
-	//first 选择班级
-	 w_ch_class.open(ajax_teachingplan_listByClass);
-	Queue.push(ajax_teachingplan_listByClass);
-}
-
-/*
- * (标头)食谱管理功能
- * @跳转kd_service发服务器请求
- * */
-function menu_cookbookPlan_list_fn(){
-	Queue.push(menu_cookbookPlan_list_fn);
-	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
-}
-
-/*
- * (标头)发布消息功能
- * @types- 0:校园公告 1:老师公告 2：班级通知,4:"招生计划"3:"分享文章' 
- * @跳转kd_service发服务器请求
- * */
-var announce_types=1;
-function menu_announce_list_fn(types) {
-	announce_types=types;
-	Queue.push(menu_announce_list_fn);
-	ajax_announce_listByGroup(Store.getCurGroup().uuid);
+function menu_accounts_list_fn() {
+	Queue.push(menu_accounts_list_fn);
+	ajax_accounts_listByGroup(Store.getCurGroup().uuid);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * 精品文章
@@ -506,14 +454,7 @@ function menu_announce_list_fn(types) {
 function menu_article_list_fn(){
 	menu_announce_list_fn(3);
 }
-/*
- * (标头)<校务管理>校园列表功能
- * @跳转kd_service发服务器请求
- * */
-function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn);
-	ajax_group_myList();
-}
+
 
 /*
  * (标头)我功能中的注销用户
@@ -523,13 +464,7 @@ function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
 
-/*
- * (标头)<园长信箱>校园列表功能 
- * */
-function menu_queryLeaderMsgByParents_message_fn() {
-	Queue.push(menu_queryLeaderMsgByParents_message_fn);
-	ajax_queryLeaderMsgByParents_message();
-};
+
 
 /*
  * (标头)学生列表
@@ -539,7 +474,8 @@ function menu_query_list_fn() {
 	Queue.push(menu_query_list_fn);
 	ajax_student_query();
 };
-//——————————————————首页大图标——————————————————
+
+//±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）公告功能方法；
  * @跳转kd_service发服务器请求

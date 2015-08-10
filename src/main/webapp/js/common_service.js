@@ -377,8 +377,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 
 
 function menu_userinfo_update_fn(){
-	Queue.push(menu_userinfo_update_fn);
-	
+	Queue.push(menu_userinfo_update_fn);	
 	React.render(React.createElement(Div_userinfo_update,{formdata:Store.getUserinfo()})
 			, document.getElementById('div_body'));
 }
