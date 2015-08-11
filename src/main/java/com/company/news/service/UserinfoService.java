@@ -18,7 +18,9 @@ import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
+import com.company.news.entity.PClass;
 import com.company.news.entity.RoleUserRelation;
+import com.company.news.entity.Student;
 import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
@@ -532,6 +534,20 @@ public class UserinfoService extends AbstractServcice {
 				.createSQLQuery(sql).addEntity("t1", User4Q.class);
 
 		return q.list();
+	}
+	
+	/**
+	 * 根据机构UUID,获取所有班级
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List<PClass> getClassByGroup(String groupuuid) {
+		
+		List<PClass> list= (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from PClass where groupuuid=?)",groupuuid);
+		
+		return list;
 	}
 
 	/**
