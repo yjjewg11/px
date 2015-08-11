@@ -218,6 +218,11 @@ function login_affter_init(){
 	                      "link": "##",
 	                      "title": "学生列表",
 	                      "fn":menu_query_list_fn
+	                    },
+	                {
+	                      "link": "##",
+	                      "title": "统计",
+	                      "fn":menu_query_list_fn
 	                    }
 	                
 	              ];
@@ -452,7 +457,7 @@ function menu_query_list_fn() {
  * */
 function menu_announce_mylist_fn() {
 	Queue.push(menu_announce_mylist_fn);
-	ajax_announce_Mylist();
+	ajax_announce_div();
 };
 /*
  * <教学计划>

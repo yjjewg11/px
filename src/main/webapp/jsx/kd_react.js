@@ -2031,54 +2031,211 @@ var Query_EventRow = React.createClass({
  *公告功能表格绘制
  * 
  * */
-var Announcements_mylist_EventsTable = React.createClass({
+//var Announcements_mylist_EventsTable = React.createClass({
+//render: function() {
+//  return (
+//  <div>
+//    <AMR_Table {...this.props}>  
+//      <thead> 
+//        <tr>
+//          <th>标题</th>
+//          <th>类型</th>
+//          <th>幼儿园</th>
+//          <th>浏览次数</th>
+//          <th>创建人</th>
+//          <th>创建时间</th>
+//        </tr> 
+//      </thead>
+//      <tbody>
+//        {this.props.events.map(function(event) {
+//          return (<Announcements_mylist_EventRow  event={event} />);
+//        })}
+//        
+//      </tbody>
+//    </AMR_Table>
+//    
+//    </div>
+//  );
+//}
+//});
+//  /*
+//   *公告功能表格内容绘制
+//   *@react_ajax_announce_show：点击名字后进入内容详情绘制
+//   * 在kd_react；
+//   * */
+// var Announcements_mylist_EventRow = React.createClass({ 
+//	  render: function() {
+//	    var event = this.props.event;
+//	    var className = event.highlight ? 'am-active' :
+//      event.disabled ? 'am-disabled' : '';
+//
+//    return (
+//      <tr className={className} >
+//        <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a></td>
+//        <td>{Vo.announce_type(event.type)}</td>
+//        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+//        <td>{0}</td>
+//        <td>{event.create_user}</td>
+//        <td>{event.create_time}</td>
+//      </tr> 
+//    );
+//  }
+//  });
+ 
+
+//绘制基本框信息 调用Announcements_Div_list
+var Announcements_Div_kuang = React.createClass({ 
+	render: function() {
+		  return (
+	   <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+	   <div className="am-list-news-hd am-cf">
+	     <h2>栏目标题</h2>
+	     </div>   	      	      
+
+	     
+	     {Announcements_Div_list}
+	     
+	     
+		    </div>
+		  );
+		}	
+
+});
+
+
+
+
+
+
+
+//<div className="am-list-news-bd">
+//<ul className="am-list">
+//{this.props.events.map(function(event) {
+//  return (<Announcements_mylist_EventRow  event={event} />);
+//})}
+//</ul>
+//</div>	
+
+
+
+
+
+
+
+
+/* 
+ * 公告中的<信息>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @Parent_message_save我要保存模板；
+ * */
+var Announcements_Div_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<ul className=am-list"+this.pageNo+">加载中...</div>");
+		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
 render: function() {
-  return (
-  <div>
-    <AMR_Table {...this.props}>  
-      <thead> 
-        <tr>
-          <th>标题</th>
-          <th>类型</th>
-          <th>幼儿园</th>
-          <th>浏览次数</th>
-          <th>创建人</th>
-          <th>创建时间</th>
-        </tr> 
-      </thead>
-      <tbody>
-        {this.props.events.map(function(event) {
-          return (<Announcements_mylist_EventRow  event={event} />);
-        })}
-      </tbody>
-    </AMR_Table>
-    </div>
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+			
+			  <div className="am-list-news-ft">
+			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+			  </div>
   );
 }
 });
-  /*
-   *公告功能表格内容绘制
-   *@react_ajax_announce_show：点击名字后进入内容详情绘制
-   * 在kd_react；
-   * */
- var Announcements_mylist_EventRow = React.createClass({ 
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
 
-    return (
-      <tr className={className} >
-        <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a></td>
-        <td>{Vo.announce_type(event.type)}</td>
-        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-        <td>{0}</td>
-        <td>{event.create_user}</td>
-        <td>{event.create_time}</td>
-      </tr> 
-    );
-  }
-  });
+
+
+
+	  /*
+	   *公告功能表格内容绘制
+	   *@react_ajax_announce_show：点击名字后进入内容详情绘制
+	   * 在kd_react；
+	   * */
+	 var Announcements_mylist_div = React.createClass({ 
+		  render: function() {
+		    var event = this.props.event;
+		    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	    		
+	    		     <li className="am-g">
+	    		       <a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a>
+	    		       {Vo.announce_type(event.type)}
+	    		        {Store.getGroupNameByUuid(event.groupuuid)}
+	    		        {0}
+	    		        {event.create_user}
+	    		        {event.create_time}  		     
+	    		        </li>
+	    		  
+	    );
+	  }
+	  }); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
  /*
   *公告点赞、评论、加载更多等详情绘制模板；
   * */
@@ -2100,6 +2257,34 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2394,8 +2579,8 @@ render: function() {
 		   <form id="editForm" method="post" className="am-form">
 			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
 			
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
-   {G_upload_img_Div}
+			  <AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+              {G_upload_img_Div}
 		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
 		      
 		    </form>	   

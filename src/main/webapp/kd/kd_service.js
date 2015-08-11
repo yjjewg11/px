@@ -1865,26 +1865,40 @@ function menu_classnewsbyMy_list_fn() {
 	
 
 //——————————————————————————(大图标)公告—————————————————————————— 
+
+/*
+ * <公告>先绘制舞台div
+ * 基本框 
+ * */
+function ajax_announce_div(){
+	React.render(React.createElement(Announcements_Div_kuang), document.getElementById('div_body'));
+   	
+};
+
+
+
+
 /*
  * <公告>功能服务器请求
  * 
  * */
-function ajax_announce_Mylist() {
+function ajax_announce_Mylist(pageNo) {
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/announcements/queryMyAnnouncements.json";
+	var url = hostUrl + "rest/announcements/queryMy.json?pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,
 		data : null,
 		dataType : "json",
+		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_mylist_EventsTable, {
+				React.render(React.createElement(Announcements_mylist_div, {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
-				
+				re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1898,6 +1912,7 @@ function ajax_announce_Mylist() {
 			 console.log(url+',error：', errorThrown);
 		}
 	});
+	return re_data;
 };
 /*
  * <公告>二级绑定事件服务器请求；
@@ -1928,6 +1943,37 @@ function react_ajax_announce_show(uuid){
 		}
 	});
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //——————————————————————————(大图标)教学计划——————————————————————————
@@ -2098,7 +2144,9 @@ function ajax_parentContactByMyStudent(){
  * 因有添加加载信息功能所以创建一个舞台然后把每一次添加的DIV添加到舞台上；
  * */
 function ajax_parentContactByMyStudent_message_list(parent_uuid){
-		React.render(React.createElement( ParentContactByMyStudent_message_list,{parent_uuid:parent_uuid}), document.getElementById('div_body'));
+		React.render(React.createElement(ParentContactByMyStudent_message_list,{
+			parent_uuid:parent_uuid
+			}), document.getElementById('div_body'));
 	   	
    };
 /* （首页）家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
