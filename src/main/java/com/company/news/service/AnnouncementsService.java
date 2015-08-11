@@ -19,6 +19,9 @@ import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.iservice.PushMsgIservice;
 import com.company.news.jsonform.AnnouncementsJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
@@ -150,6 +153,25 @@ public class AnnouncementsService extends AbstractServcice {
 		return true;
 	}
 
+	
+	/**
+	 * 查询我公告
+	 * 
+	 * @return
+	 */
+	public PageQueryResult query(String groupuuid, PaginationData pData) {
+		String hql = "from Announcements4Q where type=0";
+		if (StringUtils.isNotBlank(groupuuid)){
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		}
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		return pageQueryResult;
+
+	}
 	/**
 	 * 查询所有通知
 	 * 

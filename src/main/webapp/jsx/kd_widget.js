@@ -135,26 +135,8 @@ var ChooseUser_EventsTable = React.createClass({
     
 
 
-//chooseClass 
-/**
- * ajax_chooseClass_edit
- */
 
-var ChooseClass_EventRow = React.createClass({ 
-  render: function() {
-    var event = this.props.event;
-    var className = event.highlight ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
-
-    return (
-      <tr  className={className} onClick={w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}>
-        <td>{event.name}</td>
-        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-      </tr> 
-    );
-  }
-}); 
-//课程安排
+//课程安排绘制
 var ChooseClass_EventsTable = React.createClass({
 	handleClick: function(m) {
 		 if(this.props.handleClick){
@@ -201,6 +183,25 @@ var ChooseClass_EventsTable = React.createClass({
     );
   }
 });
+  //chooseClass 
+/**
+ * ajax_chooseClass_edit
+ */
+
+var ChooseClass_EventRow = React.createClass({ 
+  render: function() {
+    var event = this.props.event;
+    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+
+    return (
+      <tr  className={className} onClick={w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}>
+        <td>{event.name}</td>
+        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+      </tr> 
+    );
+  }
+}); 
 //end chooseClass
 
     
