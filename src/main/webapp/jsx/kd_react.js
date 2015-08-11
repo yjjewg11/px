@@ -2024,6 +2024,246 @@ var Query_EventRow = React.createClass({
 
 
 
+//——————————————————————————统计<绘制>——————————————————————————  
+/*
+ * 统计 绘制
+ * */
+var idx=1;
+var Statistics_Number = React.createClass(
+		option = {
+		    timeline : {
+		        data : [
+		            '2013-01-01', '2013-02-01', '2013-03-01', '2013-04-01', '2013-05-01',
+		            { name:'2013-06-01', symbol:'emptyStar6', symbolSize:8 },
+		            '2013-07-01', '2013-08-01', '2013-09-01', '2013-10-01', '2013-11-01',
+		            { name:'2013-12-01', symbol:'star6', symbolSize:8 }
+		        ],
+		        label : {
+		            formatter : function(s) {
+		                return s.slice(0, 7);
+		            }
+		        }
+		    },
+		    options : [
+		        {
+		            title : {
+		                text: '浏览器占比变化',
+		                subtext: '纯属虚构'
+		            },
+		            tooltip : {
+		                trigger: 'item',
+		                formatter: "{a} <br/>{b} : {c} ({d}%)"
+		            },
+		            legend: {
+		                data:['Chrome','Firefox','Safari','IE9+','IE8-']
+		            },
+		            toolbox: {
+		                show : true,
+		                feature : {
+		                    mark : {show: true},
+		                    dataView : {show: true, readOnly: false},
+		                    magicType : {
+		                        show: true, 
+		                        type: ['pie', 'funnel'],
+		                        option: {
+		                            funnel: {
+		                                x: '25%',
+		                                width: '50%',
+		                                funnelAlign: 'left',
+		                                max: 1700
+		                            }
+		                        }
+		                    },
+		                    restore : {show: true},
+		                    saveAsImage : {show: true}
+		                }
+		            },
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    center: ['50%', '45%'],
+		                    radius: '50%',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        }
+		    ]
+		}
+		                	
+);
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 //——————————————————————————（首页）公告<绘制>——————————————————————————  
@@ -2081,43 +2321,6 @@ var Query_EventRow = React.createClass({
 //    );
 //  }
 //  });
- 
-
-//绘制基本框信息 调用Announcements_Div_list
-var Announcements_Div_kuang = React.createClass({ 
-	render: function() {
-		  return (
-	   <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-	   <div className="am-list-news-hd am-cf">
-	     <h2>栏目标题</h2>
-	     </div>   	      	      
-
-	     
-	     {Announcements_Div_list}
-	     
-	     
-		    </div>
-		  );
-		}	
-
-});
-
-
-
-
-
-
-
-//<div className="am-list-news-bd">
-//<ul className="am-list">
-//{this.props.events.map(function(event) {
-//  return (<Announcements_mylist_EventRow  event={event} />);
-//})}
-//</ul>
-//</div>	
-
-
-
 
 
 
@@ -2139,8 +2342,11 @@ var Announcements_Div_list = React.createClass({
 	componentDidMount:function(){
 		this.load_more_data();
 	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
-		$("#"+this.classnewsreply_list_div).append("<ul className=am-list"+this.pageNo+">加载中...</div>");
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -2151,91 +2357,65 @@ var Announcements_Div_list = React.createClass({
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
+		Announcements_Div_kuang();
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
 		
 	},
+	//绘制不变的信息
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  <div className="am-list-news-hd am-cf">
+		    <h2>公告：</h2>
+		  </div>
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">
+		   
+		    
+		  </div>
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		</div>
+		  
 			
-			  <div className="am-list-news-ft">
-			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
-			  </div>
   );
 }
 });
 
+/*
+ *公告功能表格内容绘制
+ * 在kd_react；
+ * */
+var Announcements_mylist_div = React.createClass({ 
+	  render: function() {
+	    var event = this.props.events;
+	    var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
 
-
-
-	  /*
-	   *公告功能表格内容绘制
-	   *@react_ajax_announce_show：点击名字后进入内容详情绘制
-	   * 在kd_react；
-	   * */
-	 var Announcements_mylist_div = React.createClass({ 
-		  render: function() {
-		    var event = this.props.event;
-		    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-
-	    return (
-	    		
-	    		     <li className="am-g">
-	    		       <a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a>
-	    		       {Vo.announce_type(event.type)}
-	    		        {Store.getGroupNameByUuid(event.groupuuid)}
-	    		        {0}
-	    		        {event.create_user}
-	    		        {event.create_time}  		     
-	    		        </li>
-	    		  
-	    );
-	  }
-	  }); 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
+  return (
+     <ul className="am-list">
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		<li className="am-list-news-hd am-g">
+		  		      <a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{Vo.announce_type(event.type)}:{event.title}</a>
+		  		        
+		  		        <span className="am-list-date">{event.create_time}
+		  		        <br/>
+		  		       {Store.getGroupNameByUuid(event.groupuuid)}
+		  		        -
+		  		       {event.create_user}
+		  		      </span>
+		  		    </li>
+		    		  )
+		         })}		
+    </ul>  		  
+  );
+}
+}); 
  /*
   *公告点赞、评论、加载更多等详情绘制模板；
   * */
@@ -2257,33 +2437,6 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

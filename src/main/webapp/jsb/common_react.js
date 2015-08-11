@@ -72,7 +72,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 			  if(!uuids&&uuids.indexOf(",")>-1){
 					alert("只能选择一个！");
 					return;
-				}
+				};
 		  }
 		  btn_click_userinfo(m,uuids,usernames);
 	  },

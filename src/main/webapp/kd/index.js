@@ -222,7 +222,7 @@ function login_affter_init(){
 	                {
 	                      "link": "##",
 	                      "title": "统计",
-	                      "fn":menu_query_list_fn
+	                      "fn":menu_statistics_list_fn
 	                    }
 	                
 	              ];
@@ -449,7 +449,14 @@ function menu_query_list_fn() {
 	ajax_student_query();
 };
 
-
+/*
+ * (标头)统计
+ * @跳转kd_service发服务器请求
+ * */
+function menu_statistics_list_fn() {
+	Queue.push(menu_statistics_list_fn);
+	ajax_statistics_list();
+};
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）公告功能方法；
