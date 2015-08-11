@@ -74,6 +74,33 @@ public class StatisticsController extends AbstractRESTController {
 				model.addAttribute(RestConstants.Return_G_entity, vo);
 			else
 				return "";
+		}else if (type.toLowerCase().equals("css"))// 学生班级统计
+		{
+			PieStatisticsVo vo = statisticsService.getCssBygroup(
+					responseMessage, request.getParameter("groupuuid"));
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+		}else if (type.toLowerCase().equals("cns"))// 班级互动统计
+		{
+			PieStatisticsVo vo = statisticsService.getCnsBygroup(
+					responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+		}else if (type.toLowerCase().equals("cnts"))// 班级互动TOP
+		{
+			PieStatisticsVo vo = statisticsService.getCntsBygroup(
+					responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
