@@ -146,7 +146,7 @@ public class StudentController extends AbstractRESTController {
 			e.printStackTrace();
 			responseMessage
 					.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 		model.addAttribute(RestConstants.Return_G_entity, s);
@@ -165,15 +165,34 @@ public class StudentController extends AbstractRESTController {
 	public String exportStudentExcel(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Student> list = studentService.query(
-				request.getParameter("classuuid"),
-				request.getParameter("groupuuid"));
-
+		
 		try {
+		
+		String groupuuid=request.getParameter("groupuuid");
+		String classuuid=request.getParameter("classuuid");
+		  
+		if(StringUtils.isBlank(groupuuid)){ 
+			groupuuid=this.getMyGroupUuidsBySession(request);
+		}else{
+			String groupUuids=this.getMyGroupUuidsBySession(request);
+			if(groupUuids==null||!groupUuids.contains(groupuuid)){
+				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+groupuuid);
+				return "";
+			}
+		}
+		
+		List<Student> list = studentService.query(
+				classuuid,
+				groupuuid);
+
+		
 			ExcelUtil.outputPrintWriterStream(response, "幼儿园基本情况登记表",list);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
 		}
 		return null;
 	}

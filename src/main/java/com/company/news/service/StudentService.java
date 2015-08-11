@@ -237,14 +237,10 @@ public class StudentService extends AbstractServcice {
 	public List<Student> query(String classuuid,String groupuuid) {
 		String hql="from Student where 1=1";
 		
-		// Group_uuid昵称验证
-		if (StringUtils.isNotBlank(classuuid)) {
-			hql+=" and classuuid in ("+DBUtil.stringsToWhereInValue(classuuid)+")";
-		}
-		
-		if (StringUtils.isNotBlank(groupuuid)) {
-			hql+=" and groupuuid in ("+DBUtil.stringsToWhereInValue(groupuuid)+")";
-		}		
+		if (StringUtils.isNotBlank(groupuuid))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
 		
 		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		 

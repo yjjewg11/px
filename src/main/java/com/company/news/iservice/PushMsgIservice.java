@@ -21,24 +21,47 @@ import com.baidu.yun.push.exception.PushClientException;
 import com.baidu.yun.push.exception.PushServerException;
 import com.baidu.yun.push.model.PushMsgToAllRequest;
 import com.baidu.yun.push.model.PushMsgToAllResponse;
-import com.baidu.yun.push.model.PushMsgToSingleDeviceRequest;
-import com.baidu.yun.push.model.PushMsgToSingleDeviceResponse;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.IOSPushUtils;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.PushMessage;
-import com.company.news.entity.Student;
 import com.company.news.rest.util.TimeUtils;
+import com.company.pushmsg.PushMsgAndoridInterface;
+import com.company.pushmsg.PushMsgBaiduAndoridImpl;
+import com.company.pushmsg.PushMsgUmengAndoridImpl;
 
 
 @Service
 public class PushMsgIservice {
+	
+	public static final String andoridPushMsg_type = ProjectProperties.getProperty(
+			"andoridPushMsg_type", "umeng");
+	
+	private static PushMsgAndoridInterface pushMsgAndoridInterface;
+	static {
+		if (andoridPushMsg_type.equals("baidu"))
+			pushMsgAndoridInterface = new PushMsgBaiduAndoridImpl();
+		else{
+			
+			pushMsgAndoridInterface = new PushMsgUmengAndoridImpl();
+		}
+	}
 	  protected static Logger logger = LoggerFactory.getLogger(PushMsgIservice.class);
 	  @Autowired
 	  @Qualifier("NSimpleHibernateDao")
 	  protected NSimpleHibernateDao nSimpleHibernateDao;
-	  
+  public void androidPushMsgToSingleDevice_to_parentByChannelId(String title,String msg,String channelId)throws Exception{
+	  	pushMsgAndoridInterface.androidPushMsgToSingleDevice_to_parentByChannelId(title, msg, channelId);
+	  }
+	  /**
+	   * 广播所有android消息_给老师
+	   * @param msg
+	   * @return
+	   */
+	  public void androidPushMsgToSingleDevice_to_TeacherByChannelId(String title,String msg,String channelId)throws Exception{
+		  pushMsgAndoridInterface.androidPushMsgToSingleDevice_to_TeacherByChannelId(title, msg, channelId);
+	  }
 	  
 	  /**
 	   * 获取设备id用于推送.
@@ -227,30 +250,7 @@ public class PushMsgIservice {
 		  String p12Pass = ProjectProperties.getProperty("iosCert_pwd_teacher", "wenjie_123456");
 		 IOSPushUtils.pushIosMsgByToken(p12FileName, p12Pass, msg, deviceTokenList);
 	  }
-	  /**
-	   * 广播所有android消息_给所有家长
-	   * @param msg
-	   * @return
-	   */
-	  public void androidPushMsgToSingleDevice_to_parentByChannelId(String title,String msg,String channelId)throws Exception{
-		  
-		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_parent", "p9DUFwCzoUaKenaB5ovHch0G");
-		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_parent", "GUHR0mniN15LvML8OWnm3GzMdXsVEGbD");
-		  this.androidPushMsgToSingleDevice(title,msg, channelId, apiKey, secretKey);
-	  }
-	  
-
-	  /**
-	   * 广播所有android消息_给所有家长
-	   * @param msg
-	   * @return
-	   */
-	  public void androidPushMsgToSingleDevice_to_TeacherByChannelId(String title,String msg,String channelId)throws Exception{
-		  
-		  String apiKey = ProjectProperties.getProperty("baidu_apiKey_teacher", "El4au0Glwr7Xt8sPgZFg2UP7");
-		  String secretKey = ProjectProperties.getProperty("baidu_secretKey_teacher", "4rtqyA96S6GDNVcgB8D1Cqh0Wm4Vohq8");
-		  this.androidPushMsgToSingleDevice(title,msg, channelId, apiKey, secretKey);
-	  }
+	 
 	  	
 
 	  /**
@@ -312,66 +312,6 @@ public class PushMsgIservice {
 			
 			
 	  }
-	  
-	  
-	  /**
-	   * 广播所有android消息
-	   * @param msg
-	   * @return
-	   */
-	  public void androidPushMsgToSingleDevice(String title,String msg,String channelId,String apiKey,String secretKey)throws Exception{
-		// 1. get apiKey and secretKey from developer console
-//			String apiKey = "xxxxxxxxxxxxxxxxxxxx";
-//			String secretKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-			PushKeyPair pair = new PushKeyPair(apiKey, secretKey);
-
-			// 2. build a BaidupushClient object to access released interfaces
-			BaiduPushClient pushClient = new BaiduPushClient(pair,
-					BaiduPushConstants.CHANNEL_REST_URL);
-
-			// 3. register a YunLogHandler to get detail interacting information
-			// in this request.
-			pushClient.setChannelLogHandler(new YunLogHandler() {
-				@Override
-				public void onHandle(YunLogEvent event) {
-					System.out.println(event.getMessage());
-				}
-			});
-
-			try {
-				// 4. specify request arguments
-
-				JSONObject notification = new JSONObject();
-				notification.put("title", title);
-				notification.put("description",msg);
-				PushMsgToSingleDeviceRequest request = new PushMsgToSingleDeviceRequest()
-					.addChannelId(channelId)
-						.addMsgExpires(new Integer(3600)).addMessageType(1)//1：通知,0:透传消息. 默认为0 注：IOS只有通知.
-						.addMessage(notification.toString()) //添加透传消息
-						.addDeviceType(3);
-				// 5. http request
-				PushMsgToSingleDeviceResponse response = pushClient
-						.pushMsgToSingleDevice(request);
-				// Http请求结果解析打印
-				System.out.println("msgId: " + response.getMsgId() + ",sendTime: "
-						+ response.getSendTime());
-			} catch (PushClientException e) {
-				if (BaiduPushConstants.ERROROPTTYPE) {
-					throw e;
-				} else {
-					e.printStackTrace();
-				}
-			} catch (PushServerException e) {
-				if (BaiduPushConstants.ERROROPTTYPE) {
-					throw e;
-				} else {
-					System.out.println(String.format(
-							"requestId: %d, errorCode: %d, errorMessage: %s",
-							e.getRequestId(), e.getErrorCode(), e.getErrorMsg()));
-				}
-			}
-			
-			
-	  }
+	 
 	  
 }

@@ -247,7 +247,7 @@ public class CookbookPlanService extends AbstractServcice {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return User.class;
+		return CookbookPlan.class;
 	}
 
 }
