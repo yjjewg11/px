@@ -300,6 +300,20 @@ public class StudentService extends AbstractServcice {
 		
 		return list;
 	}
+	
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getStudentCountByGroup(String groupuuid) {
+		
+		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("select count(uuid),classuuid from Student  where groupuuid=? group by classuuid)",groupuuid);
+		
+		return list;
+	}
 
 	/**
 	 * 

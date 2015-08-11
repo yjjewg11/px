@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -7,6 +8,8 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -138,6 +141,43 @@ public class ClassNewsService extends AbstractServcice {
 
 	}
 
+	
+	/**
+	 * 根据机构UUID,获取班级互动
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getClassNewsCollectionByGroup(String groupuuid,String begDateStr, String endDateStr) {
+		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
+		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
+		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("select count(uuid),classuuid from ClassNews  where create_time<=? and create_time >=?  and classuuid in(select uuid from PClass where groupuuid=?) group by classuuid)",endDate,begDate,groupuuid);
+		
+		return list;
+	}
+	
+	
+	/**
+	 * 根据机构UUID,获取班级热门互动top
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getClassNewsCountByGroup(String groupuuid,String begDateStr, String endDateStr) {
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("SELECT c.count,cn.title,cn.create_user FROM pxdb.px_count c left join px_classnews cn on c.ext_uuid=cn.uuid "
+				+ "where ext_uuid in (select uuid from px_classnews where create_time<='"+endDateStr+"' and create_time>='"+begDateStr+"' and classuuid in "
+				+ "(select uuid from px_class where groupuuid='"+groupuuid+"'))"
+				+ "order by count desc;");
+
+		
+		return q.list();
+	}
+	
+	
 	/**
 	 * 删除 支持多个，用逗号分隔
 	 * 
