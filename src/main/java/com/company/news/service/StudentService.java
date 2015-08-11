@@ -276,7 +276,7 @@ public class StudentService extends AbstractServcice {
 	}
 	
 	/**
-	 * 根据电话号码,机构UUID,获取绑定该学生的家长账号
+	 * 根据电话号码,机构UUID,获取绑定该学生
 	 * @param tel
 	 * @param type
 	 * @return
@@ -290,7 +290,29 @@ public class StudentService extends AbstractServcice {
 		else
 			return null;
 	}
+	
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List<Student> getStudentByGroup(String groupuuid) {
+		
+		List<Student> list= (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from Student  where groupuuid=?)",groupuuid);
+		
+		return list;
+	}
 
+	/**
+	 * 
+	 * @param groupuuid
+	 * @param classuuid
+	 * @param name
+	 * @param pData
+	 * @return
+	 */
 	public PageQueryResult queryByPage(String groupuuid,String classuuid,String  name ,PaginationData pData) {
 		String hql = "from Student where 1=1";
 		if (StringUtils.isNotBlank(groupuuid))

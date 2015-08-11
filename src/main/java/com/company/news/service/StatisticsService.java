@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.entity.Group;
+import com.company.news.entity.Student;
 import com.company.news.entity.User4Q;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
@@ -31,7 +32,8 @@ public class StatisticsService extends AbstractServcice {
 	
 	@Autowired
 	private UserinfoService userinfoService;
-	
+	@Autowired
+	private StudentService studentService;
 	/**
 	 * 获取用户性别统计
 	 * user sex Statistics
@@ -137,16 +139,7 @@ public class StatisticsService extends AbstractServcice {
 		
 	}
 	
-	/**
-	 * 获取家长登陆时间统计
-	 * parent logintime Statistics
-	 * @param responseMessage
-	 * @return
-	 */
-	public boolean getPlsBygroup(ResponseMessage responseMessage) {
-		return false;
-		
-	}
+
 	
 	/**
 	 * 获取学生性别统计
@@ -154,8 +147,47 @@ public class StatisticsService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public boolean getSssBygroup(ResponseMessage responseMessage) {
-		return false;
+	public PieStatisticsVo getSssBygroup(ResponseMessage responseMessage,String group_uuid) {
+		//验证group合法性
+		if(!validateGroup(group_uuid, responseMessage))
+			return null;
+		
+		logger.debug("begain 用户性别统计");
+		
+		List<Student> list=studentService.getStudentByGroup(group_uuid);
+		logger.debug("getUserByGroupuuid 查询结束");
+		
+		//返回
+		PieStatisticsVo vo=new PieStatisticsVo();
+		//需要获取机构名
+		Group g=(Group) CommonsCache.get(group_uuid, Group.class);
+		vo.setTitle_text(g.getCompany_name()+" 学生统计（按性别）");
+		vo.setTitle_subtext("总计 "+list.size()+" 人");
+		vo.setLegend_data("['男','女']");
+		int sex_male=0;
+		int sex_female=0;
+		
+		for(Student s:list){
+			if(s.getSex().intValue()==SystemConstants.User_sex_male.intValue())
+				sex_male++;
+			else
+				sex_female++;
+		}
+		
+		PieSeriesDataVo male_sdvo=new PieSeriesDataVo();
+		male_sdvo.setName("男");
+		male_sdvo.setValue(sex_male);
+		
+		PieSeriesDataVo female_sdvo=new PieSeriesDataVo();
+		female_sdvo.setName("女");
+		female_sdvo.setValue(sex_female);
+		
+		List<PieSeriesDataVo> plist=new ArrayList<PieSeriesDataVo>();
+		plist.add(male_sdvo);
+		plist.add(female_sdvo);
+		vo.setSeries_data(plist);
+		logger.debug("end 用户性别统计");
+		return vo;
 		
 	}
 	
@@ -165,8 +197,47 @@ public class StatisticsService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public boolean getCssBygroup(ResponseMessage responseMessage) {
-		return false;
+	public PieStatisticsVo getCssBygroup(ResponseMessage responseMessage,String group_uuid) {
+		//验证group合法性
+		if(!validateGroup(group_uuid, responseMessage))
+			return null;
+		
+		logger.debug("begain 班级学生人数统计");
+		
+		List<User4Q> list=userinfoService.getUserByGroupuuid(group_uuid, null);
+		logger.debug("getUserByGroupuuid 查询结束");
+		
+		//返回
+		PieStatisticsVo vo=new PieStatisticsVo();
+		//需要获取机构名
+		Group g=(Group) CommonsCache.get(group_uuid, Group.class);
+		vo.setTitle_text(g.getCompany_name()+" 班级学生人数统计");
+		vo.setTitle_subtext("总计 "+list.size()+" 人");
+		vo.setLegend_data("['男','女']");
+		int sex_male=0;
+		int sex_female=0;
+		
+		for(User4Q u:list){
+			if(u.getSex().intValue()==SystemConstants.User_sex_male.intValue())
+				sex_male++;
+			else
+				sex_female++;
+		}
+		
+		PieSeriesDataVo male_sdvo=new PieSeriesDataVo();
+		male_sdvo.setName("男");
+		male_sdvo.setValue(sex_male);
+		
+		PieSeriesDataVo female_sdvo=new PieSeriesDataVo();
+		female_sdvo.setName("女");
+		female_sdvo.setValue(sex_female);
+		
+		List<PieSeriesDataVo> plist=new ArrayList<PieSeriesDataVo>();
+		plist.add(male_sdvo);
+		plist.add(female_sdvo);
+		vo.setSeries_data(plist);
+		logger.debug("end 用户性别统计");
+		return vo;
 		
 	}
 	
