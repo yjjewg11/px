@@ -261,15 +261,15 @@ var w_uploadImg={
 			$("#"+this.div_body).show();
 			$("#"+this.div_id).html("");
 		}	
-}
+};
+//修改密码
 function menu_userinfo_updatepassword_fn(){
-	Queue.push(menu_userinfo_updatepassword_fn);
-	
+	Queue.push(menu_userinfo_updatepassword_fn);	
 	React.render(React.createElement(Div_userinfo_updatepassword,null)
 			, document.getElementById('div_body'));
 }
 
-//用户登陆
+//用户登陆(修改密码也调用)
 function ajax_userinfo_updatepassword() {
 	$.AMUI.progress.start();
 	  var objectForm = $('#commonform').serializeJson();
@@ -375,13 +375,13 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 		});
 	}
 
-
+//（我）<修改资料>
 function menu_userinfo_update_fn(){
 	Queue.push(menu_userinfo_update_fn);	
 	React.render(React.createElement(Div_userinfo_update,{formdata:Store.getUserinfo()})
 			, document.getElementById('div_body'));
 }
-
+//（我）<修改资料>保存按钮事件处理
 function ajax_userinfo_update() {
 	var opt={
 			 formName:"commonform",

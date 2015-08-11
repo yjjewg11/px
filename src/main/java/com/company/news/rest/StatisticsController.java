@@ -65,6 +65,15 @@ public class StatisticsController extends AbstractRESTController {
 				model.addAttribute(RestConstants.Return_G_entity, vo);
 			else
 				return "";
+		} else if (type.toLowerCase().equals("sss"))// 学生性别统计
+		{
+			PieStatisticsVo vo = statisticsService.getSssBygroup(
+					responseMessage, request.getParameter("groupuuid"));
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

@@ -393,7 +393,7 @@ function menu_cookbookPlan_list_fn(){
  * @跳转widget发服务器请求
  * */
 function menu_teachingplan_list_fn(){
-	Queue.push(ajax_teachingplan_listByClass);
+	Queue.push(menu_teachingplan_list_fn);
 	 w_ch_class.open(ajax_teachingplan_listByClass);
 }
 /*
@@ -428,44 +428,13 @@ function menu_accounts_list_fn() {
 	Queue.push(menu_accounts_list_fn);
 	ajax_accounts_listByGroup(Store.getCurGroup().uuid);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * 精品文章
- * /share/articleList.json
- */
-function menu_article_list_fn(){
-	menu_announce_list_fn(3);
-}
-
-
 /*
- * (标头)我功能中的注销用户
+ * (标头)注销用户
  * @ ajax_userinfo_logout：注销；
  * */
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
-
-
-
 /*
  * (标头)学生列表
  * @跳转kd_service发服务器请求
@@ -474,6 +443,7 @@ function menu_query_list_fn() {
 	Queue.push(menu_query_list_fn);
 	ajax_student_query();
 };
+
 
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
@@ -484,13 +454,36 @@ function menu_announce_mylist_fn() {
 	Queue.push(menu_announce_mylist_fn);
 	ajax_announce_Mylist();
 };
-/* （首页）学生通讯录功能方法
+/*
+ * <教学计划>
+ * 调用ajax_teachingplan_dayShow：在kd_service
+ * */
+function menu_teachingplan_dayShow_fn() {
+	Queue.push(menu_teachingplan_dayShow_fn);
+	w_ch_class.open(function(uuid,name){ajax_teachingplan_dayShow(null,{uuid:uuid,name:name});});
+};
+/*
+ * （首页）每日食谱
+ * 调用ajax_cookbookPlan_dayShow：每天食谱计划
+ * */
+function menu_cookbookPlan_dayShow_fn() {
+	Queue.push(menu_cookbookPlan_dayShow_fn);
+	ajax_cookbookPlan_dayShow(null);
+};
+/* （首页）家长通讯录功能方法
  * @跳转kd_service发服务器请求
  * */
 function parentContactByMyStudent() {
 	Queue.push(parentContactByMyStudent);
 	ajax_parentContactByMyStudent();
 };
+/*
+ * 精品文章
+ * @menu_announce_list_fn:直接调用发布消息中的方法
+ */
+function menu_article_list_fn(){
+	menu_announce_list_fn(3);
+}
 /*
 * （首页）我的班级 show
 * @跳转kd_service发服务器请求
@@ -501,7 +494,6 @@ function menu_class_students_fn() {
 	w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
 	
 };
-
 /*
  * （首页）老师通讯录；
  * @跳转kd_service发服务器请求
@@ -510,10 +502,11 @@ function menu_Teacher_tel_fn() {
 	Queue.push(menu_Teacher_tel_fn);
 	ajax_Teacher_listByGroup(Store.getCurGroup().uuid);
 };
-function menu_userinfo_reg_fn(){
-	
-	ajax_loaddata_group_list_for_userinfo_reg();
-	
+
+
+//老师注册
+function menu_userinfo_reg_fn(){	
+	ajax_loaddata_group_list_for_userinfo_reg();	
 }
 
 function menu_userinfo_login_fn(){
