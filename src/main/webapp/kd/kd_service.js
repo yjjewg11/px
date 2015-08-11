@@ -465,9 +465,9 @@ function ajax_class_students_look_info(uuid){
 
 function btn_class_student_uploadHeadere(){
 	
-	w_uploadImg.open(function(guid){
-		$("#headimg").val(guid);
-		 $("#img_head_image").attr("src",G_imgPath+guid); 
+	w_uploadImg.open(function(url){
+		$("#headimg").val(url);
+		 $("#img_head_image").attr("src",url); 
 		 G_img_down404("#img_head_image");
 	});
 	

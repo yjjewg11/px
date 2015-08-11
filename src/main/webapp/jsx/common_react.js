@@ -287,16 +287,16 @@ var Div_userinfo_update = React.createClass({
 		    this.setState($('#commonform').serializeJson());
 	  },
 	 handle_uploadHeader: function(event) {
-			w_uploadImg.open(function(guid){
-				$("#img").val(guid);
-				 $("#img_head_image").attr("src",G_imgPath+guid); 
+			w_uploadImg.open(function(url){
+				$("#img").val(url);
+				 $("#img_head_image").attr("src",url); 
 				 G_img_down404("#img_head_image");
 			},1);
 	  },
 	  componentDidMount:function(){
 		  var imgGuid=this.state.img;
 		 if(imgGuid){
-			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+			 $("#img_head_image").attr("src",imgGuid); 
 			 G_img_down404("#img_head_image");
 		 }
 
