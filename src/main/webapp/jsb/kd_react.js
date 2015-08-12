@@ -3119,3 +3119,51 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 	    );
 	  }
 	}); 
+
+
+
+/*
+图表加载
+ * */
+var ECharts_Div = React.createClass({displayName: "ECharts_Div", 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	componentDidMount:function(){
+		var tmp_fn=function(){
+			 var o=$('#editEchartForm').serializeJson();
+			 PXECharts_ajax.ajax(o);
+		 };
+		 if(typeof(require)=="undefined"){
+			 var js="http://echarts.baidu.com/build/dist/echarts.js";
+			 loadJS(js,tmp_fn)
+		 }else{
+			 tmp_fn();
+		 }
+		
+	  },
+	  handleChange: function(event) {
+			 var o=$('#editEchartForm').serializeJson();
+			   this.setState(o);
+			 PXECharts_ajax.ajax(o);
+			    //PXECharts.loading();
+		  },
+	  render: function() {
+		  var o = this.state;
+	    return (
+	    		React.createElement("div", null, 
+	    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
+	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"}), 
+	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 
+	    		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange}), 
+	    		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+	    	  		
+	    		 ), 
+	    		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
+	    		)
+
+	    );
+	  }
+	}); 
+
+

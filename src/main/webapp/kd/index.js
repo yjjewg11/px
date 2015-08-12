@@ -190,7 +190,7 @@ function login_affter_init(){
 	  	                                      }
 	                                        ]
 	                           
-	                          },	                       
+	                          },	
 	                        
 	                {
 	                  "link": "##",
@@ -449,9 +449,12 @@ function menu_query_list_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_statistics_list_fn() {
-	Queue.push(menu_statistics_list_fn);
-	ajax_statistics_list();
+	React.render(React.createElement(ECharts_Div, {
+		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
+		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+		}), document.getElementById('div_body'));
 };
+
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）公告功能方法；

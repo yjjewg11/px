@@ -8,8 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +60,11 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师统计（按性别）");
 		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		vo.setLegend_data("['男','女']");
+		List legend_data=new ArrayList();
+		legend_data.add("男");
+		legend_data.add("女");
+		vo.setLegend_data(legend_data);
+//		vo.setLegend_data("['男','女']");
 		int sex_male = 0;
 		int sex_female = 0;
 
@@ -122,9 +124,15 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师统计（按登陆时间）");
 		vo.setTitle_subtext("总计 " + count + " 人");
-		vo.setLegend_data("['" + lessthreeDay + "%的用户在3天内登陆过'" + ",'"
-				+ lessOneWeek + "%的用户在1周内登陆过','" + greaterOneWeek
-				+ "%的用户在更早前']");
+		List legend_data=new ArrayList();
+		legend_data.add(lessthreeDay + "%的用户在3天内登陆过");
+		legend_data.add(lessOneWeek + "%的用户在1周内登陆过");
+		legend_data.add(greaterOneWeek + "%的用户在更早前");
+		vo.setLegend_data(legend_data);
+//		
+//		vo.setLegend_data("['" + lessthreeDay + "%的用户在3天内登陆过'" + ",'"
+//				+ lessOneWeek + "%的用户在1周内登陆过','" + greaterOneWeek
+//				+ "%的用户在更早前']");
 
 		PieSeriesDataVo lessthreeDayVo = new PieSeriesDataVo();
 		lessthreeDayVo.setName(lessthreeDay + "%的用户在3天内登陆过");
@@ -171,7 +179,10 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
 		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		vo.setLegend_data("['男','女']");
+		List legend_data=new ArrayList();
+		legend_data.add("男");
+		legend_data.add("女");
+		vo.setLegend_data(legend_data);
 		int sex_male = 0;
 		int sex_female = 0;
 
@@ -223,8 +234,9 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级学生人数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班");
-		vo.setLegend_data("['班级人数']");
-
+		List legend_data=new ArrayList();
+		legend_data.add("班级人数");
+		vo.setLegend_data(legend_data);
 		String axis_data = "";
 		for (PClass p : list) {
 			axis_data += ("'" + p.getName() + "',");
@@ -290,8 +302,10 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级互动发帖数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班");
-		vo.setLegend_data("['互动发帖数']");
-
+//		vo.setLegend_data("['互动发帖数']");
+		List legend_data=new ArrayList();
+		legend_data.add("互动发帖数");
+		vo.setLegend_data(legend_data);
 		String axis_data = "";
 		for (PClass p : list) {
 			axis_data += ("'" + p.getName() + "',");
@@ -356,8 +370,10 @@ public class StatisticsService extends AbstractServcice {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级互动热门TOP10");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
-		vo.setLegend_data("['班级互动热门TOP10']");
-
+//		vo.setLegend_data("['班级互动热门TOP10']");
+		List legend_data=new ArrayList();
+		legend_data.add("班级互动热门TOP10");
+		vo.setLegend_data(legend_data);
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		if (list != null && list.size() > 0) {
 			for(Object[] o:list)

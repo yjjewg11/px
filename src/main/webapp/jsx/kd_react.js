@@ -3119,3 +3119,51 @@ var Teacherinfo_EventRow = React.createClass({
 	    );
 	  }
 	}); 
+
+
+
+/*
+图表加载
+ * */
+var ECharts_Div = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	componentDidMount:function(){
+		var tmp_fn=function(){
+			 var o=$('#editEchartForm').serializeJson();
+			 PXECharts_ajax.ajax(o);
+		 };
+		 if(typeof(require)=="undefined"){
+			 var js="http://echarts.baidu.com/build/dist/echarts.js";
+			 loadJS(js,tmp_fn)
+		 }else{
+			 tmp_fn();
+		 }
+		
+	  },
+	  handleChange: function(event) {
+			 var o=$('#editEchartForm').serializeJson();
+			   this.setState(o);
+			 PXECharts_ajax.ajax(o);
+			    //PXECharts.loading();
+		  },
+	  render: function() {
+		  var o = this.state;
+	    return (
+	    		<div>
+	    		 <form id="editEchartForm" method="post" className="am-form">
+	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+	    		 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+	    		 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+	    	  		
+	    		 </form>
+	    		 <div id="main_ECharts" className="ECharts"></div>
+	    		</div>
+
+	    );
+	  }
+	}); 
+
+
