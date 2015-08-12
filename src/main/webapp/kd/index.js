@@ -218,6 +218,11 @@ function login_affter_init(){
 	                      "link": "##",
 	                      "title": "学生列表",
 	                      "fn":menu_query_list_fn
+	                    },
+	                {
+	                      "link": "##",
+	                      "title": "统计",
+	                      "fn":menu_statistics_list_fn
 	                    }
 	                
 	              ];
@@ -444,7 +449,14 @@ function menu_query_list_fn() {
 	ajax_student_query();
 };
 
-
+/*
+ * (标头)统计
+ * @跳转kd_service发服务器请求
+ * */
+function menu_statistics_list_fn() {
+	Queue.push(menu_statistics_list_fn);
+	ajax_statistics_list();
+};
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）公告功能方法；
@@ -452,7 +464,7 @@ function menu_query_list_fn() {
  * */
 function menu_announce_mylist_fn() {
 	Queue.push(menu_announce_mylist_fn);
-	ajax_announce_Mylist();
+	ajax_announce_div();
 };
 /*
  * <教学计划>

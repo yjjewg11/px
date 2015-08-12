@@ -2024,6 +2024,246 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
 
 
 
+//——————————————————————————统计<绘制>——————————————————————————  
+/*
+ * 统计 绘制
+ * */
+var idx=1;
+var Statistics_Number = React.createClass(
+		option = {
+		    timeline : {
+		        data : [
+		            '2013-01-01', '2013-02-01', '2013-03-01', '2013-04-01', '2013-05-01',
+		            { name:'2013-06-01', symbol:'emptyStar6', symbolSize:8 },
+		            '2013-07-01', '2013-08-01', '2013-09-01', '2013-10-01', '2013-11-01',
+		            { name:'2013-12-01', symbol:'star6', symbolSize:8 }
+		        ],
+		        label : {
+		            formatter : function(s) {
+		                return s.slice(0, 7);
+		            }
+		        }
+		    },
+		    options : [
+		        {
+		            title : {
+		                text: '浏览器占比变化',
+		                subtext: '纯属虚构'
+		            },
+		            tooltip : {
+		                trigger: 'item',
+		                formatter: "{a} <br/>{b} : {c} ({d}%)"
+		            },
+		            legend: {
+		                data:['Chrome','Firefox','Safari','IE9+','IE8-']
+		            },
+		            toolbox: {
+		                show : true,
+		                feature : {
+		                    mark : {show: true},
+		                    dataView : {show: true, readOnly: false},
+		                    magicType : {
+		                        show: true, 
+		                        type: ['pie', 'funnel'],
+		                        option: {
+		                            funnel: {
+		                                x: '25%',
+		                                width: '50%',
+		                                funnelAlign: 'left',
+		                                max: 1700
+		                            }
+		                        }
+		                    },
+		                    restore : {show: true},
+		                    saveAsImage : {show: true}
+		                }
+		            },
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    center: ['50%', '45%'],
+		                    radius: '50%',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        },
+		        {
+		            series : [
+		                {
+		                    name:'浏览器（数据纯属虚构）',
+		                    type:'pie',
+		                    data:[
+		                        {value: idx * 128 + 80,  name:'Chrome'},
+		                        {value: idx * 64  + 160,  name:'Firefox'},
+		                        {value: idx * 32  + 320,  name:'Safari'},
+		                        {value: idx * 16  + 640,  name:'IE9+'},
+		                        {value: idx++ * 8  + 1280, name:'IE8-'}
+		                    ]
+		                }
+		            ]
+		        }
+		    ]
+		}
+		                	
+);
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 //——————————————————————————（首页）公告<绘制>——————————————————————————  
@@ -2031,54 +2271,151 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
  *公告功能表格绘制
  * 
  * */
-var Announcements_mylist_EventsTable = React.createClass({displayName: "Announcements_mylist_EventsTable",
+//var Announcements_mylist_EventsTable = React.createClass({
+//render: function() {
+//  return (
+//  <div>
+//    <AMR_Table {...this.props}>  
+//      <thead> 
+//        <tr>
+//          <th>标题</th>
+//          <th>类型</th>
+//          <th>幼儿园</th>
+//          <th>浏览次数</th>
+//          <th>创建人</th>
+//          <th>创建时间</th>
+//        </tr> 
+//      </thead>
+//      <tbody>
+//        {this.props.events.map(function(event) {
+//          return (<Announcements_mylist_EventRow  event={event} />);
+//        })}
+//        
+//      </tbody>
+//    </AMR_Table>
+//    
+//    </div>
+//  );
+//}
+//});
+//  /*
+//   *公告功能表格内容绘制
+//   *@react_ajax_announce_show：点击名字后进入内容详情绘制
+//   * 在kd_react；
+//   * */
+// var Announcements_mylist_EventRow = React.createClass({ 
+//	  render: function() {
+//	    var event = this.props.event;
+//	    var className = event.highlight ? 'am-active' :
+//      event.disabled ? 'am-disabled' : '';
+//
+//    return (
+//      <tr className={className} >
+//        <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a></td>
+//        <td>{Vo.announce_type(event.type)}</td>
+//        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+//        <td>{0}</td>
+//        <td>{event.create_user}</td>
+//        <td>{event.create_time}</td>
+//      </tr> 
+//    );
+//  }
+//  });
+
+
+
+
+
+/* 
+ * 公告中的<信息>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @Parent_message_save我要保存模板；
+ * */
+var Announcements_Div_list = React.createClass({displayName: "Announcements_Div_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		Announcements_Div_kuang();
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+	//绘制不变的信息
 render: function() {
-  return (
-  React.createElement("div", null, 
-    React.createElement(AMR_Table, React.__spread({},  this.props), 
-      React.createElement("thead", null, 
-        React.createElement("tr", null, 
-          React.createElement("th", null, "标题"), 
-          React.createElement("th", null, "类型"), 
-          React.createElement("th", null, "幼儿园"), 
-          React.createElement("th", null, "浏览次数"), 
-          React.createElement("th", null, "创建人"), 
-          React.createElement("th", null, "创建时间")
-        )
-      ), 
-      React.createElement("tbody", null, 
-        this.props.events.map(function(event) {
-          return (React.createElement(Announcements_mylist_EventRow, {event: event}));
-        })
-      )
-    )
-    )
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		  React.createElement("div", {className: "am-list-news-hd am-cf"}, 
+		    React.createElement("h2", null, "公告：")
+		  ), 
+		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}
+		   
+		    
+		  ), 
+		  React.createElement("div", {className: "am-list-news-ft"}, 
+		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+		  )
+		)
+		  
+			
   );
 }
 });
-  /*
-   *公告功能表格内容绘制
-   *@react_ajax_announce_show：点击名字后进入内容详情绘制
-   * 在kd_react；
-   * */
- var Announcements_mylist_EventRow = React.createClass({displayName: "Announcements_mylist_EventRow", 
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
 
-    return (
-      React.createElement("tr", {className: className}, 
-        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show.bind( this, event.uuid)}, event.title)), 
-        React.createElement("td", null, Vo.announce_type(event.type)), 
-        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-        React.createElement("td", null, 0), 
-        React.createElement("td", null, event.create_user), 
-        React.createElement("td", null, event.create_time)
-      ) 
-    );
-  }
-  });
+/*
+ *公告功能表格内容绘制
+ * 在kd_react；
+ * */
+var Announcements_mylist_div = React.createClass({displayName: "Announcements_mylist_div", 
+	  render: function() {
+	    var event = this.props.events;
+	    var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+     React.createElement("ul", {className: "am-list"}, 
+		  this.props.events.data.map(function(event) {
+		      return (
+		    		React.createElement("li", {className: "am-list-news-hd am-g"}, 
+		  		      React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show.bind( this, event.uuid)}, Vo.announce_type(event.type), ":", event.title), 
+		  		        
+		  		        React.createElement("span", {className: "am-list-date"}, event.create_time, 
+		  		        React.createElement("br", null), 
+		  		       Store.getGroupNameByUuid(event.groupuuid), 
+		  		        "-", 
+		  		       event.create_user
+		  		      )
+		  		    )
+		    		  )
+		         })		
+    )  		  
+  );
+}
+}); 
  /*
   *公告点赞、评论、加载更多等详情绘制模板；
   * */
@@ -2100,6 +2437,7 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
 
 
 
@@ -2394,8 +2732,8 @@ render: function() {
 		   React.createElement("form", {id: "editForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.uuid}), 
 			
-			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
-   G_upload_img_Div, 
+			  React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
+              G_upload_img_Div, 
 		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
 		      
 		    )	   
