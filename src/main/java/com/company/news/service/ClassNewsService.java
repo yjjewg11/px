@@ -49,11 +49,11 @@ public class ClassNewsService extends AbstractServcice {
 	 */
 	public boolean add(ClassNewsJsonform classNewsJsonform,
 			ResponseMessage responseMessage) throws Exception {
-		if (StringUtils.isBlank(classNewsJsonform.getTitle())
-				|| classNewsJsonform.getTitle().length() > 128) {
-			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
-			return false;
-		}
+//		if (StringUtils.isBlank(classNewsJsonform.getTitle())
+//				|| classNewsJsonform.getTitle().length() > 128) {
+//			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+//			return false;
+//		}
 
 		if (StringUtils.isBlank(classNewsJsonform.getClassuuid())) {
 			responseMessage.setMessage("groupuuid不能为空！");
@@ -84,11 +84,11 @@ public class ClassNewsService extends AbstractServcice {
 	public boolean update(ClassNewsJsonform classNewsJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		
-		if (StringUtils.isBlank(classNewsJsonform.getTitle())
-				|| classNewsJsonform.getTitle().length() > 128) {
-			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
-			return false;
-		}
+//		if (StringUtils.isBlank(classNewsJsonform.getTitle())
+//				|| classNewsJsonform.getTitle().length() > 128) {
+//			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+//			return false;
+//		}
 
 		ClassNews cn = (ClassNews) this.nSimpleHibernateDao.getObjectById(
 				ClassNews.class, classNewsJsonform.getUuid());

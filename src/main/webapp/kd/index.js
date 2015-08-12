@@ -190,7 +190,25 @@ function login_affter_init(){
 	  	                                      }
 	                                        ]
 	                           
-	                          },	                       
+	                          },	
+	                          {
+		                            "link": "##",
+		                            "title": "统计",
+		                            "subMenu": [
+		                                        {
+		                                            "link": "##",
+		                                            "fn":menu_statistics_uss_fn,
+		                                            "title": "教师统计（按性别）"
+		                                          },
+		                                          
+		  	                                    {
+		  	                                        "link": "##",
+		  	                                     // "fn":menu_classnews_list_fn,
+		  	                                        "title": "邀请家长(未)"
+		  	                                      }
+		                                        ]
+		                           
+		                          },	
 	                        
 	                {
 	                  "link": "##",
