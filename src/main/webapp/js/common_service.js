@@ -591,8 +591,14 @@ function common_ajax_reply_save(callback){
 	 formName:"editClassnewsreplyForm",
 	 url:hostUrl + "rest/reply/save.json",
 	 cbFN:function(data){
-		 G_msg_pop(data.ResMsg.message);
-		 if(callback)callback();
+		 if (data.ResMsg.status == "success") {
+			 G_msg_pop(data.ResMsg.message);
+			 if(callback)callback();
+
+		} else {
+			alert(data.ResMsg.message);
+			G_resMsg_filter(data.ResMsg);
+		}
 	 }
 	 };
 	 G_ajax_abs_save(opt);

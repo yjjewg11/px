@@ -616,17 +616,23 @@ var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 		  
 		  this.pageNo++;
 	},
-	reply_save_callback:function(){
-		this.forceUpdate();
+	refreshReplyList:function(){
+		$("#"+this.classnewsreply_list_div).html("");
+		this.pageNo=1;
+		this.load_more_data();
 	},
+
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	var parentThis=this;
   return (
 		  React.createElement("div", {className: "G_reply"}, 
 		   React.createElement("h4", null, "评论"), 
 		   React.createElement("div", {id: this.classnewsreply_list_div}
 		   ), 
-			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")
+			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})
+			
 			)
 		   
   );
@@ -634,10 +640,15 @@ render: function() {
 }); 
 
 //我要评论模块 
+//that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
 var Common_reply_save = React.createClass({displayName: "Common_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	reply_save_btn_click:function(){
-		common_ajax_reply_save(this.props.reply_save_callback);
+		var that=this.props.parentThis;
+		common_ajax_reply_save(function(){
+			that.refreshReplyList();
+		
+		})
 	},
 render: function() {
   return (

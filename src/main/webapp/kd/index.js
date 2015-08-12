@@ -33,25 +33,25 @@ function login_affter_init(){
 	var menu_data=[];
 	var t_menu=null;//第一级菜单
 	var t_subMenu=null;//第二级子菜单
-	
-	
-	//切换分校
-	t_menu={
-	    "link": "##",
-	    "title": "切换分校"
-	  };
-	t_subMenu=[];
-	var t_group=Store.getGroup();
-	for(var i=0;i<t_group.length;i++){
-		t_subMenu.push({
-			"fn":menu_group_change_fn.bind(this,t_group[i]),
-		    "link": "##",
-		    "title": t_group[i].brand_name
-		  });
-	};
-	
-	t_menu.subMenu=t_subMenu;
-	menu_data.push(t_menu);
+//	
+//	
+//	//切换分校
+//	t_menu={
+//	    "link": "##",
+//	    "title": "切换分校"
+//	  };
+//	t_subMenu=[];
+//	var t_group=Store.getGroup();
+//	for(var i=0;i<t_group.length;i++){
+//		t_subMenu.push({
+//			"fn":menu_group_change_fn.bind(this,t_group[i]),
+//		    "link": "##",
+//		    "title": t_group[i].brand_name
+//		  });
+//	};
+//	
+//	t_menu.subMenu=t_subMenu;
+//	menu_data.push(t_menu);
 	
 	
 /*
@@ -86,7 +86,7 @@ function login_affter_init(){
 	t_menu={
 	        
 	            "link": "##",
-	            "title": "发布消息",
+	            "title": "信息管理",
 	            "subMenu": [
 	                        {
 	                          "fn":function(){menu_announce_list_fn(0);},
@@ -221,8 +221,8 @@ function login_affter_init(){
 	                    },
 	                {
 	                      "link": "##",
-	                      "title": "统计",
-	                      "fn":menu_statistics_list_fn
+	                      "title": "统计"
+	                      //"fn":menu_statistics_list_fn
 	                    }
 	                
 	              ];
@@ -280,11 +280,11 @@ function menu_dohome(){
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	var div_Gallery_data=[
-	                      {
-	                    	    "img": myhead_img,
-	                    	    "link": "javascript:menu_userinfo_update_fn();",
-	                    	    "title": "我"
-	                    	  },
+//	                      {
+//	                    	    "img": myhead_img,
+//	                    	    "link": "javascript:menu_userinfo_update_fn();",
+//	                    	    "title": "我"
+//	                    	  },
 
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
@@ -306,11 +306,6 @@ function menu_dohome(){
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
-	                    	  {
-		                    	    "img": hostUrl+"i/icon-msg.png",
-		                    	    "link": "###",
-		                    	    "title": "我的信箱(未)"
-		                    	  },
 		                    	 
 		                    	  {
 			                    	    "img": hostUrl+"i/header.png",
@@ -375,14 +370,14 @@ function menu_group_myList_fn() {
 	ajax_group_myList();
 }
 /*
- * (发布消息)<校园公告><老师公告><精品文章><招生计划>
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>
  * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
  * @跳转kd_service发服务器请求
  * */
 var announce_types=1;
 function menu_announce_list_fn(types) {
 	announce_types=types;
-	Queue.push(menu_announce_list_fn);
+  	Queue.push(function(){menu_announce_list_fn(announce_types);});
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
 };
 /*
@@ -494,7 +489,8 @@ function parentContactByMyStudent() {
  * @menu_announce_list_fn:直接调用发布消息中的方法
  */
 function menu_article_list_fn(){
-	menu_announce_list_fn(3);
+  	Queue.push(menu_article_list_fn);
+	ajax_announce_listGood(Store.getCurGroup().uuid);
 }
 /*
 * （首页）我的班级 show

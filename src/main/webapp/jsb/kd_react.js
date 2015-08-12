@@ -237,55 +237,9 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 
 
 
-var CookbookPlanShow_EventRow = React.createClass({displayName: "CookbookPlanShow_EventRow",
-	//第而.//使用list<cookbook>
-		componentWillReceiveProps: function(nextProps) {
-			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-			  this.setState({
-				  items: lists
-			  });
-			},
-	 getInitialState: function() {
-		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-		    return {
-	            items: lists
-	        };
-		  },
-	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
-		  //list
-	  cookbookPlan_timeStr_to_list:function(cooks){
-		  if(!cooks)cooks=[];
-		  return cooks;
-		 // if(!cooks)return [];
-		 // return cooks.split(",");
-		  
-	  },
-	  
-	  render: function() {
-	    return (
-	    		  React.createElement("div", {id: "div_cookPlan_"+this.props.type}, 
-	    		  
-	    			  this.state.items.map(function(event) {
-	    				  //直接使用list<cookbook>
-	    				  var t_uuid=event.uuid;
-	    				  var t_imguuid=event.img;
-	    				  var t_name=event.name;
-	    					 return (
-	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+t_uuid, title: t_uuid, className: "G_cookplan_Img"}, 
-	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+t_uuid, src: G_imgPath+t_imguuid, alt: "图片不存在", title: t_name}), 
-	    		    	 	       			React.createElement("span", null, t_name)
-	    		    	 	       		)		
-	     	 	            	);
-	    				
-	    			 })//end map
-	    		  
-	    		)
-		
-	  )
-	  }
-	});
 
-//Div_body_index reg
+
+//加载封的方法<div id="baidu_dup_1110291"></div>百度广告页面
 var Div_body_index = React.createClass({displayName: "Div_body_index", 
 	componentDidMount:function(){
 		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
@@ -293,8 +247,9 @@ var Div_body_index = React.createClass({displayName: "Div_body_index",
 	render: function() {
 	return (
 		React.createElement("div", null, 
-		React.createElement("div", {id: "baidu_dup_1110291"}), 
-		React.createElement(AMUIReact.Gallery, React.__spread({},   this.props))
+
+		React.createElement(AMUIReact.Gallery, React.__spread({},   this.props)), 
+		React.createElement("div", {id: "baidu_dup_1110291"})
 		)
 		
 	);
@@ -558,9 +513,9 @@ var Group_edit = React.createClass({displayName: "Group_edit",
   }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————发布消息<绘制>—————————————————————  
+//——————————————————————————信息管理<绘制>—————————————————————  
 /*
- *(发布消息)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
+ *(信息管理)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
  *@btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */  
 var Announcements_EventsTable = React.createClass({displayName: "Announcements_EventsTable",
@@ -655,7 +610,7 @@ var Announcements_EventRow = React.createClass({displayName: "Announcements_Even
 	}
 	});     
  /*
- * (发布消息)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
  * @w_img_upload_nocut:上传图片后发的请求刷新;
  * */    
 var Announcements_edit = React.createClass({displayName: "Announcements_edit", 
@@ -1819,8 +1774,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 				React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 			   ), 	
 			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_save, {uuid: o.uuid, type: 0})
+			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
 			    )		   
 	  );
 	}
@@ -2267,65 +2221,6 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
 
 
 //——————————————————————————（首页）公告<绘制>——————————————————————————  
-/*
- *公告功能表格绘制
- * 
- * */
-//var Announcements_mylist_EventsTable = React.createClass({
-//render: function() {
-//  return (
-//  <div>
-//    <AMR_Table {...this.props}>  
-//      <thead> 
-//        <tr>
-//          <th>标题</th>
-//          <th>类型</th>
-//          <th>幼儿园</th>
-//          <th>浏览次数</th>
-//          <th>创建人</th>
-//          <th>创建时间</th>
-//        </tr> 
-//      </thead>
-//      <tbody>
-//        {this.props.events.map(function(event) {
-//          return (<Announcements_mylist_EventRow  event={event} />);
-//        })}
-//        
-//      </tbody>
-//    </AMR_Table>
-//    
-//    </div>
-//  );
-//}
-//});
-//  /*
-//   *公告功能表格内容绘制
-//   *@react_ajax_announce_show：点击名字后进入内容详情绘制
-//   * 在kd_react；
-//   * */
-// var Announcements_mylist_EventRow = React.createClass({ 
-//	  render: function() {
-//	    var event = this.props.event;
-//	    var className = event.highlight ? 'am-active' :
-//      event.disabled ? 'am-disabled' : '';
-//
-//    return (
-//      <tr className={className} >
-//        <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a></td>
-//        <td>{Vo.announce_type(event.type)}</td>
-//        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-//        <td>{0}</td>
-//        <td>{event.create_user}</td>
-//        <td>{event.create_time}</td>
-//      </tr> 
-//    );
-//  }
-//  });
-
-
-
-
-
 /* 
  * 公告中的<信息>绘制舞台
  * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
@@ -2430,13 +2325,12 @@ return (
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
 		     ), 
 			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_save, {uuid: o.uuid, type: 0})
+			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
 		   )
 );
 }
 }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±  this.props.parent_React
 
 
 
@@ -2511,16 +2405,19 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
  * 
  */
 var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_showByOneDay", 
+	group_uuid:null,
 	handleClick: function(m) {
 		if(m=="pre"){
-			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point);
+			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }else if(m=="next"){
-			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point);
+			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }
 	},
-	componentDidMount: function() {
+	  handleChange_selectgroup_uuid:function(val){
+		  group_uuid=val;
+		  ajax_cookbookPlan_dayShow(g_cookbookPlan_listToShow_point,val);
 	  },
 	render: function() {
 	  var o = this.props.formdata;
@@ -2568,7 +2465,7 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上一天")
 				    ), 
 				    React.createElement(Col, {sm: 6}, 
-				    React.createElement("h1", null, "【", this.props.ch_group.brand_name, "】-每日食谱-", this.props.ch_day)
+				    React.createElement("h1", null, React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid}), "  -每日食谱-", this.props.ch_day)
 				    ), 
 				    React.createElement(Col, {sm: 3}, 
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下一天")	
@@ -2582,7 +2479,53 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 	  );
 }
 }); 
+/*
+ * 今日食谱绘制;
+ * 介绍页面查询的那一天食谱绘制
+ */
+var CookbookPlanShow_EventRow = React.createClass({displayName: "CookbookPlanShow_EventRow",
+	//第而.//使用list<cookbook>
+		componentWillReceiveProps: function(nextProps) {
+			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+			  this.setState({
+				  items: lists
+			  });
+			},
+	 getInitialState: function() {
+		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+		    return {
+	            items: lists
+	        };
+		  },
+		  //list
+	  cookbookPlan_timeStr_to_list:function(cooks){
+		  if(!cooks)cooks=[];
+		  return cooks;		  
+	  },	  
+	  render: function() {
+	    return (
+	    		  React.createElement("div", {id: "div_cookPlan_"+this.props.type}, 
+	    		  
+	    			  this.state.items.map(function(event) {
+	    				  var t_uuid=event.uuid;
+	    				  var t_imguuid=event.img;
+	    				  var t_name=event.name;
+	    					 return (
+	     	 	            		React.createElement("div", {id: "div_cookPlan_Item_"+t_uuid, title: t_uuid, className: "G_cookplan_Img"}, 
+	    		    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", id: "divCookItem_img_"+t_uuid, src: G_imgPath+t_imguuid, alt: "图片不存在", title: t_name}), 
+	    		    	 	       			React.createElement("span", null, t_name)
+	    		    	 	       		)		
+	     	 	            	);
+	    				
+	    			 })
+	    		  
+	    		)		
+	   )
+	  }
+	});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
 
 
 //——————————————————————————家长通讯录<绘制>—————————————————————————— 
@@ -2733,7 +2676,6 @@ render: function() {
 			React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.uuid}), 
 			
 			  React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
-              G_upload_img_Div, 
 		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
 		      
 		    )	   
@@ -2757,6 +2699,267 @@ var Message_queryByParent_listpage =React.createClass({displayName: "Message_que
 	}
 })
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————精品文章<绘制>—————————————————————  
+/*
+ *(信息管理)<精品文章>按钮及表单框绘制
+ *@btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */  
+var Announcements_Good_Table = React.createClass({displayName: "Announcements_Good_Table",
+  	handleClick: function(m) {
+  			 if(m=="add"){
+  				btnclick_good_announce(m,this.props.groupuuid,uuids);
+			 return;
+		 }
+		 var uuids=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			　if(this.checked){
+				 if(uuids==null)uuids=this.value;
+				 else
+				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+			　}
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  btnclick_good_announce(m,this.props.groupuuid,uuids);
+  },
+  handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+  },
+//  handleChange_selectgroup_uuid:function(val){
+//	  ajax_announce_listGood(val);
+//  },
+  render: function() {
+    return (
+    React.createElement("div", null, 
+    React.createElement("div", {className: "header"}, 
+  React.createElement("div", {className: "am-g"}, 
+    React.createElement("h1", null, Vo.announce_type(announce_types))
+  ), 
+  React.createElement("hr", null)
+), 
+React.createElement(AMR_ButtonToolbar, null, 
+    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "创建"), 
+    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit"), round: true}, "编辑"), 
+    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
+    ), 
+  React.createElement("hr", null), 
+  React.createElement("div", {className: "am-form-group"}, 
+  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+    ), 	  
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+     React.createElement("thead", null, 
+      React.createElement("tr", null, 
+      React.createElement("th", null, 
+   React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+        ), 
+        React.createElement("th", null, "标题"), 
+        React.createElement("th", null, "类型"), 
+        React.createElement("th", null, "幼儿园"), 
+        React.createElement("th", null, "浏览次数"), 
+        React.createElement("th", null, "创建人"), 
+        React.createElement("th", null, "创建时间")
+      )
+    ), 
+    React.createElement("tbody", null, 
+      this.props.events.map(function(event) {
+        return (React.createElement(Announcements_GoodRow, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+  });
+    
+     
+var Announcements_GoodRow = React.createClass({displayName: "Announcements_GoodRow", 
+	render: function() {
+	  var event = this.props.event;
+	  var className = event.highlight ? 'am-active' :
+	    event.disabled ? 'am-disabled' : '';
+
+	  return (
+	    React.createElement("tr", {className: className}, 
+	    React.createElement("td", null, 
+	    React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+	    ), 
+	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_good.bind( this, event.uuid)}, event.title)), 
+	      React.createElement("td", null, Vo.announce_type(event.type)), 
+	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+	      React.createElement("td", null, 0), 
+	      React.createElement("td", null, event.create_user), 
+	      React.createElement("td", null, event.create_time)
+	    ) 
+	  );
+	}
+	});     
+ /*
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
+var Announcements_goodedit = React.createClass({displayName: "Announcements_goodedit", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+          });
+	  },
+render: function() {
+	 var o = this.state;
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
+		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
+		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
+		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
+  		     );
+	  } else {
+		  type_div =
+		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
+	  }
+  return (
+  		React.createElement("div", null, 
+  		React.createElement("div", {className: "header"}, 
+  		  React.createElement("div", {className: "am-g"}, 
+  		    React.createElement("h1", null, Vo.announce_type(o.type), "-编辑")
+  		  ), 
+  		  React.createElement("hr", null)
+  		), 
+  		React.createElement("div", {className: "am-g"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
+  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+  		React.createElement("div", {className: "am-form-group"}, 
+  	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
+        ), 
+  		type_div, 
+  		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
+  		  React.createElement("br", null), 
+  		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
+ 		G_upload_img_Div, 
+  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
+  		  )
+  	     )
+  	   )	   
+  	  )
+  );
+}
+}); 
+/*
+ *公告点赞、评论、加载更多等详情绘制模板；
+ * */
+var Announcements_show_good = React.createClass({displayName: "Announcements_show_good", 
+render: function() {
+	  var o = this.props.data;
+return (
+		  React.createElement("div", null, 
+		  React.createElement(AMUIReact.Article, {
+		    title: o.title, 
+		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+		     ), 
+		     
+		     
+		     
+			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
+			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
+		   )
+);
+}
+}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //——————————————————————————我的班级<绘制>—————————————————————————— 

@@ -520,9 +520,9 @@ function ajax_group_edit(m,formdata){
   };	
  
   
-//————————————————————————————发布消息—————————————————————————    
+//————————————————————————————信息管理—————————————————————————    
 /*
-*(发布消息)<校园公告><老师公告><精品文章><招生计划>服务器请求
+*(信息管理)<校园公告><老师公告><精品文章><招生计划>服务器请求
 * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
@@ -559,13 +559,12 @@ function ajax_group_edit(m,formdata){
   	});
   }; 
   /*
-  *(发布消息)<校园公告><老师公告><精品文章><招生计划>添加等按钮绑定事件
+  *(信息管理)<校园公告><老师公告><精品文章><招生计划>添加等按钮绑定事件
   * @add:创建；
   * @edit:编辑；
   * @del:删除；
   * */  
   function btn_click_announce(m,groupuuid,uuid){
-	  	Queue.push(function(){btn_click_announce(m,groupuuid,uuid);});
 	  	if(m=="add"){
 	  		react_ajax_announce_edit({groupuuid:groupuuid,type:announce_types},null);
 	  	}else if(m=="edit"){
@@ -575,11 +574,12 @@ function ajax_group_edit(m,formdata){
 	  	}
 	  }; 
   /*
-   *(发布消息)<校园公告><老师公告><精品文章><招生计划>创建与编辑服务请求；
+   *(信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑服务请求；
    * @if(!uuid):创建；
    * @uuid不是则:编辑；
    * */  	  
   function react_ajax_announce_edit(formdata,uuid){
+		Queue.push(function(){react_ajax_announce_edit(formdata,uuid);});
 	  	if(!uuid){
 	  		React.render(React.createElement(Announcements_edit,{
 	  			formdata:formdata,
@@ -612,7 +612,7 @@ function ajax_group_edit(m,formdata){
 	  	});
 	  };
   /*
-   *(发布消息)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+   *(信息管理)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
    *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
    * */  	  
   function react_ajax_announce_delete(groupuuid,uuid){	  	
@@ -639,7 +639,7 @@ function ajax_group_edit(m,formdata){
   	});
   };
   /*
-  *(发布消息)<校园公告><老师公告><精品文章><招生计划>创建与编辑提交按钮方法
+  *(信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑提交按钮方法
   *@OPT：我们把内容用Form表单提交到Opt我们封装的
   *一个方法内直接传给服务器，服务器从表单取出需要的参数
   * */    
@@ -824,6 +824,7 @@ var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
 var g_teachingplan_classname=null;
 function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
+  	Queue.push(function(){ajax_teachingplan_listByClass(classuuid,classname,weeknum);});
 	if(classuuid)g_teachingplan_classuuid=classuuid;
 	else classuuid=g_teachingplan_classuuid;
 	if(classname)g_teachingplan_classname=classname;
@@ -876,7 +877,6 @@ function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
  * 班级详情内添加编辑课程等按钮方法判断;
  * */ 
 function btn_click_teachingplan(m,uuid,classuuid){
-	Queue.push(function(){btn_click_teachingplan(m,uuid,classuuid);});
 	if(m=="add"){
 		react_ajax_teachingplan_edit({classuuid:classuuid},null);
 	}else if(m=="edit"){
@@ -914,6 +914,7 @@ function btn_click_teachingplan(m,uuid,classuuid){
  * 
  * */ 
 function react_ajax_teachingplan_edit(formdata,uuid){
+  	Queue.push(function(){react_ajax_teachingplan_edit(formdata,uuid);});
 	if(!uuid){
 		if(!formdata.classuuid){
 			alert("新建课程，班级id必填");
@@ -2041,13 +2042,18 @@ function ajax_teachingplan_dayShow(num,myclazz) {
  * @老师查询，条件groupuuid
  * @num:0.表示当前.-1上,1下.2下下
  * @g_cookbookPlan_listToShow_point:记录当前翻页的周数
+ * @formdata有食谱的判断;
  * */
 var g_cookbookPlan_listToShow_point=0;
-function ajax_cookbookPlan_dayShow(num) {
+var g_cookbookPlan_groupuuid="";
+function ajax_cookbookPlan_dayShow(num,groupuuid) {
 	var now=new Date();
 	if(!num){
 		num=0;
 		g_cookbookPlan_listToShow_point=0;
+	}
+	if(!groupuuid){
+		groupuuid=Store.getCurGroup().uuid;
 	}
 	var begDateStr=G_week.getDateStr(now,num);
 	var endDateStr=begDateStr;
@@ -2056,14 +2062,20 @@ function ajax_cookbookPlan_dayShow(num) {
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {groupuuid:Store.getCurGroup().uuid,begDateStr:begDateStr,endDateStr:endDateStr},
+		data : {groupuuid:groupuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+		cooklist:G_selected_dataModelArray_byArray(Store.getGroup (),"uuid" ,"brand_name"),
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				if(data.list==null)data.list=[];
 				var formdata=data.list[0];
-				React.render(React.createElement(CookbookPlan_showByOneDay,{ch_group:Store.getCurGroup(),ch_day:begDateStr,formdata:formdata}), document.getElementById('div_body'));
+				React.render(React.createElement(CookbookPlan_showByOneDay,{
+					groupuuid:groupuuid,
+					ch_group:G_selected_dataModelArray_byArray(Store.getGroup (),"uuid" ,"brand_name"),
+					ch_day:begDateStr,
+					formdata:formdata
+					}), document.getElementById('div_body'));
 				
 			} else {
 				alert(data.ResMsg.message);
@@ -2079,6 +2091,236 @@ function ajax_cookbookPlan_dayShow(num) {
 		}
 	});
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//————————————————————————————精品文章—————————————————————————    
+/*
+*(精品文章)服务器请求
+* @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
+* @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
+* */
+  function ajax_announce_listGood(groupuuid) {
+  	$.AMUI.progress.start();
+  	var url = hostUrl + "rest/announcements/list.json";
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+  		data : {type:3,groupuuid:groupuuid},
+  		dataType : "json",
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Announcements_Good_Table, {
+  					groupuuid:groupuuid,
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+  					events: data.list,
+  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+  					}), document.getElementById('div_body'));
+  				
+  			} else {
+  				alert(data.ResMsg.message);
+  				G_resMsg_filter(data.ResMsg);
+  			}
+  		}
+  	});
+  }; 
+  /*
+  *(精品文章)<校园公告><老师公告><精品文章><招生计划>添加等按钮绑定事件
+  * @add:创建；
+  * @edit:编辑；
+  * @del:删除；
+  * */  
+  function btnclick_good_announce(m,groupuuid,uuid){
+	  	if(m=="add"){
+	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:announce_types},null);
+	  	}else if(m=="edit"){
+	  		react_ajax_announce_good_edit(null,uuid);
+	  	}else if(m=="del"){
+	  		react_ajax_announce_good_delete(groupuuid,uuid);
+	  	}
+	  }; 
+  /*
+   *(精品文章)<校园公告><老师公告><精品文章><招生计划>创建与编辑服务请求；
+   * @if(!uuid):创建；
+   * @uuid不是则:编辑；
+   * */  	  
+  function react_ajax_announce_good_edit(formdata,uuid){
+		Queue.push(function(){react_ajax_announce_edit(formdata,uuid);});
+	  	if(!uuid){
+	  		React.render(React.createElement(Announcements_edit,{
+	  			formdata:formdata,
+	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+	  			}), document.getElementById('div_body'));
+	  		return;
+	  	}
+	  	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/announcements/"+uuid+".json";
+	  	$.ajax({
+	  		type : "GET",
+	  		url : url,
+	  		dataType : "json",
+	  		 async: true,
+	  		success : function(data) {
+	  			$.AMUI.progress.done();
+	  			if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(Announcements_goodedit,{
+	  					formdata:data.data,
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+	  					}),document.getElementById('div_body'));
+	  			} else {
+	  				alert("加载数据失败："+data.ResMsg.message);
+	  			}
+	  		},
+	  		error : function( obj, textStatus, errorThrown ){
+	  			$.AMUI.progress.done();
+	  			alert(url+",error:"+textStatus);
+	  		}
+	  	});
+	  };
+  /*
+   *(精品文章)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+   * */  	  
+  function react_ajax_announce_good_delete(groupuuid,uuid){	  	
+	  	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
+  	$.ajax({
+  		type : "POST",
+  		url : url,
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				ajax_announce_listByGroup(groupuuid);
+  			} else {
+  				alert(data.ResMsg.message);
+  			}
+  		},
+  		error : function( obj, textStatus, errorThrown ){
+  			$.AMUI.progress.done();
+  			alert(url+",error:"+textStatus);
+  		}
+  	});
+  };
+  /*
+  *(精品文章)<校园公告><老师公告><精品文章><招生计划>创建与编辑提交按钮方法
+  *@OPT：我们把内容用Form表单提交到Opt我们封装的
+  *一个方法内直接传给服务器，服务器从表单取出需要的参数
+  * */    
+  function ajax_good_save(){
+      var opt={
+              formName: "editAnnouncementsForm",
+          url:hostUrl + "rest/announcements/save.json",
+              cbFN:null
+              };
+  G_ajax_abs_save(opt);
+  }	  
+  /*
+   * <精品文章>详情服务器请求；
+   * @Announcements_show:详情绘制
+   * 在kd_rect;
+   * */
+  function react_ajax_announce_good(uuid){
+  	Queue.push(function(){react_ajax_announce_show(uuid);});
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/announcements/"+uuid+".json";
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Announcements_show_good,{data:data.data,count:data.count}), document.getElementById('div_body'));
+  			} else {
+  				alert("加载数据失败："+data.ResMsg.message);
+  			}
+  		},
+  		error : function( obj, textStatus, errorThrown ){
+  			$.AMUI.progress.done();
+  			alert(url+",error:"+textStatus);
+  		}
+  	});
+  };
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
 
 //—————————————————————————————(大图标)家长通讯录—————————————————————————    
 

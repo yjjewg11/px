@@ -237,55 +237,9 @@ var CookbookPlan_edit_EventRow = React.createClass({
 
 
 
-var CookbookPlanShow_EventRow = React.createClass({
-	//第而.//使用list<cookbook>
-		componentWillReceiveProps: function(nextProps) {
-			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-			  this.setState({
-				  items: lists
-			  });
-			},
-	 getInitialState: function() {
-		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-		    return {
-	            items: lists
-	        };
-		  },
-	  //uuids=rs += (cb.getUuid() + "$" + cb.getName() + ",");
-		  //list
-	  cookbookPlan_timeStr_to_list:function(cooks){
-		  if(!cooks)cooks=[];
-		  return cooks;
-		 // if(!cooks)return [];
-		 // return cooks.split(",");
-		  
-	  },
-	  
-	  render: function() {
-	    return (
-	    		  <div id={"div_cookPlan_"+this.props.type}>
-	    		  {
-	    			  this.state.items.map(function(event) {
-	    				  //直接使用list<cookbook>
-	    				  var t_uuid=event.uuid;
-	    				  var t_imguuid=event.img;
-	    				  var t_name=event.name;
-	    					 return (
-	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
-	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
-	    		    	 	       			<span >{t_name}</span>
-	    		    	 	       		</div>		
-	     	 	            	);
-	    				
-	    			 })//end map
-	    		  } 
-	    		</div>
-		
-	  )
-	  }
-	});
 
-//Div_body_index reg
+
+//加载封的方法<div id="baidu_dup_1110291"></div>百度广告页面
 var Div_body_index = React.createClass({ 
 	componentDidMount:function(){
 		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
@@ -293,8 +247,9 @@ var Div_body_index = React.createClass({
 	render: function() {
 	return (
 		<div>
-		<div id="baidu_dup_1110291"></div>
+
 		<AMUIReact.Gallery  {...this.props} />
+		<div id="baidu_dup_1110291"></div>
 		</div>
 		
 	);
@@ -558,9 +513,9 @@ var Group_edit = React.createClass({
   }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————发布消息<绘制>—————————————————————  
+//——————————————————————————信息管理<绘制>—————————————————————  
 /*
- *(发布消息)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
+ *(信息管理)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
  *@btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */  
 var Announcements_EventsTable = React.createClass({
@@ -655,7 +610,7 @@ var Announcements_EventRow = React.createClass({
 	}
 	});     
  /*
- * (发布消息)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
  * @w_img_upload_nocut:上传图片后发的请求刷新;
  * */    
 var Announcements_edit = React.createClass({ 
@@ -1820,7 +1775,6 @@ var Classnews_show = React.createClass({
 			   </AMUIReact.Article>	
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
 			  <Common_reply_list uuid={o.uuid}  type={0}/>
-			  <Common_reply_save uuid={o.uuid}  type={0}/>
 			    </div>		   
 	  );
 	}
@@ -2267,65 +2221,6 @@ var Query_EventRow = React.createClass({
 
 
 //——————————————————————————（首页）公告<绘制>——————————————————————————  
-/*
- *公告功能表格绘制
- * 
- * */
-//var Announcements_mylist_EventsTable = React.createClass({
-//render: function() {
-//  return (
-//  <div>
-//    <AMR_Table {...this.props}>  
-//      <thead> 
-//        <tr>
-//          <th>标题</th>
-//          <th>类型</th>
-//          <th>幼儿园</th>
-//          <th>浏览次数</th>
-//          <th>创建人</th>
-//          <th>创建时间</th>
-//        </tr> 
-//      </thead>
-//      <tbody>
-//        {this.props.events.map(function(event) {
-//          return (<Announcements_mylist_EventRow  event={event} />);
-//        })}
-//        
-//      </tbody>
-//    </AMR_Table>
-//    
-//    </div>
-//  );
-//}
-//});
-//  /*
-//   *公告功能表格内容绘制
-//   *@react_ajax_announce_show：点击名字后进入内容详情绘制
-//   * 在kd_react；
-//   * */
-// var Announcements_mylist_EventRow = React.createClass({ 
-//	  render: function() {
-//	    var event = this.props.event;
-//	    var className = event.highlight ? 'am-active' :
-//      event.disabled ? 'am-disabled' : '';
-//
-//    return (
-//      <tr className={className} >
-//        <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind( this, event.uuid)}>{event.title}</a></td>
-//        <td>{Vo.announce_type(event.type)}</td>
-//        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-//        <td>{0}</td>
-//        <td>{event.create_user}</td>
-//        <td>{event.create_time}</td>
-//      </tr> 
-//    );
-//  }
-//  });
-
-
-
-
-
 /* 
  * 公告中的<信息>绘制舞台
  * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
@@ -2430,13 +2325,12 @@ return (
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
 		     </AMUIReact.Article>
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
-			  <Common_reply_list uuid={o.uuid}  type={0}/>
-			  <Common_reply_save uuid={o.uuid}  type={0}/>
+			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
 );
 }
 }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±  this.props.parent_React
 
 
 
@@ -2511,16 +2405,19 @@ var Teachingplan_showByOneDay = React.createClass({
  * 
  */
 var CookbookPlan_showByOneDay = React.createClass({ 
+	group_uuid:null,
 	handleClick: function(m) {
 		if(m=="pre"){
-			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point);
+			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }else if(m=="next"){
-			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point);
+			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }
 	},
-	componentDidMount: function() {
+	  handleChange_selectgroup_uuid:function(val){
+		  group_uuid=val;
+		  ajax_cookbookPlan_dayShow(g_cookbookPlan_listToShow_point,val);
 	  },
 	render: function() {
 	  var o = this.props.formdata;
@@ -2568,7 +2465,7 @@ var CookbookPlan_showByOneDay = React.createClass({
 				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")}  round>上一天</AMR_Button>
 				    </Col>
 				    <Col sm={6}>
-				    <h1>【{this.props.ch_group.brand_name}】-每日食谱-{this.props.ch_day}</h1>
+				    <h1><AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />  -每日食谱-{this.props.ch_day}</h1>
 				    </Col>
 				    <Col sm={3}>
 				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下一天</AMR_Button>	
@@ -2582,7 +2479,53 @@ var CookbookPlan_showByOneDay = React.createClass({
 	  );
 }
 }); 
+/*
+ * 今日食谱绘制;
+ * 介绍页面查询的那一天食谱绘制
+ */
+var CookbookPlanShow_EventRow = React.createClass({
+	//第而.//使用list<cookbook>
+		componentWillReceiveProps: function(nextProps) {
+			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+			  this.setState({
+				  items: lists
+			  });
+			},
+	 getInitialState: function() {
+		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
+		    return {
+	            items: lists
+	        };
+		  },
+		  //list
+	  cookbookPlan_timeStr_to_list:function(cooks){
+		  if(!cooks)cooks=[];
+		  return cooks;		  
+	  },	  
+	  render: function() {
+	    return (
+	    		  <div id={"div_cookPlan_"+this.props.type}>
+	    		  {
+	    			  this.state.items.map(function(event) {
+	    				  var t_uuid=event.uuid;
+	    				  var t_imguuid=event.img;
+	    				  var t_name=event.name;
+	    					 return (
+	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
+	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
+	    		    	 	       			<span >{t_name}</span>
+	    		    	 	       		</div>		
+	     	 	            	);
+	    				
+	    			 })
+	    		  } 
+	    		</div>		
+	   )
+	  }
+	});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
 
 
 //——————————————————————————家长通讯录<绘制>—————————————————————————— 
@@ -2733,7 +2676,6 @@ render: function() {
 			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
 			
 			  <AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
-              {G_upload_img_Div}
 		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
 		      
 		    </form>	   
@@ -2757,6 +2699,267 @@ var Message_queryByParent_listpage =React.createClass({
 	}
 })
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————精品文章<绘制>—————————————————————  
+/*
+ *(信息管理)<精品文章>按钮及表单框绘制
+ *@btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */  
+var Announcements_Good_Table = React.createClass({
+  	handleClick: function(m) {
+  			 if(m=="add"){
+  				btnclick_good_announce(m,this.props.groupuuid,uuids);
+			 return;
+		 }
+		 var uuids=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			　if(this.checked){
+				 if(uuids==null)uuids=this.value;
+				 else
+				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+			　}
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  btnclick_good_announce(m,this.props.groupuuid,uuids);
+  },
+  handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+  },
+//  handleChange_selectgroup_uuid:function(val){
+//	  ajax_announce_listGood(val);
+//  },
+  render: function() {
+    return (
+    <div>
+    <div className="header">
+  <div className="am-g">
+    <h1>{Vo.announce_type(announce_types)}</h1>
+  </div>
+  <hr />
+</div>
+<AMR_ButtonToolbar>
+    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
+    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
+    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+    </AMR_ButtonToolbar>
+  <hr/>
+  <div className="am-form-group">
+  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />    
+    </div> 	  
+      <AMR_Table {...this.props}>  
+     <thead> 
+      <tr>
+      <th>  
+   <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+        </th>
+        <th>标题</th>
+        <th>类型</th>
+        <th>幼儿园</th>
+        <th>浏览次数</th>
+        <th>创建人</th>
+        <th>创建时间</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {this.props.events.map(function(event) {
+        return (<Announcements_GoodRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+  });
+    
+     
+var Announcements_GoodRow = React.createClass({ 
+	render: function() {
+	  var event = this.props.event;
+	  var className = event.highlight ? 'am-active' :
+	    event.disabled ? 'am-disabled' : '';
+
+	  return (
+	    <tr className={className} >
+	    <td> 
+	    <input type="checkbox" value={event.uuid} name="table_checkbox" />
+	    </td>
+	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_good.bind( this, event.uuid)}>{event.title}</a></td>
+	      <td>{Vo.announce_type(event.type)}</td>
+	      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+	      <td>{0}</td>
+	      <td>{event.create_user}</td>
+	      <td>{event.create_time}</td>
+	    </tr> 
+	  );
+	}
+	});     
+ /*
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
+var Announcements_goodedit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+          });
+	  },
+render: function() {
+	 var o = this.state;
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   <div className="am-form-group" id="div_classuuids" >
+		  		<input type="hidden" name="type"  value={o.type}/>
+		  		<label htmlFor="tel">班级通知:</label>
+		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		     </div>;
+	  } else {
+		  type_div =
+		  <input type="hidden" name="type"  value={o.type}/>
+	  }
+  return (
+  		<div>
+  		<div className="header">
+  		  <div className="am-g">
+  		    <h1>{Vo.announce_type(o.type)}-编辑</h1>
+  		  </div>
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <form id="editAnnouncementsForm" method="post" className="am-form">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+  		<div className="am-form-group">
+  	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+        </div>   
+  		{type_div}
+  		  <label htmlFor="name">标题:</label>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
+  		  <br/>
+  		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+ 		{G_upload_img_Div} 
+  		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
+  		  </form>
+  	     </div>
+  	   </div>	   
+  	  </div>
+  );
+}
+}); 
+/*
+ *公告点赞、评论、加载更多等详情绘制模板；
+ * */
+var Announcements_show_good = React.createClass({ 
+render: function() {
+	  var o = this.props.data;
+return (
+		  <div>
+		  <AMUIReact.Article
+		    title={o.title}
+		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+		     </AMUIReact.Article>
+		     
+		     
+		     
+			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+		   </div>
+);
+}
+}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //——————————————————————————我的班级<绘制>—————————————————————————— 
