@@ -1853,28 +1853,28 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
  * @请求数据成功后执行Accounts_EventsTable方法绘制
  * 在kd_react
  * */
-function ajax_statistics_list() {
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/statistics/type.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : "",
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Statistics_Number, {
-					events: data.list,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));				
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		}
-	});
-};
+//function ajax_statistics_list() {
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/statistics/type.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		data : "",
+//		dataType : "json",
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Statistics_Number, {
+//					events: data.list,
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//					}), document.getElementById('div_body'));				
+//			} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}
+//		}
+//	});
+//};
 	
 	
 	
