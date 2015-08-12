@@ -2095,78 +2095,102 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 
 
 
+//————————————————————————————精品文章————————————————————————— 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//————————————————————————————精品文章—————————————————————————    
 /*
-*(精品文章)服务器请求
+ * <精品文章>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+ * 基本框 等
+ * */
+function ajax_good_announce_div(){
+	React.render(React.createElement(Announcements_good_Div_list), document.getElementById('div_body'));
+   	
+};
+/*
+*(精品文章)服务器请求share/articleList
 * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
-* @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
+* 取出数组服务器请求后
+* 开始绘制动态数据内容
 * */
-  function ajax_announce_listGood(groupuuid) {
-  	$.AMUI.progress.start();
-  	var url = hostUrl + "rest/announcements/list.json";
-  	$.ajax({
-  		type : "GET",
-  		url : url,
-  		data : {type:3,groupuuid:groupuuid},
-  		dataType : "json",
-  		success : function(data) {
-  			$.AMUI.progress.done();
-  			if (data.ResMsg.status == "success") {
-  				React.render(React.createElement(Announcements_Good_Table, {
-  					groupuuid:groupuuid,
-  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-  					events: data.list,
-  					responsive: true, bordered: true, striped :true,hover:true,striped:true
-  					}), document.getElementById('div_body'));
-  				
-  			} else {
-  				alert(data.ResMsg.message);
-  				G_resMsg_filter(data.ResMsg);
-  			}
-  		}
-  	});
-  }; 
-  /*
-  *(精品文章)<校园公告><老师公告><精品文章><招生计划>添加等按钮绑定事件
-  * @add:创建；
-  * @edit:编辑；
-  * @del:删除；
-  * */  
-  function btnclick_good_announce(m,groupuuid,uuid){
+function ajax_announce_Mygoodlist(list_div,pageNo) {
+	var re_data=null;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/share/articleList.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+  		data : {type:3,pageNo:pageNo},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Announcements_mygoodlist_div, {
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				re_data=data.list;
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		}
+	});
+	return re_data;
+};
+/*
+ *<精品文章>详情服务器请求；
+* @Announcements_show:详情绘制
+ * 在kd_rect;
+ * */
+function react_ajax_announce_good_show(uuid){
+	Queue.push(function(){react_ajax_announce_good_show(uuid);});
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/announcements/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Announcements_goodshow,{data:data.data,count:data.count}), document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+",error:"+textStatus);
+		}
+	});
+};
+
+/*
+ *(精品文章)添加等按钮绑定事件
+ * @add:创建；
+ * @edit:编辑；
+ * @del:删除；
+ * */  
+ function btnclick_good_announce(m,groupuuid,uuid){
 	  	if(m=="add"){
-	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:announce_types},null);
+	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:3},null);
 	  	}else if(m=="edit"){
 	  		react_ajax_announce_good_edit(null,uuid);
 	  	}else if(m=="del"){
 	  		react_ajax_announce_good_delete(groupuuid,uuid);
 	  	}
-	  }; 
+	 }; 
   /*
-   *(精品文章)<校园公告><老师公告><精品文章><招生计划>创建与编辑服务请求；
+   *(精品文章)创建与编辑服务请求；
    * @if(!uuid):创建；
    * @uuid不是则:编辑；
    * */  	  
   function react_ajax_announce_good_edit(formdata,uuid){
 		Queue.push(function(){react_ajax_announce_edit(formdata,uuid);});
 	  	if(!uuid){
-	  		React.render(React.createElement(Announcements_edit,{
+	  		React.render(React.createElement(Announcements_goodedit,{
 	  			formdata:formdata,
 	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
 	  			}), document.getElementById('div_body'));
@@ -2197,34 +2221,34 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 	  	});
 	  };
   /*
-   *(精品文章)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+   *(精品文章)删除按钮服务请求；
    *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
    * */  	  
-  function react_ajax_announce_good_delete(groupuuid,uuid){	  	
-	  	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
-  	$.ajax({
-  		type : "POST",
-  		url : url,
-  		dataType : "json",
-  		 async: true,
-  		success : function(data) {
-  			$.AMUI.progress.done();
-  			// 登陆成功直接进入主页
-  			if (data.ResMsg.status == "success") {
-  				ajax_announce_listByGroup(groupuuid);
-  			} else {
-  				alert(data.ResMsg.message);
-  			}
-  		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-  		}
-  	});
-  };
+//  function react_ajax_announce_good_delete(groupuuid,uuid){	  	
+//	  	$.AMUI.progress.start();
+//	      var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
+//  	$.ajax({
+//  		type : "POST",
+//  		url : url,
+//  		dataType : "json",
+//  		 async: true,
+//  		success : function(data) {
+//  			$.AMUI.progress.done();
+//  			// 登陆成功直接进入主页
+//  			if (data.ResMsg.status == "success") {
+//  				ajax_good_announce_div();
+//  			} else {
+//  				alert(data.ResMsg.message);
+//  			}
+//  		},
+//  		error : function( obj, textStatus, errorThrown ){
+//  			$.AMUI.progress.done();
+//  			alert(url+",error:"+textStatus);
+//  		}
+//  	});
+//  };
   /*
-  *(精品文章)<校园公告><老师公告><精品文章><招生计划>创建与编辑提交按钮方法
+  *(精品文章)创建与编辑提交按钮方法
   *@OPT：我们把内容用Form表单提交到Opt我们封装的
   *一个方法内直接传给服务器，服务器从表单取出需要的参数
   * */    
@@ -2236,92 +2260,8 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
               };
   G_ajax_abs_save(opt);
   }	  
-  /*
-   * <精品文章>详情服务器请求；
-   * @Announcements_show:详情绘制
-   * 在kd_rect;
-   * */
-  function react_ajax_announce_good(uuid){
-  	Queue.push(function(){react_ajax_announce_show(uuid);});
-  	$.AMUI.progress.start();
-      var url = hostUrl + "rest/announcements/"+uuid+".json";
-  	$.ajax({
-  		type : "GET",
-  		url : url,
-  		dataType : "json",
-  		 async: true,
-  		success : function(data) {
-  			$.AMUI.progress.done();
-  			// 登陆成功直接进入主页
-  			if (data.ResMsg.status == "success") {
-  				React.render(React.createElement(Announcements_show_good,{data:data.data,count:data.count}), document.getElementById('div_body'));
-  			} else {
-  				alert("加载数据失败："+data.ResMsg.message);
-  			}
-  		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-  		}
-  	});
-  };
-
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
-
-
-
 //—————————————————————————————(大图标)家长通讯录—————————————————————————    
 
 //大图标统一定义一个菜单;

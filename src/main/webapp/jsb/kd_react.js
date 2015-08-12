@@ -2252,7 +2252,6 @@ var Announcements_Div_list = React.createClass({displayName: "Announcements_Div_
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		Announcements_Div_kuang();
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
@@ -2330,7 +2329,7 @@ return (
 );
 }
 }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±  this.props.parent_React
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -2702,150 +2701,137 @@ var Message_queryByParent_listpage =React.createClass({displayName: "Message_que
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————精品文章<绘制>—————————————————————  
-/*
- *(信息管理)<精品文章>按钮及表单框绘制
- *@btn_click_announce:点击按钮事件跳转kd_servise方法;
- * */  
-var Announcements_Good_Table = React.createClass({displayName: "Announcements_Good_Table",
-  	handleClick: function(m) {
-  			 if(m=="add"){
-  				btnclick_good_announce(m,this.props.groupuuid,uuids);
-			 return;
-		 }
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  btnclick_good_announce(m,this.props.groupuuid,uuids);
-  },
-  handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-  },
-//  handleChange_selectgroup_uuid:function(val){
-//	  ajax_announce_listGood(val);
-//  },
-  render: function() {
-    return (
-    React.createElement("div", null, 
-    React.createElement("div", {className: "header"}, 
-  React.createElement("div", {className: "am-g"}, 
-    React.createElement("h1", null, Vo.announce_type(announce_types))
-  ), 
-  React.createElement("hr", null)
-), 
-React.createElement(AMR_ButtonToolbar, null, 
-    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "创建"), 
-    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit"), round: true}, "编辑"), 
-    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
-    ), 
-  React.createElement("hr", null), 
-  React.createElement("div", {className: "am-form-group"}, 
-  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
-    ), 	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-     React.createElement("thead", null, 
-      React.createElement("tr", null, 
-      React.createElement("th", null, 
-   React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-        ), 
-        React.createElement("th", null, "标题"), 
-        React.createElement("th", null, "类型"), 
-        React.createElement("th", null, "幼儿园"), 
-        React.createElement("th", null, "浏览次数"), 
-        React.createElement("th", null, "创建人"), 
-        React.createElement("th", null, "创建时间")
-      )
-    ), 
-    React.createElement("tbody", null, 
-      this.props.events.map(function(event) {
-        return (React.createElement(Announcements_GoodRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-  });
-    
-     
-var Announcements_GoodRow = React.createClass({displayName: "Announcements_GoodRow", 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
 
-	  return (
-	    React.createElement("tr", {className: className}, 
-	    React.createElement("td", null, 
-	    React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
-	    ), 
-	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_good.bind( this, event.uuid)}, event.title)), 
-	      React.createElement("td", null, Vo.announce_type(event.type)), 
-	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-	      React.createElement("td", null, 0), 
-	      React.createElement("td", null, event.create_user), 
-	      React.createElement("td", null, event.create_time)
-	    ) 
-	  );
-	}
-	});     
+/* 
+ * <精品文章>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */
+var Announcements_good_Div_list = React.createClass({displayName: "Announcements_good_Div_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+	//创建精品文章点击按钮事件跳转kd_servise方法;
+  	handleClick: function(m,groupuuid) {
+		  btnclick_good_announce(m,Store.getCurGroup().uuid);
+},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+
+		  React.createElement(AMR_ButtonToolbar, null, 
+		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add",this.props.groupuuid), round: true}, "创建精品文章")
+		    ), 
+		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
+		  ), 
+		  React.createElement("div", {className: "am-list-news-ft"}, 
+		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+		  )
+		)
+		  
+			
+  );
+}
+});
+/*
+ *<精品文章>表格内容绘制
+ * 在kd_react；
+ * */
+var Announcements_mygoodlist_div = React.createClass({displayName: "Announcements_mygoodlist_div", 
+	  render: function() {
+	    var event = this.props.events;
+	    var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+     React.createElement("ul", {className: "am-list"}, 
+		  this.props.events.data.map(function(event) {
+		      return (
+		    		React.createElement("li", {className: "am-list-news-hd am-g"}, 
+		  		      React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_good_show.bind( this, event.uuid)}, Vo.announce_type(event.type), ":", event.title), 
+		  		        
+		  		        React.createElement("span", {className: "am-list-date"}, event.create_time, 
+		  		        React.createElement("br", null), 
+		  		       Store.getGroupNameByUuid(event.groupuuid), 
+		  		        "-", 
+		  		       event.create_user
+		  		      )
+		  		    )
+		    		  )
+		         })		
+    )  		  
+  );
+}
+}); 
+
+
+
+/*
+*公告点赞、评论、加载更多等详情绘制模板；
+* */
+var Announcements_goodshow = React.createClass({displayName: "Announcements_goodshow", 
+	//创建精品文章点击按钮事件跳转kd_servise方法;
+  	handleClick: function(m,groupuuid,uuid) {
+		  btnclick_good_announce(m,groupuuid,uuid);
+}, 
+edithide: function() {
+    	$("#"+this.load_more_btn_id1).hide();
+}, 
+render: function() {
+	  var o = this.props.data;
+	  this.load_more_btn_id1="load_more_"+o.uuid;
+	  this.load_more_btn_id2="load_more2_"+o.uuid;
+return (
+		  React.createElement("div", null, 
+		  React.createElement(AMUIReact.Article, {
+		    title: o.title, 
+		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+		     ), 
+		     React.createElement(AMR_ButtonToolbar, null, 
+		     React.createElement(AMR_Button, {id: this.load_more_btn_id1, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
+		      this.edithide()
+		     ), 	
+			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
+			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
+		   )
+);
+}
+}); 
+
+
  /*
- * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * (精品文章)创建与编辑界面绘制；
  * @w_img_upload_nocut:上传图片后发的请求刷新;
  * */    
 var Announcements_goodedit = React.createClass({displayName: "Announcements_goodedit", 
@@ -2905,58 +2891,7 @@ render: function() {
   );
 }
 }); 
-/*
- *公告点赞、评论、加载更多等详情绘制模板；
- * */
-var Announcements_show_good = React.createClass({displayName: "Announcements_show_good", 
-render: function() {
-	  var o = this.props.data;
-return (
-		  React.createElement("div", null, 
-		  React.createElement(AMUIReact.Article, {
-		    title: o.title, 
-		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
-		     ), 
-		     
-		     
-		     
-			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
-		   )
-);
-}
-}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

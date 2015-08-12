@@ -493,7 +493,7 @@ function parentContactByMyStudent() {
  */
 function menu_article_list_fn(){
   	Queue.push(menu_article_list_fn);
-	ajax_announce_listGood(Store.getCurGroup().uuid);
+  	ajax_good_announce_div();
 }
 /*
 * （首页）我的班级 show

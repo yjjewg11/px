@@ -2252,7 +2252,6 @@ var Announcements_Div_list = React.createClass({
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		Announcements_Div_kuang();
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
@@ -2330,7 +2329,7 @@ return (
 );
 }
 }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±  this.props.parent_React
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -2702,150 +2701,137 @@ var Message_queryByParent_listpage =React.createClass({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————精品文章<绘制>—————————————————————  
-/*
- *(信息管理)<精品文章>按钮及表单框绘制
- *@btn_click_announce:点击按钮事件跳转kd_servise方法;
- * */  
-var Announcements_Good_Table = React.createClass({
-  	handleClick: function(m) {
-  			 if(m=="add"){
-  				btnclick_good_announce(m,this.props.groupuuid,uuids);
-			 return;
-		 }
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  btnclick_good_announce(m,this.props.groupuuid,uuids);
-  },
-  handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-  },
-//  handleChange_selectgroup_uuid:function(val){
-//	  ajax_announce_listGood(val);
-//  },
-  render: function() {
-    return (
-    <div>
-    <div className="header">
-  <div className="am-g">
-    <h1>{Vo.announce_type(announce_types)}</h1>
-  </div>
-  <hr />
-</div>
-<AMR_ButtonToolbar>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
-    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
-    </AMR_ButtonToolbar>
-  <hr/>
-  <div className="am-form-group">
-  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />    
-    </div> 	  
-      <AMR_Table {...this.props}>  
-     <thead> 
-      <tr>
-      <th>  
-   <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
-        </th>
-        <th>标题</th>
-        <th>类型</th>
-        <th>幼儿园</th>
-        <th>浏览次数</th>
-        <th>创建人</th>
-        <th>创建时间</th>
-      </tr> 
-    </thead>
-    <tbody>
-      {this.props.events.map(function(event) {
-        return (<Announcements_GoodRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-  });
-    
-     
-var Announcements_GoodRow = React.createClass({ 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
 
-	  return (
-	    <tr className={className} >
-	    <td> 
-	    <input type="checkbox" value={event.uuid} name="table_checkbox" />
-	    </td>
-	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_good.bind( this, event.uuid)}>{event.title}</a></td>
-	      <td>{Vo.announce_type(event.type)}</td>
-	      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-	      <td>{0}</td>
-	      <td>{event.create_user}</td>
-	      <td>{event.create_time}</td>
-	    </tr> 
-	  );
-	}
-	});     
+/* 
+ * <精品文章>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */
+var Announcements_good_Div_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+	//创建精品文章点击按钮事件跳转kd_servise方法;
+  	handleClick: function(m,groupuuid) {
+		  btnclick_good_announce(m,Store.getCurGroup().uuid);
+},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+
+		  <AMR_ButtonToolbar>
+		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} round>创建精品文章</AMR_Button>
+		    </AMR_ButtonToolbar>
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  </div>
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		</div>
+		  
+			
+  );
+}
+});
+/*
+ *<精品文章>表格内容绘制
+ * 在kd_react；
+ * */
+var Announcements_mygoodlist_div = React.createClass({ 
+	  render: function() {
+	    var event = this.props.events;
+	    var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
+
+  return (
+     <ul className="am-list">
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		<li className="am-list-news-hd am-g">
+		  		      <a  href="javascript:void(0);" onClick={react_ajax_announce_good_show.bind( this, event.uuid)}>{Vo.announce_type(event.type)}:{event.title}</a>
+		  		        
+		  		        <span className="am-list-date">{event.create_time}
+		  		        <br/>
+		  		       {Store.getGroupNameByUuid(event.groupuuid)}
+		  		        -
+		  		       {event.create_user}
+		  		      </span>
+		  		    </li>
+		    		  )
+		         })}		
+    </ul>  		  
+  );
+}
+}); 
+
+
+
+/*
+*公告点赞、评论、加载更多等详情绘制模板；
+* */
+var Announcements_goodshow = React.createClass({ 
+	//创建精品文章点击按钮事件跳转kd_servise方法;
+  	handleClick: function(m,groupuuid,uuid) {
+		  btnclick_good_announce(m,groupuuid,uuid);
+}, 
+edithide: function() {
+    	$("#"+this.load_more_btn_id1).hide();
+}, 
+render: function() {
+	  var o = this.props.data;
+	  this.load_more_btn_id1="load_more_"+o.uuid;
+	  this.load_more_btn_id2="load_more2_"+o.uuid;
+return (
+		  <div>
+		  <AMUIReact.Article
+		    title={o.title}
+		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+		     </AMUIReact.Article>
+		     <AMR_ButtonToolbar>
+		     <AMR_Button id={this.load_more_btn_id1} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
+		      {this.edithide()}
+		     </AMR_ButtonToolbar>	
+			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+		   </div>
+);
+}
+}); 
+
+
  /*
- * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+ * (精品文章)创建与编辑界面绘制；
  * @w_img_upload_nocut:上传图片后发的请求刷新;
  * */    
 var Announcements_goodedit = React.createClass({ 
@@ -2905,58 +2891,7 @@ render: function() {
   );
 }
 }); 
-/*
- *公告点赞、评论、加载更多等详情绘制模板；
- * */
-var Announcements_show_good = React.createClass({ 
-render: function() {
-	  var o = this.props.data;
-return (
-		  <div>
-		  <AMUIReact.Article
-		    title={o.title}
-		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-		     </AMUIReact.Article>
-		     
-		     
-		     
-			  <Common_Dianzan_show uuid={o.uuid} type={0} />
-			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
-		   </div>
-);
-}
-}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
