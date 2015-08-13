@@ -76,6 +76,7 @@ public class SessionListener implements HttpSessionListener {
    */
   public static User   getUserInfoBySession(HttpServletRequest request){
     HttpSession session =SessionListener.getSession(request);
+    if(session==null)return null;
     return (User)session.getAttribute(RestConstants.Session_UserInfo);
   }
     /**
