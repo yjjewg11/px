@@ -970,7 +970,7 @@ return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
 		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "某某班级课程1-编辑")
+		    React.createElement("h1", null, g_teachingplan_classname, "课程-编辑")
 		  ), 
 		  React.createElement("hr", null)
 		), 
@@ -1315,8 +1315,10 @@ render: function() {
   }
  }); 
   /*
-   *<班级管理>班级学生头像列表界面绘制
+   *<班级管理>班级学生头像列表界面绘制 
    * @class_students_manage_onClick 添加学生按钮的方法
+   * @add：添加学生
+   * @class：查看课程;
    * */
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
@@ -1326,12 +1328,12 @@ render: function() {
   	  },
   	render: function() {
   		var o=this.props.formdata;
-  		console.log("数据班级管理",o);
   	  return (
   	  React.createElement("div", null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
-  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid), round: true}, "添加学生")
-  		  ), 
+  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid,null), round: true}, "添加学生"), 
+  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,"class",o.uuid,o.name), round: true}, "查看课程")
+  		    ), 
   		  React.createElement("hr", null), 
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
@@ -1345,6 +1347,9 @@ render: function() {
   	  );
   	}
   	});
+  
+ 
+  
 /*
  * <班级管理>详情界面
  * 添加学生与编辑绘制
@@ -1464,6 +1469,9 @@ render: function() {
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+  
+
+  
   
 
 //——————————————————————————收支记录<绘制>——————————————————————————
@@ -2346,42 +2354,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————（首页）课程表<绘制>——————————————————————————  
 /*
  * 课程表班级内详情 课程表
@@ -2465,68 +2437,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 );
 }
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -3052,6 +2963,9 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	 
 		  React.createElement(AMR_Panel, null, 
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
+		  	  React.createElement(AMR_ButtonToolbar, null, 
+	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,"class",o.uuid,o.name), round: true}, "查看课程")
+	  		    ), 
 			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
 			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)

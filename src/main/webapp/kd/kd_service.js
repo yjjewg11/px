@@ -824,7 +824,6 @@ var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
 var g_teachingplan_classname=null;
 function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
-	console.log("123课程安排：",classuuid,classname,weeknum);
   	Queue.push(function(){ajax_teachingplan_listByClass(classuuid,classname,weeknum);});
 	if(classuuid)g_teachingplan_classuuid=classuuid;
 	else classuuid=g_teachingplan_classuuid;
@@ -1481,10 +1480,13 @@ function ajax_class_students_look_info(uuid){
 /*  
  * （标头）<班级管理>界面添加学生按钮事件处理
  * @服务器请求:POST rest/student/{uuid}.json;
+ * @ajax_teachingplan_listByClass 直接调用课程安排里面的方法一步到位功能
  * */
-function class_students_manage_onClick(m,classuuid){
+function class_students_manage_onClick(m,classuuid,name){
 if(m=="add"){
 	ajax_class_students_edit({classuuid:classuuid,sex:0},null);
+}else{
+	ajax_teachingplan_listByClass(classuuid,name);
 }
 };
 
@@ -1878,14 +1880,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 //	});
 //};
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	
@@ -1984,16 +1979,6 @@ function react_ajax_announce_show(uuid){
 
 
 
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————(大图标)课程表——————————————————————————
 
 /*
@@ -2045,21 +2030,6 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 		}
 	});
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

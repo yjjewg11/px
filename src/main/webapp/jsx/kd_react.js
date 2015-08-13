@@ -970,7 +970,7 @@ return (
 		<div>
 		<div className="header">
 		  <div className="am-g">
-		    <h1>某某班级课程1-编辑</h1>
+		    <h1>{g_teachingplan_classname}课程-编辑</h1>
 		  </div>
 		  <hr />
 		</div>
@@ -1315,8 +1315,10 @@ render: function() {
   }
  }); 
   /*
-   *<班级管理>班级学生头像列表界面绘制
+   *<班级管理>班级学生头像列表界面绘制 
    * @class_students_manage_onClick 添加学生按钮的方法
+   * @add：添加学生
+   * @class：查看课程;
    * */
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
@@ -1326,12 +1328,12 @@ render: function() {
   	  },
   	render: function() {
   		var o=this.props.formdata;
-  		console.log("数据班级管理",o);
   	  return (
   	  <div>
   	  <AMR_ButtonToolbar>
-  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
-  		  </AMR_ButtonToolbar>
+  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid,null)} round>添加学生</AMR_Button>
+  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+  		    </AMR_ButtonToolbar>
   		  <hr/>
   		  <AMR_Panel>
   			  <AMR_Grid className="doc-g">
@@ -1345,6 +1347,9 @@ render: function() {
   	  );
   	}
   	});
+  
+ 
+  
 /*
  * <班级管理>详情界面
  * 添加学生与编辑绘制
@@ -1464,6 +1469,9 @@ render: function() {
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+  
+
+  
   
 
 //——————————————————————————收支记录<绘制>——————————————————————————
@@ -2346,42 +2354,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————（首页）课程表<绘制>——————————————————————————  
 /*
  * 课程表班级内详情 课程表
@@ -2465,68 +2437,7 @@ var Teachingplan_showByOneDay = React.createClass({
 );
 }
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -3052,6 +2963,9 @@ var Class_students_show= React.createClass({
 	 
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
+		  	  <AMR_ButtonToolbar>
+	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
 			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
