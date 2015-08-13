@@ -299,7 +299,7 @@ function menu_dohome(){
 			                    {
 		                    	    "img": hostUrl+"i/kechengbiao.png",
 		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
-		                    	    "title": "教学计划"
+		                    	    "title": "课程表"
 		                    	  },
 		                    	  {
 			                    	    "img": hostUrl+"i/meirisipu.png",
@@ -465,12 +465,12 @@ function menu_announce_mylist_fn() {
 	ajax_announce_div();
 };
 /*
- * <教学计划>
+ * <课程表>Store.getCurGroup().uuid
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
 function menu_teachingplan_dayShow_fn() {
-	Queue.push(menu_teachingplan_dayShow_fn);
-	w_ch_class.open(function(uuid,name){ajax_teachingplan_dayShow(null,{uuid:uuid,name:name});});
+	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
+	ajax_teachingplan_dayShow(null,{uuid:classList[0].uuid});
 };
 /*
  * （首页）每日食谱

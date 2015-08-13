@@ -10,9 +10,19 @@
  * G_jsCallBack.user_info_update()修改资料；
  * G_jsCallBack.user_info_updatepassword()；修改密码
  * G_jsCallBack.QueuedoBackFN()；修改密码
+ * G_jsCallBack.QueueTeacher()；老师通讯录
+ * Store.getCurGroup().uuid
  */
 var G_jsCallBack={
 		//Queue.doBackFN()
+	/**
+	 * 老师通讯录
+	 * @param base64
+	 */
+		QueueTeacher:function(base64){
+	
+		Queue.ajax_Teacher_listByGroup(base64);
+},	
 	/**
 	 * 回退方法
 	 * @param base64

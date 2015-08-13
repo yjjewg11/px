@@ -14,7 +14,7 @@ var AMR_Span=AMUIReact.span;
 
 
 
-//kd group reg
+//幼儿园注册
 var Div_kd_group_reg = React.createClass({ 
 	
 	render: function() {
@@ -950,6 +950,7 @@ var Teachingplan_EventRow = React.createClass({
 	);
 	}
 	});
+
 /*
  *<课程安排>班级详情添加与编辑内容绘制;
  * @add:添加班级课程；
@@ -965,7 +966,6 @@ var Teachingplan_edit = React.createClass({
 	  },
 render: function() {
 	  var o = this.state;
-	
 return (
 		<div>
 		<div className="header">
@@ -994,6 +994,16 @@ return (
 }
 });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1316,6 +1326,7 @@ render: function() {
   	  },
   	render: function() {
   		var o=this.props.formdata;
+  		console.log("数据班级管理",o);
   	  return (
   	  <div>
   	  <AMR_ButtonToolbar>
@@ -2334,32 +2345,93 @@ return (
 
 
 
-//——————————————————————————（首页）教学计划<绘制>——————————————————————————  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————（首页）课程表<绘制>——————————————————————————  
 /*
- * 教学计划班级内详情 课程表
+ * 课程表班级内详情 课程表
  */
 var Teachingplan_showByOneDay = React.createClass({ 
-	handleClick: function(m) {
+	handleClick: function(m,classuuid) {
 		if(m=="pre"){
-			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point);
+			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point,{uuid:classuuid});
 			 return;
 		 }else if(m=="next"){
-			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point);
+			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point,{uuid:classuuid});
 			 return;
 		 }
 	},
+	handleChange_selectgroup_uuid: function(val) {
+		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val});  
+    },
+	handleClick_class: function(m,uuid,classuuid,ch_day) {
+			 btn_click_teachingplan(m,null,classuuid,ch_day);
+			 return;
+
+ },
 	componentDidMount: function() {
-		  if(!this.props.formdata){
-			  $("#div_detail").html("今日没有发布教学计划");
-		  }
-	    
+//		if(!this.props.formdata){
+//			  $("#div_detail").html("今日没有发布教学计划");
+//		  }	    
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
 	  if(!o){
 		  o={};
 	  }	
+	  var div_detail_inhtml=null;
+	  var edit_btn_className="G_Edit_hide";
+	  if(this.props.formdata){
+		  div_detail_inhtml=(
+				  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+					 <label>早上:</label> 
+					 <div className="g_teachingplan">
+						<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}}></div>
+					 </div>
+					 <label>下午:</label> 
+					 <div className="g_teachingplan">
+						<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}></div>
+					 </div>
+					</div> 
+		  )
+	  }else{
+		  edit_btn_className="G_Edit_show";
+	  }
 	  return (
 		<div>
 		
@@ -2368,35 +2440,97 @@ var Teachingplan_showByOneDay = React.createClass({
 		  
 		  <Grid>
 		    <Col sm={3}>
-		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")}  round>上一天</AMR_Button>
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",this.props.ch_class.uuid)}  round>上一天</AMR_Button>
 		    </Col>
 		    <Col sm={6}>
-		    <h1>课程安排-【{this.props.ch_class.name}】-{this.props.ch_day}</h1>
+		    <h1>课程安排-<AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth= "200" data={ this.props.classList} btnStyle="primary" value={this.props.ch_class.uuid} />-{this.props.ch_day}</h1>
+		    < AMR_ButtonToolbar >
+		      < AMR_Button className={edit_btn_className} amStyle ="primary" onClick={this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day)} round >课程编辑</AMR_Button >
+		      </AMR_ButtonToolbar >
 		    </Col>
 		    <Col sm={3}>
-		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下一天</AMR_Button>	
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",this.props.ch_class.uuid)} round>下一天</AMR_Button>	
 		    </Col>
 		  </Grid>
 		  </div>
 		  <hr />
 		</div>
 		<div className="am-g" id="div_detail">
-		 <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		 <label>早上:</label> 
-		 <div className="g_teachingplan">
-			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}}></div>
-		 </div>
-		 <label>下午:</label> 
-		 <div className="g_teachingplan">
-			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}></div>
-		 </div>
-		</div> 
+		
+			{div_detail_inhtml}
+		
 		</div>
 	   
 	   </div>
 );
 }
 }); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //——————————————————————————（首页）今日食谱<绘制>——————————————————————————  
 /*
@@ -2809,8 +2943,11 @@ edithide: function() {
 }, 
 render: function() {
 	  var o = this.props.data;
-	  this.load_more_btn_id1="load_more_"+o.uuid;
-	  this.load_more_btn_id2="load_more2_"+o.uuid;
+	  
+	  var edit_btn_className="G_Edit_hide";
+	  if(this.props.canEdit){
+		  edit_btn_className="G_Edit_show";
+	  }
 return (
 		  <div>
 		  <AMUIReact.Article
@@ -2819,8 +2956,8 @@ return (
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
 		     </AMUIReact.Article>
 		     <AMR_ButtonToolbar>
-		     <AMR_Button id={this.load_more_btn_id1} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
-		      {this.edithide()}
+		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
+		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
 		     </AMR_ButtonToolbar>	
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 

@@ -87,8 +87,12 @@ z-index: 9999;
 
 .G_reply .event{border-bottom:1px solid #9a9a9a;}
 
-
-
+.G_Edit_show{
+	display:inline;
+} 
+.G_Edit_hide{
+	display:none;
+} 
 /* Í³¼Æ*/
 .ECharts{
 	height:400px;

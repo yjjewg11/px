@@ -824,6 +824,7 @@ var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
 var g_teachingplan_classname=null;
 function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
+	console.log("123课程安排：",classuuid,classname,weeknum);
   	Queue.push(function(){ajax_teachingplan_listByClass(classuuid,classname,weeknum);});
 	if(classuuid)g_teachingplan_classuuid=classuuid;
 	else classuuid=g_teachingplan_classuuid;
@@ -876,9 +877,9 @@ function ajax_teachingplan_listByClass(classuuid,classname,weeknum) {
 /*(课程安排)
  * 班级详情内添加编辑课程等按钮方法判断;
  * */ 
-function btn_click_teachingplan(m,uuid,classuuid){
+function btn_click_teachingplan(m,uuid,classuuid,ch_day){
 	if(m=="add"){
-		react_ajax_teachingplan_edit({classuuid:classuuid},null);
+		react_ajax_teachingplan_edit({classuuid:classuuid,plandate:ch_day},null);
 	}else if(m=="edit"){
 		react_ajax_teachingplan_edit(null,uuid);
 	}else if(m=="del"){
@@ -1982,11 +1983,22 @@ function react_ajax_announce_show(uuid){
 };
 
 
-//——————————————————————————(大图标)教学计划——————————————————————————
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————(大图标)课程表——————————————————————————
 
 /*
  * 上一层绘制在idget中w_ch_class.open 执行; 
- * <教学计划> 教学计划班级内详情服务器请求
+ * <课程表> 教学计划班级内详情服务器请求
  * @老师查询，条件groupuuid
  * @num:0.表示当前.-1上,
  * */
@@ -1994,7 +2006,7 @@ function react_ajax_announce_show(uuid){
 var g_teachingplan_listToShow_point=0;
 var g_cur_myclass=null;
 function ajax_teachingplan_dayShow(num,myclazz) {
-	
+	Queue.push(function(){ajax_teachingplan_dayShow(num,myclazz);});
 	if(!myclazz)myclazz=g_cur_myclass;
 	else g_cur_myclass=myclazz;
 	
@@ -2018,22 +2030,38 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 			if (data.ResMsg.status == "success") {
 				if(data.list==null)data.list=[];
 				var formdata=data.list[0];
-				React.render(React.createElement(Teachingplan_showByOneDay,{ch_class:g_cur_myclass,ch_group:Store.getCurGroup(),ch_day:begDateStr,formdata:formdata}), document.getElementById('div_body'));
+				React.render(React.createElement(Teachingplan_showByOneDay,{
+					ch_class:g_cur_myclass,
+					ch_group:Store.getCurGroup(),
+					ch_day:begDateStr,					
+					classList:G_selected_dataModelArray_byArray (Store.getChooseClass(Store.getCurGroup().uuid),"uuid" ,"name"),
+					formdata:formdata
+					}), document.getElementById('div_body'));
 				
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
 		}
 	});
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //——————————————————————————(大图标)今日食谱——————————————————————————
@@ -2155,7 +2183,13 @@ function react_ajax_announce_good_show(uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_goodshow,{data:data.data,count:data.count}), document.getElementById('div_body'));
+				//如果相等为True不等为false用于判断编辑与删除是否
+				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
+				React.render(React.createElement(Announcements_goodshow,{
+					canEdit:canEdit,
+					data:data.data,
+					count:data.count
+					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
