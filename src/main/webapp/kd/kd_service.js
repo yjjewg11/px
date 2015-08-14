@@ -1194,17 +1194,14 @@ function btn_click_userinfo(m,obj,usernames,sex){
     * <老师管理>分配权限按钮服务请求
     * */
    function btn_ajax_updateRole(useruuid){
-		 var uuids=null;
+		 var uuids="";
 		 $("input[name='table_checkbox']").each(function(){
 			if(this.checked){
-				 if(uuids==null)uuids=this.value;
+				 if(!uuids)uuids=this.value;
 				 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
 			}
 			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }		  
+		 	  
 		$.AMUI.progress.start();
 	      var url = hostUrl + "rest/userinfo/updateRole.json";
 	      var opt={

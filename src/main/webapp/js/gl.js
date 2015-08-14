@@ -34,7 +34,7 @@ G_imgPath="";
  */
 function G_user_hasRight(s){
 	console.log("权限判断参数S",s);
-	return true;
+	//return true;
 	if(Store.getUserRights().indexOf(","+s+",")>-1){
 		return true;
 	}
