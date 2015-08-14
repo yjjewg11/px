@@ -11,6 +11,7 @@ import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsReplyJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -33,7 +34,7 @@ public class ClassNewsReplyService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(ClassNewsReplyJsonform classNewsReplyJsonform,
+	public boolean add(SessionUserInfoInterface user,ClassNewsReplyJsonform classNewsReplyJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(classNewsReplyJsonform.getContent())) {
 			responseMessage.setMessage("content不能为空！");
@@ -46,7 +47,7 @@ public class ClassNewsReplyService extends AbstractServcice {
 		}
 
 		ClassNewsReply cn=new ClassNewsReply();
-
+		 PxStringUtil.addCreateUser(user, cn);
 		BeanUtils.copyProperties(cn, classNewsReplyJsonform);
 
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
@@ -66,7 +67,7 @@ public class ClassNewsReplyService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(ClassNewsReplyJsonform classNewsReplyJsonform,
+	public boolean update(SessionUserInfoInterface user,ClassNewsReplyJsonform classNewsReplyJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(classNewsReplyJsonform.getContent())) {
 			responseMessage.setMessage("content不能为空！");

@@ -52,15 +52,13 @@ public class ReplyController extends AbstractRESTController {
 		
 		//设置当前用户
 		User user=this.getUserInfoBySession(request);
-		classNewsReplyJsonform.setCreate_user(user.getName());
-		classNewsReplyJsonform.setCreate_useruuid(user.getUuid());
 		classNewsReplyJsonform.setContent(MyUbbUtils.htmlToMyUbb(classNewsReplyJsonform.getContent()));
 		try {
 			boolean flag;
 			if(StringUtils.isEmpty(classNewsReplyJsonform.getUuid()))
-			    flag = classNewsReplyService.add(classNewsReplyJsonform, responseMessage);
+			    flag = classNewsReplyService.add(user,classNewsReplyJsonform, responseMessage);
 			else
-				flag = classNewsReplyService.update(classNewsReplyJsonform, responseMessage);
+				flag = classNewsReplyService.update(user,classNewsReplyJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

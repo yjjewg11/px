@@ -221,8 +221,8 @@ function login_affter_init(){
 	                    },
 	                {
 	                      "link": "##",
-	                      "title": "统计"
-	                      //"fn":menu_statistics_list_fn
+	                      "title": "统计",
+	                      "fn":menu_statistics_list_fn
 	                    }
 	                
 	              ];
