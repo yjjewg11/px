@@ -77,9 +77,10 @@ var Div_kd_group_reg = React.createClass({
 	}
 }); 
 
-//kd group reg end
-
-//login   
+/*
+ *登录界面账号与密码输入绘制
+ * <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/> 绘制图片
+ * */
 var Div_login = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props;
@@ -95,25 +96,19 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
- 		 <h1>问界互动家园-幼儿园老师登录</h1>
- 	    <p>WenJie Interactive Home <br/>快捷管理，大数据分析</p>
+ 		 <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/>
+ 		 <h1>问界互动家园</h1>
  		  </div>
- 		  <hr />
  		</div>
  		<div className="am-g">
  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
  		 <form id="login_form" method="post" className="am-form">
- 	      <label htmlFor="loginname">手机号:</label>
- 	      <input type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
- 	      <br/>
- 	      <label htmlFor="password">密码:</label>
- 	      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
- 	      <br/>
+ 	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+ 	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
  	      <label htmlFor="pw_checked">
  	        <input id="pw_checked" name="pw_checked" type="checkbox"  checked={o.pw_checked=="checked"?"checked":""} onChange={this.handleChange}/>
  	        记住密码
  	      </label>
- 	      <br />
  	      <div className="am-cf">
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
@@ -500,6 +495,7 @@ var Group_edit = React.createClass({
   var Group_show = React.createClass({ 
   render: function() {
   	  var o = this.props.formdata;
+		console.log("图片地址",o.description)
     return (
   		  <AMUIReact.Article
   		    title={o.brand_name}
@@ -2954,7 +2950,9 @@ render: function() {
 var Class_students_show= React.createClass({
 	 componentDidMount:function(){
 			 G_img_down404();
-
+	  },
+	  handleChange_selectgroup_uuid:function(val){
+		  react_ajax_class_students_manage(val,"show");
 	  },
 	render: function() {
 		var o=this.props.formdata;
@@ -2965,6 +2963,7 @@ var Class_students_show= React.createClass({
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
 	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />  
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>

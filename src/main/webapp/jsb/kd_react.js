@@ -77,9 +77,10 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 	}
 }); 
 
-//kd group reg end
-
-//login   
+/*
+ *登录界面账号与密码输入绘制
+ * <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/> 绘制图片
+ * */
 var Div_login = React.createClass({displayName: "Div_login", 
 	 getInitialState: function() {
 		    return this.props;
@@ -95,25 +96,19 @@ render: function() {
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
- 		 React.createElement("h1", null, "问界互动家园-幼儿园老师登录"), 
- 	    React.createElement("p", null, "WenJie Interactive Home ", React.createElement("br", null), "快捷管理，大数据分析")
- 		  ), 
- 		  React.createElement("hr", null)
+ 		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"}), 
+ 		 React.createElement("h1", null, "问界互动家园")
+ 		  )
  		), 
  		React.createElement("div", {className: "am-g"}, 
  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
  		 React.createElement("form", {id: "login_form", method: "post", className: "am-form"}, 
- 	      React.createElement("label", {htmlFor: "loginname"}, "手机号:"), 
- 	      React.createElement("input", {type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
- 	      React.createElement("br", null), 
- 	      React.createElement("label", {htmlFor: "password"}, "密码:"), 
- 	      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
- 	      React.createElement("br", null), 
+ 	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
+ 	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
  	      React.createElement("label", {htmlFor: "pw_checked"}, 
  	        React.createElement("input", {id: "pw_checked", name: "pw_checked", type: "checkbox", checked: o.pw_checked=="checked"?"checked":"", onChange: this.handleChange}), 
  	        "记住密码"
  	      ), 
- 	      React.createElement("br", null), 
  	      React.createElement("div", {className: "am-cf"}, 
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
@@ -500,6 +495,7 @@ var Group_edit = React.createClass({displayName: "Group_edit",
   var Group_show = React.createClass({displayName: "Group_show", 
   render: function() {
   	  var o = this.props.formdata;
+		console.log("图片地址",o.description)
     return (
   		  React.createElement(AMUIReact.Article, {
   		    title: o.brand_name, 
@@ -2954,7 +2950,9 @@ render: function() {
 var Class_students_show= React.createClass({displayName: "Class_students_show",
 	 componentDidMount:function(){
 			 G_img_down404();
-
+	  },
+	  handleChange_selectgroup_uuid:function(val){
+		  react_ajax_class_students_manage(val,"show");
 	  },
 	render: function() {
 		var o=this.props.formdata;
@@ -2964,7 +2962,8 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  React.createElement(AMR_Panel, null, 
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
 		  	  React.createElement(AMR_ButtonToolbar, null, 
-	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,"class",o.uuid,o.name), round: true}, "查看课程")
+	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,"class",o.uuid,o.name), round: true}, "查看课程"), 
+	  		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
 	  		    ), 
 			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
