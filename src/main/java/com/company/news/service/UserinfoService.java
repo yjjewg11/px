@@ -338,7 +338,7 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean login(UserLoginForm userLoginForm, ModelMap model,
+	public User login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request, ResponseMessage responseMessage)
 			throws Exception {
 		String loginname = userLoginForm.getLoginname();
@@ -346,11 +346,11 @@ public class UserinfoService extends AbstractServcice {
 
 		if (StringUtils.isBlank(loginname)) {
 			responseMessage.setMessage("用户登录名不能为空!");
-			return false;
+			return null;
 		}
 		if (StringUtils.isBlank(password)) {
 			responseMessage.setMessage("登陆密码不能为空!");
-			return false;
+			return null;
 		}
 
 		String attribute = "loginname";
@@ -360,7 +360,7 @@ public class UserinfoService extends AbstractServcice {
 
 		if (user == null) {
 			responseMessage.setMessage("用户名:" + loginname + ",不存在!");
-			return false;
+			return null;
 		}
 
 		boolean pwdIsTrue = false;
@@ -380,28 +380,46 @@ public class UserinfoService extends AbstractServcice {
 			if ("true".equals(project_loginLimit)) {
 				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
 						responseMessage)) {// 密码错误次数验证
-					return false;
+					return null;
 				}
 				if (!pwdIsTrue) {
 					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
-					return false;
+					return null;
 				}
 
 			} else {
 				if (!pwdIsTrue) {
 					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
-					return false;
+					return null;
 				}
 			}
 
 		}
-		Boolean isAdmin = false;
+		
+		// 更新登陆日期,最近一次登陆日期
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update User set login_time=?,last_login_time=? where uuid=?",
+				TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
+				user.getUuid());
+
+
+		return user;
+	}
+	
+	/**
+	 * 
+	 * @param userLoginForm
+	 * @param user
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean isAdmin(UserLoginForm userLoginForm,User user,ResponseMessage responseMessage){
+		boolean isAdmin = false;
 		// 后台管理员登录
 		if (SystemConstants.Group_type_0.toString().equals(
 				userLoginForm.getGrouptype())) {
 			Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 					.getSessionFactory().getCurrentSession();
-			String sql = "";
 			List tmpList = s
 					.createSQLQuery(
 							"select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type="
@@ -416,69 +434,9 @@ public class UserinfoService extends AbstractServcice {
 
 			isAdmin = true;
 
+			
 		}
-
-		// 创建session
-		HttpSession session = SessionListener
-				.getSession((HttpServletRequest) request);
-
-		if (session != null) {
-			User userInfo = (User) session
-					.getAttribute(RestConstants.Session_UserInfo);
-			if (userInfo != null && loginname.equals(userInfo.getLoginname())) {
-				// 当前用户,在线直接返回当前用户.
-				this.logger.info("userInfo is online,loginName=" + loginname);
-				// 返回用户信息
-				UserInfoReturn userInfoReturn = new UserInfoReturn();
-				try {
-					BeanUtils.copyProperties(userInfoReturn, user);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				model.put(RestConstants.Return_JSESSIONID, session.getId());
-				model.put(RestConstants.Return_UserInfo, userInfoReturn);
-				session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-				return true;
-			}
-		}
-
-		// 更新登陆日期,最近一次登陆日期
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update User set login_time=?,last_login_time=? where uuid=?",
-				TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
-				user.getUuid());
-		session = request.getSession(true);
-		// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
-		SessionListener.putSessionByJSESSIONID(session);
-		session.setAttribute(RestConstants.Session_UserInfo, user);
-		// 返回客户端用户信息放入Map
-		// putUserInfoReturnToModel(model, request);
-
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-				.getSessionFactory().getCurrentSession();
-
-		List rightList = s
-				.createSQLQuery(
-						"select t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"
-								+ user.getUuid() + "'").list();
-
-		// 测试数据,拥有所有权限
-		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
-				"false"))) {
-			this.logger.warn("调试模式下面,用户有所有角色权限.");
-			rightList = s.createSQLQuery("select name from px_right").list();
-		}
-		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
-		
-
-		String hql="select groupuuid from UserGroupRelation where  useruuid=?";
-		List listGroupuuids=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, user.getUuid());
-		
-		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
-		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-		session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
-		return true;
+		return isAdmin;
 	}
 
 	/**
