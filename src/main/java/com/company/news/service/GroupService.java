@@ -275,6 +275,18 @@ public class GroupService extends AbstractServcice {
 		
 		return q.list();
 	}
+	
+	
+	/**
+	 * 查询指定用户的机构列表
+	 * @return
+	 */
+	public List getGroupuuidsByUseruuid(String uuid){
+		String hql="select groupuuid from UserGroupRelation where  useruuid=?";
+		List listGroupuuids=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, uuid);
+
+		return listGroupuuids;
+	}
 
 	/**
 	 * 查询指定用户的机构列表

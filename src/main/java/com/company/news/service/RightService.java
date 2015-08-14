@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.ProjectProperties;
 import com.company.news.entity.Right;
+import com.company.news.entity.User;
 import com.company.news.jsonform.RightJsonform;
 import com.company.news.vo.ResponseMessage;
 
@@ -18,6 +21,30 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class RightService extends AbstractServcice {
+	
+	/**
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public List getRightListByUser(User user){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession();
+
+		List rightList = s
+				.createSQLQuery(
+						"select t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"
+								+ user.getUuid() + "'").list();
+
+		// 测试数据,拥有所有权限
+		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
+				"false"))) {
+			this.logger.warn("调试模式下面,用户有所有角色权限.");
+			rightList = s.createSQLQuery("select name from px_right").list();
+		}
+
+		return rightList;
+	}
 
 	/**
 	 * 新增权限

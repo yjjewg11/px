@@ -6,7 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.ProjectProperties;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
@@ -24,19 +28,24 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
+import com.company.news.service.AbstractServcice;
 import com.company.news.service.GroupService;
+import com.company.news.service.RightService;
 import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
+import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/userinfo")
 public class UserinfoController extends AbstractRESTController {
-
+	private static Logger logger = Logger.getLogger(UserinfoController.class);
 	@Autowired
 	private UserinfoService userinfoService;
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private RightService rightService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
@@ -45,11 +54,11 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		boolean flag;
+		User user;
 		try {
-			flag = userinfoService.login(userLoginForm, model, request,
+			user = userinfoService.login(userLoginForm, model, request,
 					responseMessage);
-			if (!flag)// 请求服务返回失败标示
+			if (user==null)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -58,9 +67,49 @@ public class UserinfoController extends AbstractRESTController {
 			return "";
 		}
 		
-		flag = this.getUserAndGroup(model, request, responseMessage);
-		if (!flag)// 请求服务返回失败标示
-			return "";
+		
+		// 创建session
+		HttpSession session = SessionListener
+				.getSession((HttpServletRequest) request);
+
+		if (session != null) {
+			User userInfo = (User) session
+					.getAttribute(RestConstants.Session_UserInfo);
+			if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
+				// 当前用户,在线直接返回当前用户.
+				this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
+				// 返回用户信息
+				UserInfoReturn userInfoReturn = new UserInfoReturn();
+				try {
+					BeanUtils.copyProperties(userInfoReturn, user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				model.put(RestConstants.Return_UserInfo, userInfoReturn);			
+			}
+		}else{
+
+		session = request.getSession(true);
+		// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+		SessionListener.putSessionByJSESSIONID(session);
+		session.setAttribute(RestConstants.Session_UserInfo, user);
+		// 返回客户端用户信息放入Map
+		// putUserInfoReturnToModel(model, request);
+
+		//取相关权限
+		model.put(RestConstants.Return_JSESSIONID, session.getId());
+		List rightList=rightService.getRightListByUser(user);
+		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+		//取相关机构
+		List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());		
+		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
+		session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+		}
+		
+		//设置当前用户是否管理员
+		boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
+		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 
 		
 		
@@ -148,19 +197,8 @@ public class UserinfoController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/getUserinfo", method = RequestMethod.GET)
 	public String getUserinfo(ModelMap model, HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		try {
-			boolean flag = this.getUserAndGroup(model, request, responseMessage);
-			if (!flag)// 请求服务返回失败标示
-				return "";
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage("服务器错误:"+e.getMessage());
-			return "";
-		}
+		// 返回用户信息
+		this.putUserInfoReturnToModel(model, request);
 		return "";
 	}
 
@@ -276,42 +314,6 @@ public class UserinfoController extends AbstractRESTController {
 	}
 	
 	
-	/**
-	 * 获取登录用户和机构
-	 * @param model
-	 * @param request
-	 * @param responseMessage
-	 * @return
-	 */
-	private boolean getUserAndGroup(ModelMap model,
-			HttpServletRequest request,ResponseMessage responseMessage){
-		List list = new ArrayList();
-		try {
-//			if(RightUtils.isAdmin(request)){
-//				list = groupService.getGroupByUseruuidByAdmin(this.getUserInfoBySession(
-//						request).getUuid());
-//			}else{
-//				list = groupService.getKDGroupByUseruuid(this.getUserInfoBySession(
-//						request).getUuid());
-//			}
-			list = groupService.getGroupByUseruuidByAdmin(this.getUserInfoBySession(
-					request).getUuid());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
-			return false;
-		}
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-
-		
-		HttpSession session = SessionListener.getSession(request);
-		// 返回用户信息
-		this.putUserInfoReturnToModel(model, request);
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
-		
-		return true;
-	}
 	
 	
 	/**
