@@ -460,7 +460,14 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
     		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
     	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-    	      React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
+            
+    		React.createElement("label", {htmlFor: "nickname"}, "LOGO:"), 
+            React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+            React.createElement("br", null), 
+            React.createElement("button", {type: "button", onClick: btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO"), 
+            React.createElement("br", null), 
+  
+    		React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
     	      React.createElement("input", {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
     	      React.createElement("br", null), 
     	       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
@@ -1643,6 +1650,17 @@ render: function() {
 });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+
+
+
+
+
+
+
+
+
+
+
 //——————————————————————————班级互动<绘制>——————————————————————————
 /*
  * <班级互动>列表框与下拉框和按钮绘制;
@@ -1683,9 +1701,6 @@ var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTab
 			 return;
 		 }
 	  },	  
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
 	  handleChange_select_classnews_type:function(){
 		  ajax_classnews_list($('#select_classnews_type').val());
 	  },
@@ -1703,29 +1718,16 @@ render: function() {
 return (
 React.createElement("div", null, 
 React.createElement(AMUIReact.ButtonToolbar, null, 
-	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
-	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit"), round: true}, "编辑")
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "发布互动")
 	 ), 
 	  React.createElement("hr", null), 	  
 	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this, "pre"), round: true}, "« 上一页"), 
 	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
-	    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
-      React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 	    	      
+	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
 React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
-  React.createElement("thead", null, 
-    React.createElement("tr", null, 
-    	React.createElement("th", null, 
-      React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-      ), 
-      React.createElement("th", null, "标题"), 
-      React.createElement("th", null, "创建人"), 
-      React.createElement("th", null, "更新时间"), 
-      React.createElement("th", null, "回复时间")
-    )
-  ), 
   React.createElement("tbody", null, 
     this.props.events.data.map(function(event) {
-      return (React.createElement(Classnews_EventRow, {event: event}));
+      return (React.createElement(Classnews_show, {event: event}));
     })
   )
 )
@@ -1734,29 +1736,50 @@ React.createElement(AMUIReact.Table, React.__spread({},  this.props),
 }
 });
 /*
- * <班级互动>列表详情内容绘制;
- * @btn_click_classnews:互动单独详情;
- * */
-var Classnews_EventRow = React.createClass({displayName: "Classnews_EventRow", 
-	render: function() {
-	var event = this.props.event;
-	var className = event.highlight ? 'am-active' :
-	event.disabled ? 'am-disabled' : '';
-
-	return (
-	React.createElement("tr", {className: className}, 
-	React.createElement("td", null, 
-	React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
-	), 
-	  React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_classnews.bind(this,"show",event)}, event.title)), 
-	  React.createElement("td", null, event.create_user), 
-	  React.createElement("td", null, event.update_time), 
-	  React.createElement("td", null, event.reply_time)
-	  
-	) 
-	);
+ * <班级互动>MAp详情绘制
+ * var o = this.props.formdata;
+ */
+var Classnews_show = React.createClass({displayName: "Classnews_show", 
+	render: function() {		  
+		  var  o = this.props.event;
+		  if(!o.dianzanList)o.dianzanList=[];
+	  return (
+			  React.createElement("div", null, 
+			  React.createElement(AMUIReact.Article, {
+			    title: o.title, 
+			    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}, 
+				React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
+			   ), 	
+			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
+			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
+			    )		   
+	  );
 	}
 	}); 
+///*Classnews_show Classnews_EventRow
+// * <班级互动>列表详情内容绘制;
+// * @btn_click_classnews:互动单独详情;
+// * */
+//var Classnews_EventRow = React.createClass({ 
+//	render: function() {
+//	var event = this.props.event;
+//	var className = event.highlight ? 'am-active' :
+//	event.disabled ? 'am-disabled' : '';
+//
+//	return (
+//	<tr className={className} >
+//	<td> 
+//	<input type="checkbox" value={event.uuid} name="table_checkbox" />
+//	</td>
+//	  <td><a href="javascript:void(0);" onClick={btn_click_classnews.bind(this,"show",event)}>{event.title}</a></td>
+//	  <td>{event.create_user}</td>
+//	  <td>{event.update_time}</td>
+//	  <td>{event.reply_time}</td>
+//	  
+//	</tr> 
+//	);
+//	}
+//	}); 
 /*
  * <班级互动>添加与编辑按钮中可删除图片显示.
  */
@@ -1773,27 +1796,7 @@ var ClassNews_Img_canDel = React.createClass({displayName: "ClassNews_Img_canDel
             	)
 	  }
 	});
-/*
- * <班级互动>列表点击详情和班级互动详情公用方法绘制;
- */
-var Classnews_show = React.createClass({displayName: "Classnews_show", 
-	render: function() {
-		  var o = this.props.formdata;
-		 
-		  if(!o.dianzanList)o.dianzanList=[];
-	  return (
-			  React.createElement("div", null, 
-			  React.createElement(AMUIReact.Article, {
-			    title: o.title, 
-			    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+this.props.count+"次"}, 
-				React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
-			   ), 	
-			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
-			    )		   
-	  );
-	}
-	}); 
+
 
 /*
  * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
@@ -1880,6 +1883,42 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //——————————————————————————学生列表<绘制>——————————————————————————  
 /*

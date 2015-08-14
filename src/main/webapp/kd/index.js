@@ -465,7 +465,7 @@ function menu_announce_mylist_fn() {
 	ajax_announce_div();
 };
 /*
- * <课程表>Store.getCurGroup().uuid
+ * （首页）<课程表>Store.getCurGroup().uuid
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
 function menu_teachingplan_dayShow_fn() {
@@ -488,7 +488,7 @@ function parentContactByMyStudent() {
 	ajax_parentContactByMyStudent();
 };
 /*
- * 精品文章
+ * （首页）精品文章
  * @menu_announce_list_fn:直接调用发布消息中的方法
  */
 function menu_article_list_fn(){

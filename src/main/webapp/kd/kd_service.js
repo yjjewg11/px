@@ -507,6 +507,17 @@ function ajax_group_edit(m,formdata){
    		}
    	});
    };
+
+   /*
+    * (校务管理)<校园列表>内上传LOGO图片
+    * */
+   function btn_class_group_uploadHeadere (){      
+        w_uploadImg.open(function (guid){
+             $ ("#headimg").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+         });   
+   }
    
 //————————————————————————————校务管理<校园介绍>—————————————————————————    
 /*

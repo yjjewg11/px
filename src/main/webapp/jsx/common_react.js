@@ -560,9 +560,10 @@ var Common_Dianzan_show = React.createClass({
 render: function() {	
 	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
   return (
-		   <div id="dianzan" class="dianzan">♡
+		   <div id="dianzan" class="dianzan">
 		   {dianzanObject.names},等一共{dianzanObject.count}人点赞
-		   <AMUIReact.Button   onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}  amStyle={dianzanObject.canDianzan?"primary":"warning"}>{dianzanObject.canDianzan?"点赞":"取消点赞"}</AMUIReact.Button>		   
+		   <img src={dianzanObject.canDianzan?hostUrl+"i/quxiaohongxin.png":hostUrl+"i/hongxin2.png"}/>
+		   <img src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/>
 		   </div>
 //		   <div id="delete_dianzan" class="delete_dianzan">
 //		   {dianzanList.map(function(event) {
