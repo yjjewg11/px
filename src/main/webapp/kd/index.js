@@ -18,8 +18,8 @@ function login_affter_init(){
 			    "right": [
 			      {
 			        "link": "javascript:menu_queryMyTimely_fn()",
-			        "title": "消息",
-			        "customIcon":hostUrl+"i/icon-msg.png"
+			        "customIcon":hostUrl+"i/icon-msg.png",
+			        "title": "消息"
 			      }
 			    ]
 			  }
@@ -376,8 +376,7 @@ function menu_group_myList_fn() {
  * */
 var announce_types=1;
 function menu_announce_list_fn(types) {
-	announce_types=types;
-  	Queue.push(function(){menu_announce_list_fn(announce_types);});
+	announce_types=types;  
 	ajax_announce_listByGroup(Store.getCurGroup().uuid);
 };
 /*
@@ -385,7 +384,6 @@ function menu_announce_list_fn(types) {
  * @跳转kd_service发服务器请求
  * */
 function menu_cookbookPlan_list_fn(){
-	Queue.push(menu_cookbookPlan_list_fn);
 	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
 }
 /*
@@ -393,7 +391,6 @@ function menu_cookbookPlan_list_fn(){
  * @跳转widget发服务器请求
  * */
 function menu_teachingplan_list_fn(){
-	Queue.push(menu_teachingplan_list_fn);
 	 w_ch_class.open(ajax_teachingplan_listByClass);
 }
 /*
@@ -401,7 +398,6 @@ function menu_teachingplan_list_fn(){
  * @跳转kd_service发服务器请求
  * */
 function menu_queryLeaderMsgByParents_message_fn() {
-	Queue.push(menu_queryLeaderMsgByParents_message_fn);
 	ajax_queryLeaderMsgByParents_message();
 };
 /*
@@ -417,7 +413,6 @@ function menu_userinfo_list_fn() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn() {
-	Queue.push(menu_class_list_fn);
 	ajax_class_listByGroup(Store.getCurGroup().uuid);
 };
 /*
@@ -425,7 +420,6 @@ function menu_class_list_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn() {
-	Queue.push(menu_accounts_list_fn);
 	ajax_accounts_listByGroup(Store.getCurGroup().uuid);
 };
 /*
@@ -440,7 +434,6 @@ function menu_userinfo_logout_fn(){
  * @跳转kd_service发服务器请求
  * */
 function menu_query_list_fn() {
-	Queue.push(menu_query_list_fn);
 	ajax_student_query();
 };
 
@@ -477,14 +470,12 @@ function menu_teachingplan_dayShow_fn() {
  * 调用ajax_cookbookPlan_dayShow：每天食谱计划
  * */
 function menu_cookbookPlan_dayShow_fn() {
-	Queue.push(menu_cookbookPlan_dayShow_fn);
 	ajax_cookbookPlan_dayShow(null);
 };
 /* （首页）家长通讯录功能方法
  * @跳转kd_service发服务器请求
  * */
 function parentContactByMyStudent() {
-	Queue.push(parentContactByMyStudent);
 	ajax_parentContactByMyStudent();
 };
 /*

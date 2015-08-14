@@ -538,6 +538,7 @@ function ajax_group_edit(m,formdata){
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
   function ajax_announce_listByGroup(groupuuid) {
+		Queue.push(function(){ajax_announce_listByGroup(groupuuid);});
   	$.AMUI.progress.start();
   	var url = hostUrl + "rest/announcements/list.json";
   	$.ajax({
@@ -672,6 +673,7 @@ function ajax_group_edit(m,formdata){
   //记录当前翻页的周数
   var g_cookbookPlan_week_point=0;
   function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
+	  Queue.push(function(){ajax_cookbookPlan_listByGroup(groupuuid,weeknum);});
   	var now=new Date();
   	if(weeknum){
   		now=G_week.getDate(now,weeknum*7);
@@ -975,7 +977,8 @@ G_ajax_abs_save(opt);
   /*(园长信箱)（服务器请求）-取出所有家长和园长沟通讯息List；
    * 调用Boss_student_tel绘制一层界面；
    * */ 
-   function ajax_queryLeaderMsgByParents_message(){    	     	   	
+   function ajax_queryLeaderMsgByParents_message(){ 
+	   Queue.push(function(){ajax_queryLeaderMsgByParents_message();});
  	   	$.AMUI.progress.start();
  	       var url = hostUrl + "rest/message/queryLeaderMsgByParents.json";
  	   	$.ajax({
@@ -1250,6 +1253,7 @@ G_ajax_abs_save(opt);
  * @请求数据成功后执行Class_EventsTable方法绘制
  * */
 function ajax_class_listByGroup(groupuuid) {
+	Queue.push(function(){ajax_class_listByGroup(groupuuid);});
 	if(!groupuuid){
 		alert("ajax_class_listByGroup groupuuid is null.");
 		return;
@@ -1294,7 +1298,6 @@ function ajax_class_listByGroup(groupuuid) {
  * uuids:点击框后班级的ID；
  * */	  
 function btn_click_class_list(m,groupuuid,uuids){
-	Queue.push(function(){btn_click_class_list(m,groupuuid,uuids);});
 	if(m=="add_class"){
 		react_ajax_class_edit_get({groupuuid:groupuuid},null);
 	}else if(m=="edit_class"){
@@ -1320,7 +1323,8 @@ function ajax_class_edit(formdata,operate){
  * @uuid:根据uuid判断是添加还是编辑，
  * 添加直接就调用Class_edit，不发服务器请求
  * */	 
-function react_ajax_class_edit_get(formdata,uuid){	
+function react_ajax_class_edit_get(formdata,uuid){
+	Queue.push(function(){react_ajax_class_edit_get(formdata,uuid);});
 	if(!uuid){
 		var userinfo=Store.getUserinfo();
 		formdata.headTeacher=userinfo.uuid;
@@ -1390,7 +1394,6 @@ function ajax_flowername_download (groupuuid,classuuid){
 *   跳转学生详情绘制界面；
 * */
 function react_ajax_class_students_manage(uuid,m){
-	console.log("测试跳转问题",uuid,m);
 	Queue.push(function(){react_ajax_class_students_manage(uuid,m);});
 	$.AMUI.progress.start();
 	
@@ -1471,7 +1474,8 @@ function react_ajax_class_students_manage(uuid,m){
  * uuid:用户ID;
  * @根据数据在 Kd_react做绘制处理 
  * */
-function ajax_class_students_look_info(uuid){	
+function ajax_class_students_look_info(uuid){
+	Queue.push(function(){ajax_class_students_look_info(uuid);});
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/student/"+uuid+".json";
 	$.ajax({
@@ -1500,7 +1504,6 @@ function ajax_class_students_look_info(uuid){
  * @ajax_teachingplan_listByClass 直接调用课程安排里面的方法一步到位功能
  * */
 function class_students_manage_onClick(m,classuuid,name){
-	console.log("测试一下跳转：",m,classuuid,name);
 if(m=="add"){
 	ajax_class_students_edit({classuuid:classuuid,sex:0},null);
 }else{
@@ -1512,6 +1515,7 @@ if(m=="add"){
 * （标头）<班级管理>模板中添加学生按钮服务器请求
 * */
 function ajax_class_students_edit(formdata,uuid){
+	Queue.push(function(){ajax_class_students_edit(formdata,uuid);});
 	if(!uuid){
 		React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
 		return;
@@ -1578,6 +1582,7 @@ G_ajax_abs_save(opt);
  * 在kd_react
  * */
 function ajax_accounts_listByGroup(groupuuid) {
+	Queue.push(function(){ajax_accounts_listByGroup(groupuuid);});
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
 	$.ajax({
@@ -1614,7 +1619,6 @@ function ajax_accounts_listByGroup(groupuuid) {
  * @调用ajax_accounts_edit
  * */
 function btn_click_accounts(m,formdata){
-	Queue.push(function(){btn_click_accounts(m,formdata);});
 	ajax_accounts_edit(m,formdata);
 };
 /*<收支记录>添加按钮详情绘制前数据准备		
@@ -1623,7 +1627,8 @@ function btn_click_accounts(m,formdata){
 * @class_list:班级
 * 调用Accounts_edit
 * */
-function ajax_accounts_edit(m,formdata){ 
+function ajax_accounts_edit(m,formdata){
+	Queue.push(function(){ajax_accounts_edit(m,formdata);});
 	  if(!formdata.groupuuid)formdata.groupuuid="";
 	  if(!formdata.classuuid)formdata.classuuid="";
 	  if(!formdata.studentuuid)formdata.studentuuid="";
@@ -1826,6 +1831,7 @@ var g_student_query_classuuid="";
 var g_student_query_name="";
 var g_student_query_pageNo="";
 function ajax_student_query(groupuuid,classuuid,name,pageNo) {
+	Queue.push(function(){ajax_student_query(groupuuid,classuuid,name,pageNo);});
 	  if(!groupuuid)groupuuid="";
 	  if(!classuuid)classuuid="";
 	  if(!name)name="";
@@ -2063,6 +2069,7 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 var g_cookbookPlan_listToShow_point=0;
 var g_cookbookPlan_groupuuid="";
 function ajax_cookbookPlan_dayShow(num,groupuuid) {
+	Queue.push(function(){ajax_cookbookPlan_dayShow(num,groupuuid);});
 	var now=new Date();
 	if(!num){
 		num=0;
@@ -2304,6 +2311,7 @@ function menu_parentContactByMyStudent_fn() {
  * */
 //var g_parentContact_listToShow_type="";
 function ajax_parentContactByMyStudent(){
+	Queue.push(function(){ajax_parentContactByMyStudent();});
 //		if(!type){
 //			if(type==0){
 //				g_parentContact_listToShow_type=type;
@@ -2363,6 +2371,7 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid){
  *  
  * */
 function ajax_message_queryByParent(parent_uuid,list_div,pageNo){
+	Queue.push(function(){ajax_message_queryByParent(parent_uuid,list_div,pageNo);});
 	   var re_data=null;
 	   if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
@@ -2500,5 +2509,5 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 
 
 
-
+//Queue.push(function(){ajax_accounts_listByGroup(groupuuid);});
   

@@ -249,6 +249,7 @@ var w_ch_class={
 	},
 	
 	show:function(){
+		Queue.push(function(){w_ch_class.show();});
 		var lists=Store.getChooseClass(w_ch_class.groupuuid);
 		React.render(React.createElement(ChooseClass_EventsTable, {
 			group_uuid:w_ch_class.groupuuid,
