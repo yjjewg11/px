@@ -47,8 +47,8 @@ public class ClassNewsReplyService extends AbstractServcice {
 		}
 
 		ClassNewsReply cn=new ClassNewsReply();
-		 PxStringUtil.addCreateUser(user, cn);
 		BeanUtils.copyProperties(cn, classNewsReplyJsonform);
+		PxStringUtil.addCreateUser(user, cn);
 
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
         cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
