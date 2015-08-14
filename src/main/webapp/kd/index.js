@@ -221,8 +221,8 @@ function login_affter_init(){
 	                    },
 	                {
 	                      "link": "##",
-	                      "title": "统计"
-	                      //"fn":menu_statistics_list_fn
+	                      "title": "统计",
+	                      "fn":menu_statistics_list_fn
 	                    }
 	                
 	              ];
@@ -292,7 +292,7 @@ function menu_dohome(){
 		                    	    "title": "班级互动"
 		                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/gonggao2.png",
+			                    	    "img": hostUrl+"i/gonggao.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
@@ -308,20 +308,20 @@ function menu_dohome(){
 			                    	  },
 		                    	 
 		                    	  {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/JZtongxunlu.png",
 			                    	    "link": "javascript:parentContactByMyStudent()",
 			                    	    "title": "家长通讯录"
 			                    	  }, 
-		                    	  {
-	                    	    "img": hostUrl+"i/qiandao.png",
-	                    	    "link": "###",
-	                    	    "title": "签到(未)"
-	                    	  },
-	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
-		                    	    "link": "###",
-		                    	    "title": "花名册(未)"
-		                    	  },
+//		                    	  {
+//	                    	    "img": hostUrl+"i/qiandao.png",
+//	                    	    "link": "###",
+//	                    	    "title": "签到(未)"
+//	                    	  },
+//	                    	  {
+//		                    	    "img": hostUrl+"i/header.png",
+//		                    	    "link": "###",
+//		                    	    "title": "花名册(未)"
+//		                    	  },
 		                    	  {
 		                    		  "img": hostUrl+"i/jpwz.png",
 	                                  "link": "javascript:menu_article_list_fn()",
@@ -329,12 +329,12 @@ function menu_dohome(){
 	                                },
 			                    	
 		                      {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/banji.png",
 		                    	    "link": "javascript:menu_class_students_fn()",
 		                    	    "title": "我的班级"
 		                    	  },
 	  		                    {
-			                    	    "img": hostUrl+"i/header.png",
+			                    	    "img": hostUrl+"i/laoshitongxunlu.png",
 			                    	    "link": "javascript:menu_Teacher_tel_fn()",
 			                    	    "title": "老师通讯录"
 			                    }
@@ -465,7 +465,7 @@ function menu_announce_mylist_fn() {
 	ajax_announce_div();
 };
 /*
- * <课程表>Store.getCurGroup().uuid
+ * （首页）<课程表>Store.getCurGroup().uuid
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
 function menu_teachingplan_dayShow_fn() {
@@ -488,7 +488,7 @@ function parentContactByMyStudent() {
 	ajax_parentContactByMyStudent();
 };
 /*
- * 精品文章
+ * （首页）精品文章
  * @menu_announce_list_fn:直接调用发布消息中的方法
  */
 function menu_article_list_fn(){
@@ -501,9 +501,10 @@ function menu_article_list_fn(){
 * @show老师查看状态进入查看学生详情;
 * */
 function menu_class_students_fn() {
-	Queue.push(menu_class_students_fn);
-	w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
-	
+	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
+	//Queue.push(menu_class_students_fn);
+	//w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
+	react_ajax_class_students_manage(classList[0].uuid,"show");
 };
 /*
  * （首页）老师通讯录；

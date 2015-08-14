@@ -36,12 +36,11 @@ var Store={
 		this.map["UserRights"]=v;
 	},
 	getUserRights:function(){
-		return this.map["UserRights"];
+		var o= this.map["UserRights"];
+		if(!o)o="";
+		return o;
 	},
-	getUserRights:function(){
-		if(!Store.enabled())return null;
-		$.AMUI.store.get("Vo_md5");
-	},
+	
 	getVo_map:function(){
 		if(!Store.enabled())return null;
 		$.AMUI.store.get("Vo_map");
@@ -364,6 +363,7 @@ function store_ajax_getUserinfo() {
 			if (data.ResMsg.status == "success") {
 				if(data.userinfo)Store.setUserinfo(data.userinfo);
 				if(data.list)Store.setGroup(data.list);
+				Store.setUserRights(data.S_User_rights);
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

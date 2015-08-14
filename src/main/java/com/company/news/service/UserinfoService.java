@@ -255,13 +255,14 @@ public class UserinfoService extends AbstractServcice {
 			return null;
 		}
 		
+		boolean needUpdateCreateImg=false;
 		//头像有变化,更新相应的表.
 		if(userRegJsonform.getImg()!=null&&!userRegJsonform.getImg().equals(user.getImg())){
-			this.nSimpleHibernateDao.updateUserInfoToBusinessData(user.getUuid(), userRegJsonform.getName(), userRegJsonform.getImg());
+			needUpdateCreateImg=true;
 		}
 		//名字有变化更新相应的表.
 		else if(!userRegJsonform.getName().equals(user.getName())){
-			this.nSimpleHibernateDao.updateUserInfoToBusinessData(user.getUuid(), userRegJsonform.getName(), userRegJsonform.getImg());
+			needUpdateCreateImg=true;
 		}
 
 		user.setName(userRegJsonform.getName());
@@ -269,10 +270,12 @@ public class UserinfoService extends AbstractServcice {
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
 		user.setImg(PxStringUtil.imgUrlToUuid(userRegJsonform.getImg()));
+		
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
-
+		
+		if(needUpdateCreateImg)this.nSimpleHibernateDao.updateUserInfoToBusinessData(user);
 		return user;
 	}
 	

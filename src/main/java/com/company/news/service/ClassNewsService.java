@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
-import com.company.news.entity.ClassNewsDianzan;
 import com.company.news.entity.User;
-import com.company.news.jsonform.ClassNewsDianzanJsonform;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -47,7 +42,7 @@ public class ClassNewsService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(ClassNewsJsonform classNewsJsonform,
+	public boolean add(SessionUserInfoInterface user,ClassNewsJsonform classNewsJsonform,
 			ResponseMessage responseMessage) throws Exception {
 //		if (StringUtils.isBlank(classNewsJsonform.getTitle())
 //				|| classNewsJsonform.getTitle().length() > 128) {
@@ -68,6 +63,7 @@ public class ClassNewsService extends AbstractServcice {
 		cn.setReply_time(TimeUtils.getCurrentTimestamp());
 		cn.setUsertype(USER_type_default);
 		// 有事务管理，统一在Controller调用时处理异常
+		PxStringUtil.addCreateUser(user, cn);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 
 		return true;
@@ -81,7 +77,7 @@ public class ClassNewsService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(ClassNewsJsonform classNewsJsonform,
+	public boolean update(SessionUserInfoInterface user,ClassNewsJsonform classNewsJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		
 //		if (StringUtils.isBlank(classNewsJsonform.getTitle())
@@ -126,17 +122,8 @@ public class ClassNewsService extends AbstractServcice {
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findByPaginationToHql(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
-		this.nSimpleHibernateDao.getHibernateTemplate().clear();
-		for(ClassNews o:list){
-			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
-			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
-			try {
-				o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		this.warpVoList(list, user.getUuid());
+		
 		return pageQueryResult;
 
 	}
@@ -229,4 +216,36 @@ public class ClassNewsService extends AbstractServcice {
 		return ClassNews.class;
 	}
 
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private ClassNews warpVo(ClassNews o,String cur_user_uuid){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		
+		o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
+		o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
+		try {
+			o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
+//			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
+//			o.setReplyPage(this.getReplyPageList(o.getUuid()));
+			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<ClassNews> warpVoList(List<ClassNews> list,String cur_user_uuid){
+		for(ClassNews o:list){
+			warpVo(o,cur_user_uuid);
+		}
+		return list;
+	}
 }

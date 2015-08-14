@@ -77,9 +77,10 @@ var Div_kd_group_reg = React.createClass({
 	}
 }); 
 
-//kd group reg end
-
-//login   
+/*
+ *登录界面账号与密码输入绘制
+ * <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/> 绘制图片
+ * */
 var Div_login = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props;
@@ -95,25 +96,19 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
- 		 <h1>问界互动家园-幼儿园老师登录</h1>
- 	    <p>WenJie Interactive Home <br/>快捷管理，大数据分析</p>
+ 		 <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/>
+ 		 <h1>问界互动家园</h1>
  		  </div>
- 		  <hr />
  		</div>
  		<div className="am-g">
  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
  		 <form id="login_form" method="post" className="am-form">
- 	      <label htmlFor="loginname">手机号:</label>
- 	      <input type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
- 	      <br/>
- 	      <label htmlFor="password">密码:</label>
- 	      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
- 	      <br/>
+ 	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+ 	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
  	      <label htmlFor="pw_checked">
  	        <input id="pw_checked" name="pw_checked" type="checkbox"  checked={o.pw_checked=="checked"?"checked":""} onChange={this.handleChange}/>
  	        记住密码
  	      </label>
- 	      <br />
  	      <div className="am-cf">
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
@@ -465,7 +460,14 @@ var Group_edit = React.createClass({
     		<form id="editGroupForm" method="post" className="am-form">
     		<input type="hidden" name="uuid"  value={o.uuid}/>
     	    <input type="hidden" name="type"  value={o.type}/>
-    	      <label htmlFor="brand_name">品牌名:</label>
+            
+    		<label htmlFor="nickname" >LOGO:</label>
+            <AMUIReact.Image  id="img_head_image"   src={G_def_headImgPath} className={"G_img_header"}/>
+            <br/>
+            <button type="button"   onClick={btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <br/>
+  
+    		<label htmlFor="brand_name">品牌名:</label>
     	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	      <br/>
     	       <label htmlFor="company_name">机构全称:</label>
@@ -500,6 +502,7 @@ var Group_edit = React.createClass({
   var Group_show = React.createClass({ 
   render: function() {
   	  var o = this.props.formdata;
+		console.log("图片地址",o.description)
     return (
   		  <AMUIReact.Article
   		    title={o.brand_name}
@@ -1647,6 +1650,17 @@ render: function() {
 });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+
+
+
+
+
+
+
+
+
+
+
 //——————————————————————————班级互动<绘制>——————————————————————————
 /*
  * <班级互动>列表框与下拉框和按钮绘制;
@@ -1687,9 +1701,6 @@ var Classnews_EventsTable = React.createClass({
 			 return;
 		 }
 	  },	  
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
 	  handleChange_select_classnews_type:function(){
 		  ajax_classnews_list($('#select_classnews_type').val());
 	  },
@@ -1707,29 +1718,16 @@ render: function() {
 return (
 <div>
 <AMUIReact.ButtonToolbar>
-	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMUIReact.Button>
-	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMUIReact.Button>
+	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>发布互动</AMUIReact.Button>
 	 </AMUIReact.ButtonToolbar>
 	  <hr/>	  
 	  <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this, "pre")} round>&laquo; 上一页</AMR_Button>
 	  <label>{g_classnews_pageNo_point}\{maxPageNo}</label> 
-	    <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
-      <AMUIReact.Selected id="selectclass_uuid" name="class_uuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />	    	      
+	  <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
 <AMUIReact.Table {...this.props}>  
-  <thead> 
-    <tr>
-    	<th>  
-      <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
-      </th>
-      <th>标题</th>
-      <th>创建人</th>
-      <th>更新时间</th>
-      <th>回复时间</th>
-    </tr> 
-  </thead>
   <tbody>
     {this.props.events.data.map(function(event) {
-      return (<Classnews_EventRow  event={event} />);
+      return (<Classnews_show  event={event} />);
     })}
   </tbody>
 </AMUIReact.Table>
@@ -1738,29 +1736,50 @@ return (
 }
 });
 /*
- * <班级互动>列表详情内容绘制;
- * @btn_click_classnews:互动单独详情;
- * */
-var Classnews_EventRow = React.createClass({ 
-	render: function() {
-	var event = this.props.event;
-	var className = event.highlight ? 'am-active' :
-	event.disabled ? 'am-disabled' : '';
-
-	return (
-	<tr className={className} >
-	<td> 
-	<input type="checkbox" value={event.uuid} name="table_checkbox" />
-	</td>
-	  <td><a href="javascript:void(0);" onClick={btn_click_classnews.bind(this,"show",event)}>{event.title}</a></td>
-	  <td>{event.create_user}</td>
-	  <td>{event.update_time}</td>
-	  <td>{event.reply_time}</td>
-	  
-	</tr> 
-	);
+ * <班级互动>MAp详情绘制
+ * var o = this.props.formdata;
+ */
+var Classnews_show = React.createClass({ 
+	render: function() {		  
+		  var  o = this.props.event;
+		  if(!o.dianzanList)o.dianzanList=[];
+	  return (
+			  <div>
+			  <AMUIReact.Article
+			    title={o.title}
+			    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
+				<div dangerouslySetInnerHTML={{__html:o.content}}></div>
+			   </AMUIReact.Article>	
+			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+			  <Common_reply_list uuid={o.uuid}  type={0}/>
+			    </div>		   
+	  );
 	}
 	}); 
+///*Classnews_show Classnews_EventRow
+// * <班级互动>列表详情内容绘制;
+// * @btn_click_classnews:互动单独详情;
+// * */
+//var Classnews_EventRow = React.createClass({ 
+//	render: function() {
+//	var event = this.props.event;
+//	var className = event.highlight ? 'am-active' :
+//	event.disabled ? 'am-disabled' : '';
+//
+//	return (
+//	<tr className={className} >
+//	<td> 
+//	<input type="checkbox" value={event.uuid} name="table_checkbox" />
+//	</td>
+//	  <td><a href="javascript:void(0);" onClick={btn_click_classnews.bind(this,"show",event)}>{event.title}</a></td>
+//	  <td>{event.create_user}</td>
+//	  <td>{event.update_time}</td>
+//	  <td>{event.reply_time}</td>
+//	  
+//	</tr> 
+//	);
+//	}
+//	}); 
 /*
  * <班级互动>添加与编辑按钮中可删除图片显示.
  */
@@ -1777,27 +1796,7 @@ var ClassNews_Img_canDel = React.createClass({
             	)
 	  }
 	});
-/*
- * <班级互动>列表点击详情和班级互动详情公用方法绘制;
- */
-var Classnews_show = React.createClass({ 
-	render: function() {
-		  var o = this.props.formdata;
-		 
-		  if(!o.dianzanList)o.dianzanList=[];
-	  return (
-			  <div>
-			  <AMUIReact.Article
-			    title={o.title}
-			    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+this.props.count+"次"}>
-				<div dangerouslySetInnerHTML={{__html: o.content}}></div>
-			   </AMUIReact.Article>	
-			  <Common_Dianzan_show uuid={o.uuid} type={0} />
-			  <Common_reply_list uuid={o.uuid}  type={0}/>
-			    </div>		   
-	  );
-	}
-	}); 
+
 
 /*
  * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
@@ -1884,6 +1883,42 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //——————————————————————————学生列表<绘制>——————————————————————————  
 /*
@@ -2954,7 +2989,9 @@ render: function() {
 var Class_students_show= React.createClass({
 	 componentDidMount:function(){
 			 G_img_down404();
-
+	  },
+	  handleChange_selectgroup_uuid:function(val){
+		  react_ajax_class_students_manage(val,"show");
 	  },
 	render: function() {
 		var o=this.props.formdata;
@@ -2965,6 +3002,7 @@ var Class_students_show= React.createClass({
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
 	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />  
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>

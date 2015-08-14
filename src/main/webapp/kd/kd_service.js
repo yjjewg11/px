@@ -507,6 +507,17 @@ function ajax_group_edit(m,formdata){
    		}
    	});
    };
+
+   /*
+    * (校务管理)<校园列表>内上传LOGO图片
+    * */
+   function btn_class_group_uploadHeadere (){      
+        w_uploadImg.open(function (guid){
+             $ ("#headimg").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+         });   
+   }
    
 //————————————————————————————校务管理<校园介绍>—————————————————————————    
 /*
@@ -1180,17 +1191,14 @@ function btn_click_userinfo(m,obj,usernames,sex){
     * <老师管理>分配权限按钮服务请求
     * */
    function btn_ajax_updateRole(useruuid){
-		 var uuids=null;
+		 var uuids="";
 		 $("input[name='table_checkbox']").each(function(){
 			if(this.checked){
-				 if(uuids==null)uuids=this.value;
+				 if(!uuids)uuids=this.value;
 				 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
 			}
 			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }		  
+		 	  
 		$.AMUI.progress.start();
 	      var url = hostUrl + "rest/userinfo/updateRole.json";
 	      var opt={
@@ -1379,7 +1387,8 @@ function ajax_flowername_download (groupuuid,classuuid){
 *   跳转学生详情绘制界面；
 * */
 function react_ajax_class_students_manage(uuid,m){
-	Queue.push(function(){react_ajax_class_students_manage(uuid);});
+	console.log("测试跳转问题",uuid,m);
+	Queue.push(function(){react_ajax_class_students_manage(uuid,m);});
 	$.AMUI.progress.start();
 	
 	var formdata=null;
@@ -1433,8 +1442,11 @@ function react_ajax_class_students_manage(uuid,m){
 				tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"')";
 			}
 		}
-		
-		React.render(React.createElement(Class_students_show,{formdata:formdata,students:students}), document.getElementById('div_body'));
+		React.render(React.createElement(Class_students_show,{
+			formdata:formdata,
+			classList:G_selected_dataModelArray_byArray(Store.getChooseClass(Store.getCurGroup().uuid),"uuid" ,"name"),
+			classuuid:uuid,
+			students:students}), document.getElementById('div_body'));
 		return ;
 	}	
 	if(students){
@@ -1446,7 +1458,9 @@ function react_ajax_class_students_manage(uuid,m){
 			tmp.link= "javascript:ajax_class_students_edit(null,'"+tmp.uuid+"')";
 		}
 	}	
-	React.render(React.createElement(Class_students_manage,{formdata:formdata,students:students}), document.getElementById('div_body'));
+	React.render(React.createElement(Class_students_manage,{
+		formdata:formdata,
+		students:students}), document.getElementById('div_body'));
 };
 /*
  * （主页）我的班级界面下的二级界面学生详细信息
@@ -1483,6 +1497,7 @@ function ajax_class_students_look_info(uuid){
  * @ajax_teachingplan_listByClass 直接调用课程安排里面的方法一步到位功能
  * */
 function class_students_manage_onClick(m,classuuid,name){
+	console.log("测试一下跳转：",m,classuuid,name);
 if(m=="add"){
 	ajax_class_students_edit({classuuid:classuuid,sex:0},null);
 }else{
