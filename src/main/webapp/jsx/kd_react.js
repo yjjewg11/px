@@ -1740,6 +1740,7 @@ return (
  * var o = this.props.formdata;
  */
 var Classnews_show = React.createClass({ 
+
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
@@ -1756,6 +1757,7 @@ var Classnews_show = React.createClass({
 	  );
 	}
 	}); 
+
 ///*Classnews_show Classnews_EventRow
 // * <班级互动>列表详情内容绘制;
 // * @btn_click_classnews:互动单独详情;
@@ -2485,11 +2487,13 @@ var Teachingplan_showByOneDay = React.createClass({
  */
 var CookbookPlan_showByOneDay = React.createClass({ 
 	group_uuid:null,
-	handleClick: function(m) {
+	handleClick: function(m,groupuuid) {
 		if(m=="pre"){
+			group_uuid=groupuuid;
 			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }else if(m=="next"){
+			 group_uuid=groupuuid;
 			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }
@@ -2500,7 +2504,6 @@ var CookbookPlan_showByOneDay = React.createClass({
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
 	  var dataShowDiv=null;
 	  if(!o){
 		  dataShowDiv=(<div className="am-g" id="div_detail">今日没有发布食谱</div>)
@@ -2541,13 +2544,13 @@ var CookbookPlan_showByOneDay = React.createClass({
 				  <div className="am-g">				  
 				  <Grid>
 				    <Col sm={3}>
-				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")}  round>上一天</AMR_Button>
+				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",this.props.groupuuid)}  round>上一天</AMR_Button>
 				    </Col>
 				    <Col sm={6}>
 				    <h1><AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />  -每日食谱-{this.props.ch_day}</h1>
 				    </Col>
 				    <Col sm={3}>
-				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下一天</AMR_Button>	
+				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)} round>下一天</AMR_Button>	
 				    </Col>
 				  </Grid>
 				  </div>

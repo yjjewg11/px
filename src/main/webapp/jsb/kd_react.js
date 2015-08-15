@@ -1740,6 +1740,7 @@ React.createElement(AMUIReact.Table, React.__spread({},  this.props),
  * var o = this.props.formdata;
  */
 var Classnews_show = React.createClass({displayName: "Classnews_show", 
+
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
@@ -1756,6 +1757,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 	  );
 	}
 	}); 
+
 ///*Classnews_show Classnews_EventRow
 // * <班级互动>列表详情内容绘制;
 // * @btn_click_classnews:互动单独详情;
@@ -2485,11 +2487,13 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
  */
 var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_showByOneDay", 
 	group_uuid:null,
-	handleClick: function(m) {
+	handleClick: function(m,groupuuid) {
 		if(m=="pre"){
+			group_uuid=groupuuid;
 			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }else if(m=="next"){
+			 group_uuid=groupuuid;
 			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point,group_uuid);
 			 return;
 		 }
@@ -2500,7 +2504,6 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 	  },
 	render: function() {
 	  var o = this.props.formdata;
-	  
 	  var dataShowDiv=null;
 	  if(!o){
 		  dataShowDiv=(React.createElement("div", {className: "am-g", id: "div_detail"}, "今日没有发布食谱"))
@@ -2541,13 +2544,13 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				  React.createElement("div", {className: "am-g"}, 				  
 				  React.createElement(Grid, null, 
 				    React.createElement(Col, {sm: 3}, 
-				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上一天")
+				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre",this.props.groupuuid), round: true}, "上一天")
 				    ), 
 				    React.createElement(Col, {sm: 6}, 
 				    React.createElement("h1", null, React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid}), "  -每日食谱-", this.props.ch_day)
 				    ), 
 				    React.createElement(Col, {sm: 3}, 
-				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下一天")	
+				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next",this.props.groupuuid), round: true}, "下一天")	
 				    )
 				  )
 				  ), 
