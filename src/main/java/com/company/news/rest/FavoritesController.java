@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Favorites;
+import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.FavoritesJsonform;
 import com.company.news.query.PageQueryResult;
@@ -108,8 +109,6 @@ public class FavoritesController extends AbstractRESTController {
 
 
 
-	
-
 	/**
 	 * 班级删除
 	 * 
@@ -123,8 +122,11 @@ public class FavoritesController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
-			boolean flag = favoritesService.delete(request.getParameter("uuid"),
-					responseMessage);
+			
+			User user=this.getUserInfoBySession(request);
+			
+			boolean flag = favoritesService.delete(user.getUuid(),request.getParameter("uuid"),request.getParameter("reluuid")
+					,responseMessage);
 			if (!flag)
 				return "";
 		} catch (Exception e) {

@@ -197,8 +197,19 @@ public class UserinfoController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/getUserinfo", method = RequestMethod.GET)
 	public String getUserinfo(ModelMap model, HttpServletRequest request) {
-		// 返回用户信息
-		this.putUserInfoReturnToModel(model, request);
+		try {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+
+			// 返回用户信息
+			this.putUserInfoReturnToModel(model, request);
+			
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			responseMessage.setMessage("登陆成功");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "";
 	}
 

@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Cookbook;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Message;
 import com.company.news.entity.Parent;
 import com.company.news.entity.User;
@@ -19,7 +19,6 @@ import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
-import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.GourpLeaderMsgVO;
 import com.company.news.vo.ResponseMessage;
@@ -35,7 +34,8 @@ public class MessageService extends AbstractServcice {
 	public static final int announcements_isread_no = 0;// 未读
 	public static final int announcements_isdelete_yes = 1;// 已读
 	public static final int announcements_isdelete_no = 0;// 未读
-
+	@Autowired
+	public PushMsgIservice pushMsgIservice;
 	/**
 	 * 增加
 	 * 
@@ -73,7 +73,14 @@ public class MessageService extends AbstractServcice {
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(message);
-
+		if(SystemConstants.Message_type_1.equals(message.getType())){
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageTeaher, message.getSend_useruuid(), user.getUuid(), message.getTitle());
+			
+		}else{
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageKD, message.getSend_useruuid(), user.getUuid(), message.getTitle());
+			
+		}
+		
 		return true;
 	}
 	/**
@@ -202,6 +209,7 @@ public class MessageService extends AbstractServcice {
 		pData.setOrderType("desc");
 	PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 			.findByPaginationToHql(hql, pData);
+	this.warpVoList(pageQueryResult.getData());
 	return pageQueryResult;
 	}
 	/**
@@ -241,7 +249,7 @@ public class MessageService extends AbstractServcice {
 	 * @param list
 	 * @return
 	 */
-	private Message warpVo(Message o){
+	public Message warpVo(Message o){
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		o.setMessage(MyUbbUtils.myUbbTohtml(o.getMessage()));
 		return o;
@@ -251,7 +259,7 @@ public class MessageService extends AbstractServcice {
 	 * @param list
 	 * @return
 	 */
-	private List<Message> warpVoList(List<Message> list){
+	public List<Message> warpVoList(List<Message> list){
 		for(Message o:list){
 			warpVo(o);
 		}

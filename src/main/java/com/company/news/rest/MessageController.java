@@ -27,7 +27,6 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.MessageService;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/message")
@@ -83,7 +82,7 @@ public class MessageController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-
+		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("修改成功");
 		return "";
@@ -160,7 +159,6 @@ public class MessageController extends AbstractRESTController {
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			PageQueryResult pageQueryResult= messageService.query(request.getParameter("type"),request.getParameter("useruuid"),pData);
-
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

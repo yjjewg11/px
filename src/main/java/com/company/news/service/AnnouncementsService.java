@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Announcements;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
-import com.company.news.entity.PClass;
 import com.company.news.entity.User;
-import com.company.news.iservice.PushMsgIservice;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
