@@ -222,7 +222,7 @@ function menu_userinfo_reg_fn(){
 	ajax_loaddata_group_list_for_userinfo_reg();
 	
 }
-
+//登录界面
 function menu_userinfo_login_fn(){
 	Queue.push(menu_userinfo_login_fn);
 	var loginname = getCookie("bs_loginname");

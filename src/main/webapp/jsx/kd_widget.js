@@ -157,9 +157,6 @@ var ChooseClass_EventsTable = React.createClass({
     <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
   </AMUIReact_ButtonToolbar>
   <div className="header">
-  <div className="am-g">
-    <h1>班级选择</h1>
-  </div>
   <hr />
 </div>
 	  <div className="am-form-group">
