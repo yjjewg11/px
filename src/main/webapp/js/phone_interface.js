@@ -21,7 +21,7 @@ var G_jsCallBack={
 	 */
 		QueueTeacher:function(base64){
 	
-		Queue.ajax_Teacher_listByGroup(base64);
+		ajax_Teacher_listByGroup(base64);
 },	
 	/**
 	 * 回退方法

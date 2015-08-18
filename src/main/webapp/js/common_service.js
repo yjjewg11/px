@@ -5,18 +5,31 @@
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
 
  * 保存通用方法
+ * 
+ * 表单格式
 var opt={
 	 formName:"editClassnewsForm",
+	 formObject:null,
 	 url:hostUrl + "rest/classnewsreply/save.json",
 	 cbFN:null,
 	 }
 	 G_ajax_abs_save(opt);
+	 对象格式
+	 var opt={
+	 jsonString:'{"key":"val"}',
+	 url:hostUrl + "rest/classnewsreply/save.json",
+	 cbFN:null,
+	 }
+	 G_ajax_abs_save(opt);
+	 
+	 opt.jsonString等于空的时候执行一次opt.jsonString=JSON.stringify(formObject);我们自己去取一次formName表单;
  */
 function G_ajax_abs_save(opt){
 $.AMUI.progress.start();
-	
-	  var objectForm = $('#'+opt.formName).serializeJson();
-	  var jsonString=JSON.stringify(objectForm);
+	  if(!opt.jsonString){
+		  formObject = $('#'+opt.formName).serializeJson();
+		  opt.jsonString=JSON.stringify(formObject);
+	  }		 
 	  var async=true;
 	  if(opt.async===false){
 		  async=opt.async;
@@ -25,7 +38,7 @@ $.AMUI.progress.start();
 		type : "POST",
 		url : opt.url,
 		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
-		data:jsonString,
+		data:opt.jsonString,
 		dataType : "json",
 		contentType : false, 
 		async:async,
@@ -603,3 +616,27 @@ function common_ajax_reply_save(callback){
 	 };
 	 G_ajax_abs_save(opt);
 }
+
+/*
+ *收藏按钮公用服务器请求
+ *@title：(String)标头
+ *@type:(int类型)模块类型.0:公告,3:精品文章.4:招生计划. 99:班级互动.10:html类型,直接去url地址,调用浏览器显示.
+ *@reluuid：(String)与type配合确定某个模块的详细的uuid.用于跳转到该模块的详细显示.
+ *@url：(String)Type=10的时候,填写该URL;
+ *@直接调用opt公共组件 对象处理服务器请求
+ *formObject:这里直接转换成字符串格式,不然JSON转换会报错;
+ * */
+function commons_ajax_favorites_push(title,type,reluuid,url){
+	var formObject={
+			title:title+"",type:type+"",reluuid:reluuid+"",url:url+""	
+	};	
+	 var jsonString=JSON.stringify(formObject);
+	 var opt={
+			// formObject:formObject,
+			 jsonString:jsonString,
+			 url:hostUrl + "rest/favorites/save.json",
+			 cbFN:null,
+			 };
+			 G_ajax_abs_save(opt);
+	
+};

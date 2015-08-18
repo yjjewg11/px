@@ -186,8 +186,7 @@ var  Queue={
 		clear:function(){
 			this.arr=[];
 		},
-		push:function(o,title){
-           			
+		push:function(o,title){          			
 			title_info_init(title);// 绘制标头方法
 			 this.isBack=false;
 			 if(this.arr.length>50){
