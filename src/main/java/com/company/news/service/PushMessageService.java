@@ -1,5 +1,8 @@
 package com.company.news.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,28 @@ public class PushMessageService extends AbstractServcice {
 	public static final int announcements_isdelete_yes = 1;// 已读
 	public static final int announcements_isdelete_no = 0;// 未读
 
+	
+
+	/**
+	 * 根据日期查询是否有新消息.
+	 * 每次登录是,createdate传入null.点击过消息页面.后时间传入点击时的时间点.
+	 * 
+	 * @return
+	 */
+	public Long queryMsgCount(String type, String useruuid,Date createDate) {
+
+		String hql = "select count(*) from PushMessage where revice_useruuid='" + useruuid + "'";
+		if (StringUtils.isNotBlank(type))
+			hql += " and type=" + type;
+		
+		if(createDate!=null){
+			hql += " and create_time>?";
+		}
+		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, createDate);
+		if(list==null)return Long.valueOf(0);
+		return Long.valueOf(list.get(0).toString());
+	}
+	
 	/**
 	 * 查询所有通知
 	 * 

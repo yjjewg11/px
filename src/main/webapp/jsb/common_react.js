@@ -433,7 +433,8 @@ var Div_userinfo_updatePasswordBySms = React.createClass({displayName: "Div_user
 		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
 		      React.createElement("input", {type: "password", name: "password1"}), 
 		      React.createElement("br", null), 
-		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatePasswordBySms, className: "am-btn am-btn-primary"}, "提交")
+		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatePasswordBySms, className: "am-btn am-btn-primary"}, "提交"), 
+		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
 		    ), 
 		    React.createElement("hr", null)
 		  

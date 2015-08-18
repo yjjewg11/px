@@ -237,14 +237,15 @@ var CookbookPlan_edit_EventRow = React.createClass({
 //加载封的方法<div id="baidu_dup_1110291"></div>百度广告页面
 var Div_body_index = React.createClass({ 
 	componentDidMount:function(){
-		(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
+		//(BAIDU_DUP=window.BAIDU_DUP||[]).push(['fillAsync','1110291','baidu_dup_1110291']);
+		//<div id="baidu_dup_1110291"></div>
 	},
 	render: function() {
 	return (
 		<div>
 
 		<AMUIReact.Gallery  {...this.props} />
-		<div id="baidu_dup_1110291"></div>
+		
 		</div>
 		
 	);

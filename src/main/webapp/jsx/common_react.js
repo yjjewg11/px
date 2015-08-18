@@ -434,6 +434,7 @@ var Div_userinfo_updatePasswordBySms = React.createClass({
 		      <input type="password" name="password1"  />
 		      <br/>
 		      <button type="button" onClick={ajax_userinfo_updatePasswordBySms} className="am-btn am-btn-primary">提交</button>
+		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
 		    </form>
 		    <hr/>
 		  
