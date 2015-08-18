@@ -562,15 +562,7 @@ render: function() {
 		   React.createElement("img", {src: dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)})
 		   )
 
-//		   <img src={dianzanObject.canDianzan?hostUrl+"i/quxiaohongxin.png":hostUrl+"i/hongxin2.png"}/>		   
-//		   <div id="delete_dianzan" class="delete_dianzan">
-//		   {dianzanList.map(function(event) {
-//			      return (
-//			    		  <a href="javascript:void(0);">,{event.create_user}</a>
-//			    		  )
-//			  })}		   
-//		   <button type="button2"  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type)}  className="am-btn am-btn-primary">取消点赞</button>
-		   
+
   );
 }
 }); 

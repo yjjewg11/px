@@ -619,7 +619,7 @@ function ajax_group_edit(m,formdata){
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
   function ajax_announce_listByGroup(groupuuid,Titlename) {
-	Queue.push(function(){ajax_announce_listByGroup(groupuuid);},Titlename);
+
   	$.AMUI.progress.start();
   	var url = hostUrl + "rest/announcements/list.json";
   	$.ajax({
@@ -2207,8 +2207,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
  * 基本框 等
  * */
 function ajax_good_announce_div(){
-	React.render(React.createElement(Announcements_good_Div_list), document.getElementById('div_body'));
-   	
+	React.render(React.createElement(Announcements_good_Div_list), document.getElementById('div_body'));  	
 };
 /*
 *(精品文章)服务器请求share/articleList

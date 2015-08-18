@@ -275,8 +275,7 @@ var div_menu_handleClick = function(nav, index, e) {
 		 if( typeof  nav.fn=="function"){
 			 body_show();
 			 this.closeAll();
-			 nav.fn();
-			 
+			 nav.fn();			 
 		 }
 		  console.log('点击的链接为1：', nav);
 	  } else {
@@ -301,7 +300,8 @@ function menu_dohome(){
 	$("#div_body").show();
 	$("#div_widget_chooseUser").html("");
 	$("#div_widget_chooseCook").html("");
-	Queue.push(menu_dohome,"主页");
+	title_info_init("主页");
+	Queue.push(menu_dohome);
 	var myhead_img=hostUrl+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
@@ -343,11 +343,11 @@ function menu_dohome(){
 //	                    	    "link": "###",
 //	                    	    "title": "签到(未)"
 //	                    	  },
-//	                    	  {
-//		                    	    "img": hostUrl+"i/header.png",
-//		                    	    "link": "###",
-//		                    	    "title": "花名册(未)"
-//		                    	  },
+	                    	  {
+		                    	    "img": hostUrl+"i/header.png",
+		                    	    "link": "###",
+		                    	    "title": "我的信箱(未)"
+		                    	  },
 		                    	  {
 		                    		  "img": hostUrl+"i/jpwz.png",
 	                                  "link": "javascript:menu_article_list_fn()",
@@ -359,11 +359,17 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_class_students_fn()",
 		                    	    "title": "我的班级"
 		                    	  },
+
 	  		                    {
 			                    	    "img": hostUrl+"i/laoshitongxunlu.png",
 			                    	    "link": "javascript:menu_Teacher_tel_fn()",
 			                    	    "title": "老师通讯录"
-			                    }
+			                    },
+			                      {
+		                    	    "img": hostUrl+"i/banji.png",
+		                    	    "link": "javascript:menu_class_students_fn()",
+		                    	    "title": "我的收藏"
+		                    	  }
 	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
@@ -384,7 +390,7 @@ function menu_kd_group_reg_fn(){
  * @跳转kd_service发服务器请求
  * */
 function menu_queryMyTimely_fn() {
-	Queue.push(menu_queryMyTimely_fn,"即时消息");
+	Queue.push(menu_queryMyTimely_fn);
 	ajax_queryMyTimely_myList();
 };
 /*
@@ -402,6 +408,7 @@ function menu_group_myList_fn() {
  * */
 var announce_types=1;
 function menu_announce_list_fn(types,name) {
+	Queue.push(function(){menu_announce_list_fn(types,name);},name);
 	announce_types=types; 
 	ajax_announce_listByGroup(Store.getCurGroup().uuid,name);
 };
