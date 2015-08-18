@@ -88,22 +88,22 @@ function login_affter_init(){
 	            "title": "信息管理",
 	            "subMenu": [
 	                        {
-	                          "fn":function(){menu_announce_list_fn(0,"信息管理-校园公告");},
+	                          "fn":function(){menu_announce_list_fn(0,"信息管理-校园公告",null);},
 	                          "link": "##",
 	                          "title": "校园公告"
 	                        },
 	                        {
-	                        	  "fn":function(){menu_announce_list_fn(1,"信息管理-老师公告");},
+	                        	  "fn":function(){menu_announce_list_fn(1,"信息管理-老师公告",null);},
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                              "fn":function(){menu_announce_list_fn(3,"信息管理-精品文章");},
+	                              "fn":function(){menu_announce_list_fn(3,"信息管理-精品文章",null);},
 	                              "link": "##",
 	                              "title": "精品文章"
 	                            },
 	                          {
-	                        	  "fn":function(){menu_announce_list_fn(4,"信息管理-招生计划");},
+	                        	  "fn":function(){menu_announce_list_fn(4,"信息管理-招生计划",null);},
 	                              "link": "##",
 	                              "title": "招生计划"
 	                            }
@@ -300,17 +300,11 @@ function menu_dohome(){
 	$("#div_body").show();
 	$("#div_widget_chooseUser").html("");
 	$("#div_widget_chooseCook").html("");
-	title_info_init("主页");
-	Queue.push(menu_dohome);
+	Queue.push(menu_dohome,"主页");
 	var myhead_img=hostUrl+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	var div_Gallery_data=[
-//	                      {
-//	                    	    "img": myhead_img,
-//	                    	    "link": "javascript:menu_userinfo_update_fn();",
-//	                    	    "title": "我"
-//	                    	  },
 
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
@@ -344,7 +338,7 @@ function menu_dohome(){
 //	                    	    "title": "签到(未)"
 //	                    	  },
 	                    	  {
-		                    	    "img": hostUrl+"i/header.png",
+		                    	    "img": hostUrl+"i/xinxiang.png",
 		                    	    "link": "###",
 		                    	    "title": "我的信箱(未)"
 		                    	  },
@@ -366,8 +360,8 @@ function menu_dohome(){
 			                    	    "title": "老师通讯录"
 			                    },
 			                      {
-		                    	    "img": hostUrl+"i/banji.png",
-		                    	    "link": "javascript:menu_class_students_fn()",
+		                    	    "img": hostUrl+"i/shoucang.png",
+		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
 		                    	  }
 	                    	  ];
@@ -390,7 +384,7 @@ function menu_kd_group_reg_fn(){
  * @跳转kd_service发服务器请求
  * */
 function menu_queryMyTimely_fn() {
-	Queue.push(menu_queryMyTimely_fn);
+	Queue.push(menu_queryMyTimely_fn,"即时消息");
 	ajax_queryMyTimely_myList();
 };
 /*
@@ -406,18 +400,29 @@ function menu_group_myList_fn() {
  * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
  * @跳转kd_service发服务器请求
  * */
-var announce_types=1;
-function menu_announce_list_fn(types,name) {
-	Queue.push(function(){menu_announce_list_fn(types,name);},name);
+var announce_types="";
+var Group_name="";
+var Group_uuid=null;
+function menu_announce_list_fn(types,name,groupuuid) {
+	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
 	announce_types=types; 
-	ajax_announce_listByGroup(Store.getCurGroup().uuid,name);
+	Group_name=name;
+	if(!groupuuid)Group_uuid=Store.getCurGroup().uuid;
+	else Group_uuid=groupuuid;
+	ajax_announce_listByGroup(Group_uuid,name);
 };
 /*
  * (标头)食谱管理功能
  * @跳转kd_service发服务器请求
  * */
-function menu_cookbookPlan_list_fn(){
-	ajax_cookbookPlan_listByGroup(Store.getCurGroup().uuid);
+var g_cookbookPlan_week_point="";
+var cookbook_Group_uuid=null;
+function menu_cookbookPlan_list_fn(groupuuid,weeknum){
+    Queue.push(function(){ajax_cookbookPlan_listByGroup(groupuuid,weeknum);},"食谱管理");
+    g_cookbookPlan_week_point=weeknum; 
+	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroup().uuid;
+	else cookbook_Group_uuid=groupuuid;
+	ajax_cookbookPlan_listByGroup(cookbook_Group_uuid,weeknum);
 }
 /*
  * (标头)课程安排功能
@@ -538,6 +543,15 @@ function menu_class_students_fn() {
 function menu_Teacher_tel_fn() {
 	Queue.push(menu_Teacher_tel_fn,"老师通讯录");
 	ajax_Teacher_listByGroup(Store.getCurGroup().uuid);
+};
+
+/*
+ * （首页）我的收藏；
+ * @跳转kd_service发服务器请求
+ * */
+function menu_favorites_push_fn() {
+	Queue.push(menu_favorites_push_fn,"我的收藏");
+	ajax_favorites_div();
 };
 
 

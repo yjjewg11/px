@@ -611,6 +611,8 @@ function ajax_group_edit(m,formdata){
       	ajax_group_edit("show",{uuid:uuid});  		
   };	
  
+
+  
   
 //————————————————————————————信息管理—————————————————————————    
 /*
@@ -618,8 +620,7 @@ function ajax_group_edit(m,formdata){
 * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
-  function ajax_announce_listByGroup(groupuuid,Titlename) {
-
+  function ajax_announce_listByGroup(groupuuid) {
   	$.AMUI.progress.start();
   	var url = hostUrl + "rest/announcements/list.json";
   	$.ajax({
@@ -658,7 +659,6 @@ function ajax_group_edit(m,formdata){
   * @del:删除；
   * */  
   function btn_click_announce(m,groupuuid,uuid){
-	  console.log("announce_types",announce_types);
 	  	if(m=="add"){
 			Queue.push(function(){btn_click_announce(m,groupuuid,uuid);},Vo.announce_type(announce_types)+"-创建");
 	  		react_ajax_announce_edit({groupuuid:groupuuid,type:announce_types},null);
@@ -756,13 +756,13 @@ function ajax_group_edit(m,formdata){
   //记录当前翻页的周数
   var g_cookbookPlan_week_point=0;
   function ajax_cookbookPlan_listByGroup(groupuuid,weeknum) {
-	  Queue.push(function(){ajax_cookbookPlan_listByGroup(groupuuid,weeknum);},"食谱管理");
   	var now=new Date();
   	if(weeknum){
   		now=G_week.getDate(now,weeknum*7);
   	}else{
   		g_cookbookPlan_week_point=0;
   	}
+  	if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
   	var begDateStr=G_week.getWeek0(now);
   	var endDateStr=G_week.getWeek6(now);
   	$.AMUI.progress.start();
@@ -1096,8 +1096,11 @@ G_ajax_abs_save(opt);
      *@Boss_message_list准备开始绘制舞台  
  	* @revice_useruuid:收件人ID；
  	* @send_useruuid:发送者ID；
+ 	* @send_user:发送者姓名
      * */
-    function ajax_boss_message_list(send_useruuid,revice_useruuid){
+    function ajax_boss_message_list(send_useruuid,revice_useruuid,send_user){
+    	var message_name="园长信箱-来自"+send_user+"的信息";
+    	Queue.push(function(){ajax_boss_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
  		React.render(React.createElement( Boss_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
  	   };
  		   
@@ -1222,8 +1225,8 @@ G_ajax_abs_save(opt);
  * @ajax_userinfo_getRole:在common_react;
  * */  
 function btn_click_userinfo(m,obj,usernames,sex){
-  Queue.push(function(){btn_click_userinfo(m,obj,usernames);});
 	if(m=="add"){
+	Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师管理-添加");
 		obj.sex=1;
 		ajax_userinfo_edit(obj,"add",sex);
 	}else if(m=="disable"){
@@ -1231,8 +1234,10 @@ function btn_click_userinfo(m,obj,usernames,sex){
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,sex);
 	}else if(m=="getRole"){
+		Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师管理-分配权限-"+usernames);
 		ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);
 	}else if(m=="edit"){
+		  Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师管理-修改");
 		ajax_userinfo_edit({uuid:obj},"edit",sex);
 	   	};
 	   };
@@ -1381,12 +1386,14 @@ function ajax_class_listByGroup(groupuuid) {
  * */	  
 function btn_click_class_list(m,groupuuid,uuids){
 	if(m=="add_class"){
+		Queue.push(function(){btn_click_class_list(m,groupuuid,uuids);},"班级管理-添加班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},null);
 	}else if(m=="edit_class"){
 		if(!uuids&&uuids.indexOf(",")>-1){
 			alert("只能选择一个班级进行编辑！");
 			return;
 		}
+		Queue.push(function(){btn_click_class_list(m,groupuuid,uuids);},"班级管理-编辑班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},uuids);
 	}else if(m=="graduate_class"){
 		//ajax_class_edit({groupuuid:groupuuid},"edit");
@@ -1406,7 +1413,6 @@ function ajax_class_edit(formdata,operate){
  * 添加直接就调用Class_edit，不发服务器请求
  * */	 
 function react_ajax_class_edit_get(formdata,uuid){
-	Queue.push(function(){react_ajax_class_edit_get(formdata,uuid);});
 	if(!uuid){
 		var userinfo=Store.getUserinfo();
 		formdata.headTeacher=userinfo.uuid;
@@ -1476,7 +1482,6 @@ function ajax_flowername_download (groupuuid,classuuid){
 *   跳转学生详情绘制界面；
 * */
 function react_ajax_class_students_manage(uuid,m){
-	Queue.push(function(){react_ajax_class_students_manage(uuid,m);},"我的班级");
 	$.AMUI.progress.start();
 	
 	var formdata=null;
@@ -1521,13 +1526,14 @@ function react_ajax_class_students_manage(uuid,m){
 	});
 //根据判断 是我的班级还是班级管理-show我的班级模块
 	if(m=="show"){
+		Queue.push(function(){react_ajax_class_students_manage(uuid,m);},"我的班级");
 		if(students){
 			for(var i=0;i<students.length;i++){
 				var tmp=students[i];
 				tmp.img=G_def_headImgPath;
 				if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
 				tmp.title=tmp.name;
-				tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"')";
+				tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"','"+tmp.title+"')";
 			}
 		}
 		React.render(React.createElement(Class_students_show,{
@@ -1536,7 +1542,8 @@ function react_ajax_class_students_manage(uuid,m){
 			classuuid:uuid,
 			students:students}), document.getElementById('div_body'));
 		return ;
-	}	
+	}
+	Queue.push(function(){react_ajax_class_students_manage(uuid,m);},"班级详情");
 	if(students){
 		for(var i=0;i<students.length;i++){
 			var tmp=students[i];
@@ -1556,8 +1563,8 @@ function react_ajax_class_students_manage(uuid,m){
  * uuid:用户ID;
  * @根据数据在 Kd_react做绘制处理 
  * */
-function ajax_class_students_look_info(uuid){
-	Queue.push(function(){ajax_class_students_look_info(uuid);});
+function ajax_class_students_look_info(uuid,title){
+	Queue.push(function(){ajax_class_students_look_info(uuid,title);},"我的班级-学生详情："+title);
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/student/"+uuid+".json";
 	$.ajax({
@@ -1597,11 +1604,13 @@ if(m=="add"){
 * （标头）<班级管理>模板中添加学生按钮服务器请求
 * */
 function ajax_class_students_edit(formdata,uuid){
-	Queue.push(function(){ajax_class_students_edit(formdata,uuid);});
+
 	if(!uuid){
+		Queue.push(function(){ajax_class_students_edit(formdata,uuid);},"班级详情-添加学生");
 		React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
 		return;
 	}
+	Queue.push(function(){ajax_class_students_edit(formdata,uuid);},"班级详情-编辑学生");
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/student/"+uuid+".json";
 	$.ajax({
@@ -1710,7 +1719,7 @@ function btn_click_accounts(m,formdata){
 * 调用Accounts_edit
 * */
 function ajax_accounts_edit(m,formdata){
-	Queue.push(function(){ajax_accounts_edit(m,formdata);});
+	Queue.push(function(){ajax_accounts_edit(m,formdata);},"收支记录-添加");
 	  if(!formdata.groupuuid)formdata.groupuuid="";
 	  if(!formdata.classuuid)formdata.classuuid="";
 	  if(!formdata.studentuuid)formdata.studentuuid="";
@@ -1813,7 +1822,7 @@ function ajax_classnews_list(classuuid,pageNo){
  * 在kd_react
  * */
 function btn_click_classnews(m,formdata){
-	Queue.push(function(){btn_click_classnews(m,formdata);});
+	Queue.push(function(){btn_click_classnews(m,formdata);},"班级互动-发布新互动");
 	ajax_classnews_edit(m,formdata,g_classnews_class_list);
 };	  
 /*
@@ -2071,7 +2080,12 @@ function react_ajax_announce_show(uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Announcements_show,{data:data.data,count:data.count}), document.getElementById('div_body'));
+				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
+				React.render(React.createElement(Announcements_show,{
+					data:data.data,
+					count:data.count,
+					canEdit:canEdit
+					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -2590,5 +2604,73 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 
 
 
-//Queue.push(function(){ajax_accounts_listByGroup(groupuuid);});
-  
+
+
+
+
+//—————————————————————————————(大图标)我的收藏—————————————————————————
+/*
+ * <精品文章>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+ * 基本框 等
+ * */
+function ajax_favorites_div(){
+	React.render(React.createElement(rect_favorites_Div_list), document.getElementById('div_body'));  	
+};
+/*
+ * 我的收藏（获取用户收藏列表服务器请求；
+ * */
+function ajax_favorites_list(list_div,pageNo) {
+	var re_data=null;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/favorites/query.json";
+	$.ajax({
+		type :"GET",
+		url  :url,
+		async: false,
+		data :{pageNo:pageNo},
+		dataType : "json",
+		success  : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(favorites_list_div,{
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				re_data=data.list;
+			} else {
+				alert(data.ResMsg.message);
+			}
+		}
+	});
+	return re_data;
+};
+ 
+
+
+
+/*
+ * <精品文章>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+ * 基本框 等
+ * */
+function react_ajax_favorites_show(type,reluuid){
+	 switch (type)   
+	   {
+  case 0:                                 
+	       react_ajax_announce_show(reluuid);   //(公告);   
+      break;      
+  case 1:                                 
+	       react_ajax_announce_show(reluuid);   //(老师公告);   
+      break;   
+  case 3:                                          
+	  react_ajax_announce_good_show(reluuid);   //(精品文章);
+      break;
+	case 4:                                          
+		   react_ajax_announce_show(reluuid);   //(招生计划);  
+	       break; 	
+	   default:            
+	       Styte.out.println("此信息为非法信息，请联系管理员！");
+	       break;
+	   }
+	   
+};
+ 

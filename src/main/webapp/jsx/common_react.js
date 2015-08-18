@@ -167,9 +167,7 @@ var Userinfo_edit = React.createClass({
     return (
     		<div>
     		<div className="header">
-    		  <div className="am-g">
-    		    <h1>编辑</h1>
-    		  </div>
+
     		  <hr />
     		</div>
     		<div className="am-g">
@@ -218,9 +216,7 @@ var Userinfo_getRole = React.createClass({
 	  return (
 	  		<div>
 		  		<div className="header">
-			  		  <div className="am-g">
-			  		    <h1>用户绑定角色-【{o.username}】</h1>
-			  		  </div>
+		  		 <hr />
 		  		</div>
 	  			<button type="button"  onClick={btn_ajax_updateRole.bind(this, o.useruuid)}  className="am-btn am-btn-primary">提交</button>
 		  		<UserChooseRole_EventsTable {...this.props}/>
@@ -239,9 +235,6 @@ var Div_userinfo_updatepassword = React.createClass({
 	return (
 		<div>
 		<div className="header">
-		  <div className="am-g">
-		    <h1>修改密码</h1>
-		  </div>
 		  <hr />
 		</div>
 		<div className="am-g">
@@ -298,9 +291,6 @@ var Div_userinfo_update = React.createClass({
 	return (
 		<div>
 		<div className="header">
-		  <div className="am-g">
-		    <h1>修改资料</h1>
-		  </div>
 		  <hr />
 		</div>
 		<div className="am-g">
@@ -559,7 +549,8 @@ render: function() {
   return (
 		   <div id="dianzan" className="dianzan" >
 		   {dianzanObject.names},等一共{dianzanObject.count}人点赞		   
-		   <img src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/> 
+		   <a  href="javascript:void(0);"><img  src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/> 
+		   </a>
 		   </div>
 
 
@@ -568,8 +559,7 @@ render: function() {
 }); 
 
 
-var Common_Classnewsreply_listshow = React.createClass({ 
-	
+var Common_Classnewsreply_listshow = React.createClass({ 	
 render: function() {
   return (
 		  <div>
@@ -582,8 +572,7 @@ render: function() {
 		    		  )
 		  })}
 		
-		    </div>
-		   
+		    </div>		   
   );
 }
 }); 
@@ -603,8 +592,7 @@ var Common_reply_list = React.createClass({
 		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
-		}
-		  
+		}		  
 		  this.pageNo++;
 	},
 	refreshReplyList:function(){
@@ -622,10 +610,8 @@ render: function() {
 		   <div id={this.classnewsreply_list_div}>
 		   </div>
 			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-			 <Common_reply_save uuid={this.props.uuid}  type={this.props.type} parentThis={parentThis}/>
-			
-			</div>
-		   
+			 <Common_reply_save uuid={this.props.uuid}  type={this.props.type} parentThis={parentThis}/>			
+			</div>		   
   );
 }
 }); 

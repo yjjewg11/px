@@ -167,9 +167,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
-    		  React.createElement("div", {className: "am-g"}, 
-    		    React.createElement("h1", null, "编辑")
-    		  ), 
+
     		  React.createElement("hr", null)
     		), 
     		React.createElement("div", {className: "am-g"}, 
@@ -218,9 +216,7 @@ var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole",
 	  return (
 	  		React.createElement("div", null, 
 		  		React.createElement("div", {className: "header"}, 
-			  		  React.createElement("div", {className: "am-g"}, 
-			  		    React.createElement("h1", null, "用户绑定角色-【", o.username, "】")
-			  		  )
+		  		 React.createElement("hr", null)
 		  		), 
 	  			React.createElement("button", {type: "button", onClick: btn_ajax_updateRole.bind(this, o.useruuid), className: "am-btn am-btn-primary"}, "提交"), 
 		  		React.createElement(UserChooseRole_EventsTable, React.__spread({},  this.props))
@@ -239,9 +235,6 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 	return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "修改密码")
-		  ), 
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
@@ -298,9 +291,6 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 	return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "修改资料")
-		  ), 
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
@@ -559,7 +549,8 @@ render: function() {
   return (
 		   React.createElement("div", {id: "dianzan", className: "dianzan"}, 
 		   dianzanObject.names, ",等一共", dianzanObject.count, "人点赞", 		   
-		   React.createElement("img", {src: dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)})
+		   React.createElement("a", {href: "javascript:void(0);"}, React.createElement("img", {src: dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)})
+		   )
 		   )
 
 
@@ -568,8 +559,7 @@ render: function() {
 }); 
 
 
-var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 
-	
+var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 	
 render: function() {
   return (
 		  React.createElement("div", null, 
@@ -582,8 +572,7 @@ render: function() {
 		    		  )
 		  })
 		
-		    )
-		   
+		    )		   
   );
 }
 }); 
@@ -603,8 +592,7 @@ var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
-		}
-		  
+		}		  
 		  this.pageNo++;
 	},
 	refreshReplyList:function(){
@@ -622,10 +610,8 @@ render: function() {
 		   React.createElement("div", {id: this.classnewsreply_list_div}
 		   ), 
 			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
-			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})
-			
-			)
-		   
+			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})			
+			)		   
   );
 }
 }); 

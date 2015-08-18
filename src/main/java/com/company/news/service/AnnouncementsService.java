@@ -276,6 +276,7 @@ public class AnnouncementsService extends AbstractServcice {
 		Announcements announcements = (Announcements) this.nSimpleHibernateDao
 				.getObjectById(Announcements.class, uuid);
 
+		if(announcements==null)return null;
 		AnnouncementsVo a = new AnnouncementsVo();
 		BeanUtils.copyProperties(a, announcements);
 		
