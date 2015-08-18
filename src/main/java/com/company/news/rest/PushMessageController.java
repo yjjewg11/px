@@ -1,7 +1,10 @@
 package com.company.news.rest;
 
+import java.sql.Timestamp;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,6 +17,7 @@ import com.company.news.entity.User;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.PushMessageService;
@@ -48,14 +52,55 @@ public class PushMessageController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
 	
+	/**
+	 *  * 根据日期查询是否有新消息.
+	 * 每次登录是,createdate传入null.点击过消息页面.后时间传入点击时的时间点.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryMsgCount", method = RequestMethod.GET)
+	public String queryMsgCount(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			String type=request.getParameter("type");
+			String create_timeStr=request.getParameter("create_time");
+			Timestamp create_time=null; 
+			if(StringUtils.isNotBlank(create_timeStr)){
+				Timestamp plandate = TimeUtils.string2Timestamp(null,
+						create_timeStr);
 
+				if (plandate == null) {
+					responseMessage.setMessage("create_time格式不正确,正确格式:YYYY-MM-dd 24HH:mm:ss");
+					return "";
+				}
+				
+			}
+			
+			this.pushMessageService.queryMsgCount(request.getParameter("type"), user.getUuid(), create_time);
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult pageQueryResult= pushMessageService.query(request.getParameter("type"),user.getUuid(),pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	/**
 	 * 班级删除
 	 * 
