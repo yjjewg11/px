@@ -264,7 +264,7 @@ var w_uploadImg={
 };
 //修改密码
 function menu_userinfo_updatepassword_fn(){
-	Queue.push(menu_userinfo_updatepassword_fn);	
+	Queue.push(menu_userinfo_updatepassword_fn,"修改密码");	
 	React.render(React.createElement(Div_userinfo_updatepassword,null)
 			, document.getElementById('div_body'));
 }
@@ -377,7 +377,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 
 //（我）<修改资料>
 function menu_userinfo_update_fn(){
-	Queue.push(menu_userinfo_update_fn);	
+	Queue.push(menu_userinfo_update_fn,"修改资料");	
 	React.render(React.createElement(Div_userinfo_update,{formdata:Store.getUserinfo()})
 			, document.getElementById('div_body'));
 }

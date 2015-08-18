@@ -2,7 +2,7 @@ function login_affter_init(){
 	Vo.init();
 	//主页顶部按钮；
 	var div_header_props = {
-			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,
+			  "title":"主页",
 			  "link": "#title-link",
 			  data: {
 			    "left": [
@@ -84,31 +84,30 @@ function login_affter_init(){
 
 //————————————发布消息<权限>——————————	
 	t_menu={
-	        
 	            "link": "##",
 	            "title": "信息管理",
 	            "subMenu": [
 	                        {
-	                          "fn":function(){menu_announce_list_fn(0);},
+	                          "fn":function(){menu_announce_list_fn(0,"信息管理-校园公告");},
 	                          "link": "##",
 	                          "title": "校园公告"
 	                        },
 	                        {
-	                        	  "fn":function(){menu_announce_list_fn(1);},
+	                        	  "fn":function(){menu_announce_list_fn(1,"信息管理-老师公告");},
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
-	                      
 	                          {
-	                        	  "fn":function(){menu_announce_list_fn(4);},
-	                              "link": "##",
-	                              "title": "招生计划"
-	                            },
-	                          {
-	                              "fn":function(){menu_announce_list_fn(3);},
+	                              "fn":function(){menu_announce_list_fn(3,"信息管理-精品文章");},
 	                              "link": "##",
 	                              "title": "精品文章"
+	                            },
+	                          {
+	                        	  "fn":function(){menu_announce_list_fn(4,"信息管理-招生计划");},
+	                              "link": "##",
+	                              "title": "招生计划"
 	                            }
+
 	                        ]                   
 		  };
 	if(G_user_hasRight("KD_announce_m")){
@@ -233,7 +232,35 @@ function login_affter_init(){
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 
 }
+//统一换标头方法
+function title_info_init(type){
+	//主页顶部按钮；
+	var div_header_title_info = {
+			  "title":type,
+			  "link": "#title-link",
+			  data: {
+			    "left": [
+			             {
+			 		        "link": "javascript:Queue.doBackFN();",
+			 		        "icon": "chevron-left"
+			 		      },
+			      {
+			        "link": "javascript:menu_dohome();",
+			        "icon": "home"
+			      }
+			    ],
+			    "right": [
+			      {
+			        "link": "javascript:menu_queryMyTimely_fn()",
+			        "customIcon":hostUrl+"i/icon-msg.png",
+			        "title": "消息"
+			      }
+			    ]
+			  }
+			};
 
+	React.render(React.createElement(AMUIReact.Header,div_header_title_info), document.getElementById('div_header'));
+}
 /*
  * 显示bodydiv,隐藏其他所有控件div
 **/
@@ -270,12 +297,11 @@ var div_menu_handleClick = function(nav, index, e) {
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±图标按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 function menu_dohome(){
-	
-	
+
 	$("#div_body").show();
 	$("#div_widget_chooseUser").html("");
 	$("#div_widget_chooseCook").html("");
-	Queue.push(menu_dohome);
+	Queue.push(menu_dohome,"主页");
 	var myhead_img=hostUrl+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
@@ -358,7 +384,7 @@ function menu_kd_group_reg_fn(){
  * @跳转kd_service发服务器请求
  * */
 function menu_queryMyTimely_fn() {
-	Queue.push(menu_queryMyTimely_fn);
+	Queue.push(menu_queryMyTimely_fn,"即时消息");
 	ajax_queryMyTimely_myList();
 };
 /*
@@ -366,7 +392,7 @@ function menu_queryMyTimely_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn);
+	Queue.push(menu_group_myList_fn,"校务管理-校园列表");
 	ajax_group_myList();
 }
 /*
@@ -375,9 +401,9 @@ function menu_group_myList_fn() {
  * @跳转kd_service发服务器请求
  * */
 var announce_types=1;
-function menu_announce_list_fn(types) {
-	announce_types=types;  
-	ajax_announce_listByGroup(Store.getCurGroup().uuid);
+function menu_announce_list_fn(types,name) {
+	announce_types=types; 
+	ajax_announce_listByGroup(Store.getCurGroup().uuid,name);
 };
 /*
  * (标头)食谱管理功能
@@ -442,6 +468,7 @@ function menu_query_list_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_statistics_list_fn() {
+	Queue.push(menu_statistics_list_fn,"统计");
 	React.render(React.createElement(ECharts_Div, {
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
 		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
@@ -454,7 +481,7 @@ function menu_statistics_list_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_announce_mylist_fn() {
-	Queue.push(menu_announce_mylist_fn);
+	Queue.push(menu_announce_mylist_fn,"公告");
 	ajax_announce_div();
 };
 /*
@@ -483,7 +510,7 @@ function parentContactByMyStudent() {
  * @menu_announce_list_fn:直接调用发布消息中的方法
  */
 function menu_article_list_fn(){
-  	Queue.push(menu_article_list_fn);
+  	Queue.push(menu_article_list_fn,"精品文章");
   	ajax_good_announce_div();
 }
 /*
@@ -502,7 +529,7 @@ function menu_class_students_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_Teacher_tel_fn() {
-	Queue.push(menu_Teacher_tel_fn);
+	Queue.push(menu_Teacher_tel_fn,"老师通讯录");
 	ajax_Teacher_listByGroup(Store.getCurGroup().uuid);
 };
 
@@ -531,7 +558,7 @@ function menu_body_fn (){
 	login_affter_init();
 	menu_dohome();
 }
-
+//登录操作
 function index_init(){
 	G_CallPhoneFN.hideLoadingDialog();
 	  if ($.AMUI.fullscreen.enabled) {
@@ -540,6 +567,7 @@ function index_init(){
 	  ajax_getUserinfo(true);
 }
 
+//登录操作
 window.onload=function(){ 
 	index_init();
 }; 

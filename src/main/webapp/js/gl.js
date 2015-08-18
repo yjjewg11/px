@@ -68,7 +68,7 @@ function G_img_down404(jquery_name){
 		});
 }
 
-
+//登录失败跳转登录界面
 function G_resMsg_filter(ResMsg){
 	if("sessionTimeout"==ResMsg.status){
 		//window.location = hostUrl + "login.html";
@@ -186,7 +186,9 @@ var  Queue={
 		clear:function(){
 			this.arr=[];
 		},
-		push:function(o){
+		push:function(o,title){
+           			
+			title_info_init(title);// 绘制标头方法
 			 this.isBack=false;
 			 if(this.arr.length>50){
 				 this.arr=this.arr.slice(40);//防止内存异常,最多保留50个.

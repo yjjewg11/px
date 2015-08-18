@@ -249,7 +249,7 @@ var w_ch_class={
 	},
 	
 	show:function(){
-		Queue.push(function(){w_ch_class.show();});
+		Queue.push(function(){w_ch_class.show();},"课程安排-班级选择");
 		var lists=Store.getChooseClass(w_ch_class.groupuuid);
 		React.render(React.createElement(ChooseClass_EventsTable, {
 			group_uuid:w_ch_class.groupuuid,

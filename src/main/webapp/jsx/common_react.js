@@ -86,9 +86,6 @@ var Userinfo_EventsTable = React.createClass({
     return (
     <div>
     <div className="header">
-    <div className="am-g">
-      <h1>老师管理</h1>
-    </div>
     <hr />
     </div>
     <AMR_ButtonToolbar>
@@ -560,11 +557,12 @@ var Common_Dianzan_show = React.createClass({
 render: function() {	
 	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
   return (
-		   <div id="dianzan" class="dianzan">
-		   {dianzanObject.names},等一共{dianzanObject.count}人点赞
-		   <img src={dianzanObject.canDianzan?hostUrl+"i/quxiaohongxin.png":hostUrl+"i/hongxin2.png"}/>
-		   <img src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/>
+		   <div id="dianzan" className="dianzan" >
+		   {dianzanObject.names},等一共{dianzanObject.count}人点赞		   
+		   <img src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/> 
 		   </div>
+
+//		   <img src={dianzanObject.canDianzan?hostUrl+"i/quxiaohongxin.png":hostUrl+"i/hongxin2.png"}/>		   
 //		   <div id="delete_dianzan" class="delete_dianzan">
 //		   {dianzanList.map(function(event) {
 //			      return (

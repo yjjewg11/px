@@ -97,6 +97,7 @@
     <tx:attributes>  
         <tx:method name="count" propagation="REQUIRED"/>  
         <tx:method name="login" propagation="REQUIRED"/> 
+        <tx:method name="save" propagation="REQUIRED"/>        
         <tx:method name="add" propagation="REQUIRED"/>
         <tx:method name="update*" propagation="REQUIRED"/>
         <tx:method name="delete" propagation="REQUIRED"/> 
@@ -106,10 +107,8 @@
         <tx:method name="uploadImg" propagation="REQUIRED"/>
         <tx:method name="reg" propagation="REQUIRED"/>
 
-      	 <tx:method name="*" propagation="REQUIRED"/>
-
         
-        <!-- tx:method name="*" propagation="NOT_SUPPORTED" read-only="true"/>   -->
+        <tx:method name="*" propagation="NOT_SUPPORTED" read-only="true"/>
     </tx:attributes>  
 </tx:advice>  
 

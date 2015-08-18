@@ -157,9 +157,6 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
     React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
   ), 
   React.createElement("div", {className: "header"}, 
-  React.createElement("div", {className: "am-g"}, 
-    React.createElement("h1", null, "班级选择")
-  ), 
   React.createElement("hr", null)
 ), 
 	  React.createElement("div", {className: "am-form-group"}, 
