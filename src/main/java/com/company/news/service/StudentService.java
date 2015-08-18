@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -10,12 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.ClassNews;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
-import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -265,10 +264,16 @@ public class StudentService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List parentContactByMyStudent() {
+	public List parentContactByMyStudent(List listClassuuids,String student_name) {
+		if(listClassuuids.size()==0)return new ArrayList();
 		//student_uuid in(select uuid from Student classuuid in("+StringOperationUtil.dateStr)+"))
-		String hql="from StudentContactRealation  where 1=1 order  by student_name,type";
-		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		String where_student_name="";
+		if(StringUtils.isNotBlank(student_name)){
+			where_student_name=" and name like '%"+student_name+"%'";
+		}
+		String hql="from StudentContactRealation  where student_uuid in" +
+				"(select uuid from Student where classuuid in("+DBUtil.stringsToWhereInValue(StringUtils.join(listClassuuids, ","))+") "+where_student_name+" ) order  by student_name,type";
+		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 	}
 	
 	/**

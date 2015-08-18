@@ -1,5 +1,6 @@
 package com.company.news.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.commons.util.ExcelUtil;
 import com.company.news.entity.Student;
+import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -207,13 +209,34 @@ public class StudentController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/parentContactByMyStudent", method = RequestMethod.GET)
 	public String parentContactByMyStudent(ModelMap model, HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
+		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
+		try {
+			String student_name=request.getParameter("student_name");
+			String class_uuid=request.getParameter("class_uuid");
+			
+			User user =this.getUserInfoBySession(request);
+			List listClassuuids=null;
+			if(StringUtils.isBlank(class_uuid)){
+				listClassuuids=studentService.getTeacherRelClassUuids(user.getUuid());
+			}else
+			{
+				listClassuuids=new ArrayList();
+				listClassuuids.add(class_uuid);
+			}
 		
-		List list = studentService.parentContactByMyStudent();
-		
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			
+			
+			List list = studentService.parentContactByMyStudent(listClassuuids,student_name);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 	
