@@ -278,6 +278,40 @@ public class MessageController extends AbstractRESTController {
 	}
 	
 	/**
+	 * 查询我(老师)和家长的信件统计
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryCountMsgByParents", method = RequestMethod.GET)
+	public String queryCountMsgByParents(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			
+//		String group_uuid=request.getParameter("group_uuid");
+//		if(StringUtils.isBlank(group_uuid)){
+//			responseMessage.setMessage("参数必填:group_uuid");
+//			return "";
+//		}
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			List list= messageService.queryCountMsgByParents(user.getUuid(),pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	
+	/**
 	 * 查询我(家长)和园长的信件
 	 * 
 	 * @param model
@@ -298,7 +332,7 @@ public class MessageController extends AbstractRESTController {
 //			return "";
 //		}
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			List list= messageService.queryLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
+			List list= messageService.queryCountLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

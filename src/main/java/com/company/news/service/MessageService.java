@@ -212,22 +212,55 @@ public class MessageService extends AbstractServcice {
 	this.warpVoList(pageQueryResult.getData());
 	return pageQueryResult;
 	}
+	
+	
 	/**
-	 * 获取家长写信给幼儿园的数据.
+	 * 获取家长写信给幼儿园的统计数据.
 	 * @param group_uuid
 	 * @param parent_uuid
 	 * @param pData
 	 * @return
 	 */
-	public List queryLeaderMsgByParents(String group_uuids,
+	public List queryCountMsgByParents(String useruuid,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type=2 ";
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type= "+SystemConstants.Message_type_1;
+		sql += " and (" ;
+		sql += "  revice_useruuid ='" + useruuid + "'";//家长发给我的.
+		sql += "  )" ;
+		sql+="GROUP BY revice_useruuid,send_useruuid";
+		sql += " order by create_time desc";
+		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
+		List relList=new ArrayList();
+		for(Object[] o:list){
+			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
+			vo.setRevice_useruuid(o[0]+"");
+			vo.setRevice_user(o[1]+"");
+			vo.setSend_useruuid(o[2]+"");
+			vo.setSend_user(o[3]+"");
+			vo.setCount(o[4]+"");
+			relList.add(vo);
+		}
+		
+		
+	return relList;
+	}
+	
+	/**
+	 * 获取家长写信给幼儿园的统计数据.
+	 * @param group_uuid
+	 * @param parent_uuid
+	 * @param pData
+	 * @return
+	 */
+	public List queryCountLeaderMsgByParents(String group_uuids,
+			 PaginationData pData) {
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
 		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
-		sql += " order by revice_useruuid desc";
+		sql += " order by create_time desc";
 		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
 		List relList=new ArrayList();
 		for(Object[] o:list){
