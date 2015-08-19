@@ -339,8 +339,8 @@ function menu_dohome(){
 //	                    	  },
 	                    	  {
 		                    	    "img": hostUrl+"i/xinxiang.png",
-		                    	    "link": "###",
-		                    	    "title": "我的信箱(未)"
+		                    	    "link": "javascript:menu_queryCountMsgByParents_message_fn()",
+		                    	    "title": "我的信箱"
 		                    	  },
 		                    	  {
 		                    		  "img": hostUrl+"i/jpwz.png",
@@ -363,7 +363,12 @@ function menu_dohome(){
 		                    	    "img": hostUrl+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  }
+		                    	  },
+			                   	  {
+			                    	    "img": hostUrl+"i/xinxiang.png",
+			                    	    "link": "###",
+			                    	    "title": "每日任务"
+			                    	  }
 	                    	  ];
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
@@ -502,7 +507,7 @@ function menu_announce_mylist_fn() {
  * */
 function menu_teachingplan_dayShow_fn() {
 	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
-	ajax_teachingplan_dayShow(null,{uuid:classList[0].uuid});
+	ajax_teachingplan_dayShow(null,{uuid:classList[0].uuid,name:classList[0].name});
 };
 /*
  * （首页）每日食谱
@@ -554,6 +559,13 @@ function menu_favorites_push_fn() {
 	ajax_favorites_div();
 };
 
+/*
+ * (首页)我的信箱
+ * @跳转kd_service发服务器请求
+ * */
+function menu_queryCountMsgByParents_message_fn() {
+	ajax_queryCountMsgByParents_message();
+};
 
 //老师注册
 function menu_userinfo_reg_fn(){	

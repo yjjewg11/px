@@ -598,7 +598,7 @@ var Announcements_EventRow = React.createClass({
 	    <td> 
 	    <input type="checkbox" value={event.uuid} name="table_checkbox" />
 	    </td>
-	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind(this,event.uuid)}>{event.title}</a></td>
+	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
 	      <td>{Vo.announce_type(event.type)}</td>
 	      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
 	      <td>{0}</td>
@@ -878,10 +878,10 @@ var Teachingplan_EventsTable = React.createClass({
 				 btn_click_teachingplan(m,null,classuuid);
 				 return;
 			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(null,null,--g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(classuuid,null,--g_cookbookPlan_week_point);
 				 return;
 			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(null,null,++g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(classuuid,null,++g_cookbookPlan_week_point);
 				 return;
 			 }
 	  },
@@ -899,8 +899,8 @@ return (
 	</div>
 <AMR_ButtonToolbar>
 	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.classuuid)} round>添加</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.classuuid)} round>上周</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.classuuid)} round>下周</AMR_Button>
     </AMR_ButtonToolbar>
 	  <hr/>
   <AMR_Table {...this.props}>  
@@ -2126,7 +2126,7 @@ var Announcements_mylist_div = React.createClass({
 		  {this.props.events.data.map(function(event) {
 		      return (
 		    		<li className="am-g am-list-item-desced">
-		  		    <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_show.bind(this,event.uuid)}>{Vo.announce_type(event.type)}</a>		  		        
+		  		    <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>{Vo.announce_type(event.type)}</a>		  		        
 		  		    <div className="am-list-item-text">{event.title}</div>    
 		  		    <div className="am-list-date">{event.create_time}
 		  	        <br/>
@@ -2187,15 +2187,15 @@ return (
 var Teachingplan_showByOneDay = React.createClass({ 
 	handleClick: function(m,classuuid) {
 		if(m=="pre"){
-			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point,{uuid:classuuid});
+			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point,{uuid:classuuid,name:Store.getClassNameByUuid(classuuid)});
 			 return;
 		 }else if(m=="next"){
-			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point,{uuid:classuuid});
+			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point,{uuid:classuuid,name:Store.getClassNameByUuid(classuuid)});
 			 return;
 		 }
 	},
 	handleChange_selectgroup_uuid: function(val) {
-		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val});  
+		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val,name:Store.getClassNameByUuid(val)});  
     },
 	handleClick_class: function(m,uuid,classuuid,ch_day) {
 			 btn_click_teachingplan(m,null,classuuid,ch_day);
@@ -2332,11 +2332,12 @@ var CookbookPlan_showByOneDay = React.createClass({
 			<div className="header">
 				  <div className="am-g">				  
 				  <Grid>
+				  <hr />
 				    <Col sm={3}>
 				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",this.props.groupuuid)}  round>上一天</AMR_Button>
 				    </Col>
 				    <Col sm={6}>
-				    <h1><AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />  -每日食谱-{this.props.ch_day}</h1>
+				    <AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />
 				    </Col>
 				    <Col sm={3}>
 				    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)} round>下一天</AMR_Button>	
@@ -2415,7 +2416,10 @@ var Class_student_tel =React.createClass({
 	    	  ajax_parentContactByMyStudent(type);
 		  },
 	  handleChange_selectgroup_uuid:function(){
-	  //ajax_Teacher_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$('#class_uuid').val());
+	  },
+	  handleChange_class_uuid:function(val){
+		  ajax_parentContactByMyStudent(null,val);
 	  },
 		render: function() {
 	     var o =this.state;	
@@ -2443,6 +2447,7 @@ var Class_student_tel =React.createClass({
 			      <form id="editGroupForm" method="post" className="am-form">
 			      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="搜索姓名"/>	  
 				  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+		    	  <AMUIReact.Selected  name="groupuuid" placeholder="班级选择"  onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.group_uuid} />  
 				  </form>
 				    <br/>
 	  		        <AMR_ButtonToolbar>
@@ -2465,8 +2470,8 @@ var Class_student_tel =React.createClass({
 	  	  				}
 	  	  		        return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
 	  	  		        <AMR_ButtonToolbar>
-	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
-	  	  		        <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid)} amStyle="success">@信息</AMUIReact.Button>	
+	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
+	  	  		        <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"来自"+event.student_name+event.typename+"的信息")} amStyle="success">@信息</AMUIReact.Button>	
 	  	  		        {ListItem}
 	  	  		        </AMR_ButtonToolbar>
 	  	  		        </AMUIReact.ListItem>);
@@ -2495,7 +2500,7 @@ var ParentContactByMyStudent_message_list = React.createClass({
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}
@@ -2672,7 +2677,7 @@ var Announcements_mygoodlist_div = React.createClass({
 		      return (
 		    		  
 		   <li className="am-g am-list-item-desced">
-		      <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_good_show.bind(this,event.uuid)}>{Vo.announce_type(event.type)}</a>
+		      <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>{Vo.announce_type(event.type)}</a>
 		      <div className="am-list-item-text">{event.title}</div>
 		        <div className="am-list-date">{event.create_time}
   		        <br/>
@@ -2761,9 +2766,6 @@ render: function() {
   return (
   		<div>
   		<div className="header">
-  		  <div className="am-g">
-  		    <h1>{Vo.announce_type(o.type)}-编辑</h1>
-  		  </div>
   		  <hr />
   		</div>
   		<div className="am-g">
@@ -2896,13 +2898,6 @@ var Teacher_info_tel = React.createClass({
   render: function() {
     return (
     <div>
-    <div className="header">
-    <div className="am-g">
-      <h1>老师通讯录</h1>
-    </div>
-    <hr />
-    </div>
-
 	      <form id="editGroupForm" method="post" className="am-form">
 	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
 		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
@@ -3092,3 +3087,49 @@ var favorites_list_div = React.createClass({
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
+
+
+//——————————————————————————我的信箱<绘制>——————————————————————————        
+/*
+ * <我的信箱>一层界面绘制;
+ * @send_user:家长名字；
+ * @revice_useruuid:收件人ID；
+ * @send_useruuid:发送者ID；
+ * @ajax_boss_message_list绑定事件然后开始绘制舞台；
+ * */
+var My_student_tel =React.createClass({
+		render: function() {
+	     var o =this.state;	
+		 return (
+		 		<div>
+			    <AMUIReact.List static>
+		    	{this.props.formdata.map(function(event) {
+		            return (<AMUIReact.ListItem>家长{event.send_user}的信息    
+		            <AMR_ButtonToolbar>		            
+		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"来自"+event.send_user+"的信息")} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
+		            </AMR_ButtonToolbar>	        
+		            </AMUIReact.ListItem>);
+		          })}		      			      
+			      </AMUIReact.List>
+		 	     </div> 
+		     );
+	        }
+		 });
+
+/*
+* <我的信箱>如果没有数据则绘制文字提示用户
+* */
+var My_student_tel2 =React.createClass({
+	render: function() {
+	 return (
+			 <div className="am-g">
+			  <h1>您的信箱暂无信件！</h1>
+			  </div>
+	     );
+        }
+	 });
+
+
+
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
