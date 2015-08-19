@@ -598,7 +598,7 @@ var Announcements_EventRow = React.createClass({displayName: "Announcements_Even
 	    React.createElement("td", null, 
 	    React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
 	    ), 
-	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show.bind(this,event.uuid)}, event.title)), 
+	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
 	      React.createElement("td", null, Vo.announce_type(event.type)), 
 	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
 	      React.createElement("td", null, 0), 
@@ -878,10 +878,10 @@ var Teachingplan_EventsTable = React.createClass({displayName: "Teachingplan_Eve
 				 btn_click_teachingplan(m,null,classuuid);
 				 return;
 			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(null,null,--g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(classuuid,null,--g_cookbookPlan_week_point);
 				 return;
 			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(null,null,++g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(classuuid,null,++g_cookbookPlan_week_point);
 				 return;
 			 }
 	  },
@@ -899,8 +899,8 @@ React.createElement("div", {className: "header"},
 	), 
 React.createElement(AMR_ButtonToolbar, null, 
 	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add",null,this.props.classuuid), round: true}, "添加"), 
-    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre"), round: true}, "上周"), 
-    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next"), round: true}, "下周")
+    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre",null,this.props.classuuid), round: true}, "上周"), 
+    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next",null,this.props.classuuid), round: true}, "下周")
     ), 
 	  React.createElement("hr", null), 
   React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -2126,7 +2126,7 @@ var Announcements_mylist_div = React.createClass({displayName: "Announcements_my
 		  this.props.events.data.map(function(event) {
 		      return (
 		    		React.createElement("li", {className: "am-g am-list-item-desced"}, 
-		  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_show.bind(this,event.uuid)}, Vo.announce_type(event.type)), 		  		        
+		  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}, Vo.announce_type(event.type)), 		  		        
 		  		    React.createElement("div", {className: "am-list-item-text"}, event.title), 
 		  		    React.createElement("div", {className: "am-list-date"}, event.create_time, 
 		  	        React.createElement("br", null), 
@@ -2187,15 +2187,15 @@ return (
 var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_showByOneDay", 
 	handleClick: function(m,classuuid) {
 		if(m=="pre"){
-			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point,{uuid:classuuid});
+			ajax_teachingplan_dayShow(--g_teachingplan_listToShow_point,{uuid:classuuid,name:Store.getClassNameByUuid(classuuid)});
 			 return;
 		 }else if(m=="next"){
-			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point,{uuid:classuuid});
+			 ajax_teachingplan_dayShow(++g_teachingplan_listToShow_point,{uuid:classuuid,name:Store.getClassNameByUuid(classuuid)});
 			 return;
 		 }
 	},
 	handleChange_selectgroup_uuid: function(val) {
-		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val});  
+		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val,name:Store.getClassNameByUuid(val)});  
     },
 	handleClick_class: function(m,uuid,classuuid,ch_day) {
 			 btn_click_teachingplan(m,null,classuuid,ch_day);
@@ -2332,11 +2332,12 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 			React.createElement("div", {className: "header"}, 
 				  React.createElement("div", {className: "am-g"}, 				  
 				  React.createElement(Grid, null, 
+				  React.createElement("hr", null), 
 				    React.createElement(Col, {sm: 3}, 
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre",this.props.groupuuid), round: true}, "上一天")
 				    ), 
 				    React.createElement(Col, {sm: 6}, 
-				    React.createElement("h1", null, React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid}), "  -每日食谱-", this.props.ch_day)
+				    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid})
 				    ), 
 				    React.createElement(Col, {sm: 3}, 
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next",this.props.groupuuid), round: true}, "下一天")	
@@ -2415,7 +2416,10 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	    	  ajax_parentContactByMyStudent(type);
 		  },
 	  handleChange_selectgroup_uuid:function(){
-	  //ajax_Teacher_listByGroup($('#selectgroup_uuid').val(),$('#sutdent_name').val());
+		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$('#class_uuid').val());
+	  },
+	  handleChange_class_uuid:function(val){
+		  ajax_parentContactByMyStudent(null,val);
 	  },
 		render: function() {
 	     var o =this.state;	
@@ -2442,7 +2446,8 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		 		React.createElement("div", null, 
 			      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 			      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "搜索姓名"}), 	  
-				  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
+				  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索"), 	  	
+		    	  React.createElement(AMUIReact.Selected, {name: "groupuuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.group_uuid})
 				  ), 
 				    React.createElement("br", null), 
 	  		        React.createElement(AMR_ButtonToolbar, null, 
@@ -2466,7 +2471,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	  	  		        return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  	  		        React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
-	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid), amStyle: "success"}, "@信息"), 	
+	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"来自"+event.student_name+event.typename+"的信息"), amStyle: "success"}, "@信息"), 	
 	  	  		        ListItem
 	  	  		        )
 	  	  		        ));
@@ -2495,7 +2500,7 @@ var ParentContactByMyStudent_message_list = React.createClass({displayName: "Par
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}
@@ -2672,7 +2677,7 @@ var Announcements_mygoodlist_div = React.createClass({displayName: "Announcement
 		      return (
 		    		  
 		   React.createElement("li", {className: "am-g am-list-item-desced"}, 
-		      React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_good_show.bind(this,event.uuid)}, Vo.announce_type(event.type)), 
+		      React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, Vo.announce_type(event.type)), 
 		      React.createElement("div", {className: "am-list-item-text"}, event.title), 
 		        React.createElement("div", {className: "am-list-date"}, event.create_time, 
   		        React.createElement("br", null), 
@@ -2761,9 +2766,6 @@ render: function() {
   return (
   		React.createElement("div", null, 
   		React.createElement("div", {className: "header"}, 
-  		  React.createElement("div", {className: "am-g"}, 
-  		    React.createElement("h1", null, Vo.announce_type(o.type), "-编辑")
-  		  ), 
   		  React.createElement("hr", null)
   		), 
   		React.createElement("div", {className: "am-g"}, 
@@ -2896,13 +2898,6 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
   render: function() {
     return (
     React.createElement("div", null, 
-    React.createElement("div", {className: "header"}, 
-    React.createElement("div", {className: "am-g"}, 
-      React.createElement("h1", null, "老师通讯录")
-    ), 
-    React.createElement("hr", null)
-    ), 
-
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 	      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
 		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
@@ -3092,3 +3087,49 @@ var favorites_list_div = React.createClass({displayName: "favorites_list_div",
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
+
+
+//——————————————————————————我的信箱<绘制>——————————————————————————        
+/*
+ * <我的信箱>一层界面绘制;
+ * @send_user:家长名字；
+ * @revice_useruuid:收件人ID；
+ * @send_useruuid:发送者ID；
+ * @ajax_boss_message_list绑定事件然后开始绘制舞台；
+ * */
+var My_student_tel =React.createClass({displayName: "My_student_tel",
+		render: function() {
+	     var o =this.state;	
+		 return (
+		 		React.createElement("div", null, 
+			    React.createElement(AMUIReact.List, {static: true}, 
+		    	this.props.formdata.map(function(event) {
+		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
+		            React.createElement(AMR_ButtonToolbar, null, 		            
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"来自"+event.send_user+"的信息"), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+		            )	        
+		            ));
+		          })		      			      
+			      )
+		 	     ) 
+		     );
+	        }
+		 });
+
+/*
+* <我的信箱>如果没有数据则绘制文字提示用户
+* */
+var My_student_tel2 =React.createClass({displayName: "My_student_tel2",
+	render: function() {
+	 return (
+			 React.createElement("div", {className: "am-g"}, 
+			  React.createElement("h1", null, "您的信箱暂无信件！")
+			  )
+	     );
+        }
+	 });
+
+
+
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±

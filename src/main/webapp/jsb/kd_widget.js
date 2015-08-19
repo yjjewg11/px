@@ -192,7 +192,7 @@ var ChooseClass_EventRow = React.createClass({displayName: "ChooseClass_EventRow
       event.disabled ? 'am-disabled' : '';
 
     return (
-      React.createElement("tr", {className: className, onClick: w_ch_class.handleClick.bind(this,"choose",event.uuid,event.name)}, 
+      React.createElement("tr", {className: className, onClick: w_ch_class.handleClick.bind(this,"choose",event.uuid)}, 
         React.createElement("td", null, event.name), 
         React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid))
       ) 
