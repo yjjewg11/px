@@ -112,6 +112,8 @@ public class UserinfoController extends AbstractRESTController {
 		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 
 		
+		// 返回用户信息
+		this.putUserInfoReturnToModel(model, request);
 		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");
