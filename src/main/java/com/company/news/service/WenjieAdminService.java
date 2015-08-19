@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
@@ -135,6 +136,14 @@ public class WenjieAdminService extends AbstractServcice {
 		default:
 			break;
 		}
+		
+		//更新家长姓名和头像.多个孩子已最后保存为准
+		if(parent!=null){
+			parent.setName(PxStringUtil.getParentNameByStudentContactRealation(studentContactRealation));
+			parent.setImg(student.getHeadimg());
+			nSimpleHibernateDao.save(parent);
+		}
+		
 		nSimpleHibernateDao.save(studentContactRealation);
 		return studentContactRealation;
 	}
