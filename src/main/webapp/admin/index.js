@@ -51,6 +51,18 @@ function login_affter_init(){
             },
             {
                 "link": "##",
+                "title": "数据纠正",
+                "subCols": 3,
+                "subMenu": [
+    	                    {
+    	                    	 "fn":menu_wenjieAdmin_dataRefresh_fn,
+    	                      "link": "##",
+    	                      "title": "数据纠正"
+    	                    }
+    	                  ]
+              },
+            {
+                "link": "##",
                 "title": "我",
                 "subCols": 3,
                 "subMenu": [
@@ -205,6 +217,10 @@ function menu_userinfo_login_fn(){
 	React.render(React.createElement(Div_login,{loginname:loginname,password:password,pw_checked:pw_checked})
 			, document.getElementById('div_login'));
 	$("#div_seesion_body").hide();
+}
+
+function menu_wenjieAdmin_dataRefresh_fn(){
+	ajax_wenjieAdmin_dataRefresh();
 }
 
 

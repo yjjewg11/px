@@ -164,15 +164,19 @@ public class StudentService extends AbstractServcice {
 		studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		studentContactRealation.setGroupuuid(student.getGroupuuid());
 		
+		
 		studentContactRealation.setTel(tel);
 		studentContactRealation.setType(type);
 		studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
+		
+		studentContactRealation.setClass_uuid(student.getClassuuid());
+		studentContactRealation.setStudent_img(student.getHeadimg());
 		
 		Parent parent=(Parent)nSimpleHibernateDao.getObjectByAttribute(Parent.class,"loginname", tel);
 		//判断电话,是否已经注册,来设置状态.
 		if(parent!=null){
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_1);
-			studentContactRealation.setParent_uuid(parent.getUuid());			
+			studentContactRealation.setParent_uuid(parent.getUuid());	
 		}else{
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		}
@@ -203,6 +207,14 @@ public class StudentService extends AbstractServcice {
 			break;
 		default:
 			break;
+		}
+		
+		
+		//更新家长姓名和头像.多个孩子已最后保存为准
+		if(parent!=null){
+			parent.setName(PxStringUtil.getParentNameByStudentContactRealation(studentContactRealation));
+			parent.setImg(student.getHeadimg());
+			nSimpleHibernateDao.save(parent);
 		}
 		nSimpleHibernateDao.save(studentContactRealation);
 		return studentContactRealation;
@@ -273,7 +285,10 @@ public class StudentService extends AbstractServcice {
 		}
 		String hql="from StudentContactRealation  where student_uuid in" +
 				"(select uuid from Student where classuuid in("+DBUtil.stringsToWhereInValue(StringUtils.join(listClassuuids, ","))+") "+where_student_name+" ) order  by student_name,type";
-		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+	
+		 List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+		 warpStudentContactRealationVoList(list);
+		return list;
 	}
 	
 	/**
@@ -345,6 +360,29 @@ public class StudentService extends AbstractServcice {
 		this.warpVoList(pageQueryResult.getData());
 		
 		return pageQueryResult;
+	}
+	
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private StudentContactRealation warpStudentContactRealationVo(StudentContactRealation o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setStudent_img(PxStringUtil.imgUrlByUuid(o.getStudent_img()));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<StudentContactRealation> warpStudentContactRealationVoList(List<StudentContactRealation> list){
+		for(StudentContactRealation o:list){
+			warpStudentContactRealationVo(o);
+		}
+		return list;
 	}
 	
 	

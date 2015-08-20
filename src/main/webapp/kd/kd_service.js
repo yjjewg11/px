@@ -363,7 +363,7 @@ function ajax_queryMyTimely_myList() {
 
 /*
  * （首页））即时消息(舞台跳转)；
- * @thpe:0:公告,1:内部通知（教师可见）,3:精品文章.4:招生计划 5:课程表 6:食谱,7:精品课程,99:班级互动.
+ * @thpe:0:公告,1:内部通知（教师可见）,3:精品文章.4:招生计划 7:课程表 6:食谱,5:精品课程,99:班级互动.
  * 10:html类型直接去url地址,调用浏览器显示;,11:家长通讯录信息 12：园长信箱 13：签到记录
  * @reluuid:与type配合确定某个模块的详细的uuid.用于跳转到该模块的详细显示;
  * Type取值0时:rel_uuid为公告的uuid.点击显示公告详细页面.
@@ -386,13 +386,13 @@ function ajax_State_style(type,reluuid,group_uuid){
 	case 4:                                          
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break;
-    case 5:                                          
+    case 7:                                          
     	   ajax_teachingplan_dayShow(null,{uuid:reluuid,nmae:""});  //(课程表);
 	       break;
 	case 6:                                          
 		   ajax_cookbookPlan_dayShow(null,reluuid);  //(食谱);
 	       break;
-	case 7:                                          
+	case 5:                                          
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
 	case 99:                                          

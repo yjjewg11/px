@@ -34,7 +34,7 @@ var w_ch_cookAddImg={
 		cropper:null,
 		callbackFN:null,
 		base64:null,
-		type:5,
+		type:6,
 		uuid:null,
 		
 		ajax_upload:function(){

@@ -697,3 +697,28 @@ function ajax_accounts_saveAndAdd(){
 G_ajax_abs_save(opt);
 }
 //accounts end
+
+
+function ajax_wenjieAdmin_dataRefresh(){
+	Queue.clear();
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/wenjieAdmin/dataRefresh.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			alert(data.ResMsg.message);
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+			 window.location = hostUrl + "login.html";
+		}
+	});
+}
