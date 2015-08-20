@@ -88,10 +88,10 @@ public class PushMessageController extends AbstractRESTController {
 				
 			}
 			
-			this.pushMessageService.queryMsgCount(request.getParameter("type"), user.getUuid(), create_time);
-			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult pageQueryResult= pushMessageService.query(request.getParameter("type"),user.getUuid(),pData);
-			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			Long count=this.pushMessageService.queryMsgCount(request.getParameter("type"), user.getUuid(), create_time);
+//			PaginationData pData = this.getPaginationDataByRequest(request);
+//			PageQueryResult pageQueryResult= pushMessageService.query(request.getParameter("type"),user.getUuid(),pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_count, count);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

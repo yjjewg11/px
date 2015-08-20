@@ -36,11 +36,14 @@ public class PushMessageService extends AbstractServcice {
 		String hql = "select count(*) from PushMessage where revice_useruuid='" + useruuid + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
-		
+		List list=null;
 		if(createDate!=null){
 			hql += " and create_time>?";
+		 list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, createDate);
+		}else{
+			 list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql );
+				
 		}
-		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, createDate);
 		if(list==null)return Long.valueOf(0);
 		return Long.valueOf(list.get(0).toString());
 	}

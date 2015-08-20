@@ -113,8 +113,10 @@ render: function() {
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
- 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册"), 
- 	      React.createElement("br", null)
+ 	     React.createElement("div", {className: "am-margin-top-sm"}, 
+ 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册")
+ 	     ), 
+ 	     React.createElement("br", null)
  	    ), 
  	    React.createElement("hr", null), 
  	   React.createElement("p", null, "© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1")
@@ -1696,13 +1698,10 @@ React.createElement(AMUIReact.ButtonToolbar, null,
 	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this, "pre"), round: true}, "« 上一页"), 
 	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
 	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
-React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
-  React.createElement("tbody", null, 
+
     this.props.events.data.map(function(event) {
       return (React.createElement(Classnews_show, {event: event}));
     })
-  )
-)
 )
 );
 }
@@ -1743,9 +1742,7 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
+	
 	componentDidMount:function(){
 		this.load_more_data();
 	},
@@ -1754,6 +1751,8 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -1762,6 +1761,8 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
 		this.load_more_data();
+		
+		$("#"+this.div_reply_save_id).html("");
 	},
 	div_reply_save_id:"btn_reply_save",
 	btn_reply_save:function(){
@@ -1777,6 +1778,7 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
 		  React.createElement("div", {className: "G_reply"}, 
@@ -1795,6 +1797,7 @@ render: function() {
 
 /*
  * 绘制评论模板
+ * @componentDidMount:添加表情
  * */
 var Classnews_reply_save = React.createClass({displayName: "Classnews_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -1803,14 +1806,19 @@ var Classnews_reply_save = React.createClass({displayName: "Classnews_reply_save
 		common_ajax_reply_save(function(){
 			that.refreshReplyList();		
 		})
+	
+	},
+	componentDidMount:function(){
+		 $("#"+this.classnews_content).xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	this.classnews_content="classnews_content_replay"+this.props.uuid;
 return (
 		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
 			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
-			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
 			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 		    )	   
 );
@@ -2077,6 +2085,8 @@ var Announcements_Div_list = React.createClass({displayName: "Announcements_Div_
 		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -2160,16 +2170,21 @@ render: function() {
 	  }
 return (
 		  React.createElement("div", null, 
-		  React.createElement(AMUIReact.Article, {
+            React.createElement("div", {className: "am-margin-left-sm"}, 
+		 
+            React.createElement(AMUIReact.Article, {
 		    title: o.title, 
 		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
-		     ), 
+		      ), 		     
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
 		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏")
+		     )
+		     
 		     ), 
+		     
 			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
 		   )
@@ -2503,6 +2518,8 @@ var ParentContactByMyStudent_message_list = React.createClass({displayName: "Par
 		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -2614,6 +2631,8 @@ var Announcements_good_Div_list = React.createClass({displayName: "Announcements
 		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -3025,6 +3044,8 @@ var rect_favorites_Div_list = React.createClass({displayName: "rect_favorites_Di
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.totalCount<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;

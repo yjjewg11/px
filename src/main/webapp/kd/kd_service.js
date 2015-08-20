@@ -316,6 +316,62 @@ function ajax_loaddata_group_list_for_userinfo_reg() {
 		}
 	});
 }
+/*
+ * 每5分钟消息是否有新消息服务请求
+ * @data.count:0没新消息   大于0有新消息;
+ * @MessageTimer.start:入口每次5分钟;
+ * @update_create_time：点击即时消息时截取时间5分钟另外一条线程把时间发到服务器做最新信息截取时间;
+ * @注意图片 名字 勿轻易更改
+ * */
+var MessageTimer={
+		create_time:null,
+	start:function(){
+		MessageTimer.do_loop();
+	},
+	do_loop:function(){
+		MessageTimer.pxMessageTimer();
+	},
+	update_create_time:function(){
+		MessageTimer.create_time=new Date().format('yyyy-MM-dd h:m:s');
+		MessageTimer.upate_img_status_read();
+	},
+	upate_img_status_read:function(){
+   	  $("[src$='i/icon-msg-you.png']").attr("src",hostUrlCDN+"i/icon-msg-wu.png");
+	},
+	/**
+	 * 
+	 */
+	 pxMessageTimer:function (){
+		  setTimeout(MessageTimer.do_loop,5*60*1000);
+		$.AMUI.progress.start();
+	    var url = hostUrl + "rest/pushMessage/queryMsgCount.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data:{create_time:MessageTimer.create_time},
+			dataType : "json",
+			 async: false,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {					
+	              if(data.count=0){
+	            	  MessageTimer.upate_img_status_read();
+	              }else{
+	            	 // div_header_props.div_header_props.data.right.title="新消息";
+	            	 // alert( $("[src$='i/icon-msg-wu.png']").attr("src"));
+	            	  $("[src$='i/icon-msg-wu.png']").attr("src",hostUrlCDN+"i/icon-msg-you.png");
+	              }				
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+",error:"+textStatus);
+			}
+		});
+	}
+};
 
 
 
@@ -323,26 +379,6 @@ function ajax_loaddata_group_list_for_userinfo_reg() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-   
- 
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -362,7 +398,8 @@ function ajax_queryMyTimely_myList() {
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-		  React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), document.getElementById('div_body'));
+				MessageTimer.update_create_time(); 
+		        React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -376,28 +413,6 @@ function ajax_queryMyTimely_myList() {
 		}
 	});
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -463,60 +478,6 @@ function ajax_State_style(type,reluuid,group_uuid){
 	   }
 	   
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
