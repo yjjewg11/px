@@ -317,34 +317,11 @@ function ajax_loaddata_group_list_for_userinfo_reg() {
 	});
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    
-
-   
- 
-
-
+//function cardTimer (){
+//	  alert("123");
+//      cardCdTime = setTimeout(cardTimer,5);
+//};
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 //————————————————————————————即时消息—————————————————————————    
 /*
@@ -376,28 +353,6 @@ function ajax_queryMyTimely_myList() {
 		}
 	});
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
