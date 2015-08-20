@@ -18,7 +18,7 @@ function login_affter_init(){
 			    "right": [
 			      {
 			        "link": "javascript:menu_queryMyTimely_fn()",
-			        "customIcon":hostUrl+"i/icon-msg.png",
+			        "customIcon":hostUrl+"i/icon-msg-wu.png",
 			        "title": "消息"
 			      }
 			    ]
@@ -230,7 +230,7 @@ function login_affter_init(){
 
 	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
-
+	MessageTimer.start();
 }
 //统一换标头方法
 function title_info_init(type){
@@ -252,7 +252,7 @@ function title_info_init(type){
 			    "right": [
 			      {
 			        "link": "javascript:menu_queryMyTimely_fn()",
-			        "customIcon":hostUrl+"i/icon-msg.png",
+			        "customIcon":hostUrl+"i/icon-msg-wu.png",
 			        "title": "消息"
 			      }
 			    ]
@@ -261,6 +261,7 @@ function title_info_init(type){
 
 	React.render(React.createElement(AMUIReact.Header,div_header_title_info), document.getElementById('div_header'));
 }
+
 /*
  * 显示bodydiv,隐藏其他所有控件div
 **/

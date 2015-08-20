@@ -113,8 +113,10 @@ render: function() {
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
- 	      <a  href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>
- 	      <br/>
+ 	     <div className="am-margin-top-sm">
+ 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>
+ 	     </div>
+ 	     <br/>
  	    </form>
  	    <hr/>
  	   <p>© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1</p>
@@ -1696,13 +1698,10 @@ return (
 	  <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this, "pre")} round>&laquo; 上一页</AMR_Button>
 	  <label>{g_classnews_pageNo_point}\{maxPageNo}</label> 
 	  <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
-<AMUIReact.Table {...this.props}>  
-  <tbody>
+
     {this.props.events.data.map(function(event) {
       return (<Classnews_show  event={event} />);
     })}
-  </tbody>
-</AMUIReact.Table>
 </div>
 );
 }
@@ -1743,9 +1742,7 @@ var Classnews_reply_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
+	
 	componentDidMount:function(){
 		this.load_more_data();
 	},
@@ -1754,6 +1751,8 @@ var Classnews_reply_list = React.createClass({
 		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -1762,6 +1761,8 @@ var Classnews_reply_list = React.createClass({
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
 		this.load_more_data();
+		
+		$("#"+this.div_reply_save_id).html("");
 	},
 	div_reply_save_id:"btn_reply_save",
 	btn_reply_save:function(){
@@ -1777,6 +1778,7 @@ var Classnews_reply_list = React.createClass({
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
 		  <div className="G_reply">
@@ -1795,6 +1797,7 @@ render: function() {
 
 /*
  * 绘制评论模板
+ * @componentDidMount:添加表情
  * */
 var Classnews_reply_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -1803,14 +1806,19 @@ var Classnews_reply_save = React.createClass({
 		common_ajax_reply_save(function(){
 			that.refreshReplyList();		
 		})
+	
+	},
+	componentDidMount:function(){
+		 $("#"+this.classnews_content).xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	this.classnews_content="classnews_content_replay"+this.props.uuid;
 return (
 		   <form id="editClassnewsreplyForm" method="post" className="am-form">
 			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
 			<input type="hidden" name="uuid" />
 			<input type="hidden" name="type"  value={this.props.uuid}/>						
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
+			<AMR_Input id={this.classnews_content} type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 		    </form>	   
 );
@@ -2077,6 +2085,8 @@ var Announcements_Div_list = React.createClass({
 		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -2160,16 +2170,21 @@ render: function() {
 	  }
 return (
 		  <div>
-		  <AMUIReact.Article
+            <div className="am-margin-left-sm">
+		 
+            <AMUIReact.Article
 		    title={o.title}
 		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-		     </AMUIReact.Article>
+		      </AMUIReact.Article>		     
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
 		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
 		     </AMR_ButtonToolbar>
+		     
+		     </div>
+		     
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
@@ -2503,6 +2518,8 @@ var ParentContactByMyStudent_message_list = React.createClass({
 		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -2614,6 +2631,8 @@ var Announcements_good_Div_list = React.createClass({
 		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;
@@ -3025,6 +3044,8 @@ var rect_favorites_Div_list = React.createClass({
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.totalCount<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}
 		  
 		  this.pageNo++;

@@ -548,7 +548,7 @@ var Common_Dianzan_show = React.createClass({
 render: function() {	
 	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
   return (
-		   <div id="dianzan" className="dianzan" >
+		   <div id="dianzan" className="am-margin-left-sm" >
 		   {dianzanObject.names},等一共{dianzanObject.count}人点赞		   
 		   <a  href="javascript:void(0);"><img  src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/> 
 		   </a>
@@ -593,6 +593,8 @@ var Common_reply_list = React.createClass({
 		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
 		}		  
 		  this.pageNo++;
 	},
