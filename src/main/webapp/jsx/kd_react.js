@@ -1686,6 +1686,7 @@ render: function() {
 	var totalCount=this.props.events.totalCount;
 	var pageSize=this.props.events.pageSize;
 	var maxPageNo=Math.floor(totalCount/pageSize)+1;
+	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
 	var that=this;
 	var pre_disabled=g_classnews_pageNo_point<2;
 	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
@@ -1715,14 +1716,20 @@ var Classnews_show = React.createClass({
 		  this.selectclass_uuid_val=val;
 		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
+	  
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
+		  if(!o.imgsList)o.imgsList=[];
 	  return (
 			  <div>
 			  <AMUIReact.Article
 			    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
-				<div dangerouslySetInnerHTML={{__html:o.content}}></div>
+			 <Common_mg_big_fn  imgsList={o.imgsList} />
+			  <div dangerouslySetInnerHTML={{__html:o.content}}></div>
 			   </AMUIReact.Article>	
 			  <Common_Dianzan_show uuid={o.uuid} type={0} />
 			  <Classnews_reply_list uuid={o.uuid}  type={0}/>
@@ -1883,9 +1890,9 @@ var Classnews_edit = React.createClass({
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  handleChange_selectclass_uuid:function(val){
-		  this.selectclass_uuid_val=val;
-		  this.props.formdata.classuuid=val
-			 $('#classuuid').val(val);
+//		  this.selectclass_uuid_val=val;
+//		  this.props.formdata.classuuid=val
+			// $('#classuuid').val(val);
 			    this.setState($('#editClassnewsForm').serializeJson());
 	  },	  
 	  imgDivNum:0,
@@ -1919,21 +1926,21 @@ var Classnews_edit = React.createClass({
 	},
 render: function() {
 	  var o = this.state;
+	  if(this.props.mycalsslist.length>0){
+		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
+	  }
 return (
 		<div>
 		<div className="header">
-		  <div className="am-g">
-		    <h1>编辑</h1>
-		  </div>
 		  <hr />
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">	      
-		  <AMUIReact.Selected id="selectclass_uuid" name="class_uuid" onChange={this.handleChange_selectclass_uuid} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={this.props.formdata.classuuid} />	      
 		  <form id="editClassnewsForm" method="post" className="am-form">
-			<input type="hidden" name="uuid"  value={o.uuid}/>
+		  <AMUIReact.Selected id="selectclass_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={o.classuuid} />	      
+			
+		  <input type="hidden" name="uuid"  value={o.uuid}/>
 			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>			
-			<input type="hidden" name="classuuid"  value={this.props.formdata.classuuid}/>
 		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
@@ -2000,11 +2007,12 @@ render: function() {
 	  <hr/>	  
 	  <div className="am-form-group">
 		<form id="editGroupForm" method="post" className="am-form">
+        <div className= "am-margin-left-sm">
 	  <AMUIReact.Selected id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
 	  <AMUIReact.Selected id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
-      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="学生姓名"/>	  
+	  </div>
+	  <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="学生姓名"/>	  
 	  <button type="button"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
-	
 	  </form>
 	  </div>	  
       <AMR_Table {...this.props}>  

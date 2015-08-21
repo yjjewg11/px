@@ -559,6 +559,59 @@ render: function() {
 }
 }); 
 
+/*
+ * 图片绘制公共模板（点击可看原图）
+ * */
+var  Common_mg_big_fn  = React.createClass({
+
+  render: function() {
+			  if (!this.props.imgsList){
+				  return;
+			  };		  		   
+			    return (
+		      <div>
+			    {this.props.imgsList.map(function(event) {
+			    	 var  o = event;
+					  var  imgArr=o.split("@");
+			        return (
+			       <ul data-am-widget="gallery" className="am-gallery am-avg-sm-6 am-gallery-imgbordered" data-am-gallery="{pureview:{target: 'a'}}">
+			     	  <li>			     			
+			     	    <div className="am-gallery-item">
+			     		  <a href={imgArr[0]} title="" data-am-pureviewed="1">
+			     		    <img src={o} alt=""/>
+                          </a>
+			     		</div>	   
+	        		 </li>
+			       </ul>	   
+			        	)
+			      })}
+			  </div>
+			    )
+          }
+        }); 
+
+
+/*
+ * 图片绘制公共模板 绘制多张图片
+ * */
+var common_img_big_show = React.createClass({ 
+	render: function() {		  
+		  var  o = this.props.event;
+		  var  imgArr=o.split("@");
+		//  console.log("o-----",o,"   imgArr----",imgArr);
+	  return (
+	     <ul data-am-widget="gallery" className="am-gallery am-avg-sm-2 am-gallery-imgbordered" data-am-gallery="{pureview: 1}">
+		   <li>
+			 <div className="am-gallery-item">
+		         <img src={o}
+	             alt="" data-rel={imgArr[0]}/>
+		     </div>
+		   </li>
+		 </ul>	   
+	  );
+	}
+	}); 
+
 
 var Common_Classnewsreply_listshow = React.createClass({ 	
 render: function() {

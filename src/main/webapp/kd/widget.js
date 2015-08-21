@@ -49,6 +49,7 @@ var w_ch_cookAddImg={
 			$.ajax({
 				type : "POST",
 				url : url,
+				timeout : 0, 
 				dataType : "json",
 				data:{type:2,base64:w_ch_cookAddImg.base64},
 				 async: false,
