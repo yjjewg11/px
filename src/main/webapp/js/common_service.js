@@ -141,6 +141,7 @@ w_img_upload_nocut={
 			$.ajax({
 				type : "POST",
 				url : url,
+				timeout : 0, 
 				dataType : "json",
 				data:{type:w_img_upload_nocut.type,base64:base64},
 				 async: true,
@@ -185,6 +186,7 @@ var w_uploadImg={
 			$.ajax({
 				type : "POST",
 				url : url,
+				timeout : 0, 
 				dataType : "json",
 				data:{type:w_uploadImg.type,base64:base64},
 				 async: true,
@@ -214,6 +216,7 @@ var w_uploadImg={
 			$.ajax({
 				type : "POST",
 				url : url,
+				timeout : 0, 
 				dataType : "json",
 				data:{type:w_uploadImg.type,base64:w_uploadImg.base64},
 				 async: true,

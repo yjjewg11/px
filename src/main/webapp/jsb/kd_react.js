@@ -1686,6 +1686,7 @@ render: function() {
 	var totalCount=this.props.events.totalCount;
 	var pageSize=this.props.events.pageSize;
 	var maxPageNo=Math.floor(totalCount/pageSize)+1;
+	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
 	var that=this;
 	var pre_disabled=g_classnews_pageNo_point<2;
 	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
@@ -1715,14 +1716,20 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 		  this.selectclass_uuid_val=val;
 		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
+	  
+//	  componentDidMount:function(){
+//		  $('[data-am-pureview]', document).pureview();
+//		},
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
+		  if(!o.imgsList)o.imgsList=[];
 	  return (
 			  React.createElement("div", null, 
 			  React.createElement(AMUIReact.Article, {
 			    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}, 
-				React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
+			 React.createElement(Common_mg_big_fn, {imgsList: o.imgsList}), 
+			  React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
 			   ), 	
 			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Classnews_reply_list, {uuid: o.uuid, type: 0})
@@ -1883,9 +1890,9 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		    this.setState($('#editClassnewsForm').serializeJson());
 	  },
 	  handleChange_selectclass_uuid:function(val){
-		  this.selectclass_uuid_val=val;
-		  this.props.formdata.classuuid=val
-			 $('#classuuid').val(val);
+//		  this.selectclass_uuid_val=val;
+//		  this.props.formdata.classuuid=val
+			// $('#classuuid').val(val);
 			    this.setState($('#editClassnewsForm').serializeJson());
 	  },	  
 	  imgDivNum:0,
@@ -1919,21 +1926,21 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	},
 render: function() {
 	  var o = this.state;
+	  if(this.props.mycalsslist.length>0){
+		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
+	  }
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "编辑")
-		  ), 
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
-		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: this.props.formdata.classuuid}), 	      
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
-			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
+			
+		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
-			React.createElement("input", {type: "hidden", name: "classuuid", value: this.props.formdata.classuuid}), 
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
@@ -2000,11 +2007,12 @@ render: function() {
 	  React.createElement("hr", null), 	  
 	  React.createElement("div", {className: "am-form-group"}, 
 		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+        React.createElement("div", {className: "am-margin-left-sm"}, 
 	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid}), 
-      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "学生姓名"}), 	  
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+	  ), 
+	  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "学生姓名"}), 	  
 	  React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
-	
 	  )
 	  ), 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 

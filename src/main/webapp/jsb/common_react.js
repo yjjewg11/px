@@ -559,6 +559,59 @@ render: function() {
 }
 }); 
 
+/*
+ * 图片绘制公共模板（点击可看原图）
+ * */
+var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
+
+  render: function() {
+			  if (!this.props.imgsList){
+				  return;
+			  };		  		   
+			    return (
+		      React.createElement("div", null, 
+			    this.props.imgsList.map(function(event) {
+			    	 var  o = event;
+					  var  imgArr=o.split("@");
+			        return (
+			       React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
+			     	  React.createElement("li", null, 			     			
+			     	    React.createElement("div", {className: "am-gallery-item"}, 
+			     		  React.createElement("a", {href: imgArr[0], title: "", "data-am-pureviewed": "1"}, 
+			     		    React.createElement("img", {src: o, alt: ""})
+                          )
+			     		)	   
+	        		 )
+			       )	   
+			        	)
+			      })
+			  )
+			    )
+          }
+        }); 
+
+
+/*
+ * 图片绘制公共模板 绘制多张图片
+ * */
+var common_img_big_show = React.createClass({displayName: "common_img_big_show", 
+	render: function() {		  
+		  var  o = this.props.event;
+		  var  imgArr=o.split("@");
+		//  console.log("o-----",o,"   imgArr----",imgArr);
+	  return (
+	     React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-2 am-gallery-imgbordered", "data-am-gallery": "{pureview: 1}"}, 
+		   React.createElement("li", null, 
+			 React.createElement("div", {className: "am-gallery-item"}, 
+		         React.createElement("img", {src: o, 
+	             alt: "", "data-rel": imgArr[0]})
+		     )
+		   )
+		 )	   
+	  );
+	}
+	}); 
+
 
 var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 	
 render: function() {

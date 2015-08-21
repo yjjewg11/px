@@ -1971,7 +1971,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 function menu_classnewsbyMy_list_fn() {
 	Queue.push(menu_classnewsbyMy_list_fn,"班级互动");
 	g_classnews_url=hostUrl + "rest/classnews/getClassNewsByMy.json";
-	g_classnews_class_list=Store.getMyClassList();
+	g_classnews_class_list=Store.getChooseClass(Store.getCurGroup().uuid);
 	ajax_classnews_list();
 };
 	
@@ -2488,7 +2488,7 @@ function ajax_parent_message_save(that){
  * */
 function ajax_parentContact_tels(tels){
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/parentContactByMyStudent.json?tels="+tels;
+    var url = hostUrl + "rest/student/inviteParents.json?tels="+tels;
 	$.ajax({
 		type : "POST",
 		url : url,
@@ -2497,7 +2497,7 @@ function ajax_parentContact_tels(tels){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				G_msg_pop("邀请已发送");
+				alert(data.ResMsg.message);
 				ajax_parentContactByMyStudent();
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
