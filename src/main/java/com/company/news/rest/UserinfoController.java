@@ -513,7 +513,7 @@ public class UserinfoController extends AbstractRESTController {
 	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		User a;
+		User4Q a=null;
 		try {
 			a = userinfoService.get(uuid);
 		} catch (Exception e) {

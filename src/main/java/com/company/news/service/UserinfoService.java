@@ -708,9 +708,9 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
-	public User get(String uuid) throws Exception {
-		return (User) this.nSimpleHibernateDao
-				.getObjectById(User.class, uuid);
+	public User4Q get(String uuid) throws Exception {
+		return (User4Q) this.nSimpleHibernateDao
+				.getObjectById(User4Q.class, uuid);
 
 	}
 	/**
