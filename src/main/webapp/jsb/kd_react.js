@@ -1717,9 +1717,9 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
 	  
-//	  componentDidMount:function(){
-//		  $('[data-am-pureview]', document).pureview();
-//		},
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
