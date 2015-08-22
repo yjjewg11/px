@@ -365,8 +365,8 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
 		                    	  },
-			                   	  {
-			                    	    "img": hostUrl+"i/xinxiang.png",
+			                   	  { 
+			                    	    "img": hostUrl+"i/meirirenwu.png",
 			                    	    "link": "###",
 			                    	    "title": "每日任务"
 			                    	  }
