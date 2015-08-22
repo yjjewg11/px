@@ -616,7 +616,7 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 			  };		  		   
 			    return (
 		      React.createElement("div", null, 
-		      React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
+		      React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
 			   
 			    this.props.imgsList.map(function(event) {
 			    	 var  o = event;

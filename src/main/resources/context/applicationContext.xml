@@ -98,7 +98,7 @@
         <tx:method name="count" propagation="REQUIRED"/>  
         <tx:method name="login" propagation="REQUIRED"/> 
         <tx:method name="save" propagation="REQUIRED"/>        
-        <tx:method name="add" propagation="REQUIRED"/>
+        <tx:method name="add*" propagation="REQUIRED"/>
         <tx:method name="update*" propagation="REQUIRED"/>
         <tx:method name="delete" propagation="REQUIRED"/> 
         <tx:method name="read" propagation="REQUIRED"/>
@@ -115,7 +115,7 @@
 
     <!-- 配置哪些类的方法需要进行事务管理 -->  
 <aop:config proxy-target-class="true">  
-    <aop:pointcut id="servicePointcut"  expression="execution(* com.company.news.service..*.*(..))"/>  
+    <aop:pointcut id="servicePointcut"  expression="execution(* com.company.news.service..*.*(..))||execution(* com.company.news.core.iservice..*.*(..))"/>  
     <aop:advisor pointcut-ref="servicePointcut" advice-ref="serviceAdvice"/>  
 </aop:config>  
 
