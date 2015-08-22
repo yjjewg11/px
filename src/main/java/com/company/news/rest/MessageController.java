@@ -66,6 +66,7 @@ public class MessageController extends AbstractRESTController {
 		User user=this.getUserInfoBySession(request);
 		messageJsonform.setSend_user(user.getName());
 		messageJsonform.setSend_useruuid(user.getUuid());
+		messageJsonform.setSend_userimg(user.getImg());
 		messageJsonform.setType(SystemConstants.Message_type_1);//
 		messageJsonform.setTitle(SystemConstants.Message_title_xinxiang);
 		messageJsonform.setMessage(MyUbbUtils.htmlToMyUbb(messageJsonform.getMessage()));
@@ -388,8 +389,9 @@ public class MessageController extends AbstractRESTController {
 			responseMessage.setMessage("send_useruuid无效.没有对应的幼儿园.:"+messageJsonform.getSend_useruuid());
 			return "";
 		}
-		messageJsonform.setSend_user(group.getBrand_name()+"园长");
+		messageJsonform.setSend_user(group.getBrand_name());
 		messageJsonform.setSend_useruuid(group.getUuid());
+		messageJsonform.setSend_userimg(messageJsonform.getMessage());
 		messageJsonform.setType(SystemConstants.Message_type_2);//
 		messageJsonform.setTitle(SystemConstants.Message_title_xinxiang);
 		

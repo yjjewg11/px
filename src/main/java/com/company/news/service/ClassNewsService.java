@@ -222,17 +222,17 @@ public class ClassNewsService extends AbstractServcice {
 	 * @return
 	 */
 	private ClassNews warpVo(ClassNews o,String cur_user_uuid){
-		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
-		
-		o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
-		o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 		try {
+			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			//网页版本需要转为html显示.
+			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
+			o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
+			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 			o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 //			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
 //			o.setReplyPage(this.getReplyPageList(o.getUuid()));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return o;

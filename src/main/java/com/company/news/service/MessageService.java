@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.MyUbbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Message;
 import com.company.news.entity.Parent;
@@ -70,7 +71,9 @@ public class MessageService extends AbstractServcice {
 		message.setCreate_time(TimeUtils.getCurrentTimestamp());
 		message.setIsread(announcements_isread_no);
 		message.setIsdelete(announcements_isdelete_no);
-
+		message.setSend_userimg(user.getImg());
+		
+		
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(message);
 		if(SystemConstants.Message_type_1.equals(message.getType())){
@@ -284,6 +287,7 @@ public class MessageService extends AbstractServcice {
 	 */
 	public Message warpVo(Message o){
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		o.setSend_userimg(PxStringUtil.imgSmallUrlByUuid(o.getSend_userimg()));
 		o.setMessage(MyUbbUtils.myUbbTohtml(o.getMessage()));
 		return o;
 	}

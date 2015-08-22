@@ -107,10 +107,6 @@ public class ClassNewsReplyService extends AbstractServcice {
 		PageQueryResult pageQueryResult= this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
 		List<ClassNewsReply> list=pageQueryResult.getData();
 		
-		this.nSimpleHibernateDao.getHibernateTemplate().clear();
-		for(ClassNewsReply o:list){
-			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
-		}
 		return pageQueryResult;
 				
 	}
@@ -150,6 +146,35 @@ public class ClassNewsReplyService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return ClassNews.class;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private ClassNewsReply warpVo(ClassNewsReply o,String cur_user_uuid){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		try {
+			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
+			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
+			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<ClassNewsReply> warpVoList(List<ClassNewsReply> list,String cur_user_uuid){
+		for(ClassNewsReply o:list){
+			warpVo(o,cur_user_uuid);
+		}
+		return list;
 	}
 
 }

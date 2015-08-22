@@ -108,13 +108,13 @@ public class ClassNewsDianzanService extends AbstractServcice {
 			return false;
 		}
 
-		this.nSimpleHibernateDao
+		Integer count=this.nSimpleHibernateDao
 				.getHibernateTemplate()
 				.bulkUpdate(
 						"delete from ClassNewsDianzan where newsuuid=? and create_useruuid=?",
 						classNewsDianzanJsonform.getNewsuuid(),
 						classNewsDianzanJsonform.getCreate_useruuid());
-
+		this.logger.info("cancelDianzan:"+count);
 		return true;
 	}
 

@@ -529,9 +529,9 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
  * @type:哪个模板的点赞功能;
  * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
  */
-function common_ajax_dianzan_save(newsuuid,type,canDianzan){
+function common_ajax_dianzan_save(newsuuid,type,canDianzan,dianzansave_callback){
 	var that=this;
-	var objectForm={newsuuid:newsuuid,type:type,canDianzan:canDianzan};
+	var objectForm={newsuuid:newsuuid,type:type};
 	var jsonString=JSON.stringify(objectForm);
 	$.AMUI.progress.start();
 	var url =hostUrl +(canDianzan?"rest/dianzan/save.json":"rest/dianzan/delete.json");
@@ -546,7 +546,7 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan){
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					that.forceUpdate();
+					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
 
 					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
 				} else {
@@ -568,7 +568,8 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan){
 
 
 
-function commons_ajax_reply_list(newsuuid,list_div,pageNo){
+function commons_ajax_reply_list(newsuuid,list_div,pageNo,tempateClazz){
+	if(!tempateClazz)tempateClazz=Common_Classnewsreply_listshow;
 	var re_data=null;
 	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
@@ -581,7 +582,7 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Common_Classnewsreply_listshow, {
+				React.render(React.createElement(tempateClazz, {
 					events: data.list,
 					newsuuid:newsuuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -602,9 +603,10 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo){
 	return re_data;
 };
 //我要评论保存操作
-function common_ajax_reply_save(callback){
+function common_ajax_reply_save(callback,formid){
+	if(!formid)formid="editClassnewsreplyForm";
 	var opt={
-	 formName:"editClassnewsreplyForm",
+	 formName:formid,
 	 url:hostUrl + "rest/reply/save.json",
 	 cbFN:function(data){
 		 if (data.ResMsg.status == "success") {

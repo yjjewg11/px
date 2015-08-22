@@ -537,21 +537,67 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
 //end uploadImg
 
 
-//点赞模板
+//点赞模板.点赞显示+点赞按钮一起 
+/*
+ *
+ * 
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ **/
+var Common_Dianzan_show = React.createClass({displayName: "Common_Dianzan_show", 
+	 dianzansave_callback:function(canDianzan){
+		 this.forceUpdate();
+	 },
+render: function() {	
+	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	 var showStr="";
+	 if(dianzanObject.names){
+		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 }
+  return (
+		   React.createElement("div", {id: "dianzan", className: "am-margin-left-sm"}, 
+			showStr, 
+		   React.createElement("a", {href: "javascript:void(0);"}, React.createElement("img", {src: dianzanObject.canDianzan?hostUrlCDN+"i/dianzan1.png":hostUrlCDN+"i/quxiaodianzhan.png", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan,this.dianzansave_callback)})
+		   )
+		   )
+
+
+  );
+}
+}); 
+//点赞模板2,点赞显示与点赞按钮分离,传入点赞按钮id
 /*
  * 
  * 
  *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
  **/
-var Common_Dianzan_show = React.createClass({displayName: "Common_Dianzan_show", 
-
+var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianzan_show_noAction", 
+	obj:null,
+	 componentDidMount:function(){
+		 var that=this;
+		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
+		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		$("#"+this.props.btn_dianzan).bind("click",function(){
+			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
+			common_ajax_dianzan_save(that.props.uuid,that.props.type,canDianzan,that.dianzansave_callback);
+		});
+				
+			
+	 },
+	 dianzansave_callback:function(canDianzan){
+		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
+		 this.forceUpdate();
+	 },
 render: function() {	
 	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	 this.obj=dianzanObject;
+	 var showStr="";
+	 if(dianzanObject.names){
+		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 }
   return (
 		   React.createElement("div", {id: "dianzan", className: "am-margin-left-sm"}, 
-		   dianzanObject.names, ",等一共", dianzanObject.count, "人点赞", 		   
-		   React.createElement("a", {href: "javascript:void(0);"}, React.createElement("img", {src: dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png", onClick: common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)})
-		   )
+		   		showStr
 		   )
 
 
@@ -570,21 +616,22 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 			  };		  		   
 			    return (
 		      React.createElement("div", null, 
+		      React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
+			   
 			    this.props.imgsList.map(function(event) {
 			    	 var  o = event;
 					  var  imgArr=o.split("@");
 			        return (
-			       React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
-			     	  React.createElement("li", null, 			     			
+			       	  React.createElement("li", null, 			     			
 			     	    React.createElement("div", {className: "am-gallery-item"}, 
-			     		  React.createElement("a", {href: imgArr[0], title: "", "data-am-pureviewed": "1"}, 
-			     		    React.createElement("img", {src: o, alt: ""})
+			     		  React.createElement("a", {href: imgArr[0], title: ""}, 
+			     		    React.createElement("img", {src: o, alt: "", "data-rel": imgArr[0]})
                           )
 			     		)	   
 	        		 )
-			       )	   
 			        	)
 			      })
+			    )	   
 			  )
 			    )
           }
@@ -618,11 +665,27 @@ render: function() {
   return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
+			  if(!event.create_img)event.create_img=G_def_headImgPath;
 		      return (
-		    		  React.createElement("div", {className: "event"}, 
-		  		 React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}}), 
-		  		 React.createElement("strong", null, event.create_user+" | "+event.update_time)
-		  		 )
+		    		  React.createElement("article", {className: "am-comment am-comment-flip am-comment-success am-margin-xs"}, 
+		    		  React.createElement("a", {href: "javascript:void(0);"}, 
+		    		  React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+		    		  ), 
+
+		    		  React.createElement("div", {className: "am-comment-main am-comment-flip"}, 
+		    		    React.createElement("header", {className: "am-comment-hd"}, 
+		    		      React.createElement("div", {className: "am-comment-meta"}, 
+		    		      	React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
+		    		      		React.createElement("time", null, event.create_time)
+		    		      )
+		    		    ), 
+		    		    React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 
+					        React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
+			  		    )
+		    			 
+		    			 )
+		    		)
+		    		
 		    		  )
 		  })
 		
@@ -659,15 +722,15 @@ var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
-		  React.createElement("div", {className: "G_reply"}, 
-		   React.createElement("h4", null, "评论"), 
-		   React.createElement("div", {id: this.classnewsreply_list_div}
-		   ), 
-			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+		  React.createElement("div", null, 
+		  React.createElement("div", {id: this.classnewsreply_list_div}), 
+		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
 			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})			
-			)		   
+			 
+			 )
   );
 }
 }); 
@@ -691,7 +754,7 @@ render: function() {
 			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 
 			
 			
-			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "2", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 
 			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
 		      

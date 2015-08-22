@@ -537,21 +537,67 @@ var Upload_headImg = React.createClass({
 //end uploadImg
 
 
-//点赞模板
+//点赞模板.点赞显示+点赞按钮一起 
+/*
+ *
+ * 
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ **/
+var Common_Dianzan_show = React.createClass({ 
+	 dianzansave_callback:function(canDianzan){
+		 this.forceUpdate();
+	 },
+render: function() {	
+	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	 var showStr="";
+	 if(dianzanObject.names){
+		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 }
+  return (
+		   <div id="dianzan" className="am-margin-left-sm" >
+			{showStr}    
+		   <a  href="javascript:void(0);"><img  src={dianzanObject.canDianzan?hostUrlCDN+"i/dianzan1.png":hostUrlCDN+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan,this.dianzansave_callback)}/> 
+		   </a>
+		   </div>
+
+
+  );
+}
+}); 
+//点赞模板2,点赞显示与点赞按钮分离,传入点赞按钮id
 /*
  * 
  * 
  *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
  **/
-var Common_Dianzan_show = React.createClass({ 
-
+var Common_Dianzan_show_noAction = React.createClass({ 
+	obj:null,
+	 componentDidMount:function(){
+		 var that=this;
+		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
+		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		$("#"+this.props.btn_dianzan).bind("click",function(){
+			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
+			common_ajax_dianzan_save(that.props.uuid,that.props.type,canDianzan,that.dianzansave_callback);
+		});
+				
+			
+	 },
+	 dianzansave_callback:function(canDianzan){
+		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
+		 this.forceUpdate();
+	 },
 render: function() {	
 	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	 this.obj=dianzanObject;
+	 var showStr="";
+	 if(dianzanObject.names){
+		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 }
   return (
 		   <div id="dianzan" className="am-margin-left-sm" >
-		   {dianzanObject.names},等一共{dianzanObject.count}人点赞		   
-		   <a  href="javascript:void(0);"><img  src={dianzanObject.canDianzan?hostUrl+"i/dianzan1.png":hostUrl+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan)}/> 
-		   </a>
+		   		{showStr} 
 		   </div>
 
 
@@ -570,21 +616,22 @@ var  Common_mg_big_fn  = React.createClass({
 			  };		  		   
 			    return (
 		      <div>
+		      <ul data-am-widget="gallery" className="am-gallery am-avg-sm-6 am-gallery-imgbordered" data-am-gallery="{pureview:{target: 'a'}}">
+			   
 			    {this.props.imgsList.map(function(event) {
 			    	 var  o = event;
 					  var  imgArr=o.split("@");
 			        return (
-			       <ul data-am-widget="gallery" className="am-gallery am-avg-sm-6 am-gallery-imgbordered" data-am-gallery="{pureview:{target: 'a'}}">
-			     	  <li>			     			
+			       	  <li>			     			
 			     	    <div className="am-gallery-item">
-			     		  <a href={imgArr[0]} title="" data-am-pureviewed="1">
-			     		    <img src={o} alt=""/>
+			     		  <a href={imgArr[0]} title="">
+			     		    <img src={o} alt=""  data-rel={imgArr[0]}/>
                           </a>
 			     		</div>	   
 	        		 </li>
-			       </ul>	   
 			        	)
 			      })}
+			    </ul>	   
 			  </div>
 			    )
           }
@@ -618,11 +665,27 @@ render: function() {
   return (
 		  <div>
 		  {this.props.events.data.map(function(event) {
+			  if(!event.create_img)event.create_img=G_def_headImgPath;
 		      return (
-		    		  <div className="event">
-		  		 <div  dangerouslySetInnerHTML={{__html: event.content}}></div>
-		  		 <strong>{event.create_user+" | "+event.update_time}</strong>
-		  		 </div>
+		    		  <article className="am-comment am-comment-flip am-comment-success am-margin-xs">
+		    		  <a href="javascript:void(0);">
+		    		  <img src={event.create_img} className="am-comment-avatar" width="48" height="48"/>
+		    		  </a>
+
+		    		  <div className="am-comment-main am-comment-flip">
+		    		    <header className="am-comment-hd">
+		    		      <div className="am-comment-meta">
+		    		      	<a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
+		    		      		<time>{event.create_time}</time>
+		    		      </div>
+		    		    </header>
+		    		    <div className="am-comment-bd am-comment-flip am-inline">
+					        <div dangerouslySetInnerHTML={{__html:event.content}}></div>
+			  		    </div>
+		    			 
+		    			 </div>
+		    		</article>
+		    		
 		    		  )
 		  })}
 		
@@ -659,15 +722,15 @@ var Common_reply_list = React.createClass({
 
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
-		  <div className="G_reply">
-		   <h4>评论</h4>
-		   <div id={this.classnewsreply_list_div}>
-		   </div>
-			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
+		  <div>
+		  <div id={this.classnewsreply_list_div}></div>
+		    <button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
 			 <Common_reply_save uuid={this.props.uuid}  type={this.props.type} parentThis={parentThis}/>			
-			</div>		   
+			 
+			 </div>
   );
 }
 }); 
@@ -691,7 +754,7 @@ render: function() {
 			<input type="hidden" name="type"  value={this.props.uuid}/>
 			
 			
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="2" label="我要评论" placeholder="填写内容" name="content" />
 
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>
 		      

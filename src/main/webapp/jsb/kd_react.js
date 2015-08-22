@@ -1018,7 +1018,7 @@ var Boss_student_tel =React.createClass({displayName: "Boss_student_tel",
 		    	this.props.formdata.map(function(event) {
 		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
 		            React.createElement(AMR_ButtonToolbar, null, 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_boss_message_list.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+		            React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
 		            )	
         
 		            ));
@@ -1066,7 +1066,8 @@ componentDidMount:function(){
 },
 load_more_data:function(){
 	$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-	var re_data=ajax_boss_message(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+	var re_data=ajax_boss_message_list(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+	if(!re_data)return;
 	if(re_data.data.length<re_data.pageSize){
 		$("#"+this.load_more_btn_id).hide();
 	}
@@ -1131,17 +1132,38 @@ return (
 * */
 var Message_queryLeaderMsgByParents_listpage =React.createClass({displayName: "Message_queryLeaderMsgByParents_listpage",	 
 	render: function() {
+			var revice_useruuid=this.props.revice_useruuid;
 		  return (
-				  React.createElement("div", null, 
+				  
+				  React.createElement("ul", {className: "am-comments-list "}, 
 				  this.props.events.data.map(function(event) {
-				      return (React.createElement(AMUIReact.ListItem, null, 
-				      React.createElement("div", {className: "am-cf"}, 
-				      React.createElement("div", {className: "am-fl"}, event.send_user, ":"), 
-				      React.createElement("div", {className: "am-fl", dangerouslySetInnerHTML: { __html: event.message}})
-				      )
-				    	  ))
+					  var class1="am-comment am-comment-flip am-comment-secondary";
+					  if(revice_useruuid==event.send_useruuid){
+						  class1="am-comment";
+					  }
+				      return (
+				    		  React.createElement("li", {className: class1}, 
+				    		  	React.createElement("a", {href: "javascript:void(0);"}, 
+				    		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+				    		  		), 
+				    		  		 React.createElement("div", {className: "am-comment-main"}, 
+				    		  		 React.createElement("header", {className: "am-comment-hd"}, 
+				    		  	      React.createElement("div", {className: "am-comment-meta"}, 
+				    		  	        React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.send_user), 
+				    		  	        "发送于 ", React.createElement("time", null, event.create_time)
+				    		  	      )
+				    		  	    ), 
+				    		  	  React.createElement("div", {className: "am-comment-bd"}, 
+				    		  	 React.createElement("div", {dangerouslySetInnerHTML: {__html:event.message}})
+				    		  	 )
+				    		  	    )
+							  )
+							  )
 				  })
-				    )				   
+
+				  
+				)
+				 
 		  );
 		}
 })
@@ -1724,22 +1746,71 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
 		  if(!o.imgsList)o.imgsList=[];
+		  if(!o.create_img)G_def_headImgPath;
+		  
 	  return (
 			  React.createElement("div", null, 
-			  React.createElement(AMUIReact.Article, {
-			    meta: o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}, 
-			 React.createElement(Common_mg_big_fn, {imgsList: o.imgsList}), 
-			  React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
-			   ), 	
-			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
-			  React.createElement(Classnews_reply_list, {uuid: o.uuid, type: 0})
+			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
+			  React.createElement("a", {href: "javascript:void(0);"}, 
+			    React.createElement("img", {src: o.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+			  ), 
+
+			  React.createElement("div", {className: "am-comment-main"}, 
+			    React.createElement("header", {className: "am-comment-hd"}, 
+			      React.createElement("div", {className: "am-comment-meta"}, 
+			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user), 
+			        "发表于 ", React.createElement("time", null, o.update_time)
+			      )
+			    ), 
+			    React.createElement("div", {className: "am-comment-bd"}, 
+			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
+			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
+			    ), 
+			    	React.createElement("footer", {className: "am-comment-footer"}, 
+			    	React.createElement("div", {className: "am-comment-actions"}, 
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}))
+			    	)
+			    	), 
+			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+			    	React.createElement("ul", {className: "am-comments-list"}, 
+					  React.createElement(Classnews_reply_list, {uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+			    	)
+			     )
+			)
+			 
 			    )		   
 	  );
 	}
 	}); 
 
+
+
 /*
- * 互动里面单独的评论模板
+ * 1.2互动里面单独的评论模板-item
+ * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+ * 把评论模板插入空Div里面
+ * 
+ * */
+var Classnews_reply_list_listshow = React.createClass({displayName: "Classnews_reply_list_listshow", 	
+render: function() {
+  return (
+		  React.createElement("div", null, 
+		  this.props.events.data.map(function(event) {
+		      return (
+		    		  React.createElement("li", {className: "am-comment"}, 
+		    		  React.createElement("span", {className: "am-comment-author"}, event.create_user+":"), 
+				        React.createElement("span", {dangerouslySetInnerHTML: {__html:event.content}})
+		    		  )
+		    		  )
+		  })
+		
+		    )		   
+  );
+}
+}); 
+/*
+ * 1.1互动里面单独的评论模板
  * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
  * 把评论模板插入空Div里面
  * 
@@ -1751,11 +1822,14 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 	
 	
 	componentDidMount:function(){
+		var that=this;
+		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
 		this.load_more_data();
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -1771,16 +1845,12 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		
 		$("#"+this.div_reply_save_id).html("");
 	},
-	div_reply_save_id:"btn_reply_save",
-	btn_reply_save:function(){
-		
-		
+	btn_reply_show:function(){
 		React.render(React.createElement(Classnews_reply_save,
 				{uuid:this.props.uuid,
 			parentThis:this,
 			type:this.props.type
-			})
-				, document.getElementById(this.div_reply_save_id));
+			}), document.getElementById(this.div_reply_save_id));
 	},
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -1788,14 +1858,17 @@ render: function() {
 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
-		  React.createElement("div", {className: "G_reply"}, 
-		   React.createElement("h4", null, "评论"), 
-		   React.createElement("div", {id: this.classnewsreply_list_div}
-		   ), 
-			React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 		
-			React.createElement("button", {type: "button", onClick: this.btn_reply_save.bind(this), className: "am-btn am-btn-primary"}, "评论"), 
-			React.createElement("div", {id: this.div_reply_save_id}, "   ")
+		  
+		  React.createElement("div", {className: "am-comment-bd am-comment-flip"}, 
+		  React.createElement("div", {id: this.div_reply_save_id}, "   "), 
+		    React.createElement("div", {id: this.classnewsreply_list_div}), 
+		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")		
+			
 			)
+		 
+		
+		
+		
 		   
   );
 }
@@ -1808,11 +1881,12 @@ render: function() {
  * */
 var Classnews_reply_save = React.createClass({displayName: "Classnews_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
+	form_id:"editClassnewsreplyForm",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		common_ajax_reply_save(function(){
 			that.refreshReplyList();		
-		})
+		},this.form_id);
 	
 	},
 	componentDidMount:function(){
@@ -1820,12 +1894,13 @@ var Classnews_reply_save = React.createClass({displayName: "Classnews_reply_save
 	},
 render: function() {
 	this.classnews_content="classnews_content_replay"+this.props.uuid;
+	this.form_id="editClassnewsreplyForm"+this.props.uuid;
 return (
-		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
+		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
 			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
-			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "10", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "3", label: "我要回复", placeholder: "填写内容", name: "content"}), 
 			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 		    )	   
 );
@@ -2091,6 +2166,7 @@ var Announcements_Div_list = React.createClass({displayName: "Announcements_Div_
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -2524,6 +2600,7 @@ var ParentContactByMyStudent_message_list = React.createClass({displayName: "Par
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -2588,17 +2665,38 @@ render: function() {
  * */
 var Message_queryByParent_listpage =React.createClass({displayName: "Message_queryByParent_listpage",	 
 	render: function() {
+		var revice_useruuid=this.props.revice_useruuid;
 	  return (
-			  React.createElement("div", null, 
-			  this.props.events.data.map(function(event) {			      return (React.createElement(AMUIReact.ListItem, null, 
-			      React.createElement("div", {className: "am-cf"}, 
-			      React.createElement("div", {className: "am-fl"}, event.send_user, ":"), 
-			      React.createElement("div", {className: "am-fl", dangerouslySetInnerHTML: { __html: event.message}})
-			      )
-			    	  ))
+			  
+			  React.createElement("ul", {className: "am-comments-list "}, 
+			  this.props.events.data.map(function(event) {
+				  var class1="am-comment am-comment-flip am-comment-secondary";
+				  if(revice_useruuid==event.send_useruuid){
+					  class1="am-comment";
+				  }
+			      return (
+			    		  React.createElement("li", {className: class1}, 
+			    		  	React.createElement("a", {href: "javascript:void(0);"}, 
+			    		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+			    		  		), 
+			    		  		 React.createElement("div", {className: "am-comment-main"}, 
+			    		  		 React.createElement("header", {className: "am-comment-hd"}, 
+			    		  	      React.createElement("div", {className: "am-comment-meta"}, 
+			    		  	        React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.send_user), 
+			    		  	        "发送于 ", React.createElement("time", null, event.create_time)
+			    		  	      )
+			    		  	    ), 
+			    		  	  React.createElement("div", {className: "am-comment-bd"}, 
+			    		  	 React.createElement("div", {dangerouslySetInnerHTML: {__html:event.message}})
+			    		  	 )
+			    		  	    )
+						  )
+						  )
 			  })
-			    )
-			   
+
+			  
+			)
+			 
 	  );
 	}
 })
@@ -2637,6 +2735,7 @@ var Announcements_good_Div_list = React.createClass({displayName: "Announcements
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -3050,6 +3149,7 @@ var rect_favorites_Div_list = React.createClass({displayName: "rect_favorites_Di
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.totalCount<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{

@@ -1085,7 +1085,7 @@ G_ajax_abs_save(opt);
  	   		}
  	   	});
  	   };
-    /* (园长信箱)创建舞台
+    /* (家长信息)创建舞台
      * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
      *@Boss_message_list准备开始绘制舞台  
  	* @revice_useruuid:收件人ID；
@@ -1094,16 +1094,31 @@ G_ajax_abs_save(opt);
      * */
     function ajax_my_message_list(send_useruuid,revice_useruuid,send_user){
     	var message_name="我的信箱-来自"+send_user+"的信息";
-    	Queue.push(function(){ajax_boss_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
+    	Queue.push(function(){ajax_my_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
  		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
  	   };
  		   
  		   
+ 	  /* (园长信箱)创建舞台
+ 	     * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
+ 	     *@Boss_message_list准备开始绘制舞台  
+ 	 	* @revice_useruuid:收件人ID；
+ 	 	* @send_useruuid:发送者ID；
+ 	 	* @send_user:发送者姓名
+ 	     * */
+ 	    function ajax_my_boss_stage(send_useruuid,revice_useruuid,send_user){
+ 	    	var message_name="我的信箱-来自"+send_user+"的信息";
+ 	    	Queue.push(function(){ajax_my_boss_stage(send_useruuid,revice_useruuid,send_user);},message_name);
+ 	 		React.render(React.createElement( Boss_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+ 	 	   };
+ 	 		   
+ 	   
+ 	  
     /* (园长信箱)(服务器请求)-绘制每一个Div信息放置在舞台上；
      * @revice_useruuid:收件人ID；
      * @send_useruuid:发送者ID；
      * */
-    function ajax_my_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
+    function ajax_boss_message_list(revice_useruuid,send_useruuid,list_div,pageNo){
  	   var re_data=null;
  	   if(!pageNo)pageNo=1;
     	$.AMUI.progress.start();
@@ -1224,9 +1239,9 @@ function btn_click_userinfo(m,obj,usernames,sex){
 		obj.sex=1;
 		ajax_userinfo_edit(obj,"add",sex);
 	}else if(m=="disable"){
-		ajax_userinfo_updateDisable(obj,sex);		
+		ajax_userinfo_updateDisable(obj,1);		
 	}else if(m=="enable"){
-		ajax_userinfo_updateDisable(obj,sex);
+		ajax_userinfo_updateDisable(obj,0);
 	}else if(m=="getRole"){
 		Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师管理-分配权限-"+usernames);
 		ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);

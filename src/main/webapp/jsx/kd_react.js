@@ -1018,7 +1018,7 @@ var Boss_student_tel =React.createClass({
 		    	{this.props.formdata.map(function(event) {
 		            return (<AMUIReact.ListItem>家长{event.send_user}的信息    
 		            <AMR_ButtonToolbar>		            
-		            <AMUIReact.Button  onClick={ajax_boss_message_list.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
+		            <AMUIReact.Button  onClick={ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
 		            </AMR_ButtonToolbar>	
         
 		            </AMUIReact.ListItem>);
@@ -1066,7 +1066,8 @@ componentDidMount:function(){
 },
 load_more_data:function(){
 	$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-	var re_data=ajax_boss_message(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+	var re_data=ajax_boss_message_list(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+	if(!re_data)return;
 	if(re_data.data.length<re_data.pageSize){
 		$("#"+this.load_more_btn_id).hide();
 	}
@@ -1131,17 +1132,38 @@ return (
 * */
 var Message_queryLeaderMsgByParents_listpage =React.createClass({	 
 	render: function() {
+			var revice_useruuid=this.props.revice_useruuid;
 		  return (
-				  <div>
+				  
+				  <ul className="am-comments-list ">
 				  {this.props.events.data.map(function(event) {
-				      return (<AMUIReact.ListItem>
-				      <div className="am-cf">
-				      <div className="am-fl">{event.send_user}:</div>
-				      <div className="am-fl" dangerouslySetInnerHTML={{ __html: event.message}} ></div>
-				      </div>
-				    	  </AMUIReact.ListItem>)
+					  var class1="am-comment am-comment-flip am-comment-secondary";
+					  if(revice_useruuid==event.send_useruuid){
+						  class1="am-comment";
+					  }
+				      return (
+				    		  <li className={class1}>
+				    		  	<a href="javascript:void(0);" >
+				    		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+				    		  		</a>
+				    		  		 <div className="am-comment-main">
+				    		  		 <header className="am-comment-hd">
+				    		  	      <div className="am-comment-meta">
+				    		  	        <a href="#link-to-user" className="am-comment-author">{event.send_user}</a>
+				    		  	        发送于 <time>{event.create_time}</time>
+				    		  	      </div>
+				    		  	    </header>
+				    		  	  <div className="am-comment-bd">
+				    		  	 <div dangerouslySetInnerHTML={{__html:event.message}}></div>
+				    		  	 </div>
+				    		  	    </div>
+							  </li>
+							  )
 				  })}
-				    </div>				   
+
+				  
+				</ul>
+				 
 		  );
 		}
 })
@@ -1724,22 +1746,71 @@ var Classnews_show = React.createClass({
 		  var  o = this.props.event;
 		  if(!o.dianzanList)o.dianzanList=[];
 		  if(!o.imgsList)o.imgsList=[];
+		  if(!o.create_img)G_def_headImgPath;
+		  
 	  return (
 			  <div>
-			  <AMUIReact.Article
-			    meta={o.create_user+" | "+Store.getClassNameByUuid(o.classuuid)+" | "+o.update_time+" | 阅读"+o.count+"次"}>
-			 <Common_mg_big_fn  imgsList={o.imgsList} />
-			  <div dangerouslySetInnerHTML={{__html:o.content}}></div>
-			   </AMUIReact.Article>	
-			  <Common_Dianzan_show uuid={o.uuid} type={0} />
-			  <Classnews_reply_list uuid={o.uuid}  type={0}/>
+			  <article className="am-comment am-margin-xs">
+			  <a href="javascript:void(0);">
+			    <img src={o.create_img}  className="am-comment-avatar" width="48" height="48"/>
+			  </a>
+
+			  <div className="am-comment-main">
+			    <header className="am-comment-hd">
+			      <div className="am-comment-meta">
+			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
+			        发表于 <time>{o.update_time}</time>
+			      </div>
+			    </header>
+			    <div className="am-comment-bd">
+			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
+			    	<Common_mg_big_fn  imgsList={o.imgsList} />
+			    </div>
+			    	<footer className="am-comment-footer">
+			    	<div className="am-comment-actions">
+			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+			    	</div>
+			    	</footer>
+			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+			    	<ul className="am-comments-list">
+					  <Classnews_reply_list uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+			    	</ul>
+			     </div>
+			</article>
+			 
 			    </div>		   
 	  );
 	}
 	}); 
 
+
+
 /*
- * 互动里面单独的评论模板
+ * 1.2互动里面单独的评论模板-item
+ * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+ * 把评论模板插入空Div里面
+ * 
+ * */
+var Classnews_reply_list_listshow = React.createClass({ 	
+render: function() {
+  return (
+		  <div>
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		  <li className="am-comment">
+		    		  <span className="am-comment-author">{event.create_user+":"}</span>
+				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
+		    		  </li>
+		    		  )
+		  })}
+		
+		    </div>		   
+  );
+}
+}); 
+/*
+ * 1.1互动里面单独的评论模板
  * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
  * 把评论模板插入空Div里面
  * 
@@ -1751,11 +1822,14 @@ var Classnews_reply_list = React.createClass({
 	
 	
 	componentDidMount:function(){
+		var that=this;
+		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
 		this.load_more_data();
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -1771,16 +1845,12 @@ var Classnews_reply_list = React.createClass({
 		
 		$("#"+this.div_reply_save_id).html("");
 	},
-	div_reply_save_id:"btn_reply_save",
-	btn_reply_save:function(){
-		
-		
+	btn_reply_show:function(){
 		React.render(React.createElement(Classnews_reply_save,
 				{uuid:this.props.uuid,
 			parentThis:this,
 			type:this.props.type
-			})
-				, document.getElementById(this.div_reply_save_id));
+			}), document.getElementById(this.div_reply_save_id));
 	},
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -1788,14 +1858,17 @@ render: function() {
 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
   return (
-		  <div className="G_reply">
-		   <h4>评论</h4>
-		   <div id={this.classnewsreply_list_div}>
-		   </div>
-			<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>		
-			<button  type="button"  onClick={this.btn_reply_save.bind(this)}  className="am-btn am-btn-primary">评论</button>
-			<div id={this.div_reply_save_id}>			</div>
+		  
+		  <div className="am-comment-bd am-comment-flip">
+		  <div id={this.div_reply_save_id}>			</div>
+		    <div id={this.classnewsreply_list_div}></div>
+		    <button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>		
+			
 			</div>
+		 
+		
+		
+		
 		   
   );
 }
@@ -1808,11 +1881,12 @@ render: function() {
  * */
 var Classnews_reply_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
+	form_id:"editClassnewsreplyForm",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		common_ajax_reply_save(function(){
 			that.refreshReplyList();		
-		})
+		},this.form_id);
 	
 	},
 	componentDidMount:function(){
@@ -1820,12 +1894,13 @@ var Classnews_reply_save = React.createClass({
 	},
 render: function() {
 	this.classnews_content="classnews_content_replay"+this.props.uuid;
+	this.form_id="editClassnewsreplyForm"+this.props.uuid;
 return (
-		   <form id="editClassnewsreplyForm" method="post" className="am-form">
+		   <form id={this.form_id} method="post" className="am-form">
 			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
 			<input type="hidden" name="uuid" />
 			<input type="hidden" name="type"  value={this.props.uuid}/>						
-			<AMR_Input id={this.classnews_content} type="textarea" rows="10" label="我要回复" placeholder="填写内容" name="content" />
+			<AMR_Input id={this.classnews_content} type="textarea" rows="3" label="我要回复" placeholder="填写内容" name="content" />
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 		    </form>	   
 );
@@ -2091,6 +2166,7 @@ var Announcements_Div_list = React.createClass({
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -2524,6 +2600,7 @@ var ParentContactByMyStudent_message_list = React.createClass({
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -2588,17 +2665,38 @@ render: function() {
  * */
 var Message_queryByParent_listpage =React.createClass({	 
 	render: function() {
+		var revice_useruuid=this.props.revice_useruuid;
 	  return (
-			  <div>
-			  {this.props.events.data.map(function(event) {			      return (<AMUIReact.ListItem>
-			      <div className="am-cf">
-			      <div className="am-fl">{event.send_user}:</div>
-			      <div className="am-fl" dangerouslySetInnerHTML={{ __html: event.message}} ></div>
-			      </div>
-			    	  </AMUIReact.ListItem>)
+			  
+			  <ul className="am-comments-list ">
+			  {this.props.events.data.map(function(event) {
+				  var class1="am-comment am-comment-flip am-comment-secondary";
+				  if(revice_useruuid==event.send_useruuid){
+					  class1="am-comment";
+				  }
+			      return (
+			    		  <li className={class1}>
+			    		  	<a href="javascript:void(0);" >
+			    		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+			    		  		</a>
+			    		  		 <div className="am-comment-main">
+			    		  		 <header className="am-comment-hd">
+			    		  	      <div className="am-comment-meta">
+			    		  	        <a href="#link-to-user" className="am-comment-author">{event.send_user}</a>
+			    		  	        发送于 <time>{event.create_time}</time>
+			    		  	      </div>
+			    		  	    </header>
+			    		  	  <div className="am-comment-bd">
+			    		  	 <div dangerouslySetInnerHTML={{__html:event.message}}></div>
+			    		  	 </div>
+			    		  	    </div>
+						  </li>
+						  )
 			  })}
-			    </div>
-			   
+
+			  
+			</ul>
+			 
 	  );
 	}
 })
@@ -2637,6 +2735,7 @@ var Announcements_good_Div_list = React.createClass({
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
@@ -3050,6 +3149,7 @@ var rect_favorites_Div_list = React.createClass({
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
 		if(re_data.totalCount<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{

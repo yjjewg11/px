@@ -1,3 +1,12 @@
+@media only screen and (min-width:1025px) {
+body{
+	margin-left: 150px;
+	margin-right:150px;
+}
+
+}
+
+
 .G_div_msg_pop{
 position:absolute; 
 height:60px; 
@@ -79,6 +88,14 @@ z-index: 9999;
 
 .cls{clear:both;height:0px;}
 
+/*点赞*/
+.px-icon-hasdianzan  {
+color: red;
+}
+/*字体按钮放大*/
+.px_font_size_click  {
+	font-size: 24px;
+}
 
 /*评论*/
 .G_reply h4{ height:24px; color:#e6268c; border-bottom:1px solid #000;}

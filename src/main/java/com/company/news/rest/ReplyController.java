@@ -87,8 +87,17 @@ public class ReplyController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
+			User user=this.getUserInfoBySession(request);
+			String user_uuid=null;
+			if(user!=null){
+				user_uuid=user.getUuid();
+			}
 			PaginationData pData=this.getPaginationDataByRequest(request);
+			
 			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData);
+			
+			classNewsReplyService.warpVoList(pageQueryResult.getData(), user_uuid);
+			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";

@@ -29,7 +29,13 @@ var G_def_headImgPath=hostUrlCDN+"i/header.png";
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
 G_imgPath="";
 
-
+/**
+ * 获取头像,没有则取默认
+ */
+var G_getHeadImg=function(s){
+	if(s)return s;
+	return G_def_headImgPath;
+}
 
 
 Date.prototype.format = function(format) {
