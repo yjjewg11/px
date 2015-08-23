@@ -116,7 +116,7 @@ public abstract class AbstractServcice {
 				"select create_user from ClassNewsDianzanOfShow where newsuuid=?", newsuuid);
 		
 		
-		Boolean canDianzan=false;
+		Boolean canDianzan=true;
 		if(list.size()>0&&StringUtils.isNotBlank(cur_user_uuid)){
 			canDianzan=this.canDianzan(newsuuid,cur_user_uuid);
 		}

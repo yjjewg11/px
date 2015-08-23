@@ -2082,13 +2082,20 @@ render: function() {
 	  <hr/>	  
 	  <div className="am-form-group">
 		<form id="editGroupForm" method="post" className="am-form">
-        <div className= "am-margin-left-sm">
-	  <AMUIReact.Selected id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	  <AMUIReact.Selected id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
+        <div className= "am-cf">
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
 	  </div>
-	  <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="学生姓名"/>	  
-	  <button type="button"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+	  
+	  <div className="am-form-group am-margin-top-xs">
+	  	<div className="am-u-sm-6">
+	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+	  	</div>
+	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+	   </div>
 	  </form>
+	  
+	  
 	  </div>	  
       <AMR_Table {...this.props}>  
         <thead> 
@@ -2220,11 +2227,13 @@ var Announcements_mylist_div = React.createClass({
 		  {this.props.events.data.map(function(event) {
 		      return (
 		    		<li className="am-g am-list-item-desced">
-		  		    <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>{Vo.announce_type(event.type)}</a>		  		        
-		  		    <div className="am-list-item-text">{event.title}</div>    
-		  		    <div className="am-list-date">{event.create_time}
-		  	        <br/>
-		  	       {Store.getGroupNameByUuid(event.groupuuid)}
+		  		    <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>
+		  		  {event.title}       </a>		
+		  		    <div>
+		  		  <div className="am-list-item-text am-u-md-8">{event.title}</div> 
+		  		  {Vo.announce_type(event.type)}| {Store.getGroupNameByUuid(event.groupuuid)}
+			  		 
+		  		    <div className="am-list-date  am-u-md-4">{event.create_time}</div>
 		  	        </div>
 		  		    </li>
 		    		  )
@@ -3110,12 +3119,28 @@ var ECharts_Div = React.createClass({
 	    return (
 	    		<div>
 	    		 <form id="editEchartForm" method="post" className="am-form">
-	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
-	    		 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
-	    		 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
-	    		 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
-	    	  		
+	    		 <div>
+		    		 <div className="am-u-lg-3 am-u-md-6">
+		    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+		    		 
+		    		 </div>
+					<div className="am-u-lg-3 am-u-md-6">
+								    		 
+							 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+		    		 </div>
+					 <div className="am-u-lg-3 am-u-md-6">
+						    		 
+					 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+		    		 </div>
+					<div className="am-u-lg-3 am-u-md-6">
+						 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+		    		 
+		    		 </div>
+	    		 
+	    		 </div>
+	    		 <div className="am-cf"></div>
 	    		 </form>
+	    		 
 	    		 <div id="main_ECharts" className="ECharts"></div>
 	    		</div>
 

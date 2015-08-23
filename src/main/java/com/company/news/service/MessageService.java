@@ -76,11 +76,11 @@ public class MessageService extends AbstractServcice {
 		
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(message);
+		String msg_title=message.getSend_user();
 		if(SystemConstants.Message_type_1.equals(message.getType())){
-			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageTeaher, message.getSend_useruuid(), user.getUuid(), message.getTitle());
-			
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageTeaher, message.getSend_useruuid(), user.getUuid(), msg_title);
 		}else{
-			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageKD, message.getSend_useruuid(), user.getUuid(), message.getTitle());
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageKD, message.getSend_useruuid(), user.getUuid(),msg_title);
 			
 		}
 		
