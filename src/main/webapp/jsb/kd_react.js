@@ -2223,21 +2223,23 @@ var Announcements_mylist_div = React.createClass({displayName: "Announcements_my
     event.disabled ? 'am-disabled' : '';
 
   return (
+     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+     React.createElement("div", {className: "am-list-news-bd"}, 
      React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
 		      return (
-		    		React.createElement("li", {className: "am-g am-list-item-desced"}, 
+		    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
 		  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}, 
-		  		  event.title, "       "), 		
-		  		    React.createElement("div", null, 
-		  		  React.createElement("div", {className: "am-list-item-text am-u-md-8"}, event.title), 
-		  		  Vo.announce_type(event.type), "| ", Store.getGroupNameByUuid(event.groupuuid), 
-			  		 
-		  		    React.createElement("div", {className: "am-list-date  am-u-md-4"}, event.create_time)
-		  	        )
+		  		  event.title
+		  		  ), 		
+		  		  React.createElement("div", {className: "am-list-item-text"}, 
+		  		  Vo.announce_type(event.type), "| ", Store.getGroupNameByUuid(event.groupuuid), "|", event.create_time
+		  		  )
 		  		    )
 		    		  )
-		         })		
+		         })	
+		  )
+		  )
     )  		  
   );
 }
@@ -2805,25 +2807,26 @@ var Announcements_mygoodlist_div = React.createClass({displayName: "Announcement
 	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
     event.disabled ? 'am-disabled' : '';
-
-  return (
-     React.createElement("ul", {className: "am-list"}, 
-		  this.props.events.data.map(function(event) {
-		      return (
-		    		  
-		   React.createElement("li", {className: "am-g am-list-item-desced"}, 
-		      React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, Vo.announce_type(event.type)), 
-		      React.createElement("div", {className: "am-list-item-text"}, event.title), 
-		        React.createElement("div", {className: "am-list-date"}, event.create_time, 
-  		        React.createElement("br", null), 
-  		       Store.getGroupNameByUuid(event.groupuuid), "-", event.create_user
-  		      )
-		    )	
-		    
-		      )
-		  })		
-    )  		  
-  );
+	    return (
+	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+	    	     React.createElement("div", {className: "am-list-news-bd"}, 
+	    	     React.createElement("ul", {className: "am-list"}, 
+	    			  this.props.events.data.map(function(event) {
+	    			      return (
+	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
+	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
+	    			  		  event.title
+	    			  		  ), 		
+	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
+	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_user, "|", event.create_time
+	    			  		  )
+	    			  		    )
+	    			    		  )
+	    			         })	
+	    			  )
+	    			  )
+	    	    )  		  
+	    	  );
 }
 }); 
 

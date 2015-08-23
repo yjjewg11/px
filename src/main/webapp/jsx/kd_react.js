@@ -2223,22 +2223,24 @@ var Announcements_mylist_div = React.createClass({
     event.disabled ? 'am-disabled' : '';
 
   return (
+     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+     <div className="am-list-news-bd">
      <ul className="am-list">
 		  {this.props.events.data.map(function(event) {
 		      return (
-		    		<li className="am-g am-list-item-desced">
+		    		<li className="am-g am-list-item-dated">
 		  		    <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>
-		  		  {event.title}       </a>		
-		  		    <div>
-		  		  <div className="am-list-item-text am-u-md-8">{event.title}</div> 
-		  		  {Vo.announce_type(event.type)}| {Store.getGroupNameByUuid(event.groupuuid)}
-			  		 
-		  		    <div className="am-list-date  am-u-md-4">{event.create_time}</div>
-		  	        </div>
+		  		  {event.title} 
+		  		  </a>		
+		  		  <div className="am-list-item-text">
+		  		  {Vo.announce_type(event.type)}| {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
+		  		  </div> 
 		  		    </li>
 		    		  )
-		         })}		
-    </ul>  		  
+		         })}	
+		  </ul> 
+		  </div> 
+    </div>  		  
   );
 }
 }); 
@@ -2805,25 +2807,26 @@ var Announcements_mygoodlist_div = React.createClass({
 	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
     event.disabled ? 'am-disabled' : '';
-
-  return (
-     <ul className="am-list">
-		  {this.props.events.data.map(function(event) {
-		      return (
-		    		  
-		   <li className="am-g am-list-item-desced">
-		      <a href="javascript:void(0);" className="am-list-item-hd "onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>{Vo.announce_type(event.type)}</a>
-		      <div className="am-list-item-text">{event.title}</div>
-		        <div className="am-list-date">{event.create_time}
-  		        <br/>
-  		       {Store.getGroupNameByUuid(event.groupuuid)}-{event.create_user}
-  		      </div>
-		    </li>	
-		    
-		      )
-		  })}		
-    </ul>  		  
-  );
+	    return (
+	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+	    	     <div className="am-list-news-bd">
+	    	     <ul className="am-list">
+	    			  {this.props.events.data.map(function(event) {
+	    			      return (
+	    			    		<li className="am-g am-list-item-dated">
+	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
+	    			  		  {event.title} 
+	    			  		  </a>		
+	    			  		  <div className="am-list-item-text">
+	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+	    			  		  </div> 
+	    			  		    </li>
+	    			    		  )
+	    			         })}	
+	    			  </ul> 
+	    			  </div> 
+	    	    </div>  		  
+	    	  );
 }
 }); 
 
