@@ -538,36 +538,6 @@ var Upload_headImg = React.createClass({
 });
        
        
-//end uploadImg
-
-
-//点赞模板.点赞显示+点赞按钮一起 
-/*
- *
- * 
- *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
- **/
-var Common_Dianzan_show = React.createClass({ 
-	 dianzansave_callback:function(canDianzan){
-		 this.forceUpdate();
-	 },
-render: function() {	
-	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
-	 var showStr="";
-	 if(dianzanObject.names){
-		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
-	 }
-  return (
-		   <div id="dianzan" className="am-margin-left-sm" >
-			{showStr}    
-		   <a  href="javascript:void(0);"><img  src={dianzanObject.canDianzan?hostUrlCDN+"i/dianzan1.png":hostUrlCDN+"i/quxiaodianzhan.png"}  onClick={common_ajax_dianzan_save.bind(this,this.props.uuid,this.props.type,dianzanObject.canDianzan,this.dianzansave_callback)}/> 
-		   </a>
-		   </div>
-
-
-  );
-}
-}); 
 //点赞模板2,点赞显示与点赞按钮分离,传入点赞按钮id
 /*
  * 
@@ -697,6 +667,10 @@ render: function() {
   );
 }
 }); 
+
+
+
+
 //评论模板
 var Common_reply_list = React.createClass({ 
 	load_more_btn_id:"load_more_",
@@ -750,6 +724,9 @@ var Common_reply_save = React.createClass({
 		
 		})
 	},
+	componentDidMount:function(){
+		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
 render: function() {
   return (
 		   <form id="editClassnewsreplyForm" method="post" className="am-form">
@@ -758,7 +735,7 @@ render: function() {
 			<input type="hidden" name="type"  value={this.props.uuid}/>
 			
 			
-			<AMR_Input id="classnews_content_replay" type="textarea" rows="2" label="我要评论" placeholder="填写内容" name="content" />
+			<AMR_Input id="classnews_content_replay" type="textarea" rows="4" label="我要评论" placeholder="填写内容" name="content" />
 
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>
 		      

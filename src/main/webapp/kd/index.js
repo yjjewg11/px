@@ -178,7 +178,7 @@ function login_affter_init(){
 	                            "subMenu": [
 	                                        {
 	                                            "link": "##",
-	                                            "fn":menu_classnews_list_fn,
+	                                            "fn":function(){ajax_class_announce_div(1);},
 	                                            "title": "班级互动"
 	                                          },
 	                                          
@@ -367,7 +367,7 @@ function menu_dohome(){
 		                    	  },
 			                   	  { 
 			                    	    "img": hostUrl+"i/meirirenwu.png",
-			                    	    "link": "###",
+			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
 			                    	    "title": "每日任务"
 			                    	  }
 	                    	  ];
@@ -383,7 +383,7 @@ function menu_kd_group_reg_fn(){
 };
 
 //±±±±±±±±±±±±±±±±±±±±标头±±±±±±±±±±±±±±±±±±±±
-//@Queue.push()方法Push
+//@Queue.push()方法Push  
 //实现页面缓存然后可以实现回退功能；
 /*
  *<查看即时消息>
@@ -567,7 +567,15 @@ function menu_favorites_push_fn() {
 function menu_queryCountMsgByParents_message_fn() {
 	ajax_queryCountMsgByParents_message();
 };
-
+/*
+ * (首页)每日任务
+ * @ menu_teacherDailyTask_fn
+ * */
+function menu_teacherDailyTask_fn() {
+	Queue.push(menu_teacherDailyTask_fn,"每日任务");
+//	   Queue.push(function(){ajax_queryCountMsgByParents_message();},"我的信箱");
+	ajax_teacherDailyTask();
+};
 //老师注册
 function menu_userinfo_reg_fn(){	
 	ajax_loaddata_group_list_for_userinfo_reg();	
