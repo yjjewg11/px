@@ -2081,13 +2081,20 @@ render: function() {
 	  React.createElement("hr", null), 	  
 	  React.createElement("div", {className: "am-form-group"}, 
 		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-        React.createElement("div", {className: "am-margin-left-sm"}, 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+        React.createElement("div", {className: "am-cf"}, 
+	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
 	  ), 
-	  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "学生姓名"}), 	  
-	  React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
+	  
+	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
+	  	React.createElement("div", {className: "am-u-sm-6"}, 
+	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
+	  	), 
+	  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
+	   )
 	  )
+	  
+	  
 	  ), 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
@@ -2215,19 +2222,23 @@ var Announcements_mylist_div = React.createClass({displayName: "Announcements_my
     event.disabled ? 'am-disabled' : '';
 
   return (
+     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+     React.createElement("div", {className: "am-list-news-bd"}, 
      React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
 		      return (
-		    		React.createElement("li", {className: "am-g am-list-item-desced"}, 
-		  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}, Vo.announce_type(event.type)), 		  		        
-		  		    React.createElement("div", {className: "am-list-item-text"}, event.title), 
-		  		    React.createElement("div", {className: "am-list-date"}, event.create_time, 
-		  	        React.createElement("br", null), 
-		  	       Store.getGroupNameByUuid(event.groupuuid)
-		  	        )
+		    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
+		  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}, 
+		  		  event.title
+		  		  ), 		
+		  		  React.createElement("div", {className: "am-list-item-text"}, 
+		  		  Vo.announce_type(event.type), "| ", Store.getGroupNameByUuid(event.groupuuid), "|", event.create_time
+		  		  )
 		  		    )
 		    		  )
-		         })		
+		         })	
+		  )
+		  )
     )  		  
   );
 }
@@ -2795,25 +2806,26 @@ var Announcements_mygoodlist_div = React.createClass({displayName: "Announcement
 	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
     event.disabled ? 'am-disabled' : '';
-
-  return (
-     React.createElement("ul", {className: "am-list"}, 
-		  this.props.events.data.map(function(event) {
-		      return (
-		    		  
-		   React.createElement("li", {className: "am-g am-list-item-desced"}, 
-		      React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd ", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, Vo.announce_type(event.type)), 
-		      React.createElement("div", {className: "am-list-item-text"}, event.title), 
-		        React.createElement("div", {className: "am-list-date"}, event.create_time, 
-  		        React.createElement("br", null), 
-  		       Store.getGroupNameByUuid(event.groupuuid), "-", event.create_user
-  		      )
-		    )	
-		    
-		      )
-		  })		
-    )  		  
-  );
+	    return (
+	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+	    	     React.createElement("div", {className: "am-list-news-bd"}, 
+	    	     React.createElement("ul", {className: "am-list"}, 
+	    			  this.props.events.data.map(function(event) {
+	    			      return (
+	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
+	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
+	    			  		  event.title
+	    			  		  ), 		
+	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
+	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_user, "|", event.create_time
+	    			  		  )
+	    			  		    )
+	    			    		  )
+	    			         })	
+	    			  )
+	    			  )
+	    	    )  		  
+	    	  );
 }
 }); 
 
@@ -3109,12 +3121,28 @@ var ECharts_Div = React.createClass({displayName: "ECharts_Div",
 	    return (
 	    		React.createElement("div", null, 
 	    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
-	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"}), 
-	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 
-	    		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange}), 
-	    		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
-	    	  		
+	    		 React.createElement("div", null, 
+		    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+		    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
+		    		 
+		    		 ), 
+					React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+								    		 
+							 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+		    		 ), 
+					 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+						    		 
+					 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
+		    		 ), 
+					React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+						 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+		    		 
+		    		 )
+	    		 
 	    		 ), 
+	    		 React.createElement("div", {className: "am-cf"})
+	    		 ), 
+	    		 
 	    		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
 	    		)
 
