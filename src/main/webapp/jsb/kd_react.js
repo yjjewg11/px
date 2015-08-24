@@ -487,7 +487,7 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
     	      React.createElement("br", null), 
     	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
-    		  	G_upload_img_Div, 
+    		  	G_get_upload_img_Div(), 
     	      React.createElement("button", {type: "button", onClick: ajax_group_save, className: "am-btn am-btn-primary"}, "提交")
     	     )
     	     )
@@ -661,7 +661,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_upload_img_Div, 
+ 		G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: ajax_announcements_save, className: "am-btn am-btn-primary"}, "提交")
   		  )
   	     )
@@ -2019,7 +2019,7 @@ return (
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-  			  G_upload_img_Div, 
+  			  G_get_upload_img_Div(), 
 		      React.createElement("button", {type: "button", onClick: ajax_classnews_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 	     )
@@ -2919,7 +2919,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_upload_img_Div, 
+ 		G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
   		  )
   	     )

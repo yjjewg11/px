@@ -1,5 +1,6 @@
 /**
  * 公布接口,给手机调用
+ * G_jsCallBack.setIosApp();//设置为ios调用模式,给ios使用.
  * 调用选择头像图片,裁剪和调整方向,回调方法.
  * G_jsCallBack.selectHeadPic_callback(base64);
  * 
@@ -14,7 +15,14 @@
  * Store.getCurGroup().uuid
  */
 var G_jsCallBack={
-		//Queue.doBackFN()
+	/**
+	 * ios_app特殊处理.
+	 */
+	setIosApp:function(){
+		G_CallIosFN.init();
+		return true;
+		
+	},
 	/**
 	 * 老师通讯录
 	 * @param base64
@@ -111,7 +119,7 @@ var G_CallPhoneFN={
 		 * @returns {Boolean}
 		 */
 		isPhoneApp:function(){
-			if(window.JavaScriptCall){
+			if(window.JavaScriptCall||G_CallIosFN.isIos){
 				return true;
 			}
 			return false;
@@ -155,6 +163,11 @@ var G_CallPhoneFN={
 		 */
 		selectImgPic:function(){
 			try{
+				
+				if(G_CallIosFN.isIos){
+					G_CallIosFN.selectImgPic();
+					return true;
+				}
 				if(window.JavaScriptCall){
 					JavaScriptCall.selectImgPic();
 					return true;
@@ -171,6 +184,11 @@ var G_CallPhoneFN={
 	 */
 	selectHeadPic:function(){
 		try{
+			
+			if(G_CallIosFN.isIos){
+				G_CallIosFN.selectHeadPic();
+				return true;
+			}
 			if(window.JavaScriptCall){
 				JavaScriptCall.selectHeadPic();
 				return true;
@@ -186,6 +204,11 @@ var G_CallPhoneFN={
 	 */
 	jsessionToPhone:function(sessionid){
 		try{
+			
+			if(G_CallIosFN.isIos){
+				G_CallIosFN.jsessionToPhone(sessionid);
+				return true;
+			}
 			if(window.JavaScriptCall){
 				JavaScriptCall.jsessionToPhone(sessionid);
 				return true;

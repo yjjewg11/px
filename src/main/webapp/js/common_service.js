@@ -98,7 +98,7 @@ w_img_upload_nocut={
 		base64:null,
 		bind_onchange:function(fileId,callbackFN){
 			w_img_upload_nocut.callbackFN=callbackFN;
-			if(window.JavaScriptCall){
+			if(G_CallPhoneFN.isPhoneApp()){
 				$(fileId).bind("click", function(){
 					//优先调用手机
 	            	G_CallPhoneFN.selectImgPic();

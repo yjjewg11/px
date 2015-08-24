@@ -129,6 +129,7 @@ public class ClassNewsController extends AbstractRESTController {
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			User user = this.getUserInfoBySession(request);
+			pData.setPageSize(5);
 			PageQueryResult pageQueryResult = classNewsService.query(user,"myByTeacher",
 					request.getParameter("classuuid"), pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
