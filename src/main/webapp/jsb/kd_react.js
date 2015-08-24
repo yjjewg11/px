@@ -1708,7 +1708,6 @@ render: function() {
 	var totalCount=this.props.events.totalCount;
 	var pageSize=this.props.events.pageSize;
 	var maxPageNo=Math.floor(totalCount/pageSize)+1;
-	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
 	var that=this;
 	var pre_disabled=g_classnews_pageNo_point<2;
 	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
@@ -3262,3 +3261,73 @@ var My_student_tel2 =React.createClass({displayName: "My_student_tel2",
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+//——————————————————————————每日任务<绘制>——————————————————————————  
+/*
+ * <每日任务>服务器请求后绘制处理方法；
+ * 
+ * */
+var rect_teacherDailyTask = React.createClass({displayName: "rect_teacherDailyTask",
+render: function() {
+    return (
+    React.createElement("div", null, 
+	  React.createElement("hr", null), 	  
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "每日任务"), 
+            React.createElement("th", null, "任务类型"), 
+            React.createElement("th", null, "任务状态"), 
+            React.createElement("th", null, "积分")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Query_teacherDailyTask, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * <每日任务>在表单上绘制详细内容;
+ * @点击后调用即时消息(舞台跳转)
+ * */
+var Query_teacherDailyTask = React.createClass({displayName: "Query_teacherDailyTask", 
+	btn_students_list_click:function(type){
+		ajax_State_style(type);
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+	    return (
+	      React.createElement("tr", {className: className}, 
+	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.type)}, event.title)), 
+	        React.createElement("td", null, common_teacherDailyTask_type(event.type)), 
+	        React.createElement("td", null, common_teacherDailyTask_status(event.status)), 
+	        React.createElement("td", null, 0)
+	      ) 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+

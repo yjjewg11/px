@@ -455,8 +455,9 @@ function ajax_State_style(type,reluuid,group_uuid){
 	case 5:                                          
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
-	case 99:                                          
-		   ajax_classnews_list(reluuid);        //(班级互动;
+	case 99:     
+		   menu_classnews_list_fn();
+		   //ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	case 11:                                          
 		   ajax_parentContactByMyStudent_message_list(reluuid,"家长通讯录-来自学生家长的信息");   //家长通讯录信息(未验证功能);
@@ -1128,10 +1129,11 @@ G_ajax_abs_save(opt);
     	}
     });
     	$.AMUI.progress.start();
-        var url = hostUrl + "rest/message/queryByParentAndLeader.json?group_uuid="+send_useruuid+"&parent_uuid="+revice_useruuid;
+        var url = hostUrl + "rest/message/queryByParentAndLeader.json";
     	$.ajax({
     		type : "GET",
     		url : url,
+    		data : {group_uuid:send_useruuid,parent_uuid:revice_useruuid,pageNo:pageNo},
     		dataType : "json",
     		 async: false,
     		success : function(data) {
@@ -2759,4 +2761,47 @@ function react_ajax_favorites_show(type,reluuid){
  	 G_ajax_abs_save(opt);
  }    
 
+ 
+//———————————————————————————————————每日任务—————————————————————————   
+ 
 
+ /*
+  * <每日任务>
+  * 
+  * */
+  function ajax_teacherDailyTask(){ 
+ 	   	$.AMUI.progress.start();
+ 	       var url = hostUrl + "rest/teacherDailyTask/queryByDay.json";
+ 	   	$.ajax({
+ 	   		type : "GET",
+ 	   		url : url,
+ 	   		dataType : "json",
+ 	   		 async: true,
+ 	   		success : function(data) {
+ 	   			$.AMUI.progress.done();
+ 	   			if (data.ResMsg.status == "success") {
+ 					React.render(React.createElement(rect_teacherDailyTask, {
+						events: data.list,
+ 						responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 						
+ 					}), document.getElementById('div_body'));
+ 	   			} else {
+ 	   				alert("加载数据失败："+data.ResMsg.message);
+ 	   			}
+ 	   		}
+ 	   	});
+ 	   };
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

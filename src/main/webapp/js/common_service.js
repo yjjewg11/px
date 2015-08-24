@@ -645,3 +645,82 @@ function commons_ajax_favorites_push(title,type,reluuid,url){
 			 G_ajax_abs_save(opt);
 	
 };
+
+
+
+
+
+
+
+
+/*
+ * 每日任务
+ * 模块类型名字（公用方法模板）
+ */
+function common_teacherDailyTask_type(type){
+	var teacherDailyTask_name;
+	 switch (type)   
+	   {
+  case 0:     
+	      teacherDailyTask_name="公告信息"; 
+	       break; 
+  case 1:    
+	      teacherDailyTask_name="老师公告";  
+           break;   
+  case 3:   
+	      teacherDailyTask_name="精品文章"; 
+           break;
+	case 4:  
+	      teacherDailyTask_name="招生计划"; 
+	       break;
+  case 7:
+	  	  teacherDailyTask_name="课程表"; 
+	       break;
+	case 6:  
+	      teacherDailyTask_name="食谱"; 
+	       break;
+	case 5:
+		  teacherDailyTask_name="精品课程"; 
+           break;
+	case 99:
+		  teacherDailyTask_name="班级互动"; 
+	       break;
+	case 11:
+		  teacherDailyTask_name="家长通讯录"; 
+	       break;
+	case 12: 
+		  teacherDailyTask_name="园长信箱"; 
+	       break;
+	case 13:  
+		  teacherDailyTask_name="签到记录"; 
+	       break;
+	case 10:
+		  teacherDailyTask_name="Case 10"; 
+	       break;
+	   default:       
+		   teacherDailyTask_name="此信息为非法信息，请联系管理员！";
+	       Styte.out.println("此信息为非法信息，请联系管理员！");
+	       break;
+	   }
+	 return teacherDailyTask_name; 	
+}
+
+/*
+ * 每日任务
+ * 任务完成状态（公用方法模板）
+ */
+function common_teacherDailyTask_status(status){
+	var teacherDailyTask_status;
+        if(status==0){
+        	teacherDailyTask_status="已完成";
+        }else if(status==1){
+        	teacherDailyTask_status="待完成";
+        }else if(status==2){
+        	teacherDailyTask_status="已过期";
+        }else{
+        	teacherDailyTask_status="有问题的状态";
+        } 
+	
+	 return teacherDailyTask_status; 	
+}
+

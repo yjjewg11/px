@@ -1708,7 +1708,6 @@ render: function() {
 	var totalCount=this.props.events.totalCount;
 	var pageSize=this.props.events.pageSize;
 	var maxPageNo=Math.floor(totalCount/pageSize)+1;
-	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
 	var that=this;
 	var pre_disabled=g_classnews_pageNo_point<2;
 	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
@@ -3262,3 +3261,73 @@ var My_student_tel2 =React.createClass({
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+//——————————————————————————每日任务<绘制>——————————————————————————  
+/*
+ * <每日任务>服务器请求后绘制处理方法；
+ * 
+ * */
+var rect_teacherDailyTask = React.createClass({
+render: function() {
+    return (
+    <div>
+	  <hr/>	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>每日任务</th>
+            <th>任务类型</th>
+            <th>任务状态</th>
+            <th>积分</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_teacherDailyTask key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * <每日任务>在表单上绘制详细内容;
+ * @点击后调用即时消息(舞台跳转)
+ * */
+var Query_teacherDailyTask = React.createClass({ 
+	btn_students_list_click:function(type){
+		ajax_State_style(type);
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+	    return (
+	      <tr className={className} >
+	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.type)}>{event.title}</a></td>
+	        <td>{common_teacherDailyTask_type(event.type)}</td>
+	        <td>{common_teacherDailyTask_status(event.status)}</td>
+	        <td>{0}</td>
+	      </tr> 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
