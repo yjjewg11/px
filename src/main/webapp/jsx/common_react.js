@@ -7,9 +7,13 @@ var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
 var PxInput=AMUIReact.Input;
 
-var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" />
-if(window.JavaScriptCall){
-	G_upload_img_Div=<AMR_Button amStyle="primary"  id="file_img_upload" round>上传图片</AMR_Button>
+
+var G_get_upload_img_Div=function(){
+	var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" />
+	if(G_CallPhoneFN.isPhoneApp()){
+		G_upload_img_Div=<AMR_Button amStyle="primary"  id="file_img_upload" round>上传图片</AMR_Button>
+	}
+	return G_upload_img_Div;
 }
 //userinfo
 var Userinfo_EventRow = React.createClass({ 

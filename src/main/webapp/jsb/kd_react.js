@@ -487,7 +487,7 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
     	      React.createElement("br", null), 
     	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
-    		  	G_upload_img_Div, 
+    		  	G_get_upload_img_Div(), 
     	      React.createElement("button", {type: "button", onClick: ajax_group_save, className: "am-btn am-btn-primary"}, "提交")
     	     )
     	     )
@@ -661,7 +661,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_upload_img_Div, 
+ 		G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: ajax_announcements_save, className: "am-btn am-btn-primary"}, "提交")
   		  )
   	     )
@@ -1657,49 +1657,12 @@ render: function() {
 
 
 
-
-
 //——————————————————————————班级互动<绘制>——————————————————————————
-/* 
- * <班级互动>绘制舞台
- * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
- * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
- * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+/*
+ * <班级互动>列表框与下拉框和按钮绘制;
+ * @Classnews_EventRow:绘制列表详情;
  * */
-var Announcements_class_Div_list = React.createClass({displayName: "Announcements_class_Div_list", 
-	load_more_btn_id:"load_more_",
-	pageNo:1,
-	classnewsreply_list_div:"am-list-news-bd",
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
-	componentDidMount:function(){
-		this.load_more_data();
-	},
-	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
-	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
-	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
-	load_more_data:function(){
-		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
-	},
-	refresh_data:function(){
-//		classnewsreply_list_div 清除；
-//      load_more_data	重新绘制DIV；
-		this.forceUpdate();
-		this.pageNo=1;
-		$("#"+this.classnewsreply_list_div).html("");
-		this.load_more_data();
-		
-	},
+var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTable",
 	selectclass_uuid_val:null,
 	handleClick: function(m) {
 		if(m=="add"){
@@ -1725,56 +1688,57 @@ var Announcements_class_Div_list = React.createClass({displayName: "Announcement
 				}
 			  btn_click_classnews(m,{uuid:uuids});
 		 }
+		else if(m=="pre"){
+			 if(g_classnews_pageNo_point==1)return;
+			 ajax_classnews_list(g_classnews_classuuid,--g_classnews_pageNo_point);
+			 return;
+		 }else if(m=="next"){
+			 ajax_classnews_list(g_classnews_classuuid,++g_classnews_pageNo_point);
+			 return;
+		 }
+	  },	  
+	  handleChange_select_classnews_type:function(){
+		  ajax_classnews_list($('#select_classnews_type').val());
+	  },
+	  handleChange_selectclass_uuid:function(val){
+		  this.selectclass_uuid_val=val;
+		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
 render: function() {
-	this.load_more_btn_id="load_more_"+this.props.uuid;
-  return (			
-		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		  React.createElement(AMUIReact.ButtonToolbar, null, 
-		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动")
-		 ), 
-		  React.createElement("hr", null), 	  
-		    
-		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
-		  ), 
-		  
-		  React.createElement("div", {className: "am-list-news-ft"}, 
-		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
-		  )
-		  
-		  
-		  
-		)
-		  
-			
-  );
-}
-});
-/*
-* <班级互动>;
-* @Classnews_EventRow:绘制列表详情;
-* */
-var Classnews_EventsTable = React.createClass({displayName: "Classnews_EventsTable",	  
-render: function() {
+	var totalCount=this.props.events.totalCount;
+	var pageSize=this.props.events.pageSize;
+	var maxPageNo=Math.floor(totalCount/pageSize)+1;
+	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
 	var that=this;
+	var pre_disabled=g_classnews_pageNo_point<2;
+	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
 return (
 React.createElement("div", null, 
-  this.props.events.data.map(function(event) {
-    return (React.createElement(Classnews_show, {event: event}));
-  })
+React.createElement(AMUIReact.ButtonToolbar, null, 
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "发布互动")
+	 ), 
+	  React.createElement("hr", null), 	  
+	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this, "pre"), round: true}, "« 上一页"), 
+	  React.createElement("label", null, g_classnews_pageNo_point, "\\", maxPageNo), 
+	  React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this, "next"), round: true}, "下一页 »"), 
+
+    this.props.events.data.map(function(event) {
+      return (React.createElement(Classnews_show, {event: event}));
+    })
 )
 );
 }
 });
 /*
-* <班级互动>MAp详情绘制
-* var o = this.props.formdata;
-*/
+ * <班级互动>MAp详情绘制
+ * var o = this.props.formdata;
+ */
 var Classnews_show = React.createClass({displayName: "Classnews_show", 
 	handleClick_pinglun:function(val){
 		  this.selectclass_uuid_val=val;
 		  ajax_classnews_list(this.selectclass_uuid_val);
-	  },	  
+	  },
+	  
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
 		},
@@ -1823,14 +1787,14 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 
 
 /*
-* 1.2互动里面单独的评论模板-item
-* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
-* 把评论模板插入空Div里面
-* 
-* */
+ * 1.2互动里面单独的评论模板-item
+ * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+ * 把评论模板插入空Div里面
+ * 
+ * */
 var Classnews_reply_list_listshow = React.createClass({displayName: "Classnews_reply_list_listshow", 	
 render: function() {
-return (
+  return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
 		      return (
@@ -1842,15 +1806,15 @@ return (
 		  })
 		
 		    )		   
-);
+  );
 }
 }); 
 /*
-* 1.1互动里面单独的评论模板
-* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
-* 把评论模板插入空Div里面
-* 
-* */
+ * 1.1互动里面单独的评论模板
+ * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+ * 把评论模板插入空Div里面
+ * 
+ * */
 var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list", 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
@@ -1893,24 +1857,28 @@ render: function() {
 	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
-return (
+  return (
 		  
 		  React.createElement("div", {className: "am-comment-bd am-comment-flip"}, 
 		  React.createElement("div", {id: this.div_reply_save_id}, "   "), 
 		    React.createElement("div", {id: this.classnewsreply_list_div}), 
 		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")		
 			
-			)	
+			)
+		 
+		
+		
+		
 		   
-);
+  );
 }
 }); 
 
 
 /*
-* 绘制评论模板
-* @componentDidMount:添加表情
-* */
+ * 绘制评论模板
+ * @componentDidMount:添加表情
+ * */
 var Classnews_reply_save = React.createClass({displayName: "Classnews_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	form_id:"editClassnewsreplyForm",
@@ -1938,33 +1906,56 @@ return (
 );
 }
 }); 
-
+///*Classnews_show Classnews_EventRow
+// * <班级互动>列表详情内容绘制;
+// * @btn_click_classnews:互动单独详情;
+// * */
+//var Classnews_EventRow = React.createClass({ 
+//	render: function() {
+//	var event = this.props.event;
+//	var className = event.highlight ? 'am-active' :
+//	event.disabled ? 'am-disabled' : '';
+//
+//	return (
+//	<tr className={className} >
+//	<td> 
+//	<input type="checkbox" value={event.uuid} name="table_checkbox" />
+//	</td>
+//	  <td><a href="javascript:void(0);" onClick={btn_click_classnews.bind(this,"show",event)}>{event.title}</a></td>
+//	  <td>{event.create_user}</td>
+//	  <td>{event.update_time}</td>
+//	  <td>{event.reply_time}</td>
+//	  
+//	</tr> 
+//	);
+//	}
+//	}); 
 /*
-* <班级互动>添加与编辑按钮中可删除图片显示.
-*/
+ * <班级互动>添加与编辑按钮中可删除图片显示.
+ */
 var ClassNews_Img_canDel = React.createClass({displayName: "ClassNews_Img_canDel",
 		deleteImg:function(divid){
 			$("#"+divid).remove();
 		},			
 	  render: function() {
 		 return (
-          		React.createElement("div", {className: "G_cookplan_Img"}, 
-	 	       			React.createElement("img", {className: "G_cookplan_Img_img", src: this.props.url, alt: "图片不存在"}), 
-	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this,this.props.parentDivId)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"}))
-	 	       		)		
-          	)
+            		React.createElement("div", {className: "G_cookplan_Img"}, 
+  	 	       			React.createElement("img", {className: "G_cookplan_Img_img", src: this.props.url, alt: "图片不存在"}), 
+  	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this,this.props.parentDivId)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"}))
+  	 	       		)		
+            	)
 	  }
 	});
 
 
 /*
-* <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
-* @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
-* 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
-* 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
-* @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
-* @ajax_classnews_save:提交按钮在Kd_service;
-* */
+ * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
+ * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+ * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+ * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+ * @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
+ * @ajax_classnews_save:提交按钮在Kd_service;
+ * */
 var Classnews_edit = React.createClass({displayName: "Classnews_edit", 
 	selectclass_uuid_val:null,
 	 getInitialState: function() {
@@ -2028,7 +2019,7 @@ return (
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-			  G_upload_img_Div, 
+  			  G_get_upload_img_Div(), 
 		      React.createElement("button", {type: "button", onClick: ajax_classnews_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 	     )
@@ -2085,6 +2076,9 @@ render: function() {
 	};
     return (
     React.createElement("div", null, 
+    React.createElement("div", {className: "header"}, 
+    React.createElement("hr", null)
+    ), 
 	  React.createElement("hr", null), 	  
 	  React.createElement("div", {className: "am-form-group"}, 
 		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
@@ -2285,13 +2279,8 @@ return (
 		     )
 		     
 		     ), 
-		    	React.createElement("footer", {className: "am-comment-footer"}, 
-		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
-		    	)
-		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
-
+		     
+			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
 		   )
 );
@@ -2675,7 +2664,7 @@ render: function() {
 		   React.createElement("form", {id: "editForm", method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.uuid}), 
 			
-			  React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "信息发送", placeholder: "填写内容", name: "message"}), 
+			  React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
 		      React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")
 		      
 		    )	   
@@ -2873,12 +2862,7 @@ return (
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
 		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏")
 		     ), 	
-		    	React.createElement("footer", {className: "am-comment-footer"}, 
-		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
-		    	)
-		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+			  React.createElement(Common_Dianzan_show, {uuid: o.uuid, type: 0}), 
 			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
 		   )
 );
@@ -2935,7 +2919,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_upload_img_Div, 
+ 		G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
   		  )
   	     )
@@ -3306,69 +3290,3 @@ var My_student_tel2 =React.createClass({displayName: "My_student_tel2",
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-//——————————————————————————每日任务<绘制>——————————————————————————  
-/*
- * <每日任务>服务器请求后绘制处理方法；
- * 
- * */
-var rect_teacherDailyTask = React.createClass({displayName: "rect_teacherDailyTask",
-render: function() {
-    return (
-    React.createElement("div", null, 
-	  React.createElement("hr", null), 	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-            React.createElement("th", null, "每日任务"), 
-            React.createElement("th", null, "任务类型"), 
-            React.createElement("th", null, "任务状态"), 
-            React.createElement("th", null, "积分")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Query_teacherDailyTask, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-});
-    
-/*  	
- * <每日任务>在表单上绘制详细内容;
- * @点击后调用即时消息(舞台跳转)
- * */
-var Query_teacherDailyTask = React.createClass({displayName: "Query_teacherDailyTask", 
-	btn_students_list_click:function(type){
-		ajax_State_style(type);
-	},
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-	    return (
-	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.type)}, event.title)), 
-	        React.createElement("td", null, common_teacherDailyTask_type(event.type)), 
-	        React.createElement("td", null, common_teacherDailyTask_status(event.status)), 
-	        React.createElement("td", null, 0)
-	      ) 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-

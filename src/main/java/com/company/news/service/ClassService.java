@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -22,6 +23,7 @@ import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -89,6 +91,16 @@ public class ClassService extends AbstractServcice {
 		}
 
 		return true;
+	}
+	/*
+	 * 
+	 * 判断是否是班级的班主任老师
+	 */
+	public boolean isheadteacher(String user_uuids,String classuuid){
+		String hql="select uuid from UserClassRelation where type=? and classuuid=? and useruuid in("+DBUtil.stringsToWhereInValue(user_uuids)+")";
+		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, class_usertype_head,classuuid);
+		if(list.size()>0)return true;
+		return false;
 	}
 
 	/**

@@ -101,6 +101,10 @@ public class AccountsController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(!RightUtils.hasRight(RightConstants.KD_accounts_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
 		List list = accountsService.query(request.getParameter("begDateStr"),request.getParameter("endDateStr"),
 				request.getParameter("type"),request.getParameter("groupuuid"),request.getParameter("classuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
@@ -120,15 +124,15 @@ public class AccountsController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
+		if(!RightUtils.hasRight(RightConstants.KD_accounts_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}
 		try {
-			boolean flag = accountsService.delete(request.getParameter("uuid"),
-					responseMessage);
-			if (!flag)
-				return "";
+//			boolean flag = accountsService.delete(request.getParameter("uuid"),
+//					responseMessage);
+//			if (!flag)
+//				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

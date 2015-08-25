@@ -254,13 +254,13 @@ public class AnnouncementsService extends AbstractServcice {
 		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from Announcements where uuid in(?)", uuid);
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from AnnouncementsTo where classuuid in(?)", uuid);
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
 		} else {
 			this.nSimpleHibernateDao
 					.deleteObjectById(Announcements.class, uuid);
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from AnnouncementsTo where classuuid =?", uuid);
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from AnnouncementsTo where announcementsuuid =?", uuid);
 		}
 
 		return true;
