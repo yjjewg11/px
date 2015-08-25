@@ -612,7 +612,5 @@ function index_init(){
 //登录操作
 window.onload=function(){ 
 	index_init();
-	
-	 G_jsCallBack.setIosApp()
 }; 
 
