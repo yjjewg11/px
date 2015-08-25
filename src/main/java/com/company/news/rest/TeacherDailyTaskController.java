@@ -52,7 +52,9 @@ public class TeacherDailyTaskController extends AbstractRESTController {
 			List list = teacherDailyTaskService.queryByDay(user, date);
 			
 			if(list.size()==0){//表明需要自动创建任务
-				list=teacherDailyTaskService.addByAuto(user,date);
+				list=teacherDailyTaskService.addByAuto(user,date,request);
+			}else{
+				teacherDailyTaskService.updateTaskStatus(list, user, date);
 			}
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					list);
