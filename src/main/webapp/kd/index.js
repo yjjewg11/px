@@ -306,7 +306,6 @@ function menu_dohome(){
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	var div_Gallery_data=[
-
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
@@ -592,8 +591,7 @@ function menu_userinfo_login_fn(){
 	$("#div_seesion_body").hide();
 }
 
-function menu_body_fn (){
-	
+function menu_body_fn (){	
 	$("#div_seesion_body").show();
 	//$("#div_login").hide();
 	$("#div_login").html(null);
