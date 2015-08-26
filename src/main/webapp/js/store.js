@@ -392,7 +392,7 @@ function store_ajax_RoleList_toStroe() {
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				Store.setRoleList(data.list)
+				Store.setRoleList(data.list);
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -420,7 +420,7 @@ function store_ajax_MyClass_toStroe() {
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				Store.setMyClassList(data.list)
+				Store.setMyClassList(data.list);
 			} else {
 				alert(data.ResMsg.message);
 			}

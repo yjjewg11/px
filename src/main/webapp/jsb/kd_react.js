@@ -354,7 +354,7 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
 						  React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.title, "："), "消息发送于",  
 						  React.createElement("time", null, event.create_time))
 						  ), 
-						  React.createElement("div", {className: "am-comment-bd", onClick: this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid)}, event.message)
+						  React.createElement("div", {className: "am-comment-bd", onClick: this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}, event.message)
 					  )
 					))						
 				  })
@@ -1037,18 +1037,28 @@ var Boss_student_tel =React.createClass({displayName: "Boss_student_tel",
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true}, 
 		    	this.props.formdata.map(function(event) {
-		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
+		            return (
+		           React.createElement(AMUIReact.ListItem, null, 
+			          React.createElement("li", {className: "am-comment"}, 	
+			  		  	React.createElement("a", {href: "javascript:void(0);"}, 
+			  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+			  		  	), 
+		           "家长", event.send_user, "的信息",     
 		            React.createElement(AMR_ButtonToolbar, null, 		            
 		            React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
-		            )	
-        
-		            ));
+
+		            )
+		            )
+		            ));	            
 		          })		      			      
 			      )
-		 	     ) 
-		     );
+		 	     ) 		 
+		 );
 	        }
 		 });
+
+
+
 
 /*
 * <园长信箱>如果没有数据则绘制文字提示用户
@@ -1155,8 +1165,7 @@ return (
 var Message_queryLeaderMsgByParents_listpage =React.createClass({displayName: "Message_queryLeaderMsgByParents_listpage",	 
 	render: function() {
 			var revice_useruuid=this.props.revice_useruuid;
-		  return (
-				  
+		  return (				  
 				  React.createElement("ul", {className: "am-comments-list "}, 
 				  this.props.events.data.map(function(event) {
 					  var class1="am-comment am-comment-flip am-comment-secondary";
@@ -2335,6 +2344,8 @@ return (
 
 
 
+
+
 //——————————————————————————（首页）课程表<绘制>——————————————————————————  
 /*
  * 课程表班级内详情 课程表
@@ -2379,7 +2390,14 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 					 React.createElement("label", null, "下午:"), 
 					 React.createElement("div", {className: "g_teachingplan"}, 
 						React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.afternoon)}})
-					 )
+					 ), 
+				    	React.createElement("footer", {className: "am-comment-footer"}, 
+				    	React.createElement("div", {className: "am-comment-actions"}, 
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+				    	)
+				    	), 
+				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+					  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
 					) 
 		  )
 	  }else{
@@ -2398,7 +2416,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 		    React.createElement(Col, {sm: 6}, 
 		    React.createElement("h1", null, "课程安排-", React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data:  this.props.classList, btnStyle: "primary", value: this.props.ch_class.uuid}), "-", this.props.ch_day), 
 		    React.createElement(AMR_ButtonToolbar, null, 
-		      React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day), round: true}, "课程编辑")
+		      React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day), round: true}, "新增课程")
 		      )
 		    ), 
 		    React.createElement(Col, {sm: 3}, 
@@ -2452,11 +2470,12 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 	  if(!o){
 		  dataShowDiv=(React.createElement("div", {className: "am-g", id: "div_detail"}, "今日没有发布食谱"))
 	  }else{
-		  dataShowDiv=(	React.createElement("div", {className: "am-g", id: "div_detail"}, 
-				 React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		  dataShowDiv=(	
+	React.createElement("div", {className: "am-g", id: "div_detail"}, 
+		React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
 				 React.createElement("label", null, "早餐:"), 
 				 React.createElement(CookbookPlanShow_EventRow, {uuids: o.list_time_1, type: "time_1"}), 
-				 React.createElement("div", {className: "cls"}), 
+		         React.createElement("div", {className: "cls"}), 
 				 React.createElement("br", null), 
 				 React.createElement("label", null, "早上加餐:"), 
 				 React.createElement(CookbookPlanShow_EventRow, {uuids: o.list_time_2, type: "time_2"}), 
@@ -2476,14 +2495,21 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				 React.createElement("br", null), 
 				 React.createElement("label", null, "营养分析:"), 
 				 React.createElement("div", {className: "g_analysis"}, 
-					React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.analysis)}})
-				 )
+				 React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.analysis)}})
+				 ), 
+			    	React.createElement("footer", {className: "am-comment-footer"}, 
+			    	React.createElement("div", {className: "am-comment-actions"}, 
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+			    	)
+			    	), 
+			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+				  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
 				)
 			)
 		  )
 	  }	
 	  return (
-		React.createElement("div", null, 		
+		React.createElement("div", null, 	
 			React.createElement("div", {className: "header"}, 
 				  React.createElement("div", {className: "am-g"}, 				  
 				  React.createElement(Grid, null, 
@@ -2492,6 +2518,7 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre",this.props.groupuuid), round: true}, "上一天")
 				    ), 
 				    React.createElement(Col, {sm: 6}, 
+				    React.createElement("div", {id: "div_detail"}, this.props.ch_day), 
 				    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid})
 				    ), 
 				    React.createElement(Col, {sm: 3}, 
@@ -2623,12 +2650,18 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			  	  					React.createElement(AMR_Button, {amStyle: "revise", round: true}, "邀请中")		
 			  	  				);
 	  	  				}
-	  	  		        return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
+	  	  		        return (React.createElement(AMUIReact.ListItem, null, 
+				          React.createElement("li", {className: "am-comment"}, 	
+				  		  	React.createElement("a", {href: "javascript:void(0);"}, 
+				  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+				  		  	), 
+	  	  		        event.student_name, "的", event.typename, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  	  		        React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
-	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"来自"+event.student_name+event.typename+"的信息"), amStyle: "success"}, "@信息"), 	
+	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
 	  	  		        ListItem
 	  	  		        )
+	  	  		         )
 	  	  		        ));
 	  	  		      })		      			      
 	  	  		      )
@@ -3099,6 +3132,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
+            React.createElement("th", null, "头像"), 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
@@ -3129,12 +3163,18 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 	    return (
 	      React.createElement("tr", {className: className}, 
+          React.createElement("li", {className: "am-comment"}, 
+          React.createElement("td", null, 
+		  	React.createElement("a", {href: "javascript:void(0);"}, 
+		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+		  	)), 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
-	      ) 
+	        )
+	        ) 
 	    );
 	  }
 	}); 
@@ -3313,7 +3353,7 @@ var My_student_tel =React.createClass({displayName: "My_student_tel",
 		    	this.props.formdata.map(function(event) {
 		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
 		            React.createElement(AMR_ButtonToolbar, null, 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"来自"+event.send_user+"的信息"), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"我的信箱"), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
 		            )	        
 		            ));
 		          })		      			      
@@ -3379,14 +3419,14 @@ render: function() {
  * @点击后调用即时消息(舞台跳转)
  * */
 var Query_teacherDailyTask = React.createClass({displayName: "Query_teacherDailyTask", 
-	btn_students_list_click:function(type){
-		ajax_State_style(type);
+	btn_students_list_click:function(type,group_uuid){
+		ajax_State_style(type,null,group_uuid,2);
 	},
 	  render: function() {
 	    var event = this.props.event;
 	    return (
 	      React.createElement("tr", {className: common_teacherDailyTask_status(event.status).className}, 
-	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.type)}, event.title)), 
+	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.type,event.group_uuid)}, event.title)), 
 
 	        React.createElement("td", null, common_teacherDailyTask_type(event.type)), 
 	        React.createElement("td", null, common_teacherDailyTask_status(event.status).status)
