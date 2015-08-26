@@ -552,7 +552,11 @@ function ajax_group_save(){
       var opt={
               formName: "editGroupForm",
               url:hostUrl + "rest/group/save.json",
-              cbFN:null
+              cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
+				Queue.doBackFN();
+				Store.setGroup(null);
+            }
               };
   G_ajax_abs_save(opt);
   }
@@ -1468,7 +1472,11 @@ function ajax_class_save(){
     var opt={
             formName: "editClassForm",
             url:hostUrl + "rest/class/save.json",
-            cbFN:null
+            cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
+				Queue.doBackFN();
+				Store.setMyClassList(null);
+            }
             };
 G_ajax_abs_save(opt);
 }	  
@@ -1658,6 +1666,7 @@ function btn_ajax_class_student_save(){
             url:hostUrl + "rest/student/save.json",
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
+            	Store.setClassStudentsList(data.uuid,null);
 				react_ajax_class_students_manage(objectForm.classuuid);
             }
             };
@@ -1766,8 +1775,8 @@ G_ajax_abs_save(opt);
  * 基本框 等
  * @type：Type：1班级互动（头标）Type:2 大图标班级互动;
  * */
-function ajax_class_announce_div(type){
-	  Queue.push (function(){ajax_class_announce_div(type);},"班级互动") ;
+function ajax_classnews_list_div(type){
+	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	React.render(React.createElement(Announcements_class_Div_list,{
 		type:type
 		}), document.getElementById('div_body'));  	
@@ -1778,13 +1787,12 @@ function ajax_class_announce_div(type){
  * 在kd_react
  * */
 var g_classnews_pageNo_point=1;
-var g_classnews_class_list=null;
 function ajax_classs_Mygoodlist(list_div,pageNo,type) {
 	var re_data=null;
 	var url;
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
-	g_classnews_class_list=Store.getChooseClass(Store.getCurGroup().uuid);
+	var classnews_class_list=Store.getChooseClass(Store.getCurGroup().uuid);
 	$.AMUI.progress.start();
 	if(type==1){
 		url =hostUrl + "rest/classnews/getClassNewsByClassuuid.json";
@@ -1952,7 +1960,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
  * 在kd_service;
  * */
 function menu_classnewsbyMy_list_fn() {
-	ajax_class_announce_div(2);
+	ajax_classnews_list_div(2);
 	
 };
 	

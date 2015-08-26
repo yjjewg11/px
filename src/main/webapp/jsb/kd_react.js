@@ -1037,18 +1037,28 @@ var Boss_student_tel =React.createClass({displayName: "Boss_student_tel",
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true}, 
 		    	this.props.formdata.map(function(event) {
-		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
+		            return (
+		           React.createElement(AMUIReact.ListItem, null, 
+			          React.createElement("li", {className: "am-comment"}, 	
+			  		  	React.createElement("a", {href: "javascript:void(0);"}, 
+			  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+			  		  	), 
+		           "家长", event.send_user, "的信息",     
 		            React.createElement(AMR_ButtonToolbar, null, 		            
 		            React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
-		            )	
-        
-		            ));
+
+		            )
+		            )
+		            ));	            
 		          })		      			      
 			      )
-		 	     ) 
-		     );
+		 	     ) 		 
+		 );
 	        }
 		 });
+
+
+
 
 /*
 * <园长信箱>如果没有数据则绘制文字提示用户
@@ -2640,12 +2650,18 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			  	  					React.createElement(AMR_Button, {amStyle: "revise", round: true}, "邀请中")		
 			  	  				);
 	  	  				}
-	  	  		        return (React.createElement(AMUIReact.ListItem, null, event.student_name, "的", event.typename, ":", event.tel, 
+	  	  		        return (React.createElement(AMUIReact.ListItem, null, 
+				          React.createElement("li", {className: "am-comment"}, 	
+				  		  	React.createElement("a", {href: "javascript:void(0);"}, 
+				  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+				  		  	), 
+	  	  		        event.student_name, "的", event.typename, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  	  		        React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
 	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
 	  	  		        ListItem
 	  	  		        )
+	  	  		         )
 	  	  		        ));
 	  	  		      })		      			      
 	  	  		      )
@@ -3116,6 +3132,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
+            React.createElement("th", null, "头像"), 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
@@ -3146,12 +3163,18 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 	    return (
 	      React.createElement("tr", {className: className}, 
+          React.createElement("li", {className: "am-comment"}, 
+          React.createElement("td", null, 
+		  	React.createElement("a", {href: "javascript:void(0);"}, 
+		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+		  	)), 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
-	      ) 
+	        )
+	        ) 
 	    );
 	  }
 	}); 

@@ -1037,18 +1037,28 @@ var Boss_student_tel =React.createClass({
 		 		<div>
 			    <AMUIReact.List static>
 		    	{this.props.formdata.map(function(event) {
-		            return (<AMUIReact.ListItem>家长{event.send_user}的信息    
+		            return (
+		           <AMUIReact.ListItem>
+			          <li className="am-comment">	
+			  		  	<a href="javascript:void(0);" >
+			  		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+			  		  	</a>
+		           家长{event.send_user}的信息    
 		            <AMR_ButtonToolbar>		            
 		            <AMUIReact.Button  onClick={ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
-		            </AMR_ButtonToolbar>	
-        
-		            </AMUIReact.ListItem>);
+
+		            </AMR_ButtonToolbar>
+		            </li>
+		            </AMUIReact.ListItem>);	            
 		          })}		      			      
 			      </AMUIReact.List>
-		 	     </div> 
-		     );
+		 	     </div> 		 
+		 );
 	        }
 		 });
+
+
+
 
 /*
 * <园长信箱>如果没有数据则绘制文字提示用户
@@ -2640,12 +2650,18 @@ var Class_student_tel =React.createClass({
 			  	  					<AMR_Button amStyle="revise" round>邀请中</AMR_Button>		
 			  	  				);
 	  	  				}
-	  	  		        return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
+	  	  		        return (<AMUIReact.ListItem>
+				          <li className="am-comment">	
+				  		  	<a href="javascript:void(0);" >
+				  		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+				  		  	</a>
+	  	  		        {event.student_name}的{event.typename}:{event.tel}
 	  	  		        <AMR_ButtonToolbar>
 	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
 	  	  		        <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录")} amStyle="success">@信息</AMUIReact.Button>	
 	  	  		        {ListItem}
 	  	  		        </AMR_ButtonToolbar>
+	  	  		         </li>
 	  	  		        </AMUIReact.ListItem>);
 	  	  		      })}		      			      
 	  	  		      </AMUIReact.List>
@@ -3116,6 +3132,7 @@ var Teacher_info_tel = React.createClass({
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
+            <th>头像</th>
             <th>姓名</th>
             <th>电话</th>
             <th>邮箱</th>
@@ -3146,12 +3163,18 @@ var Teacherinfo_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
+          <li className="am-comment">
+          <td>
+		  	<a href="javascript:void(0);" >
+		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+		  	</a></td>
 	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
-	      </tr> 
+	        </li>
+	        </tr> 
 	    );
 	  }
 	}); 

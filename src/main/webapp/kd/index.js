@@ -178,7 +178,7 @@ function login_affter_init(){
 	                            "subMenu": [
 	                                        {
 	                                            "link": "##",
-	                                            "fn":function(){ajax_class_announce_div(1);},
+	                                            "fn":function(){ajax_classnews_list_div(1);},
 	                                            "title": "班级互动"
 	                                          },
 	                                          
