@@ -1,8 +1,6 @@
 package com.company.news.service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,7 +14,6 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.TelSmsCode;
 import com.company.news.rest.RestConstants;
-import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -31,14 +28,12 @@ public class SmsService extends AbstractServcice {
 
 	private static long MINUTE = 1000 * 60L;
 	//限制重复时间5分钟
-	public static long SMS_TIME_LIMIT = MINUTE
-			* Long.valueOf(ProjectProperties.getProperty(
+	public static long SMS_TIME_LIMIT = 	Long.valueOf(ProjectProperties.getProperty(
 					"project.SMS.TIME_LIMIT", "5"));
 	
 	//验证码失效时间30分钟
-		public static long SMS_TIME_LIMIT_Effective = MINUTE
-				* Long.valueOf(ProjectProperties.getProperty(
-						"project.SMS.TIME_LIMIT_", "30"));
+		public static long SMS_TIME_LIMIT_Effective =  Long.valueOf(ProjectProperties.getProperty(
+						"project.SMS.TIME_LIMIT_Effective", "30"));
 	/**
 	 * 发送短信验证码
 	 * 

@@ -257,7 +257,7 @@ public class StudentController extends AbstractRESTController {
 		String tels=request.getParameter("tels");
 		
 		
-		responseMessage.setMessage("此用户还未开通！");
+		responseMessage.setMessage("暂不开放!");
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
