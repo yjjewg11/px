@@ -366,12 +366,13 @@ var Message_queryMyTimely_myList =React.createClass({
 	})
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————校务管理<校园列表绘制>—————————————————————   
+//——————————————————————————校务管理<绘制>—————————————————————   
 /*
  *(校务管理)<校园列表>列表框绘制 ;
  *@handleClick:绑定的事件根据M来区分点击事件并做处理；
  *@add:添加分校;
  *@edit:编辑分校;
+ *@edit:预览分校;
  *@btn_click_group ：在kd_service
  * */
 var Group_EventsTable = React.createClass({
@@ -379,8 +380,6 @@ var Group_EventsTable = React.createClass({
 		if(m=="add"){
 			btn_click_group(m,{type:"1"});
 			 return;
-		 }if(m=="edit"){
-			btn_click_group(m,{uuid:uuids});
 		 }
 	  },
   render: function() {
@@ -394,6 +393,7 @@ var Group_EventsTable = React.createClass({
         <thead> 
           <tr>
             <th>品牌名</th>
+            <th>预览</th>
             <th>机构全称</th>
             <th>电话</th>
             <th>公司地址</th>
@@ -423,11 +423,14 @@ var Group_EventRow = React.createClass({
       event.disabled ? 'am-disabled' : '';
     return (
       <tr className={className} >
-      <td  ><a href="javascript:void(0);" onClick={btn_click_group.bind(this,"edit", event)}>{event.brand_name}</a></td>
-        <td  >{event.company_name}</td>
-        <td > {event.link_tel}</td>
-        <td >{event.address}</td>
-        <td >{event.create_time}</td>
+      <td><a href="javascript:void(0);" onClick={btn_click_group.bind(this,"edit", event)}>{event.brand_name}</a></td>
+        <td>
+    	<AMR_Button amStyle="primary" onClick={btn_click_group.bind(this,"show",event)} round>预览</AMR_Button>
+        </td>
+        <td>{event.company_name}</td>
+        <td> {event.link_tel}</td>
+        <td>{event.address}</td>
+        <td>{event.create_time}</td>
       </tr> 
     );
   }
@@ -507,11 +510,9 @@ var Group_edit = React.createClass({
     );
   }
 });
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————校务管理<校园介绍绘制>—————————————————————  
 /*
- *(校务管理)<校园介绍>绘制 ;
+ *(校务管理)预览校园绘制 ;
  * */
   var Group_show = React.createClass({ 
   render: function() {
@@ -528,8 +529,15 @@ var Group_edit = React.createClass({
     );
   }
   }); 
+
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+  
+  
+  
+  
+  
+  
 //——————————————————————————信息管理<绘制>—————————————————————  
 /*
  *(信息管理)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
@@ -2651,17 +2659,12 @@ var Class_student_tel =React.createClass({
 			  	  				);
 	  	  				}
 	  	  		        return (<AMUIReact.ListItem>
-				          <li className="am-comment">	
-				  		  	<a href="javascript:void(0);" >
-				  		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
-				  		  	</a>
 	  	  		        {event.student_name}的{event.typename}:{event.tel}
 	  	  		        <AMR_ButtonToolbar>
 	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
 	  	  		        <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录")} amStyle="success">@信息</AMUIReact.Button>	
 	  	  		        {ListItem}
 	  	  		        </AMR_ButtonToolbar>
-	  	  		         </li>
 	  	  		        </AMUIReact.ListItem>);
 	  	  		      })}		      			      
 	  	  		      </AMUIReact.List>
@@ -3132,7 +3135,6 @@ var Teacher_info_tel = React.createClass({
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
-            <th>头像</th>
             <th>姓名</th>
             <th>电话</th>
             <th>邮箱</th>
@@ -3163,17 +3165,11 @@ var Teacherinfo_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-          <li className="am-comment">
-          <td>
-		  	<a href="javascript:void(0);" >
-		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
-		  	</a></td>
 	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
-	        </li>
 	        </tr> 
 	    );
 	  }

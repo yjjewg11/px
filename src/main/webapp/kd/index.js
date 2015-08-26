@@ -64,19 +64,8 @@ function login_affter_init(){
 	t_menu={
 		    "link": "##",
 		    "title": "校务管理",
-		    "subMenu": [
-		                {
-		                	"fn":menu_group_myList_fn,
-		                	 "link": "##",
-                              "title": "校园列表"
-                            },
-                            {
-                            	 "fn":menu_group_description_fn,
-                                "link": "##",
-                                "title": "校园介绍"
-                              }
-                            
-                        ]
+		    "fn":menu_group_myList_fn
+                                            
 		  };
 	if(G_user_hasRight("KD_group_m")){
 		menu_data.push(t_menu);
@@ -393,11 +382,11 @@ function menu_queryMyTimely_fn() {
 	ajax_queryMyTimely_myList();
 };
 /*
- * (校务管理)<校园列表>
+ * (校务管理)
  * @跳转kd_service发服务器请求
  * */
 function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn,"校园列表");
+	Queue.push(menu_group_myList_fn,"校务管理");
 	ajax_group_myList();
 }
 /*
@@ -405,10 +394,11 @@ function menu_group_myList_fn() {
  * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
  * @跳转kd_service发服务器请求
  * */
-var announce_types="";
-var Group_name="";
-var Group_uuid=null;
+
 function menu_announce_list_fn(types,name,groupuuid) {
+	var announce_types="";
+	var Group_name="";
+	var Group_uuid=null;
 	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
 	announce_types=types; 
 	Group_name=name;
@@ -420,10 +410,8 @@ function menu_announce_list_fn(types,name,groupuuid) {
  * (标头)食谱管理功能
  * @跳转kd_service发服务器请求
  * */
-var g_cookbookPlan_week_point="";
-var cookbook_Group_uuid=null;
 function menu_cookbookPlan_list_fn(groupuuid,weeknum){
-    g_cookbookPlan_week_point=weeknum; 
+	var cookbook_Group_uuid="";
 	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroup().uuid;
 	else cookbook_Group_uuid=groupuuid;
 	ajax_cookbookPlan_listByGroup(cookbook_Group_uuid,weeknum);

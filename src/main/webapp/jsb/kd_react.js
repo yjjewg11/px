@@ -366,12 +366,13 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
 	})
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————校务管理<校园列表绘制>—————————————————————   
+//——————————————————————————校务管理<绘制>—————————————————————   
 /*
  *(校务管理)<校园列表>列表框绘制 ;
  *@handleClick:绑定的事件根据M来区分点击事件并做处理；
  *@add:添加分校;
  *@edit:编辑分校;
+ *@edit:预览分校;
  *@btn_click_group ：在kd_service
  * */
 var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
@@ -379,8 +380,6 @@ var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
 		if(m=="add"){
 			btn_click_group(m,{type:"1"});
 			 return;
-		 }if(m=="edit"){
-			btn_click_group(m,{uuid:uuids});
 		 }
 	  },
   render: function() {
@@ -394,6 +393,7 @@ var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
         React.createElement("thead", null, 
           React.createElement("tr", null, 
             React.createElement("th", null, "品牌名"), 
+            React.createElement("th", null, "预览"), 
             React.createElement("th", null, "机构全称"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "公司地址"), 
@@ -424,6 +424,9 @@ var Group_EventRow = React.createClass({displayName: "Group_EventRow",
     return (
       React.createElement("tr", {className: className}, 
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_group.bind(this,"edit", event)}, event.brand_name)), 
+        React.createElement("td", null, 
+    	React.createElement(AMR_Button, {amStyle: "primary", onClick: btn_click_group.bind(this,"show",event), round: true}, "预览")
+        ), 
         React.createElement("td", null, event.company_name), 
         React.createElement("td", null, " ", event.link_tel), 
         React.createElement("td", null, event.address), 
@@ -507,11 +510,9 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     );
   }
 });
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————校务管理<校园介绍绘制>—————————————————————  
 /*
- *(校务管理)<校园介绍>绘制 ;
+ *(校务管理)预览校园绘制 ;
  * */
   var Group_show = React.createClass({displayName: "Group_show", 
   render: function() {
@@ -528,8 +529,15 @@ var Group_edit = React.createClass({displayName: "Group_edit",
     );
   }
   }); 
+
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+  
+  
+  
+  
+  
+  
 //——————————————————————————信息管理<绘制>—————————————————————  
 /*
  *(信息管理)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
@@ -2651,17 +2659,12 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			  	  				);
 	  	  				}
 	  	  		        return (React.createElement(AMUIReact.ListItem, null, 
-				          React.createElement("li", {className: "am-comment"}, 	
-				  		  	React.createElement("a", {href: "javascript:void(0);"}, 
-				  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
-				  		  	), 
 	  	  		        event.student_name, "的", event.typename, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  	  		        React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
 	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
 	  	  		        ListItem
 	  	  		        )
-	  	  		         )
 	  	  		        ));
 	  	  		      })		      			      
 	  	  		      )
@@ -3132,7 +3135,6 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
-            React.createElement("th", null, "头像"), 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
@@ -3163,17 +3165,11 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 	    return (
 	      React.createElement("tr", {className: className}, 
-          React.createElement("li", {className: "am-comment"}, 
-          React.createElement("td", null, 
-		  	React.createElement("a", {href: "javascript:void(0);"}, 
-		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
-		  	)), 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
-	        )
 	        ) 
 	    );
 	  }
