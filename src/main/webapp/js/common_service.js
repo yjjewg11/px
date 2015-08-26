@@ -707,18 +707,18 @@ function common_teacherDailyTask_type(type){
 
 /*
  * 每日任务
- * 任务完成状态（公用方法模板）
+ * 任务完成状态和状态颜色（公用方法模板）
  */
 function common_teacherDailyTask_status(status){
 	var teacherDailyTask_status;
         if(status==0){
-        	teacherDailyTask_status="已完成";
+        	teacherDailyTask_status={status:"已完成",className:"am-success"};
         }else if(status==1){
-        	teacherDailyTask_status="待完成";
+        	teacherDailyTask_status={status:"待完成",className:"am-warning"};
         }else if(status==2){
-        	teacherDailyTask_status="已过期";
+        	teacherDailyTask_status={status:"已过期",className:"am-danger"};
         }else{
-        	teacherDailyTask_status="有问题的状态";
+        	teacherDailyTask_status={status:"有问题的状态",className:""};
         } 
 	
 	 return teacherDailyTask_status; 	

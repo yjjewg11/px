@@ -1,4 +1,3 @@
-
 //
 var AMR_Table=AMUIReact.Table;
 var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
@@ -447,10 +446,22 @@ var Group_edit = React.createClass({
 	  },
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+			  
+			  
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
           });
 	},
+	   /*
+	    * (校务管理)<校园列表>内上传LOGO图片
+	    * */
+	    btn_class_group_uploadHeadere :function(){      
+	        w_uploadImg.open(function (guid){
+	             $ ("#img").val(guid);
+	              $("#img_head_image").attr("src",G_imgPath+ guid);
+	              G_img_down404("#img_head_image");
+	         });   
+	   },
   render: function() {
 	  var o = this.state;
     return (
@@ -463,11 +474,11 @@ var Group_edit = React.createClass({
     		<form id="editGroupForm" method="post" className="am-form">
     		<input type="hidden" name="uuid"  value={o.uuid}/>
     	    <input type="hidden" name="type"  value={o.type}/>
-            
+    		 <input type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>
     		<label htmlFor="nickname" >LOGO:</label>
-            <AMUIReact.Image  id="img_head_image"   src={G_def_headImgPath} className={"G_img_header"}/>
+            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
             <br/>
-            <button type="button"   onClick={btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
             <br/>
   
     		<label htmlFor="brand_name">品牌名:</label>
@@ -875,15 +886,15 @@ render: function() {
  * @next:下一周；
  * */
 var Teachingplan_EventsTable = React.createClass({
-	handleClick: function(m,uuid,classuuid) {
+	handleClick: function(m,uuid,groupuuid,classuuid) {
 			 if(m=="add"){
-				 btn_click_teachingplan(m,null,classuuid);
+				 btn_click_teachingplan(m,null,groupuuid,classuuid);
 				 return;
 			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(classuuid,null,--g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(groupuuid,classuuid,--g_cookbookPlan_week_point);
 				 return;
 			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(classuuid,null,++g_cookbookPlan_week_point);
+				 ajax_teachingplan_listByClass(groupuuid,classuuid,++g_cookbookPlan_week_point);
 				 return;
 			 }
 	  },
@@ -893,17 +904,27 @@ var Teachingplan_EventsTable = React.createClass({
 	  handleChange_selectgroup_uuid:function(){
 		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
 	  },
+		handleChange_selectgroup: function(val) {
+			this.props.classuuid="";
+			ajax_teachingplan_listByClass(val,this.props.classuuid,this.props.weeknum);  
+	    },
+	    handleChange_selectclass: function(val) {
+			ajax_teachingplan_listByClass(this.props.groupuuid,val,this.props.weeknum);  
+	    },
 render: function() {
 return (
 <div>
 <div className="header">
-	  <hr />
+	<hr />
 	</div>
 <AMR_ButtonToolbar>
-	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.classuuid)} round>添加</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.classuuid)} round>上周</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.classuuid)} round>下周</AMR_Button>
-    </AMR_ButtonToolbar>
+	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.groupuuid,this.props.classuuid)} round>添加</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.groupuuid,this.props.classuuid)} round>上周</AMR_Button>
+    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.groupuuid,this.props.classuuid)} round>下周</AMR_Button>
+    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
+    <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={this.props.classuuid}/>    
+</AMR_ButtonToolbar>
+    <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
 	  <hr/>
   <AMR_Table {...this.props}>  
     <thead> 
@@ -1129,6 +1150,7 @@ return (
 /* <园长信箱>2层发信息详情界面绘制；
 * @send_user：信息者名字；
 * @message：信息内容；
+* @am-comment-flip:默认头像 加了靠右边 不加靠左;
 * */
 var Message_queryLeaderMsgByParents_listpage =React.createClass({	 
 	render: function() {
@@ -1348,7 +1370,7 @@ render: function() {
   	  return (
   	  <div>
   	  <AMR_ButtonToolbar>
-  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid,null)} round>添加学生</AMR_Button>
+  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
   		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
   		    </AMR_ButtonToolbar>
   		  <hr/>
@@ -1380,11 +1402,23 @@ render: function() {
   	  },
   	  componentDidMount:function(){
   		  var imgGuid=this.state.headimg;
+  		  
+  		  
   		 if(imgGuid){
   			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
   			 G_img_down404("#img_head_image");
   		 }
   	  },
+  	/*
+  	 * （标头）<班级管理>图片上传功能
+  	 * */
+  	 btn_class_student_uploadHeadere:function(){
+  		w_uploadImg.open(function(guid){
+  			$("#headimg").val(guid);
+  			 $("#img_head_image").attr("src",G_imgPath+guid); 
+  			 G_img_down404("#img_head_image");
+  		});	
+  	},
   render: function() {
   	  var o = this.state;
    return (
@@ -1407,7 +1441,7 @@ render: function() {
   		       <label htmlFor="nickname">头像:</label>
   	 		   <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
   	 		   <br/>
-  	 		   <button type="button"  onClick={btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+  	 		   <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
   			   <br/>
   			      
   		      <AMUIReact.FormGroup>
@@ -1657,12 +1691,49 @@ render: function() {
 
 
 
+
+
 //——————————————————————————班级互动<绘制>——————————————————————————
-/*
- * <班级互动>列表框与下拉框和按钮绘制;
- * @Classnews_EventRow:绘制列表详情;
+/* 
+ * <班级互动>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */
-var Classnews_EventsTable = React.createClass({
+var Announcements_class_Div_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
 	selectclass_uuid_val:null,
 	handleClick: function(m) {
 		if(m=="add"){
@@ -1688,57 +1759,56 @@ var Classnews_EventsTable = React.createClass({
 				}
 			  btn_click_classnews(m,{uuid:uuids});
 		 }
-		else if(m=="pre"){
-			 if(g_classnews_pageNo_point==1)return;
-			 ajax_classnews_list(g_classnews_classuuid,--g_classnews_pageNo_point);
-			 return;
-		 }else if(m=="next"){
-			 ajax_classnews_list(g_classnews_classuuid,++g_classnews_pageNo_point);
-			 return;
-		 }
-	  },	  
-	  handleChange_select_classnews_type:function(){
-		  ajax_classnews_list($('#select_classnews_type').val());
-	  },
-	  handleChange_selectclass_uuid:function(val){
-		  this.selectclass_uuid_val=val;
-		  ajax_classnews_list(this.selectclass_uuid_val);
 	  },
 render: function() {
-	var totalCount=this.props.events.totalCount;
-	var pageSize=this.props.events.pageSize;
-	var maxPageNo=Math.floor(totalCount/pageSize)+1;
-	console.log("totalCount--",totalCount,"   pageSize-----",pageSize,"   maxPageNo-----",maxPageNo) 
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  <AMUIReact.ButtonToolbar>
+		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
+		 </AMUIReact.ButtonToolbar>
+		  <hr/>	  
+		    
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  </div>
+		  
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		  
+		  
+		  
+		</div>
+		  
+			
+  );
+}
+});
+/*
+* <班级互动>;
+* @Classnews_EventRow:绘制列表详情;
+* */
+var Classnews_EventsTable = React.createClass({	  
+render: function() {
 	var that=this;
-	var pre_disabled=g_classnews_pageNo_point<2;
-	var next_disabled=g_classnews_pageNo_point>=maxPageNo;
 return (
 <div>
-<AMUIReact.ButtonToolbar>
-	    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>发布互动</AMUIReact.Button>
-	 </AMUIReact.ButtonToolbar>
-	  <hr/>	  
-	  <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this, "pre")} round>&laquo; 上一页</AMR_Button>
-	  <label>{g_classnews_pageNo_point}\{maxPageNo}</label> 
-	  <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this, "next")} round>下一页 &raquo;</AMR_Button>
-
-    {this.props.events.data.map(function(event) {
-      return (<Classnews_show  event={event} />);
-    })}
+  {this.props.events.data.map(function(event) {
+    return (<Classnews_show  event={event} />);
+  })}
 </div>
 );
 }
 });
 /*
- * <班级互动>MAp详情绘制
- * var o = this.props.formdata;
- */
+* <班级互动>MAp详情绘制
+* var o = this.props.formdata;
+*/
 var Classnews_show = React.createClass({ 
 	handleClick_pinglun:function(val){
 		  this.selectclass_uuid_val=val;
 		  ajax_classnews_list(this.selectclass_uuid_val);
-	  },
-	  
+	  },	  
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
 		},
@@ -1787,14 +1857,14 @@ var Classnews_show = React.createClass({
 
 
 /*
- * 1.2互动里面单独的评论模板-item
- * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
- * 把评论模板插入空Div里面
- * 
- * */
+* 1.2互动里面单独的评论模板-item
+* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+* 把评论模板插入空Div里面
+* 
+* */
 var Classnews_reply_list_listshow = React.createClass({ 	
 render: function() {
-  return (
+return (
 		  <div>
 		  {this.props.events.data.map(function(event) {
 		      return (
@@ -1806,15 +1876,15 @@ render: function() {
 		  })}
 		
 		    </div>		   
-  );
+);
 }
 }); 
 /*
- * 1.1互动里面单独的评论模板
- * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
- * 把评论模板插入空Div里面
- * 
- * */
+* 1.1互动里面单独的评论模板
+* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+* 把评论模板插入空Div里面
+* 
+* */
 var Classnews_reply_list = React.createClass({ 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
@@ -1857,28 +1927,24 @@ render: function() {
 	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
 	var parentThis=this;
-  return (
+return (
 		  
 		  <div className="am-comment-bd am-comment-flip">
 		  <div id={this.div_reply_save_id}>			</div>
 		    <div id={this.classnewsreply_list_div}></div>
 		    <button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>		
 			
-			</div>
-		 
-		
-		
-		
+			</div>	
 		   
-  );
+);
 }
 }); 
 
 
 /*
- * 绘制评论模板
- * @componentDidMount:添加表情
- * */
+* 绘制评论模板
+* @componentDidMount:添加表情
+* */
 var Classnews_reply_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
 	form_id:"editClassnewsreplyForm",
@@ -1906,56 +1972,33 @@ return (
 );
 }
 }); 
-///*Classnews_show Classnews_EventRow
-// * <班级互动>列表详情内容绘制;
-// * @btn_click_classnews:互动单独详情;
-// * */
-//var Classnews_EventRow = React.createClass({ 
-//	render: function() {
-//	var event = this.props.event;
-//	var className = event.highlight ? 'am-active' :
-//	event.disabled ? 'am-disabled' : '';
-//
-//	return (
-//	<tr className={className} >
-//	<td> 
-//	<input type="checkbox" value={event.uuid} name="table_checkbox" />
-//	</td>
-//	  <td><a href="javascript:void(0);" onClick={btn_click_classnews.bind(this,"show",event)}>{event.title}</a></td>
-//	  <td>{event.create_user}</td>
-//	  <td>{event.update_time}</td>
-//	  <td>{event.reply_time}</td>
-//	  
-//	</tr> 
-//	);
-//	}
-//	}); 
+
 /*
- * <班级互动>添加与编辑按钮中可删除图片显示.
- */
+* <班级互动>添加与编辑按钮中可删除图片显示.
+*/
 var ClassNews_Img_canDel = React.createClass({
 		deleteImg:function(divid){
 			$("#"+divid).remove();
 		},			
 	  render: function() {
 		 return (
-            		<div  className="G_cookplan_Img" >
-  	 	       			<img className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
-  	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
-  	 	       		</div>		
-            	)
+          		<div  className="G_cookplan_Img" >
+	 	       			<img className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
+	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
+	 	       		</div>		
+          	)
 	  }
 	});
 
 
 /*
- * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
- * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
- * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
- * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
- * @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
- * @ajax_classnews_save:提交按钮在Kd_service;
- * */
+* <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
+* @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+* 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+* 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+* @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
+* @ajax_classnews_save:提交按钮在Kd_service;
+* */
 var Classnews_edit = React.createClass({ 
 	selectclass_uuid_val:null,
 	 getInitialState: function() {
@@ -2019,7 +2062,7 @@ return (
 		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
-  			  {G_get_upload_img_Div()}
+			  {G_get_upload_img_Div()}
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 	     </div>
@@ -2076,9 +2119,6 @@ render: function() {
 	};
     return (
     <div>
-    <div className="header">
-    <hr />
-    </div>
 	  <hr/>	  
 	  <div className="am-form-group">
 		<form id="editGroupForm" method="post" className="am-form">
@@ -2279,8 +2319,13 @@ return (
 		     </AMR_ButtonToolbar>
 		     
 		     </div>
-		     
-			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+		    	<footer className="am-comment-footer">
+		    	<div className="am-comment-actions">
+		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	</div>
+		    	</footer>
+		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
 );
@@ -2664,7 +2709,7 @@ render: function() {
 		   <form id="editForm" method="post" className="am-form">
 			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>
 			
-			  <AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+			  <AMR_Input id="classnews_content_replay" type="textarea" rows="4" label="信息发送" placeholder="填写内容" name="message" />
 		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>
 		      
 		    </form>	   
@@ -2862,7 +2907,12 @@ return (
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
 		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
 		     </AMR_ButtonToolbar>	
-			  <Common_Dianzan_show uuid={o.uuid} type={0} />
+		    	<footer className="am-comment-footer">
+		    	<div className="am-comment-actions">
+		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	</div>
+		    	</footer>
+		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
 );
@@ -3290,3 +3340,58 @@ var My_student_tel2 =React.createClass({
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+//——————————————————————————每日任务<绘制>——————————————————————————  
+/*
+ * <每日任务>服务器请求后绘制处理方法；
+ * 
+ * */
+var rect_teacherDailyTask = React.createClass({
+render: function() {
+    return (
+    <div>
+	  <hr/>	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>每日任务</th>
+            <th>任务类型</th>
+            <th>任务状态</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_teacherDailyTask key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * <每日任务>在表单上绘制详细内容;
+ * @点击后调用即时消息(舞台跳转)
+ * */
+var Query_teacherDailyTask = React.createClass({ 
+	btn_students_list_click:function(type){
+		ajax_State_style(type);
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    return (
+	      <tr className={common_teacherDailyTask_status(event.status).className} >
+	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.type)}>{event.title}</a></td>
+
+	        <td>{common_teacherDailyTask_type(event.type)}</td>
+	        <td>{common_teacherDailyTask_status(event.status).status}</td>
+	      </tr> 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±± am-table-bordered 、 .am-table-radius，外层圆角边框通过 box-shadow

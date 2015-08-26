@@ -589,16 +589,7 @@ function ajax_group_edit(m,formdata){
    	});
    };
 
-   /*
-    * (校务管理)<校园列表>内上传LOGO图片
-    * */
-   function btn_class_group_uploadHeadere (){      
-        w_uploadImg.open(function (guid){
-             $ ("#headimg").val(guid);
-              $("#img_head_image").attr("src",G_imgPath+ guid);
-              G_img_down404("#img_head_image");
-         });   
-   }
+
    
 //————————————————————————————校务管理<校园介绍>—————————————————————————    
 /*
@@ -913,16 +904,17 @@ function ajax_group_edit(m,formdata){
  
   
 //———————————————————————————————————课程安排—————————————————————————      
-  /*(课程安排)（服务器请求
+  /*(课程安排)（服务器请求  
    * Teachingplan_EventsTable在common_rect绘制；
+   * 初始进入都为默认第一位
    * */ 
 //记录当前翻页的周数	  <h1>【{this.props.classname}】[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
 var g_cookbookPlan_week_point=0;
 var g_teachingplan_classuuid=null;
-function ajax_teachingplan_listByClass(classuuid,name,weeknum) {
-	if(classuuid)g_teachingplan_classuuid=classuuid;
-	else classuuid=g_teachingplan_classuuid;
-	
+var g_teachingplan_groupuuid=null;
+function ajax_teachingplan_listByClass(groupuuid,classuuid,weeknum){
+	if(!classuuid&&Store.getChooseClass(groupuuid).length>0)classuuid=Store.getChooseClass(groupuuid)[0].uuid;
+	g_teachingplan_classuuid=classuuid;
 	var now=new Date();
 	if(weeknum){
 		now=G_week.getDate(now,weeknum*7);
@@ -931,8 +923,7 @@ function ajax_teachingplan_listByClass(classuuid,name,weeknum) {
 	}
 	var begDateStr=G_week.getWeek0(now);
 	var endDateStr=G_week.getWeek6(now);
-	var Titlename="【"+Store.getClassNameByUuid(classuuid)+"】"+"["+begDateStr+"到"+endDateStr+"]";
-  	Queue.push(function(){ajax_teachingplan_listByClass(classuuid,name,weeknum);},Titlename);
+  	Queue.push(function(){ajax_teachingplan_listByClass(groupuuid,classuuid,weeknum);},"课程安排");
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/teachingplan/list.json";
 	$.ajax({
@@ -945,10 +936,14 @@ function ajax_teachingplan_listByClass(classuuid,name,weeknum) {
 			if (data.ResMsg.status == "success") {
 				if(data.list==null)data.list=[];
 				React.render(React.createElement(Teachingplan_EventsTable, {
+					groupuuid:groupuuid,
 					classuuid:classuuid,
 					events: data.list,
+					weeknum:weeknum,
 					begDateStr:begDateStr,
 					endDateStr:endDateStr,
+					groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -969,11 +964,11 @@ function ajax_teachingplan_listByClass(classuuid,name,weeknum) {
 /*(课程安排)
  * 班级详情内添加编辑课程等按钮方法判断;
  * */ 
-function btn_click_teachingplan(m,uuid,classuuid,ch_day){
+function btn_click_teachingplan(m,uuid,groupuuid,classuuid,ch_day){
 	if(m=="add"){
 		react_ajax_teachingplan_edit({classuuid:classuuid,plandate:ch_day},null,Store.getClassNameByUuid(classuuid)+"课程-添加");
 	}else if(m=="edit"){
-		react_ajax_teachingplan_edit(null,uuid,getClassNameByUuid(classuuid)+"课程-编辑");
+		react_ajax_teachingplan_edit(null,uuid,Store.getClassNameByUuid(classuuid)+"课程-编辑");
 	}else if(m=="del"){
 		//react_ajax_teachingplan_delete(groupuuid,uuid);
 	}
@@ -1601,13 +1596,13 @@ function ajax_class_students_look_info(uuid,title){
 /*  
  * （标头）<班级管理>界面添加学生按钮事件处理
  * @服务器请求:POST rest/student/{uuid}.json;
- * @ajax_teachingplan_listByClass 直接调用课程安排里面的方法一步到位功能
+ * @ajax_teachingplan_dayShow 直接调用课程表的方法；
  * */
 function class_students_manage_onClick(m,classuuid,name){
 if(m=="add"){
 	ajax_class_students_edit({classuuid:classuuid,sex:0},null);
 }else{
-	ajax_teachingplan_listByClass(classuuid,name);
+	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:name});
 }
 };
 
@@ -1645,17 +1640,7 @@ function ajax_class_students_edit(formdata,uuid){
 		}
 	});
 };
-/*
- * （标头）<班级管理>图片上传功能
- * */
-function btn_class_student_uploadHeadere(){
-	
-	w_uploadImg.open(function(guid){
-		$("#headimg").val(guid);
-		 $("#img_head_image").attr("src",G_imgPath+guid); 
-		 G_img_down404("#img_head_image");
-	});	
-}
+
 /*
  * （标头）<班级管理>添加与编辑学生 提交按钮 服务器请求
  * */
