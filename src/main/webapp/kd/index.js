@@ -394,10 +394,9 @@ function menu_group_myList_fn() {
  * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
  * @跳转kd_service发服务器请求
  * */
-
+var announce_types="";
+var Group_name="";
 function menu_announce_list_fn(types,name,groupuuid) {
-	var announce_types="";
-	var Group_name="";
 	var Group_uuid=null;
 	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
 	announce_types=types; 

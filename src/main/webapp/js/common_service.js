@@ -69,6 +69,51 @@ $.AMUI.progress.start();
 
 
 
+
+//收藏按钮单独处理方法不返回;
+function G_ajax_shouc_save(opt){
+	$.AMUI.progress.start();
+		  if(!opt.jsonString){
+			  formObject = $('#'+opt.formName).serializeJson();
+			  opt.jsonString=JSON.stringify(formObject);
+		  }		 
+		  var async=true;
+		  if(opt.async===false){
+			  async=opt.async;
+		  }
+		$.ajax({
+			type : "POST",
+			url : opt.url,
+			processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+			data:opt.jsonString,
+			dataType : "json",
+			contentType : false, 
+			async:async,
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					if(opt.cbFN){
+						opt.cbFN(data);
+					}else{
+						G_msg_pop(data.ResMsg.message);
+						//Queue.doBackFN();
+					}
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				 alert(opt.url+",error:"+textStatus);
+				 console.log(opt.url+',error：', obj);
+				 console.log(opt.url+',error：', textStatus);
+				 console.log(opt.url+',error：', errorThrown);
+			}
+		});
+	}
+
 /*
  * 将幼儿园列表转换成select要求的数据模型
  * @arrlist  数组
@@ -642,7 +687,7 @@ function commons_ajax_favorites_push(title,type,reluuid,url){
 			 url:hostUrl + "rest/favorites/save.json",
 			 cbFN:null,
 			 };
-			 G_ajax_abs_save(opt);
+			 G_ajax_shouc_save(opt);
 	
 };
 

@@ -2037,11 +2037,8 @@ function react_ajax_announce_show(uuid,Titlenmae){
  * */
 //记录当前翻页的周数
 var g_teachingplan_listToShow_point=0;
-var g_cur_myclass=null;
 function ajax_teachingplan_dayShow(num,myclazz) {
 	Queue.push(function(){ajax_teachingplan_dayShow(num,myclazz);},"查看课程");
-//	if(!myclazz)g_cur_myclass=myclazz;
-//	else g_cur_myclass=myclazz;
 	
 	var now=new Date();
 	if(!num){
@@ -2091,16 +2088,14 @@ function ajax_teachingplan_dayShow(num,myclazz) {
  * @formdata有食谱的判断;
  * */
 var g_cookbookPlan_listToShow_point=0;
-var g_cookbookPlan_groupuuid="";
 function ajax_cookbookPlan_dayShow(num,groupuuid) {
 	var now=new Date();
 	if(!num){
 		num=0;
 		g_cookbookPlan_listToShow_point=0;
 	}
-	if(!groupuuid){
-		groupuuid=Store.getCurGroup().uuid;
-	}
+	if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+	
 	var begDateStr=G_week.getDateStr(now,num);
 	var endDateStr=begDateStr;
 	Queue.push(function(){ajax_cookbookPlan_dayShow(num,groupuuid);},"今日食谱");
@@ -2486,10 +2481,8 @@ function ajax_parentContact_tels(tels){
  * @name:搜索功能 按中文名字;
  * @Teacher_info_tel:绘制;
  * */
-var g_teacher_query_name="";
 function ajax_Teacher_listByGroup(groupuuid,name) {
 	  if(!name)name="";
-	  g_teacher_query_name=name;
 	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
 	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
 	$.AMUI.progress.start();
