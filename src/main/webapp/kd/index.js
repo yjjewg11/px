@@ -88,22 +88,22 @@ function login_affter_init(){
 	            "title": "信息管理",
 	            "subMenu": [
 	                        {
-	                          "fn":function(){menu_announce_list_fn(0,"信息管理-校园公告",null);},
+	                          "fn":function(){menu_announce_list_fn(0,"校园公告",null);},
 	                          "link": "##",
 	                          "title": "校园公告"
 	                        },
 	                        {
-	                        	  "fn":function(){menu_announce_list_fn(1,"信息管理-老师公告",null);},
+	                        	  "fn":function(){menu_announce_list_fn(1,"老师公告",null);},
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                              "fn":function(){menu_announce_list_fn(3,"信息管理-精品文章",null);},
+	                              "fn":function(){menu_announce_list_fn(3,"精品文章",null);},
 	                              "link": "##",
 	                              "title": "精品文章"
 	                            },
 	                          {
-	                        	  "fn":function(){menu_announce_list_fn(4,"信息管理-招生计划",null);},
+	                        	  "fn":function(){menu_announce_list_fn(4,"招生计划",null);},
 	                              "link": "##",
 	                              "title": "招生计划"
 	                            }
@@ -397,7 +397,7 @@ function menu_queryMyTimely_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn,"校务管理-校园列表");
+	Queue.push(menu_group_myList_fn,"校园列表");
 	ajax_group_myList();
 }
 /*
@@ -423,7 +423,6 @@ function menu_announce_list_fn(types,name,groupuuid) {
 var g_cookbookPlan_week_point="";
 var cookbook_Group_uuid=null;
 function menu_cookbookPlan_list_fn(groupuuid,weeknum){
-    Queue.push(function(){ajax_cookbookPlan_listByGroup(groupuuid,weeknum);},"食谱管理");
     g_cookbookPlan_week_point=weeknum; 
 	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroup().uuid;
 	else cookbook_Group_uuid=groupuuid;
