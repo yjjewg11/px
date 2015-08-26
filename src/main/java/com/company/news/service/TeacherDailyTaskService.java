@@ -233,7 +233,7 @@ public class TeacherDailyTaskService extends AbstractServcice {
 		Date firstdate=TimeUtils.getDate00(date);
 		Date lastdate=TimeUtils.getDate23(date);
 		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, user.getUuid(),firstdate,lastdate);
-		
+		this.nSimpleHibernateDao.getHibernateTemplate().clear();
 		return list;
 	}
 

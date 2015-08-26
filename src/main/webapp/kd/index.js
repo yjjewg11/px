@@ -306,7 +306,6 @@ function menu_dohome(){
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	var div_Gallery_data=[
-
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
@@ -435,7 +434,9 @@ function menu_cookbookPlan_list_fn(groupuuid,weeknum){
  * @跳转widget发服务器请求
  * */
 function menu_teachingplan_list_fn(){
-	 w_ch_class.open(ajax_teachingplan_listByClass);
+	var groupList=Store.getGroup();
+	var classList=Store.getChooseClass(groupList[0].uuid);
+	ajax_teachingplan_listByClass(groupList[0].uuid,classList[0].uuid);
 }
 /*
  * (标头)<园长信箱>
@@ -538,8 +539,6 @@ function menu_article_list_fn(){
 * */
 function menu_class_students_fn() {
 	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
-	//Queue.push(menu_class_students_fn);
-	//w_ch_class.open(function(uuid){react_ajax_class_students_manage(uuid,"show");},Store.getCurGroup().uuid);
 	react_ajax_class_students_manage(classList[0].uuid,"show");
 };
 /*
@@ -592,8 +591,7 @@ function menu_userinfo_login_fn(){
 	$("#div_seesion_body").hide();
 }
 
-function menu_body_fn (){
-	
+function menu_body_fn (){	
 	$("#div_seesion_body").show();
 	//$("#div_login").hide();
 	$("#div_login").html(null);
