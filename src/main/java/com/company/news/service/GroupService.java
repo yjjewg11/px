@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
@@ -80,7 +81,7 @@ public class GroupService extends AbstractServcice {
 		BeanUtils.copyProperties(group, groupRegJsonform);
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
-
+		group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
 		
@@ -145,15 +146,15 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
-			responseMessage.setMessage("机构名已被注册！");
-			return false;
-		}
+//		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
+//			responseMessage.setMessage("机构名已被注册！");
+//			return false;
+//		}
 		
 		Group group = new Group();
 
 		BeanUtils.copyProperties(group, groupRegJsonform);
-
+		group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 		// 有事务管理，统一在Controller调用时处理异常
@@ -213,13 +214,14 @@ public class GroupService extends AbstractServcice {
 		}
 		
 		// 机构名是否存在
-		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),groupRegJsonform.getUuid())) {
-			responseMessage.setMessage("机构名已被注册！");
-			return false;
-		}
+//		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),groupRegJsonform.getUuid())) {
+//			responseMessage.setMessage("机构名已被注册！");
+//			return false;
+//		}
 			
 		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
 		if (group != null) {
+			group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
 			group.setAddress(groupRegJsonform.getAddress());
 			group.setDescription(groupRegJsonform.getDescription());
 			group.setLink_tel(groupRegJsonform.getLink_tel());
@@ -251,7 +253,9 @@ public class GroupService extends AbstractServcice {
 	 * @return
 	 */
 	public List<Group4Q> query(){
-		return (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q", null);
+		List list=  (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q", null);
+		 this.warpVoList(list);
+		 return  list;
 	}
 	
 	/**
@@ -273,7 +277,9 @@ public class GroupService extends AbstractServcice {
 		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
-		return q.list();
+		List list= q.list();
+		 this.warpVoList(list);
+		 return  list;
 	}
 	
 	
@@ -298,7 +304,9 @@ public class GroupService extends AbstractServcice {
 		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
-		return q.list();
+		List list= q.list();
+		 this.warpVoList(list);
+		 return  list;
 	}
 
 	/**
@@ -315,7 +323,9 @@ public class GroupService extends AbstractServcice {
 		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
-		return q.list();
+		List list= q.list();
+		 this.warpVoList(list);
+		 return  list;
 	}
 
 	/**
@@ -326,7 +336,7 @@ public class GroupService extends AbstractServcice {
 	 */
 	private boolean isExitSameUserByBrand_name(String brand_name) {
 		String attribute = "brand_name";
-		Object group = nSimpleHibernateDao.getObjectByAttribute(Group.class,
+		Object group = nSimpleHibernateDao.getObjectByAttribute(Group4Q.class,
 				attribute, brand_name);
 
 		if (group != null)// 已被占用
@@ -344,8 +354,7 @@ public class GroupService extends AbstractServcice {
 	private boolean isExitSameUserByCompany_name(String company_name,String uuid) {
 		String attribute = "company_name";
 		Group group = (Group) nSimpleHibernateDao.getObjectByAttribute(
-				Group.class, attribute, company_name);
-
+				Group4Q.class, attribute, company_name);
 		if (group != null)// 已被占用
 			{
 			// 判断的是自身
@@ -362,7 +371,44 @@ public class GroupService extends AbstractServcice {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return User.class;
+		return null;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public Group4Q warpVo(Group4Q o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		o.setImg(PxStringUtil.imgSmallUrlByUuid(o.getImg()));
+		return o;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public Group warpVo(Group o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		o.setImg(PxStringUtil.imgSmallUrlByUuid(o.getImg()));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<Object> warpVoList(List<Object> list){
+		for(Object o:list){
+			if(o instanceof Group){
+				warpVo((Group)o);
+			}else if(o instanceof Group4Q){
+				warpVo((Group4Q)o);
+			}
+		}
+		return list;
 	}
 
 }
