@@ -608,7 +608,7 @@ function ajax_group_edit(m,formdata){
 * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
-  function ajax_announce_listByGroup(groupuuid) {
+  function ajax_announce_listByGroup(groupuuid){
   	$.AMUI.progress.start();
   	var url = hostUrl + "rest/announcements/list.json";
   	$.ajax({

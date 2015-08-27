@@ -775,3 +775,9 @@ function common_teacherDailyTask_status(status){
 	 return teacherDailyTask_status; 	
 }
 
+/*
+ * 审批公共组件方法
+ * */
+function common_approval(uuid){
+     console.log("123321");	
+}

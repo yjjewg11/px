@@ -569,13 +569,28 @@ var Announcements_EventsTable = React.createClass({
 	  menu_announce_list_fn(announce_types,Group_name,val)
 	  //ajax_announce_listByGroup(val);
   },
+  handleClick_approval: function(m) {
+	 var uuids=null;
+	 $($("input[name='table_checkbox']")).each(function(){
+		　if(this.checked){
+			 if(uuids==null)uuids=this.value;
+			 else
+			　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+		　}
+		});
+	  if(!uuids){
+		  alert("请勾选复选框！");
+		  return;
+	  }
+	  common_approval(uuids);
+},
   render: function() {
     return (
     <div>
 <AMR_ButtonToolbar>
     <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
     <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
-    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+    <AMR_Button amStyle="danger" onClick={this.handleClick_approval.bind(this)} round>想一下</AMR_Button>
     </AMR_ButtonToolbar>
   <hr/>
   <div className="am-form-group">
