@@ -345,32 +345,28 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
  * @send_user：信息者名字；"即时消息"
  * */
 
+
 var Message_queryMyTimely_myList =React.createClass({displayName: "Message_queryMyTimely_myList",	 
 	render: function() {
 		  return (
-			 React.createElement("div", null, 
-	    		React.createElement("div", {className: "header"}, 
-	    		  React.createElement("hr", null)
-	    		), 
+		    React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		      React.createElement("div", {className: "am-list-news-bd"}, 
+		    	React.createElement("ul", {className: "am-list"}, 
 				  this.props.formdata.data.map(function(event) {
-					  return(							  
-					React.createElement("article", {className: "am-comment-highlight"}, 
-					  React.createElement("div", {className: "am-comment-main"}, 
-						  React.createElement("header", {className: "am-comment-hd"}, 
-						  React.createElement("div", {className: "am-comment-meta"}, 
-						  React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.title, "："), "消息发送于",  
-						  React.createElement("time", null, event.create_time))
-						  ), 
-						  React.createElement("div", {className: "am-comment-bd", onClick: this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}, event.message)
-					  )
-					))						
-				  })
-				  
-			 )				   
-		 
-		  );
-		}
-	})
+					  return(							  										  
+			    React.createElement("li", {className: "am-g am-list-item-dated"}, 
+			  React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}, 
+			    event.title, "： ", event.message
+			  ), 		
+			    React.createElement("div", {className: "am-list-item-text"}, 
+			  	   React.createElement("time", null, "消息发送于 ", event.create_time)
+			  		  )
+			  		     ))})
+    			    )
+    			  )
+    	        ) 		 
+		      );
+		   }})	
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 //——————————————————————————校务管理<校园列表绘制>—————————————————————   
@@ -380,15 +376,12 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
  *@add:添加分校;
  *@edit:编辑分校;
  *@btn_click_group ：在kd_service
+ *@取消校园介绍；增加预览按钮
  * */
 var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
 	handleClick: function(m) {
-		if(m=="add"){
 			btn_click_group(m,{type:"1"});
-			 return;
-		 }if(m=="edit"){
-			btn_click_group(m,{uuid:uuids});
-		 }
+
 	  },
   render: function() {
     return (
@@ -401,6 +394,7 @@ var Group_EventsTable = React.createClass({displayName: "Group_EventsTable",
         React.createElement("thead", null, 
           React.createElement("tr", null, 
             React.createElement("th", null, "品牌名"), 
+            React.createElement("th", null, "预览"), 
             React.createElement("th", null, "机构全称"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "公司地址"), 
@@ -431,7 +425,10 @@ var Group_EventRow = React.createClass({displayName: "Group_EventRow",
     return (
       React.createElement("tr", {className: className}, 
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_group.bind(this,"edit", event)}, event.brand_name)), 
-        React.createElement("td", null, event.company_name), 
+         React.createElement("td", null, 
+    	React.createElement(AMR_Button, {amStyle: "primary", onClick: btn_click_group.bind(this,"show",event), round: true}, "预览")
+        ), 
+          React.createElement("td", null, event.company_name), 
         React.createElement("td", null, " ", event.link_tel), 
         React.createElement("td", null, event.address), 
         React.createElement("td", null, event.create_time)
@@ -1053,33 +1050,28 @@ return (
  * @ajax_boss_message_list绑定事件然后开始绘制舞台；
  * */
 var Boss_student_tel =React.createClass({displayName: "Boss_student_tel",
-		render: function() {
-	     var o =this.state;	
-		 return (
-		 		React.createElement("div", null, 
-			    React.createElement(AMUIReact.List, {static: true}, 
-		    	this.props.formdata.map(function(event) {
-		            return (
-		           React.createElement(AMUIReact.ListItem, null, 
-			          React.createElement("li", {className: "am-comment"}, 	
-			  		  	React.createElement("a", {href: "javascript:void(0);"}, 
-			  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
-			  		  	), 
-		           "家长", event.send_user, "的信息",     
-		            React.createElement(AMR_ButtonToolbar, null, 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
-
-		            )
-		            )
-		            ));	            
-		          })		      			      
-			      )
-		 	     ) 		 
-		 );
-	        }
-		 });
-
-
+	render: function() {
+     var o =this.state;	
+	 return (
+	 	React.createElement("div", null, 
+	 	  React.createElement("hr", null), 
+	 	    React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
+	    	     this.props.formdata.map(function(event) {
+	              return (
+	              React.createElement("li", {className: "am-comment"}, 	
+	      	       React.createElement("a", {href: "javascript:void(0);"}, 
+	   	          React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+	      	     ), 
+	            "家长", event.send_user, "的信息",     
+	           React.createElement(AMR_ButtonToolbar, null, 		            
+	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+	        )
+	       ));})		      			      
+		 )
+	 	) 		 
+	     );
+        }
+	 });
 
 
 /*
@@ -2664,7 +2656,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  		        React.createElement(AMR_Button, {amStyle: "success", round: true}, "邀请全部")	
 	  		        ), 
-	  	  	       React.createElement(AMUIReact.List, null, 
+	  	  	       React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	  	  			this.props.formdata.map(function(event) {
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(
@@ -2679,21 +2671,16 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			  	  					React.createElement(AMR_Button, {amStyle: "revise", round: true}, "邀请中")		
 			  	  				);
 	  	  				}
-	  	  		        return (React.createElement(AMUIReact.ListItem, null, 
-				          React.createElement("li", {className: "am-comment"}, 	
-				  		  	React.createElement("a", {href: "javascript:void(0);"}, 
-				  		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
-				  		  	), 
+	  	  		        return (
+	  	  		       React.createElement("li", null, 
 	  	  		        event.student_name, "的", event.typename, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
-	  	  		        React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
-	  	  		        React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
-	  	  		        ListItem
-	  	  		        )
-	  	  		         )
-	  	  		        ));
-	  	  		      })		      			      
-	  	  		      )
+	  	  		         React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
+	  	  		          React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
+	  	  		           ListItem
+	  	  		          )
+	  	  		       ));})		      			      
+	  	  		     )	
 				  
 		 	     ) 
 		     );
@@ -3167,7 +3154,6 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
-            React.createElement("th", null, "头像"), 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
             React.createElement("th", null, "邮箱"), 
@@ -3198,17 +3184,11 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 	    return (
 	      React.createElement("tr", {className: className}, 
-          React.createElement("li", {className: "am-comment"}, 
-          React.createElement("td", null, 
-		  	React.createElement("a", {href: "javascript:void(0);"}, 
-		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
-		  	)), 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
-	        )
 	        ) 
 	    );
 	  }
