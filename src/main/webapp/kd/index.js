@@ -82,6 +82,11 @@ function login_affter_init(){
 	                          "title": "校园公告"
 	                        },
 	                        {
+                                "link": "##",
+                                "fn":function(){ajax_classnews_list_div(1);},
+                                "title": "班级互动"
+                              },
+	                        {
 	                        	  "fn":function(){menu_announce_list_fn(1,"老师公告",null);},
 	                        	  "link": "##",
 	                            "title": "老师公告"
@@ -101,8 +106,18 @@ function login_affter_init(){
 		  };
 	if(G_user_hasRight("KD_announce_m")){
 		menu_data.push(t_menu);
-	}
+	};
+	
+	
+	t_menu={
+          "link": "##",
+          "title": "老师管理",
+          "fn":menu_userinfo_list_fn
+        };
 
+	if(G_user_hasRight("KD_teacher_m")){
+		menu_data.push(t_menu);
+	}
 	
 //————————————食谱管理<权限>——————————	
 	t_menu={
@@ -137,48 +152,42 @@ function login_affter_init(){
 	if(G_user_hasRight("KD_Leader_Msg_m")){
 		menu_data.push(t_menu);
 	}
-
-	
-	
+	t_menu= {
+            "link": "##",
+            "fn":menu_class_list_fn,
+            "title": "班级管理"
+          };
+		if(G_user_hasRight("AD_class_m")){
+			menu_data.push(t_menu);
+		}
+		t_menu= {
+                "link": "##",
+                "fn":menu_accounts_list_fn,
+                "title": "收支记录"
+              };
+			if(G_user_hasRight("KD_accounts_m")){
+				menu_data.push(t_menu);
+			}
+	t_menu= {
+            "link": "##",
+            "title": "学生列表",
+            "fn":menu_query_list_fn
+          };
+		if(G_user_hasRight("KD_student_allquery")){
+			menu_data.push(t_menu);
+		}	
+		t_menu= {
+                "link": "##",
+                "title": "统计",
+                "fn":menu_statistics_list_fn
+              };
+			if(G_user_hasRight("KD_statistics_m")){
+				menu_data.push(t_menu);
+			}	
 	
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data=[
-	           		
-	        		  
-	        		  {
-	                      "link": "##",
-	                      "title": "老师管理",
-	                      "fn":menu_userinfo_list_fn
-	                    },
-	                    {
-	                        "link": "##",
-	                        "fn":menu_class_list_fn,
-	                        "title": "班级管理"
-	                      },
-	                        {
-	                            "link": "##",
-	                            "fn":menu_accounts_list_fn,
-	                            "title": "收支记录"
-	                          },                     
-	                        {
-	                            "link": "##",
-	                            "title": "互动",
-	                            "subMenu": [
-	                                        {
-	                                            "link": "##",
-	                                            "fn":function(){ajax_classnews_list_div(1);},
-	                                            "title": "班级互动"
-	                                          },
-	                                          
-	  	                                    {
-	  	                                        "link": "##",
-	  	                                     // "fn":menu_classnews_list_fn,
-	  	                                        "title": "邀请家长(未)"
-	  	                                      }
-	                                        ]
-	                           
-	                          },	
 	                        
 	                {
 	                  "link": "##",
@@ -201,23 +210,17 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                },      	
-	                {
-	                      "link": "##",
-	                      "title": "学生列表",
-	                      "fn":menu_query_list_fn
-	                    },
-	                {
-	                      "link": "##",
-	                      "title": "统计",
-	                      "fn":menu_statistics_list_fn
-	                    }
+	                }     	
+	                
+	                
 	                
 	              ];
 	
 	menu_data=menu_data.concat(div_menu_data);
-
+	$("#div_header").html("");
 	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
+	
+	$("#div_menu").html("");
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	MessageTimer.start();
 }
@@ -294,6 +297,7 @@ function menu_dohome(){
 	var myhead_img=hostUrl+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
+	
 	var div_Gallery_data=[
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
@@ -359,6 +363,23 @@ function menu_dohome(){
 			                    	    "title": "每日任务"
 			                    	  }
 	                    	  ];
+	/**
+	 * 禁用用户
+	 */
+	if(!G_user_status_normal()){
+		div_Gallery_data=[
+	                    	  {
+	                    		  "img": hostUrl+"i/jpwz.png",
+                                  "link": "javascript:menu_article_list_fn()",
+                                  "title": "精品文章"
+                                },
+		                      {
+	                    	    "img": hostUrl+"i/shoucang.png",
+	                    	    "link": "javascript:menu_favorites_push_fn()",
+	                    	    "title": "我的收藏"
+	                    	  }
+                    	  ];
+	}
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 

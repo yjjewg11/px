@@ -156,9 +156,11 @@ var Userinfo_edit = React.createClass({
 	  var o = this.state;
 	  var passwordDiv=null;
 	  if(!o.uuid){
+		  o.password="123456";
+		  o.password1="123456";
 		  passwordDiv=(
 				  <div>
-				  <label htmlFor="password">密码:</label>
+				  <label htmlFor="password">密码:(默认:123456)</label>
     		      <PxInput  icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
     		      <br/>
     		      
@@ -424,10 +426,10 @@ var Div_userinfo_updatePasswordBySms = React.createClass({
 
 		    <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
-		      <button type="button" onClick={ajax_sms_sendCode_byReset} className="am-btn am-btn-primary">发送验证码</button>
+		      <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",2)} className="am-btn am-btn-primary">发送验证码</button>
 		      <br/>
 		      <label htmlFor="smscode">验证码:</label>
-		      <input type="text" name="smscode" id="smscode"  placeholder=""/>
+		      <input type="text" name="smscode" id="smscode"  placeholder="验证码"/>
 		    
 		      <br/>
 		      <label htmlFor="password">密码:</label>

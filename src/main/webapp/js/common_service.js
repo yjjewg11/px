@@ -464,13 +464,18 @@ function menu_userinfo_updatePasswordBySms_fn(){
 	React.render(React.createElement(Div_userinfo_updatePasswordBySms,null)
 			, document.getElementById('div_login'));
 }
-function ajax_sms_sendCode_byReset(){
+/**
+ * 发送验证码
+ * @param inputid.去获取值的inputid
+ * @param type.1:注册,2:找回密码
+ */
+function ajax_sms_sendCode(inputid,type){
 	  var url = hostUrl + "rest/sms/sendCode.json";
 		$.ajax({
 			type : "GET",
 			url : url,
 			dataType : "json",
-			data:{tel:$("#tel").val(),type:2},
+			data:{tel:$(inputid).val(),type:type},
 			 async: true,
 			success : function(data) {
 				$.AMUI.progress.done();
@@ -487,6 +492,7 @@ function ajax_sms_sendCode_byReset(){
 			}
 		});
 }
+
 
 
 //用户登陆

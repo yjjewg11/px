@@ -73,6 +73,18 @@ function G_user_hasRight(s){
 }
 
 /**
+ * 判断用户状态是否正常.0:表示正常,其他都是异常情况,异常帐号,只有最少权限.
+ * @param m
+ */
+function G_user_status_normal(){
+	
+	if(Store.getUserinfo()&&Store.getUserinfo().disable==0){
+		return true;
+	}
+	return false;
+}
+
+/**
  * 成功消息提示,3秒后消失
  * @param m
  */
