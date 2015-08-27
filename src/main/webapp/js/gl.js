@@ -77,7 +77,7 @@ function G_user_hasRight(s){
  * @param m
  */
 function G_user_status_normal(){
-	console.log("权限判断参数S",s);
+	
 	if(Store.getUserinfo()&&Store.getUserinfo().disable==0){
 		return true;
 	}

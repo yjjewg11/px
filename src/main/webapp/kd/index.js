@@ -228,8 +228,10 @@ function login_affter_init(){
 	              ];
 	
 	menu_data=menu_data.concat(div_menu_data);
-
+	$("#div_header").html("");
 	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
+	
+	$("#div_menu").html("");
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	MessageTimer.start();
 }
