@@ -126,11 +126,12 @@ public class ClassNewsController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		String type=request.getParameter("type");
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			User user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
-			PageQueryResult pageQueryResult = classNewsService.query(user,"myByTeacher",
+			PageQueryResult pageQueryResult = classNewsService.getClassNewsByMy(user,type,
 					request.getParameter("classuuid"), pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);

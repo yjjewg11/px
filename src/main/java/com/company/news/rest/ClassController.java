@@ -62,14 +62,6 @@ public class ClassController extends AbstractRESTController {
 			return "";
 		}
 		User user=this.getUserInfoBySession(request);
-		
-		if(StringUtils.isNotEmpty(classRegJsonform.getUuid())){
-			boolean b1=classService.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
-			if(!b1&&RightUtils.hasRight(RightConstants.AD_class_m,request)){
-				responseMessage.setMessage("不能修改,不是班主任或者管理员");
-				return "";
-			}
-		}
 		//设置当前用户
 		classRegJsonform.setCreate_user(user.getName());
 		classRegJsonform.setCreate_useruuid(user.getUuid());

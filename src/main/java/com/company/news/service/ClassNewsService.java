@@ -127,6 +127,32 @@ public class ClassNewsService extends AbstractServcice {
 		return pageQueryResult;
 
 	}
+	
+	/**
+	 * 查询我班级相关的班级数据.
+	 * 
+	 * @return
+	 */
+	public PageQueryResult getClassNewsByMy(User user ,String type,String classuuid, PaginationData pData) {
+		String hql = "from ClassNews where status=0 ";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		else if("all".equals(type)) {//查询所有数据
+			
+		}else  {
+			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
+		}
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		List<ClassNews> list=pageQueryResult.getData();
+		this.warpVoList(list, user.getUuid());
+		
+		return pageQueryResult;
+
+	}
 
 	
 	/**

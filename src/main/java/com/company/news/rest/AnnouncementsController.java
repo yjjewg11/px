@@ -87,7 +87,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("修改成功");
+		responseMessage.setMessage("保存成功");
 		return "";
 	}
 
@@ -103,7 +103,16 @@ public class AnnouncementsController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
 		try {
+			String groupuuid=request.getParameter("groupuuid");
+			if(StringUtils.isBlank(groupuuid)){
+				groupuuid=this.getMyGroupUuidsBySession(request);
+			}
 			List list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -221,6 +230,10 @@ public class AnnouncementsController extends AbstractRESTController {
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 				responseMessage.setMessage("数据不存在.");
+				return "";
+			}
+			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
+				responseMessage.setMessage("数据已被禁止浏览!");
 				return "";
 			}
 			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));

@@ -3,6 +3,8 @@ package com.company.news.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
@@ -12,10 +14,12 @@ import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -27,6 +31,8 @@ import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -114,18 +120,47 @@ public class ClassService extends AbstractServcice {
 	 * @return
 	 */
 	public boolean update(ClassRegJsonform classRegJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage,User user, HttpServletRequest request) throws Exception {
 		if (StringUtils.isBlank(classRegJsonform.getName())
 				|| classRegJsonform.getName().length() > 45) {
 			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
 			return false;
 		}
+		
+		PClass obj = (PClass)nSimpleHibernateDao.getObject(PClass.class,classRegJsonform.getUuid());
+		//班级所在学校切换是,代理云,只能切换到其他学校一次
+		if(obj.getGroupuuid()!=null&&!obj.getGroupuuid().equals(classRegJsonform.getGroupuuid())){
+			//不允许重其他学校切换到代理平台
+			if(SystemConstants.Group_uuid_wjd.equals(classRegJsonform.getGroupuuid())){
+				responseMessage.setMessage("不能修改,不能从其他幼儿园切换到云代理幼儿园!");
+				return false;
+			}
+		}
+		//如果 是更新,只有班主任和管理员可以进行修改,
+			boolean b1=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
+			if(!b1){
+				
+				if(!b1&&RightUtils.hasRight(RightConstants.AD_class_m,request)){
+					responseMessage.setMessage("不能修改,不是班主任或者管理员");
+					return false;
+				}
+				responseMessage.setMessage("不能修改,不是班主任或者管理员");
+				return false;
+			}
 
-		// 更新班级名字
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update PClass set name=? where uuid =?",
-				classRegJsonform.getName(), classRegJsonform.getUuid());
-
+			obj.setName(classRegJsonform.getName());
+			obj.setGroupuuid(classRegJsonform.getGroupuuid());
+			this.nSimpleHibernateDao.save(obj);
+			//更新学生学校.
+			if(obj.getGroupuuid()!=null&&!obj.getGroupuuid().equals(classRegJsonform.getGroupuuid())){
+				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update Student set  groupuuid=? where classuuid=?",
+				classRegJsonform.getGroupuuid(),classRegJsonform.getUuid());
+				
+				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+						"update StudentContactRealation set  groupuuid=? where class_uuid=?",
+						classRegJsonform.getGroupuuid(),classRegJsonform.getUuid());
+			}
 		// 先删除原来数据
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 				"delete from UserClassRelation where classuuid =?",

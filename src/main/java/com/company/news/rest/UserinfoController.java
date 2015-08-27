@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
@@ -54,66 +55,79 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		User user;
 		try {
-			user = userinfoService.login(userLoginForm, model, request,
-					responseMessage);
-			if (user==null)// 请求服务返回失败标示
+			User user;
+			try {
+				user = userinfoService.login(userLoginForm, model, request,
+						responseMessage);
+				if (user==null)// 请求服务返回失败标示
+					return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
 				return "";
+			}
+			
+			
+			// 创建session
+			HttpSession session = SessionListener
+					.getSession((HttpServletRequest) request);
+
+			if (session != null) {
+				User userInfo = (User) session
+						.getAttribute(RestConstants.Session_UserInfo);
+				if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
+					// 当前用户,在线直接返回当前用户.
+					this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
+					// 返回用户信息
+					UserInfoReturn userInfoReturn = new UserInfoReturn();
+					try {
+						BeanUtils.copyProperties(userInfoReturn, user);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					model.put(RestConstants.Return_JSESSIONID, session.getId());
+					model.put(RestConstants.Return_UserInfo, userInfoReturn);			
+				}
+			}else{
+
+			session = request.getSession(true);
+			// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+			SessionListener.putSessionByJSESSIONID(session);
+			session.setAttribute(RestConstants.Session_UserInfo, user);
+			// 返回客户端用户信息放入Map
+			// putUserInfoReturnToModel(model, request);
+
+			//取相关权限
+			model.put(RestConstants.Return_JSESSIONID, session.getId());
+			List rightList=rightService.getRightListByUser(user);
+			String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+			//取相关机构
+			List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
+			//老数据兼容,如果没有关联默认学校,则关联.
+			if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
+				if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
+					return "";
+				}
+			}
+			session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
+			session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+			}
+			
+			//设置当前用户是否管理员
+			boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
+			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
+
+			
+			// 返回用户信息
+			this.putUserInfoReturnToModel(model, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
-		
-		
-		// 创建session
-		HttpSession session = SessionListener
-				.getSession((HttpServletRequest) request);
-
-		if (session != null) {
-			User userInfo = (User) session
-					.getAttribute(RestConstants.Session_UserInfo);
-			if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
-				// 当前用户,在线直接返回当前用户.
-				this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
-				// 返回用户信息
-				UserInfoReturn userInfoReturn = new UserInfoReturn();
-				try {
-					BeanUtils.copyProperties(userInfoReturn, user);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				model.put(RestConstants.Return_JSESSIONID, session.getId());
-				model.put(RestConstants.Return_UserInfo, userInfoReturn);			
-			}
-		}else{
-
-		session = request.getSession(true);
-		// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
-		SessionListener.putSessionByJSESSIONID(session);
-		session.setAttribute(RestConstants.Session_UserInfo, user);
-		// 返回客户端用户信息放入Map
-		// putUserInfoReturnToModel(model, request);
-
-		//取相关权限
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
-		List rightList=rightService.getRightListByUser(user);
-		String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
-		//取相关机构
-		List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());		
-		session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
-		session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
-		}
-		
-		//设置当前用户是否管理员
-		boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
-		session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-
-		
-		// 返回用户信息
-		this.putUserInfoReturnToModel(model, request);
 		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("登陆成功");
@@ -145,9 +159,14 @@ public class UserinfoController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
+		
+		if (userinfoService.isExitSameUserByLoginName(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码已被注册！");
+			return "";
+		}
 		// 默认注册未普通用户类型
 		userRegJsonform.setType(UserinfoService.USER_type_teacher);
-
+		userRegJsonform.setGroup_uuid(SystemConstants.Group_uuid_wjd);
 		try {
 			boolean flag = userinfoService
 					.reg(userRegJsonform, responseMessage);
@@ -156,7 +175,7 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 
@@ -247,16 +266,16 @@ public class UserinfoController extends AbstractRESTController {
 //		}
 		// 默认添加普通用户类型,管理员只有一个.
 		userRegJsonform.setType(UserinfoService.USER_type_teacher);
-
+		String mygroup=this.getMyGroupUuidsBySession(request);
 		try {
 			boolean flag = userinfoService
-					.add(userRegJsonform, responseMessage);
+					.add(userRegJsonform, responseMessage,mygroup);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 
@@ -363,7 +382,7 @@ public class UserinfoController extends AbstractRESTController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -411,7 +430,7 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 
@@ -456,7 +475,7 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 
@@ -499,7 +518,7 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 
@@ -520,7 +539,7 @@ public class UserinfoController extends AbstractRESTController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 		model.addAttribute(RestConstants.Return_G_entity,a);
@@ -537,7 +556,7 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 		}
 		model.addAttribute("mygroup_uuids",mygroup_uuids);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -557,12 +576,11 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
 
 		if(!RightUtils.hasRight(RightConstants. KD_teacher_m,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
             return "";
-}
+		}
 
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
@@ -585,15 +603,16 @@ public class UserinfoController extends AbstractRESTController {
 		
 		//设置当前用户
 		User user=this.getUserInfoBySession(request);
+		String mygroup=this.getMyGroupUuidsBySession(request);
 		try {
 			if(StringUtils.isEmpty(userRegJsonform.getUuid())){
 				boolean flag = userinfoService
-						.reg(userRegJsonform, responseMessage);
+						.add(userRegJsonform, responseMessage,mygroup);
 				if (!flag)// 请求服务返回失败标示
 					return "";
 			}
 			else{
-				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage);
+				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage,mygroup);
 				if (user1==null)// 请求服务返回失败标示
 					return "";
 			}
@@ -602,7 +621,7 @@ public class UserinfoController extends AbstractRESTController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 

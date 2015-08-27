@@ -69,32 +69,34 @@ public class AnnouncementsService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(announcements);
 		// 如果类型是班级通知
-				if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
-					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-					pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-				}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
-					pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-				}
-	
-		// 如果类型是班级通知
-		if (announcements.getType().intValue() == SystemConstants.common_type_banjitongzhi) {
-			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
-				responseMessage.setMessage("Classuuids不能为空！");
-				return false;
-			}
-
-			String[] classuuid = announcementsJsonform.getClassuuids().split(
-					",");
-			for (String s : classuuid) {
-				// 保存用户机构关联表
-				AnnouncementsTo announcementsTo = new AnnouncementsTo();
-				announcementsTo.setClassuuid(s);
-				announcementsTo.setAnnouncementsuuid(announcements.getUuid());
-				// 有事务管理，统一在Controller调用时处理异常
-				this.nSimpleHibernateDao.getHibernateTemplate().save(
-						announcementsTo);
-			}
+		
+		
+		if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+		}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 		}
+	
+//		// 如果类型是班级通知
+//		if (announcements.getType().intValue() == SystemConstants.common_type_banjitongzhi) {
+//			if (StringUtils.isBlank(announcementsJsonform.getClassuuids())) {
+//				responseMessage.setMessage("Classuuids不能为空！");
+//				return false;
+//			}
+//
+//			String[] classuuid = announcementsJsonform.getClassuuids().split(
+//					",");
+//			for (String s : classuuid) {
+//				// 保存用户机构关联表
+//				AnnouncementsTo announcementsTo = new AnnouncementsTo();
+//				announcementsTo.setClassuuid(s);
+//				announcementsTo.setAnnouncementsuuid(announcements.getUuid());
+//				// 有事务管理，统一在Controller调用时处理异常
+//				this.nSimpleHibernateDao.getHibernateTemplate().save(
+//						announcementsTo);
+//			}
+//		}
 
 		return true;
 	}
@@ -157,7 +159,7 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @return
 	 */
 	public PageQueryResult query(String groupuuid, PaginationData pData) {
-		String hql = "from Announcements4Q where type=0";
+		String hql = "from Announcements4Q where type=0 and status=0 ";
 		if (StringUtils.isNotBlank(groupuuid)){
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		}
@@ -178,7 +180,7 @@ public class AnnouncementsService extends AbstractServcice {
 		if (StringUtils.isBlank(groupuuid))
 			return null;
 
-		String hql = "from Announcements4Q where groupuuid='" + groupuuid + "'";
+		String hql = "from Announcements4Q where    groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 
@@ -221,11 +223,11 @@ public class AnnouncementsService extends AbstractServcice {
 
 		} else {// 机构公告或老师公告
 
-			String hql = "from Announcements4Q where ";
+			String hql = "from Announcements4Q where  status=0 ";
 			if (StringUtils.isNotBlank(groupuuid))
-				hql += "groupuuid='" + groupuuid + "'";
+				hql += "and groupuuid='" + groupuuid + "'";
 			else{
-				hql += "groupuuid in (select groupuuid from UserGroupRelation where useruuid='"+user.getUuid()+"')";
+				hql += "and groupuuid in (select groupuuid from UserGroupRelation where useruuid='"+user.getUuid()+"')";
 			}
 			if (StringUtils.isNotBlank(type))
 				hql += " and type=" + type;

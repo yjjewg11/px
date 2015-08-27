@@ -8,7 +8,12 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.MyUbbUtils;
+import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Message;
 import com.company.news.entity.TeacherJudge;
+import com.company.news.entity.User4Q;
 
 /**
  * 
@@ -87,14 +92,37 @@ public class TeachingJudgeService extends AbstractServcice {
 				+ date_end + "'";
 
 		Query q = s.createSQLQuery(sql).addEntity("t0", TeacherJudge.class);
-
-		return q.list();
+		return this.warpVoList(q.list());
 	}
 
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return TeachingJudgeService.class;
+		return TeacherJudge.class;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public TeacherJudge warpVo(TeacherJudge o){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		User4Q user=(User4Q)CommonsCache.get(o.getTeacheruuid(), User4Q.class);
+		if(user!=null)
+		o.setTeacher_name(user.getName());
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<TeacherJudge> warpVoList(List<TeacherJudge> list){
+		for(TeacherJudge o:list){
+			warpVo(o);
+		}
+		return list;
 	}
 
 }
