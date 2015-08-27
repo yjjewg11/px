@@ -115,7 +115,8 @@ render: function() {
  	      </div>
  	     <div className="am-cf am-margin-top-sm">
  	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
- 	     </div>
+ 	     <a href="javascript:void(0);"  onClick={menu_userinfo_reg_fn} className="am-fr">老师注册</a>
+ 	      </div>
  	     <br/>
  	    </form>
  	    <hr/>
@@ -273,14 +274,7 @@ var Div_userinfo_reg = React.createClass({
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
 		    <form id="regform" method="post" className="am-form">
 		     <input type="hidden" name="type"  value="1"/>
-		    <div className="am-form-group">
-		    
-		    <select id="reg_group_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" >
-		      {this.props.group_list.map(function(event) {
-		          return (<option value={event.uuid} >{event.brand_name}</option>);
-		        })}
-		      </select>
-		        </div>		      
+		        
 		      <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
 		      <br/>
@@ -1764,26 +1758,29 @@ var Announcements_class_Div_list = React.createClass({
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
-		 }if(m=="edit"){			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_classnews(m,{uuid:uuids});
+		 }else{
+			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
 		 }
+//		if(m=="edit"){			
+//			 var uuids=null;
+//			 $($("input[name='table_checkbox']")).each(function(){
+//				
+//				　if(this.checked){
+//					 if(uuids==null)uuids=this.value;
+//					 else
+//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+//				　}
+//				});
+//			  if(!uuids){
+//				  alert("请勾选复选框！");
+//				  return;
+//			  }
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//					alert("只能选择一个进行编辑！");
+//					return;
+//				}
+//			  btn_click_classnews(m,{uuid:uuids});
+//		 }
 	  },
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -1791,7 +1788,8 @@ render: function() {
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
-		 </AMUIReact.ButtonToolbar>
+		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth")} round>他人互动</AMUIReact.Button>
+		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
 		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
@@ -2211,6 +2209,157 @@ var Query_EventRow = React.createClass({
 	  }
 	}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————评价老师<绘制>——————————————————————————  
+/*
+ * 评价老师服务器请求后绘制处理方法；
+ * @</select>下拉多选框;
+ * @handleChange_stutent_Selected:学校查询；
+ * @handleChange_class_Selected::班级查询；
+ * @btn_query_click:名字查找；
+ * */
+var Query_teachingjudge_list = React.createClass({
+	group_uuid:null,
+	class_uuid:null,
+	handleChange_stutent_Selected: function(val) {
+		  if(val=="0"){
+			  this.group_uuid="";
+		  }else{
+			  this.group_uuid=val;
+		  };
+		  this.class_uuid="";
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+	  }, 
+	  handleChange_class_Selected: function(val) {
+		  if(val=="1"){
+			  this.class_uuid="";
+		  }else{
+			  this.class_uuid=val;
+		  };
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		  }, 
+		btn_query_click:function(){
+			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		},
+render: function() {
+	this.props.group_list.unshift({value:"0",label:"所有"});
+	this.props.class_list.unshift({value:"1",label:"所有"});
+	if(this.props.group_uuid==""){			
+		this.props.group_uuid="0";
+	};
+	if(this.props.class_uuid==""){			
+		this.props.class_uuid="1";
+	};
+    return (
+    <div>
+	  <hr/>	  
+	  <div className="am-form-group">
+		<form id="editGroupForm" method="post" className="am-form">
+        <div className= "am-cf">
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
+	  </div>
+	  
+	  <div className="am-form-group am-margin-top-xs">
+	  	<div className="am-u-sm-6">
+	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+	  	</div>
+	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+	   </div>
+	  </form>
+	  
+	  
+	  </div>	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>姓名</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>身份证</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_teachingjudge_EventRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * 评价老师在表单上绘制详细内容;
+ * @点击后直接调用学生详情方法
+ * 调用ajax_class_students_look_info
+ * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+ * */
+var Query_teachingjudge_EventRow = React.createClass({ 
+	btn_students_list_click:function(uuid,nmae){
+		ajax_class_students_look_info(uuid,nmae)
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	      <tr className={className} >
+	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
+	        <td>{event.nickname}</td>
+	        <td>{event.sex=="0"?"男":"女"}</td>
+	        <td>{event.birthday}</td>
+	        <td>{event.idcard}</td>
+	      </tr> 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

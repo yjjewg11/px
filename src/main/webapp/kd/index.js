@@ -210,9 +210,13 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                }     	
+	                },     	
 	                
-	                
+	                   {
+		                  "link": "##",
+		                  "title": "老师评价",
+		                  "fn":menu_teachingjudge_list_fn
+		                }
 	                
 	              ];
 	
@@ -500,6 +504,19 @@ function menu_statistics_list_fn() {
 		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
+/*
+ *menu_teachingjudge_list_fn 
+ * 
+ * 
+ * */
+/*
+ * (标头)评价老师
+ * @跳转kd_service发服务器请求
+ * */
+function menu_teachingjudge_list_fn () {
+	//ajax_teachingjudge_query();
+};
+
 
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
@@ -584,7 +601,9 @@ function menu_teacherDailyTask_fn() {
 };
 //老师注册
 function menu_userinfo_reg_fn(){	
-	ajax_loaddata_group_list_for_userinfo_reg();	
+	React.render(React.createElement(Div_userinfo_reg,null)
+			, document.getElementById('div_login'));
+	$("#div_seesion_body").hide();
 }
 
 function menu_userinfo_login_fn(){

@@ -287,35 +287,35 @@ function ajax_getUserinfo(isInit) {
 //};
 
 /*
- * 老师注册（服务器请求）
+ * 老师注册（服务器请求） 不用了
  * @Div_userinfo_reg:在kd_rect;
  * */
-function ajax_loaddata_group_list_for_userinfo_reg() {
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/group/list.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Div_userinfo_reg,{group_list:data.list})
-						, document.getElementById('div_login'));
-				$("#div_seesion_body").hide();
-				
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-}
+//function ajax_loaddata_group_list_for_userinfo_reg() {
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/group/list.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: false,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Div_userinfo_reg,{group_list:data.list})
+//						, document.getElementById('div_login'));
+//				$("#div_seesion_body").hide();
+//				
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : function( obj, textStatus, errorThrown ){
+//			$.AMUI.progress.done();
+//			alert(url+",error:"+textStatus);
+//		}
+//	});
+//}
 /*
  * 每5分钟消息是否有新消息服务请求
  * @data.count:0没新消息   大于0有新消息;
@@ -343,7 +343,6 @@ var MessageTimer={
 	 */
 	 pxMessageTimer:function (){
 		  setTimeout(MessageTimer.do_loop,5*60*1000);
-		$.AMUI.progress.start();
 	    var url = hostUrl + "rest/pushMessage/queryMsgCount.json";
 		$.ajax({
 			type : "GET",
@@ -352,7 +351,6 @@ var MessageTimer={
 			dataType : "json",
 			 async: false,
 			success : function(data) {
-				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {					
 	              if(data.count=0){
 	            	  MessageTimer.upate_img_status_read();
@@ -361,14 +359,9 @@ var MessageTimer={
 	            	 // alert( $("[src$='i/icon-msg-wu.png']").attr("src"));
 	            	  $("[src$='i/icon-msg-wu.png']").attr("src",hostUrlCDN+"i/icon-msg-you.png");
 	              }				
-				} else {
-					alert("加载数据失败："+data.ResMsg.message);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-			}
+			error : function( obj, textStatus, errorThrown ){}			
 		});
 	}
 };
@@ -1929,6 +1922,53 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 	};
 
 	
+//——————————————————————————评价老师—————————————————————————— 
+/*
+ * <评价老师>（获取用户列表服务器请求）；
+ * 各属性置空开始，方便后面的的机构、班级、名字搜索；
+ * */
+function ajax_teachingjudge_query(groupuuid,classuuid,name,pageNo) {
+	Queue.push(function(){ajax_teachingjudge_query(groupuuid,classuuid,name,pageNo);},"学生列表");
+	  if(!groupuuid)groupuuid="";
+	  if(!classuuid)classuuid="";
+	  if(!name)name="";
+	  if(!pageNo)pageNo="";
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+		$.ajax({          
+			type : "GET",  
+			url : url,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(Query_teachingjudge_list, {
+	  					group_uuid:groupuuid,
+	  					class_uuid:classuuid,
+	  					name:name,
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+	  					class_list:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+	  					events: data.list.data,
+	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	  					
+	  				}), document.getElementById('div_body'));
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				$.AMUI.progress.done();
+				alert(url+","+textStatus+"="+errorThrown);
+				 console.log(url+',error：', obj);
+				 console.log(url+',error：', textStatus);
+				 console.log(url+',error：', errorThrown);
+			}
+		});
+	};
+		
+		
+		
 	
 //——————————————————————————(大图标)班级互动—————————————————————————— 	  
 /*

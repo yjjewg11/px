@@ -114,8 +114,9 @@ render: function() {
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
  	     React.createElement("div", {className: "am-cf am-margin-top-sm"}, 
- 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn, className: "am-fl"}, "幼儿园注册")
- 	     ), 
+ 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn, className: "am-fl"}, "幼儿园注册"), 
+ 	     React.createElement("a", {href: "javascript:void(0);", onClick: menu_userinfo_reg_fn, className: "am-fr"}, "老师注册")
+ 	      ), 
  	     React.createElement("br", null)
  	    ), 
  	    React.createElement("hr", null), 
@@ -273,14 +274,7 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
 		    React.createElement("form", {id: "regform", method: "post", className: "am-form"}, 
 		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
-		    React.createElement("div", {className: "am-form-group"}, 
-		    
-		    React.createElement("select", {id: "reg_group_uuid", name: "group_uuid", "data-am-selected": "{btnSize: 'lg'}"}, 
-		      this.props.group_list.map(function(event) {
-		          return (React.createElement("option", {value: event.uuid}, event.brand_name));
-		        })
-		      )
-		        ), 		      
+		        
 		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
 		      React.createElement("br", null), 
@@ -1764,34 +1758,38 @@ var Announcements_class_Div_list = React.createClass({displayName: "Announcement
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
-		 }if(m=="edit"){			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_classnews(m,{uuid:uuids});
+		 }else{
+			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
 		 }
+//		if(m=="edit"){			
+//			 var uuids=null;
+//			 $($("input[name='table_checkbox']")).each(function(){
+//				
+//				　if(this.checked){
+//					 if(uuids==null)uuids=this.value;
+//					 else
+//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+//				　}
+//				});
+//			  if(!uuids){
+//				  alert("请勾选复选框！");
+//				  return;
+//			  }
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//					alert("只能选择一个进行编辑！");
+//					return;
+//				}
+//			  btn_click_classnews(m,{uuid:uuids});
+//		 }
 	  },
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
-		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动")
-		 ), 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth"), round: true}, "他人互动")
+		    ), 
 		  React.createElement("hr", null), 	  
 		    
 		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
@@ -2211,6 +2209,157 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
 	  }
 	}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————评价老师<绘制>——————————————————————————  
+/*
+ * 评价老师服务器请求后绘制处理方法；
+ * @</select>下拉多选框;
+ * @handleChange_stutent_Selected:学校查询；
+ * @handleChange_class_Selected::班级查询；
+ * @btn_query_click:名字查找；
+ * */
+var Query_teachingjudge_list = React.createClass({displayName: "Query_teachingjudge_list",
+	group_uuid:null,
+	class_uuid:null,
+	handleChange_stutent_Selected: function(val) {
+		  if(val=="0"){
+			  this.group_uuid="";
+		  }else{
+			  this.group_uuid=val;
+		  };
+		  this.class_uuid="";
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+	  }, 
+	  handleChange_class_Selected: function(val) {
+		  if(val=="1"){
+			  this.class_uuid="";
+		  }else{
+			  this.class_uuid=val;
+		  };
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		  }, 
+		btn_query_click:function(){
+			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		},
+render: function() {
+	this.props.group_list.unshift({value:"0",label:"所有"});
+	this.props.class_list.unshift({value:"1",label:"所有"});
+	if(this.props.group_uuid==""){			
+		this.props.group_uuid="0";
+	};
+	if(this.props.class_uuid==""){			
+		this.props.class_uuid="1";
+	};
+    return (
+    React.createElement("div", null, 
+	  React.createElement("hr", null), 	  
+	  React.createElement("div", {className: "am-form-group"}, 
+		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+        React.createElement("div", {className: "am-cf"}, 
+	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+	  ), 
+	  
+	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
+	  	React.createElement("div", {className: "am-u-sm-6"}, 
+	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
+	  	), 
+	  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
+	   )
+	  )
+	  
+	  
+	  ), 	  
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "姓名"), 
+            React.createElement("th", null, "昵称"), 
+            React.createElement("th", null, "性别"), 
+            React.createElement("th", null, "生日"), 
+            React.createElement("th", null, "身份证")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Query_teachingjudge_EventRow, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * 评价老师在表单上绘制详细内容;
+ * @点击后直接调用学生详情方法
+ * 调用ajax_class_students_look_info
+ * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+ * */
+var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachingjudge_EventRow", 
+	btn_students_list_click:function(uuid,nmae){
+		ajax_class_students_look_info(uuid,nmae)
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	      React.createElement("tr", {className: className}, 
+	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.uuid,event.name)}, event.name)), 
+	        React.createElement("td", null, event.nickname), 
+	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+	        React.createElement("td", null, event.birthday), 
+	        React.createElement("td", null, event.idcard)
+	      ) 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
