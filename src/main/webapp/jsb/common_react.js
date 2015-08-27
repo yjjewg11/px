@@ -156,9 +156,11 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 	  var o = this.state;
 	  var passwordDiv=null;
 	  if(!o.uuid){
+		  o.password="123456";
+		  o.password1="123456";
 		  passwordDiv=(
 				  React.createElement("div", null, 
-				  React.createElement("label", {htmlFor: "password"}, "密码:"), 
+				  React.createElement("label", {htmlFor: "password"}, "密码:(默认:123456)"), 
     		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
     		      React.createElement("br", null), 
     		      
@@ -424,10 +426,10 @@ var Div_userinfo_updatePasswordBySms = React.createClass({displayName: "Div_user
 
 		    React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
-		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode_byReset, className: "am-btn am-btn-primary"}, "发送验证码"), 
+		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",2), className: "am-btn am-btn-primary"}, "发送验证码"), 
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "smscode"}, "验证码:"), 
-		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: ""}), 
+		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: "验证码"}), 
 		    
 		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "password"}, "密码:"), 

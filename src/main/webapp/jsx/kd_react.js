@@ -63,6 +63,7 @@ var Div_kd_group_reg = React.createClass({
 			      
 			      <label htmlFor="password1">重复密码:</label>
 			      <input type="password" name="password1" id="password1"  />
+			      
 			      <br/>
 			      <button type="button" onClick={ajax_kd_group_reg} className="am-btn am-btn-primary">注册</button>
 			      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
@@ -112,8 +113,8 @@ render: function() {
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
- 	     <div className="am-margin-top-sm">
- 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} >幼儿园注册</a>
+ 	     <div className="am-cf am-margin-top-sm">
+ 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
  	     </div>
  	     <br/>
  	    </form>
@@ -283,6 +284,11 @@ var Div_userinfo_reg = React.createClass({
 		      <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
 		      <br/>
+		      <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",1)} className="am-btn am-btn-primary">发送验证码</button>
+		      <br/>
+		      <label htmlFor="smscode">验证码:</label>
+		      <input type="text" name="smscode" id="smscode"  placeholder=""/>
+		      <br/>
 		      <label htmlFor="name">姓名:</label>
 		      <input type="text" name="name" id="name"  placeholder="必填，不超过15位"/>
 		      <br/>
@@ -295,6 +301,7 @@ var Div_userinfo_reg = React.createClass({
 		      <label htmlFor="password1">重复密码:</label>
 		      <input type="password" name="password1" id="password1" />
 		      <br/>
+		      
 		      <button type="button" onClick={ajax_userinfo_reg} className="am-btn am-btn-primary">注册</button>
 		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
 		    </form>
@@ -2635,7 +2642,7 @@ var Class_student_tel =React.createClass({
 	  		        <AMR_ButtonToolbar>
 	  		        <AMR_Button   amStyle="success" round>邀请全部</AMR_Button>	
 	  		        </AMR_ButtonToolbar>
-	  	  	       <AMUIReact.List static>
+	  	  	       <AMUIReact.List >
 	  	  			{this.props.formdata.map(function(event) {
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(

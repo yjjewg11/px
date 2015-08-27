@@ -63,6 +63,7 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 			      
 			      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
 			      React.createElement("input", {type: "password", name: "password1", id: "password1"}), 
+			      
 			      React.createElement("br", null), 
 			      React.createElement("button", {type: "button", onClick: ajax_kd_group_reg, className: "am-btn am-btn-primary"}, "注册"), 
 			      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
@@ -112,8 +113,8 @@ render: function() {
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
- 	     React.createElement("div", {className: "am-margin-top-sm"}, 
- 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn}, "幼儿园注册")
+ 	     React.createElement("div", {className: "am-cf am-margin-top-sm"}, 
+ 	      React.createElement("a", {href: "javascript:void(0);", onClick: menu_kd_group_reg_fn, className: "am-fl"}, "幼儿园注册")
  	     ), 
  	     React.createElement("br", null)
  	    ), 
@@ -283,6 +284,11 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
 		      React.createElement("br", null), 
+		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",1), className: "am-btn am-btn-primary"}, "发送验证码"), 
+		      React.createElement("br", null), 
+		      React.createElement("label", {htmlFor: "smscode"}, "验证码:"), 
+		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: ""}), 
+		      React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 		      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
 		      React.createElement("br", null), 
@@ -295,6 +301,7 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
 		      React.createElement("input", {type: "password", name: "password1", id: "password1"}), 
 		      React.createElement("br", null), 
+		      
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_reg, className: "am-btn am-btn-primary"}, "注册"), 
 		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
 		    ), 
@@ -2635,7 +2642,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  		        React.createElement(AMR_Button, {amStyle: "success", round: true}, "邀请全部")	
 	  		        ), 
-	  	  	       React.createElement(AMUIReact.List, {static: true}, 
+	  	  	       React.createElement(AMUIReact.List, null, 
 	  	  			this.props.formdata.map(function(event) {
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(

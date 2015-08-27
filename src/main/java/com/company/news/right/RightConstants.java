@@ -24,9 +24,11 @@ public class RightConstants {
 	static public String KD_announce_m="KD_announce_m";//发布消息权限(增改)
 	static public String KD_cookbookplan_m="KD_cookbookplan_m";//发布每日食谱
 	static public String KD_student_m="KD_student_m";//学生管理
+	static public String KD_student_allquery="KD_student_allquery";//所有学生查看权限
 	static public String KD_teachingplan_m="KD_teachingplan_m";//教学计划
 	static public String KD_teacher_m="KD_teacher_m";//添加老师权限	
 	static public String KD_accounts_m="KD_accounts_m";//添加账目权限
 	static public String KD_Leader_Msg_m="KD_Leader_Msg_m";//园长信箱
+	static public String KD_statistics_m="KD_statistics_m";//统计数据查看
 	
 }

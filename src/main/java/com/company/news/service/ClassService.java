@@ -167,7 +167,7 @@ public class ClassService extends AbstractServcice {
 		else
 			return (List<PClass>) this.nSimpleHibernateDao
 					.getHibernateTemplate().find(
-							"from PClass where groupuuid=?", groupuuid);
+							"from PClass where groupuuid=? ", groupuuid);
 	}
 
 	/**
@@ -176,16 +176,10 @@ public class ClassService extends AbstractServcice {
 	 * @return
 	 */
 	public List queryClassByUseruuid(String useruuid) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-				.getSessionFactory().openSession();
-		String sql = "";
-		Query q = s
-				.createSQLQuery(
-						"select {t1.*} from px_userclassrelation t0,px_class t1 where t0.classuuid=t1.uuid and t0.useruuid='"
-								+ useruuid + "'").addEntity("t1", PClass.class);
-
-		return q.list();
-
+		
+		return (List<PClass>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(
+						"from PClass where uuid in (select classuuid from UserClassRelation where   useruuid=?) order by create_time desc", useruuid);
 	}
 
 	/**
