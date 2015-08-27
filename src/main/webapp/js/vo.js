@@ -37,6 +37,13 @@ var Vo={
 		if(!tmp)tmp=[];
 		return tmp;
 	},
+	/**
+	 * 根据传入值，获取显示名。
+	 * @param t。 
+	 * @returns
+	 * 	Vo.map[tmp.typeuuid+"_"+tmp.datakey]=tmp.datavalue;
+	 * Vo.get("group_type_"+1);
+	 */
 	get:function(t){
 		Vo.init();
 		return this.map[t];

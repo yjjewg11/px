@@ -115,7 +115,8 @@ render: function() {
  	      </div>
  	     <div className="am-cf am-margin-top-sm">
  	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
- 	     </div>
+ 	     <a href="javascript:void(0);"  onClick={menu_userinfo_reg_fn} className="am-fr">老师注册</a>
+ 	      </div>
  	     <br/>
  	    </form>
  	    <hr/>
@@ -273,14 +274,7 @@ var Div_userinfo_reg = React.createClass({
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
 		    <form id="regform" method="post" className="am-form">
 		     <input type="hidden" name="type"  value="1"/>
-		    <div className="am-form-group">
-		    
-		    <select id="reg_group_uuid" name="group_uuid" data-am-selected="{btnSize: 'lg'}" >
-		      {this.props.group_list.map(function(event) {
-		          return (<option value={event.uuid} >{event.brand_name}</option>);
-		        })}
-		      </select>
-		        </div>		      
+		        
 		      <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
 		      <br/>
@@ -345,32 +339,28 @@ var Div_userinfo_reg = React.createClass({
  * @send_user：信息者名字；"即时消息"
  * */
 
+
 var Message_queryMyTimely_myList =React.createClass({	 
 	render: function() {
 		  return (
-			 <div>
-	    		<div className="header">
-	    		  <hr />
-	    		</div>
+		    <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+		      <div className="am-list-news-bd">
+		    	<ul className="am-list">
 				  {this.props.formdata.data.map(function(event) {
-					  return(							  
-					<article className="am-comment-highlight">
-					  <div className="am-comment-main">
-						  <header className="am-comment-hd">
-						  <div className="am-comment-meta">
-						  <a href="#link-to-user" className="am-comment-author">{event.title}：</a>消息发送于 
-						  <time>{event.create_time}</time></div>
-						  </header>
-						  <div className="am-comment-bd" onClick={this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}>{event.message}</div>
-					  </div>
-					</article>)						
-				  })}
-				  
-			 </div>				   
-		 
-		  );
-		}
-	})
+					  return(							  										  
+			    <li className="am-g am-list-item-dated">
+			  <a href="javascript:void(0);" className="am-list-item-hd" onClick={this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}>
+			    {event.title}： {event.message}
+			  </a>		
+			    <div className="am-list-item-text">
+			  	   <time>消息发送于 {event.create_time}</time>
+			  		  </div> 
+			  		     </li>)})}
+    			    </ul> 
+    			  </div> 
+    	        </div> 		 
+		      );
+		   }})	
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 //——————————————————————————校务管理<校园列表绘制>—————————————————————   
@@ -380,15 +370,12 @@ var Message_queryMyTimely_myList =React.createClass({
  *@add:添加分校;
  *@edit:编辑分校;
  *@btn_click_group ：在kd_service
+ *@取消校园介绍；增加预览按钮
  * */
 var Group_EventsTable = React.createClass({
 	handleClick: function(m) {
-		if(m=="add"){
 			btn_click_group(m,{type:"1"});
-			 return;
-		 }if(m=="edit"){
-			btn_click_group(m,{uuid:uuids});
-		 }
+
 	  },
   render: function() {
     return (
@@ -401,6 +388,7 @@ var Group_EventsTable = React.createClass({
         <thead> 
           <tr>
             <th>品牌名</th>
+            <th>预览</th>
             <th>机构全称</th>
             <th>电话</th>
             <th>公司地址</th>
@@ -431,7 +419,10 @@ var Group_EventRow = React.createClass({
     return (
       <tr className={className} >
       <td  ><a href="javascript:void(0);" onClick={btn_click_group.bind(this,"edit", event)}>{event.brand_name}</a></td>
-        <td  >{event.company_name}</td>
+         <td>
+    	<AMR_Button amStyle="primary" onClick={btn_click_group.bind(this,"show",event)} round>预览</AMR_Button>
+        </td>
+          <td  >{event.company_name}</td>
         <td > {event.link_tel}</td>
         <td >{event.address}</td>
         <td >{event.create_time}</td>
@@ -569,13 +560,28 @@ var Announcements_EventsTable = React.createClass({
 	  menu_announce_list_fn(announce_types,Group_name,val)
 	  //ajax_announce_listByGroup(val);
   },
+  handleClick_approval: function(m) {
+	 var uuids=null;
+	 $($("input[name='table_checkbox']")).each(function(){
+		　if(this.checked){
+			 if(uuids==null)uuids=this.value;
+			 else
+			　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+		　}
+		});
+	  if(!uuids){
+		  alert("请勾选复选框！");
+		  return;
+	  }
+	  common_approval(uuids);
+},
   render: function() {
     return (
     <div>
 <AMR_ButtonToolbar>
     <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
     <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
-    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+    <AMR_Button amStyle="danger" onClick={this.handleClick_approval.bind(this)} round>想一下</AMR_Button>
     </AMR_ButtonToolbar>
   <hr/>
   <div className="am-form-group">
@@ -1038,33 +1044,28 @@ return (
  * @ajax_boss_message_list绑定事件然后开始绘制舞台；
  * */
 var Boss_student_tel =React.createClass({
-		render: function() {
-	     var o =this.state;	
-		 return (
-		 		<div>
-			    <AMUIReact.List static>
-		    	{this.props.formdata.map(function(event) {
-		            return (
-		           <AMUIReact.ListItem>
-			          <li className="am-comment">	
-			  		  	<a href="javascript:void(0);" >
-			  		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
-			  		  	</a>
-		           家长{event.send_user}的信息    
-		            <AMR_ButtonToolbar>		            
-		            <AMUIReact.Button  onClick={ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
-
-		            </AMR_ButtonToolbar>
-		            </li>
-		            </AMUIReact.ListItem>);	            
-		          })}		      			      
-			      </AMUIReact.List>
-		 	     </div> 		 
-		 );
-	        }
-		 });
-
-
+	render: function() {
+     var o =this.state;	
+	 return (
+	 	<div>
+	 	  <hr/>
+	 	    <ul className="am-list am-list-static am-list-border">
+	    	     {this.props.formdata.map(function(event) {
+	              return (
+	              <li className="am-comment">	
+	      	       <a href="javascript:void(0);" >
+	   	          <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
+	      	     </a>
+	            家长{event.send_user}的信息    
+	           <AMR_ButtonToolbar>		            
+	         <AMUIReact.Button  onClick={ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
+	        </AMR_ButtonToolbar>
+	       </li>);})}		      			      
+		 </ul>
+	 	</div> 		 
+	     );
+        }
+	 });
 
 
 /*
@@ -1284,7 +1285,8 @@ render: function() {
           <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
           </th>
           <th>班级</th>
-          <th>创建人</th>
+          <th>班主任</th>
+          <th>老师</th>
           <th>学校</th>
           <th>创建时间</th>
         </tr> 
@@ -1314,7 +1316,8 @@ render: function() {
 	      <input type="checkbox" value={event.uuid} name="table_checkbox" />
 	      </td>
 	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage.bind(this, event.uuid)}>{event.name}</a></td>
-	        <td>{event.createUser}</td>
+	        <td>{event.headTeacher_name}</td>
+	        <td>{event.teacher_name}</td>
 	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
 	        <td>{event.create_time}</td>
 	      </tr> 
@@ -1755,26 +1758,29 @@ var Announcements_class_Div_list = React.createClass({
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
-		 }if(m=="edit"){			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_classnews(m,{uuid:uuids});
+		 }else{
+			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
 		 }
+//		if(m=="edit"){			
+//			 var uuids=null;
+//			 $($("input[name='table_checkbox']")).each(function(){
+//				
+//				　if(this.checked){
+//					 if(uuids==null)uuids=this.value;
+//					 else
+//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+//				　}
+//				});
+//			  if(!uuids){
+//				  alert("请勾选复选框！");
+//				  return;
+//			  }
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//					alert("只能选择一个进行编辑！");
+//					return;
+//				}
+//			  btn_click_classnews(m,{uuid:uuids});
+//		 }
 	  },
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -1782,7 +1788,8 @@ render: function() {
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
-		 </AMUIReact.ButtonToolbar>
+		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth")} round>他人互动</AMUIReact.Button>
+		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
 		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
@@ -1856,6 +1863,7 @@ var Classnews_show = React.createClass({
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+			    	<a href="javascript:void(0);">举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2206,6 +2214,157 @@ var Query_EventRow = React.createClass({
 
 
 
+
+
+
+
+
+//——————————————————————————评价老师<绘制>——————————————————————————  
+/*
+ * 评价老师服务器请求后绘制处理方法；
+ * @</select>下拉多选框;
+ * @handleChange_stutent_Selected:学校查询；
+ * @handleChange_class_Selected::班级查询；
+ * @btn_query_click:名字查找；
+ * */
+var Query_teachingjudge_list = React.createClass({
+	group_uuid:null,
+	class_uuid:null,
+	handleChange_stutent_Selected: function(val) {
+		  if(val=="0"){
+			  this.group_uuid="";
+		  }else{
+			  this.group_uuid=val;
+		  };
+		  this.class_uuid="";
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+	  }, 
+	  handleChange_class_Selected: function(val) {
+		  if(val=="1"){
+			  this.class_uuid="";
+		  }else{
+			  this.class_uuid=val;
+		  };
+		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		  }, 
+		btn_query_click:function(){
+			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		},
+render: function() {
+	this.props.group_list.unshift({value:"0",label:"所有"});
+	this.props.class_list.unshift({value:"1",label:"所有"});
+	if(this.props.group_uuid==""){			
+		this.props.group_uuid="0";
+	};
+	if(this.props.class_uuid==""){			
+		this.props.class_uuid="1";
+	};
+    return (
+    <div>
+	  <hr/>	  
+	  <div className="am-form-group">
+		<form id="editGroupForm" method="post" className="am-form">
+        <div className= "am-cf">
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
+	  </div>
+	  
+	  <div className="am-form-group am-margin-top-xs">
+	  	<div className="am-u-sm-6">
+	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+	  	</div>
+	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+	   </div>
+	  </form>
+	  
+	  
+	  </div>	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>姓名</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>身份证</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_teachingjudge_EventRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * 评价老师在表单上绘制详细内容;
+ * @点击后直接调用学生详情方法
+ * 调用ajax_class_students_look_info
+ * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+ * */
+var Query_teachingjudge_EventRow = React.createClass({ 
+	btn_students_list_click:function(uuid,nmae){
+		ajax_class_students_look_info(uuid,nmae)
+	},
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+
+	    return (
+	      <tr className={className} >
+	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
+	        <td>{event.nickname}</td>
+	        <td>{event.sex=="0"?"男":"女"}</td>
+	        <td>{event.birthday}</td>
+	        <td>{event.idcard}</td>
+	      </tr> 
+	    );
+	  }
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //——————————————————————————（首页）公告<绘制>——————————————————————————  
 /* 
  * 公告中的<信息>绘制舞台
@@ -2338,6 +2497,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	<a href="javascript:void(0);">举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2401,6 +2561,7 @@ var Teachingplan_showByOneDay = React.createClass({
 				    	<footer className="am-comment-footer">
 				    	<div className="am-comment-actions">
 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+				    	<a href="javascript:void(0);">举报</a>
 				    	</div>
 				    	</footer>
 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2507,10 +2668,12 @@ var CookbookPlan_showByOneDay = React.createClass({
 			    	<footer className="am-comment-footer">
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+			    	<a href="javascript:void(0);">举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-				  <Common_reply_list uuid={o.uuid}  type={0}/>
+				     
+			    	<Common_reply_list uuid={o.uuid}  type={0}/>
 				</div> 
 			</div>
 		  )
@@ -2642,7 +2805,7 @@ var Class_student_tel =React.createClass({
 	  		        <AMR_ButtonToolbar>
 	  		        <AMR_Button   amStyle="success" round>邀请全部</AMR_Button>	
 	  		        </AMR_ButtonToolbar>
-	  	  	       <AMUIReact.List >
+	  	  	       <ul className="am-list am-list-static am-list-border">
 	  	  			{this.props.formdata.map(function(event) {
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(
@@ -2657,21 +2820,16 @@ var Class_student_tel =React.createClass({
 			  	  					<AMR_Button amStyle="revise" round>邀请中</AMR_Button>		
 			  	  				);
 	  	  				}
-	  	  		        return (<AMUIReact.ListItem>
-				          <li className="am-comment">	
-				  		  	<a href="javascript:void(0);" >
-				  		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
-				  		  	</a>
+	  	  		        return (
+	  	  		       <li>
 	  	  		        {event.student_name}的{event.typename}:{event.tel}
 	  	  		        <AMR_ButtonToolbar>
-	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
-	  	  		        <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录")} amStyle="success">@信息</AMUIReact.Button>	
-	  	  		        {ListItem}
-	  	  		        </AMR_ButtonToolbar>
-	  	  		         </li>
-	  	  		        </AMUIReact.ListItem>);
-	  	  		      })}		      			      
-	  	  		      </AMUIReact.List>
+	  	  		         <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
+	  	  		          <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录")} amStyle="success">@信息</AMUIReact.Button>	
+	  	  		           {ListItem}
+	  	  		          </AMR_ButtonToolbar>
+	  	  		       </li>);})}		      			      
+	  	  		     </ul>	
 				  
 		 	     </div> 
 		     );
@@ -2950,6 +3108,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	<a href="javascript:void(0);">举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -3027,6 +3186,7 @@ render: function() {
 /*
 * 我的班级 show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
+* @handleClick:增加添加新班级按钮跳转-班级管理-添加班级方法
 * @Class_students_show（kd_service中服务器请求时调用）;
 * */
 var Class_students_show= React.createClass({
@@ -3035,6 +3195,9 @@ var Class_students_show= React.createClass({
 	  },
 	  handleChange_selectgroup_uuid:function(val){
 		  react_ajax_class_students_manage(val,"show");
+	  },
+	  handleClick:function(m,groupuuid){
+			 btn_click_class_list(m,groupuuid);
 	  },
 	render: function() {
 		var o=this.props.formdata;
@@ -3045,6 +3208,7 @@ var Class_students_show= React.createClass({
 		  	  <AMR_ButtonToolbar>
 	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
 	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />  
+	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"add_class",o.groupuuid)} round>添加班级</AMR_Button>
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
@@ -3139,7 +3303,6 @@ var Teacher_info_tel = React.createClass({
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
-            <th>头像</th>
             <th>姓名</th>
             <th>电话</th>
             <th>邮箱</th>
@@ -3170,17 +3333,11 @@ var Teacherinfo_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-          <li className="am-comment">
-          <td>
-		  	<a href="javascript:void(0);" >
-		  	 <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
-		  	</a></td>
 	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
-	        </li>
 	        </tr> 
 	    );
 	  }
