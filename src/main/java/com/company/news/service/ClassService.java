@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Right;
@@ -251,6 +253,53 @@ public class ClassService extends AbstractServcice {
 		c.setHeadTeacher_name(PxStringUtil.StringDecComma(headTeacher_name));
 		c.setTeacher_name(PxStringUtil.StringDecComma(teacher_name));
 		return c;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private PClass warpVo(PClass o,String cur_user_uuid){
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+		try {
+
+			List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find(
+							"from UserClassRelation where classuuid=?", o.getUuid());
+
+			String headTeacher_name = "";
+			String teacher_name = "";
+			for (UserClassRelation u : l) {
+				User user = (User) CommonsCache.get(u.getUseruuid(),User.class);
+				if (user != null) {
+					if (u.getType().intValue() == class_usertype_head) {
+						headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(),User.class))
+								.getName() + ",");
+					} else {
+						teacher_name += (((User)CommonsCache.get(u.getUseruuid(),User.class))
+								.getName() + ",");
+					}
+				}
+			}
+			o.setHeadTeacher_name(PxStringUtil.StringDecComma(headTeacher_name));
+			o.setTeacher_name(PxStringUtil.StringDecComma(teacher_name));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<PClass> warpVoList(List<PClass> list,String cur_user_uuid){
+		for(PClass o:list){
+			warpVo(o,cur_user_uuid);
+		}
+		return list;
 	}
 
 	@Override

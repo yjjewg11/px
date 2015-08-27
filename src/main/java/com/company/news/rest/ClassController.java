@@ -117,6 +117,7 @@ public class ClassController extends AbstractRESTController {
 			}
 		}
 		List<PClass> list = classService.query(request.getParameter("groupuuid"));
+		classService.warpVoList(list, null);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
@@ -170,6 +171,7 @@ public class ClassController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		List list = classService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
+		classService.warpVoList(list, null);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
