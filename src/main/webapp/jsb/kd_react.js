@@ -1278,7 +1278,8 @@ render: function() {
           React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
           ), 
           React.createElement("th", null, "班级"), 
-          React.createElement("th", null, "创建人"), 
+          React.createElement("th", null, "班主任"), 
+          React.createElement("th", null, "老师"), 
           React.createElement("th", null, "学校"), 
           React.createElement("th", null, "创建时间")
         )
@@ -1308,7 +1309,8 @@ render: function() {
 	      React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
 	      ), 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_class_students_manage.bind(this, event.uuid)}, event.name)), 
-	        React.createElement("td", null, event.createUser), 
+	        React.createElement("td", null, event.headTeacher_name), 
+	        React.createElement("td", null, event.teacher_name), 
 	        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
 	        React.createElement("td", null, event.create_time)
 	      ) 
@@ -1849,7 +1851,8 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}))
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+			    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2331,7 +2334,8 @@ return (
 		     ), 
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+		    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
 		    	)
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2394,7 +2398,8 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 					 ), 
 				    	React.createElement("footer", {className: "am-comment-footer"}, 
 				    	React.createElement("div", {className: "am-comment-actions"}, 
-				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+				    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
 				    	)
 				    	), 
 				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2500,11 +2505,13 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				 ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
-			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+			    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
-				  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
+				     
+			    	React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
 				)
 			)
 		  )
@@ -2943,7 +2950,8 @@ return (
 		     ), 	
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+		    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
 		    	)
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -3021,6 +3029,7 @@ render: function() {
 /*
 * 我的班级 show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
+* @handleClick:增加添加新班级按钮跳转-班级管理-添加班级方法
 * @Class_students_show（kd_service中服务器请求时调用）;
 * */
 var Class_students_show= React.createClass({displayName: "Class_students_show",
@@ -3030,6 +3039,9 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  handleChange_selectgroup_uuid:function(val){
 		  react_ajax_class_students_manage(val,"show");
 	  },
+	  handleClick:function(m,groupuuid){
+			 btn_click_class_list(m,groupuuid);
+	  },
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -3038,7 +3050,8 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
 		  	  React.createElement(AMR_ButtonToolbar, null, 
 	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,"class",o.uuid,o.name), round: true}, "查看课程"), 
-	  		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
+	  		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid}), 
+	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add_class",o.groupuuid), round: true}, "添加班级")
 	  		    ), 
 			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 

@@ -1278,7 +1278,8 @@ render: function() {
           <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
           </th>
           <th>班级</th>
-          <th>创建人</th>
+          <th>班主任</th>
+          <th>老师</th>
           <th>学校</th>
           <th>创建时间</th>
         </tr> 
@@ -1308,7 +1309,8 @@ render: function() {
 	      <input type="checkbox" value={event.uuid} name="table_checkbox" />
 	      </td>
 	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage.bind(this, event.uuid)}>{event.name}</a></td>
-	        <td>{event.createUser}</td>
+	        <td>{event.headTeacher_name}</td>
+	        <td>{event.teacher_name}</td>
 	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
 	        <td>{event.create_time}</td>
 	      </tr> 
@@ -1850,6 +1852,7 @@ var Classnews_show = React.createClass({
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+			    	<a href="javascript:void(0);">举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2332,6 +2335,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	<a href="javascript:void(0);">举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2395,6 +2399,7 @@ var Teachingplan_showByOneDay = React.createClass({
 				    	<footer className="am-comment-footer">
 				    	<div className="am-comment-actions">
 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+				    	<a href="javascript:void(0);">举报</a>
 				    	</div>
 				    	</footer>
 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2501,10 +2506,12 @@ var CookbookPlan_showByOneDay = React.createClass({
 			    	<footer className="am-comment-footer">
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+			    	<a href="javascript:void(0);">举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-				  <Common_reply_list uuid={o.uuid}  type={0}/>
+				     
+			    	<Common_reply_list uuid={o.uuid}  type={0}/>
 				</div> 
 			</div>
 		  )
@@ -2944,6 +2951,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+		    	<a href="javascript:void(0);">举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -3021,6 +3029,7 @@ render: function() {
 /*
 * 我的班级 show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
+* @handleClick:增加添加新班级按钮跳转-班级管理-添加班级方法
 * @Class_students_show（kd_service中服务器请求时调用）;
 * */
 var Class_students_show= React.createClass({
@@ -3029,6 +3038,9 @@ var Class_students_show= React.createClass({
 	  },
 	  handleChange_selectgroup_uuid:function(val){
 		  react_ajax_class_students_manage(val,"show");
+	  },
+	  handleClick:function(m,groupuuid){
+			 btn_click_class_list(m,groupuuid);
 	  },
 	render: function() {
 		var o=this.props.formdata;
@@ -3039,6 +3051,7 @@ var Class_students_show= React.createClass({
 		  	  <AMR_ButtonToolbar>
 	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
 	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />  
+	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"add_class",o.groupuuid)} round>添加班级</AMR_Button>
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
