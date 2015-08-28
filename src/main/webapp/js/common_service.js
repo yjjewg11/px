@@ -367,12 +367,27 @@ function ajax_userinfo_updatepassword() {
 		}
 	});
 }
-function ajax_userinfo_getRole(useruuid,usernames,roleList){
+/**
+ * ajax_userinfo_getRole({groupuuid:groupuuid,userUuid:userUuid},usernames,roleList);
+ * @param opt.格式:{groupuuid:groupuuid,userUuid:userUuid}
+ * @param usernames
+ * @param roleList
+ */
+function ajax_userinfo_getRole(opt,usernames,roleList){
+	if(!opt||!opt.groupuuid){
+		alert("groupuuid is null!");
+		return;
+	}
+	if(!opt||!opt.userUuid){
+		alert("userUuid is null!");
+		return;
+	}
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
+	var url = hostUrl + "rest/userinfo/getRole.json";
 	$.ajax({
 		type : "GET",
 		url : url,
+		data:opt,
 		dataType : "json",
 		async: false,
 		success : function(data) {
@@ -380,7 +395,7 @@ function ajax_userinfo_getRole(useruuid,usernames,roleList){
 			if (data.ResMsg.status == "success") {
 				
 				React.render(React.createElement(Userinfo_getRole, {
-					formdata:{useruuid:useruuid,username:usernames},
+					formdata:{groupuuid:opt.groupuuid,useruuid:opt.userUuid,username:usernames},
 					events: roleList,
 					chooselist: JSON.stringify(data.list),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -400,6 +415,7 @@ function ajax_userinfo_getRole(useruuid,usernames,roleList){
 	});
 	
 };
+
 /*
  * 老师管理Button事件(启用和禁用按钮功能)；
  * @useruuids:选中的老师对象；

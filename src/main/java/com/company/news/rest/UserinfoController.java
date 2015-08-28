@@ -636,6 +636,36 @@ public class UserinfoController extends AbstractRESTController {
 		return "";
 	}
 	
-	
+	/**
+	 * 班级删除
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteByAdmin", method = RequestMethod.POST)
+	public String delete(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			
+			boolean flag = userinfoService.delete(request.getParameter("uuid"),
+					responseMessage,request);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("删除成功");
+		return "";
+	}
 	
 }

@@ -1,3 +1,20 @@
+var cur_group_ad_uuid='wjkj';
+/**
+ * Store.getCurGroup();//获取当前组织
+ * 
+ * Store.getGroup();//获取当前组织列表
+*Store.getGroupNameByUuid(uuid);//
+ * Store.getUserinfo();//获取当前用户
+ * Store.getUserRights();//获取当前班级
+ * Store.getMyClassList();//获取我关联的班级(老师)
+ * Store.getCurMyClass();//获取我当前班级
+ * Store.getClassByUuid(uuid);//
+ * Store.getChooseClass(uuid);根据组织id获取班级信息
+ * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
+ * Store.getUserRights();//获取当前用户的权限信息
+ * Store.clear();
+ * 
+ */
 var ADStore={
 	map:{},
 	clear:function(){

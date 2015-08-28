@@ -20,6 +20,10 @@ public class RightConstants {
 	static public String AD_basedata_m="AD_basedata_m";//基础数据权限(增改)
 		static public String AD_basedata_del="AD_basedata_del";//基础数据权限(删)
 		static public String AD_class_m="AD_class_m";//	班级管理员权限-增傻查改
+		static public String AD_user_m="AD_user_m";//	用户管理权限
+		static public String AD_user_del="AD_user_del";//	用户删除权限
+		
+		
 	static public String KD_group_m="KD_group_m";//添加分校权限
 	static public String KD_announce_m="KD_announce_m";//发布消息权限(增改)
 	static public String KD_cookbookplan_m="KD_cookbookplan_m";//发布每日食谱

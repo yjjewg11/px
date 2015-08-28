@@ -1,12 +1,17 @@
 //login
+
+/*
+ *登录界面账号与密码输入绘制
+ * <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/> 绘制图片
+ * */
 var Div_login = React.createClass({displayName: "Div_login", 
 	 getInitialState: function() {
 		    return this.props;
 		  },
-	 handleChange: function(event) { 
+	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
-		    this.setState(o); 
+		    this.setState(o);
 	  },
 render: function() {
 	  var o = this.state;
@@ -14,38 +19,28 @@ render: function() {
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
- 		 React.createElement("h1", null, "问界科技管理云平台"), 
- 	    React.createElement("p", null, "PX Background Management System", React.createElement("br", null), "快捷管理，大数据分析")
- 		  ), 
- 		  React.createElement("hr", null)
+ 		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"}), 
+ 		 React.createElement("h1", null, "问界科技管理云平台")
+ 		  )
  		), 
  		React.createElement("div", {className: "am-g"}, 
  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
  		 React.createElement("form", {id: "login_form", method: "post", className: "am-form"}, 
- 	      React.createElement("label", {htmlFor: "loginname"}, "手机号:"), 
- 	      React.createElement("input", {type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
- 	      React.createElement("br", null), 
- 	      React.createElement("label", {htmlFor: "password"}, "密码:"), 
- 	      React.createElement("input", {type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
- 	      React.createElement("br", null), 
+ 	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
+ 	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
  	      React.createElement("label", {htmlFor: "pw_checked"}, 
  	        React.createElement("input", {id: "pw_checked", name: "pw_checked", type: "checkbox", checked: o.pw_checked=="checked"?"checked":"", onChange: this.handleChange}), 
  	        "记住密码"
  	      ), 
- 	      React.createElement("br", null), 
  	      React.createElement("div", {className: "am-cf"}, 
  	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
  	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
  	      ), 
- 	      React.createElement("br", null), 
- 	      
- 	     React.createElement("a", {href: "http://120.25.248.31/px-rest/admin/"}, " ", React.createElement("img", {src: "ew_admin.png"}))
- 	    
- 			
+ 	   
+ 	     React.createElement("br", null)
  	    ), 
  	    React.createElement("hr", null), 
- 	    React.createElement("p", null, "© 2015 PX, Inc. ")
-
+ 	   React.createElement("p", null, "© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1")
  	     )
  	   )
  	   
@@ -346,7 +341,115 @@ render: function() {
 //end role bind right
 
 
+//userinfo
+/*
+ * 老师管理服务器请求后绘制处理方法；
+ * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+ * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+ * @调用LIS.events.map方法循环绘制老师数组； 
+ * @</select>下拉多选框;
+ * */
+var AD_Userinfo_EventsTable = React.createClass({displayName: "AD_Userinfo_EventsTable",
+	handleClick: function(m) {
+		
+		 if(m=="add"){
+			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
+			 return;
+		 }
+		 var uuids=null;
+		 var usernames=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			　if(this.checked){
+				 if(uuids==null){
+					 uuids=this.value;
+					 usernames=this.alt;
+				 }
+				 else{
+					 uuids+=','+this.value ;  
+					 usernames+=','+this.alt;
+				 };
+			　};
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  if(m=="getRole"){
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个！");
+					return;
+				};
+				  var opt={groupuuid:$("input[name='group_uuid']").val(),
+						  userUuid:uuids};
+				  btn_click_userinfo(m,opt,usernames);
+				  return;
+		  }
+		  if(m=="del"){
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个！");
+					return;
+				};
+		  }
+	
+		  btn_click_userinfo(m,uuids,usernames);
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_uesrinfo_listByAllGroup($("input[name='group_uuid']").val(),$('#sutdent_name').val());
+	  },
+  render: function() {
+    return (
+    React.createElement("div", null, 
+    React.createElement("div", {className: "header"}, 
+    React.createElement("hr", null)
+    ), 
+    React.createElement(AMR_ButtonToolbar, null, 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
+	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
+	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用"), 
+	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
+	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改"), 
+	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
+	    ), 
+	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+	      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
+		  ), 
+	  React.createElement("hr", null), 
+	  React.createElement("div", {className: "am-form-group"}, 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
 
+    ), 
+	  
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+          	React.createElement("th", null, 
+            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+            ), 
+            React.createElement("th", null, "帐号"), 
+            React.createElement("th", null, "姓名"), 
+            React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "邮箱"), 
+            React.createElement("th", null, "性别"), 
+            React.createElement("th", null, "状态"), 
+            React.createElement("th", null, "登录时间"), 
+            React.createElement("th", null, "创建时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Userinfo_EventRow, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+//userinfo end
 
 //basedatatype
 var Basedatatype_EventRow = React.createClass({displayName: "Basedatatype_EventRow", 

@@ -224,7 +224,9 @@ var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole",
 		  		React.createElement("div", {className: "header"}, 
 		  		 React.createElement("hr", null)
 		  		), 
-	  			React.createElement("button", {type: "button", onClick: btn_ajax_updateRole.bind(this, o.useruuid), className: "am-btn am-btn-primary"}, "提交"), 
+		  		
+	  			React.createElement("button", {type: "button", onClick: btn_ajax_updateRole.bind(this, o.useruuid,o.groupuuid), className: "am-btn am-btn-primary"}, "提交"), 
+	  			React.createElement("h3", null, Store.getGroupNameByUuid(o.groupuuid)), 
 		  		React.createElement(UserChooseRole_EventsTable, React.__spread({},  this.props))
 		  	   
 	  	   )

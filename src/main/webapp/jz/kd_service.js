@@ -360,7 +360,7 @@ function btn_click_userinfo(m,obj,usernames){
 
 
 
-function btn_ajax_updateRole(useruuid){
+function btn_ajax_updateRole(useruuid,groupuuid){
 	 var uuids=null;
 	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
@@ -380,7 +380,7 @@ function btn_ajax_updateRole(useruuid){
     			url : url,
     			processData: true, 
     			dataType : "json",
-    			data:{type:1,useruuid:useruuid,roleuuids:uuids},
+    			data:{type:1,useruuid:useruuid,groupuuid,roleuuids:uuids},
     			//contentType : false,  
     			success : function(data) {
     				$.AMUI.progress.done();

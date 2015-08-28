@@ -123,7 +123,7 @@ public class RoleController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		String type=request.getParameter("type");
 		if(StringUtils.isBlank(type)||SystemConstants.Group_type_0.toString().equals(type)){
-			if(!RightUtils.isAdmin( request)){
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)){
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return "";
 			}

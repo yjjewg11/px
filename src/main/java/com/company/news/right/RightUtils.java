@@ -25,7 +25,7 @@ public class RightUtils {
 		List rights=(List)session.getAttribute(RestConstants.Session_UserInfo_rights);
 		try {
 			for(int i=0;i<rights.size();i++){
-				String[] sa=(String[])rights.get(i);
+				Object[] sa=(Object[])rights.get(i);
 				if(groupuuid.equals(sa[0])&&rightName.equals(sa[1])){
 					return true;
 				}
@@ -51,7 +51,7 @@ public class RightUtils {
 		List rights=(List)session.getAttribute(RestConstants.Session_UserInfo_rights);
 		try {
 			for(int i=0;i<rights.size();i++){
-				String[] sa=(String[])rights.get(i);
+				Object[] sa=(Object[])rights.get(i);
 				if(rightName.equals(sa[1])){
 					return true;
 				}

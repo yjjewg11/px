@@ -224,7 +224,9 @@ var Userinfo_getRole = React.createClass({
 		  		<div className="header">
 		  		 <hr />
 		  		</div>
-	  			<button type="button"  onClick={btn_ajax_updateRole.bind(this, o.useruuid)}  className="am-btn am-btn-primary">提交</button>
+		  		
+	  			<button type="button"  onClick={btn_ajax_updateRole.bind(this, o.useruuid,o.groupuuid)}  className="am-btn am-btn-primary">提交</button>
+	  			<h3>{Store.getGroupNameByUuid(o.groupuuid)}</h3>
 		  		<UserChooseRole_EventsTable {...this.props}/>
 		  	   
 	  	   </div>

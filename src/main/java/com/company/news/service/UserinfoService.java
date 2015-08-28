@@ -17,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Announcements;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.RoleUserRelation;
@@ -33,6 +34,7 @@ import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
@@ -414,7 +416,14 @@ public class UserinfoService extends AbstractServcice {
 //				"update User set  login_time=?,last_login_time=? where uuid=?",
 //				count,TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
 //				user.getUuid());
-
+//		if (true) {
+//			RoleUserRelation r = new RoleUserRelation();
+//			r.setRoleuuid(RightConstants.Role_AD_admini);
+//			r.setUseruuid(user.getUuid());
+//			r.setGroupuuid(SystemConstants.Group_uuid_wjkj);
+//			this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+//
+//	}
 
 		return user;
 	}
@@ -719,5 +728,44 @@ public class UserinfoService extends AbstractServcice {
 			list.add(teacherPhone);
 		}
 		return list;
+	}
+	public boolean delete(String uuid, ResponseMessage responseMessage,
+			HttpServletRequest request) {
+		if (StringUtils.isBlank(uuid)) {
+
+			responseMessage.setMessage("ID不能为空！");
+			return false;
+		}
+		User4Q obj=(User4Q) this.nSimpleHibernateDao.getObject(User4Q.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("没有该数据!");
+			return false;
+		}
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_user_del,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return false;
+		}
+		
+		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from UserGroupRelation where  useruuid =? ", obj.getUuid());
+		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
+		
+		
+		 this.nSimpleHibernateDao.delete(obj);
+//		if (uuid.indexOf(",") != -1)// 多ID
+//		{
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from Announcements where uuid in(?)", uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
+//		} else {
+//			this.nSimpleHibernateDao
+//					.deleteObjectById(Announcements.class, uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid =?", uuid);
+//		}
+
+		return true;
 	}
 }
