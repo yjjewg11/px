@@ -11,6 +11,7 @@
  * Store.getChooseClass(uuid);根据组织id获取班级信息
  * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
  * Store.getUserRights();//获取当前用户的权限信息
+ * Store.getGroupByRight(rightname);获取有权限的学校;
  * Store.clear();
  * 
  */
@@ -179,6 +180,20 @@ var Store={
 		}
 		return "";
 	},
+	getCurGroupByRight:function(rightname){
+		 if(this.map["CurGroup"])return this.map["CurGroup"];
+		 var o=$.AMUI.store.get("CurGroup");
+		 if(o==null){
+			 var group=Store.getGroup();
+			 if(group.length>0){
+				 o=group[0];
+			 	Store.setCurGroup(o);
+			 }else{
+			 	cur_group={};
+			 }
+		 }
+		 return o;
+	},
 	getCurGroup:function(){
 		 if(this.map["CurGroup"])return this.map["CurGroup"];
 		 var o=$.AMUI.store.get("CurGroup");
@@ -197,6 +212,18 @@ var Store={
 		this.map["CurGroup"]=v;
 		if(!Store.enabled())return;
 		$.AMUI.store.set("CurGroup", v);
+	},
+	/**
+	 * 
+	 * @param rightname
+	 * @returns
+	 */
+	getGroupByRight:function(rightname){
+		 if(this.map["Group"])return this.map["Group"];
+			 //从后台重新获取
+			 store_ajax_group_myList_toStroe();
+			 if(this.map["Group"])return this.map["Group"];
+		 return [];
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

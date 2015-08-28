@@ -1,5 +1,5 @@
 /**
- * Vo.getTypeList("s");
+ * Vo.getTypeList("s");//根据名字取数组
  */
 var Vo={
 	md5:null,

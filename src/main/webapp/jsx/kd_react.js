@@ -2224,69 +2224,67 @@ var Query_EventRow = React.createClass({
  * 评价老师服务器请求后绘制处理方法；
  * @</select>下拉多选框;
  * @handleChange_stutent_Selected:学校查询；
- * @handleChange_class_Selected::班级查询；
  * @btn_query_click:名字查找；
  * */
 var Query_teachingjudge_list = React.createClass({
-	group_uuid:null,
-	class_uuid:null,
-	handleChange_stutent_Selected: function(val) {
-		  if(val=="0"){
-			  this.group_uuid="";
-		  }else{
-			  this.group_uuid=val;
-		  };
-		  this.class_uuid="";
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  handleChange_group_Selected: function(val) {
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var type=this.props.type;
+	  ajax_teachingjudge_query(begDateStr,endDateStr,val,teacher_name,type);
 	  }, 
-	  handleChange_class_Selected: function(val) {
-		  if(val=="1"){
-			  this.class_uuid="";
-		  }else{
-			  this.class_uuid=val;
-		  };
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		  }, 
-		btn_query_click:function(){
-			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		},
-render: function() {
-	this.props.group_list.unshift({value:"0",label:"所有"});
-	this.props.class_list.unshift({value:"1",label:"所有"});
-	if(this.props.group_uuid==""){			
-		this.props.group_uuid="0";
-	};
-	if(this.props.class_uuid==""){			
-		this.props.class_uuid="1";
-	};
+  handleChange_type_Selected: function(val) {
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var groupuuid=this.props.group_uuid;
+		  ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,val);
+    },
+  btn_teachingjudge_click:function(){
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var groupuuid=this.props.group_uuid;
+	  var type=this.props.type;
+
+ ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type); 
+   },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+	  },
+render: function() { 
     return (
     <div>
 	  <hr/>	  
 	  <div className="am-form-group">
 		<form id="editGroupForm" method="post" className="am-form">
         <div className= "am-cf">
-	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
+	  <AMUIReact.Selected  id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />     
+	  <AMUIReact.Selected  id="selectgroup_uuid2" name="type" onChange={this.handleChange_type_Selected} btnWidth="200"  data={this.props.teachingjudge_typelist} btnStyle="primary" value={this.props.type} />
 	  </div>
-	  
+
 	  <div className="am-form-group am-margin-top-xs">
-	  	<div className="am-u-sm-6">
-	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+	  	<div className="am-u-lg-3 am-u-sm-6">
+	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>      
+			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
+			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
+			  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-primary">查询</button>	  				
 	  	</div>
-	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
-	   </div>
+   </div>
 	  </form>
-	  
+	
 	  
 	  </div>	  
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
-            <th>姓名</th>
-            <th>昵称</th>
-            <th>性别</th>
-            <th>生日</th>
-            <th>身份证</th>
+            <th>老师姓名</th>
+            <th>满意度</th>
+            <th>评价详情</th>
+            <th>评价人</th>
+            <th>评价时间</th>
           </tr> 
         </thead>
         <tbody>
@@ -2306,10 +2304,7 @@ render: function() {
  * 调用ajax_class_students_look_info
  * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
  * */
-var Query_teachingjudge_EventRow = React.createClass({ 
-	btn_students_list_click:function(uuid,nmae){
-		ajax_class_students_look_info(uuid,nmae)
-	},
+var Query_teachingjudge_EventRow = React.createClass({
 	  render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
@@ -2317,11 +2312,11 @@ var Query_teachingjudge_EventRow = React.createClass({
 
 	    return (
 	      <tr className={className} >
-	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
-	        <td>{event.nickname}</td>
-	        <td>{event.sex=="0"?"男":"女"}</td>
-	        <td>{event.birthday}</td>
-	        <td>{event.idcard}</td>
+	        <td>{event.teacher_name}</td>
+	        <td>{Vo.get("KD_Teachingjudge_type_"+event.type)}</td>
+	        <td>{event.content}</td>
+	        <td>{event.create_user}</td>
+	        <td>{event.create_time}</td>
 	      </tr> 
 	    );
 	  }

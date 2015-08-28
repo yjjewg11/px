@@ -64,6 +64,7 @@ Date.prototype.format = function(format) {
  * @param m
  */
 function G_user_hasRight(s){
+	return true
 	console.log("权限判断参数S",s);
 	//return true;
 	//list<[groupuuid,rightname]>

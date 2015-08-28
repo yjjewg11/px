@@ -2224,69 +2224,67 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
  * 评价老师服务器请求后绘制处理方法；
  * @</select>下拉多选框;
  * @handleChange_stutent_Selected:学校查询；
- * @handleChange_class_Selected::班级查询；
  * @btn_query_click:名字查找；
  * */
 var Query_teachingjudge_list = React.createClass({displayName: "Query_teachingjudge_list",
-	group_uuid:null,
-	class_uuid:null,
-	handleChange_stutent_Selected: function(val) {
-		  if(val=="0"){
-			  this.group_uuid="";
-		  }else{
-			  this.group_uuid=val;
-		  };
-		  this.class_uuid="";
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  handleChange_group_Selected: function(val) {
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var type=this.props.type;
+	  ajax_teachingjudge_query(begDateStr,endDateStr,val,teacher_name,type);
 	  }, 
-	  handleChange_class_Selected: function(val) {
-		  if(val=="1"){
-			  this.class_uuid="";
-		  }else{
-			  this.class_uuid=val;
-		  };
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		  }, 
-		btn_query_click:function(){
-			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		},
-render: function() {
-	this.props.group_list.unshift({value:"0",label:"所有"});
-	this.props.class_list.unshift({value:"1",label:"所有"});
-	if(this.props.group_uuid==""){			
-		this.props.group_uuid="0";
-	};
-	if(this.props.class_uuid==""){			
-		this.props.class_uuid="1";
-	};
+  handleChange_type_Selected: function(val) {
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var groupuuid=this.props.group_uuid;
+		  ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,val);
+    },
+  btn_teachingjudge_click:function(){
+	  var begDateStr=$('#begDateStr').val();
+	  var endDateStr=$('#endDateStr').val();
+	  var teacher_name=$('#sutdent_name').val();
+	  var groupuuid=this.props.group_uuid;
+	  var type=this.props.type;
+
+ ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type); 
+   },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+	  },
+render: function() { 
     return (
     React.createElement("div", null, 
 	  React.createElement("hr", null), 	  
 	  React.createElement("div", {className: "am-form-group"}, 
 		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
         React.createElement("div", {className: "am-cf"}, 
-	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "type", onChange: this.handleChange_type_Selected, btnWidth: "200", data: this.props.teachingjudge_typelist, btnStyle: "primary", value: this.props.type})
 	  ), 
-	  
+
 	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
-	  	React.createElement("div", {className: "am-u-sm-6"}, 
-	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
-	  	), 
-	  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
-	   )
+	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
+	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
+			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
+			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
+			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-primary"}, "查询")	  				
+	  	)
+   )
 	  )
-	  
+	
 	  
 	  ), 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
-            React.createElement("th", null, "姓名"), 
-            React.createElement("th", null, "昵称"), 
-            React.createElement("th", null, "性别"), 
-            React.createElement("th", null, "生日"), 
-            React.createElement("th", null, "身份证")
+            React.createElement("th", null, "老师姓名"), 
+            React.createElement("th", null, "满意度"), 
+            React.createElement("th", null, "评价详情"), 
+            React.createElement("th", null, "评价人"), 
+            React.createElement("th", null, "评价时间")
           )
         ), 
         React.createElement("tbody", null, 
@@ -2306,10 +2304,7 @@ render: function() {
  * 调用ajax_class_students_look_info
  * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
  * */
-var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachingjudge_EventRow", 
-	btn_students_list_click:function(uuid,nmae){
-		ajax_class_students_look_info(uuid,nmae)
-	},
+var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachingjudge_EventRow",
 	  render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
@@ -2317,11 +2312,11 @@ var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachi
 
 	    return (
 	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.uuid,event.name)}, event.name)), 
-	        React.createElement("td", null, event.nickname), 
-	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-	        React.createElement("td", null, event.birthday), 
-	        React.createElement("td", null, event.idcard)
+	        React.createElement("td", null, event.teacher_name), 
+	        React.createElement("td", null, Vo.get("KD_Teachingjudge_type_"+event.type)), 
+	        React.createElement("td", null, event.content), 
+	        React.createElement("td", null, event.create_user), 
+	        React.createElement("td", null, event.create_time)
 	      ) 
 	    );
 	  }
