@@ -77,6 +77,10 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 					alert("只能选择一个！");
 					return;
 				};
+				  var opt={groupuuid:$("input[name='group_uuid']").val(),
+						  userUuid:uuids};
+				  btn_click_userinfo(m,opt,usernames);
+				  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);
 	  },

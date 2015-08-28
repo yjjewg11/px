@@ -219,11 +219,14 @@ var Store={
 	 * @returns
 	 */
 	getGroupByRight:function(rightname){
-		 if(this.map["Group"])return this.map["Group"];
-			 //从后台重新获取
-			 store_ajax_group_myList_toStroe();
-			 if(this.map["Group"])return this.map["Group"];
-		 return [];
+		var tmpList=this.getGroup();
+		var r=[];
+		 for(var i=0;i<tmpList;i++){
+			if( G_user_hasRightByGroupuuid(rightname,tmpList[i].uuid)){
+				r.push(tmpList[i]);
+			}
+		 }
+		 return r;
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

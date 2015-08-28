@@ -109,6 +109,7 @@ public class UserinfoController extends AbstractRESTController {
 			//老数据兼容,如果没有关联默认学校,则关联.
 			if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
 				if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
+					responseMessage.setMessage("绑定云代理失败");
 					return "";
 				}
 				listGroupuuids.add(SystemConstants.Group_uuid_wjd);

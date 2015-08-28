@@ -82,7 +82,7 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 		
-		return false;
+		return true;
 	}
 	/**
 	 * 用户注册
@@ -503,7 +503,7 @@ public class UserinfoService extends AbstractServcice {
 	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
-		String sql = "select {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 		if(StringUtils.isNotBlank(group_uuid)){
 			sql+="and t0.groupuuid='"+ group_uuid + "'";
 		}
