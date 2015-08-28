@@ -69,17 +69,19 @@ public class AnnouncementsService extends AbstractServcice {
 		BeanUtils.copyProperties(announcements, announcementsJsonform);
 
 		announcements.setCreate_time(TimeUtils.getCurrentTimestamp());
-
+		announcements.setStatus(SystemConstants.Check_status_fabu);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(announcements);
 		// 如果类型是班级通知
 		
-		
-		if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
-			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-		}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
-			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+		if(SystemConstants.Check_status_fabu.equals(announcements.getStatus())){
+			
+			if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+				pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			}
 		}
 	
 //		// 如果类型是班级通知
@@ -145,12 +147,14 @@ public class AnnouncementsService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
 
 		
-		
-		if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
-			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-		}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
-			pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+		if(SystemConstants.Check_status_fabu.equals(announcements.getStatus())){
+			
+			if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+				pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+			}
 		}
 
 		return true;
