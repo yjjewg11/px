@@ -70,6 +70,11 @@ public class GroupService extends AbstractServcice {
 			return false;
 		}
 		
+		if (userinfoService.isExitSameUserByLoginName(groupRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码已被注册！");
+			return false;
+		}
+		
 		// 机构名是否存在
 //		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
 //			responseMessage.setMessage("机构名已被注册！");
@@ -288,7 +293,7 @@ public class GroupService extends AbstractServcice {
 	 * @return
 	 */
 	public List getGroupuuidsByUseruuid(String uuid){
-		String hql="select groupuuid from UserGroupRelation where  useruuid=?";
+		String hql="select DISTINCT  groupuuid from UserGroupRelation where  useruuid=?";
 		List listGroupuuids=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, uuid);
 
 		return listGroupuuids;
@@ -301,7 +306,7 @@ public class GroupService extends AbstractServcice {
 	public List getGroupByUseruuid(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -320,7 +325,7 @@ public class GroupService extends AbstractServcice {
 //		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 //				.addEntity("t1",Group4Q.class);
 //		
-		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();

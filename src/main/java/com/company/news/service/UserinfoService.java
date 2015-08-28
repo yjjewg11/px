@@ -29,6 +29,7 @@ import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -61,6 +62,26 @@ public class UserinfoService extends AbstractServcice {
 	public static final int USER_disable_2 = 2;//注册用户带审核.
 	@Autowired
 	private SmsService smsService;
+	
+	/**
+	 * 给用户添加默认学校
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean addDefaultKDGroup(String user_uuid,
+			ResponseMessage responseMessage) throws Exception {
+		// 保存用户机构关联表
+		UserGroupRelation userGroupRelation = new UserGroupRelation();
+		userGroupRelation.setUseruuid(user_uuid);
+		userGroupRelation.setGroupuuid(SystemConstants.Group_uuid_wjd);
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+		
+		return false;
+	}
 	/**
 	 * 用户注册
 	 * 
@@ -90,26 +111,17 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("关联机构不能为空！");
 			return false;
 		}
-
-		// 用户名是否存在
-		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
-			responseMessage.setMessage("电话号码已被注册！");
+		// 用户名是否存在.移动到controller判断
+//		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
+//			responseMessage.setMessage("电话号码已被注册！");
+//			return false;
+//		}
+		
+		if(!smsService.VerifySmsCode(responseMessage, userRegJsonform.getTel(), userRegJsonform.getSmscode())){
 			return false;
 		}
 		
-		// TEL格式验证
-				if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
-					responseMessage.setMessage("电话号码格式不正确！");
-					return false;
-				}
-				// 注册机构情况下,当前用户设置为管理员角色.需要验证码
-				if (userRegJsonform instanceof GroupRegJsonform) {
-
-					if(!smsService.VerifySmsCode(responseMessage, userRegJsonform.getTel(), userRegJsonform.getSmscode())){
-						return false;
-					}
-				}
-		
+		// 注册机构情况下,当前用户设置为管理员角色.需要验证码
 
 		User user = new User();
 
@@ -149,7 +161,7 @@ public class UserinfoService extends AbstractServcice {
 		return true;
 	}
 	/**
-	 * 用户注册
+	 * 管理员添加用户
 	 * 
 	 * @param entityStr
 	 * @param model
@@ -157,8 +169,12 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 */
 	public boolean add(UserRegJsonform userRegJsonform,
-			ResponseMessage responseMessage) throws Exception {
-
+			ResponseMessage responseMessage,String mygroup) throws Exception {
+		// name昵称验证
+		if (StringUtils.isBlank(mygroup)) {
+			responseMessage.setMessage("当前用户没有关联学校,无权限操作");
+			return false;
+		}
 		// TEL格式验证
 		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
 			responseMessage.setMessage("电话号码格式不正确！");
@@ -177,34 +193,33 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("关联机构不能为空！");
 			return false;
 		}
-
-		// 用户名是否存在
-		if (isExitSameUserByLoginName(userRegJsonform.getTel())) {
-			responseMessage.setMessage("电话号码已被注册！");
+		// TEL格式验证
+		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码格式不正确！");
 			return false;
 		}
+		String attribute = "";
+		User user = (User)nSimpleHibernateDao.getObjectByAttribute(User.class,
+				"loginname", userRegJsonform.getTel());
 		
-		// TEL格式验证
-				if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
-					responseMessage.setMessage("电话号码格式不正确！");
-					return false;
-				}
+		if (user==null) {//不存在,则新加用户并绑定关心.
+			 user = new User();
 
-		
-
-		User user = new User();
-
-		BeanUtils.copyProperties(user, userRegJsonform);
-		user.setLoginname(userRegJsonform.getTel());
-		user.setCreate_time(TimeUtils.getCurrentTimestamp());
-		user.setDisable(USER_disable_default);
-		user.setLogin_time(TimeUtils.getCurrentTimestamp());
-		user.setTel_verify(USER_tel_verify_default);
-		user.setSex(0);
-
-		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
-
+				BeanUtils.copyProperties(user, userRegJsonform);
+				user.setLoginname(userRegJsonform.getTel());
+				user.setCreate_time(TimeUtils.getCurrentTimestamp());
+				user.setDisable(USER_disable_default);
+				user.setLogin_time(TimeUtils.getCurrentTimestamp());
+				user.setTel_verify(USER_tel_verify_default);
+				user.setSex(0);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(user);
+		}else{
+			//只能删除我关联学校的用户的关联关心
+			int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+					.bulkUpdate(
+							"delete from UserGroupRelation where  groupuuid in("+DBUtil.stringsToWhereInValue(mygroup)+") and  useruuid =? and groupuuid!=?", user.getUuid(),SystemConstants.Group_uuid_wjd);
+			this.logger.info("delete from UserGroupRelation count=" + tmpCout);
+		}
 		
 		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
 		for(int i=0;i<groupStrArr.length;i++){
@@ -216,17 +231,6 @@ public class UserinfoService extends AbstractServcice {
 			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 		}
 
-		// 注册机构情况下,当前用户设置为管理员角色
-		if (userRegJsonform instanceof GroupRegJsonform) {
-			GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
-			if (SystemConstants.Group_type_1.equals(group.getType())) {
-				RoleUserRelation r = new RoleUserRelation();
-				r.setRoleuuid(RightConstants.Role_KD_admini);
-				r.setUseruuid(user.getUuid());
-				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
-
-			}
-		}
 		return true;
 	}
 
@@ -288,8 +292,13 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 */
 	public User updateByAdmin(UserRegJsonform userRegJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage,String mygroup) throws Exception {
 
+		// name昵称验证
+				if (StringUtils.isBlank(mygroup)) {
+					responseMessage.setMessage("当前用户没有关联学校,无权限操作");
+					return null;
+				}
 		// name昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getName())
 				|| userRegJsonform.getName().length() > 15) {
@@ -311,12 +320,12 @@ public class UserinfoService extends AbstractServcice {
 			responseMessage.setMessage("关联机构不能为空！");
 			return null;
 		}
-		
+		//只能删除我关联学校的用户的关联关心
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate(
-						"delete from UserGroupRelation where useruuid =?", user.getUuid());
+						"delete from UserGroupRelation where  groupuuid in("+DBUtil.stringsToWhereInValue(mygroup)+") and  useruuid =? and groupuuid!=?", user.getUuid(),SystemConstants.Group_uuid_wjd);
 		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
-		
+
 		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
 		for(int i=0;i<groupStrArr.length;i++){
 			// 保存用户机构关联表
@@ -398,12 +407,13 @@ public class UserinfoService extends AbstractServcice {
 			}
 
 		}
-		
 		// 更新登陆日期,最近一次登陆日期
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update User set login_time=?,last_login_time=? where uuid=?",
-				TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
-				user.getUuid());
+		String sql="update px_user set count=count+1,last_login_time=login_time,login_time=now() where uuid='"+user.getUuid()+"'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+//		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//				"update User set  login_time=?,last_login_time=? where uuid=?",
+//				count,TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
+//				user.getUuid());
 
 
 		return user;

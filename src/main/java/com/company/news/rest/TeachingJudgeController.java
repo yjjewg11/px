@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.TeacherJudge;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.TeachingJudgeService;
 import com.company.news.vo.ResponseMessage;
 
@@ -36,7 +38,10 @@ public class TeachingJudgeController extends AbstractRESTController {
 	public String query(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
+			if(!RightUtils.hasRight(RightConstants.KD_statistics_m, request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_nopower);
+				return "";
+			}
 		    List<TeacherJudge> list= teachingJudgeService.query(request.getParameter("groupuuid"),request.getParameter("type"),
 		    		request.getParameter("begDateStr"),request.getParameter("endDateStr"));
 
