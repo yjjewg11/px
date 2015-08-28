@@ -1196,7 +1196,7 @@ G_ajax_abs_save(opt);
    			if (data.ResMsg.status == "success") {
    				React.render(React.createElement(Userinfo_EventsTable, {
    					group_uuid:groupuuid,
-   					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+   					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight('KD_teacher_m'),"uuid","brand_name"),
    					events: data.list,
    					handleClick:btn_click_userinfo,
    					responsive: true, bordered: true, striped :true,hover:true,striped:true

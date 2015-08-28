@@ -219,11 +219,15 @@ var Store={
 	 * @returns
 	 */
 	getGroupByRight:function(rightname){
+		console.log("getGroupByRight:pa",rightname);
 		var tmpList=this.getGroup();
 		var r=[];
-		 for(var i=0;i<tmpList;i++){
+		 for(var i=0;i<tmpList.length;i++){
 			if( G_user_hasRightByGroupuuid(rightname,tmpList[i].uuid)){
 				r.push(tmpList[i]);
+				console.log("getGroupByRight-add:", tmpList[i].brand_name);
+			}else{
+				 console.log("getGroupByRight-remove:", tmpList[i].brand_name);
 			}
 		 }
 		 return r;

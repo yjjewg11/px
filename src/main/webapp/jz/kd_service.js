@@ -302,8 +302,8 @@ function ajax_userinfo_logout(){
 //老师管理
 
 //老师查询，条件groupuuid
-function menu_userinfo_list_fn() {
-	Queue.push(menu_userinfo_list_fn);
+function menu_userinfo_list_fn_byRight() {
+	Queue.push(menu_userinfo_list_fn_byRight);
 	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
 };
 

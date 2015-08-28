@@ -132,8 +132,8 @@ function ajax_userinfo_logout(){
 
 
 //user manage
-function menu_userinfo_list_fn() { 
-	Queue.push(menu_userinfo_list_fn);
+function menu_userinfo_list_fn_byRight() { 
+	Queue.push(menu_userinfo_list_fn_byRight);
 	ajax_uesrinfo_listByAllGroup(cur_group_ad_uuid);
 };
 
