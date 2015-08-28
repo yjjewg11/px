@@ -71,7 +71,7 @@ public class ClassController extends AbstractRESTController {
 			if(StringUtils.isEmpty(classRegJsonform.getUuid()))
 			    flag = classService.add(classRegJsonform, responseMessage);
 			else
-				flag = classService.update(classRegJsonform, responseMessage);
+				flag = classService.update(classRegJsonform, responseMessage,user,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

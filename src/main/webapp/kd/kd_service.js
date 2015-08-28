@@ -66,6 +66,7 @@ function ajax_userinfo_reg() {
 	  var objectForm = $('#regform').serializeJson();
 	  if(objectForm.password!=objectForm.password1){
 		  alert("2次输入密码不匹配");
+		  return;
 	  }
 	  delete objectForm.password1;
 	  objectForm.password=$.md5(objectForm.password); 
