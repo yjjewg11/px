@@ -31,10 +31,7 @@ public class TeachingJudgeService extends AbstractServcice {
 	 * @return
 	 */
 	public List<TeacherJudge> query(String groupuuid, String type, String date_start,String date_end) {
-		if (StringUtils.isBlank(groupuuid)) {
-			logger.error("groupuuid can't null");
-			return null;
-		}
+		
 
 		if (StringUtils.isBlank(date_start)) {
 			logger.error("date_start can't null");

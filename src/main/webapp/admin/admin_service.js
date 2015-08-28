@@ -134,7 +134,7 @@ function ajax_userinfo_logout(){
 //user manage
 function menu_userinfo_list_fn() { 
 	Queue.push(menu_userinfo_list_fn);
-	ajax_uesrinfo_listByAllGroup(Store.getCurGroup().uuid);
+	ajax_uesrinfo_listByAllGroup(cur_group_ad_uuid);
 };
 
 //老师查询，条件groupuuid
@@ -150,9 +150,9 @@ function ajax_uesrinfo_listByAllGroup(groupuuid) {
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Userinfo_EventsTable, {
+				React.render(React.createElement(AD_Userinfo_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:ADStore.getAllGroup(),
+					group_list:G_selected_dataModelArray_byArray(ADStore.getAllGroup(),"uuid","brand_name"),
 					events: data.list,
 					handleClick:btn_click_userinfo,
 					handleChange_selectgroup_uuid:ajax_uesrinfo_listByAllGroup,
@@ -174,33 +174,156 @@ function ajax_uesrinfo_listByAllGroup(groupuuid) {
 	});
 };
 
-
-function btn_click_userinfo(m,obj,usernames){
-	
-	Queue.push(function(){btn_click_userinfo(m,obj,usernames)});
+/*
+ * <老师管理>Button事件 添加、启用、禁用、分配、修改;
+ * @ajax_userinfo_getRole:在common_react;
+ * */  
+function btn_click_userinfo(m,obj,usernames,sex){
 	if(m=="add"){
-		ajax_userinfo_edit(obj,"add");
+	Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"新增老师");
+		obj.sex=1;
+		ajax_userinfo_edit(obj,"add",sex);
 	}else if(m=="disable"){
-		ajax_userinfo_updateDisable(obj,1);
+		ajax_userinfo_updateDisable(obj,1);		
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,0);
+	}else if(m=="del"){
+		ajax_userinfo_delete(obj);
 	}else if(m=="getRole"){
-		ajax_userinfo_getRole(obj,usernames,ADStore.getRoleList());
-	}
-};
+		Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师权限-"+usernames);
+		ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);
+	}else if(m=="edit"){
+		  Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师修改");
+		ajax_userinfo_edit({uuid:obj},"edit",sex);
+	   	};
+ };
+ /*
+  * 老师管理Button事件(启用和禁用按钮功能)；
+  * @useruuids:选中的老师对象；
+  * @disable：是启用还是禁用功能；1-启用  0-禁用；
+  * @ajax_uesrinfo_listByGroup：服务器请求处理结束后调回最初方法做数据更新；
+  * */
+ function ajax_userinfo_updateDisable(useruuids,disable){
+ 	var groupuuid=$('#selectgroup_uuid').val();
+ 	$.AMUI.progress.start();
+ 	      var url = hostUrl + "rest/userinfo/updateDisable.json";
+ 		$.ajax({
+ 			type : "POST",
+ 			url : url,
+ 			data : {useruuids:useruuids,disable:disable},
+ 			dataType : "json",
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				// 登陆成功直接进入主页
+ 				if (data.ResMsg.status == "success") {
+ 					G_msg_pop(data.ResMsg.message);
+ 					ajax_uesrinfo_listByAllGroup(groupuuid);
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 					G_resMsg_filter(data.ResMsg);
+ 				}
+ 			},
+ 			error : function( obj, textStatus, errorThrown ){
+ 				$.AMUI.progress.done();
+ 				alert(url+",error:"+textStatus);
+ 				 console.log(url+',error：', obj);
+ 				 console.log(url+',error：', textStatus);
+ 				 console.log(url+',error：', errorThrown);
+ 			}
+ 		});
+ 	}
+
+ /*
+  * 删除权限,仅管理员
+  * */
+ function ajax_userinfo_delete(useruuids){
+ 	var groupuuid=$('#selectgroup_uuid').val();
+ 	$.AMUI.progress.start();
+ 	      var url = hostUrl + "rest/userinfo/deleteByAdmin.json";
+ 		$.ajax({
+ 			type : "POST",
+ 			url : url,
+ 			data : {uuid:useruuids},
+ 			dataType : "json",
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				// 登陆成功直接进入主页
+ 				if (data.ResMsg.status == "success") {
+ 					G_msg_pop(data.ResMsg.message);
+ 					ajax_uesrinfo_listByAllGroup(groupuuid);
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 					G_resMsg_filter(data.ResMsg);
+ 				}
+ 			},
+ 			error : function( obj, textStatus, errorThrown ){
+ 				$.AMUI.progress.done();
+ 				alert(url+",error:"+textStatus);
+ 				 console.log(url+',error：', obj);
+ 				 console.log(url+',error：', textStatus);
+ 				 console.log(url+',error：', errorThrown);
+ 			}
+ 		});
+ 	}
+ /*
+ * <老师管理>提交Button事件
+ * */
+ function ajax_userinfo_saveByAdmin(){
+ 	if($("#password")[0])$("#password").val($.md5($("#password").val()));
+     var opt={
+             formName: "editUserinfoForm",
+             url:hostUrl + "rest/userinfo/saveByAdmin.json",
+             cbFN:null
+             };
+ G_ajax_abs_save(opt);
+ }  	  
 /**
  * operate=add|edit
  * @param formdata
  * @param operate
  */
-function ajax_userinfo_edit(formdata,operate){
-	React.render(React.createElement(Userinfo_edit,{operate:operate,formdata:formdata,group_list:ADStore.getAllGroup()}), document.getElementById('div_body'));
+ /*
+  * <老师管理>Button事件(添加和修改按钮功能)；
+  * @formdata:选中的老师对象；
+  * @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+  * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
+  * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
+  * */
+ function ajax_userinfo_edit(formdata,m,sex){
+ 	if(m=="add"){
+ 		React.render(React.createElement(Userinfo_edit,{
+ 			formdata:formdata,
+ 			select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+ 			sex:formdata.sex
+ 			}), document.getElementById('div_body'));
+ 		return;
+ 	
+ 	}
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(ADStore.getAllGroup(),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error : function( obj, textStatus, errorThrown ){
+ 			$.AMUI.progress.done();
+ 			alert(url+",error:"+textStatus);
+ 		}
+ 	});
+ 	
+ };
 
-	
-};
 
-
-function btn_ajax_updateRole(useruuid){
+function btn_ajax_updateRole(useruuid,groupuuid){
 	 var uuids=null;
 	 $("input[name='table_checkbox']").each(function(){
 		if(this.checked){
@@ -220,7 +343,7 @@ function btn_ajax_updateRole(useruuid){
     			url : url,
     			processData: true, 
     			dataType : "json",
-    			data:{useruuid:useruuid,roleuuids:uuids},
+    			data:{useruuid:useruuid,groupuuid:groupuuid,roleuuids:uuids},
     			//contentType : false,  
     			success : function(data) {
     				$.AMUI.progress.done();

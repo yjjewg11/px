@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.Right;
 import com.company.news.jsonform.RightJsonform;
 import com.company.news.rest.util.RestUtil;
@@ -38,7 +39,7 @@ public class RightController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.AD_right_del,request)){
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_right_del,request)){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
@@ -69,7 +70,7 @@ public class RightController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
-		if(!RightUtils.hasRight(RightConstants.AD_right_m,request)){
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_right_m,request)){
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";

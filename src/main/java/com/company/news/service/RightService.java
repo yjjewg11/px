@@ -5,13 +5,19 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.entity.Right;
+import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
+import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.RightJsonform;
+import com.company.news.rest.AccountsController;
+import com.company.news.right.RightConstants;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -33,15 +39,19 @@ public class RightService extends AbstractServcice {
 
 		List rightList = s
 				.createSQLQuery(
-						"select t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"
+						"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid and t0.useruuid='"
 								+ user.getUuid() + "'").list();
 
+		
+			
 		// 测试数据,拥有所有权限
-		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
-				"false"))) {
-			this.logger.warn("调试模式下面,用户有所有角色权限.");
-			rightList = s.createSQLQuery("select name from px_right").list();
-		}
+//		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
+//				"false"))) {
+//			this.logger.warn("调试模式下面,用户有所有角色权限.");
+//			 rightList = s
+//					.createSQLQuery(
+//							"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid").list();
+//		}
 
 		return rightList;
 	}

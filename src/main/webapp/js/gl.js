@@ -60,11 +60,10 @@ Date.prototype.format = function(format) {
        return format;
 }
 /**
- * 判断用户是否有该权限
+ * 判断用户是否有该权限.(任意一个学校有即可)
  * @param m
  */
 function G_user_hasRight(s){
-	return true
 	console.log("权限判断参数S",s);
 	//return true;
 	//list<[groupuuid,rightname]>
@@ -73,11 +72,25 @@ function G_user_hasRight(s){
 	for(var i=0;i<list.length;i++){
 		if(list[i][1]==s)return true;
 	}
-	if(Store.getUserRights().indexOf(","+s+",")>-1){
-		return true;
+	return false;
+}
+
+/**
+ * 判断用户在某国幼儿园下是否有该权限.
+ * @param m
+ */
+function G_user_hasRightByGroupuuid(s,groupuuid){
+	console.log("权限判断参数S",s);
+	//list<[groupuuid,rightname]>
+	var list=Store.getUserRights();
+	if(!list)return false;
+	for(var i=0;i<list.length;i++){
+		if(groupuuid==list[i][0]&&list[i][1]==s)return true;
 	}
 	return false;
 }
+
+
 
 /**
  * 判断用户状态是否正常.0:表示正常,其他都是异常情况,异常帐号,只有最少权限.

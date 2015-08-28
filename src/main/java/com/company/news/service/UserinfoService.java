@@ -17,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Announcements;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.RoleUserRelation;
@@ -33,6 +34,7 @@ import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
@@ -80,7 +82,7 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 		
-		return false;
+		return true;
 	}
 	/**
 	 * 用户注册
@@ -414,7 +416,14 @@ public class UserinfoService extends AbstractServcice {
 //				"update User set  login_time=?,last_login_time=? where uuid=?",
 //				count,TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
 //				user.getUuid());
-
+//		if (true) {
+//			RoleUserRelation r = new RoleUserRelation();
+//			r.setRoleuuid(RightConstants.Role_AD_admini);
+//			r.setUseruuid(user.getUuid());
+//			r.setGroupuuid(SystemConstants.Group_uuid_wjkj);
+//			this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+//
+//	}
 
 		return user;
 	}
@@ -494,7 +503,7 @@ public class UserinfoService extends AbstractServcice {
 	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
-		String sql = "select {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 		if(StringUtils.isNotBlank(group_uuid)){
 			sql+="and t0.groupuuid='"+ group_uuid + "'";
 		}
@@ -560,13 +569,13 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @param uuid
 	 */
-	public List<RoleUserRelation> getRoleuuid(String uuid) {
-		if (StringUtils.isBlank(uuid))
+	public List<RoleUserRelation> getRoleuuid(String groupuuid,String useruuid) {
+		if (StringUtils.isBlank(groupuuid)||StringUtils.isBlank(useruuid))
 			return null;
 
 		return (List<RoleUserRelation>) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(
-						"from RoleUserRelation where useruuid=?", uuid);
+						"from RoleUserRelation where groupuuid=? and useruuid=?",groupuuid, useruuid);
 
 	}
 
@@ -575,10 +584,14 @@ public class UserinfoService extends AbstractServcice {
 	 * @param roleuuid
 	 * @param rightuuids
 	 */
-	public boolean updateRoleRightRelation(String roleuuids, String useruuid,
+	public boolean updateRoleRightRelation(String roleuuids, String useruuid,String groupuuid,
 			String type, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(useruuid)) {
 			responseMessage.setMessage("useruuids不能为空");
+			return false;
+		}
+		if (StringUtils.isBlank(groupuuid)) {
+			responseMessage.setMessage("groupuuid不能为空");
 			return false;
 		}
 		String whereType = "";
@@ -590,8 +603,8 @@ public class UserinfoService extends AbstractServcice {
 		// 删除原有角色权限
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate(
-						"delete from RoleUserRelation where useruuid =? "
-								+ whereType, useruuid);
+						"delete from RoleUserRelation where groupuuid=? and useruuid =? "
+								+ whereType,groupuuid, useruuid);
 		this.logger.info("delete from RoleUserRelation count=" + tmpCout);
 		if (StringUtils.isNotBlank(roleuuids)) {
 			String[] str = PxStringUtil.StringDecComma(roleuuids).split(",");
@@ -599,6 +612,7 @@ public class UserinfoService extends AbstractServcice {
 				RoleUserRelation r = new RoleUserRelation();
 				r.setRoleuuid(s);
 				r.setUseruuid(useruuid);
+				r.setGroupuuid(groupuuid);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 			}
 		}
@@ -714,5 +728,44 @@ public class UserinfoService extends AbstractServcice {
 			list.add(teacherPhone);
 		}
 		return list;
+	}
+	public boolean delete(String uuid, ResponseMessage responseMessage,
+			HttpServletRequest request) {
+		if (StringUtils.isBlank(uuid)) {
+
+			responseMessage.setMessage("ID不能为空！");
+			return false;
+		}
+		User4Q obj=(User4Q) this.nSimpleHibernateDao.getObject(User4Q.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("没有该数据!");
+			return false;
+		}
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_user_del,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return false;
+		}
+		
+		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from UserGroupRelation where  useruuid =? ", obj.getUuid());
+		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
+		
+		
+		 this.nSimpleHibernateDao.delete(obj);
+//		if (uuid.indexOf(",") != -1)// 多ID
+//		{
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from Announcements where uuid in(?)", uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
+//		} else {
+//			this.nSimpleHibernateDao
+//					.deleteObjectById(Announcements.class, uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid =?", uuid);
+//		}
+
+		return true;
 	}
 }

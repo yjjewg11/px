@@ -2,6 +2,8 @@ package com.company.news.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -20,6 +22,8 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 
@@ -245,25 +249,34 @@ public class AnnouncementsService extends AbstractServcice {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage) {
+	public boolean delete(String uuid, ResponseMessage responseMessage, HttpServletRequest request) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
-
-		if (uuid.indexOf(",") != -1)// 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Announcements where uuid in(?)", uuid);
-//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-//					"delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
-		} else {
-			this.nSimpleHibernateDao
-					.deleteObjectById(Announcements.class, uuid);
-//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-//					"delete from AnnouncementsTo where announcementsuuid =?", uuid);
+		Announcements obj=(Announcements) this.nSimpleHibernateDao.getObject(Announcements.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("没有该数据!");
+			return false;
 		}
+		if(!RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_announce_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return false;
+		}
+		 this.nSimpleHibernateDao.delete(obj);
+//		if (uuid.indexOf(",") != -1)// 多ID
+//		{
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from Announcements where uuid in(?)", uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
+//		} else {
+//			this.nSimpleHibernateDao
+//					.deleteObjectById(Announcements.class, uuid);
+////			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+////					"delete from AnnouncementsTo where announcementsuuid =?", uuid);
+//		}
 
 		return true;
 	}

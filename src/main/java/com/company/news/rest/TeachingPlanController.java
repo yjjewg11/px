@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Teachingplan;
+import com.company.news.entity.User;
 import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.right.RightConstants;
-import com.company.news.right.RightUtils;
 import com.company.news.service.TeachingPlanService;
 import com.company.news.vo.ResponseMessage;
 
@@ -39,12 +39,12 @@ public class TeachingPlanController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
-		
-		if (!RightUtils.hasRight(RightConstants. KD_teachingplan_m ,request)){
-            responseMessage.setMessage( RightConstants.Return_msg );
-            return "";
-
-		}
+//		
+//		if (!RightUtils.hasRight(RightConstants. KD_teachingplan_m ,request)){
+//            responseMessage.setMessage( RightConstants.Return_msg );
+//            return "";
+//
+//		}
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		TeachingPlanJsonform teachingPlanJsonform;
@@ -57,11 +57,21 @@ public class TeachingPlanController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-
-		teachingPlanJsonform.setCreate_useruuid(this.getUserInfoBySession(
-				request).getUuid());
-
 		try {
+			
+			if (StringUtils.isBlank(teachingPlanJsonform.getClassuuid())) {
+				responseMessage.setMessage("classuuid不能为空！");
+				return "";
+			}
+			User user=this.getUserInfoBySession(
+					request);
+			if(!teachingPlanService.isheadteacher(user.getUuid(), teachingPlanJsonform.getClassuuid())){
+				responseMessage.setMessage("不是当前班级班主任不能修改课程表");
+				return "";
+			}
+			teachingPlanJsonform.setCreate_useruuid(this.getUserInfoBySession(
+					request).getUuid());
+
 			boolean flag = teachingPlanService.add(teachingPlanJsonform,
 					responseMessage);
 

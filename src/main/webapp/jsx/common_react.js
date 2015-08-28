@@ -77,6 +77,10 @@ var Userinfo_EventsTable = React.createClass({
 					alert("只能选择一个！");
 					return;
 				};
+				  var opt={groupuuid:$("input[name='group_uuid']").val(),
+						  userUuid:uuids};
+				  btn_click_userinfo(m,opt,usernames);
+				  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);
 	  },
@@ -224,7 +228,9 @@ var Userinfo_getRole = React.createClass({
 		  		<div className="header">
 		  		 <hr />
 		  		</div>
-	  			<button type="button"  onClick={btn_ajax_updateRole.bind(this, o.useruuid)}  className="am-btn am-btn-primary">提交</button>
+		  		
+	  			<button type="button"  onClick={btn_ajax_updateRole.bind(this, o.useruuid,o.groupuuid)}  className="am-btn am-btn-primary">提交</button>
+	  			<h3>{Store.getGroupNameByUuid(o.groupuuid)}</h3>
 		  		<UserChooseRole_EventsTable {...this.props}/>
 		  	   
 	  	   </div>

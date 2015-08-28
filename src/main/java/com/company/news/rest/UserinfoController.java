@@ -101,17 +101,20 @@ public class UserinfoController extends AbstractRESTController {
 
 			//取相关权限
 			model.put(RestConstants.Return_JSESSIONID, session.getId());
+			 //List<groupuuid,rightname>
 			List rightList=rightService.getRightListByUser(user);
-			String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+			//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
 			//取相关机构
 			List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
 			//老数据兼容,如果没有关联默认学校,则关联.
 			if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
 				if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
+					responseMessage.setMessage("绑定云代理失败");
 					return "";
 				}
+				listGroupuuids.add(SystemConstants.Group_uuid_wjd);
 			}
-			session.setAttribute(RestConstants.Session_UserInfo_rights, rights_str);
+			session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
 			session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
 			}
 			
@@ -359,8 +362,11 @@ public class UserinfoController extends AbstractRESTController {
 	public String getRole(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<RoleUserRelation> list = userinfoService.getRoleuuid(request
-				.getParameter("userUuid"));
+		String groupuuid=request
+				.getParameter("groupuuid");
+		String useruuid=request
+				.getParameter("userUuid");
+		List<RoleUserRelation> list = userinfoService.getRoleuuid(groupuuid, useruuid);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
@@ -375,6 +381,7 @@ public class UserinfoController extends AbstractRESTController {
 			boolean flag = userinfoService.updateRoleRightRelation(
 					request.getParameter("roleuuids"),
 					request.getParameter("useruuid"),
+					request.getParameter("groupuuid"),
 					request.getParameter("type"),responseMessage);
 			if (!flag)
 				return "";
@@ -577,7 +584,7 @@ public class UserinfoController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
-		if(!RightUtils.hasRight(RightConstants. KD_teacher_m,request)){
+		if(!RightUtils.hasRightAnyGroup(RightConstants. KD_teacher_m,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
             return "";
 		}
@@ -630,6 +637,36 @@ public class UserinfoController extends AbstractRESTController {
 		return "";
 	}
 	
-	
+	/**
+	 * 班级删除
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteByAdmin", method = RequestMethod.POST)
+	public String delete(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			
+			boolean flag = userinfoService.delete(request.getParameter("uuid"),
+					responseMessage,request);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("删除成功");
+		return "";
+	}
 	
 }

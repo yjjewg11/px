@@ -82,10 +82,10 @@ public class GroupController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants. KD_group_m,request)){
+		if(!RightUtils.hasRightAnyGroup(RightConstants. KD_group_m,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
             return "";
-}
+		}
 
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);

@@ -47,10 +47,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return "";
-		}
+		
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		AnnouncementsJsonform announcementsJsonform;
@@ -63,13 +60,23 @@ public class AnnouncementsController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-		
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		announcementsJsonform.setCreate_user(user.getName());
-		announcementsJsonform.setCreate_useruuid(user.getUuid());
-		
 		try {
+			
+			if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
+				responseMessage.setMessage("Groupuuid不能为空！");
+				return "";
+			}
+
+			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			announcementsJsonform.setCreate_user(user.getName());
+			announcementsJsonform.setCreate_useruuid(user.getUuid());
+			
+	
 			boolean flag;
 			if(StringUtils.isEmpty(announcementsJsonform.getUuid()))
 			    flag = announcementsService.add(announcementsJsonform, responseMessage);
@@ -104,10 +111,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
-		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return "";
-		}
+		
 		try {
 			String groupuuid=request.getParameter("groupuuid");
 			if(StringUtils.isBlank(groupuuid)){
@@ -138,13 +142,11 @@ public class AnnouncementsController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return "";
-		}
+		
 		try {
+			
 			boolean flag = announcementsService.delete(request.getParameter("uuid"),
-					responseMessage);
+					responseMessage,request);
 			if (!flag)
 				return "";
 		} catch (Exception e) {

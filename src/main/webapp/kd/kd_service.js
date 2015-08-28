@@ -1280,42 +1280,49 @@ function btn_click_userinfo(m,obj,usernames,sex){
    /*
     * <老师管理>分配权限按钮服务请求
     * */
-   function btn_ajax_updateRole(useruuid){
-		 var uuids="";
-		 $("input[name='table_checkbox']").each(function(){
-			if(this.checked){
-				 if(!uuids)uuids=this.value;
-				 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			}
-			});
-		 	  
-		$.AMUI.progress.start();
-	      var url = hostUrl + "rest/userinfo/updateRole.json";
-	      var opt={
-	    			type : "POST",
-	    			url : url,
-	    			processData: true, 
-	    			dataType : "json",
-	    			data:{type:1,useruuid:useruuid,roleuuids:uuids},
-	    			success : function(data) {
-	    				$.AMUI.progress.done();
-	    				if (data.ResMsg.status == "success") {
-	    					G_msg_pop(data.ResMsg.message);
-	    					Queue.doBackFN();
-	    				} else {
-	    					alert(data.ResMsg.message);
-	    				}
-	    			},
-	    			error : function( obj, textStatus, errorThrown ){
-	    				$.AMUI.progress.done();
-	    				alert(url+",error:"+textStatus);
-	    				 console.log(url+',error：', obj);
-	    				 console.log(url+',error：', textStatus);
-	    				 console.log(url+',error：', errorThrown);
-	    			}
-	    		};
-		$.ajax(opt);
-	}
+
+   function btn_ajax_updateRole(useruuid,groupuuid){
+   	 var uuids=null;
+   	 $("input[name='table_checkbox']").each(function(){
+   		if(this.checked){
+   			 if(uuids==null)uuids=this.value;
+   			 else uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+   		}
+   		});
+   	  if(!uuids){
+   		  alert("请勾选复选框！");
+   		  return;
+   	  }
+   	  
+   	$.AMUI.progress.start();
+         var url = hostUrl + "rest/userinfo/updateRole.json";
+         var opt={
+       			type : "POST",
+       			url : url,
+       			processData: true, 
+       			dataType : "json",
+       			data:{useruuid:useruuid,groupuuid:groupuuid,roleuuids:uuids},
+       			//contentType : false,  
+       			success : function(data) {
+       				$.AMUI.progress.done();
+       				// 登陆成功直接进入主页
+       				if (data.ResMsg.status == "success") {
+       					G_msg_pop(data.ResMsg.message);
+       					Queue.doBackFN();
+       				} else {
+       					alert(data.ResMsg.message);
+       				}
+       			},
+       			error : function( obj, textStatus, errorThrown ){
+       				$.AMUI.progress.done();
+       				alert(url+",error:"+textStatus);
+       				 console.log(url+',error：', obj);
+       				 console.log(url+',error：', textStatus);
+       				 console.log(url+',error：', errorThrown);
+       			}
+       		};
+   	$.ajax(opt);
+   }
    
 /*
 * <老师管理>提交Button事件

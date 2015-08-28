@@ -42,9 +42,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class ClassService extends AbstractServcice {
-	// 20150610 去掉对用户表的TYPE定义，默认都为0
-	public static final int class_usertype_head = 1;// 班主任
-	public static final int class_usertype_teacher = 0;// 老师类型
+	
 
 	/**
 	 * 增加班级
@@ -82,7 +80,7 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pClass.getUuid());
 				u.setUseruuid(s);
-				u.setType(class_usertype_head);
+				u.setType(SystemConstants.class_usertype_head);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
@@ -93,23 +91,14 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pClass.getUuid());
 				u.setUseruuid(s);
-				u.setType(class_usertype_teacher);
+				u.setType(SystemConstants.class_usertype_teacher);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
 
 		return true;
 	}
-	/*
-	 * 
-	 * 判断是否是班级的班主任老师
-	 */
-	public boolean isheadteacher(String user_uuids,String classuuid){
-		String hql="select uuid from UserClassRelation where type=? and classuuid=? and useruuid in("+DBUtil.stringsToWhereInValue(user_uuids)+")";
-		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, class_usertype_head,classuuid);
-		if(list.size()>0)return true;
-		return false;
-	}
+	
 
 	/**
 	 * 更新班级
@@ -140,7 +129,7 @@ public class ClassService extends AbstractServcice {
 			boolean b1=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
 			if(!b1){
 				
-				if(!b1&&RightUtils.hasRight(RightConstants.AD_class_m,request)){
+				if(!b1&&RightUtils.hasRight(obj.getGroupuuid(),RightConstants.AD_class_m,request)){
 					responseMessage.setMessage("不能修改,不是班主任或者管理员");
 					return false;
 				}
@@ -173,7 +162,7 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(classRegJsonform.getUuid());
 				u.setUseruuid(s);
-				u.setType(class_usertype_head);
+				u.setType(SystemConstants.class_usertype_head);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
@@ -184,7 +173,7 @@ public class ClassService extends AbstractServcice {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(classRegJsonform.getUuid());
 				u.setUseruuid(s);
-				u.setType(class_usertype_teacher);
+				u.setType(SystemConstants.class_usertype_teacher);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
@@ -269,7 +258,7 @@ public class ClassService extends AbstractServcice {
 		for (UserClassRelation u : l) {
 			User user = (User) CommonsCache.get(u.getUseruuid(),User.class);
 			if (user != null) {
-				if (u.getType().intValue() == class_usertype_head) {
+				if (u.getType().intValue() == SystemConstants.class_usertype_head) {
 
 					headTeacher += (u.getUseruuid() + ",");
 					headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(),User.class))
@@ -308,7 +297,7 @@ public class ClassService extends AbstractServcice {
 			for (UserClassRelation u : l) {
 				User user = (User) CommonsCache.get(u.getUseruuid(),User.class);
 				if (user != null) {
-					if (u.getType().intValue() == class_usertype_head) {
+					if (u.getType().intValue() == SystemConstants.class_usertype_head) {
 						headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(),User.class))
 								.getName() + ",");
 					} else {

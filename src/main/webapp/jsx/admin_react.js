@@ -1,12 +1,17 @@
 //login
+
+/*
+ *登录界面账号与密码输入绘制
+ * <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/> 绘制图片
+ * */
 var Div_login = React.createClass({ 
 	 getInitialState: function() {
 		    return this.props;
 		  },
-	 handleChange: function(event) { 
+	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
-		    this.setState(o); 
+		    this.setState(o);
 	  },
 render: function() {
 	  var o = this.state;
@@ -14,38 +19,28 @@ render: function() {
  		<div>
  		<div className="header">
  		  <div className="am-g">
+ 		 <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/>
  		 <h1>问界科技管理云平台</h1>
- 	    <p>PX Background Management System<br/>快捷管理，大数据分析</p>
  		  </div>
- 		  <hr />
  		</div>
  		<div className="am-g">
  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
  		 <form id="login_form" method="post" className="am-form">
- 	      <label htmlFor="loginname">手机号:</label>
- 	      <input type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
- 	      <br/>
- 	      <label htmlFor="password">密码:</label>
- 	      <input type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
- 	      <br/>
+ 	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+ 	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
  	      <label htmlFor="pw_checked">
  	        <input id="pw_checked" name="pw_checked" type="checkbox"  checked={o.pw_checked=="checked"?"checked":""} onChange={this.handleChange}/>
  	        记住密码
  	      </label>
- 	      <br />
  	      <div className="am-cf">
  	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
- 	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn}  value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
+ 	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
- 	      <br/>
- 	      
- 	     <a  href="http://120.25.248.31/px-rest/admin/" > <img src="ew_admin.png" /></a>
- 	    
- 			
+ 	   
+ 	     <br/>
  	    </form>
  	    <hr/>
- 	    <p>© 2015 PX, Inc. </p>
-
+ 	   <p>© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1</p>
  	     </div> 
  	   </div>
  	   
@@ -346,7 +341,115 @@ render: function() {
 //end role bind right
 
 
+//userinfo
+/*
+ * 老师管理服务器请求后绘制处理方法；
+ * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+ * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+ * @调用LIS.events.map方法循环绘制老师数组； 
+ * @</select>下拉多选框;
+ * */
+var AD_Userinfo_EventsTable = React.createClass({
+	handleClick: function(m) {
+		
+		 if(m=="add"){
+			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
+			 return;
+		 }
+		 var uuids=null;
+		 var usernames=null;
+		 $($("input[name='table_checkbox']")).each(function(){
+			　if(this.checked){
+				 if(uuids==null){
+					 uuids=this.value;
+					 usernames=this.alt;
+				 }
+				 else{
+					 uuids+=','+this.value ;  
+					 usernames+=','+this.alt;
+				 };
+			　};
+			});
+		  if(!uuids){
+			  alert("请勾选复选框！");
+			  return;
+		  }
+		  if(m=="getRole"){
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个！");
+					return;
+				};
+				  var opt={groupuuid:$("input[name='group_uuid']").val(),
+						  userUuid:uuids};
+				  btn_click_userinfo(m,opt,usernames);
+				  return;
+		  }
+		  if(m=="del"){
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个！");
+					return;
+				};
+		  }
+	
+		  btn_click_userinfo(m,uuids,usernames);
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+	  handleChange_selectgroup_uuid:function(val){
+		  ajax_uesrinfo_listByAllGroup($("input[name='group_uuid']").val(),$('#sutdent_name').val());
+	  },
+  render: function() {
+    return (
+    <div>
+    <div className="header">
+    <hr />
+    </div>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
+	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
+	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
+	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
+	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+	    </AMR_ButtonToolbar>
+	      <form id="editGroupForm" method="post" className="am-form">
+	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+		  </form>
+	  <hr/>
+	  <div className="am-form-group">
+	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
 
+    </div>
+	  
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+          	<th>  
+            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+            </th>
+            <th>帐号</th>
+            <th>姓名</th>
+            <th>电话</th>
+            <th>邮箱</th>
+            <th>性别</th>
+            <th>状态</th>
+            <th>登录时间</th>
+            <th>创建时间</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Userinfo_EventRow key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+//userinfo end
 
 //basedatatype
 var Basedatatype_EventRow = React.createClass({ 

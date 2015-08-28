@@ -1,3 +1,4 @@
+
 function login_affter_init(){
 	var div_header_props = {
 			  "title": Store.getCurGroup().brand_name+"-"+Store.getUserinfo().name,

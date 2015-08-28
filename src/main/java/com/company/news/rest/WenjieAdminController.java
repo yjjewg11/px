@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.entity.BaseDataList;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
@@ -46,7 +47,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				responseMessage.setMessage("dataRefresh is not admin!");
 				return "";
 			}
-			if(!RightUtils.hasRight(RightConstants.AD_right_m, request)){
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_right_m, request)){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 				responseMessage.setMessage("dataRefresh is not authorization!");
 				return "";
