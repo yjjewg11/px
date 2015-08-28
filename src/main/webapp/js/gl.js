@@ -64,8 +64,15 @@ Date.prototype.format = function(format) {
  * @param m
  */
 function G_user_hasRight(s){
+	return true
 	console.log("权限判断参数S",s);
 	//return true;
+	//list<[groupuuid,rightname]>
+	var list=Store.getUserRights();
+	if(!list)return false;
+	for(var i=0;i<list.length;i++){
+		if(list[i][1]==s)return true;
+	}
 	if(Store.getUserRights().indexOf(","+s+",")>-1){
 		return true;
 	}

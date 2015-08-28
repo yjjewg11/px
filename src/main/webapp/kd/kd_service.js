@@ -1946,23 +1946,22 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
  * */
 var g_teachingjudge_point=0;
-function ajax_teachingjudge_query(num,groupuuid,type) {
-	Queue.push(function(){ ajax_teachingjudge_query(num,groupuuid,type);},"评价老师");
-	  if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+function ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type) {
+	Queue.push(function(){ ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
+	//  if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+	  if(!groupuuid)groupuuid=Store.getCurGroupByRight().uuid;	  
 	  if(!type)type="";
+	  if(!teacher_name)teacher_name="";	
 		var now=new Date();
-		if(!num){
-			num=0;
-			g_teachingjudge_point=0;
-		}
-		var begDateStr=G_week.getDateStr(now,num);
-		var endDateStr=begDateStr;
+	  if(!begDateStr)begDateStr=G_week.getDateStr(now,0);
+	  if(!endDateStr)endDateStr=G_week.getDateStr(now,0);
 		$.AMUI.progress.start();
 		var url = hostUrl + "rest/teachingjudge/query.json";
+		var grouplist=Store.getGroupByRight("KD_teachingjudge_q");
 		$.ajax({          
 			type : "GET",  
 			url : url,
-			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type},
+			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type,teacher_name:teacher_name,type:type},
 			dataType : "json",
 			success : function(data) {
 				$.AMUI.progress.done();
@@ -1971,12 +1970,12 @@ function ajax_teachingjudge_query(num,groupuuid,type) {
 	  					begDateStr:begDateStr,
 	  					endDateStr:endDateStr,
 	  					group_uuid:groupuuid,
-	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-	  					events: data.list.data,
-	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
-	  					
-	  				}), document.getElementById('div_body'));
-					
+	  					type:type,
+	  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
+	  					events: data.list,
+	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
+	  				}), document.getElementById('div_body'));					
 				}
 			}
 		});
