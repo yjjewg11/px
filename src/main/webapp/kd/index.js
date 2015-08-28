@@ -447,7 +447,13 @@ function menu_cookbookPlan_list_fn(groupuuid,weeknum){
 function menu_teachingplan_list_fn(){
 	var groupList=Store.getGroup();
 	var classList=Store.getChooseClass(groupList[0].uuid);
-	ajax_teachingplan_listByClass(groupList[0].uuid,classList[0].uuid);
+	var classuuid;
+	if(!classList||classList.length==0){
+		classuuid=null;
+	}else{
+		classuuid=classList[0].uuid;
+	}
+	ajax_teachingplan_listByClass(groupList[0].uuid,classuuid);
 }
 /*
  * (标头)<园长信箱>
@@ -504,17 +510,13 @@ function menu_statistics_list_fn() {
 		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
-/*
- *menu_teachingjudge_list_fn 
- * 
- * 
- * */
+
 /*
  * (标头)评价老师
  * @跳转kd_service发服务器请求
  * */
 function menu_teachingjudge_list_fn () {
-	//ajax_teachingjudge_query();
+	ajax_teachingjudge_query();
 };
 
 
@@ -533,7 +535,16 @@ function menu_announce_mylist_fn() {
  * */
 function menu_teachingplan_dayShow_fn() {
 	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
-	ajax_teachingplan_dayShow(null,{uuid:classList[0].uuid,name:classList[0].name});
+	var classuuid;
+	var classname;
+	if(!classList||classList.length==0){
+		classuuid=null;
+		classname="";
+	}else{
+		classuuid=classList[0].uuid;
+		classname=classList[0].name;
+	}
+	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
 /*
  * （首页）每日食谱
@@ -563,7 +574,13 @@ function menu_article_list_fn(){
 * */
 function menu_class_students_fn() {
 	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
-	react_ajax_class_students_manage(classList[0].uuid,"show");
+	var classuuid;
+	if(!classList||classList.length==0){
+		classuuid=null;
+	}else{
+		classuuid=classList[0].uuid;
+	}
+	react_ajax_class_students_manage(classuuid,"show");
 };
 /*
  * （首页）老师通讯录；
