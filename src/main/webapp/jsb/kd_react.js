@@ -1863,7 +1863,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("div", {className: "am-comment-actions"}, 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
+			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_illegal.bind(this,o.uuid)}, "举报")
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2215,10 +2215,6 @@ var Query_EventRow = React.createClass({displayName: "Query_EventRow",
 
 
 
-
-
-
-
 //——————————————————————————评价老师<绘制>——————————————————————————  
 /*
  * 评价老师服务器请求后绘制处理方法；
@@ -2322,34 +2318,6 @@ var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachi
 	  }
 	}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2491,8 +2459,7 @@ return (
 		     ), 
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-		    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
 		    	)
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2555,8 +2522,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 					 ), 
 				    	React.createElement("footer", {className: "am-comment-footer"}, 
 				    	React.createElement("div", {className: "am-comment-actions"}, 
-				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-				    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
 				    	)
 				    	), 
 				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2662,8 +2628,7 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 				 ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
-			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
+			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -3103,7 +3068,7 @@ return (
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-		    	React.createElement("a", {href: "javascript:void(0);"}, "举报")
+		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_illegal.bind(this,o.uuid)}, "举报")
 		    	)
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 

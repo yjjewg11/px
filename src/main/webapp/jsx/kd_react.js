@@ -1863,7 +1863,7 @@ var Classnews_show = React.createClass({
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
-			    	<a href="javascript:void(0);">举报</a>
+			    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,o.uuid)}>举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2215,10 +2215,6 @@ var Query_EventRow = React.createClass({
 
 
 
-
-
-
-
 //——————————————————————————评价老师<绘制>——————————————————————————  
 /*
  * 评价老师服务器请求后绘制处理方法；
@@ -2322,34 +2318,6 @@ var Query_teachingjudge_EventRow = React.createClass({
 	  }
 	}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2492,7 +2460,6 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-		    	<a href="javascript:void(0);">举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2556,7 +2523,6 @@ var Teachingplan_showByOneDay = React.createClass({
 				    	<footer className="am-comment-footer">
 				    	<div className="am-comment-actions">
 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-				    	<a href="javascript:void(0);">举报</a>
 				    	</div>
 				    	</footer>
 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2663,7 +2629,6 @@ var CookbookPlan_showByOneDay = React.createClass({
 			    	<footer className="am-comment-footer">
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-			    	<a href="javascript:void(0);">举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -3103,7 +3068,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-		    	<a href="javascript:void(0);">举报</a>
+		    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,o.uuid)}>举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>

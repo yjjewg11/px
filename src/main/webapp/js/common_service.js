@@ -781,3 +781,25 @@ function common_teacherDailyTask_status(status){
 function common_approval(uuid){
      console.log("123321");	
 }
+
+/*
+ * 举报公用服务器请求         /check/illegal.json?type=99&uuid=1
+
+ * */
+function common_illegal(uuid){
+	var url = hostUrl + "rest/check/illegal.json?type=99&uuid="+uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				 G_msg_pop("举报成功");
+			} else {
+				alert(data.ResMsg.message);
+			}
+		}
+	});
+}
