@@ -1923,53 +1923,89 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 	};
 
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 //——————————————————————————评价老师—————————————————————————— 
 /*
  * <评价老师>（获取用户列表服务器请求）；
  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
  * */
-function ajax_teachingjudge_query(groupuuid,classuuid,name,pageNo) {
-	Queue.push(function(){ajax_teachingjudge_query(groupuuid,classuuid,name,pageNo);},"学生列表");
-	  if(!groupuuid)groupuuid="";
-	  if(!classuuid)classuuid="";
-	  if(!name)name="";
-	  if(!pageNo)pageNo="";
+var g_teachingjudge_point=0;
+function ajax_teachingjudge_query(num,groupuuid,type) {
+	Queue.push(function(){ ajax_teachingjudge_query(num,groupuuid,type);},"评价老师");
+	  if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+	  if(!type)type="";
+		var now=new Date();
+		if(!num){
+			num=0;
+			g_teachingjudge_point=0;
+		}
+		var begDateStr=G_week.getDateStr(now,num);
+		var endDateStr=begDateStr;
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+		var url = hostUrl + "rest/teachingjudge/query.json";
 		$.ajax({          
 			type : "GET",  
 			url : url,
+			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type},
 			dataType : "json",
 			success : function(data) {
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
 	  				React.render(React.createElement(Query_teachingjudge_list, {
+	  					begDateStr:begDateStr,
+	  					endDateStr:endDateStr,
 	  					group_uuid:groupuuid,
-	  					class_uuid:classuuid,
-	  					name:name,
 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-	  					class_list:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
 	  					events: data.list.data,
 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	  					
 	  				}), document.getElementById('div_body'));
 					
-				} else {
-					alert(data.ResMsg.message);
 				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+","+textStatus+"="+errorThrown);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
 			}
 		});
 	};
 		
 		
-		
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 //——————————————————————————(大图标)班级互动—————————————————————————— 	  
 /*
