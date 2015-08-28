@@ -907,7 +907,7 @@ function ajax_group_edit(m,formdata){
 //记录当前翻页的周数	  <h1>【{this.props.classname}】[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
 var g_cookbookPlan_week_point=0;
 function ajax_teachingplan_listByClass(groupuuid,classuuid,weeknum){
-	if(!classuuid&&Store.getChooseClass(groupuuid).length>0)classuuid=Store.getChooseClass(groupuuid)[0].uuid;
+	if(!classuuid&&Store.getMyClassList().length>0)classuuid=Store.getMyClassList()[0].uuid;
 	var now=new Date();
 	if(weeknum){
 		now=G_week.getDate(now,weeknum*7);
@@ -936,7 +936,7 @@ function ajax_teachingplan_listByClass(groupuuid,classuuid,weeknum){
 					begDateStr:begDateStr,
 					endDateStr:endDateStr,
 					groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+					classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -1546,7 +1546,7 @@ function react_ajax_class_students_manage(uuid,m){
 		}
 		React.render(React.createElement(Class_students_show,{
 			formdata:formdata,
-			classList:G_selected_dataModelArray_byArray(Store.getChooseClass(Store.getCurGroup().uuid),"uuid" ,"name"),
+			classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
 			classuuid:uuid,
 			students:students}), document.getElementById('div_body'));
 		return ;
@@ -1779,7 +1779,7 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type) {
 	var url;
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
-	var classnews_class_list=Store.getChooseClass(Store.getCurGroup().uuid);
+	var classnews_class_list=Store.getMyClassList();
 	$.AMUI.progress.start();
 	if(type==1){
 		url =hostUrl + "rest/classnews/getClassNewsByClassuuid.json";
@@ -1820,7 +1820,7 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type) {
  * */
 function btn_click_classnews(m,formdata){
 	Queue.push(function(){btn_click_classnews(m,formdata);},"发布互动");
-	ajax_classnews_edit(m,formdata,Store.getChooseClass(Store.getCurGroup().uuid));
+	ajax_classnews_edit(m,formdata,Store.getMyClassList());
 };	  
 /*
  * <班级互动>添加与编辑按钮服务器请求（公共方法大图标班级活动也请求此方法）
@@ -1909,7 +1909,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 	  					class_uuid:classuuid,
 	  					name:name,
 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-	  					class_list:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+	  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
 	  					events: data.list.data,
 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	  					
@@ -2111,7 +2111,7 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 					ch_class:myclazz,
 					ch_group:Store.getCurGroup(),
 					ch_day:begDateStr,					
-					classList:G_selected_dataModelArray_byArray (Store.getChooseClass(Store.getCurGroup().uuid),"uuid" ,"name"),
+					classList:G_selected_dataModelArray_byArray (Store.getMyClassList(),"uuid" ,"name"),
 					formdata:formdata
 					}), document.getElementById('div_body'));
 				

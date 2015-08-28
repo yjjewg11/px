@@ -446,7 +446,9 @@ function menu_cookbookPlan_list_fn(groupuuid,weeknum){
  * */
 function menu_teachingplan_list_fn(){
 	var groupList=Store.getGroup();
-	var classList=Store.getChooseClass(groupList[0].uuid);
+	//var classList=Store.getChooseClass(groupList[0].uuid);
+	//我的主页
+	var classList=Store.getMyClassList();
 	var classuuid;
 	if(!classList||classList.length==0){
 		classuuid=null;
@@ -573,7 +575,10 @@ function menu_article_list_fn(){
 * @show老师查看状态进入查看学生详情;
 * */
 function menu_class_students_fn() {
-	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
+	//var classList=Store.getChooseClass(Store.getCurGroup().uuid);
+	var classList=Store.getMyClassList();
+	
+	
 	var classuuid;
 	if(!classList||classList.length==0){
 		classuuid=null;
