@@ -8,12 +8,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.vo.DianzanListVO;
 
 public abstract class AbstractServcice {
@@ -28,7 +30,16 @@ public abstract class AbstractServcice {
    */
   public abstract Class getEntityClass();
   
-  
+  /*
+	 * 
+	 * 判断是否是班级的班主任老师
+	 */
+	public boolean isheadteacher(String user_uuids,String classuuid){
+		String hql="select uuid from UserClassRelation where type=? and classuuid=? and useruuid in("+DBUtil.stringsToWhereInValue(user_uuids)+")";
+		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, SystemConstants.class_usertype_head,classuuid);
+		if(list.size()>0)return true;
+		return false;
+	}
 	/**
 	 * 获取老师相关班级的uuid
 	 * @param classNewsDianzanJsonform

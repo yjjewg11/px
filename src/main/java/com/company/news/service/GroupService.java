@@ -279,7 +279,7 @@ public class GroupService extends AbstractServcice {
 	public List getGroupByUseruuidByAdmin(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("selec DISTINCTt {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();

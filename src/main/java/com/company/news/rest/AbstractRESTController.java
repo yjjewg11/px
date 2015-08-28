@@ -51,6 +51,7 @@ public class AbstractRESTController   {
 	    }
 	    model.addAttribute(RestConstants.Return_UserInfo,userInfoReturn);
 	    HttpSession session =SessionListener.getSession(request);
+	    // //List<groupuuid,rightname>
 	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
 	  }
 	  

@@ -560,13 +560,13 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @param uuid
 	 */
-	public List<RoleUserRelation> getRoleuuid(String uuid) {
-		if (StringUtils.isBlank(uuid))
+	public List<RoleUserRelation> getRoleuuid(String groupuuid,String useruuid) {
+		if (StringUtils.isBlank(groupuuid)||StringUtils.isBlank(useruuid))
 			return null;
 
 		return (List<RoleUserRelation>) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(
-						"from RoleUserRelation where useruuid=?", uuid);
+						"from RoleUserRelation where groupuuid=? and useruuid=?",groupuuid, useruuid);
 
 	}
 
@@ -575,10 +575,14 @@ public class UserinfoService extends AbstractServcice {
 	 * @param roleuuid
 	 * @param rightuuids
 	 */
-	public boolean updateRoleRightRelation(String roleuuids, String useruuid,
+	public boolean updateRoleRightRelation(String roleuuids, String useruuid,String groupuuid,
 			String type, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(useruuid)) {
 			responseMessage.setMessage("useruuids不能为空");
+			return false;
+		}
+		if (StringUtils.isBlank(groupuuid)) {
+			responseMessage.setMessage("groupuuid不能为空");
 			return false;
 		}
 		String whereType = "";
@@ -590,8 +594,8 @@ public class UserinfoService extends AbstractServcice {
 		// 删除原有角色权限
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate(
-						"delete from RoleUserRelation where useruuid =? "
-								+ whereType, useruuid);
+						"delete from RoleUserRelation where groupuuid=? and useruuid =? "
+								+ whereType,groupuuid, useruuid);
 		this.logger.info("delete from RoleUserRelation count=" + tmpCout);
 		if (StringUtils.isNotBlank(roleuuids)) {
 			String[] str = PxStringUtil.StringDecComma(roleuuids).split(",");
@@ -599,6 +603,7 @@ public class UserinfoService extends AbstractServcice {
 				RoleUserRelation r = new RoleUserRelation();
 				r.setRoleuuid(s);
 				r.setUseruuid(useruuid);
+				r.setGroupuuid(groupuuid);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 			}
 		}

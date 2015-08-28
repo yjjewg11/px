@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.BaseDataType;
 import com.company.news.entity.Group;
 import com.company.news.jsonform.BaseDataListJsonform;
@@ -61,7 +62,7 @@ public class BaseDataTypeController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
-		if(!RightUtils.hasRight(RightConstants.AD_basedata_m,request)){
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_basedata_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}

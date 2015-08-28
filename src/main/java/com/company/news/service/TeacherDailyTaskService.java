@@ -39,9 +39,7 @@ public class TeacherDailyTaskService extends AbstractServcice {
 		List resultList=new ArrayList();
 		addByAuto_sub_classNews(resultList,user,date);
 		addByAuto_sub_Teachingplan(resultList,user,date);
-		if(RightUtils.hasRight(RightConstants.KD_cookbookplan_m, request)){
-			addByAuto_sub_CookbookPlan(resultList, user, date);
-		}
+			addByAuto_sub_CookbookPlan(resultList, user, date,request);
 		return resultList;
 	}
 	
@@ -103,7 +101,7 @@ public class TeacherDailyTaskService extends AbstractServcice {
 	 List addByAuto_sub_Teachingplan(List resultList,User user,Timestamp date) throws Exception {
 		//班主任创建课程表
 		String rhql="from PClass where uuid in (select classuuid from UserClassRelation where type=? and useruuid=?)";
-		List<PClass> classNewsList=(List<PClass>)this.nSimpleHibernateDao.getHibernateTemplate().find(rhql,ClassService.class_usertype_head,user.getUuid());
+		List<PClass> classNewsList=(List<PClass>)this.nSimpleHibernateDao.getHibernateTemplate().find(rhql,SystemConstants.class_usertype_head,user.getUuid());
 		for(PClass obj:classNewsList){
 			TeacherDailyTask task=new TeacherDailyTask();
 			task.setUser_uuid(user.getUuid());
@@ -179,10 +177,13 @@ public class TeacherDailyTaskService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
-	 List addByAuto_sub_CookbookPlan(List resultList,User user,Timestamp date) throws Exception {
+	 List addByAuto_sub_CookbookPlan(List resultList,User user,Timestamp date,HttpServletRequest request) throws Exception {
 		//创建班级互动任务
 		List<Group4Q> classNewsList=(List<Group4Q>)this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q where uuid in (select groupuuid from UserGroupRelation where useruuid=?)",user.getUuid());
 		for(Group4Q obj:classNewsList){
+			if(!RightUtils.hasRight(obj.getUuid(),RightConstants.KD_cookbookplan_m, request)){
+				continue;
+			}
 			TeacherDailyTask task=new TeacherDailyTask();
 			task.setUser_uuid(user.getUuid());
 			task.setCreate_time(date);

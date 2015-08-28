@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.BaseDataList;
 import com.company.news.entity.BaseDataListCacheVO;
 import com.company.news.json.JSONUtils;
@@ -47,7 +48,7 @@ public class BaseDataListController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.AD_basedata_m,request)){
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_basedata_m,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}
@@ -117,7 +118,7 @@ public class BaseDataListController extends AbstractRESTController {
     public String delete( ModelMap model,HttpServletRequest request) {
 		//返回消息体
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.AD_basedata_del,request)){
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_basedata_del,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}

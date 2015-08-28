@@ -127,23 +127,28 @@ public class ClassController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.AD_class_m,request)){
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return "";
-		}
-		try {
-			boolean flag = classService.delete(request.getParameter("uuid"),
-					responseMessage);
-			if (!flag)
-				return "";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
-			return "";
-		}
+		if(true){
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+		responseMessage.setMessage(RightConstants.Return_msg);
+		return "";
+	}
+//		if(!RightUtils.hasRight(RightConstants.AD_class_m,request)){
+//			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//			responseMessage.setMessage(RightConstants.Return_msg);
+//			return "";
+////		}
+//		try {
+//			boolean flag = classService.delete(request.getParameter("uuid"),
+//					responseMessage);
+//			if (!flag)
+//				return "";
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//			responseMessage.setMessage(e.getMessage());
+//			return "";
+//		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("删除成功");

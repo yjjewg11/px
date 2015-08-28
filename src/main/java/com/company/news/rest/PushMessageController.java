@@ -113,7 +113,7 @@ public class PushMessageController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRight(RightConstants.KD_announce_m,request)){
+		if(true){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}
