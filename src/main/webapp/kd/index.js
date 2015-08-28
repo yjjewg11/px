@@ -426,7 +426,7 @@ function menu_announce_list_fn(types,name,groupuuid) {
 	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
 	announce_types=types; 
 	Group_name=name;
-	if(!groupuuid)Group_uuid=Store.getGroupByRight("KD_ann_type").uuid;
+	if(!groupuuid)Group_uuid=Store.getCurGroupByRight("KD_announce_m").uuid;
 	else Group_uuid=groupuuid;
 	ajax_announce_listByGroup(Group_uuid,name);
 };
@@ -436,7 +436,7 @@ function menu_announce_list_fn(types,name,groupuuid) {
  * */
 function menu_cookbookPlan_list_fn(groupuuid,weeknum){
 	var cookbook_Group_uuid="";
-	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroup().uuid;
+	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
 	else cookbook_Group_uuid=groupuuid;
 	ajax_cookbookPlan_listByGroup(cookbook_Group_uuid,weeknum);
 }
@@ -445,7 +445,7 @@ function menu_cookbookPlan_list_fn(groupuuid,weeknum){
  * @跳转widget发服务器请求
  * */
 function menu_teachingplan_list_fn(){
-	var groupList=Store.getGroup();
+	var groupList=Store.getGroupByRight("KD_teachingplan_m");
 	//var classList=Store.getChooseClass(groupList[0].uuid);
 	//我的主页
 	var classList=Store.getMyClassList();
@@ -455,7 +455,7 @@ function menu_teachingplan_list_fn(){
 	}else{
 		classuuid=classList[0].uuid;
 	}
-	ajax_teachingplan_listByClass(groupList[0].uuid,classuuid);
+	ajax_teachingplan_listByClass(groupList.uuid,classuuid);
 }
 /*
  * (标头)<园长信箱>
@@ -469,7 +469,7 @@ function menu_queryLeaderMsgByParents_message_fn() {
  * @跳转kd_service发服务器请求
  * */
 function menu_userinfo_list_fn_byRight() {
-	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
+	ajax_uesrinfo_listByGroup(Store.getCurGroupByRight("KD_teacher_m").uuid);
 };
 /*
  * (标头)班级管理 edit
@@ -477,14 +477,14 @@ function menu_userinfo_list_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn() {
-	ajax_class_listByGroup(Store.getCurGroup().uuid);
+	ajax_class_listByGroup(Store.getCurGroupByRight("KD_class_m").uuid);
 };
 /*
  * (标头)收支管理
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn() {
-	ajax_accounts_listByGroup(Store.getCurGroup().uuid);
+	ajax_accounts_listByGroup(Store.getCurGroupByRight("KD_accounts_m").uuid);
 };
 /*
  * (标头)注销用户
@@ -509,7 +509,7 @@ function menu_statistics_list_fn() {
 	Queue.push(menu_statistics_list_fn,"统计");
 	React.render(React.createElement(ECharts_Div, {
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
-		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_statistics_m"),"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
 

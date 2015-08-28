@@ -615,7 +615,7 @@ function ajax_group_edit(m,formdata){
   			if (data.ResMsg.status == "success") {
   				React.render(React.createElement(Announcements_EventsTable, {
   					groupuuid:groupuuid,
-  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name"),
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name"),
   					events: data.list,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					}), document.getElementById('div_body'));
@@ -660,7 +660,7 @@ function ajax_group_edit(m,formdata){
 	  	if(!uuid){
 	  		React.render(React.createElement(Announcements_edit,{
 	  			formdata:formdata,
-	  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name")
+	  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
 	  			}), document.getElementById('div_body'));
 	  		return;
 	  	}
@@ -676,7 +676,7 @@ function ajax_group_edit(m,formdata){
 	  			if (data.ResMsg.status == "success") {
 	  				React.render(React.createElement(Announcements_edit,{
 	  					formdata:data.data,
-	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name")
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
 	  					}),document.getElementById('div_body'));
 	  			} else {
 	  				alert("加载数据失败："+data.ResMsg.message);
@@ -745,7 +745,7 @@ function ajax_group_edit(m,formdata){
   	}else{
   		g_cookbookPlan_week_point=0;
   	}
-  	if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+  	if(!groupuuid)groupuuid=Store.getGroupByRight("KD_cookbookplan_m").uuid;
   	var begDateStr=G_week.getWeek0(now);
   	var endDateStr=G_week.getWeek6(now);
   	$.AMUI.progress.start();
@@ -764,7 +764,7 @@ function ajax_group_edit(m,formdata){
   					events: data.list,
   					begDateStr:begDateStr,
   					endDateStr:endDateStr,
-  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_cookbookplan_m"),"uuid","brand_name"),
   					handleClick:btn_click_cookbookPlan,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					}), document.getElementById('div_body'));
@@ -806,7 +806,7 @@ function ajax_group_edit(m,formdata){
   			return;
   		}
   		React.render(React.createElement(CookbookPlan_edit,{
-  			group_list:Store.getGroup(),
+  			group_list:Store.getCurGroupByRight("KD_cookbookplan_m"),
   			formdata:formdata}
   		), document.getElementById('div_body'));
   		return; 	
@@ -823,7 +823,7 @@ function ajax_group_edit(m,formdata){
   			$.AMUI.progress.done();
   			if (data.ResMsg.status == "success") {
   				React.render(React.createElement(CookbookPlan_edit,{
-  					group_list:Store.getGroup(),
+  					group_list:Store.getGroupByRight("KD_cookbookplan_m"),
   					formdata:data.data
   					}), document.getElementById('div_body'));
   			} else {
@@ -935,7 +935,7 @@ function ajax_teachingplan_listByClass(groupuuid,classuuid,weeknum){
 					weeknum:weeknum,
 					begDateStr:begDateStr,
 					endDateStr:endDateStr,
-					groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
 					classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1247,9 +1247,10 @@ function btn_click_userinfo(m,obj,usernames,sex){
     * */
    function ajax_userinfo_edit(formdata,m,sex){
    	if(m=="add"){
+   		console.log("222",Store.getCurGroupByRight("KD_teacher_m"));
    		React.render(React.createElement(Userinfo_edit,{
    			formdata:formdata,
-   			select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+   			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
    			sex:formdata.sex
    			}), document.getElementById('div_body'));
    		return;
@@ -1265,7 +1266,7 @@ function btn_click_userinfo(m,obj,usernames,sex){
    		success : function(data) {
    			$.AMUI.progress.done();
    			if (data.ResMsg.status == "success") {
-   				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
+   				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
    			} else {
    				alert("加载数据失败："+data.ResMsg.message);
    			}
@@ -1361,7 +1362,7 @@ function ajax_class_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
 					events: data.list,
 					handleClick:btn_click_class_list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -1423,7 +1424,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 		formdata.headTeacher_name=userinfo.name;
 		React.render(React.createElement(Class_edit,{
 			formdata:formdata,
-			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
 			}), document.getElementById('div_body'));
 		return;
 	}
@@ -1439,7 +1440,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_edit,{
 					formdata:data.data,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
 					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
@@ -1684,7 +1685,7 @@ function ajax_accounts_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Accounts_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+					group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -1723,7 +1724,7 @@ function ajax_accounts_edit(m,formdata){
 	  if(!formdata.studentuuid)formdata.studentuuid="";
 	React.render(React.createElement(Accounts_edit,{
 			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
-			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+			group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
 			formdata:formdata
 			}),
 			document.getElementById('div_body'));
@@ -1908,7 +1909,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 	  					group_uuid:groupuuid,
 	  					class_uuid:classuuid,
 	  					name:name,
-	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
 	  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
 	  					events: data.list.data,
 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -1939,8 +1940,7 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 var g_teachingjudge_point=0;
 function ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type) {
 	Queue.push(function(){ ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
-	//  if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
-	  if(!groupuuid)groupuuid=Store.getCurGroupByRight().uuid;	  
+	  if(!groupuuid)groupuuid=Store.getCurGroupByRight("KD_teachingjudge_q").uuid;	  
 	  if(!type)type="";
 	  if(!teacher_name)teacher_name="";	
 		var now=new Date();

@@ -11,7 +11,8 @@
  * Store.getChooseClass(uuid);根据组织id获取班级信息
  * Store.getClassStudentsList(uuid);根据班级id获取班级学生列表
  * Store.getUserRights();//获取当前用户的权限信息
- * Store.getGroupByRight(rightname);获取有权限的学校;
+ * Store.getCurGroupByRight(rightname)//获取当前学校当前
+ * Store.getGroupByRight(rightname);获取有权限的学校列表;
  * Store.clear();
  * 
  */
@@ -231,6 +232,33 @@ var Store={
 			}
 		 }
 		 return r;
+	},
+	/**
+	 * 
+	 * @param rightname
+	 * @returns
+	 */
+	getCurGroupByRight:function(rightname){
+	//	console.log("getGroupByRight:pa",rightname);
+		var tmpList=this.getGroupByRight(rightname);
+		var tmpO=Store.getCurGroup();
+	
+		if(!tmpList||tmpList.length==0)return {};
+		
+		if(!tmpO||tmpO.uuid){
+			return tmpList[0];
+		}
+		
+		 for(var i=0;i<tmpList.length;i++){
+			if( tmpO.uuid==tmpList[i].uuid){
+				return tmpO;
+			
+			}else{
+				// console.log("getGroupByRight-remove:", tmpList[i].brand_name);
+			}
+		 }
+		 
+		 return tmpList[0];
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

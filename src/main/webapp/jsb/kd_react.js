@@ -733,17 +733,14 @@ var CookbookPlan_EventsTable = React.createClass({displayName: "CookbookPlan_Eve
 			  btn_click_cookbookPlan(m,{uuid:uuids});
 		 } else if(m=="pre"){
 			 menu_cookbookPlan_list_fn(this.props.group_uuid,--g_cookbookPlan_week_point)
-			 //ajax_cookbookPlan_listByGroup(this.props.group_uuid,--g_cookbookPlan_week_point);
 			 return;
 		 }else if(m=="next"){
 			 menu_cookbookPlan_list_fn(this.props.group_uuid,++g_cookbookPlan_week_point)
-			 //ajax_cookbookPlan_listByGroup(this.props.group_uuid,++g_cookbookPlan_week_point);
 			 return;
 		 }
 	},
 	handleChange_selectgroup_uuid:function(val){
 		menu_cookbookPlan_list_fn(val,g_cookbookPlan_week_point)
-		//ajax_cookbookPlan_listByGroup(val,g_cookbookPlan_week_point);
 	},
 	render: function() {
 	return (

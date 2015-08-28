@@ -35,5 +35,6 @@ public class RightConstants {
 	static public String KD_Leader_Msg_m="KD_Leader_Msg_m";//园长信箱
 	static public String KD_statistics_m="KD_statistics_m";//统计数据查看
 	static public String KD_teachingjudge_q="KD_teachingjudge_q";//查看老师评价
+	static public String KD_class_m="KD_class_m";//	班级管理员权限-增傻查改
 	
 }

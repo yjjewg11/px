@@ -129,7 +129,7 @@ public class ClassService extends AbstractServcice {
 			boolean b1=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
 			if(!b1){
 				
-				if(!b1&&RightUtils.hasRight(obj.getGroupuuid(),RightConstants.AD_class_m,request)){
+				if(!b1&&RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_class_m,request)){
 					responseMessage.setMessage("不能修改,不是班主任或者管理员");
 					return false;
 				}
