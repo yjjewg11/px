@@ -367,27 +367,12 @@ function ajax_userinfo_updatepassword() {
 		}
 	});
 }
-/**
- * ajax_userinfo_getRole({groupuuid:groupuuid,userUuid:userUuid},usernames,roleList);
- * @param opt.格式:{groupuuid:groupuuid,userUuid:userUuid}
- * @param usernames
- * @param roleList
- */
-function ajax_userinfo_getRole(opt,usernames,roleList){
-	if(!opt||!opt.groupuuid){
-		alert("groupuuid is null!");
-		return;
-	}
-	if(!opt||!opt.userUuid){
-		alert("userUuid is null!");
-		return;
-	}
+function ajax_userinfo_getRole(useruuid,usernames,roleList){
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getRole.json";
+	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
 	$.ajax({
 		type : "GET",
 		url : url,
-		data:opt,
 		dataType : "json",
 		async: false,
 		success : function(data) {
@@ -395,7 +380,7 @@ function ajax_userinfo_getRole(opt,usernames,roleList){
 			if (data.ResMsg.status == "success") {
 				
 				React.render(React.createElement(Userinfo_getRole, {
-					formdata:{groupuuid:opt.groupuuid,useruuid:opt.userUuid,username:usernames},
+					formdata:{useruuid:useruuid,username:usernames},
 					events: roleList,
 					chooselist: JSON.stringify(data.list),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -415,7 +400,6 @@ function ajax_userinfo_getRole(opt,usernames,roleList){
 	});
 	
 };
-
 /*
  * 老师管理Button事件(启用和禁用按钮功能)；
  * @useruuids:选中的老师对象；
@@ -791,22 +775,38 @@ function common_teacherDailyTask_status(status){
 	 return teacherDailyTask_status; 	
 }
 
-/*
+/*/check/disable.json?type=99&uuid=1
  * 审批公共组件方法
  * */
-function common_approval(uuid){
-     console.log("123321");	
+function common_approval(type,uuid){
+	var url = hostUrl + "rest/check/illegal.json?";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data:{type:type,uuid:uuid},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				 G_msg_pop("禁止成功");
+			} else {
+				alert(data.ResMsg.message);
+			}
+		}
+	});
 }
 
 /*
  * 举报公用服务器请求         /check/illegal.json?type=99&uuid=1
 
  * */
-function common_illegal(uuid){
-	var url = hostUrl + "rest/check/illegal.json?type=99&uuid="+uuid;
+function common_illegal(type,uuid){
+	var url = hostUrl + "rest/check/illegal.json?";
 	$.ajax({
 		type : "GET",
 		url : url,
+		data:{type:type,uuid:uuid},
 		dataType : "json",
 		async: false,
 		success : function(data) {
