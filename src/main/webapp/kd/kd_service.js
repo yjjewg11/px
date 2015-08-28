@@ -1930,22 +1930,6 @@ function ajax_student_query(groupuuid,classuuid,name,pageNo) {
 	};
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 //——————————————————————————评价老师—————————————————————————— 
 /*
@@ -1990,26 +1974,6 @@ function ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,t
 		
 		
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
