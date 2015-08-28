@@ -615,7 +615,7 @@ function ajax_group_edit(m,formdata){
   			if (data.ResMsg.status == "success") {
   				React.render(React.createElement(Announcements_EventsTable, {
   					groupuuid:groupuuid,
-  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name"),
   					events: data.list,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					}), document.getElementById('div_body'));
@@ -660,7 +660,7 @@ function ajax_group_edit(m,formdata){
 	  	if(!uuid){
 	  		React.render(React.createElement(Announcements_edit,{
 	  			formdata:formdata,
-	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+	  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name")
 	  			}), document.getElementById('div_body'));
 	  		return;
 	  	}
@@ -676,7 +676,7 @@ function ajax_group_edit(m,formdata){
 	  			if (data.ResMsg.status == "success") {
 	  				React.render(React.createElement(Announcements_edit,{
 	  					formdata:data.data,
-	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_ann_type"),"uuid","brand_name")
 	  					}),document.getElementById('div_body'));
 	  			} else {
 	  				alert("加载数据失败："+data.ResMsg.message);

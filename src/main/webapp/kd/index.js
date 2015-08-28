@@ -426,7 +426,7 @@ function menu_announce_list_fn(types,name,groupuuid) {
 	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
 	announce_types=types; 
 	Group_name=name;
-	if(!groupuuid)Group_uuid=Store.getCurGroup().uuid;
+	if(!groupuuid)Group_uuid=Store.getGroupByRight("KD_ann_type").uuid;
 	else Group_uuid=groupuuid;
 	ajax_announce_listByGroup(Group_uuid,name);
 };
