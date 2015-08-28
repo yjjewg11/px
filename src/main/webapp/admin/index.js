@@ -39,7 +39,7 @@ function login_affter_init(){
 		  {
               "link": "##",
               "title": "用户管理",
-              "fn":menu_userinfo_list_fn,
+              "fn":menu_userinfo_list_fn_byRight,
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },

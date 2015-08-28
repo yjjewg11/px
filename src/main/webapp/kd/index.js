@@ -112,7 +112,7 @@ function login_affter_init(){
 	t_menu={
           "link": "##",
           "title": "老师管理",
-          "fn":menu_userinfo_list_fn
+          "fn":menu_userinfo_list_fn_byRight
         };
 
 	if(G_user_hasRight("KD_teacher_m")){
@@ -468,7 +468,7 @@ function menu_queryLeaderMsgByParents_message_fn() {
  * (标头)老师管理管理功能
  * @跳转kd_service发服务器请求
  * */
-function menu_userinfo_list_fn() {
+function menu_userinfo_list_fn_byRight() {
 	ajax_uesrinfo_listByGroup(Store.getCurGroup().uuid);
 };
 /*

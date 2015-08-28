@@ -80,7 +80,6 @@ function G_user_hasRight(s){
  * @param m
  */
 function G_user_hasRightByGroupuuid(s,groupuuid){
-	console.log("权限判断参数S",s);
 	//list<[groupuuid,rightname]>
 	var list=Store.getUserRights();
 	if(!list)return false;
