@@ -111,7 +111,7 @@ public class ClassNewsService extends AbstractServcice {
 	 * @return
 	 */
 	public PageQueryResult query(User user ,String type,String classuuid, PaginationData pData) {
-		String hql = "from ClassNews where 1=1";
+		String hql = "from ClassNews where status=0";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
 		if("myByTeacher".equals(type)){
@@ -143,6 +143,28 @@ public class ClassNewsService extends AbstractServcice {
 		}else  {
 			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
 		}
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		List<ClassNews> list=pageQueryResult.getData();
+		this.warpVoList(list, user.getUuid());
+		
+		return pageQueryResult;
+
+	}
+
+	/**
+	 * 查询我班级相关的班级数据.
+	 * 
+	 * @return
+	 */
+	public PageQueryResult getAllClassNews(User user ,String type,String classuuid, PaginationData pData) {
+		String hql = "from ClassNews where status=0 ";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 
