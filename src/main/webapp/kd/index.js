@@ -176,7 +176,7 @@ function login_affter_init(){
 		}
 		t_menu= {
                 "link": "##",
-                "fn":menu_accounts_list_fn,
+                "fn":menu_accounts_list_fn_byRight,
                 "title": "收支记录"
               };
 			if(G_user_hasRight("KD_accounts_m")){
@@ -185,7 +185,7 @@ function login_affter_init(){
 	t_menu= {
             "link": "##",
             "title": "学生列表",
-            "fn":menu_query_list_fn
+            "fn":menu_query_list_fn_byRight
           };
 		if(G_user_hasRight("KD_student_allquery")){
 			menu_data.push(t_menu);
@@ -193,7 +193,7 @@ function login_affter_init(){
 		t_menu= {
                 "link": "##",
                 "title": "统计",
-                "fn":menu_statistics_list_fn
+                "fn":menu_statistics_list_fn_byRight
               };
 			if(G_user_hasRight("KD_statistics_m")){
 				menu_data.push(t_menu);
@@ -229,7 +229,7 @@ function login_affter_init(){
 	                   {
 		                  "link": "##",
 		                  "title": "老师评价",
-		                  "fn":menu_teachingjudge_list_fn
+		                  "fn":menu_teachingjudge_list_fn_byRight
 		                }
 	                
 	              ];
@@ -425,46 +425,13 @@ function menu_queryMyTimely_fn() {
 
 
 /*
- * (标头)收支管理
- * @跳转kd_service发服务器请求
- * */
-function menu_accounts_list_fn() {
-	ajax_accounts_listByGroup(Store.getCurGroupByRight("KD_accounts_m").uuid);
-};
-/*
  * (标头)注销用户
  * @ ajax_userinfo_logout：注销；
  * */
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
-/*
- * (标头)学生列表
- * @跳转kd_service发服务器请求
- * */
-function menu_query_list_fn() {
-	ajax_student_query();
-};
 
-/*
- * (标头)统计
- * @跳转kd_service发服务器请求
- * */
-function menu_statistics_list_fn() {
-	Queue.push(menu_statistics_list_fn,"统计");
-	React.render(React.createElement(ECharts_Div, {
-		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
-		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_statistics_m"),"uuid","brand_name")
-		}), document.getElementById('div_body'));
-};
-
-/*
- * (标头)评价老师
- * @跳转kd_service发服务器请求
- * */
-function menu_teachingjudge_list_fn () {
-	ajax_teachingjudge_query();
-};
 
 
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
@@ -702,3 +669,39 @@ function menu_class_list_fn_byRight() {
 	ajax_class_listByGroup_byRight(Store.getCurGroupByRight("KD_class_m").uuid);
 };
 
+
+
+/*
+ * (标头)收支管理
+ * @跳转kd_service发服务器请求
+ * */
+function menu_accounts_list_fn_byRight() {
+	ajax_accounts_listByGroup_byRight(Store.getCurGroupByRight("KD_accounts_m").uuid);
+};
+/*
+ * (标头)学生列表
+ * @跳转kd_service发服务器请求
+ * */
+function menu_query_list_fn_byRight() {
+	ajax_student_query_byRight();
+};
+
+/*
+ * (标头)统计
+ * @跳转kd_service发服务器请求
+ * */
+function menu_statistics_list_fn_byRight() {
+	Queue.push(menu_statistics_list_fn_byRight,"统计");
+	React.render(React.createElement(ECharts_Div_byRight, {
+		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
+		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_statistics_m"),"uuid","brand_name")
+		}), document.getElementById('div_body'));
+};
+
+/*
+ * (标头)评价老师
+ * @跳转kd_service发服务器请求
+ * */
+function menu_teachingjudge_list_fn_byRight () {
+	ajax_teachingjudge_query_byRight();
+};

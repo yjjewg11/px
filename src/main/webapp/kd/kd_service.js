@@ -629,7 +629,7 @@ function ajax_class_students_look_info(uuid,title){
 };
 
 /*  
- * （标头）<班级管理>界面添加学生按钮事件处理
+ * （主页）我的班级课程表的方法按钮事件处理
  * @服务器请求:POST rest/student/{uuid}.json;
  * @ajax_teachingplan_dayShow 直接调用课程表的方法；
  * */
@@ -640,95 +640,7 @@ function class_students_manage_onClick(classuuid,name){
 
 
 
-//—————————————————————————————————收支记录—————————————————————————
-/*
- * <收支记录>服务器请求
- * @请求数据成功后执行Accounts_EventsTable方法绘制
- * 在kd_react
- * */
-function ajax_accounts_listByGroup(groupuuid) {
-	Queue.push(function(){ajax_accounts_listByGroup(groupuuid);},"收支记录");
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : "",
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Accounts_EventsTable, {
-					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
-					events: data.list,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};	  
-/*
- * <收支记录>添加按钮事件处理
- * @调用ajax_accounts_edit
- * */
-function btn_click_accounts(m,formdata){
-	ajax_accounts_edit(m,formdata);
-};
-/*<收支记录>添加按钮详情绘制前数据准备		
-* @type_list:收费类型数组;
-* @group_list:机构数组;
-* @class_list:班级
-* 调用Accounts_edit
-* */
-function ajax_accounts_edit(m,formdata){
-	Queue.push(function(){ajax_accounts_edit(m,formdata);},"添加收支");
-	  if(!formdata.groupuuid)formdata.groupuuid="";
-	  if(!formdata.classuuid)formdata.classuuid="";
-	  if(!formdata.studentuuid)formdata.studentuuid="";
-	React.render(React.createElement(Accounts_edit,{
-			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
-			group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
-			formdata:formdata
-			}),
-			document.getElementById('div_body'));
-};
 
-/*<收支记录>保存按钮服务器请求；	
-* */
-function ajax_accounts_save(){
-    var opt={
-            formName: "editAccountsForm",
-            url:hostUrl + "rest/accounts/save.json",
-            cbFN:null
-            };
-G_ajax_abs_save(opt);
-}
-/*<收支记录>保存继续按钮服务器请求；		
-* */
-function ajax_accounts_saveAndAdd(){
-    var opt={
-            formName: "editAccountsForm",
-            url:hostUrl + "rest/accounts/save.json",
-            cbFN:function(data){
-            	G_msg_pop("保存成功!继续添加.");
-            	 var objectForm = $('#editAccountsForm').serializeJson();
-            	 $("input[name=num]").val("");
-            }
-            };
-G_ajax_abs_save(opt);
-}	  
 	  
 	
 
@@ -855,97 +767,9 @@ function ajax_userinfo_logout(){
 	});
 }	  
 
-//——————————————————————————学生列表—————————————————————————— 
-/*
- * <学生列表>（获取用户列表服务器请求）；
- * 各属性置空开始，方便后面的的机构、班级、名字搜索；
- * */
-function ajax_student_query(groupuuid,classuuid,name,pageNo) {
-	Queue.push(function(){ajax_student_query(groupuuid,classuuid,name,pageNo);},"学生列表");
-	  if(!groupuuid)groupuuid="";
-	  if(!classuuid)classuuid="";
-	  if(!name)name="";
-	  if(!pageNo)pageNo="";
-		$.AMUI.progress.start();
-		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
-		$.ajax({          
-			type : "GET",  
-			url : url,
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-	  				React.render(React.createElement(Query_stutent_list, {
-	  					group_uuid:groupuuid,
-	  					class_uuid:classuuid,
-	  					name:name,
-	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
-	  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
-	  					events: data.list.data,
-	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
-	  					
-	  				}), document.getElementById('div_body'));
-					
-				} else {
-					alert(data.ResMsg.message);
-				}
-			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+","+textStatus+"="+errorThrown);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
-		});
-	};
 
-	
 
-//——————————————————————————评价老师—————————————————————————— 
-/*
- * <评价老师>（获取用户列表服务器请求）；
- * 各属性置空开始，方便后面的的机构、班级、名字搜索；
- * */
-var g_teachingjudge_point=0;
-function ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type) {
-	Queue.push(function(){ ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
-	  if(!groupuuid)groupuuid=Store.getCurGroupByRight("KD_teachingjudge_q").uuid;	  
-	  if(!type)type="";
-	  if(!teacher_name)teacher_name="";	
-		var now=new Date();
-	  if(!begDateStr)begDateStr=G_week.getDateStr(now,0);
-	  if(!endDateStr)endDateStr=G_week.getDateStr(now,0);
-		$.AMUI.progress.start();
-		var url = hostUrl + "rest/teachingjudge/query.json";
-		var grouplist=Store.getGroupByRight("KD_teachingjudge_q");
-		$.ajax({          
-			type : "GET",  
-			url : url,
-			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type,teacher_name:teacher_name,type:type},
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-	  				React.render(React.createElement(Query_teachingjudge_list, {
-	  					begDateStr:begDateStr,
-	  					endDateStr:endDateStr,
-	  					group_uuid:groupuuid,
-	  					type:type,
-	  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
-	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
-	  					events: data.list,
-	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
-	  				}), document.getElementById('div_body'));					
-				}
-			}
-		});
-	};
-		
-		
 
-	
-	
 	
 	  
 
@@ -3174,13 +2998,211 @@ G_ajax_abs_save(opt);
 
 
 
+//—————————————————————————————————收支记录—————————————————————————
+ /*
+  * <收支记录>服务器请求
+  * @请求数据成功后执行Accounts_EventsTable方法绘制
+  * 在kd_react
+  * */
+ function ajax_accounts_listByGroup_byRight(groupuuid) {
+ 	Queue.push(function(){ajax_accounts_listByGroup_byRight(groupuuid);},"收支记录");
+ 	$.AMUI.progress.start();
+ 	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		data : "",
+ 		dataType : "json",
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Accounts_EventsTable_byRight, {
+ 					group_uuid:groupuuid,
+ 					group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
+ 					events: data.list,
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById('div_body'));
+ 				
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 				G_resMsg_filter(data.ResMsg);
+ 			}
+ 		},
+ 		error : function( obj, textStatus, errorThrown ){
+ 			$.AMUI.progress.done();
+ 			alert(url+","+textStatus+"="+errorThrown);
+ 			 console.log(url+',error：', obj);
+ 			 console.log(url+',error：', textStatus);
+ 			 console.log(url+',error：', errorThrown);
+ 		}
+ 	});
+ };	  
+ /*
+  * <收支记录>添加按钮事件处理
+  * @调用ajax_accounts_edit
+  * */
+ function btn_click_accounts_byRight(m,formdata){
+ 	ajax_accounts_edit_byRight(m,formdata);
+ };
+ /*<收支记录>添加按钮详情绘制前数据准备		
+ * @type_list:收费类型数组;
+ * @group_list:机构数组;
+ * @class_list:班级
+ * 调用Accounts_edit
+ * */
+ function ajax_accounts_edit_byRight(m,formdata){
+ 	Queue.push(function(){ajax_accounts_edit_byRight(m,formdata);},"添加收支");
+ 	  if(!formdata.groupuuid)formdata.groupuuid="";
+ 	  if(!formdata.classuuid)formdata.classuuid="";
+ 	  if(!formdata.studentuuid)formdata.studentuuid="";
+ 	React.render(React.createElement(Accounts_edit_byRight,{
+ 			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
+ 			group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
+ 			formdata:formdata
+ 			}),
+ 			document.getElementById('div_body'));
+ };
+
+ /*<收支记录>保存按钮服务器请求；	
+ * */
+ function ajax_accounts_save_byRight(){
+     var opt={
+             formName: "editAccountsForm",
+             url:hostUrl + "rest/accounts/save.json",
+             cbFN:null
+             };
+ G_ajax_abs_save(opt);
+ }
+ /*<收支记录>保存继续按钮服务器请求；		
+ * */
+ function ajax_accounts_saveAndAdd_byRight(){
+     var opt={
+             formName: "editAccountsForm",
+             url:hostUrl + "rest/accounts/save.json",
+             cbFN:function(data){
+             	G_msg_pop("保存成功!继续添加.");
+             	 var objectForm = $('#editAccountsForm').serializeJson();
+             	 $("input[name=num]").val("");
+             }
+             };
+ G_ajax_abs_save(opt);
+ }	  
 
 
+//——————————————————————————学生列表—————————————————————————— 
+ /*
+  * <学生列表>（获取用户列表服务器请求）；
+  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
+  * */
+ function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
+ 	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
+ 	  if(!groupuuid)groupuuid="";
+ 	  if(!classuuid)classuuid="";
+ 	  if(!name)name="";
+ 	  if(!pageNo)pageNo="";
+ 		$.AMUI.progress.start();
+ 		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+ 		$.ajax({          
+ 			type : "GET",  
+ 			url : url,
+ 			dataType : "json",
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				if (data.ResMsg.status == "success") {
+ 	  				React.render(React.createElement(Query_stutent_list_byRight, {
+ 	  					group_uuid:groupuuid,
+ 	  					class_uuid:classuuid,
+ 	  					name:name,
+ 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+ 	  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
+ 	  					events: data.list.data,
+ 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 	  					
+ 	  				}), document.getElementById('div_body'));
+ 					
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 				}
+ 			},
+ 			error : function( obj, textStatus, errorThrown ){
+ 				$.AMUI.progress.done();
+ 				alert(url+","+textStatus+"="+errorThrown);
+ 				 console.log(url+',error：', obj);
+ 				 console.log(url+',error：', textStatus);
+ 				 console.log(url+',error：', errorThrown);
+ 			}
+ 		});
+ 	};
+
+ /*
+  *  <学生列表>界面下的二级界面学生详细信息
+  * @服务器请求:POST rest/student/{uuid}.json;
+  * uuid:用户ID;
+  * @根据数据在 Kd_react做绘制处理 
+  * */
+ function ajax_class_students_look_info_byRight(uuid,title){
+ 	Queue.push(function(){ajax_class_students_look_info_byRight(uuid,title);},"学生详情");
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/student/"+uuid+".json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement( Class_student_look_info_byRight,{formdata:data.data}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		}
+ 	});
+ };	
 
 
-
-
-
+//——————————————————————————评价老师—————————————————————————— 
+ /*
+  * <评价老师>（获取用户列表服务器请求）；
+  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
+  * */
+ var g_teachingjudge_point=0;
+ function ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type) {
+ 	Queue.push(function(){ ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
+ 	  if(!groupuuid)groupuuid=Store.getCurGroupByRight("KD_teachingjudge_q").uuid;	  
+ 	  if(!type)type="";
+ 	  if(!teacher_name)teacher_name="";	
+ 		var now=new Date();
+ 	  if(!begDateStr)begDateStr=G_week.getDateStr(now,0);
+ 	  if(!endDateStr)endDateStr=G_week.getDateStr(now,0);
+ 		$.AMUI.progress.start();
+ 		var url = hostUrl + "rest/teachingjudge/query.json";
+ 		var grouplist=Store.getGroupByRight("KD_teachingjudge_q");
+ 		$.ajax({          
+ 			type : "GET",  
+ 			url : url,
+ 			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type,teacher_name:teacher_name,type:type},
+ 			dataType : "json",
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				if (data.ResMsg.status == "success") {
+ 	  				React.render(React.createElement(Query_teachingjudge_list_byRight, {
+ 	  					begDateStr:begDateStr,
+ 	  					endDateStr:endDateStr,
+ 	  					group_uuid:groupuuid,
+ 	  					type:type,
+ 	  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+ 	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
+ 	  					events: data.list,
+ 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
+ 	  				}), document.getElementById('div_body'));					
+ 				}
+ 			}
+ 		});
+ 	};
+ 		
+	
+ 	
 
 
 //幼儿园用户授权
