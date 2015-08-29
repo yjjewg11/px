@@ -2099,7 +2099,7 @@ var Class_student_tel =React.createClass({
 	    	  ajax_parentContactByMyStudent(type);
 		  },
 	  handleChange_selectgroup_uuid:function(){
-		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$('#class_uuid').val());
+		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$("input[name='class_uuid']").val());
 	  },
 	  handleChange_class_uuid:function(val){
 		  ajax_parentContactByMyStudent(null,val);
@@ -2130,7 +2130,7 @@ var Class_student_tel =React.createClass({
 			      <form id="editGroupForm" method="post" className="am-form">
 			      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="搜索姓名"/>	  
 				  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
-		    	  <AMUIReact.Selected  name="groupuuid" placeholder="班级选择"  onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.group_uuid} />  
+		    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择"  onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.group_uuid} />  
 				  </form>
 				    <br/>
 	  		        <AMR_ButtonToolbar>
