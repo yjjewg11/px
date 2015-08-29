@@ -198,6 +198,15 @@ function login_affter_init(){
 			if(G_user_hasRight("KD_statistics_m")){
 				menu_data.push(t_menu);
 			}	
+	t_menu= {
+	                "link": "##",
+	                "title": "老师评价",
+	                "fn":menu_teachingjudge_list_fn_byRight
+	              };
+			
+				if(G_user_hasRight("KD_teachingjudge_q")){
+					menu_data.push(t_menu);
+				}
 	
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -224,13 +233,7 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      }
 	                  ]
-	                },     	
-	                
-	                   {
-		                  "link": "##",
-		                  "title": "老师评价",
-		                  "fn":menu_teachingjudge_list_fn_byRight
-		                }
+	                }
 	                
 	              ];
 	

@@ -2224,38 +2224,110 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 *@btn_click_announce_byRight:点击按钮事件跳转kd_servise方法;
 * */  
 var Announcements_EventsTable_byRight = React.createClass({displayName: "Announcements_EventsTable_byRight",
+	getInitialState: function() {
+		var obj= {
+		    	groupuuid:this.props.groupuuid,
+		    	pageNo:this.props.pageNo,
+		    	type:this.props.type,
+		    	list: this.props.list
+		    };
+			
+		obj=this.ajax_list(obj);
+	    return obj;
+	   
+	  },
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  var obj= {
+			    	groupuuid:nextProps.groupuuid,
+			    	pageNo:nextProps.pageNo,
+			    	type:nextProps.type,
+			    	list: nextProps.list
+			    };
+				
+			obj=this.ajax_list(obj);
+		  this.setState(obj);
+		},
+	 ajax_list:function(obj){
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/announcements/list.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+			dataType : "json",
+			async: false,//必须同步执行
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					obj.list=data.list.data;
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			}
+		});
+		return obj;
+		
+	},
+	pageClick: function(m) {
+		 var obj=this.state;
+		 if(m=="pre"){
+			
+			 if(obj.pageNo<2){
+				 G_msg_pop("第一页了");
+				 return;
+			 }
+			 obj.pageNo=obj.pageNo-1;
+			 this.setState(this.ajax_list(obj));
+			 return;
+		 }else if(m=="next"){
+			 if(!obj.list||obj.list.length==0){
+				 G_msg_pop("最后一页了");
+				 return ;
+			 }
+			 obj.pageNo=obj.pageNo+1;
+			
+			 this.setState(this.ajax_list(obj));
+			 return;
+		 }
+	},
 	handleClick: function(m,Titlename) {
 		btn_click_announce_byRight(m,this.props.groupuuid,null);
 },
 handleChange_selectgroup_uuid:function(val){
-	  menu_announce_list_fn_byRight(announce_types,Group_name,val)
+	 var obj=this.state;
+	 obj.groupuuid=val;
+	 this.setState(this.ajax_list(obj));
 },
 
 render: function() {
+	var obj=this.state;
   return (
   React.createElement("div", null, 
 React.createElement(AMR_ButtonToolbar, null, 
-  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "创建")
+	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上一页"), 
+	React.createElement("span", null, "第", obj.pageNo, "页"), 
+	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下一页"), 	
+	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "创建")
 
   ), 
 React.createElement("hr", null), 
 React.createElement("div", {className: "am-form-group"}, 
-React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
   ), 	  
     React.createElement(AMR_Table, React.__spread({},  this.props), 
    React.createElement("thead", null, 
     React.createElement("tr", null, 
       React.createElement("th", null, "标题"), 
-      React.createElement("th", null, "类型"), 
-      React.createElement("th", null, "幼儿园"), 
       React.createElement("th", null, "浏览次数"), 
-      React.createElement("th", null, "创建人"), 
-      React.createElement("th", null, "创建时间")
+      React.createElement("th", null, "创建时间"), 
+      React.createElement("th", null, "创建人")
     )
   ), 
   React.createElement("tbody", null, 
-    this.props.events.map(function(event) {
-      return (React.createElement(Announcements_EventRow_byRight, {key: event.id, event: event}));
+    this.state.list.map(function(event) {
+      return (React.createElement(Announcements_EventRow_byRight, {key: event.uuid, event: event}));
         })
       )
     )
@@ -2274,15 +2346,14 @@ var Announcements_EventRow_byRight = React.createClass({displayName: "Announceme
 	  return (
 	    React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
-	      React.createElement("td", null, Vo.announce_type(event.type)), 
-	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-	      React.createElement("td", null, 0), 
-	      React.createElement("td", null, event.create_user), 
-	      React.createElement("td", null, event.create_time)
+	      React.createElement("td", null, event.count), 
+	      React.createElement("td", null, event.create_time), 
+	      React.createElement("td", null, event.create_user)
 	    ) 
 	  );
 	}
 	});    
+    
 
 /*
 * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
