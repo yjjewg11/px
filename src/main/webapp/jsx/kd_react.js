@@ -363,671 +363,6 @@ var Message_queryMyTimely_myList =React.createClass({
 		   }})	
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-//——————————————————————————校务管理<校园列表绘制>—————————————————————   
-/*
- *(校务管理)<校园列表>列表框绘制 ;
- *@handleClick:绑定的事件根据M来区分点击事件并做处理；
- *@add:添加分校;
- *@edit:编辑分校;
- *@btn_click_group ：在kd_service
- *@取消校园介绍；增加预览按钮
- * */
-var Group_EventsTable = React.createClass({
-	handleClick: function(m) {
-			btn_click_group(m,{type:"1"});
-
-	  },
-  render: function() {
-    return (
-    <div>
-    <AMR_ButtonToolbar>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
-	  </AMR_ButtonToolbar>
-	  <hr/>
-      <AMR_Table {...this.props}>  
-        <thead> 
-          <tr>
-            <th>品牌名</th>
-            <th>预览</th>
-            <th>机构全称</th>
-            <th>电话</th>
-            <th>公司地址</th>
-            <th>创建时间</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {this.props.events.map(function(event) {
-            return (<Group_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-});
-
-/*
- *(校务管理)<校园列表>学校内容绘制 ;
- *@handleClick:绑定的事件根据M来区分点击事件并做处理；
- *@btn_click_group ：在kd_service；
- * */
-var Group_EventRow = React.createClass({ 
-  render: function() {
-    var event = this.props.event;
-    var className = event.highlight ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
-    return (
-      <tr className={className} >
-      <td  ><a href="javascript:void(0);" onClick={btn_click_group.bind(this,"edit", event)}>{event.brand_name}</a></td>
-         <td>
-    	<AMR_Button amStyle="primary" onClick={btn_click_group.bind(this,"show",event)} round>预览</AMR_Button>
-        </td>
-          <td  >{event.company_name}</td>
-        <td > {event.link_tel}</td>
-        <td >{event.address}</td>
-        <td >{event.create_time}</td>
-      </tr> 
-    );
-  }
-}); 
-/*
- *(校务管理)<校园列表>添加分校和编辑详情绘制界面；
- *@componentDidMount：图片处理方法 
- *@ajax_group_save:提交按钮详情在kd_service
- * */    
-var Group_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editGroupForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-			  
-			  
-          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
-          });
-	},
-	   /*
-	    * (校务管理)<校园列表>内上传LOGO图片
-	    * */
-	    btn_class_group_uploadHeadere :function(){      
-	        w_uploadImg.open(function (guid){
-	             $ ("#img").val(guid);
-	              $("#img_head_image").attr("src",G_imgPath+ guid);
-	              G_img_down404("#img_head_image");
-	         });   
-	   },
-  render: function() {
-	  var o = this.state;
-    return (
-    		<div>
-    		<div className="header">
-    		  <hr />
-    		</div>
-    		<div className="am-g">
-    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">    		  
-    		<form id="editGroupForm" method="post" className="am-form">
-    		<input type="hidden" name="uuid"  value={o.uuid}/>
-    	    <input type="hidden" name="type"  value={o.type}/>
-    		 <input type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>
-    		<label htmlFor="nickname" >LOGO:</label>
-            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
-            <br/>
-            <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
-            <br/>
-  
-    		<label htmlFor="brand_name">品牌名:</label>
-    	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	      <br/>
-    	       <label htmlFor="company_name">机构全称:</label>
-    	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	      <br/>
-    	       <label htmlFor="address">公司地址:</label>
-    	      <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
-    	      <br/>
-    	       <label htmlFor="map_point">地址坐标:</label>
-    	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
-    	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-    	      <br/>
-    	       <label htmlFor="link_tel">公司电话:</label>
-    	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-    	      <br/>
-    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-    		  	{G_get_upload_img_Div()}
-    	      <button type="button"  onClick={ajax_group_save}  className="am-btn am-btn-primary">提交</button>
-    	     </form>
-    	     </div>
-    	   </div>   	   
-    	   </div>
-    );
-  }
-});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-//——————————————————————————校务管理<校园介绍绘制>—————————————————————  
-/*
- *(校务管理)<校园介绍>绘制 ;
- * */
-  var Group_show = React.createClass({ 
-  render: function() {
-  	  var o = this.props.formdata;
-		console.log("图片地址",o.description)
-    return (
-  		  <AMUIReact.Article
-  		    title={o.brand_name}
-  		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读0次"}>
-  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
-  		   </AMUIReact.Article>	
-  		   
-  		   
-    );
-  }
-  }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-//——————————————————————————信息管理<绘制>—————————————————————  
-/*
- *(信息管理)<校园公告><老师公告><精品文章><招生计划>按钮及表单框绘制
- *@btn_click_announce:点击按钮事件跳转kd_servise方法;
- * */  
-var Announcements_EventsTable = React.createClass({
-  	handleClick: function(m,Titlename) {
-  			 if(m=="add"){
-			 btn_click_announce(m,this.props.groupuuid,uuids);
-			 return;
-		 }
-		 var uuids=null;
-		 $($("input[name='table_checkbox']")).each(function(){
-			　if(this.checked){
-				 if(uuids==null)uuids=this.value;
-				 else
-				　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-			　}
-			});
-		  if(!uuids){
-			  alert("请勾选复选框！");
-			  return;
-		  }
-		  btn_click_announce(m,this.props.groupuuid,uuids);
-  },
-  handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-  },
-  handleChange_selectgroup_uuid:function(val){
-	  menu_announce_list_fn(announce_types,Group_name,val)
-	  //ajax_announce_listByGroup(val);
-  },
-  handleClick_approval: function() {
-	 var uuids=null;
-	 $($("input[name='table_checkbox']")).each(function(){
-		　if(this.checked){
-			 if(uuids==null)uuids=this.value;
-			 else
-			　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-		　}
-		});
-	  if(!uuids){
-		  alert("请勾选复选框！");
-		  return;
-	  }
-	  common_approval(3,uuids);
-},
-  render: function() {
-    return (
-    <div>
-<AMR_ButtonToolbar>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>创建</AMR_Button>
-    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit")} round>编辑</AMR_Button>
-    <AMR_Button amStyle="danger" onClick={this.handleClick_approval.bind(this)} round>禁止</AMR_Button>
-    </AMR_ButtonToolbar>
-  <hr/>
-  <div className="am-form-group">
-  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />    
-    </div> 	  
-      <AMR_Table {...this.props}>  
-     <thead> 
-      <tr>
-      <th>  
-   <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
-        </th>
-        <th>标题</th>
-        <th>类型</th>
-        <th>幼儿园</th>
-        <th>浏览次数</th>
-        <th>创建人</th>
-        <th>创建时间</th>
-      </tr> 
-    </thead>
-    <tbody>
-      {this.props.events.map(function(event) {
-        return (<Announcements_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-  });
-    
-     
-var Announcements_EventRow = React.createClass({ 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
-
-	  return (
-	    <tr className={className} >
-	    <td> 
-	    <input type="checkbox" value={event.uuid} name="table_checkbox" />
-	    </td>
-	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
-	      <td>{Vo.announce_type(event.type)}</td>
-	      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-	      <td>{0}</td>
-	      <td>{event.create_user}</td>
-	      <td>{event.create_time}</td>
-	    </tr> 
-	  );
-	}
-	});     
- /*
- * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
- * @w_img_upload_nocut:上传图片后发的请求刷新;
- * */    
-var Announcements_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editAnnouncementsForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
-          });
-	  },
-render: function() {
-	 var o = this.state;
-	  var type_div;
-	  if (announce_types==2) {
-		  type_div= 
-			   <div className="am-form-group" id="div_classuuids" >
-		  		<input type="hidden" name="type"  value={o.type}/>
-		  		<label htmlFor="tel">班级通知:</label>
-		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-  		     </div>;
-	  } else {
-		  type_div =
-		  <input type="hidden" name="type"  value={o.type}/>
-	  }
-  return (
-  		<div> 		
-  		<div className="header">
-  		  <hr />
-  		</div>
-  		
-
-  		<div className="am-g">
-  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-  		  <form id="editAnnouncementsForm" method="post" className="am-form">
-  		<input type="hidden" name="uuid"  value={o.uuid}/>
-  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
-  		<div className="am-form-group">
-  	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-        </div>   
-  		{type_div}
-  		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
-  		  <br/>
-  		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
- 		{G_get_upload_img_Div()} 
-  		  <button type="button"  onClick={ajax_announcements_save}  className="am-btn am-btn-primary">提交</button>
-  		  </form>
-  	     </div>
-  	   </div>	   
-  	  </div>
-  );
-}
-}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-//——————————————————————————食谱管理<绘制>—————————————————————  
-/*
- *(食谱管理)按钮及表单框绘制
- *@add:添加
- *@edit:编辑
- *@pre:上周
- *@next:下周
- *@btn_click_announce:点击按钮事件跳转kd_servise方法;
- * */  
-var CookbookPlan_EventsTable = React.createClass({
-	handleClick: function(m) {		
-		if(m=="add"){
-			btn_click_cookbookPlan(m,{groupuuid:this.props.group_uuid});
-			 return;
-		 }if(m=="edit"){
-			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_cookbookPlan(m,{uuid:uuids});
-		 } else if(m=="pre"){
-			 menu_cookbookPlan_list_fn(this.props.group_uuid,--g_cookbookPlan_week_point)
-			 return;
-		 }else if(m=="next"){
-			 menu_cookbookPlan_list_fn(this.props.group_uuid,++g_cookbookPlan_week_point)
-			 return;
-		 }
-	},
-	handleChange_selectgroup_uuid:function(val){
-		menu_cookbookPlan_list_fn(val,g_cookbookPlan_week_point)
-	},
-	render: function() {
-	return (
-	<div>
-	<AMR_ButtonToolbar>
-	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
-	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
-	</AMR_ButtonToolbar>
-	<div className="header">
-	<div className="am-g">
-	  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
-	</div>
-	<hr />
-	</div>
-		  <div className="am-form-group">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	</div>		  
-	  <AMR_Table {...this.props}>  
-	    <thead> 
-	      <tr>
-	        <th>一周</th>
-	        <th>早餐</th>
-	        <th>早上加餐</th>
-	        <th>午餐</th>
-	        <th>下午加餐</th>
-	        <th>晚餐</th>
-	        <th>营养分析</th>
-	      </tr> 
-	    </thead>
-	    <tbody>
-	      {this.props.events.map(function(event) {
-	        return (<CookbookPlan_EventRow  event={event} />);
-	      })}
-	    </tbody>
-	  </AMR_Table>
-	  </div>
-	);
-	}
-});
-
-
-/*
- *(食谱管理)内容绘制
- *@btn_click_cookbookPlan:点击按钮事件跳转kd_servise方法;
- * */ 
-var CookbookPlan_EventRow = React.createClass({ 
-	parseTimes:function(s){
-		var rs=null;
-		if(!s)return "";
-		var arr=s;
-		for(var i=0;i<arr.length;i++){
-			var t_arr=arr[i];
-			if(rs==null)rs=t_arr.name;
-			else rs+=","+t_arr.name;
-		}  
-		return rs;
-	},
-render: function() {
-var event = this.props.event;
-var className = event.highlight ? 'am-active' :
-  event.disabled ? 'am-disabled' : '';
-
-return (
-  <tr className={className} >
-    <td><a href="javascript:void(0);" onClick={btn_click_cookbookPlan.bind( this, 'edit',event)}>{G_week.getWeekStr(event.plandate)}</a></td>
-    <td>{this.parseTimes(event.list_time_1)}</td>
-    <td>{this.parseTimes(event.list_time_2)}</td>
-    <td>{this.parseTimes(event.list_time_3)}</td>
-    <td>{this.parseTimes(event.list_time_4)}</td>
-    <td>{this.parseTimes(event.list_time_5)}</td>
-    <td>{event.analysis}</td>
-  </tr> 
-);
-}
-});
-/*
- *(食谱管理)添加与编辑详情界面绘制
- *@ajax_cookbookPlan_save:点击按钮事件跳转kd_servise方法;
- * */ 
-var CookbookPlan_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editCookbookPlanForm').serializeJson());
-	  },
-	 
-render: function() {
-	  var o = this.state;
-	  
-	  var plandateStr_div;
-	  if (o.uuid) {//只读
-		//2015-07-04 00:00:00=>2015-07-04
-		  o.plandate=o.plandate.split(" ")[0];
-		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
-	  } else {
-		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
-	  }
-	  return (
-		<div>
-		<div className="header">
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  <form id="editCookbookPlanForm" method="post" className="am-form">
-		<input type="hidden" name="uuid"  value={o.uuid}/>
-		<input type="hidden" name="groupuuid"  value={o.groupuuid}/>
-		<input type="hidden" name="type"  value="1"/>
-		        <label htmlFor="name">日期:</label>
-				 {plandateStr_div}  
-				 <br/>
-		      <label>早餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>早上加餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>午餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>下午加餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>晚餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <AMR_Input  name="analysis" type="textarea" rows="2" label="营养分析:" placeholder="填写内容" value={o.analysis} onChange={this.handleChange}/>				
-		      <button type="button"  onClick={ajax_cookbookPlan_save}  className="am-btn am-btn-primary">提交</button>
-		    </form>
-
-	     </div> 
-	   </div>
-	   
-	   </div>
-);
-}
-}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-//——————————————————————————课程安排<绘制>——————————————————————————        
-/*
- * <课程安排>班级详情界面按钮列表框等绘制;
- * @add:添加班级课程；
- * @pre:上周；
- * @next:下一周；
- * */
-var Teachingplan_EventsTable = React.createClass({
-	handleClick: function(m,uuid,groupuuid,classuuid) {
-			 if(m=="add"){
-				 btn_click_teachingplan(m,null,groupuuid,classuuid);
-				 return;
-			 }else if(m=="pre"){
-				 ajax_teachingplan_listByClass(groupuuid,classuuid,--g_cookbookPlan_week_point);
-				 return;
-			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass(groupuuid,classuuid,++g_cookbookPlan_week_point);
-				 return;
-			 }
-	  },
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-	  },
-	  handleChange_selectgroup_uuid:function(){
-		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
-	  },
-		handleChange_selectgroup: function(val) {
-			this.props.classuuid="";
-			ajax_teachingplan_listByClass(val,this.props.classuuid,this.props.weeknum);  
-	    },
-	    handleChange_selectclass: function(val) {
-			ajax_teachingplan_listByClass(this.props.groupuuid,val,this.props.weeknum);  
-	    },
-render: function() {
-return (
-<div>
-<div className="header">
-	<hr />
-	</div>
-<AMR_ButtonToolbar>
-	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.groupuuid,this.props.classuuid)} round>添加</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.groupuuid,this.props.classuuid)} round>上周</AMR_Button>
-    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.groupuuid,this.props.classuuid)} round>下周</AMR_Button>
-    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
-    <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={this.props.classuuid}/>    
-</AMR_ButtonToolbar>
-    <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
-	  <hr/>
-  <AMR_Table {...this.props}>  
-    <thead> 
-      <tr>
-      	<th>一周</th>
-        <th>上午</th>
-        <th>下午</th>
-      </tr> 
-    </thead>
-    <tbody>
-      {this.props.events.map(function(event) {
-        return (<Teachingplan_EventRow  event={event} />);
-      })}
-    </tbody>
-  </AMR_Table>
-  </div>
-);
-}
-});
-/*
- *<课程安排>班级详情列表详情内容绘制;
- * @add:添加班级课程；
- * @pre:上周；
- * @next:下一周；
- * */
-var Teachingplan_EventRow = React.createClass({ 
-	render: function() {
-	var event = this.props.event;
-	if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
-		event.highlight=true;
-	}
-	var className = event.highlight ? 'am-active' :
-	  event.disabled ? 'am-disabled' : '';
-
-	return (
-	  <tr className={className} >
-	    <td><a href="javascript:void(0);" onClick={btn_click_teachingplan.bind( this, "edit",event.uuid)}>{G_week.getWeekStr(event.plandate)}</a></td>
-	    <td>{event.morning}</td>
-	    <td>{event.afternoon}</td>
-	  </tr> 
-	);
-	}
-	});
-
-/*
- *<课程安排>班级详情添加与编辑内容绘制;
- * @add:添加班级课程；
- * @pre:上周；
- * @next:下一周；
- * */
-var Teachingplan_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editTeachingplanForm').serializeJson());
-	  },
-render: function() {
-	  var o = this.state;
-return (
-		<div>
-		<div className="header">
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  <form id="editTeachingplanForm" method="post" className="am-form">
-		<input type="hidden" name="uuid"  value={o.uuid}/>
-		<input type="hidden" name="classuuid"  value={o.classuuid}/>
-		 <label htmlFor="name">日期:</label>
-		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
-		      <br/>
-	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
-		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
-		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
-	 </form>
-	     </div>
-	   </div>
-	   
-	   </div>
-);
-}
-});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1731,7 +1066,7 @@ var Announcements_class_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
+		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -1878,29 +1213,6 @@ var Classnews_show = React.createClass({
 
 
 /*
-* 1.2互动里面单独的评论模板-item
-* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
-* 把评论模板插入空Div里面
-* 
-* */
-var Classnews_reply_list_listshow = React.createClass({ 	
-render: function() {
-return (
-		  <div>
-		  {this.props.events.data.map(function(event) {
-		      return (
-		    		  <li className="am-comment">
-		    		  <span className="am-comment-author">{event.create_user+":"}</span>
-				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
-		    		  </li>
-		    		  )
-		  })}
-		
-		    </div>		   
-);
-}
-}); 
-/*
 * 1.1互动里面单独的评论模板
 * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
 * 把评论模板插入空Div里面
@@ -1961,6 +1273,30 @@ return (
 }
 }); 
 
+
+/*
+* 1.2互动里面单独的评论模板-item
+* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+* 把评论模板插入空Div里面
+* 
+* */
+var Classnews_reply_list_listshow = React.createClass({ 	
+render: function() {
+return (
+		  <div>
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		  <li className="am-comment">
+		    		  <span className="am-comment-author">{event.create_user+":"}</span>
+				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
+		    		  </li>
+		    		  )
+		  })}
+		
+		    </div>		   
+);
+}
+}); 
 
 /*
 * 绘制评论模板
@@ -2561,6 +1897,45 @@ var Teachingplan_showByOneDay = React.createClass({
 );
 }
 }); 
+/*
+ *<课程表>班级详情添加与编辑内容绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+var Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editTeachingplanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="classuuid"  value={o.classuuid}/>
+		 <label htmlFor="name">日期:</label>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		      <br/>
+	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
+		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
+		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
+	 </form>
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
@@ -3554,4 +2929,1165 @@ var Query_teacherDailyTask = React.createClass({
 	    );
 	  }
 	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±± am-table-bordered 、 .am-table-radius，外层圆角边框通过 box-shadow
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$管理区域$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+//——————————————————————————校务管理<校园列表绘制>—————————————————————   
+/*
+ *(校务管理)<校园列表>列表框绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@add:添加分校;
+ *@edit:编辑分校;
+ *@btn_click_group ：在kd_service
+ *@取消校园介绍；增加预览按钮
+ * */
+var Group_EventsTable_byRight = React.createClass({
+	handleClick: function(m) {
+			btn_click_group_byRight(m,{type:"1"});
+
+	  },
+  render: function() {
+    return (
+    <div>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  <hr/>
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>品牌名</th>
+            <th>预览</th>
+            <th>机构全称</th>
+            <th>电话</th>
+            <th>公司地址</th>
+            <th>创建时间</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Group_EventRow_byRight key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+
+/*
+ *(校务管理)<校园列表>学校内容绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@btn_click_group ：在kd_service；
+ * */
+var Group_EventRow_byRight = React.createClass({ 
+  render: function() {
+    var event = this.props.event;
+    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+    return (
+      <tr className={className} >
+      <td  ><a href="javascript:void(0);" onClick={btn_click_group_byRight.bind(this,"edit", event)}>{event.brand_name}</a></td>
+         <td>
+    	<AMR_Button amStyle="primary" onClick={btn_click_group_byRight.bind(this,"show",event)} round>预览</AMR_Button>
+        </td>
+          <td  >{event.company_name}</td>
+        <td > {event.link_tel}</td>
+        <td >{event.address}</td>
+        <td >{event.create_time}</td>
+      </tr> 
+    );
+  }
+}); 
+
+/*
+ *(校务管理)<预览按钮>绘制 ;
+ * */
+  var Group_show_byRight = React.createClass({ 
+  render: function() {
+  	  var o = this.props.formdata;
+		console.log("图片地址",o.description)
+    return (
+  		  <AMUIReact.Article
+  		    title={o.brand_name}
+  		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读0次"}>
+  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+  		   </AMUIReact.Article>	
+  		   
+  		   
+    );
+  }
+  }); 
+  
+/*
+ *(校务管理)<校园列表>添加分校和编辑详情绘制界面；
+ *@componentDidMount：图片处理方法 
+ *@ajax_group_save:提交按钮详情在kd_service
+ * */    
+var Group_edit_byRight = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editGroupForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+			  
+			  
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+          });
+	},
+	   /*
+	    * (校务管理)<校园列表>内上传LOGO图片
+	    * */
+    btn_class_group_uploadHeadere :function(){      
+        w_uploadImg.open(function (guid){
+             $ ("#img").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+	         });   
+	   },
+  render: function() {
+	  var o = this.state;
+    return (
+    		<div>
+    		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">    		  
+		<form id="editGroupForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+	    <input type="hidden" name="type"  value={o.type}/>
+		 <input type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>
+		<label htmlFor="nickname" >LOGO:</label>
+        <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+        <br/>
+        <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <br/>
+  
+    		<label htmlFor="brand_name">品牌名:</label>
+	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+	      <br/>
+	       <label htmlFor="company_name">机构全称:</label>
+	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+	      <br/>
+	       <label htmlFor="address">公司地址:</label>
+	      <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+	      <br/>
+	       <label htmlFor="map_point">地址坐标:</label>
+	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
+	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+	      <br/>
+	       <label htmlFor="link_tel">公司电话:</label>
+	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+	      <br/>
+	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+		  	{G_get_upload_img_Div()}
+	      <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
+    	     </form>
+    	     </div>
+    	   </div>   	   
+    	   </div>
+    );
+  }
+});
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+//——————————————————————————信息管理<绘制>—————————————————————  
+/*
+*(信息管理)<校园公告><老师公告><精品文章><招生计划>表单框绘制
+*@btn_click_announce_byRight:点击按钮事件跳转kd_servise方法;
+* */  
+var Announcements_EventsTable_byRight = React.createClass({
+	handleClick: function(m,Titlename) {
+		btn_click_announce_byRight(m,this.props.groupuuid,null);
+},
+handleChange_selectgroup_uuid:function(val){
+	  menu_announce_list_fn_byRight(announce_types,Group_name,val)
+},
+
+render: function() {
+  return (
+  <div>
+<AMR_ButtonToolbar>
+  <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>创建</AMR_Button>
+
+  </AMR_ButtonToolbar>
+<hr/>
+<div className="am-form-group">
+<AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />    
+  </div> 	  
+    <AMR_Table {...this.props}>  
+   <thead> 
+    <tr>
+      <th>标题</th>
+      <th>类型</th>
+      <th>幼儿园</th>
+      <th>浏览次数</th>
+      <th>创建人</th>
+      <th>创建时间</th>
+    </tr> 
+  </thead>
+  <tbody>
+    {this.props.events.map(function(event) {
+      return (<Announcements_EventRow_byRight key={event.id} event={event} />);
+        })}
+      </tbody>
+    </AMR_Table>
+    </div>
+  );
+}
+});
+  
+//信息管理绘制详情内容Map;   
+var Announcements_EventRow_byRight = React.createClass({ 
+	render: function() {
+	  var event = this.props.event;
+	  var className = event.highlight ? 'am-active' :
+	    event.disabled ? 'am-disabled' : '';
+
+	  return (
+	    <tr className={className} >
+	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
+	      <td>{Vo.announce_type(event.type)}</td>
+	      <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+	      <td>{0}</td>
+	      <td>{event.create_user}</td>
+	      <td>{event.create_time}</td>
+	    </tr> 
+	  );
+	}
+	});    
+
+/*
+* (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
+* @w_img_upload_nocut:上传图片后发的请求刷新;
+* */    
+var Announcements_edit_byRight = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+              editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+        });
+	  },
+render: function() {
+	 var o = this.state;
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   <div className="am-form-group" id="div_classuuids" >
+		  		<input type="hidden" name="type"  value={o.type}/>
+		  		<label htmlFor="tel">班级通知:</label>
+		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+		     </div>;
+	  } else {
+		  type_div =
+		  <input type="hidden" name="type"  value={o.type}/>
+	  }
+return (
+		<div> 		
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editAnnouncementsForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+		<div className="am-form-group">
+	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+      </div>   
+		{type_div}
+		  <label htmlFor="name">标题:</label>
+		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
+		  <br/>
+		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+		{G_get_upload_img_Div()} 
+		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
+		  </form>
+	     </div>
+	   </div>	   
+	  </div>
+);
+}
+}); 
+
+
+//
+/*
+ *<信息管理>公告点赞、添加、删除、禁用、评论、加载更多等详情绘制模板；
+ *增加编辑与删除功能
+ * */
+var Announcements_show_byRight = React.createClass({ 
+	//创建信息管理点击按钮事件跳转kd_servise方法;
+ 	handleClick: function(m,groupuuid,uuid) {
+ 		btn_click_announce_byRight(m,groupuuid,uuid);
+    }, 
+	//收藏按钮方法;
+	favorites_push: function(title,type,reluuid,url) {
+		commons_ajax_favorites_push(title,type,reluuid,url)
+	}, 
+	handleClick_approval: function(uuids) {
+	  common_approval(3,uuids);
+},
+render: function() {
+	  var o = this.props.data;
+
+return (
+	  <div>
+       <div className="am-margin-left-sm">
+	 
+       <AMUIReact.Article
+	    title={o.title}
+	    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+		<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+	      </AMUIReact.Article>		     
+	     <AMR_ButtonToolbar>
+	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
+	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
+	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
+	     <AMR_Button amStyle="danger" onClick={this.handleClick_approval.bind(this,o.uuid)} round>禁止</AMR_Button>
+	     </AMR_ButtonToolbar>
+	     
+	     </div>
+	    	<footer className="am-comment-footer">
+	    	<div className="am-comment-actions">
+	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+	    	</div>
+	    	</footer>
+	    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+		  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+	   </div>
+);
+}
+}); 
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————班级互动<绘制>——————————————————————————
+/* 
+ * <班级互动>绘制舞台
+ * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+ * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+ * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */
+var Announcements_class_Div_list_byRight = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}
+		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+	selectclass_uuid_val:null,
+	handleClick: function(m) {
+		if(m=="add"){
+			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
+			 return;
+		 }else{
+			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
+		 }
+//		if(m=="edit"){			
+//			 var uuids=null;
+//			 $($("input[name='table_checkbox']")).each(function(){
+//				
+//				　if(this.checked){
+//					 if(uuids==null)uuids=this.value;
+//					 else
+//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+//				　}
+//				});
+//			  if(!uuids){
+//				  alert("请勾选复选框！");
+//				  return;
+//			  }
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//					alert("只能选择一个进行编辑！");
+//					return;
+//				}
+//			  btn_click_classnews(m,{uuid:uuids});
+//		 }
+	  },
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  <AMUIReact.ButtonToolbar>
+		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
+		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth")} round>他人互动</AMUIReact.Button>
+		    </AMUIReact.ButtonToolbar>
+		  <hr/>	  
+		    
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  </div>
+		  
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		  
+		  
+		  
+		</div>
+		  
+			
+  );
+}
+});
+/*
+* <班级互动>;
+* @Classnews_EventRow:绘制列表详情;
+* */
+var Classnews_EventsTable_byRight = React.createClass({	  
+render: function() {
+	var that=this;
+return (
+<div>
+  {this.props.events.data.map(function(event) {
+    return (<Classnews_show_byRight  event={event} />);
+  })}
+</div>
+);
+}
+});
+/*
+* <班级互动>MAp详情绘制
+* var o = this.props.formdata;
+*/
+var Classnews_show_byRight = React.createClass({ 
+	handleClick_pinglun:function(val){
+		  this.selectclass_uuid_val=val;
+		  ajax_classnews_list_byRight(this.selectclass_uuid_val);
+	  },	  
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
+	render: function() {		  
+		  var  o = this.props.event;
+		  if(!o.dianzanList)o.dianzanList=[];
+		  if(!o.imgsList)o.imgsList=[];
+		  if(!o.create_img)G_def_headImgPath;
+		  
+	  return (
+			  <div>
+			  <article className="am-comment am-margin-xs">
+			  <a href="javascript:void(0);">
+			    <img src={o.create_img}  className="am-comment-avatar" width="48" height="48"/>
+			  </a>
+
+			  <div className="am-comment-main">
+			    <header className="am-comment-hd">
+			      <div className="am-comment-meta">
+			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
+			        发表于 <time>{o.update_time}</time>
+			      </div>
+			    </header>
+			    <div className="am-comment-bd">
+			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
+			    	<Common_mg_big_fn  imgsList={o.imgsList} />
+			    </div>
+			    	<footer className="am-comment-footer">
+			    	<div className="am-comment-actions">
+			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+			    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,99,o.uuid)}>举报</a>
+			    	</div>
+			    	</footer>
+			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+			    	<ul className="am-comments-list">
+					  <Classnews_reply_list_byRight uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+			    	</ul>
+			     </div>
+			</article>
+			 
+			    </div>		   
+	  );
+	}
+	}); 
+
+
+
+
+/*
+* 1.1互动里面单独的评论模板
+* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+* 把评论模板插入空Div里面
+* 
+* */
+var Classnews_reply_list_byRight = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	
+	
+	componentDidMount:function(){
+		var that=this;
+		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}
+		  
+		  this.pageNo++;
+	},
+	refreshReplyList:function(){
+		$("#"+this.classnewsreply_list_div).html("");
+		this.pageNo=1;
+		this.load_more_data();
+		
+		$("#"+this.div_reply_save_id).html("");
+	},
+	btn_reply_show:function(){
+		React.render(React.createElement(Classnews_reply_save_byRight,
+				{uuid:this.props.uuid,
+			parentThis:this,
+			type:this.props.type
+			}), document.getElementById(this.div_reply_save_id));
+	},
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+	var parentThis=this;
+return (
+		  
+		  <div className="am-comment-bd am-comment-flip">
+		  <div id={this.div_reply_save_id}>			</div>
+		    <div id={this.classnewsreply_list_div}></div>
+		    <button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>		
+			
+			</div>	
+		   
+);
+}
+}); 
+/*
+* 1.2互动里面单独的评论模板-item
+* 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+* 把评论模板插入空Div里面
+* 
+* */
+var Classnews_reply_list_listshow_byRight = React.createClass({ 	
+render: function() {
+return (
+		  <div>
+		  {this.props.events.data.map(function(event) {
+		      return (
+		    		  <li className="am-comment">
+		    		  <span className="am-comment-author">{event.create_user+":"}</span>
+				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
+		    		  </li>
+		    		  )
+		  })}
+		
+		    </div>		   
+);
+}
+}); 
+
+/*
+* 绘制评论模板
+* @componentDidMount:添加表情
+* */
+var Classnews_reply_save_byRight = React.createClass({ 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	form_id:"editClassnewsreplyForm",
+	reply_save_btn_click:function(){
+		var that=this.props.parentThis;
+		common_ajax_reply_save(function(){
+			that.refreshReplyList();		
+		},this.form_id);
+	
+	},
+	componentDidMount:function(){
+		 $("#"+this.classnews_content).xheditor(xhEditor_upImgOption_emot);
+	},
+render: function() {
+	this.classnews_content="classnews_content_replay"+this.props.uuid;
+	this.form_id="editClassnewsreplyForm"+this.props.uuid;
+return (
+		   <form id={this.form_id} method="post" className="am-form">
+			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
+			<input type="hidden" name="uuid" />
+			<input type="hidden" name="type"  value={this.props.uuid}/>						
+			<AMR_Input id={this.classnews_content} type="textarea" rows="3" label="我要回复" placeholder="填写内容" name="content" />
+			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
+		    </form>	   
+);
+}
+}); 
+
+/*
+* <班级互动>添加与编辑按钮中可删除图片显示.
+*/
+var ClassNews_Img_canDel = React.createClass({
+		deleteImg:function(divid){
+			$("#"+divid).remove();
+		},			
+	  render: function() {
+		 return (
+          		<div  className="G_cookplan_Img" >
+	 	       			<img className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
+	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
+	 	       		</div>		
+          	)
+	  }
+	});
+
+
+/*
+* <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
+* @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+* 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+* 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+* @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
+* @ajax_classnews_save_Right:提交按钮在Kd_service;
+* */
+var Classnews_edit_byRight = React.createClass({ 
+	selectclass_uuid_val:null,
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editClassnewsForm').serializeJson());
+	  },
+	  handleChange_selectclass_uuid:function(val){
+//		  this.selectclass_uuid_val=val;
+//		  this.props.formdata.classuuid=val
+			// $('#classuuid').val(val);
+			    this.setState($('#editClassnewsForm').serializeJson());
+	  },	  
+	  imgDivNum:0,
+	  getNewImgDiv:function(){
+		  this.imgDivNum++;
+		return "Classnews_edit_"+this.imgDivNum;  
+	  },	  
+	  addShowImg:function(url){
+		  var divid=this.getNewImgDiv();
+		  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");		 	
+		  React.render(React.createElement(ClassNews_Img_canDel, {
+				url: url,parentDivId:divid
+				}), document.getElementById(divid));  
+	  },
+	  componentDidMount:function(){
+		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
+		 var that=this;		 
+		 //已经有的图片,显示出来.		 
+		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
+			  ////data.data.uuid,data.imgUrl
+			 that.addShowImg(imgurl);
+			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
+		  });		 
+		//已经有的图片,显示出来.
+		 if(!$('#imgs').val())return;
+		 var imgArr=$('#imgs').val().split(",");
+		 for(var i=0;i<imgArr.length;i++){
+			 this.addShowImg(imgArr[i]);
+		 }		
+	},
+render: function() {
+	  var o = this.state;
+	  if(this.props.mycalsslist.length>0){
+		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
+	  }
+return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">	      
+		  <form id="editClassnewsForm" method="post" className="am-form">
+		  <AMUIReact.Selected id="selectclass_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={o.classuuid} />	      
+			
+		  <input type="hidden" name="uuid"  value={o.uuid}/>
+			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>			
+		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
+		      <div id="show_imgList"></div><br/>
+		      <div className="cls"></div>
+			  {G_get_upload_img_Div()}
+		      <button type="button"  onClick={ajax_classnews_save_Right}  className="am-btn am-btn-primary">提交</button>
+		    </form>
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————食谱管理<绘制>—————————————————————  
+/*
+ *(食谱管理)按钮及表单框绘制
+ *@add:添加
+ *@edit:编辑
+ *@pre:上周
+ *@next:下周
+ *@btn_click_announce:点击按钮事件跳转kd_servise方法;
+ * */  
+var CookbookPlan_EventsTable_byRight = React.createClass({
+	handleClick: function(m) {		
+		if(m=="add"){
+			btn_click_cookbookPlan_byRight(m,{groupuuid:this.props.group_uuid});
+			 return;
+		 }if(m=="edit"){
+			
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("请勾选复选框！");
+				  return;
+			  }
+			  if(!uuids&&uuids.indexOf(",")>-1){
+					alert("只能选择一个进行编辑！");
+					return;
+				}
+			  btn_click_cookbookPlan_byRight(m,{uuid:uuids});
+		 } else if(m=="pre"){
+			 menu_cookbookPlan_list_fn_byRight(this.props.group_uuid,--g_cookbookPlan_week_point)
+			 return;
+		 }else if(m=="next"){
+			 menu_cookbookPlan_list_fn_byRight(this.props.group_uuid,++g_cookbookPlan_week_point)
+			 return;
+		 }
+	},
+	handleChange_selectgroup_uuid:function(val){
+		menu_cookbookPlan_list_fn_byRight(val,g_cookbookPlan_week_point)
+	},
+	render: function() {
+	return (
+	<div>
+	<AMR_ButtonToolbar>
+	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
+	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
+	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
+	</AMR_ButtonToolbar>
+	<div className="header">
+	<div className="am-g">
+	  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
+	</div>
+	<hr />
+	</div>
+		  <div className="am-form-group">
+		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+	</div>		  
+	  <AMR_Table {...this.props}>  
+	    <thead> 
+	      <tr>
+	        <th>一周</th>
+	        <th>早餐</th>
+	        <th>早上加餐</th>
+	        <th>午餐</th>
+	        <th>下午加餐</th>
+	        <th>晚餐</th>
+	        <th>营养分析</th>
+	      </tr> 
+	    </thead>
+	    <tbody>
+	      {this.props.events.map(function(event) {
+	        return (<CookbookPlan_EventRow_byRight  event={event} />);
+	      })}
+	    </tbody>
+	  </AMR_Table>
+	  </div>
+	);
+	}
+});
+
+
+/*
+ *(食谱管理)内容绘制
+ *@btn_click_cookbookPlan:点击按钮事件跳转kd_servise方法;
+ * */ 
+var CookbookPlan_EventRow_byRight = React.createClass({ 
+	parseTimes:function(s){
+		var rs=null;
+		if(!s)return "";
+		var arr=s;
+		for(var i=0;i<arr.length;i++){
+			var t_arr=arr[i];
+			if(rs==null)rs=t_arr.name;
+			else rs+=","+t_arr.name;
+		}  
+		return rs;
+	},
+render: function() {
+var event = this.props.event;
+var className = event.highlight ? 'am-active' :
+  event.disabled ? 'am-disabled' : '';
+
+return (
+  <tr className={className} >
+    <td><a href="javascript:void(0);" onClick={btn_click_cookbookPlan_byRight.bind( this, 'edit',event)}>{G_week.getWeekStr(event.plandate)}</a></td>
+    <td>{this.parseTimes(event.list_time_1)}</td>
+    <td>{this.parseTimes(event.list_time_2)}</td>
+    <td>{this.parseTimes(event.list_time_3)}</td>
+    <td>{this.parseTimes(event.list_time_4)}</td>
+    <td>{this.parseTimes(event.list_time_5)}</td>
+    <td>{event.analysis}</td>
+  </tr> 
+);
+}
+});
+/*
+ *(食谱管理)添加与编辑详情界面绘制
+ *@ajax_cookbookPlan_save:点击按钮事件跳转kd_servise方法;
+ * */ 
+var CookbookPlan_edit_byRight = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editCookbookPlanForm').serializeJson());
+	  },
+	 
+render: function() {
+	  var o = this.state;
+	  
+	  var plandateStr_div;
+	  if (o.uuid) {//只读
+		//2015-07-04 00:00:00=>2015-07-04
+		  o.plandate=o.plandate.split(" ")[0];
+		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
+	  } else {
+		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
+	  }
+	  return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editCookbookPlanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="groupuuid"  value={o.groupuuid}/>
+		<input type="hidden" name="type"  value="1"/>
+		        <label htmlFor="name">日期:</label>
+				 {plandateStr_div}  
+				 <br/>
+		      <label>早餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>早上加餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>午餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>下午加餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <label>晚餐:</label> 
+		      <CookbookPlan_edit_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
+		      <div className="cls"></div>
+		      <br/>
+		      <AMR_Input  name="analysis" type="textarea" rows="2" label="营养分析:" placeholder="填写内容" value={o.analysis} onChange={this.handleChange}/>				
+		      <button type="button"  onClick={ajax_cookbookPlan_save_byRight}  className="am-btn am-btn-primary">提交</button>
+		    </form>
+
+	     </div> 
+	   </div>
+	   
+	   </div>
+);
+}
+}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
+
+//——————————————————————————课程安排<绘制>——————————————————————————        
+/*
+* <课程安排>班级详情界面按钮列表框等绘制;
+* @add:添加班级课程；
+* @pre:上周；
+* @next:下一周；
+* */
+var Teachingplan_EventsTable_byRight = React.createClass({
+	handleClick: function(m,uuid,groupuuid,classuuid) {
+			 if(m=="add"){
+				 btn_click_teachingplan_byRight(m,null,groupuuid,classuuid);
+				 return;
+			 }else if(m=="pre"){
+				 ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,--g_cookbookPlan_week_point);
+				 return;
+			 }else if(m=="next"){
+				 ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,++g_cookbookPlan_week_point);
+				 return;
+			 }
+	  },
+	  handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	  },
+//	  handleChange_selectgroup_uuid:function(){
+//		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
+//	  },
+		handleChange_selectgroup: function(val) {
+			this.props.classuuid="";
+			ajax_teachingplan_listByClass_byRight(val,this.props.classuuid,this.props.weeknum);  
+	    },
+	    handleChange_selectclass: function(val) {
+			ajax_teachingplan_listByClass_byRight(this.props.groupuuid,val,this.props.weeknum);  
+	    },
+render: function() {
+return (
+<div>
+<div className="header">
+	<hr />
+	</div>
+<AMR_ButtonToolbar>
+	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.groupuuid,this.props.classuuid)} round>添加</AMR_Button>
+  <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.groupuuid,this.props.classuuid)} round>上周</AMR_Button>
+  <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.groupuuid,this.props.classuuid)} round>下周</AMR_Button>
+  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
+  <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={this.props.classuuid}/>    
+</AMR_ButtonToolbar>
+  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
+	  <hr/>
+<AMR_Table {...this.props}>  
+  <thead> 
+    <tr>
+    	<th>一周</th>
+      <th>上午</th>
+      <th>下午</th>
+    </tr> 
+  </thead>
+  <tbody>
+    {this.props.events.map(function(event) {
+      return (<Teachingplan_EventRow_byRight  event={event} />);
+    })}
+  </tbody>
+</AMR_Table>
+</div>
+);
+}
+});
+/*
+*<课程安排>班级详情列表详情内容绘制;
+* @add:添加班级课程；
+* @pre:上周；
+* @next:下一周；
+* */
+var Teachingplan_EventRow_byRight = React.createClass({ 
+	render: function() {
+	var event = this.props.event;
+	if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
+		event.highlight=true;
+	}
+	var className = event.highlight ? 'am-active' :
+	  event.disabled ? 'am-disabled' : '';
+
+	return (
+	  <tr className={className} >
+	    <td><a href="javascript:void(0);" onClick={btn_click_teachingplan_byRight.bind( this, "edit",event.uuid)}>{G_week.getWeekStr(event.plandate)}</a></td>
+	    <td>{event.morning}</td>
+	    <td>{event.afternoon}</td>
+	  </tr> 
+	);
+	}
+	});
+
+/*
+*<课程安排>班级详情添加与编辑内容绘制;
+* @add:添加班级课程；
+* @pre:上周；
+* @next:下一周；
+* */
+var Teachingplan_edit_byRight = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editTeachingplanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="classuuid"  value={o.classuuid}/>
+		 <label htmlFor="name">日期:</label>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		      <br/>
+	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
+		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
+		      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>
+	 </form>
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+});
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±

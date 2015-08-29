@@ -64,7 +64,7 @@ function login_affter_init(){
 	t_menu={
 		    "link": "##",
 		    "title": "校务管理",
-		    "fn":menu_group_myList_fn
+		    "fn":menu_group_myList_fn_byRight
                                             
 		  };
 	if(G_user_hasRight("KD_group_m")){
@@ -77,27 +77,27 @@ function login_affter_init(){
 	            "title": "信息管理",
 	            "subMenu": [
 	                        {
-	                          "fn":function(){menu_announce_list_fn(0,"校园公告",null);},
+	                          "fn":function(){menu_announce_list_fn_byRight(0,"校园公告",null);},
 	                          "link": "##",
 	                          "title": "校园公告"
 	                        },
 	                        {
                                 "link": "##",
-                                "fn":function(){ajax_classnews_list_div(1);},
+                                "fn":function(){ajax_classnews_list_div_byRight();},
                                 "title": "班级互动"
                               },
 	                        {
-	                        	  "fn":function(){menu_announce_list_fn(1,"老师公告",null);},
+	                        	  "fn":function(){menu_announce_list_fn_byRight(1,"老师公告",null);},
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                              "fn":function(){menu_announce_list_fn(3,"精品文章",null);},
+	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章",null);},
 	                              "link": "##",
 	                              "title": "精品文章"
 	                            },
 	                          {
-	                        	  "fn":function(){menu_announce_list_fn(4,"招生计划",null);},
+	                        	  "fn":function(){menu_announce_list_fn_byRight(4,"招生计划",null);},
 	                              "link": "##",
 	                              "title": "招生计划"
 	                            }
@@ -123,7 +123,7 @@ function login_affter_init(){
 	t_menu={
                 "link": "##",
                 "title": "食谱管理",
-                "fn":menu_cookbookPlan_list_fn,
+                "fn":menu_cookbookPlan_list_fn_byRight,
                 "subCols": 2
 		  };
 	
@@ -135,7 +135,7 @@ function login_affter_init(){
 //————————————课程安排<权限>——————————		
 	t_menu={
       	   		"link": "##",
-      	   		"fn":menu_teachingplan_list_fn,
+      	   		"fn":menu_teachingplan_list_fn_byRight,
       	   		"title": "课程安排",
       	   		"subCols": 2
 		  };
@@ -406,71 +406,11 @@ function menu_queryMyTimely_fn() {
 	Queue.push(menu_queryMyTimely_fn,"即时消息");
 	ajax_queryMyTimely_myList();
 };
-/*
- * (校务管理)
- * @跳转kd_service发服务器请求
- * */
-function menu_group_myList_fn() {
-	Queue.push(menu_group_myList_fn,"校务管理");
-	ajax_group_myList();
-}
-/*
- * (信息管理)<校园公告><老师公告><精品文章><招生计划>
- * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
- * @跳转kd_service发服务器请求
- * */
-var announce_types="";
-var Group_name="";
-function menu_announce_list_fn(types,name,groupuuid) {
-	var Group_uuid=null;
-	Queue.push(function(){menu_announce_list_fn(types,name,groupuuid);},name);
-	announce_types=types; 
-	Group_name=name;
-	if(!groupuuid)Group_uuid=Store.getCurGroupByRight("KD_announce_m").uuid;
-	else Group_uuid=groupuuid;
-	ajax_announce_listByGroup(Group_uuid,name);
-};
-/*
- * (标头)食谱管理功能
- * @跳转kd_service发服务器请求
- * */
-function menu_cookbookPlan_list_fn(groupuuid,weeknum){
-	var cookbook_Group_uuid="";
-	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
-	else cookbook_Group_uuid=groupuuid;
-	ajax_cookbookPlan_listByGroup(cookbook_Group_uuid,weeknum);
-}
-/*
- * (标头)课程安排功能
- * @跳转widget发服务器请求
- * */
-function menu_teachingplan_list_fn(){
-	var groupList=Store.getGroupByRight("KD_teachingplan_m");
-	//var classList=Store.getChooseClass(groupList[0].uuid);
-	//我的主页
-	var classList=Store.getMyClassList();
-	var classuuid;
-	if(!classList||classList.length==0){
-		classuuid=null;
-	}else{
-		classuuid=classList[0].uuid;
-	}
-	ajax_teachingplan_listByClass(groupList.uuid,classuuid);
-}
-/*
- * (标头)<园长信箱>
- * @跳转kd_service发服务器请求
- * */
-function menu_queryLeaderMsgByParents_message_fn() {
-	ajax_queryLeaderMsgByParents_message();
-};
-/*
- * (标头)老师管理管理功能
- * @跳转kd_service发服务器请求
- * */
-function menu_userinfo_list_fn_byRight() {
-	ajax_uesrinfo_listByGroup(Store.getCurGroupByRight("KD_teacher_m").uuid);
-};
+
+
+
+
+
 /*
  * (标头)班级管理 edit
  * @跳转kd_service发服务器请求
@@ -524,6 +464,16 @@ function menu_teachingjudge_list_fn () {
 
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
+ * （首页）<班级互动>；
+ * @g_classnews_class_list（我的班级列表取成全局变量);
+ * @ajax_classnews_list:我的班级服务请求
+ * 在kd_service;
+ * */
+function menu_classnewsbyMy_list_fn() {
+	ajax_classnews_list_div();
+	
+};
+/*
  * （首页）公告功能方法；
  * @跳转kd_service发服务器请求
  * */
@@ -563,7 +513,6 @@ function parentContactByMyStudent() {
 };
 /*
  * （首页）精品文章
- * @menu_announce_list_fn:直接调用发布消息中的方法
  */
 function menu_article_list_fn(){
   	Queue.push(menu_article_list_fn,"精品文章");
@@ -659,4 +608,83 @@ function index_init(){
 window.onload=function(){ 
 	index_init();
 }; 
+
+
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$管理区域$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+/*
+ * (校务管理)
+ * @跳转kd_service发服务器请求
+ * */
+function menu_group_myList_fn_byRight() {
+	Queue.push(menu_group_myList_fn_byRight,"校务管理");
+	ajax_group_myList_byRight();
+}
+
+
+/*
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>
+ * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
+ * @跳转kd_service发服务器请求
+ * */
+var announce_types="";
+var Group_name="";
+function menu_announce_list_fn_byRight(types,name,groupuuid) {
+	var Group_uuid=null;
+	Queue.push(function(){menu_announce_list_fn_byRight(types,name,groupuuid);},name);
+	announce_types=types; 
+	Group_name=name;
+	if(!groupuuid)Group_uuid=Store.getCurGroupByRight("KD_announce_m").uuid;
+	else Group_uuid=groupuuid;
+	ajax_announce_listByGroup_byRight(Group_uuid,name);
+};
+
+/*
+ * (标头)老师管理管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_userinfo_list_fn_byRight() {
+	ajax_uesrinfo_listByGroup(Store.getCurGroupByRight("KD_teacher_m").uuid);
+};
+
+
+/*
+ * (标头)食谱管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
+	var cookbook_Group_uuid="";
+	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
+	else cookbook_Group_uuid=groupuuid;
+	ajax_cookbookPlan_listByGroup_byRight(cookbook_Group_uuid,weeknum);
+}
+
+
+/*
+ * (标头)课程安排功能
+ * @跳转widget发服务器请求
+ * */
+function menu_teachingplan_list_fn_byRight(){
+	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+	//我的主页
+	var classList=Store.getMyClassList();
+	var classuuid;
+	if(!classList||classList.length==0){
+		classuuid=null;
+	}else{
+		classuuid=classList[0].uuid;
+	}
+	ajax_teachingplan_listByClass_byRight(groupList.uuid,classuuid);
+}
+
+
+/*
+ * (标头)<园长信箱>
+ * @跳转kd_service发服务器请求
+ * */
+function menu_queryLeaderMsgByParents_message_fn() {
+	ajax_queryLeaderMsgByParents_message();
+};
+
+
 
