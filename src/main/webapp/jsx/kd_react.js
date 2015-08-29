@@ -393,7 +393,7 @@ var Announcements_class_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -418,7 +418,8 @@ var Announcements_class_Div_list = React.createClass({
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
+			 hd_type=2;
+			 ajax_classnews_list_div(hd_type);
 		 }
 //		if(m=="edit"){			
 //			 var uuids=null;
@@ -2471,7 +2472,7 @@ var Announcements_class_Div_list_byRight = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -2496,7 +2497,7 @@ var Announcements_class_Div_list_byRight = React.createClass({
 			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 alert("跟着我左手右手一个慢动作，右手左手慢动作重播");
+			 ajax_classnews_list_div_byRight(2);
 		 }
 //		if(m=="edit"){			
 //			 var uuids=null;

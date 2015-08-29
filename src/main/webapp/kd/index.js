@@ -83,7 +83,7 @@ function login_affter_init(){
 	                        },
 	                        {
                                 "link": "##",
-                                "fn":function(){ajax_classnews_list_div_byRight();},
+                                "fn":function(){ajax_classnews_list_div_byRight(1);},
                                 "title": "班级互动"
                               },
 	                        {
@@ -442,7 +442,7 @@ function menu_userinfo_logout_fn(){
  * 在kd_service;
  * */
 function menu_classnewsbyMy_list_fn() {
-	ajax_classnews_list_div();
+	ajax_classnews_list_div(1);
 	
 };
 /*
