@@ -382,9 +382,12 @@ var Announcements_class_Div_list = React.createClass({displayName: "Announcement
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
+	type:null,
+	//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  this.type=nextProps.type;
+			this.load_more_data();
+		},
 	componentDidMount:function(){
 		this.load_more_data();
 	},
@@ -393,7 +396,7 @@ var Announcements_class_Div_list = React.createClass({displayName: "Announcement
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
+		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -443,6 +446,7 @@ var Announcements_class_Div_list = React.createClass({displayName: "Announcement
 //		 }
 	  },
 render: function() {
+	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
@@ -2571,7 +2575,8 @@ var Announcements_class_Div_list_byRight = React.createClass({displayName: "Anno
 			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 ajax_classnews_list_div_byRight(2);
+			 hd_type_byRight=2;
+			 ajax_classnews_list_div_byRight(hd_type_byRight);
 		 }
 //		if(m=="edit"){			
 //			 var uuids=null;
