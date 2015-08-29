@@ -146,6 +146,7 @@ render: function() {
 		    	list: this.props.userList
 		    };
 		  },
+		  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
 		  this.setState({
 			  groupuuid:nextProps.groupuuid,
@@ -175,7 +176,7 @@ render: function() {
 					  that.setState({
 				        	groupuuid:groupuuid,
 				        	users:w_usernames,
-				        	useruuids:w_usernames,
+				        	useruuids:w_useruuids,
 				        	list:null
 				        })
 				  	}

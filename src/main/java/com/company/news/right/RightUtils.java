@@ -1,14 +1,15 @@
 package com.company.news.right;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.company.news.rest.RestConstants;
-import com.company.news.service.RightService;
 import com.company.web.listener.SessionListener;
 
 public class RightUtils {
@@ -65,6 +66,34 @@ public class RightUtils {
 //		 }
 		 return false;
 	}
+	
+	/**
+	 * 获取有权限的幼儿园
+	 * @param rightName
+	 * @param request
+	 * @return
+	 */
+	public static String getRightGroups(String rightName,HttpServletRequest request){
+		
+		HttpSession session =SessionListener.getSession(request);
+		List rights=(List)session.getAttribute(RestConstants.Session_UserInfo_rights);
+		List list=new ArrayList();
+		try {
+			for(int i=0;i<rights.size();i++){
+				Object[] sa=(Object[])rights.get(i);
+				
+				if(rightName.equals(sa[1])){
+					list.add(sa[0].toString());
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		 return StringUtils.join(list, ",");
+	}
+	
 	
 	/**
 	 * 判断当前用户是否是管理员登录

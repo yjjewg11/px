@@ -115,9 +115,20 @@ public class AnnouncementsController extends AbstractRESTController {
 		try {
 			String groupuuid=request.getParameter("groupuuid");
 			if(StringUtils.isBlank(groupuuid)){
-				groupuuid=this.getMyGroupUuidsBySession(request);
+				groupuuid=RightUtils.getRightGroups(RightConstants.KD_announce_m, request);
+				if(StringUtils.isBlank(groupuuid)){
+					responseMessage.setStatus(RightConstants.Return_msg);
+					return "";
+				}
+			}else{
+				//判断是否有权限
+				if(!RightUtils.hasRight(groupuuid,RightConstants.KD_announce_m, request)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return "";
+				}
 			}
-			List list = announcementsService.query(request.getParameter("type"),request.getParameter("groupuuid"));
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult list = announcementsService.listByRight(request.getParameter("type"),groupuuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
@@ -239,7 +250,7 @@ public class AnnouncementsController extends AbstractRESTController {
 				return "";
 			}
 			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
-			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
