@@ -195,10 +195,19 @@ function login_affter_init(){
                 "title": "统计",
                 "fn":menu_statistics_list_fn
               };
+		
 			if(G_user_hasRight("KD_statistics_m")){
 				menu_data.push(t_menu);
 			}	
-	
+			t_menu= {
+	                "link": "##",
+	                "title": "老师评价",
+	                "fn":menu_teachingjudge_list_fn
+	              };
+			
+				if(G_user_hasRight("KD_teachingjudge_q")){
+					menu_data.push(t_menu);
+				}
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data=[
@@ -218,19 +227,14 @@ function login_affter_init(){
 	                        "link": "##",
 	                        "title": "修改密码"
 	                      },
+	                    
 	                    {
 	                        "link": "##",
 	                        "fn":menu_userinfo_logout_fn,
 	                        "title": "注销"
 	                      }
 	                  ]
-	                },     	
-	                
-	                   {
-		                  "link": "##",
-		                  "title": "老师评价",
-		                  "fn":menu_teachingjudge_list_fn
-		                }
+	                }
 	                
 	              ];
 	
@@ -701,4 +705,3 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
 function menu_class_list_fn_byRight() {
 	ajax_class_listByGroup_byRight(Store.getCurGroupByRight("KD_class_m").uuid);
 };
-
