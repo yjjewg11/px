@@ -67,10 +67,6 @@ public class AnnouncementsController extends AbstractRESTController {
 				return "";
 			}
 
-			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
-				responseMessage.setMessage(RightConstants.Return_msg);
-				return "";
-			}
 			//设置当前用户
 			User user=this.getUserInfoBySession(request);
 			announcementsJsonform.setCreate_user(user.getName());
@@ -78,11 +74,13 @@ public class AnnouncementsController extends AbstractRESTController {
 			
 	
 			boolean flag;
-			if(StringUtils.isEmpty(announcementsJsonform.getUuid()))
-			    flag = announcementsService.add(announcementsJsonform, responseMessage);
-			else
-				flag = announcementsService.update(announcementsJsonform, responseMessage);
-
+			if(StringUtils.isEmpty(announcementsJsonform.getUuid())){
+				
+				flag = announcementsService.add(announcementsJsonform, responseMessage,request);
+			}
+			else{
+				flag = announcementsService.update(announcementsJsonform, responseMessage,request);
+			}
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

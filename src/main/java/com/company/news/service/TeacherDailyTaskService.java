@@ -55,15 +55,15 @@ public class TeacherDailyTaskService extends AbstractServcice {
 		for(TeacherDailyTask task:resultList){
 			if(task.getStatus()==null)continue;
 			if(SystemConstants.TeacherDailyTask_status_0.equals(task.getStatus()))continue;
-			if(SystemConstants.common_type_hudong==task.getStatus().intValue()){
+			if(SystemConstants.common_type_hudong==task.getType().intValue()){
 				if(isFinishTask_ClassNews(task.getRel_uuid(), user.getUuid(), date)){
 					task.setStatus(SystemConstants.TeacherDailyTask_status_0);
 				}
-			}else if(SystemConstants.common_type_jiaoxuejihua==task.getStatus().intValue()){
+			}else if(SystemConstants.common_type_jiaoxuejihua==task.getType().intValue()){
 				if(isFinishTask_Teachingplan(task.getRel_uuid(), date)){
 					task.setStatus(SystemConstants.TeacherDailyTask_status_0);
 				}
-			}else if(SystemConstants.common_type_shipu==task.getStatus().intValue()){
+			}else if(SystemConstants.common_type_shipu==task.getType().intValue()){
 				if(isFinishTask_CookbookPlan(task.getRel_uuid(), date)){
 					task.setStatus(SystemConstants.TeacherDailyTask_status_0);
 				}

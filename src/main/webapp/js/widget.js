@@ -267,7 +267,7 @@ var w_ch_user={
 		//指定一个学校
 		w_ch_user.groupuuid=groupuuid;
 		w_ch_user.useruuids=useruuids;
-		this.group_list=G_selected_dataModelArray_byArray([{uuid:groupuuid,brand_name:Store.getGroupNameByUuid(groupuuid)}],"uuid","brand_name");
+		w_ch_user.group_list=G_selected_dataModelArray_byArray([{uuid:groupuuid,brand_name:Store.getGroupNameByUuid(groupuuid)}],"uuid","brand_name");
 		w_ch_user.show();
 		
 	},	
@@ -284,7 +284,7 @@ var w_ch_user={
 			alert("w_ch_user.open groupuuid is null!");
 		}
 		
-		this.group_list=G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name");
+		w_ch_user.group_list=G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name");
 		
 		w_ch_user.show();
 		

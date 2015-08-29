@@ -50,7 +50,19 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @return
 	 */
 	public boolean add(AnnouncementsJsonform announcementsJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
+		if (announcementsJsonform.getType()==null) {
+			responseMessage.setMessage("type 不能为空.");
+			return false;
+		}
+		//精品文章都可以新加
+		if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
+			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
+			}
+		}
+		
 		if (StringUtils.isBlank(announcementsJsonform.getTitle())
 				|| announcementsJsonform.getTitle().length() > 45) {
 			responseMessage.setMessage("Title不能为空！，且长度不能超过45位！");
@@ -119,7 +131,14 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @return
 	 */
 	public boolean update(AnnouncementsJsonform announcementsJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
+		
+		if (announcementsJsonform.getType()==null) {
+			responseMessage.setMessage("type 不能为空.");
+			return false;
+		}
+		
+		
 		if (StringUtils.isBlank(announcementsJsonform.getTitle())
 				|| announcementsJsonform.getTitle().length() > 45) {
 			responseMessage.setMessage("Title不能为空！，且长度不能超过45位！");
@@ -139,7 +158,18 @@ public class AnnouncementsService extends AbstractServcice {
 		Announcements announcements = (Announcements) this.nSimpleHibernateDao
 				.getObjectById(Announcements.class,
 						announcementsJsonform.getUuid());
-
+				//精品文章都可以新加
+				if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
+					if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
+						responseMessage.setMessage(RightConstants.Return_msg);
+						return false;
+					}
+				}else{//精品文章作者可以修改.
+					if(!announcements.getCreate_useruuid().equals(announcementsJsonform.getCreate_useruuid())){
+						responseMessage.setMessage("精品文章,不是作者不能修改.");
+						return false;
+					}
+				}
 		announcements.setIsimportant(announcementsJsonform.getIsimportant());
 		announcements.setMessage(announcementsJsonform.getMessage());
 		announcements.setTitle(announcementsJsonform.getTitle());

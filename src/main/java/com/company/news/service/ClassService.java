@@ -118,12 +118,14 @@ public class ClassService extends AbstractServcice {
 		
 		PClass obj = (PClass)nSimpleHibernateDao.getObject(PClass.class,classRegJsonform.getUuid());
 		//班级所在学校切换是,代理云,只能切换到其他学校一次
+		boolean isChangeGroupuuid=false;
 		if(obj.getGroupuuid()!=null&&!obj.getGroupuuid().equals(classRegJsonform.getGroupuuid())){
 			//不允许重其他学校切换到代理平台
 			if(SystemConstants.Group_uuid_wjd.equals(classRegJsonform.getGroupuuid())){
 				responseMessage.setMessage("不能修改,不能从其他幼儿园切换到云代理幼儿园!");
 				return false;
 			}
+			isChangeGroupuuid=true;
 		}
 		//如果 是更新,只有班主任和管理员可以进行修改,
 			boolean b1=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
@@ -141,7 +143,7 @@ public class ClassService extends AbstractServcice {
 			obj.setGroupuuid(classRegJsonform.getGroupuuid());
 			this.nSimpleHibernateDao.save(obj);
 			//更新学生学校.
-			if(obj.getGroupuuid()!=null&&!obj.getGroupuuid().equals(classRegJsonform.getGroupuuid())){
+			if(isChangeGroupuuid){
 				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 				"update Student set  groupuuid=? where classuuid=?",
 				classRegJsonform.getGroupuuid(),classRegJsonform.getUuid());
