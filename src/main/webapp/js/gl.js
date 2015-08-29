@@ -298,3 +298,9 @@ function xhEditor_insertUpload(msg) {
 	msg=G_imgPath+msg[0];
 	//$("#xh_editor").append(msg);
 }
+
+function G_ajax_error_fn( obj, textStatus, errorThrown ){
+	$.AMUI.progress.done();
+		alert(obj.status+","+textStatus+"="+errorThrown);
+	 console.log(',ajax_error：', obj.status+","+textStatus+"="+errorThrown);
+}

@@ -1,4 +1,14 @@
+//幼儿园用户授权
+function menu_kd_roleUser_list_fn() {
+	Queue.push(menu_kd_roleUser_list_fn,"授权");
+	var opt={
+			groupuuid:Store.getCurGroup().uuid,
+			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+			role_list:Store.getRoleList(1)
+		};
+	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
 
+};
 //用户登陆
 function ajax_userinfo_login() {
 	
@@ -1231,8 +1241,8 @@ function btn_click_userinfo(m,obj,usernames,sex){
 	}else if(m=="enable"){
 		ajax_userinfo_updateDisable(obj,0);
 	}else if(m=="getRole"){
-		Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师权限-"+usernames);
-		ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);
+		//Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师权限-"+usernames);
+		//ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);
 	}else if(m=="edit"){
 		  Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师修改");
 		ajax_userinfo_edit({uuid:obj},"edit",sex);

@@ -367,13 +367,15 @@ function ajax_userinfo_updatepassword() {
 		}
 	});
 }
-function ajax_userinfo_getRole(useruuid,usernames,roleList){
+function ajax_userinfo_getRole(useruuid,usernames,groupuuid,roleList){
+	Queue.push(function(){ajax_userinfo_getRole(useruuid,usernames,groupuuid,roleList);},"授权-"+usernames);
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/userinfo/getRole.json?userUuid="+useruuid;
 	$.ajax({
 		type : "GET",
 		url : url,
 		dataType : "json",
+		data:{groupuuid:groupuuid,userUuid:useruuid},
 		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();

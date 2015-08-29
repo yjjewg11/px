@@ -217,5 +217,5 @@ public class RightService extends AbstractServcice {
 		// TODO Auto-generated method stub
 		return RightService.class;
 	}
-
+	
 }

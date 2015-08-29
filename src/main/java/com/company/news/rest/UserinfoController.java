@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,19 +16,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
+import com.company.news.entity.UserForJsCache;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
-import com.company.news.service.AbstractServcice;
 import com.company.news.service.GroupService;
 import com.company.news.service.RightService;
 import com.company.news.service.UserinfoService;
@@ -372,17 +370,89 @@ public class UserinfoController extends AbstractRESTController {
 		return "";
 	}
 	
+	/**
+	 * 更新用户权限
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@Deprecated
 	@RequestMapping(value = "/updateRole", method = RequestMethod.POST)
 	public String updateRole(ModelMap model, HttpServletRequest request) {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		boolean noRight=true;
 		try {
+			String groupuuid=request.getParameter("groupuuid");
+			
+			//平台管理员所有都可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request))noRight=false;
+			}
+			//该幼儿园管理员才可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(groupuuid, RightConstants.KD_role_m, request))noRight=false;
+			}
+			
 			boolean flag = userinfoService.updateRoleRightRelation(
 					request.getParameter("roleuuids"),
 					request.getParameter("useruuid"),
 					request.getParameter("groupuuid"),
 					request.getParameter("type"),responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("更新成功");
+		return "";
+	}
+	
+	/**
+	 * 更新用户权限
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateRoleByUsers", method = RequestMethod.POST)
+	public String updateRoleByUsers(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		boolean noRight=true;
+		
+		
+		try {
+		
+			String roleuuid=request.getParameter("roleuuid");
+			String useruuids=request.getParameter("useruuids");
+			String groupuuid=request.getParameter("groupuuid");
+			//平台管理员所有都可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request))noRight=false;
+			}
+			//该幼儿园管理员才可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(groupuuid, RightConstants.KD_role_m, request))noRight=false;
+			}
+		
+			if(noRight){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+			boolean flag = userinfoService.updateRoleByUsers(
+					roleuuid,
+					useruuids,
+					groupuuid,responseMessage,request);
 			if (!flag)
 				return "";
 		} catch (Exception e) {
@@ -584,11 +654,7 @@ public class UserinfoController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
-		if(!RightUtils.hasRightAnyGroup(RightConstants. KD_teacher_m,request)){
-            responseMessage.setMessage( RightConstants.Return_msg );
-            return "";
-		}
-
+		
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		UserRegJsonform userRegJsonform;
@@ -602,16 +668,45 @@ public class UserinfoController extends AbstractRESTController {
 			return "";
 		}
 
-		// type 添加用户时需要指定用户类型
-		if (userRegJsonform.getType() == null) {
-			responseMessage.setMessage("用户类型不能为空！");
-			return "";
-		}
 		
-		//设置当前用户
-		User user=this.getUserInfoBySession(request);
-		String mygroup=this.getMyGroupUuidsBySession(request);
+		
 		try {
+			
+			// type 添加用户时需要指定用户类型
+			if (userRegJsonform.getType() == null) {
+				responseMessage.setMessage("用户类型不能为空！");
+				return "";
+			}
+			
+			if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+				responseMessage.setMessage("关联机构不能为空！");
+				return "";
+			}
+			//设置当前用户
+			User user=this.getUserInfoBySession(request);
+			
+			boolean noRight=true;
+			String mygroup=this.getMyGroupUuidsBySession(request);
+			
+			//平台管理员所有都可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request))noRight=false;
+			}
+			//该幼儿园管理员才可以修改.
+			if(noRight){
+				if(!RightUtils.hasRightAnyGroup(RightConstants. KD_teacher_m,request)){
+		            responseMessage.setMessage( RightConstants.Return_msg );
+		            return "";
+				}
+				String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
+				for(int i=0;i<groupStrArr.length;i++){
+					if(!RightUtils.hasRight(groupStrArr[i], RightConstants.KD_role_m, request)){
+							responseMessage.setMessage("非法操作,没有该幼儿园老师管理权限.");
+					}
+				}
+				
+			}
+			
 			if(StringUtils.isEmpty(userRegJsonform.getUuid())){
 				boolean flag = userinfoService
 						.add(userRegJsonform, responseMessage,mygroup);
@@ -622,6 +717,7 @@ public class UserinfoController extends AbstractRESTController {
 				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage,mygroup);
 				if (user1==null)// 请求服务返回失败标示
 					return "";
+				responseMessage.setMessage("修改成功");
 			}
 			
 		} catch (Exception e) {
@@ -633,7 +729,7 @@ public class UserinfoController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("修改成功");
+		
 		return "";
 	}
 	
@@ -666,6 +762,72 @@ public class UserinfoController extends AbstractRESTController {
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("删除成功");
+		return "";
+	}
+	
+
+	/**
+	 * 用于客户端缓存
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getUserForJsCache", method = RequestMethod.GET)
+	public String getUserForJsCache(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String uuid=request.getParameter("uuid");
+		UserForJsCache a=null;
+		try {
+			a = userinfoService.getUserForJsCache(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 获取机构信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listJsCache", method = RequestMethod.GET)
+	public String listJsCache(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			List<UserForJsCache> list;
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+					groupuuid=this.getMyGroupUuidsBySession(request);
+					if (StringUtils.isEmpty(groupuuid)){
+						responseMessage.setMessage("非法用户,没有关联的学校!");
+						return "";
+					}
+				}
+			
+			}
+			list = userinfoService.listJsCache(groupuuid,name);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
 	

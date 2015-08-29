@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,30 +16,25 @@ import org.springframework.ui.ModelMap;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Announcements;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
+import com.company.news.entity.Role;
 import com.company.news.entity.RoleUserRelation;
-import com.company.news.entity.Student;
-import com.company.news.entity.TelSmsCode;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
+import com.company.news.entity.UserForJsCache;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
-import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
-import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
-import com.company.news.vo.UserInfoReturn;
 import com.company.plugin.security.LoginLimit;
-import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -215,7 +209,9 @@ public class UserinfoService extends AbstractServcice {
 				user.setTel_verify(USER_tel_verify_default);
 				user.setSex(0);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(user);
+				responseMessage.setMessage("用户添加成功!");
 		}else{
+			responseMessage.setMessage("用户已存在绑定成功!");
 			//只能删除我关联学校的用户的关联关心
 			int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 					.bulkUpdate(
@@ -225,7 +221,7 @@ public class UserinfoService extends AbstractServcice {
 		
 		String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
 		for(int i=0;i<groupStrArr.length;i++){
-			// 保存用户机构关联表
+			
 			UserGroupRelation userGroupRelation = new UserGroupRelation();
 			userGroupRelation.setUseruuid(user.getUuid());
 			userGroupRelation.setGroupuuid(groupStrArr[i]);
@@ -619,6 +615,71 @@ public class UserinfoService extends AbstractServcice {
 
 		return true;
 	}
+	
+	/**
+	 * 更新用户权限
+	 * @param roleuuid
+	 * @param useruuids
+	 * @param groupuuid
+	 * @param type
+	 * @param responseMessage
+	 * @param request
+	 * @return
+	 */
+	public boolean updateRoleByUsers(String roleuuid, String useruuids,
+			String groupuuid,  ResponseMessage responseMessage,HttpServletRequest request) {
+		
+		
+		if (StringUtils.isBlank(roleuuid)) {
+			responseMessage.setMessage("roleuuid不能为空");
+			return false;
+		}
+		if (StringUtils.isBlank(groupuuid)) {
+			responseMessage.setMessage("groupuuid不能为空");
+			return false;
+		}
+		
+		//如果是修改管理员权限,必须要有一个管理员有该角色
+		if(RightConstants.Role_AD_admini.equals(roleuuid)||RightConstants.Role_KD_admini.equals(roleuuid)){
+			if (StringUtils.isBlank(useruuids)) {
+				responseMessage.setMessage("管理员权限,必须要有一个管理员有该角色");
+				return false;
+			}
+		}
+		
+		Role role=(Role)this.nSimpleHibernateDao.getObject(Role.class, roleuuid);
+		if(role==null){
+			responseMessage.setMessage("没有该角色,roleuuid="+roleuuid);
+			return false;
+		}
+		
+		if(RightConstants.Role_Type_AD.equals(role.getType())){
+			if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)){
+				responseMessage.setMessage("非法授权,平台管理员才可设置.");
+				return false;
+			}
+		}
+		
+		
+		// 删除原有角色权限
+				int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+						.bulkUpdate(
+								"delete from RoleUserRelation where groupuuid=? and roleuuid =? ",groupuuid, roleuuid);
+				this.logger.info("delete from RoleUserRelation count=" + tmpCout);
+				
+				if (StringUtils.isNotBlank(useruuids)) {
+					String[] str = PxStringUtil.StringDecComma(useruuids).split(",");
+					for (String s : str) {
+						RoleUserRelation r = new RoleUserRelation();
+						r.setRoleuuid(roleuuid);
+						r.setUseruuid(s);
+						r.setGroupuuid(groupuuid);
+						this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+					}
+				}
+				
+		return true;
+	}
 
 	/**
 	 * 
@@ -768,4 +829,30 @@ public class UserinfoService extends AbstractServcice {
 
 		return true;
 	}
+	public UserForJsCache getUserForJsCache(String uuid) {
+		return (UserForJsCache) this.nSimpleHibernateDao
+				.getObjectById(UserForJsCache.class, uuid);
+	}
+	
+	/**
+	 * 查询指定机构的用户列表
+	 * 
+	 * @return
+	 */
+	public List<UserForJsCache> listJsCache(String group_uuid,String name) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+="and t0.groupuuid='"+ group_uuid + "'";
+		}
+		if(StringUtils.isNotBlank(name)){
+			sql+=" and {t1}.name like '%"+name+"%'";
+		}
+		Query q = s
+				.createSQLQuery(sql).addEntity("t1", UserForJsCache.class);
+
+		return q.list();
+	}
+
 }

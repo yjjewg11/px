@@ -43,6 +43,19 @@ function login_affter_init(){
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
+            
+            {
+    		    "link": "##",
+    		    "title": "平台用户授权",
+    		    "fn":menu_ad_roleUser_list_fn
+    		   
+    		  },
+    		  {
+      		    "link": "##",
+      		    "title": "幼儿园用户授权",
+      		    "fn":menu_kd_roleUser_list_fn
+      		   
+      		  },
 		  {
               "link": "##",
               "title": "基础数据",
@@ -237,4 +250,5 @@ function menu_body_fn (){
 	menu_dohome();
 }
 ajax_getUserinfo(true);
-
+//如果需要在手机或平板等触摸设备上使用 React，需要调用
+React.initializeTouchEvents(true);// 启用触摸事件处理。

@@ -3,6 +3,9 @@ package com.company.news.right;
 public class RightConstants {
 	static public String Return_msg="无操作权限";//添加老师
 	
+	
+	static public Integer Role_Type_AD=Integer.valueOf(0);//平台权限类型
+	static public Integer Role_Type_KD=Integer.valueOf(1);//幼儿园权限类型
 	//注册帐号给与的最高权限
 	static public String Role_AD_admini="Role_AD_admin";//平台最高管理员权限
 	//注册帐号给与的最高权限
@@ -36,5 +39,6 @@ public class RightConstants {
 	static public String KD_statistics_m="KD_statistics_m";//统计数据查看
 	static public String KD_teachingjudge_q="KD_teachingjudge_q";//查看老师评价
 	static public String KD_class_m="KD_class_m";//	班级管理员权限-增傻查改
+	static public String KD_role_m="KD_role_m";//	角色管理(增改)
 	
 }

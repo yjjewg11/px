@@ -152,7 +152,7 @@ function ajax_uesrinfo_listByAllGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(AD_Userinfo_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(ADStore.getAllGroup(),"uuid","brand_name"),
+					group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
 					events: data.list,
 					handleClick:btn_click_userinfo,
 					handleChange_selectgroup_uuid:ajax_uesrinfo_listByAllGroup,
@@ -293,7 +293,7 @@ function btn_click_userinfo(m,obj,usernames,sex){
  	if(m=="add"){
  		React.render(React.createElement(Userinfo_edit,{
  			formdata:formdata,
- 			select_group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+ 			select_group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
  			sex:formdata.sex
  			}), document.getElementById('div_body'));
  		return;
@@ -309,7 +309,7 @@ function btn_click_userinfo(m,obj,usernames,sex){
  		success : function(data) {
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(ADStore.getAllGroup(),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
+ 				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -763,7 +763,7 @@ function ajax_accounts_listByGroup(groupuuid) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Accounts_EventsTable, {
 					group_uuid:groupuuid,
-					group_list:Store.getGroup(),
+					group_list:Store.getAllGroup(),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
@@ -845,3 +845,29 @@ function ajax_wenjieAdmin_dataRefresh(){
 		}
 	});
 }
+
+
+//平台用户授权
+function menu_ad_roleUser_list_fn() {
+	Queue.push(menu_ad_roleUser_list_fn,"平台用户授权");
+	var group_list=[];
+	group_list.push(ADStore.getCurGroup());
+	var opt={
+			groupuuid:ADStore.getCurGroup().uuid,
+			group_list:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name"),
+			role_list:Store.getRoleList(0)
+		};
+	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+
+};
+//幼儿园用户授权
+function menu_kd_roleUser_list_fn() {
+	Queue.push(menu_kd_roleUser_list_fn,"幼儿园用户授权");
+	var opt={
+			groupuuid:ADStore.getCurGroup().uuid,
+			group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
+			role_list:Store.getRoleList(1)
+		};
+	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+
+};

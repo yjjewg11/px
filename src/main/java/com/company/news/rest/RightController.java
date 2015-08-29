@@ -101,8 +101,9 @@ public class RightController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage(e.getMessage());
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -111,7 +112,7 @@ public class RightController extends AbstractRESTController {
 	}
 
 	/**
-	 * 获取所有权限
+	 * 获取所有权限;
 	 * 
 	 * @param model
 	 * @param request
@@ -121,10 +122,21 @@ public class RightController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Right> list = rightService.query(request.getParameter("type"));
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		try {
+			List<Right> list = rightService.query(request.getParameter("type"));
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
 		return "";
 	}
+	
+	
 
 }

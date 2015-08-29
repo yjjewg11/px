@@ -15,6 +15,220 @@ var G_get_upload_img_Div=function(){
 	}
 	return G_upload_img_Div;
 }
+
+var G_help_popo = React.createClass({displayName: "G_help_popo", 
+	  render: function() {
+		  var title=G_tip.help;
+		  var msg="帮助内容";
+		  if(this.props.msg)msg=this.props.msg;
+		  if(this.props.title)title=this.props.title;
+	    return (
+	    		 React.createElement(AMUIReact.PopoverTrigger, {
+	 		    trigger: "click", // 设置触发方式
+	 		    amStyle: "warning", // 设置 popover 样式
+	 		    amSize: "sm", // 设置 popover 大小
+	 		    placement: "top", 
+	 		    popover: React.createElement(AMUIReact.Popover, null, msg)}, 
+	 		    React.createElement(AMUIReact.Button, {amStyle: "primary"}, title)
+	 		  )
+	    );
+	  }
+	  }); 
+
+
+
+
+/**
+ * 全局模版-没有内容时显示
+ */
+var G_NoData_div = React.createClass({displayName: "G_NoData_div", 
+	  render: function() {
+		  var msg="没有数据";
+		  if(this.props.msg)msg=this.props.msg;
+	    return (
+	    		React.createElement("div", null, React.createElement("h1", null, msg))
+	    );
+	  }
+	  }); 
+	  
+
+/**
+ * 角色授权用户
+ * 
+
+var opt={
+			groupuuid:Store.getCurGroup().uuid,
+			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+			role_list:Store.getRoleList(0)
+		};
+ */
+var G_Role_User_EventsTable = React.createClass({displayName: "G_Role_User_EventsTable",
+	getInitialState: function() {
+		return this.load_role_bind_user(this.props.groupuuid);
+	  },
+	  componentWillReceiveProps: function(nextProps) {
+		  var tmp=this.load_role_bind_user(nextProps.groupuuid);
+			tmp.role_list=nextProps.role_list;
+		  this.setState(tmp);
+		},
+	handleChange_selectgroup_uuid:function(groupuuid){
+		  this.setState(this.load_role_bind_user(groupuuid));
+	},
+	  componentDidMount:function(){
+		  this.setState(this.load_role_bind_user(this.props.groupuuid));
+
+	  },
+	load_role_bind_user:function(groupuuid){
+		if(!groupuuid)return;
+		var that=this;
+		var tmpState={};
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/role/getRoleUserBy.json?groupuuid="+groupuuid;
+		$.ajax({
+			type : "GET",
+			url : url,
+			async: false,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					tmpState={
+						 groupuuid:groupuuid,
+				          list: data.list
+				        };
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+		tmpState.role_list=this.props.role_list;
+		return tmpState;
+	},
+render: function() {
+	if(!this.props.group_list||this.props.group_list.length==0){
+		return (React.createElement(G_NoData_div, null))
+	}
+	var that=this;
+  return (
+  React.createElement("div", null, 
+  
+  React.createElement("div", {className: "am-cf am-margin-top-sm"}, 
+  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid}), 
+  React.createElement(G_help_popo, {title: G_tip.help, msg: G_tip.role_grant_users})
+  ), 
+    React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
+      React.createElement("thead", null, 
+        React.createElement("tr", null, 
+          React.createElement("th", null, "角色"), 
+          React.createElement("th", null, "操作"), 
+          React.createElement("th", null, "授权用户"), 
+          React.createElement("th", null, "角色描述")
+        )
+      ), 
+      React.createElement("tbody", null, 
+        this.state.role_list.map(function(event) {
+          return (React.createElement(G_Role_User_EventsTable_EventRow, {event: event, groupuuid: that.state.groupuuid, userList: that.state.list}));
+        })
+      )
+    )
+    )
+  );
+}
+});
+//role
+  var G_Role_User_EventsTable_EventRow = React.createClass({displayName: "G_Role_User_EventsTable_EventRow", 
+	  getInitialState: function() {
+		    return {
+		    	groupuuid:this.props.groupuuid,
+		    	users:null,
+		    	useruuids:null,
+		    	list: this.props.userList
+		    };
+		  },
+	  componentWillReceiveProps: function(nextProps) {
+		  this.setState({
+			  groupuuid:nextProps.groupuuid,
+		    	users:null,
+		    	useruuids:null,
+		    	list: nextProps.userList
+		  });
+		},
+	  getUsersStrByRoleUuid:function(roleuuid,list){
+		  if(!list||list.length==0)return ["",""];
+		  //list<[roleuuid,useruuid]
+		  var useruuids="";
+		  var usernames=""; 
+		  for(var i=0;i<list.length;i++){
+			  if(roleuuid==list[i][0]){
+				  useruuids+=list[i][1]+",";
+				  usernames+=Store.getUser(list[i][1]).name+",";
+			  }
+		  }
+		  return [useruuids,usernames];
+	  },
+	  handleClick:function(roleuuid,groupuuid,useruuids){
+		  var that=this;
+		  w_ch_user.openTheGroup(useruuids,groupuuid,function(w_useruuids,w_usernames,w_groupuuid){
+			  var flag=that.ajax_userinfo_updateRoleByUsers(w_useruuids,groupuuid,roleuuid);
+				  if(flag){
+					  that.setState({
+				        	groupuuid:groupuuid,
+				        	users:w_usernames,
+				        	useruuids:w_usernames,
+				        	list:null
+				        })
+				  	}
+		  		});
+	  },
+	  ajax_userinfo_updateRoleByUsers:function(useruuids,groupuuid,roleuuid){
+		  var flag=false;
+	   	$.AMUI.progress.start();
+	         var url = hostUrl + "rest/userinfo/updateRoleByUsers.json";
+	         var opt={
+	       			type : "POST",
+	       			url : url,
+	       			async: false,
+	       			processData: true, 
+	       			dataType : "json",
+	       			data:{useruuids:useruuids,groupuuid:groupuuid,roleuuid:roleuuid},
+	       			success : function(data) {
+	       				$.AMUI.progress.done();
+	       				// 登陆成功直接进入主页
+	       				if (data.ResMsg.status == "success") {
+	       					G_msg_pop(data.ResMsg.message);
+	       					flag=true;
+	       				} else {
+	       					alert(data.ResMsg.message);
+	       				}
+	       			},
+	       			error :G_ajax_error_fn
+	       		};
+	   	$.ajax(opt);
+	   	return flag;
+	   },
+  render: function() {
+    var event = this.props.event;
+    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+    var users=this.state.users;
+    var useruuids=this.state.useruuids;
+    if(this.state.list){
+    	var ar=this.getUsersStrByRoleUuid(event.uuid,this.state.list);
+    	  users=ar[1];
+    	  useruuids=ar[0];
+    }
+    return (
+      React.createElement("tr", {className: className}, 
+        React.createElement("td", null, event.name), 
+        React.createElement("td", null, React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids), round: true}, "授权")), 
+        React.createElement("td", null, users), 
+        React.createElement("td", null, event.description, " ")
+      ) 
+    );
+  }
+  }); 
+  
 //userinfo
 var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow", 
   render: function() {
@@ -77,9 +291,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 					alert("只能选择一个！");
 					return;
 				};
-				  var opt={groupuuid:$("input[name='group_uuid']").val(),
-						  userUuid:uuids};
-				  btn_click_userinfo(m,opt,usernames);
+				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList());
 				  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);

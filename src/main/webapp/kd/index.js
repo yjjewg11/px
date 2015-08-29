@@ -112,12 +112,26 @@ function login_affter_init(){
 	t_menu={
           "link": "##",
           "title": "老师管理",
-          "fn":menu_userinfo_list_fn_byRight
+          "subMenu": [
+                      {
+                        "fn":menu_userinfo_list_fn_byRight,
+                        "link": "##",
+                        "title": "老师管理"
+                      },
+                      {
+                		    "link": "##",
+                		    "title": "老师授权",
+                		    "fn":menu_kd_roleUser_list_fn
+                		   
+                		  },
+                      ]
         };
 
 	if(G_user_hasRight("KD_teacher_m")){
 		menu_data.push(t_menu);
 	}
+	
+	
 	
 //————————————食谱管理<权限>——————————	
 	t_menu={

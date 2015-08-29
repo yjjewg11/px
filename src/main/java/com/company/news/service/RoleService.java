@@ -232,4 +232,16 @@ public class RoleService extends AbstractServcice {
 		return true;
 	}
 
+	/**
+	 * 获取一个幼儿园的所有用户角色关联信息
+	 * @param groupuuid
+	 * @return
+	 */
+	public List getRoleUserRelationBy(String groupuuid) {
+		String hql = "select roleuuid,useruuid from RoleUserRelation where groupuuid=? ";
+		// TODO Auto-generated method stub
+		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql, groupuuid);
+	}
+
+
 }

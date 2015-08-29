@@ -174,5 +174,32 @@ public class RoleController extends AbstractRESTController {
 		responseMessage.setMessage("更新成功");
 		return "";
 	}
+	
+	/**
+	 * 获取角色Uuid和用户uuid的关系列表,根据groupuuid
+	 * 获取一个幼儿园的所有用户角色关联信息
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getRoleUserBy", method = RequestMethod.GET)
+	public String listby(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String groupuuid=request.getParameter("groupuuid");
+			List list = roleService.getRoleUserRelationBy(groupuuid);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 
 }

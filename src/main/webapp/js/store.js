@@ -2,6 +2,7 @@
  * Store.getCurGroup();//获取当前组织
  * 
  * Store.getGroup();//获取当前组织列表
+ * Store.getAllGroup();//获取当前组织列表
 *Store.getGroupNameByUuid(uuid);//
  * Store.getUserinfo();//获取当前用户
  * Store.getUserRights();//获取当前班级
@@ -13,6 +14,8 @@
  * Store.getUserRights();//获取当前用户的权限信息
  * Store.getCurGroupByRight(rightname)//获取当前学校当前
  * Store.getGroupByRight(rightname);获取有权限的学校列表;
+ * Store.getRoleList(type);获取角色列表;type:1 幼儿园
+ * 
  * Store.clear();
  * 
  */
@@ -34,6 +37,26 @@ var Store={
 			}
 		return true;
 	},
+	getAllGroup:function(){
+		 if(this.map["AllGroup"])return this.map["AllGroup"];
+			 //从后台重新获取
+		 Store_ajax_group_allList_toStroe();
+			 if(this.map["AllGroup"])return this.map["AllGroup"];
+		 return [];
+	},
+	setAllGroup:function(v){
+		this.map["AllGroup"]=v;
+	},
+	setUser:function(uuid,v){
+		this.map["User_"+uuid]=v;
+	},
+	getUser:function(uuid){
+		  var key="User_"+uuid;
+		 if(this.map[key])return this.map[key];
+		 store_ajax_getUserForJsCache(uuid);
+			 if(this.map[key])return this.map[key];
+		 return {uuid:"",name:"",tel:""};
+	},
 	setUserRights:function(v){
 		this.map["UserRights"]=v;
 	},
@@ -42,7 +65,16 @@ var Store={
 		if(!o)o="";
 		return o;
 	},
-	
+	setRoleList:function(type,v){
+		this.map["RoleList_"+type]=v;
+	},
+	getRoleList:function(type){
+		key="RoleList_"+type;
+		 if(this.map[key])return this.map[key];
+		 store_ajax_role_list_toStroe(type);
+		 if(this.map[key])return this.map[key];
+		 return [];
+	},
 	getVo_map:function(){
 		if(!Store.enabled())return null;
 		$.AMUI.store.get("Vo_map");
@@ -99,17 +131,6 @@ var Store={
 	setMyClassList:function(v){
 		this.map["MyClass"]=v;
 	},
-	getRoleList:function(){
-		 var key="RoleList";
-		 if(this.map[key])return this.map[key];
-			 //从后台重新获取
-			 store_ajax_RoleList_toStroe();
-			 if(this.map[key])return this.map[key];
-		 return [];
-	},
-	setRoleList:function(v){
-		this.map["RoleList"]=v;
-	},
 	/**
 	 * 设置班级选择控件到内存缓存。
 	 * @param v
@@ -165,17 +186,26 @@ var Store={
 	 * @param v
 	 */
 	setChooseUer:function(groupuuid,v){
-		this.map["ChooseUer"+groupuuid]=v;
+		this.map["ChooseUer_"+groupuuid]=v;
 	},
-	getChooseUer:function(groupuuid){
-		 return this.map["ChooseUer"+groupuuid];
+	/**
+	 * list[{uuid:"",name:"",tel:""}]
+	 * @param uuid
+	 * @returns
+	 */
+	getChooseUer:function(uuid){
+		  var key="ChooseUer_"+uuid;
+			 if(this.map[key])return this.map[key];
+			 store_ajax_chooseUser_listByGroup(uuid);
+				 if(this.map[key])return this.map[key];
+			 return [];
 	},
 //	/store : $.AMUI.store,
 	/**
 	 * 根据uuid获取机构名称
 	 */
 	getGroupNameByUuid:function(uuid){
-		var arr=this.getGroup();
+		var arr=this.getAllGroup();
 		for(var i=0;i<arr.length;i++){
 			if(uuid==arr[i].uuid)return arr[i].brand_name;
 		}
@@ -443,32 +473,6 @@ function store_ajax_getUserinfo() {
 }
 
 
-function store_ajax_RoleList_toStroe() {
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/role/list.json?type=1";
-	$.ajax({
-		type : "GET",
-		url : url,
-		async: false,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				Store.setRoleList(data.list);
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
-
 
 
 function store_ajax_MyClass_toStroe() {
@@ -514,6 +518,102 @@ function store_ajax_student_getStudentByClassuuid_toStroe(uuid) {
 				Store.setClassStudentsList(uuid,data.list)
 			} else {
 				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+};
+
+function store_ajax_role_list_toStroe(type) {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/role/list.json?type="+type;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setRoleList(type,data.list)
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+};
+
+
+function store_ajax_getUserForJsCache(uuid) {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getUserForJsCache.json?uuid="+uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setUser(uuid,data.data);
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+};
+function store_ajax_chooseUser_listByGroup(groupuuid){
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/listJsCache.json?groupuuid="+groupuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setChooseUer(groupuuid,data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			$.AMUI.progress.done();
+			alert(url+","+textStatus+"="+errorThrown);
+			 console.log(url+',error：', obj);
+			 console.log(url+',error：', textStatus);
+			 console.log(url+',error：', errorThrown);
+		}
+	});
+}
+
+function Store_ajax_group_allList_toStroe() {
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/group/list.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : "",
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setAllGroup(data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
 			}
 		},
 		error : function( obj, textStatus, errorThrown ){

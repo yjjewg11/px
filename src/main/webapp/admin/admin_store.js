@@ -31,16 +31,6 @@ var ADStore={
 			}
 		return true;
 	},
-	getAllGroup:function(){
-		 if(this.map["AllGroup"])return this.map["AllGroup"];
-			 //从后台重新获取
-		 ADstore_ajax_group_allList_toStroe();
-			 if(this.map["AllGroup"])return this.map["AllGroup"];
-		 return [];
-	},
-	setAllGroup:function(v){
-		this.map["AllGroup"]=v;
-	},
 	
 	/**
 	 * 设置人员选择控件到内存缓存。
@@ -57,25 +47,19 @@ var ADStore={
 	 * 根据uuid获取机构名称
 	 */
 	getGroupNameByUuid:function(uuid){
-		var arr=this.getGroup();
+		var arr=Store.getAllGroup();
 		for(var i=0;i<arr.length;i++){
-			if(uuid==arr[i].uuid)return arr[i].company_name;
+			if(uuid==arr[i].uuid)return arr[i].brand_name;
 		}
 		return "";
 	},
 	getCurGroup:function(){
 		 if(this.map["CurGroup"])return this.map["CurGroup"];
-		 var o=$.AMUI.store.get("CurGroup");
-		 if(o==null){
-			 var group=Store.getGroup();
-			 if(group.length>0){
-				 o=group[0];
-			 	Store.setCurGroup(o);
-			 }else{
-			 	cur_group={};
-			 }
-		 }
-		 return o;
+		 var arr=Store.getAllGroup();
+			for(var i=0;i<arr.length;i++){
+				if(cur_group_ad_uuid==arr[i].uuid)return arr[i];
+			}
+			return {uuid:cur_group_ad_uuid,brand_name:"平台"};
 	},
 	setCurGroup:function(v){
 		this.map["CurGroup"]=v;
@@ -95,16 +79,7 @@ var ADStore={
 		var key="RightList"+v;
 		this.map[key]=val;
 	},
-	getRoleList:function(){
-		 if(this.map["RoleList"])return this.map["RoleList"];
-			 //从后台重新获取
-			 ADstore_ajax_RoleList_toStroe();
-			 if(this.map["RoleList"])return this.map["RoleList"];
-		 return [];
-	},
-	setRoleList:function(v){
-		this.map["RoleList"]=v;
-	},
+	
 	getUserinfo:function(){
 		 if(this.map["userinfo"])return this.map["userinfo"];
 		 var o=$.AMUI.store.get("userinfo");
@@ -180,57 +155,3 @@ function ajax_group_myList_toStroe() {
 
 
 
-function ADstore_ajax_group_allList_toStroe() {
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/group/list.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : "",
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				ADStore.setAllGroup(data.list);
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
-
-
-function ADstore_ajax_RoleList_toStroe() {
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/role/list.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		async: false,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				ADStore.setRoleList(data.list)
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
-	});
-};
