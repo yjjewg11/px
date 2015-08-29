@@ -371,183 +371,6 @@ var Message_queryMyTimely_myList =React.createClass({
 
 
 
-
-  
-
-  
-
-//——————————————————————————收支记录<绘制>——————————————————————————
-/*
-* <收支记录>
-* @请求数据成功后执行Accounts_EventsTable方法绘制
-* 在kd_react
-**/
-  var Accounts_EventsTable = React.createClass({
-  	handleClick: function(m) {
-  		if(m=="add"){
-  			btn_click_accounts(m,{groupuuid:this.props.group_uuid});
-  			 return;
-  		 }
-  	  },
-  	  handleChange_selectgroup_uuid: function(val){
-  		  ajax_accounts_listByGroup(val);
-      },
-  render: function() {
-    return (
-    <div>
-    <div className="header">
-  	  <hr />
-  	</div>
-    <AMR_ButtonToolbar>
-  	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
-  	  </AMR_ButtonToolbar>
-  	  <hr/>
-  	  <div className="am-form-group">
-  	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />	  
-  	  </div>
-      <AMR_Table {...this.props}>  
-        <thead> 
-            <tr>
-            <th>类型</th>
-            <th>内容</th>
-            <th>金额</th>
-            <th>收费时间</th>            
-            <th>学生</th>
-            <th>班级</th>
-            <th>学校</th>
-            <th>备注</th>
-            <th>创建人</th>
-            <th>创建时间</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {this.props.events.map(function(event) {
-            return (<Accounts_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-  });
-/*
- * <收支记录>列表详细内容绘制;
- * */    
-var Accounts_EventRow = React.createClass({ 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
-
-	  return (
-	    <tr className={className} >
-	    <td > {Vo.get("KD_Accounts_type_"+event.type)}</td>
-	    <td  >{event.title}</td>
-	    <td > {event.num}</td>
-	      <td  >{G_getDateYMD(event.accounts_time)}</td>	     
-	      <td > {event.studentname}</td>
-	      <td > {Store.getClassByUuid(event.classuuid).name}</td>
-	      <td >{Store.getGroupNameByUuid(event.groupuuid)}</td>
-	      <td > {event.description}</td>
-	      <td >{event.create_user}</td>
-	      <td >{event.create_time}</td>
-	    </tr> 
-	  );
-	}
-	});
-/*
- * <收支记录>添加按钮详情绘制;
- * @ajax_accounts_save：保存按钮调用
- * @ajax_accounts_save：保存继续按钮
- * 都在kd_service；
- * */ 
-var Accounts_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.loadData(this.props.formdata);
-		  },
-	  handleChange_groupuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.groupuuid=v;
-		 	formdata.classuuid="";
-		 	formdata.studentuuid="";		 	
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_type: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.type=v;
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_classuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.classuuid=v;
-		 	formdata.studentuuid="";
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_studentuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.studentuuid=v;
-		    this.setState(this.loadData(formdata));
-	  },
-	  loadData:function(formdata){
-		  formdata.tmp_classList=G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name");
-		  if(formdata.classuuid){
-			  formdata.tmp_studentList=	G_selected_dataModelArray_byArray(Store.getClassStudentsList(formdata.classuuid),"uuid","name")
-		  }else{
-			  formdata.tmp_studentList=[];
-		  }
-		  return formdata;
-	  },	  
-render: function() {
-	  var o = this.state;	  
-		if(!o.type){			
-			o.type="0";
-		};
- return (
- 		<div>
- 		<div className="header">
- 		  <hr />
- 		</div>
- 		<div className="am-g">
- 		<div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
- 		<form id="editAccountsForm" method="post" className="am-form">
- 	    <div className="am-form-group">
- 		<AMUIReact.Selected name="groupuuid"  onChange={this.handleChange_groupuuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid+""} />  	 			          
-	    </div> 
- 		<label htmlFor="type">收支类型:</label>
- 		<div className="am-form-group">
-  		<AMUIReact.Selected name="type" onChange={this.handleChange_type} btnWidth="200"  multiple= {false} data={this.props.type_list} btnStyle="primary" value={o.type+""} />  	 
-  	    <br/>
-  		<AMUIReact.Selected name="classuuid" placeholder="班级选择" onChange={this.handleChange_classuuid} btnWidth="200"  multiple= {false} data={o.tmp_classList} btnStyle="primary" value={o.classuuid+""} />  	 
-  	    <br/>
-  		<AMUIReact.Selected name="studentuuid"placeholder="学生选择" onChange={this.handleChange_studentuuid} btnWidth="200"  multiple= {false} data={o.tmp_studentList} btnStyle="primary" value={o.studentuuid+""} />  	 
-        </div> 
- 	    <br/>	    
- 	    <label htmlFor="accounts_timeStr">收支日期:</label>
- 	    <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
- 	       <label htmlFor="title">内容:</label>
- 	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
- 	      <br/>	
- 	       <label htmlFor="num">金额:</label>
- 	      <input type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder=""/> 
- 	    <label htmlFor="description">备注:</label>
-	      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
-	      <br/>
-	      <button type="button"  onClick={ajax_accounts_saveAndAdd}  className="am-btn am-btn-primary">保存继续</button>
- 	      <button type="button"  onClick={ajax_accounts_save}  className="am-btn am-btn-primary">保存返回</button>
- 	     </form>
- 	     </div>
- 	   </div> 	   
- 	   </div>
- );
-}
-});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
 //——————————————————————————班级互动<绘制>——————————————————————————
 /* 
  * <班级互动>绘制舞台
@@ -938,223 +761,9 @@ return (
 
 
 
-//——————————————————————————学生列表<绘制>——————————————————————————  
-/*
- * 学生列表服务器请求后绘制处理方法；
- * @</select>下拉多选框;
- * @handleChange_stutent_Selected:学校查询；
- * @handleChange_class_Selected::班级查询；
- * @btn_query_click:名字查找；
- * */
-var Query_stutent_list = React.createClass({
-	group_uuid:null,
-	class_uuid:null,
-	handleChange_stutent_Selected: function(val) {
-		  if(val=="0"){
-			  this.group_uuid="";
-		  }else{
-			  this.group_uuid=val;
-		  };
-		  this.class_uuid="";
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-	  }, 
-	  handleChange_class_Selected: function(val) {
-		  if(val=="1"){
-			  this.class_uuid="";
-		  }else{
-			  this.class_uuid=val;
-		  };
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		  }, 
-		btn_query_click:function(){
-			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		},
-render: function() {
-	this.props.group_list.unshift({value:"0",label:"所有"});
-	this.props.class_list.unshift({value:"1",label:"所有"});
-	if(this.props.group_uuid==""){			
-		this.props.group_uuid="0";
-	};
-	if(this.props.class_uuid==""){			
-		this.props.class_uuid="1";
-	};
-    return (
-    <div>
-	  <hr/>	  
-	  <div className="am-form-group">
-		<form id="editGroupForm" method="post" className="am-form">
-        <div className= "am-cf">
-	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
-	  </div>
-	  
-	  <div className="am-form-group am-margin-top-xs">
-	  	<div className="am-u-sm-6">
-	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
-	  	</div>
-	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
-	   </div>
-	  </form>
-	  
-	  
-	  </div>	  
-      <AMR_Table {...this.props}>  
-        <thead> 
-          <tr>
-            <th>姓名</th>
-            <th>昵称</th>
-            <th>性别</th>
-            <th>生日</th>
-            <th>身份证</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {this.props.events.map(function(event) {
-            return (<Query_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-});
-    
-/*  	
- * 学生列表在表单上绘制详细内容;
- * @点击后直接调用学生详情方法
- * 调用ajax_class_students_look_info
- * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
- * */
-var Query_EventRow = React.createClass({ 
-	btn_students_list_click:function(uuid,nmae){
-		ajax_class_students_look_info(uuid,nmae)
-	},
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-
-	    return (
-	      <tr className={className} >
-	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
-	        <td>{event.nickname}</td>
-	        <td>{event.sex=="0"?"男":"女"}</td>
-	        <td>{event.birthday}</td>
-	        <td>{event.idcard}</td>
-	      </tr> 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
-
-
-
-//——————————————————————————评价老师<绘制>——————————————————————————  
-/*
- * 评价老师服务器请求后绘制处理方法；
- * @</select>下拉多选框;
- * @handleChange_stutent_Selected:学校查询；
- * @btn_query_click:名字查找；
- * */
-var Query_teachingjudge_list = React.createClass({
-  handleChange_group_Selected: function(val) {
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var type=this.props.type;
-	  ajax_teachingjudge_query(begDateStr,endDateStr,val,teacher_name,type);
-	  }, 
-  handleChange_type_Selected: function(val) {
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var groupuuid=this.props.group_uuid;
-		  ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,val);
-    },
-  btn_teachingjudge_click:function(){
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var groupuuid=this.props.group_uuid;
-	  var type=this.props.type;
-
- ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type); 
-   },
-  handleChange: function(event) {
-		 var o=$('#editEchartForm').serializeJson();
-		   this.setState(o);
-	  },
-render: function() { 
-    return (
-    <div>
-	  <hr/>	  
-	  <div className="am-form-group">
-		<form id="editGroupForm" method="post" className="am-form">
-        <div className= "am-cf">
-	  <AMUIReact.Selected  id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />     
-	  <AMUIReact.Selected  id="selectgroup_uuid2" name="type" onChange={this.handleChange_type_Selected} btnWidth="200"  data={this.props.teachingjudge_typelist} btnStyle="primary" value={this.props.type} />
-	  </div>
-
-	  <div className="am-form-group am-margin-top-xs">
-	  	<div className="am-u-lg-3 am-u-sm-6">
-	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>      
-			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
-			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
-			  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-primary">查询</button>	  				
-	  	</div>
-   </div>
-	  </form>
-	
-	  
-	  </div>	  
-      <AMR_Table {...this.props}>  
-        <thead> 
-          <tr>
-            <th>老师姓名</th>
-            <th>满意度</th>
-            <th>评价详情</th>
-            <th>评价人</th>
-            <th>评价时间</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {this.props.events.map(function(event) {
-            return (<Query_teachingjudge_EventRow key={event.id} event={event} />);
-          })}
-        </tbody>
-      </AMR_Table>
-      </div>
-    );
-  }
-});
-    
-/*  	
- * 评价老师在表单上绘制详细内容;
- * @点击后直接调用学生详情方法
- * 调用ajax_class_students_look_info
- * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
- * */
-var Query_teachingjudge_EventRow = React.createClass({
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-
-	    return (
-	      <tr className={className} >
-	        <td>{event.teacher_name}</td>
-	        <td>{Vo.get("KD_Teachingjudge_type_"+event.type)}</td>
-	        <td>{event.content}</td>
-	        <td>{event.create_user}</td>
-	        <td>{event.create_time}</td>
-	      </tr> 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -2234,66 +1843,7 @@ var Teacherinfo_EventRow = React.createClass({
 
 
 
-/*
-图表加载
- * */
-var ECharts_Div = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props;
-		  },
-	componentDidMount:function(){
-		var tmp_fn=function(){
-			 var o=$('#editEchartForm').serializeJson();
-			 PXECharts_ajax.ajax(o);
-		 };
-		 if(typeof(require)=="undefined"){
-			 var js="http://echarts.baidu.com/build/dist/echarts.js";
-			 loadJS(js,tmp_fn)
-		 }else{
-			 tmp_fn();
-		 }
-		
-	  },
-	  handleChange: function(event) {
-			 var o=$('#editEchartForm').serializeJson();
-			   this.setState(o);
-			 PXECharts_ajax.ajax(o);
-			    //PXECharts.loading();
-		  },
-	  render: function() {
-		  var o = this.state;
-	    return (
-	    		<div>
-	    		 <form id="editEchartForm" method="post" className="am-form">
-	    		 <div>
-		    		 <div className="am-u-lg-3 am-u-md-6">
-		    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
-		    		 
-		    		 </div>
-					<div className="am-u-lg-3 am-u-md-6">
-								    		 
-							 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
-		    		 </div>
-					 <div className="am-u-lg-3 am-u-md-6">
-						    		 
-					 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
-		    		 </div>
-					<div className="am-u-lg-3 am-u-md-6">
-						 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
-		    		 
-		    		 </div>
-	    		 
-	    		 </div>
-	    		 <div className="am-cf"></div>
-	    		 </form>
-	    		 
-	    		 <div id="main_ECharts" className="ECharts"></div>
-	    		</div>
 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 //——————————————————————————我的收藏<绘制>—————————————————————  
@@ -3696,7 +3246,7 @@ var Boss_student_tel_byRight =React.createClass({
 	      	     </a>
 	            家长{event.send_user}的信息    
 	           <AMR_ButtonToolbar>		            
-	         <AMUIReact.Button  onClick={ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
+	         <AMUIReact.Button  onClick={ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@信息</AMUIReact.Button>你们总共发了{event.count}条信息
 	        </AMR_ButtonToolbar>
 	       </li>);})}		      			      
 		 </ul>
@@ -4180,6 +3730,516 @@ render: function() {
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
   
+  
+  
+//——————————————————————————收支记录<绘制>——————————————————————————
+  /*
+  * <收支记录>
+  * @请求数据成功后执行Accounts_EventsTable方法绘制
+  * 在kd_react
+  **/
+    var Accounts_EventsTable_byRight = React.createClass({
+    	handleClick: function(m) {
+    		if(m=="add"){
+    			btn_click_accounts_byRight(m,{groupuuid:this.props.group_uuid});
+    			 return;
+    		 }
+    	  },
+    	  handleChange_selectgroup_uuid: function(val){
+    		  ajax_accounts_listByGroup_byRight(val);
+        },
+    render: function() {
+      return (
+      <div>
+      <div className="header">
+    	  <hr />
+    	</div>
+      <AMR_ButtonToolbar>
+    	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+    	  </AMR_ButtonToolbar>
+    	  <hr/>
+    	  <div className="am-form-group">
+    	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />	  
+    	  </div>
+        <AMR_Table {...this.props}>  
+          <thead> 
+              <tr>
+              <th>类型</th>
+              <th>内容</th>
+              <th>金额</th>
+              <th>收费时间</th>            
+              <th>学生</th>
+              <th>班级</th>
+              <th>学校</th>
+              <th>备注</th>
+              <th>创建人</th>
+              <th>创建时间</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<Accounts_EventRow_byRight key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+    });
+  /*
+   * <收支记录>列表详细内容绘制;
+   * */    
+  var Accounts_EventRow_byRight = React.createClass({ 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+
+  	  return (
+  	    <tr className={className} >
+  	    <td > {Vo.get("KD_Accounts_type_"+event.type)}</td>
+  	    <td  >{event.title}</td>
+  	    <td > {event.num}</td>
+  	      <td  >{G_getDateYMD(event.accounts_time)}</td>	     
+  	      <td > {event.studentname}</td>
+  	      <td > {Store.getClassByUuid(event.classuuid).name}</td>
+  	      <td >{Store.getGroupNameByUuid(event.groupuuid)}</td>
+  	      <td > {event.description}</td>
+  	      <td >{event.create_user}</td>
+  	      <td >{event.create_time}</td>
+  	    </tr> 
+  	  );
+  	}
+  	});
+  /*
+   * <收支记录>添加按钮详情绘制;
+   * @ajax_accounts_save：保存按钮调用
+   * @ajax_accounts_save：保存继续按钮
+   * 都在kd_service；
+   * */ 
+  var Accounts_edit_byRight = React.createClass({ 
+  	 getInitialState: function() {
+  		    return this.loadData(this.props.formdata);
+  		  },
+  	  handleChange_groupuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.groupuuid=v;
+  		 	formdata.classuuid="";
+  		 	formdata.studentuuid="";		 	
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_type: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.type=v;
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_classuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.classuuid=v;
+  		 	formdata.studentuuid="";
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_studentuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.studentuuid=v;
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  loadData:function(formdata){
+  		  formdata.tmp_classList=G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name");
+  		  if(formdata.classuuid){
+  			  formdata.tmp_studentList=	G_selected_dataModelArray_byArray(Store.getClassStudentsList(formdata.classuuid),"uuid","name")
+  		  }else{
+  			  formdata.tmp_studentList=[];
+  		  }
+  		  return formdata;
+  	  },	  
+  render: function() {
+  	  var o = this.state;	  
+  		if(!o.type){			
+  			o.type="0";
+  		};
+   return (
+   		<div>
+   		<div className="header">
+   		  <hr />
+   		</div>
+   		<div className="am-g">
+   		<div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+   		<form id="editAccountsForm" method="post" className="am-form">
+   	    <div className="am-form-group">
+   		<AMUIReact.Selected name="groupuuid"  onChange={this.handleChange_groupuuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid+""} />  	 			          
+  	    </div> 
+   		<label htmlFor="type">收支类型:</label>
+   		<div className="am-form-group">
+    		<AMUIReact.Selected name="type" onChange={this.handleChange_type} btnWidth="200"  multiple= {false} data={this.props.type_list} btnStyle="primary" value={o.type+""} />  	 
+    	    <br/>
+    		<AMUIReact.Selected name="classuuid" placeholder="班级选择" onChange={this.handleChange_classuuid} btnWidth="200"  multiple= {false} data={o.tmp_classList} btnStyle="primary" value={o.classuuid+""} />  	 
+    	    <br/>
+    		<AMUIReact.Selected name="studentuuid"placeholder="学生选择" onChange={this.handleChange_studentuuid} btnWidth="200"  multiple= {false} data={o.tmp_studentList} btnStyle="primary" value={o.studentuuid+""} />  	 
+          </div> 
+   	    <br/>	    
+   	    <label htmlFor="accounts_timeStr">收支日期:</label>
+   	    <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
+   	       <label htmlFor="title">内容:</label>
+   	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
+   	      <br/>	
+   	       <label htmlFor="num">金额:</label>
+   	      <input type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder=""/> 
+   	    <label htmlFor="description">备注:</label>
+  	      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+  	      <br/>
+  	      <button type="button"  onClick={ajax_accounts_saveAndAdd_byRight}  className="am-btn am-btn-primary">保存继续</button>
+   	      <button type="button"  onClick={ajax_accounts_save_byRight}  className="am-btn am-btn-primary">保存返回</button>
+   	     </form>
+   	     </div>
+   	   </div> 	   
+   	   </div>
+   );
+  }
+  });
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+  
+//——————————————————————————学生列表<绘制>——————————————————————————  
+  /*
+   * 学生列表服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @handleChange_class_Selected::班级查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_stutent_list_byRight = React.createClass({
+  	group_uuid:null,
+  	class_uuid:null,
+  	handleChange_stutent_Selected: function(val) {
+  		  if(val=="0"){
+  			  this.group_uuid="";
+  		  }else{
+  			  this.group_uuid=val;
+  		  };
+  		  this.class_uuid="";
+  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  	  }, 
+  	  handleChange_class_Selected: function(val) {
+  		  if(val=="1"){
+  			  this.class_uuid="";
+  		  }else{
+  			  this.class_uuid=val;
+  		  };
+  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  		  }, 
+  		btn_query_click:function(){
+  			 ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  		},
+  render: function() {
+  	this.props.group_list.unshift({value:"0",label:"所有"});
+  	this.props.class_list.unshift({value:"1",label:"所有"});
+  	if(this.props.group_uuid==""){			
+  		this.props.group_uuid="0";
+  	};
+  	if(this.props.class_uuid==""){			
+  		this.props.class_uuid="1";
+  	};
+      return (
+      <div>
+  	  <hr/>	  
+  	  <div className="am-form-group">
+  		<form id="editGroupForm" method="post" className="am-form">
+          <div className= "am-cf">
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_class_Selected} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid} />      
+  	  </div>
+  	  
+  	  <div className="am-form-group am-margin-top-xs">
+  	  	<div className="am-u-sm-6">
+  	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+  	  	</div>
+  	  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>	  
+  	   </div>
+  	  </form>
+  	  
+  	  
+  	  </div>	  
+        <AMR_Table {...this.props}>  
+          <thead> 
+            <tr>
+              <th>姓名</th>
+              <th>昵称</th>
+              <th>性别</th>
+              <th>生日</th>
+              <th>身份证</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<Query_EventRow_byRight key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+  });
+      
+  /*  	
+   * 学生列表在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var Query_EventRow_byRight = React.createClass({ 
+  	btn_students_list_click:function(uuid,nmae){
+  		ajax_class_students_look_info_byRight(uuid,nmae)
+  	},
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      <tr className={className} >
+  	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
+  	        <td>{event.nickname}</td>
+  	        <td>{event.sex=="0"?"男":"女"}</td>
+  	        <td>{event.birthday}</td>
+  	        <td>{event.idcard}</td>
+  	      </tr> 
+  	    );
+  	  }
+  	}); 
+
+
+
+
+  /*学生列表中查看学生信息
+   * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
+   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
+   * 
+   * */
+  var Class_student_look_info_byRight =React.createClass({
+  	 getInitialState: function() {
+  		    return this.props.formdata;
+  		  },
+  	 handleChange: function(event) {
+  		    this.setState($('#editClassStudentForm').serializeJson());
+  	  },
+  	  componentDidMount:function(){
+  		  var imgGuid=this.state.headimg;
+  		 if(imgGuid){
+  			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+  			 G_img_down404("#img_head_image");
+  		 }
+
+  	  },
+  		render: function() {
+  	     var o =this.state;
+  		 return (
+  		 		<div>
+  			    <AMUIReact.List static border striped>
+  			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
+  				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+  				  <br/>
+  			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>爸爸电话:{o.ba_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>爷爷电话:{o.ye_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>奶奶电话:{o.nai_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>外公电话:{o.waigong_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>外婆电话:{o.waipo_tel}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
+  			      <AMUIReact.ListItem>
+  			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
+  			      </AMUIReact.ListItem>			      
+  			      
+  			      </AMUIReact.List>
+  		 	     </div> 
+  		     );
+  	        }
+  		 });
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  /*
+  图表加载
+   * */
+  var ECharts_Div_byRight = React.createClass({ 
+  	 getInitialState: function() {
+  		    return this.props;
+  		  },
+  	componentDidMount:function(){
+  		var tmp_fn=function(){
+  			 var o=$('#editEchartForm').serializeJson();
+		 PXECharts_ajax.ajax(o);
+	 };
+	 if(typeof(require)=="undefined"){
+		 var js="http://echarts.baidu.com/build/dist/echarts.js";
+		 loadJS(js,tmp_fn)
+	 }else{
+		 tmp_fn();
+	 }
+	
+  },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		    //PXECharts.loading();
+	  },
+  render: function() {
+	  var o = this.state;
+    return (
+    		<div>
+    		 <form id="editEchartForm" method="post" className="am-form">
+    		 <div>
+	    		 <div className="am-u-lg-3 am-u-md-6">
+	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 
+	    		 </div>
+				<div className="am-u-lg-3 am-u-md-6">
+							    		 
+						 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+	    		 </div>
+				 <div className="am-u-lg-3 am-u-md-6">
+					    		 
+				 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+	    		 </div>
+				<div className="am-u-lg-3 am-u-md-6">
+					 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+	    		 
+	    		 </div>
+    		 
+    		 </div>
+    		 <div className="am-cf"></div>
+    		 </form>
+    		 
+    		 <div id="main_ECharts" className="ECharts"></div>
+  	    		</div>
+
+  	    );
+  	  }
+  	}); 
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+
+  
+  
+  
+//——————————————————————————评价老师<绘制>——————————————————————————  
+  /*
+   * 评价老师服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_teachingjudge_list_byRight = React.createClass({
+    handleChange_group_Selected: function(val) {
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var type=this.props.type;
+  	  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,val,teacher_name,type);
+  	  }, 
+    handleChange_type_Selected: function(val) {
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var groupuuid=this.props.group_uuid;
+  		  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,val);
+      },
+    btn_teachingjudge_click:function(){
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var groupuuid=this.props.group_uuid;
+  	  var type=this.props.type;
+
+   ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type); 
+     },
+    handleChange: function(event) {
+  		 var o=$('#editEchartForm').serializeJson();
+  		   this.setState(o);
+  	  },
+  render: function() { 
+      return (
+      <div>
+  	  <hr/>	  
+  	  <div className="am-form-group">
+  		<form id="editGroupForm" method="post" className="am-form">
+          <div className= "am-cf">
+  	  <AMUIReact.Selected  id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />     
+  	  <AMUIReact.Selected  id="selectgroup_uuid2" name="type" onChange={this.handleChange_type_Selected} btnWidth="200"  data={this.props.teachingjudge_typelist} btnStyle="primary" value={this.props.type} />
+  	  </div>
+
+  	  <div className="am-form-group am-margin-top-xs">
+  	  	<div className="am-u-lg-3 am-u-sm-6">
+  	  		<input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>      
+  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
+  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
+  			  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-primary">查询</button>	  				
+  	  	</div>
+     </div>
+  	  </form>
+  	
+  	  
+  	  </div>	  
+        <AMR_Table {...this.props}>  
+          <thead> 
+            <tr>
+              <th>老师姓名</th>
+              <th>满意度</th>
+              <th>评价详情</th>
+              <th>评价人</th>
+              <th>评价时间</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<Query_teachingjudge_EventRow_byRight key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+  });
+      
+  /*  	
+   * 评价老师在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var Query_teachingjudge_EventRow_byRight = React.createClass({
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      <tr className={className} >
+  	        <td>{event.teacher_name}</td>
+  	        <td>{Vo.get("KD_Teachingjudge_type_"+event.type)}</td>
+  	        <td>{event.content}</td>
+  	        <td>{event.create_user}</td>
+  	        <td>{event.create_time}</td>
+  	      </tr> 
+  	    );
+  	  }
+  	}); 
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
   
   
   

@@ -371,183 +371,6 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
 
 
 
-
-  
-
-  
-
-//——————————————————————————收支记录<绘制>——————————————————————————
-/*
-* <收支记录>
-* @请求数据成功后执行Accounts_EventsTable方法绘制
-* 在kd_react
-**/
-  var Accounts_EventsTable = React.createClass({displayName: "Accounts_EventsTable",
-  	handleClick: function(m) {
-  		if(m=="add"){
-  			btn_click_accounts(m,{groupuuid:this.props.group_uuid});
-  			 return;
-  		 }
-  	  },
-  	  handleChange_selectgroup_uuid: function(val){
-  		  ajax_accounts_listByGroup(val);
-      },
-  render: function() {
-    return (
-    React.createElement("div", null, 
-    React.createElement("div", {className: "header"}, 
-  	  React.createElement("hr", null)
-  	), 
-    React.createElement(AMR_ButtonToolbar, null, 
-  	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
-  	  ), 
-  	  React.createElement("hr", null), 
-  	  React.createElement("div", {className: "am-form-group"}, 
-  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})	  
-  	  ), 
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-            React.createElement("tr", null, 
-            React.createElement("th", null, "类型"), 
-            React.createElement("th", null, "内容"), 
-            React.createElement("th", null, "金额"), 
-            React.createElement("th", null, "收费时间"), 
-            React.createElement("th", null, "学生"), 
-            React.createElement("th", null, "班级"), 
-            React.createElement("th", null, "学校"), 
-            React.createElement("th", null, "备注"), 
-            React.createElement("th", null, "创建人"), 
-            React.createElement("th", null, "创建时间")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Accounts_EventRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-  });
-/*
- * <收支记录>列表详细内容绘制;
- * */    
-var Accounts_EventRow = React.createClass({displayName: "Accounts_EventRow", 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
-
-	  return (
-	    React.createElement("tr", {className: className}, 
-	    React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
-	    React.createElement("td", null, event.title), 
-	    React.createElement("td", null, " ", event.num), 
-	      React.createElement("td", null, G_getDateYMD(event.accounts_time)), 	     
-	      React.createElement("td", null, " ", event.studentname), 
-	      React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
-	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-	      React.createElement("td", null, " ", event.description), 
-	      React.createElement("td", null, event.create_user), 
-	      React.createElement("td", null, event.create_time)
-	    ) 
-	  );
-	}
-	});
-/*
- * <收支记录>添加按钮详情绘制;
- * @ajax_accounts_save：保存按钮调用
- * @ajax_accounts_save：保存继续按钮
- * 都在kd_service；
- * */ 
-var Accounts_edit = React.createClass({displayName: "Accounts_edit", 
-	 getInitialState: function() {
-		    return this.loadData(this.props.formdata);
-		  },
-	  handleChange_groupuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.groupuuid=v;
-		 	formdata.classuuid="";
-		 	formdata.studentuuid="";		 	
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_type: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.type=v;
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_classuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.classuuid=v;
-		 	formdata.studentuuid="";
-		    this.setState(this.loadData(formdata));
-	  },
-	  handleChange_studentuuid: function(v) {
-		 	var formdata=$('#editAccountsForm').serializeJson();
-		 	formdata.studentuuid=v;
-		    this.setState(this.loadData(formdata));
-	  },
-	  loadData:function(formdata){
-		  formdata.tmp_classList=G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name");
-		  if(formdata.classuuid){
-			  formdata.tmp_studentList=	G_selected_dataModelArray_byArray(Store.getClassStudentsList(formdata.classuuid),"uuid","name")
-		  }else{
-			  formdata.tmp_studentList=[];
-		  }
-		  return formdata;
-	  },	  
-render: function() {
-	  var o = this.state;	  
-		if(!o.type){			
-			o.type="0";
-		};
- return (
- 		React.createElement("div", null, 
- 		React.createElement("div", {className: "header"}, 
- 		  React.createElement("hr", null)
- 		), 
- 		React.createElement("div", {className: "am-g"}, 
- 		React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
- 		React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
- 	    React.createElement("div", {className: "am-form-group"}, 
- 		React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.handleChange_groupuuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid+""})	 			          
-	    ), 
- 		React.createElement("label", {htmlFor: "type"}, "收支类型:"), 
- 		React.createElement("div", {className: "am-form-group"}, 
-  		React.createElement(AMUIReact.Selected, {name: "type", onChange: this.handleChange_type, btnWidth: "200", multiple: false, data: this.props.type_list, btnStyle: "primary", value: o.type+""}), 	 
-  	    React.createElement("br", null), 
-  		React.createElement(AMUIReact.Selected, {name: "classuuid", placeholder: "班级选择", onChange: this.handleChange_classuuid, btnWidth: "200", multiple: false, data: o.tmp_classList, btnStyle: "primary", value: o.classuuid+""}), 	 
-  	    React.createElement("br", null), 
-  		React.createElement(AMUIReact.Selected, {name: "studentuuid", placeholder: "学生选择", onChange: this.handleChange_studentuuid, btnWidth: "200", multiple: false, data: o.tmp_studentList, btnStyle: "primary", value: o.studentuuid+""})	 
-        ), 
- 	    React.createElement("br", null), 	    
- 	    React.createElement("label", {htmlFor: "accounts_timeStr"}, "收支日期:"), 
- 	    React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_time, showTimePicker: false, onChange: this.handleChange}), 
- 	       React.createElement("label", {htmlFor: "title"}, "内容:"), 
- 	      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"}), 
- 	      React.createElement("br", null), 	
- 	       React.createElement("label", {htmlFor: "num"}, "金额:"), 
- 	      React.createElement("input", {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: ""}), 
- 	    React.createElement("label", {htmlFor: "description"}, "备注:"), 
-	      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"}), 
-	      React.createElement("br", null), 
-	      React.createElement("button", {type: "button", onClick: ajax_accounts_saveAndAdd, className: "am-btn am-btn-primary"}, "保存继续"), 
- 	      React.createElement("button", {type: "button", onClick: ajax_accounts_save, className: "am-btn am-btn-primary"}, "保存返回")
- 	     )
- 	     )
- 	   )	   
- 	   )
- );
-}
-});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
 //——————————————————————————班级互动<绘制>——————————————————————————
 /* 
  * <班级互动>绘制舞台
@@ -938,223 +761,9 @@ return (
 
 
 
-//——————————————————————————学生列表<绘制>——————————————————————————  
-/*
- * 学生列表服务器请求后绘制处理方法；
- * @</select>下拉多选框;
- * @handleChange_stutent_Selected:学校查询；
- * @handleChange_class_Selected::班级查询；
- * @btn_query_click:名字查找；
- * */
-var Query_stutent_list = React.createClass({displayName: "Query_stutent_list",
-	group_uuid:null,
-	class_uuid:null,
-	handleChange_stutent_Selected: function(val) {
-		  if(val=="0"){
-			  this.group_uuid="";
-		  }else{
-			  this.group_uuid=val;
-		  };
-		  this.class_uuid="";
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-	  }, 
-	  handleChange_class_Selected: function(val) {
-		  if(val=="1"){
-			  this.class_uuid="";
-		  }else{
-			  this.class_uuid=val;
-		  };
-		  ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		  }, 
-		btn_query_click:function(){
-			 ajax_student_query(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-		},
-render: function() {
-	this.props.group_list.unshift({value:"0",label:"所有"});
-	this.props.class_list.unshift({value:"1",label:"所有"});
-	if(this.props.group_uuid==""){			
-		this.props.group_uuid="0";
-	};
-	if(this.props.class_uuid==""){			
-		this.props.class_uuid="1";
-	};
-    return (
-    React.createElement("div", null, 
-	  React.createElement("hr", null), 	  
-	  React.createElement("div", {className: "am-form-group"}, 
-		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-        React.createElement("div", {className: "am-cf"}, 
-	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
-	  ), 
-	  
-	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
-	  	React.createElement("div", {className: "am-u-sm-6"}, 
-	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
-	  	), 
-	  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
-	   )
-	  )
-	  
-	  
-	  ), 	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-            React.createElement("th", null, "姓名"), 
-            React.createElement("th", null, "昵称"), 
-            React.createElement("th", null, "性别"), 
-            React.createElement("th", null, "生日"), 
-            React.createElement("th", null, "身份证")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Query_EventRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-});
-    
-/*  	
- * 学生列表在表单上绘制详细内容;
- * @点击后直接调用学生详情方法
- * 调用ajax_class_students_look_info
- * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
- * */
-var Query_EventRow = React.createClass({displayName: "Query_EventRow", 
-	btn_students_list_click:function(uuid,nmae){
-		ajax_class_students_look_info(uuid,nmae)
-	},
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-
-	    return (
-	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.uuid,event.name)}, event.name)), 
-	        React.createElement("td", null, event.nickname), 
-	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-	        React.createElement("td", null, event.birthday), 
-	        React.createElement("td", null, event.idcard)
-	      ) 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
-
-
-
-//——————————————————————————评价老师<绘制>——————————————————————————  
-/*
- * 评价老师服务器请求后绘制处理方法；
- * @</select>下拉多选框;
- * @handleChange_stutent_Selected:学校查询；
- * @btn_query_click:名字查找；
- * */
-var Query_teachingjudge_list = React.createClass({displayName: "Query_teachingjudge_list",
-  handleChange_group_Selected: function(val) {
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var type=this.props.type;
-	  ajax_teachingjudge_query(begDateStr,endDateStr,val,teacher_name,type);
-	  }, 
-  handleChange_type_Selected: function(val) {
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var groupuuid=this.props.group_uuid;
-		  ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,val);
-    },
-  btn_teachingjudge_click:function(){
-	  var begDateStr=$('#begDateStr').val();
-	  var endDateStr=$('#endDateStr').val();
-	  var teacher_name=$('#sutdent_name').val();
-	  var groupuuid=this.props.group_uuid;
-	  var type=this.props.type;
-
- ajax_teachingjudge_query(begDateStr,endDateStr,groupuuid,teacher_name,type); 
-   },
-  handleChange: function(event) {
-		 var o=$('#editEchartForm').serializeJson();
-		   this.setState(o);
-	  },
-render: function() { 
-    return (
-    React.createElement("div", null, 
-	  React.createElement("hr", null), 	  
-	  React.createElement("div", {className: "am-form-group"}, 
-		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-        React.createElement("div", {className: "am-cf"}, 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "type", onChange: this.handleChange_type_Selected, btnWidth: "200", data: this.props.teachingjudge_typelist, btnStyle: "primary", value: this.props.type})
-	  ), 
-
-	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
-	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
-	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
-			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
-			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
-			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-primary"}, "查询")	  				
-	  	)
-   )
-	  )
-	
-	  
-	  ), 	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-            React.createElement("th", null, "老师姓名"), 
-            React.createElement("th", null, "满意度"), 
-            React.createElement("th", null, "评价详情"), 
-            React.createElement("th", null, "评价人"), 
-            React.createElement("th", null, "评价时间")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Query_teachingjudge_EventRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
-    );
-  }
-});
-    
-/*  	
- * 评价老师在表单上绘制详细内容;
- * @点击后直接调用学生详情方法
- * 调用ajax_class_students_look_info
- * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
- * */
-var Query_teachingjudge_EventRow = React.createClass({displayName: "Query_teachingjudge_EventRow",
-	  render: function() {
-	    var event = this.props.event;
-	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-
-	    return (
-	      React.createElement("tr", {className: className}, 
-	        React.createElement("td", null, event.teacher_name), 
-	        React.createElement("td", null, Vo.get("KD_Teachingjudge_type_"+event.type)), 
-	        React.createElement("td", null, event.content), 
-	        React.createElement("td", null, event.create_user), 
-	        React.createElement("td", null, event.create_time)
-	      ) 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -2234,66 +1843,7 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 
 
 
-/*
-图表加载
- * */
-var ECharts_Div = React.createClass({displayName: "ECharts_Div", 
-	 getInitialState: function() {
-		    return this.props;
-		  },
-	componentDidMount:function(){
-		var tmp_fn=function(){
-			 var o=$('#editEchartForm').serializeJson();
-			 PXECharts_ajax.ajax(o);
-		 };
-		 if(typeof(require)=="undefined"){
-			 var js="http://echarts.baidu.com/build/dist/echarts.js";
-			 loadJS(js,tmp_fn)
-		 }else{
-			 tmp_fn();
-		 }
-		
-	  },
-	  handleChange: function(event) {
-			 var o=$('#editEchartForm').serializeJson();
-			   this.setState(o);
-			 PXECharts_ajax.ajax(o);
-			    //PXECharts.loading();
-		  },
-	  render: function() {
-		  var o = this.state;
-	    return (
-	    		React.createElement("div", null, 
-	    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
-	    		 React.createElement("div", null, 
-		    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-		    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
-		    		 
-		    		 ), 
-					React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-								    		 
-							 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
-		    		 ), 
-					 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-						    		 
-					 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
-		    		 ), 
-					React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-						 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
-		    		 
-		    		 )
-	    		 
-	    		 ), 
-	    		 React.createElement("div", {className: "am-cf"})
-	    		 ), 
-	    		 
-	    		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
-	    		)
 
-	    );
-	  }
-	}); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 //——————————————————————————我的收藏<绘制>—————————————————————  
@@ -3696,7 +3246,7 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
 	      	     ), 
 	            "家长", event.send_user, "的信息",     
 	           React.createElement(AMR_ButtonToolbar, null, 		            
-	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
 	        )
 	       ));})		      			      
 		 )
@@ -4180,6 +3730,516 @@ render: function() {
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
   
+  
+  
+//——————————————————————————收支记录<绘制>——————————————————————————
+  /*
+  * <收支记录>
+  * @请求数据成功后执行Accounts_EventsTable方法绘制
+  * 在kd_react
+  **/
+    var Accounts_EventsTable_byRight = React.createClass({displayName: "Accounts_EventsTable_byRight",
+    	handleClick: function(m) {
+    		if(m=="add"){
+    			btn_click_accounts_byRight(m,{groupuuid:this.props.group_uuid});
+    			 return;
+    		 }
+    	  },
+    	  handleChange_selectgroup_uuid: function(val){
+    		  ajax_accounts_listByGroup_byRight(val);
+        },
+    render: function() {
+      return (
+      React.createElement("div", null, 
+      React.createElement("div", {className: "header"}, 
+    	  React.createElement("hr", null)
+    	), 
+      React.createElement(AMR_ButtonToolbar, null, 
+    	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+    	  ), 
+    	  React.createElement("hr", null), 
+    	  React.createElement("div", {className: "am-form-group"}, 
+    	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})	  
+    	  ), 
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+              React.createElement("tr", null, 
+              React.createElement("th", null, "类型"), 
+              React.createElement("th", null, "内容"), 
+              React.createElement("th", null, "金额"), 
+              React.createElement("th", null, "收费时间"), 
+              React.createElement("th", null, "学生"), 
+              React.createElement("th", null, "班级"), 
+              React.createElement("th", null, "学校"), 
+              React.createElement("th", null, "备注"), 
+              React.createElement("th", null, "创建人"), 
+              React.createElement("th", null, "创建时间")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(Accounts_EventRow_byRight, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+    });
+  /*
+   * <收支记录>列表详细内容绘制;
+   * */    
+  var Accounts_EventRow_byRight = React.createClass({displayName: "Accounts_EventRow_byRight", 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+
+  	  return (
+  	    React.createElement("tr", {className: className}, 
+  	    React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
+  	    React.createElement("td", null, event.title), 
+  	    React.createElement("td", null, " ", event.num), 
+  	      React.createElement("td", null, G_getDateYMD(event.accounts_time)), 	     
+  	      React.createElement("td", null, " ", event.studentname), 
+  	      React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
+  	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+  	      React.createElement("td", null, " ", event.description), 
+  	      React.createElement("td", null, event.create_user), 
+  	      React.createElement("td", null, event.create_time)
+  	    ) 
+  	  );
+  	}
+  	});
+  /*
+   * <收支记录>添加按钮详情绘制;
+   * @ajax_accounts_save：保存按钮调用
+   * @ajax_accounts_save：保存继续按钮
+   * 都在kd_service；
+   * */ 
+  var Accounts_edit_byRight = React.createClass({displayName: "Accounts_edit_byRight", 
+  	 getInitialState: function() {
+  		    return this.loadData(this.props.formdata);
+  		  },
+  	  handleChange_groupuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.groupuuid=v;
+  		 	formdata.classuuid="";
+  		 	formdata.studentuuid="";		 	
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_type: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.type=v;
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_classuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.classuuid=v;
+  		 	formdata.studentuuid="";
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  handleChange_studentuuid: function(v) {
+  		 	var formdata=$('#editAccountsForm').serializeJson();
+  		 	formdata.studentuuid=v;
+  		    this.setState(this.loadData(formdata));
+  	  },
+  	  loadData:function(formdata){
+  		  formdata.tmp_classList=G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name");
+  		  if(formdata.classuuid){
+  			  formdata.tmp_studentList=	G_selected_dataModelArray_byArray(Store.getClassStudentsList(formdata.classuuid),"uuid","name")
+  		  }else{
+  			  formdata.tmp_studentList=[];
+  		  }
+  		  return formdata;
+  	  },	  
+  render: function() {
+  	  var o = this.state;	  
+  		if(!o.type){			
+  			o.type="0";
+  		};
+   return (
+   		React.createElement("div", null, 
+   		React.createElement("div", {className: "header"}, 
+   		  React.createElement("hr", null)
+   		), 
+   		React.createElement("div", {className: "am-g"}, 
+   		React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+   		React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
+   	    React.createElement("div", {className: "am-form-group"}, 
+   		React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.handleChange_groupuuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid+""})	 			          
+  	    ), 
+   		React.createElement("label", {htmlFor: "type"}, "收支类型:"), 
+   		React.createElement("div", {className: "am-form-group"}, 
+    		React.createElement(AMUIReact.Selected, {name: "type", onChange: this.handleChange_type, btnWidth: "200", multiple: false, data: this.props.type_list, btnStyle: "primary", value: o.type+""}), 	 
+    	    React.createElement("br", null), 
+    		React.createElement(AMUIReact.Selected, {name: "classuuid", placeholder: "班级选择", onChange: this.handleChange_classuuid, btnWidth: "200", multiple: false, data: o.tmp_classList, btnStyle: "primary", value: o.classuuid+""}), 	 
+    	    React.createElement("br", null), 
+    		React.createElement(AMUIReact.Selected, {name: "studentuuid", placeholder: "学生选择", onChange: this.handleChange_studentuuid, btnWidth: "200", multiple: false, data: o.tmp_studentList, btnStyle: "primary", value: o.studentuuid+""})	 
+          ), 
+   	    React.createElement("br", null), 	    
+   	    React.createElement("label", {htmlFor: "accounts_timeStr"}, "收支日期:"), 
+   	    React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_time, showTimePicker: false, onChange: this.handleChange}), 
+   	       React.createElement("label", {htmlFor: "title"}, "内容:"), 
+   	      React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"}), 
+   	      React.createElement("br", null), 	
+   	       React.createElement("label", {htmlFor: "num"}, "金额:"), 
+   	      React.createElement("input", {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: ""}), 
+   	    React.createElement("label", {htmlFor: "description"}, "备注:"), 
+  	      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"}), 
+  	      React.createElement("br", null), 
+  	      React.createElement("button", {type: "button", onClick: ajax_accounts_saveAndAdd_byRight, className: "am-btn am-btn-primary"}, "保存继续"), 
+   	      React.createElement("button", {type: "button", onClick: ajax_accounts_save_byRight, className: "am-btn am-btn-primary"}, "保存返回")
+   	     )
+   	     )
+   	   )	   
+   	   )
+   );
+  }
+  });
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+  
+//——————————————————————————学生列表<绘制>——————————————————————————  
+  /*
+   * 学生列表服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @handleChange_class_Selected::班级查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_stutent_list_byRight = React.createClass({displayName: "Query_stutent_list_byRight",
+  	group_uuid:null,
+  	class_uuid:null,
+  	handleChange_stutent_Selected: function(val) {
+  		  if(val=="0"){
+  			  this.group_uuid="";
+  		  }else{
+  			  this.group_uuid=val;
+  		  };
+  		  this.class_uuid="";
+  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  	  }, 
+  	  handleChange_class_Selected: function(val) {
+  		  if(val=="1"){
+  			  this.class_uuid="";
+  		  }else{
+  			  this.class_uuid=val;
+  		  };
+  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  		  }, 
+  		btn_query_click:function(){
+  			 ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  		},
+  render: function() {
+  	this.props.group_list.unshift({value:"0",label:"所有"});
+  	this.props.class_list.unshift({value:"1",label:"所有"});
+  	if(this.props.group_uuid==""){			
+  		this.props.group_uuid="0";
+  	};
+  	if(this.props.class_uuid==""){			
+  		this.props.class_uuid="1";
+  	};
+      return (
+      React.createElement("div", null, 
+  	  React.createElement("hr", null), 	  
+  	  React.createElement("div", {className: "am-form-group"}, 
+  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+          React.createElement("div", {className: "am-cf"}, 
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+  	  ), 
+  	  
+  	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
+  	  	React.createElement("div", {className: "am-u-sm-6"}, 
+  	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
+  	  	), 
+  	  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")	  
+  	   )
+  	  )
+  	  
+  	  
+  	  ), 	  
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+              React.createElement("th", null, "姓名"), 
+              React.createElement("th", null, "昵称"), 
+              React.createElement("th", null, "性别"), 
+              React.createElement("th", null, "生日"), 
+              React.createElement("th", null, "身份证")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(Query_EventRow_byRight, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+  });
+      
+  /*  	
+   * 学生列表在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var Query_EventRow_byRight = React.createClass({displayName: "Query_EventRow_byRight", 
+  	btn_students_list_click:function(uuid,nmae){
+  		ajax_class_students_look_info_byRight(uuid,nmae)
+  	},
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      React.createElement("tr", {className: className}, 
+  	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.uuid,event.name)}, event.name)), 
+  	        React.createElement("td", null, event.nickname), 
+  	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+  	        React.createElement("td", null, event.birthday), 
+  	        React.createElement("td", null, event.idcard)
+  	      ) 
+  	    );
+  	  }
+  	}); 
+
+
+
+
+  /*学生列表中查看学生信息
+   * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
+   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
+   * 
+   * */
+  var Class_student_look_info_byRight =React.createClass({displayName: "Class_student_look_info_byRight",
+  	 getInitialState: function() {
+  		    return this.props.formdata;
+  		  },
+  	 handleChange: function(event) {
+  		    this.setState($('#editClassStudentForm').serializeJson());
+  	  },
+  	  componentDidMount:function(){
+  		  var imgGuid=this.state.headimg;
+  		 if(imgGuid){
+  			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+  			 G_img_down404("#img_head_image");
+  		 }
+
+  	  },
+  		render: function() {
+  	     var o =this.state;
+  		 return (
+  		 		React.createElement("div", null, 
+  			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
+  			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
+  				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+  				  React.createElement("br", null), 
+  			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
+  			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
+  			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
+  			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+  			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
+  			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
+  			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
+  			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
+  			      React.createElement(AMUIReact.ListItem, null, "爸爸电话:", o.ba_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
+  			      React.createElement(AMUIReact.ListItem, null, "爷爷电话:", o.ye_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "奶奶电话:", o.nai_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "外公电话:", o.waigong_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "外婆电话:", o.waipo_tel), 
+  			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
+  			      React.createElement(AMUIReact.ListItem, null, 
+  			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
+  			      )			      
+  			      
+  			      )
+  		 	     ) 
+  		     );
+  	        }
+  		 });
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  /*
+  图表加载
+   * */
+  var ECharts_Div_byRight = React.createClass({displayName: "ECharts_Div_byRight", 
+  	 getInitialState: function() {
+  		    return this.props;
+  		  },
+  	componentDidMount:function(){
+  		var tmp_fn=function(){
+  			 var o=$('#editEchartForm').serializeJson();
+		 PXECharts_ajax.ajax(o);
+	 };
+	 if(typeof(require)=="undefined"){
+		 var js="http://echarts.baidu.com/build/dist/echarts.js";
+		 loadJS(js,tmp_fn)
+	 }else{
+		 tmp_fn();
+	 }
+	
+  },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		    //PXECharts.loading();
+	  },
+  render: function() {
+	  var o = this.state;
+    return (
+    		React.createElement("div", null, 
+    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
+    		 React.createElement("div", null, 
+	    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
+	    		 
+	    		 ), 
+				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+							    		 
+						 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+	    		 ), 
+				 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+					    		 
+				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
+	    		 ), 
+				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+					 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+	    		 
+	    		 )
+    		 
+    		 ), 
+    		 React.createElement("div", {className: "am-cf"})
+    		 ), 
+    		 
+    		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
+  	    		)
+
+  	    );
+  	  }
+  	}); 
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+
+  
+  
+  
+//——————————————————————————评价老师<绘制>——————————————————————————  
+  /*
+   * 评价老师服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_teachingjudge_list_byRight = React.createClass({displayName: "Query_teachingjudge_list_byRight",
+    handleChange_group_Selected: function(val) {
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var type=this.props.type;
+  	  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,val,teacher_name,type);
+  	  }, 
+    handleChange_type_Selected: function(val) {
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var groupuuid=this.props.group_uuid;
+  		  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,val);
+      },
+    btn_teachingjudge_click:function(){
+  	  var begDateStr=$('#begDateStr').val();
+  	  var endDateStr=$('#endDateStr').val();
+  	  var teacher_name=$('#sutdent_name').val();
+  	  var groupuuid=this.props.group_uuid;
+  	  var type=this.props.type;
+
+   ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type); 
+     },
+    handleChange: function(event) {
+  		 var o=$('#editEchartForm').serializeJson();
+  		   this.setState(o);
+  	  },
+  render: function() { 
+      return (
+      React.createElement("div", null, 
+  	  React.createElement("hr", null), 	  
+  	  React.createElement("div", {className: "am-form-group"}, 
+  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+          React.createElement("div", {className: "am-cf"}, 
+  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "type", onChange: this.handleChange_type_Selected, btnWidth: "200", data: this.props.teachingjudge_typelist, btnStyle: "primary", value: this.props.type})
+  	  ), 
+
+  	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
+  	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
+  	  		React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
+  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
+  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
+  			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-primary"}, "查询")	  				
+  	  	)
+     )
+  	  )
+  	
+  	  
+  	  ), 	  
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+              React.createElement("th", null, "老师姓名"), 
+              React.createElement("th", null, "满意度"), 
+              React.createElement("th", null, "评价详情"), 
+              React.createElement("th", null, "评价人"), 
+              React.createElement("th", null, "评价时间")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(Query_teachingjudge_EventRow_byRight, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+  });
+      
+  /*  	
+   * 评价老师在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var Query_teachingjudge_EventRow_byRight = React.createClass({displayName: "Query_teachingjudge_EventRow_byRight",
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      React.createElement("tr", {className: className}, 
+  	        React.createElement("td", null, event.teacher_name), 
+  	        React.createElement("td", null, Vo.get("KD_Teachingjudge_type_"+event.type)), 
+  	        React.createElement("td", null, event.content), 
+  	        React.createElement("td", null, event.create_user), 
+  	        React.createElement("td", null, event.create_time)
+  	      ) 
+  	    );
+  	  }
+  	}); 
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+
   
   
   
