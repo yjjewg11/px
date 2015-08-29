@@ -226,7 +226,7 @@ public class GroupService extends AbstractServcice {
 			
 		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
 		if (group != null) {
-			group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
+			group.setImg(PxStringUtil.imgUrlToUuid(groupRegJsonform.getImg()));
 			group.setAddress(groupRegJsonform.getAddress());
 			group.setDescription(groupRegJsonform.getDescription());
 			group.setLink_tel(groupRegJsonform.getLink_tel());
@@ -268,7 +268,8 @@ public class GroupService extends AbstractServcice {
 	 * @return
 	 */
 	public Group get(String uuid){
-		return (Group)this.nSimpleHibernateDao.getObjectById(Group.class, uuid);
+		Group group= (Group)this.nSimpleHibernateDao.getObjectById(Group.class, uuid);
+		 return warpVo(group);
 	}
 
 	

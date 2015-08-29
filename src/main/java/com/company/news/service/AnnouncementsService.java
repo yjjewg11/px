@@ -12,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.MyUbbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Announcements;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
+import com.company.news.entity.ClassNews;
 import com.company.news.entity.User;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.query.PageQueryResult;
@@ -184,18 +187,49 @@ public class AnnouncementsService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List query(String type, String groupuuid) {
+	public PageQueryResult listByRight(String type, String groupuuid, PaginationData pData) {
 		if (StringUtils.isBlank(groupuuid))
 			return null;
 
-		String hql = "from Announcements4Q where    groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		String hql = "from Announcements4Q where  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
-
-		hql += " order by create_time desc";
-		return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		warpVoList(pageQueryResult.getData(),null);
+		return pageQueryResult;
 	}
+	@Autowired
+	private CountService countService;
 
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private Announcements4Q warpVo(Announcements4Q o,String cur_user_uuid){
+		try {
+			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setCount(countService.get(o.getUuid(), o.getType()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<Announcements4Q> warpVoList(List<Announcements4Q> list,String cur_user_uuid){
+		for(Announcements4Q o:list){
+			warpVo(o,cur_user_uuid);
+		}
+		return list;
+	}
 	/**
 	 * 查询指定班级的通知列表
 	 * 

@@ -2273,6 +2273,17 @@ function react_ajax_favorites_show(type,reluuid){
   * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
   * */
 function ajax_announce_listByGroup_byRight(groupuuid){
+	
+	
+	React.render(React.createElement(Announcements_EventsTable_byRight, {
+		groupuuid:groupuuid,
+		pageNo:1,
+		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name"),
+		events: [],
+		type:announce_types,
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/list.json";
 	$.ajax({
