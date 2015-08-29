@@ -160,7 +160,7 @@ function login_affter_init(){
 //————————————园长信箱<权限>——————————		
 	t_menu={
         "link": "##",
-        "fn":menu_queryLeaderMsgByParents_message_fn,
+        "fn":menu_queryLeaderMsgByParents_message_fn_byRight,
         "title": "园长信箱"
       };
 	if(G_user_hasRight("KD_Leader_Msg_m")){
@@ -168,7 +168,7 @@ function login_affter_init(){
 	}
 	t_menu= {
             "link": "##",
-            "fn":menu_class_list_fn,
+            "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
 		if(G_user_hasRight("AD_class_m")){
@@ -424,15 +424,6 @@ function menu_queryMyTimely_fn() {
 
 
 
-
-/*
- * (标头)班级管理 edit
- * @跳转kd_service发服务器请求
- * @edit老师编辑状态进入可以编辑模式;
- * */
-function menu_class_list_fn() {
-	ajax_class_listByGroup(Store.getCurGroupByRight("KD_class_m").uuid);
-};
 /*
  * (标头)收支管理
  * @跳转kd_service发服务器请求
@@ -548,7 +539,7 @@ function menu_class_students_fn() {
 	}else{
 		classuuid=classList[0].uuid;
 	}
-	react_ajax_class_students_manage(classuuid,"show");
+	react_ajax_class_students_manage(classuuid);
 };
 /*
  * （首页）老师通讯录；
@@ -696,9 +687,18 @@ function menu_teachingplan_list_fn_byRight(){
  * (标头)<园长信箱>
  * @跳转kd_service发服务器请求
  * */
-function menu_queryLeaderMsgByParents_message_fn() {
-	ajax_queryLeaderMsgByParents_message();
+function menu_queryLeaderMsgByParents_message_fn_byRight() {
+	ajax_queryLeaderMsgByParents_message_byRight();
 };
 
 
+
+/*
+ * (标头)班级管理 edit
+ * @跳转kd_service发服务器请求
+ * @edit老师编辑状态进入可以编辑模式;
+ * */
+function menu_class_list_fn_byRight() {
+	ajax_class_listByGroup_byRight(Store.getCurGroupByRight("KD_class_m").uuid);
+};
 
