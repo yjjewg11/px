@@ -415,43 +415,29 @@ var Announcements_class_Div_list = React.createClass({
 		
 	},
 	selectclass_uuid_val:null,
-	handleClick: function(m) {
+	handleClick: function(m,num) {
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 hd_type=2;
-			 ajax_classnews_list_div(hd_type);
+			 console.log("num1",num);
+			 ajax_classnews_list_div(num); 	
 		 }
-//		if(m=="edit"){			
-//			 var uuids=null;
-//			 $($("input[name='table_checkbox']")).each(function(){
-//				
-//				　if(this.checked){
-//					 if(uuids==null)uuids=this.value;
-//					 else
-//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-//				　}
-//				});
-//			  if(!uuids){
-//				  alert("请勾选复选框！");
-//				  return;
-//			  }
-//			  if(!uuids&&uuids.indexOf(",")>-1){
-//					alert("只能选择一个进行编辑！");
-//					return;
-//				}
-//			  btn_click_classnews(m,{uuid:uuids});
-//		 }
 	  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	var  fn;
+	if(this.type==1){
+	fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",2)} round>他人互动</AMUIReact.Button>
+	}else{
+	fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",1)} round>我的互动</AMUIReact.Button>
+	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
-		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth")} round>他人互动</AMUIReact.Button>
+		    {fn}
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
@@ -470,6 +456,7 @@ render: function() {
   );
 }
 });
+
 /*
 * <班级互动>;
 * @Classnews_EventRow:绘制列表详情;
@@ -2895,43 +2882,29 @@ var Announcements_class_Div_list_byRight = React.createClass({
 		
 	},
 	selectclass_uuid_val:null,
-	handleClick: function(m) {
+	handleClick: function(m,num) {
 		if(m=="add"){
 			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 hd_type_byRight=2;
-			 ajax_classnews_list_div_byRight(hd_type_byRight);
+			 console.log("num",num);
+			 ajax_classnews_list_div_byRight(num); 		
 		 }
-//		if(m=="edit"){			
-//			 var uuids=null;
-//			 $($("input[name='table_checkbox']")).each(function(){
-//				
-//				　if(this.checked){
-//					 if(uuids==null)uuids=this.value;
-//					 else
-//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-//				　}
-//				});
-//			  if(!uuids){
-//				  alert("请勾选复选框！");
-//				  return;
-//			  }
-//			  if(!uuids&&uuids.indexOf(",")>-1){
-//					alert("只能选择一个进行编辑！");
-//					return;
-//				}
-//			  btn_click_classnews(m,{uuid:uuids});
-//		 }
 	  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	var  fn;
+	if(this.type==1){
+		fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",2)} round>他人互动</AMUIReact.Button>
+	}else{
+		fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",1)} round>我的互动</AMUIReact.Button>
+	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
-		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth")} round>他人互动</AMUIReact.Button>
+		    {fn}
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
