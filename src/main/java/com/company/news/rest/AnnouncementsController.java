@@ -244,8 +244,12 @@ public class AnnouncementsController extends AbstractRESTController {
 				return "";
 			}
 			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
-				responseMessage.setMessage("数据已被禁止浏览!");
-				return "";
+				//判断是否有权限.有权限的人可以浏览.禁用的.
+				if(!RightUtils.hasRight(a.getGroupuuid(),RightConstants.KD_announce_m, request)){
+					
+					responseMessage.setMessage("数据已被禁止浏览!");
+					return "";
+				}
 			}
 			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));

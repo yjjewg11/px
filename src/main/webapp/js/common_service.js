@@ -787,32 +787,11 @@ function common_check_disable(type,uuid){
 		url : url,
 		data:{type:type,uuid:uuid},
 		dataType : "json",
-		async: false,
+		async: true,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				 G_msg_pop("屏蔽成功");
-			} else {
-				alert(data.ResMsg.message);
-			}
-		}
-	});
-}
-/*/check/disable.json?type=99&uuid=1
- * 举报公共组件方法
- * */
-function common_check_illegal(type,uuid){
-	var url = hostUrl + "rest/check/illegal.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		data:{type:type,uuid:uuid},
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				 G_msg_pop("举报成功");
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -824,14 +803,14 @@ function common_check_illegal(type,uuid){
  * 举报公用服务器请求         /check/illegal.json?type=99&uuid=1
 
  * */
-function common_illegal(type,uuid){
-	var url = hostUrl + "rest/check/illegal.json?";
+function common_check_illegal(type,uuid){
+	var url = hostUrl + "rest/check/illegal.json";
 	$.ajax({
-		type : "GET",
+		type : "POST",
 		url : url,
 		data:{type:type,uuid:uuid},
 		dataType : "json",
-		async: false,
+		async: true,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {

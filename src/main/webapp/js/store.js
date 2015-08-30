@@ -2,6 +2,8 @@
  * Store.getCurGroup();//获取当前组织
  * 
  * Store.getGroup();//获取当前组织列表
+ *  Store.getGroupNoGroup_wjd();
+	 * 获取幼儿园列表,排除云代理学校.
  * Store.getAllGroup();//获取当前组织列表
 *Store.getGroupNameByUuid(uuid);//
  * Store.getUserinfo();//获取当前用户
@@ -289,6 +291,20 @@ var Store={
 		 }
 		 
 		 return tmpList[0];
+	},
+	/**
+	 * Store.getGroupNoGroup_wjd();
+	 * 获取幼儿园列表,排除云代理学校.
+	 * @returns {Array}
+	 */
+	getGroupNoGroup_wjd:function(){
+			var list =this.getGroup();
+			var nlist=[];
+			for(var i=0;i<list.length;i++){
+				if(list[i].uuid!='group_wjd')
+					nlist.push(list[i]);
+			}
+			return nlist;
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

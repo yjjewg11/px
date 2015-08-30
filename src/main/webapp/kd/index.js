@@ -532,7 +532,12 @@ function menu_class_students_fn() {
  * */
 function menu_Teacher_tel_fn() {
 	Queue.push(menu_Teacher_tel_fn,"老师通讯录");
-	ajax_Teacher_listByGroup(Store.getCurGroup().uuid);
+	var list=Store.getGroupNoGroup_wjd();
+	if(!list||list.length==0){
+		G_msg_pop("没有加入学校,没得数据.")
+		return;
+	}
+	ajax_Teacher_listByGroup(list.uuid);
 };
 
 /*

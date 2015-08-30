@@ -513,7 +513,7 @@ var Classnews_show = React.createClass({
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
-			    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,99,o.uuid)}>举报</a>
+			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -1869,7 +1869,7 @@ return (
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-		    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,3,o.uuid)}>举报</a>
+		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
 		    	</div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -1959,6 +1959,11 @@ var Class_students_show= React.createClass({
 	  handleClick:function(groupuuid){
 			 btn_click_class_list(groupuuid);
 	  },
+	  showTeachingplanClick:function(classuuid){
+		  G_myCurClassuuid=classuuid;
+		  menu_teachingplan_dayShow_fn();
+	  },
+	  
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -1966,7 +1971,7 @@ var Class_students_show= React.createClass({
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
-	  		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
+	  		    <AMR_Button amStyle="primary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
 	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />  
 	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,o.groupuuid)} round>添加班级</AMR_Button>
 	  		    </AMR_ButtonToolbar>
@@ -1975,7 +1980,7 @@ var Class_students_show= React.createClass({
 			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
 			  </AMR_Grid>
 		  </AMR_Panel>
-		  <AMR_Gallery data={this.props.students}  sm={3} md={4} lg={6} />
+		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />
 	    </div>
 	  );
 	}
@@ -2664,7 +2669,7 @@ var Announcements_EventRow_byRight = React.createClass({
 	  return (
 	    <tr className={className} >
 	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
-	      <th>{Vo.get("announce_status_"+event.type)}</th>
+	      <th>{Vo.get("announce_status_"+event.status)}</th>
 	      <td>{event.count}</td>
 	      <td>{event.create_time}</td>
 	      <td>{event.create_user}</td>
@@ -2764,7 +2769,6 @@ return (
 	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
 	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
 	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
-	     <AMR_Button amStyle="danger" onClick={common_check_illegal.bind(this,o.type,o.uuid)} round>举报</AMR_Button>
 	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
 	     </AMR_ButtonToolbar>
 	     
@@ -2772,6 +2776,7 @@ return (
 	    	<footer className="am-comment-footer">
 	    	<div className="am-comment-actions">
 	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+	    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
 	    	</div>
 	    	</footer>
 	    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -2979,7 +2984,7 @@ var Classnews_show_byRight = React.createClass({
 			    	<div className="am-comment-actions">
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
-			    	<a href="javascript:void(0);" onClick={common_illegal.bind(this,99,o.uuid)}>举报</a>
+			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>

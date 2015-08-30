@@ -40,11 +40,11 @@ input[type="button"]{
           transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
 .G_div_msg_pop{
-position:absolute; 
+position:fixed; ; 
 height:60px; 
 width:200px; 
 margin:-100px 0px 0px -100px; 
-top: 80%; 
+top: 35%; 
 left: 50%; 
 text-align: center; 
 padding: 0px; 
@@ -122,6 +122,9 @@ z-index: 9999;
 
 /*点赞*/
 .px-icon-hasdianzan  {
+color: red;
+}
+.px-icon-hasdo {
 color: red;
 }
 /*字体按钮放大*/
