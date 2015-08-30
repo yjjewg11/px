@@ -462,7 +462,7 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
-
+	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
 	var myclasslist=Store.getMyClassList();
 	if(!myclasslist||myclasslist.length==0){
 		G_msg_pop("请先创建班级!");
