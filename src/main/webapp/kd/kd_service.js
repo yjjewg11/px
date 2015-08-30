@@ -579,7 +579,7 @@ function react_ajax_class_edit_get(formdata){
 	formdata.headTeacher_name=userinfo.name;
 	React.render(React.createElement(Class_edit,{
 		formdata:formdata,
-		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
+		group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
 /*
