@@ -117,9 +117,16 @@ public class UserInfoFilter implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			  logger.info("client IP:"+UserInfoFilter.getIpAddr((HttpServletRequest) request)+","+endTime + " count time(ms)="
-	                    + httpServletRequest.getMethod() +"|"+httpServletRequest.getRequestURL()+ "?"
-	                    + httpServletRequest.getQueryString());
+			String msg="client IP:"+UserInfoFilter.getIpAddr((HttpServletRequest) request)+","+endTime + " count time(ms)="
+                    + httpServletRequest.getMethod() +"|"+httpServletRequest.getRequestURL()+ "?"
+                    + httpServletRequest.getQueryString();
+			if(endTime>10000){
+				logger.error(msg);
+			}else if(endTime>3000){
+				logger.warn(msg);
+			}else{
+				logger.info(msg);
+			}
 
 			
 		}
