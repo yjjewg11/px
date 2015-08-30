@@ -654,7 +654,6 @@ var hd_type="";
 function ajax_classnews_list_div(type){
 	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	  hd_type=type;
-	  console.log("type",type);
 	React.render(React.createElement(Announcements_class_Div_list,{
 		type:hd_type
 		}), document.getElementById('div_body'));  	
@@ -672,7 +671,6 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type) {
 	g_classnews_pageNo_point=pageNo;
 	var classnews_class_list=Store.getMyClassList();
 	$.AMUI.progress.start();
-	console.log("type",type);
 	  	if(type==1){
 			url =hostUrl + "rest/classnews/getClassNewsByMy.json";
 	  	}else{
@@ -1919,10 +1917,12 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * 基本框 等
    * @type：Type：1自己相关的互动 Type:2 所有人的互动;
    * */
+  var hd_type_byRight="";
   function ajax_classnews_list_div_byRight(type){
   	  Queue.push (function(){ajax_classnews_list_div_byRight(type);},"班级互动") ;
-  	React.render(React.createElement(Announcements_class_Div_list_byRight,{
-  		type:type
+  	  hd_type_byRight=type;
+  	  React.render(React.createElement(Announcements_class_Div_list_byRight,{
+  		type:hd_type_byRight
   		}), document.getElementById('div_body'));  	
   };
   /*
@@ -1932,7 +1932,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * */
   var g_classnews_pageNo_point=1;
   function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type) {
-	  console.log("type",type);
   	var re_data=null;
   	var url;
   	if(!pageNo)pageNo=1;
