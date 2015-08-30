@@ -174,7 +174,10 @@ var G_week={
 		   return new Date(now.getTime()+86400000*days); 
 	},
 	getDateStr:function(now,days){
-		   //var now=new Date();   
+		if(typeof(now)=='string'){
+				now= now.replace(/-/ig,'/'); 
+				now= new Date(now); 
+			}
 		   now=new Date(now.getTime()+86400000*days); 
 		   var yyyy=now.getFullYear(),mm=(now.getMonth()+1).toString(),dd=now.getDate().toString();   
 		   if(mm.length==1){mm='0'+mm;} if(dd.length==1){dd='0'+dd;}
@@ -192,15 +195,16 @@ var G_week={
 
 function    G_textToHTML(str)  
 {  
-      var    s    =    "";  
-      if    (!str)    return    "";  
+      var    s    =    "<p>";  
+      if    (!str)    return    "<p></p>";  
       s    =    str.replace(/&/g,    "&gt;");  
       s    =    s.replace(/ </g,        "&lt;");  
       s    =    s.replace(/>/g,        "&gt;");  
       s    =    s.replace(/    /g,        "&nbsp;");  
       s    =    s.replace(/\'/g,      "'");  
       s    =    s.replace(/\"/g,      "&quot;");  
-      s    =    s.replace(/\n/g,      " <br>");  
+      s    =    s.replace(/\n/g,      " <br>");
+      s    =   s+ "</p>"; 
       return    s;  
 }  
 

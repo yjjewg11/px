@@ -96,8 +96,7 @@ render: function() {
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
  		  React.createElement("div", {className: "am-g"}, 
- 		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"}), 
- 		 React.createElement("h1", null, "问界互动家园")
+ 		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"})
  		  )
  		), 
  		React.createElement("div", {className: "am-g"}, 
@@ -1015,6 +1014,332 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 );
 }
 }); 
+//——————————————————————————（首页->课程表）<绘制>——————————————————————————  
+/*
+ * 
+ * 课程表1周显示
+ * <Teachingplan_showByMy  classuuid={classuuid} classlist={classlist} />
+ */
+var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7Day", 
+	getInitialState: function() {
+		
+		var obj= {
+		    	classuuid:this.props.classuuid,
+		    	classlist:this.props.classlist,
+		    	pageNo:0,
+		    	list: this.props.list
+		    };
+		obj=this.ajax_list(obj);
+	    return obj;
+	   
+	  },
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  var obj= {
+				  classuuid:nextProps.classuuid,
+				  classlist:nextProps.classlist,
+			    	pageNo:nextProps.pageNo,
+			    	type:nextProps.type,
+			    	list: nextProps.list
+			    };
+				
+			obj=this.ajax_list(obj);
+		  this.setState(obj);
+		},
+	 ajax_list:function(obj){
+		 var now=new Date();
+		  	now=G_week.getDate(now,obj.pageNo*7);
+		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
+		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
+			//记录老师选择的班级.
+			G_myCurClassuuid=obj.classuuid;
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/teachingplan/list.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+		//	data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+			data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+			dataType : "json",
+			async: false,//必须同步执行
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					obj.list=data.list;
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			}
+		});
+		return obj;
+		
+	},
+	pageClick: function(m) {
+		 var obj=this.state;
+		 if(m=="pre"){
+			 obj.pageNo=obj.pageNo-1;
+			 this.setState(this.ajax_list(obj));
+			 return;
+		 }else if(m=="next"){
+			 obj.pageNo=obj.pageNo+1;
+			 this.setState(this.ajax_list(obj));
+			 return;
+		 }
+	},
+
+	handleChange_selectclass_uuid: function(val) {
+		 var obj=this.state;
+		 obj.classuuid=val;
+		 this.setState(this.ajax_list(obj));
+    },
+	componentDidMount: function() {
+//		if(!this.props.formdata){
+//			  $("#div_detail").html("今日没有发布教学计划");
+//		  }	    
+	  },
+	render: function() {
+	  var o = this.state;
+	  var now=new Date();
+	  	now=G_week.getDate(now,o.pageNo*7);
+	  return (
+		React.createElement("div", null, 
+		
+		React.createElement("div", {className: "header"}, 
+		  React.createElement("div", {className: "am-g"}, 
+		  
+		  React.createElement(Grid, null, 
+		    React.createElement(Col, {sm: 3}, 
+		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上周")
+		    ), 
+		    React.createElement(Col, {sm: 6}, 
+		    React.createElement("h1", null, React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "group_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid}))
+		    
+		    ), 
+		    React.createElement(Col, {sm: 3}, 
+		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下周")	
+		    )
+		  )
+		  ), 
+		  React.createElement("hr", null)
+		), 
+		React.createElement("div", {className: "am-g", id: "div_detail"}, 
+		
+		React.createElement(G_Teachingplan_7day, {classuuid: this.state.classuuid, startDate: now, list: this.state.list})
+		
+		)
+	   
+	   )
+);
+}
+}); 
+
+
+/**
+ * 全局模版-没有内容时显示
+ * <G_Teachingplan_7day classuuid={this.state.classuuid} startDate={startDate} list={list} />
+ */
+var G_Teachingplan_7day= React.createClass({displayName: "G_Teachingplan_7day", 
+	getInitialState: function() {
+		var obj= {
+				classuuid:this.props.classuuid,
+				startDate:this.props.startDate,
+		    	size:7,
+		    	list: this.props.list
+		    };
+	    return obj;
+	   
+	  },
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  var obj= {
+					startDate:nextProps.startDate,
+					classuuid:nextProps.classuuid,
+			    	size:7,
+			    	list: nextProps.list
+			    };
+		  this.setState(obj);
+		},
+		/**
+		 * 根据日期生成课程表,如何返回数据中没有,则创建空的.
+		 */
+		getOneDayData:function(d1,list){
+			for(var i=0;i<list.length;i++){
+				var tmp=list[i];
+				if(tmp.plandate.indexOf(d1)>-1){
+					return tmp;
+				}
+			}
+			return {classuuid:this.state.classuuid,plandate:d1,morning:"",afternoon:"",uuid:null};
+		},
+		/**
+		 * 获取7天的课程表数据
+		 */
+		getListByStartDate:function(d1,size,list){ 
+			var ar=[];
+			for(var i=0;i<size;i++){
+				var tmp=G_week.getDateStr(d1,i);
+				ar.push(this.getOneDayData(tmp,list));
+			}
+			return ar;
+		},
+	  render: function() {
+		 var ar=this.getListByStartDate(this.state.startDate,this.state.size,this.state.list);
+	    return (
+	    		React.createElement("div", null, 
+	    		 ar.map(function(event) {
+					  return(							  										  
+						React.createElement(G_Teachingplan_1day, {data: event})
+					  )})
+	    		 )
+	    );
+	  }
+	  }); 
+var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day", 
+	getInitialState: function() {
+		var obj= {
+				 isEdit:false,
+				data:this.props.data
+		    };
+	    return obj;
+	  },
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  var obj= {
+				  isEdit:false,
+				  data:nextProps.data
+			    };
+		  this.setState(obj);
+		},
+	   edit:function(o){
+		   var obj= {
+				   	isEdit:true,
+					  data:o
+				    };
+		   this.setState(obj);
+	   },
+	   save_callback:function(data){
+		  	G_msg_pop(data.ResMsg.message);
+		   var obj= {
+				   isEdit:false,
+					  data:data.data
+				    };
+		   this.setState(obj);
+     
+       },
+	  render: function() {
+		  var o=this.state.data;
+		  if(this.state.isEdit){
+			  return (React.createElement(Teachingplan_edit_inner, {data: o, callback: this.save_callback.bind(this)}));
+		  }
+		  var dianzan=(React.createElement("div", null));
+		  if(o.uuid){
+			  dianzan=(
+					  React.createElement("div", null, 
+					  React.createElement("footer", {className: "am-comment-footer"}, 
+				    	React.createElement("div", {className: "am-comment-actions"}, 
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}))
+				    	)
+				    	), 
+				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 7, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+				    	React.createElement("ul", {className: "am-comments-list"}, 
+						  React.createElement(Classnews_reply_list, {uuid: o.uuid, type: 7, btn_reply: "btn_reply_"+o.uuid})
+				    	)
+				  ));
+		  }
+			return (
+	    		React.createElement("div", {className: "am-container"}, 
+		    		React.createElement("div", {className: "am-g am-success am-article-title"}, 
+		    		  React.createElement("div", {className: "am-u-sm-4"}, G_week.getWeekStr(o.plandate)), 
+		    		  React.createElement("div", {className: "am-u-sm-8"}, o.plandate.split(" ")[0], 
+		    		  React.createElement(AMR_Button, {amStyle: "primary", onClick:  this.edit.bind( this ,o), round: true}, o.uuid?"修改":"创建")
+		    		  )
+		    		), 
+		    		React.createElement("div", {className: "am-g"}, 
+		    		  React.createElement("div", {className: "am-u-sm-4"}, "上午"), 
+		    		  React.createElement("div", {className: "am-u-sm-8"}, 
+		    		  	o.morning
+		    		  )
+		    		), 
+		    		React.createElement("div", {className: "am-g"}, 
+		    		  React.createElement("div", {className: "am-u-sm-4"}, "下午"), 
+		    		  React.createElement("div", {className: "am-u-sm-8"}, 
+		    		  	o.afternoon
+		    		  )
+		    		), 
+		    		dianzan
+	    		)
+	    		
+	    );
+	  }
+	  }); 
+
+
+/*
+ *<课程表>班级编辑-内嵌在显示1周页面
+ *<Teachingplan_edit_inner data={data} callback={callback} />
+ * */
+var Teachingplan_edit_inner = React.createClass({displayName: "Teachingplan_edit_inner", 
+	formid:null,
+	 getInitialState: function() {
+		    return this.props.data
+	},
+		//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  this.setState(nextProps.data);
+		},
+	 handleChange: function(event) {
+		    this.setState($('#'+this.formid).serializeJson());
+	  },
+	  ajax_teachingplan_save:function(){
+		  var callback=this.props.callback;
+		    var opt={
+		            formName: this.formid,
+		            url:hostUrl + "rest/teachingplan/save.json",
+		            cbFN:callback
+		            };
+		G_ajax_abs_save(opt);
+	  },
+render: function() {
+	  var o = this.state;
+	  o.plandate=o.plandate.split(" ")[0];
+	  this.formid="editTeachingplanForm"+o.plandate;
+return (
+		
+		 React.createElement("form", {id: this.formid, method: "post", className: "am-form"}, 
+		 React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+			React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+		React.createElement("div", {className: "am-container"}, 
+		React.createElement("div", {className: "am-g am-success am-article-title"}, 
+		  React.createElement("div", {className: "am-u-sm-4"}, G_week.getWeekStr(o.plandate)), 
+		  React.createElement("div", {className: "am-u-sm-8"}, 
+		  o.plandate, 
+		  React.createElement("input", {type: "hidden", name: "plandateStr", value: o.plandate})
+		 
+		  )
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-sm-4"}, "上午"), 
+		  React.createElement("div", {className: "am-u-sm-8"}, 
+		  React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange.bind(this)})
+			
+		  )
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-sm-4"}, "下午"), 
+		  React.createElement("div", {className: "am-u-sm-8"}, 
+		  React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange.bind(this)})
+		  )
+		), 
+		 React.createElement(AMR_Button, {amStyle: "primary", onClick:  this.ajax_teachingplan_save.bind( this), round: true}, "保存")
+	)
+	
+	 )
+	
+);
+}
+});
 /*
  *<课程表>班级详情添加与编辑内容绘制;
  * @add:添加班级课程；
@@ -2325,6 +2650,7 @@ React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uu
    React.createElement("thead", null, 
     React.createElement("tr", null, 
       React.createElement("th", null, "标题"), 
+      React.createElement("th", null, "状态"), 
       React.createElement("th", null, "浏览次数"), 
       React.createElement("th", null, "创建时间"), 
       React.createElement("th", null, "创建人")
@@ -2351,6 +2677,7 @@ var Announcements_EventRow_byRight = React.createClass({displayName: "Announceme
 	  return (
 	    React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
+	      React.createElement("th", null, Vo.get("announce_status_"+event.type)), 
 	      React.createElement("td", null, event.count), 
 	      React.createElement("td", null, event.create_time), 
 	      React.createElement("td", null, event.create_user)
@@ -2432,11 +2759,8 @@ var Announcements_show_byRight = React.createClass({displayName: "Announcements_
     }, 
 	//收藏按钮方法;
 	favorites_push: function(title,type,reluuid,url) {
-		commons_ajax_favorites_push(title,type,reluuid,url)
-	}, 
-	handleClick_approval: function(uuids) {
-	  common_approval(3,uuids);
-},
+		commons_ajax_favorites_push(title,type,reluuid,url);
+	},
 render: function() {
 	  var o = this.props.data;
 
@@ -2453,7 +2777,8 @@ return (
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
 	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏"), 
-	     React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick_approval.bind(this,o.uuid), round: true}, "禁止")
+	     React.createElement(AMR_Button, {amStyle: "danger", onClick: common_check_illegal.bind(this,o.type,o.uuid), round: true}, "举报"), 
+	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
 	     )
 	     
 	     ), 

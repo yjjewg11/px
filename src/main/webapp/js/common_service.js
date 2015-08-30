@@ -778,12 +778,12 @@ function common_teacherDailyTask_status(status){
 }
 
 /*/check/disable.json?type=99&uuid=1
- * 审批公共组件方法
+ * 禁止发布公共组件方法
  * */
-function common_approval(type,uuid){
-	var url = hostUrl + "rest/check/illegal.json?";
+function common_check_disable(type,uuid){
+	var url = hostUrl + "rest/check/disable.json";
 	$.ajax({
-		type : "GET",
+		type : "POST",
 		url : url,
 		data:{type:type,uuid:uuid},
 		dataType : "json",
@@ -791,7 +791,28 @@ function common_approval(type,uuid){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				 G_msg_pop("禁止成功");
+				 G_msg_pop("屏蔽成功");
+			} else {
+				alert(data.ResMsg.message);
+			}
+		}
+	});
+}
+/*/check/disable.json?type=99&uuid=1
+ * 举报公共组件方法
+ * */
+function common_check_illegal(type,uuid){
+	var url = hostUrl + "rest/check/illegal.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		data:{type:type,uuid:uuid},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				 G_msg_pop("举报成功");
 			} else {
 				alert(data.ResMsg.message);
 			}

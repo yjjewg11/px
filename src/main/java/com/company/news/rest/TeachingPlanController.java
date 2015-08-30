@@ -71,12 +71,12 @@ public class TeachingPlanController extends AbstractRESTController {
 			}
 			teachingPlanJsonform.setCreate_useruuid(this.getUserInfoBySession(
 					request).getUuid());
-
-			boolean flag = teachingPlanService.add(teachingPlanJsonform,
+			 Teachingplan teachingplan= teachingPlanService.add(teachingPlanJsonform,
 					responseMessage);
 
-			if (!flag)// 请求服务返回失败标示
+			if (teachingplan==null)// 请求服务返回失败标示
 				return "";
+			model.addAttribute(RestConstants.Return_G_entity, teachingplan);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,9 +84,9 @@ public class TeachingPlanController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "";
 		}
-
+	
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("新增成功");
+		responseMessage.setMessage("保存成功");
 		return "";
 	}
 

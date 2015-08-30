@@ -460,8 +460,23 @@ function menu_announce_mylist_fn() {
  * （首页）<课程表>Store.getCurGroup().uuid
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
+var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
-	var classList=Store.getChooseClass(Store.getCurGroup().uuid);
+
+	var myclasslist=Store.getMyClassList();
+	if(!myclasslist||myclasslist.length==0){
+		G_msg_pop("请先创建班级!");
+		return ;
+	}
+	if(!G_myCurClassuuid){
+		G_myCurClassuuid=myclasslist[0].uuid;
+	}
+	React.render(React.createElement(Teachingplan_show7Day, {
+			classuuid:G_myCurClassuuid,
+			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
+			}), document.getElementById('div_body'));
+	return;
+	
 	var classuuid;
 	var classname;
 	if(!classList||classList.length==0){

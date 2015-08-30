@@ -44,7 +44,7 @@ public class CheckController extends AbstractRESTController {
 			responseMessage.setMessage("参数:type 不是有效数据");
 			return "";
 		}
-		if(!StringUtils.isBlank(uuid)){
+		if(StringUtils.isBlank(uuid)){
 			responseMessage.setMessage("参数:uuid 不能为空");
 			return "";
 		}
@@ -86,7 +86,7 @@ public class CheckController extends AbstractRESTController {
 			responseMessage.setMessage("参数:type 不是有效数据");
 			return "";
 		}
-		if(!StringUtils.isBlank(uuid)){
+		if(StringUtils.isBlank(uuid)){
 			responseMessage.setMessage("参数:uuid 不能为空");
 			return "";
 		}

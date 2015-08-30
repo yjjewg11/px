@@ -142,7 +142,7 @@ public class SmsService extends AbstractServcice {
 		
 		
 		if (StringUtils.isBlank(smscode)) {
-			responseMessage.setMessage("smscode不能为空");
+			responseMessage.setMessage("请填写短信验证");
 			return false;
 		}
 
@@ -156,7 +156,7 @@ public class SmsService extends AbstractServcice {
 			smsdb = list.get(0);
 		else
 		{
-			responseMessage.setMessage("短信验证码失败，请重新发送");
+			responseMessage.setMessage("短信验证码发送失败请重发.");
 			return false;
 		}
 
@@ -174,7 +174,7 @@ public class SmsService extends AbstractServcice {
 			return true;
 		} else
 		{
-			responseMessage.setMessage("短信验证码不正确");
+			responseMessage.setMessage("短信验证码失败，请确认输入正确");
 			return false;
 		}
 	}

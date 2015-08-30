@@ -41,4 +41,6 @@ public class RightConstants {
 	static public String KD_class_m="KD_class_m";//	班级管理员权限-增傻查改
 	static public String KD_role_m="KD_role_m";//	角色管理(增改)
 	
+//	static public String KD_check_disable="KD_check_disable";//	屏蔽非法文章
+	
 }

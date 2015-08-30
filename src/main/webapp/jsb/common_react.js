@@ -8,6 +8,28 @@ var AMR_Input=AMUIReact.Input;
 var PxInput=AMUIReact.Input;
 
 
+/**
+ * 全局模版-没有内容时显示
+ */
+var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disable_div_byRight", 
+	  render: function() {
+		  if(G_user_hasRight("KD_announce_m")){
+			  return (
+					  React.createElement(AMR_Button, {amStyle: "danger", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid), round: true}, "屏蔽")
+			    );
+		  }else{
+			  return (
+			    		React.createElement("div", null)
+			    );
+		  }
+			 
+		  if(this.props.msg)msg=this.props.msg;
+	    return (
+	    		React.createElement("div", null, React.createElement("h1", null, msg))
+	    );
+	  }
+	  }); 
+
 var G_get_upload_img_Div=function(){
 	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera"})
 	if(G_CallPhoneFN.isPhoneApp()){
@@ -51,7 +73,7 @@ var G_NoData_div = React.createClass({displayName: "G_NoData_div",
 	  }
 	  }); 
 	  
-
+  
 /**
  * 角色授权用户
  * 

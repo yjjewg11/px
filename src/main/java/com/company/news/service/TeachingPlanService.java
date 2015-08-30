@@ -45,23 +45,23 @@ public class TeachingPlanService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(TeachingPlanJsonform teachingPlanJsonform,
+	public Teachingplan add(TeachingPlanJsonform teachingPlanJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(teachingPlanJsonform.getPlandateStr())) {
 			responseMessage.setMessage("plandateStr不能为空！");
-			return false;
+			return null;
 		}
 		
 		if (StringUtils.isBlank(teachingPlanJsonform.getClassuuid())) {
 			responseMessage.setMessage("classuuid不能为空！");
-			return false;
+			return null;
 		}
 
 		Date plandate = TimeUtils.string2Timestamp(null,teachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
 			responseMessage.setMessage("Plandate格式不正确");
-			return false;
+			return null;
 		}
 
 		Teachingplan teachingplan = this.getByPlandateAndClassuuid(plandate,teachingPlanJsonform.getClassuuid());
@@ -78,7 +78,7 @@ public class TeachingPlanService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(
 				teachingplan);
 
-		return true;
+		return teachingplan;
 	}
 
 	/**
