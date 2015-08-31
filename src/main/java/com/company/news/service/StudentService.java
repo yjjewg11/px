@@ -105,7 +105,7 @@ public class StudentService extends AbstractServcice {
 			//设置不能被修改的字段
 			student.setUuid(old_student.getUuid());
 //			student.setName(old_student.getName());
-//			student.setClassuuid(old_student.getClassuuid());
+			student.setClassuuid(old_student.getClassuuid());
 //			student.setGroupuuid(old_student.getGroupuuid());
 			student.setCreate_time(old_student.getCreate_time());
 
@@ -430,6 +430,7 @@ public class StudentService extends AbstractServcice {
 			return false;
 		}
 		student.setClassuuid(classuuid);
+		student.setGroupuuid(cl.getGroupuuid());
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		
 		return false;
