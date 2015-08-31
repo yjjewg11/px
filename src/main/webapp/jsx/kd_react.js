@@ -119,7 +119,7 @@ render: function() {
  	     <br/>
  	    </form>
  	    <hr/>
- 	   <p>© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1</p>
+ 	   <p>© 2015 成都问界科技有限公司</p>
  	     </div> 
  	   </div>
  	   
@@ -377,7 +377,7 @@ var Message_queryMyTimely_myList =React.createClass({
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * @btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */
-var Announcements_class_Div_list = React.createClass({ 
+var Classnews_Div_list = React.createClass({ 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
@@ -487,7 +487,6 @@ var Classnews_show = React.createClass({
 		},
 	render: function() {		  
 		  var  o = this.props.event;
-		  if(!o.dianzanList)o.dianzanList=[];
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)G_def_headImgPath;
 		  
@@ -516,9 +515,9 @@ var Classnews_show = React.createClass({
 			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
 			    	</div>
 			    	</footer>
-			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
 			    	<ul className="am-comments-list">
-					  <Classnews_reply_list uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+					  <Classnews_reply_list replyPage={o.replyPage} uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
 			    	</ul>
 			     </div>
 			</article>
@@ -537,6 +536,19 @@ var Classnews_show = React.createClass({
 * 
 * */
 var Classnews_reply_list = React.createClass({ 
+	getInitialState: function() {
+		var o={
+			replyPage:null
+		}
+		if(this.props.replyPage)return o.replyPage=this.props.replyPage;
+		return o;
+	  },
+   componentWillReceiveProps: function(nextProps) {
+		var o={
+				replyPage:commons_ajax_dianzan_getByNewsuuid(nextProps.uuid)
+			}
+	   this.setState(o);
+	},
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -547,9 +559,21 @@ var Classnews_reply_list = React.createClass({
 		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
 		this.load_more_data();
 	},
+	loadByFirst:function(list_div){
+		React.render(React.createElement(Classnews_reply_list_listshow, {
+			events: this.state.replyPage,
+			newsuuid:this.props.uuid,
+			responsive: true, bordered: true, striped :true,hover:true,striped:true
+			}), document.getElementById(list_div));
+	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		var re_data=this.state.replyPage;
+		if(!re_data){
+			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		}else{
+			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+		}
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -560,6 +584,7 @@ var Classnews_reply_list = React.createClass({
 		  this.pageNo++;
 	},
 	refreshReplyList:function(){
+		this.setState({replyPage:null});
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
 		this.load_more_data();
@@ -604,9 +629,9 @@ return (
 		  <div>
 		  {this.props.events.data.map(function(event) {
 		      return (
-		    		  <li className="am-comment">
-		    		  <span className="am-comment-author">{event.create_user+":"}</span>
-				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
+		    		  <li className="am-cf">
+		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
+				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span>
 		    		  </li>
 		    		  )
 		  })}
@@ -1235,28 +1260,39 @@ var G_Teachingplan_1day= React.createClass({
 				    	</ul>
 				  </div>);
 		  }
+		  var divCs1="am-u-sm-4 am-u-md-2 am-u-lg-1";
+		  var divCs2="am-u-sm-8 am-u-md-10 am-u-lg-11";
 			return (
-	    		<div className="am-container">
-		    		<div className="am-g am-success am-article-title">
-		    		  <div className="am-u-sm-4">{G_week.getWeekStr(o.plandate)}</div>
-		    		  <div className="am-u-sm-8">{o.plandate.split(" ")[0]}
-		    		  < AMR_Button  amStyle ="primary" onClick={ this.edit.bind( this ,o)} round >{o.uuid?"修改":"创建"}</AMR_Button >
-		    		  </div>
-		    		</div>
-		    		<div className="am-g">
-		    		  <div className="am-u-sm-4">上午</div>
-		    		  <div className="am-u-sm-8" >  
-		    		  	{o.morning}
-		    		  </div>
-		    		</div>
-		    		<div className="am-g">
-		    		  <div className="am-u-sm-4">下午</div>
-		    		  <div className="am-u-sm-8">
-		    		  	{o.afternoon}
-		    		  </div>
-		    		</div>
-		    		{dianzan}
-	    		</div>
+					
+					<div className="am-panel am-panel-secondary">
+					  <div className="am-panel-hd">
+					  <h3 className="am-panel-title am-g">
+						  <div className={divCs1}>{G_week.getWeekStr(o.plandate)}</div>
+			    		  <div className={divCs2}>{o.plandate.split(" ")[0]}
+			    		   < AMR_Button className="am-margin-left" amStyle ={o.uuid?"default":"warning"} onClick={ this.edit.bind( this ,o)} round >{o.uuid?"修改":"创建"}</AMR_Button >
+			    		  </div>
+					  </h3>
+					  </div>
+					  <div className="am-panel-bd">
+							  <div className="am-g">
+				    		  <div className={divCs1}>上午</div>
+				    		  <div className={divCs2} >  
+				    		  	{o.morning}
+				    		  </div>
+				    		</div>
+				    		<div className="am-g">
+				    		  <div className={divCs1}>下午</div>
+				    		  <div className={divCs2}>
+				    		  	{o.afternoon}
+				    		  </div>
+				    		</div>
+				    		<div className="am-g">
+				    		{dianzan}
+				    		</div>
+					  </div>
+					 
+					</div>
+	    		
 	    		
 	    );
 	  }
@@ -2934,7 +2970,7 @@ return (
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * @btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */
-var Announcements_class_Div_list_byRight = React.createClass({ 
+var Classnews_Div_list_byRight = React.createClass({ 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
@@ -3159,9 +3195,9 @@ return (
 		  <div>
 		  {this.props.events.data.map(function(event) {
 		      return (
-		    		  <li className="am-comment">
-		    		  <span className="am-comment-author">{event.create_user+":"}</span>
-				        <span dangerouslySetInnerHTML={{__html:event.content}}></span>
+		    		  <li className="am-cf">
+		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
+				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span>
 		    		  </li>
 		    		  )
 		  })}

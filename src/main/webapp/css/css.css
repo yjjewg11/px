@@ -149,3 +149,7 @@ color: red;
 .ECharts{
 	height:400px;
 }
+
+.px_border{
+	  border: 1px solid #CCC;
+}

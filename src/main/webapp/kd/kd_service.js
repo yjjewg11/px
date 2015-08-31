@@ -669,7 +669,7 @@ var hd_type="";
 function ajax_classnews_list_div(type){
 	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	  hd_type=type;
-	React.render(React.createElement(Announcements_class_Div_list,{
+	React.render(React.createElement(Classnews_Div_list,{
 		type:hd_type
 		}), document.getElementById('div_body'));  	
 };
@@ -1941,7 +1941,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   function ajax_classnews_list_div_byRight(type){
   	  Queue.push (function(){ajax_classnews_list_div_byRight(type);},"班级互动") ;
   	  hd_type_byRight=type;
-  	  React.render(React.createElement(Announcements_class_Div_list_byRight,{
+  	  React.render(React.createElement(Classnews_Div_list_byRight,{
   		type:hd_type_byRight
   		}), document.getElementById('div_body'));  	
   };
