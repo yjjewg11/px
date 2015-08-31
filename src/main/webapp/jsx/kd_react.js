@@ -2156,96 +2156,105 @@ var Class_student_look_info =React.createClass({
   	},
   render: function() {
   	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
-   		<div>
-   		<div className="header">
-   		  <hr />
-   		</div>
-   		<div className="am-g">
-   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-   		  <form id="editClassStudentForm" method="post" className="am-form">
-   		<input type="hidden" name="uuid"  value={o.uuid}/>
-   		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
-   		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
-   		      <label htmlFor="name">姓名:</label>
-   		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
-   		       <br/>
-   		       <label htmlFor="nickname">昵称:</label>
-   		       <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
-  		       <br/>
-  		       <label htmlFor="nickname">头像:</label>
-  	 		   <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  	 		   <br/>
-  	 		   <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
-  			   <br/> 			      
-  		      <AMUIReact.FormGroup>
-  		      <label>单选：</label>
-  		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-  		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-  		      </AMUIReact.FormGroup>  		      
-  		      <label htmlFor="birthday">生日:</label>
-  			  <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
-  			  <br/> 			 
-  			  <label htmlFor="birthday">身份证:</label>
-  			  <input  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
-  		      <br/> 		      		      
-  		      <fieldset>
-  		      <legend>爸爸妈妈信息</legend>  		      
-  		      <label htmlFor="nickname">妈妈姓名:</label>
-   		      <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">妈妈电话:</label>
-  		      <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
+		   <form id="editClassStudentForm" method="post" className="am-form">
+			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+		   <div className="am-form-group">
+		   <hr />
+ 	        <label htmlFor="nickname">头像:</label>
+  		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
   		      <br/>
-  		      <label htmlfor="nickname">妈妈的工作:</label>
-   		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
-   		      <br/>		      		      		     		       		      
-   		      <label htmlfor="nickname">爸爸姓名:</label>
-   		      <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">爸爸电话:</label>
-  		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/> 		          
-   		      <label htmlfor="nickname">爸爸的工作:</label>
-   		      <input type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
-   		      <br/>		     
-   		      <label htmlfor="nickname">家庭住址:</label>
-  		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
-  		      <br/>		
-  		      </fieldset>
-  		      <fieldset>
-  		      <legend>其他信息</legend>
-  		      <label htmlFor="nickname">奶奶电话:</label>
-   		      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">爷爷电话:</label>
-  		      <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  		      <label htmlFor="nickname">外婆电话:</label>
-   		      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">外公电话:</label>
-  		      <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  		      <label htmlFor="nickname">其他电话:</label>
-  		      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  	 		   <AMUIReact.Input type="textarea"
-  		 	 	      label="说明"
-  		 	 	    	 name="note"
-  		 	 	      labelClassName="am-u-sm-2"
-  		 	 	      placeholder="备注"
-  		 	 	      wrapperClassName="am-u-sm-10"
-  		 	 	      amSize="lg" />
-  	 		  <br/>
-  	 		 </fieldset>
-   		      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>
-   		    </form>
-
-   	     </div> 
-   	   </div>
-   	   
-   	   </div>
+  		       <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+ 		      <br/> 		      
+ 	         <AMUIReact.FormGroup>
+ 	        <label>单选：</label>
+ 	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+ 	      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+ 	     </AMUIReact.FormGroup>     		    
+ 	       <label className={one_classDiv}>姓名</label>
+   		     <div className={two_classDiv}>
+		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange}/>
+		        </div>
+		       <label className={one_classDiv}>昵称</label>
+	   		  <div className={two_classDiv}>  
+   		     <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
+   		    </div>
+   		     <label className={one_classDiv}>生日</label>
+  		      <div className={two_classDiv}>
+  		       <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday} onChange={this.handleChange}/>
+		        </div>
+		       <label className={one_classDiv}>身份证</label>
+			  <div className={two_classDiv}>  
+			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
+		    </div>  		     
+		    <fieldset>
+		    <legend>爸爸妈妈信息</legend> 
+	        <label className={one_classDiv}>妈妈姓名</label>
+	         <div className={two_classDiv}>
+	          <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange}/>
+	           </div>
+	          <label className={one_classDiv}>妈妈电话</label>
+		     <div className={two_classDiv}>  
+		    <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
+	       </div>
+	        <label className={one_classDiv}>妈妈工作</label>
+	         <div className={two_classDiv}>
+		      <PxInput type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange}/>
+	           </div>
+	          <label className={one_classDiv}>爸爸姓名</label>
+		     <div className={two_classDiv}>  
+		    <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange}/>
+	       </div>
+	        <label className={one_classDiv}>爸爸电话</label>
+	         <div className={two_classDiv}>
+		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+	           </div>
+	          <label className={one_classDiv}>爸爸工作</label>
+		     <div className={two_classDiv}>  
+		    <PxInput type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
+	       </div>
+	        <label className={one_classDiv}>家庭住址</label>
+	         <div className={two_classDiv}>
+		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+	           </div>		    
+		      </fieldset>  		    		      
+		      <fieldset>
+		      <legend>其他信息</legend>
+		        <label className={one_classDiv}>奶奶电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		          <label className={one_classDiv}>爷爷电话</label>
+			     <div className={two_classDiv}>  
+			    <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
+		       </div>
+		        <label className={one_classDiv}>外婆电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		          <label className={one_classDiv}>外公电话</label>
+			     <div className={two_classDiv}>  
+			    <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
+		       </div>
+		        <label className={one_classDiv}>其他电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		 		   <AMUIReact.Input type="textarea"
+			 	 	      label="说明"
+			 	 	    	 name="note"
+			 	 	      labelClassName="am-u-sm-2"
+			 	 	      placeholder="备注"
+			 	 	      wrapperClassName="am-u-sm-10"
+			 	 	      amSize="lg" />
+		 		      <br/>
+		 		      </fieldset>
+				      <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">提交</button>		      
+   		           </div>  
+   		          </form> 		  
    );
   }
   });
@@ -2284,6 +2293,7 @@ var Teacher_info_tel = React.createClass({
           <tr>
             <th>姓名</th>
             <th>电话</th>
+            <th>职位</th>
             <th>邮箱</th>
             <th>性别</th>
             <th>状态</th>
@@ -2314,6 +2324,7 @@ var Teacherinfo_EventRow = React.createClass({
 	      <tr className={className} >
 	        <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
 	        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
+	        <td>{event.office}</td>
 	        <td>{event.email}</td>
 	        <td>{event.sex=="0"?"男":"女"}</td>
 	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
@@ -2321,10 +2332,6 @@ var Teacherinfo_EventRow = React.createClass({
 	    );
 	  }
 	}); 
-
-
-
-
 
 
 //——————————————————————————我的收藏<绘制>—————————————————————  
@@ -2956,51 +2963,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————班级互动<绘制>——————————————————————————
 /* 
  * <班级互动>绘制舞台
@@ -3381,42 +3343,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————食谱管理<绘制>—————————————————————  
 /*
  *(食谱管理)按钮及表单框绘制
@@ -3742,23 +3668,6 @@ return (
 }
 });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4176,102 +4085,142 @@ render: function() {
   	},
   render: function() {
   	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
-   		<div>
-   		<div className="header">
-   		  <hr />
-   		</div>
-   		<div className="am-g">
-   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-   		  <form id="editClassStudentForm" method="post" className="am-form">
-   		<input type="hidden" name="uuid"  value={o.uuid}/>
-   		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
-   		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
-   		      <label htmlFor="name">姓名:</label>
-   		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder=""/>
-   		       <br/>
-   		       <label htmlFor="nickname">昵称:</label>
-   		       <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange} placeholder=""/>
-  		       <br/>
-  		       <label htmlFor="nickname">头像:</label>
-  	 		   <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  	 		   <br/>
-  	 		   <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
-  			   <br/>
-  			      
-  		      <AMUIReact.FormGroup>
-  		      <label>单选：</label>
-  		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-  		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-  		      </AMUIReact.FormGroup>  		      
-  		      <label htmlFor="birthday">生日:</label>
-  			  <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday}    onChange={this.handleChange}/>
-  			  <br/> 			 
-  			  <label htmlFor="birthday">身份证:</label>
-  			  <input  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
-  		      <br/> 		      		      
-  		      <fieldset>
-  		      <legend>爸爸妈妈信息</legend>  		      
-  		      <label htmlFor="nickname">妈妈姓名:</label>
-   		      <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">妈妈电话:</label>
-  		      <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange} placeholder=""/>
+		   <form id="editClassStudentForm" method="post" className="am-form">
+			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+		   <div className="am-form-group">
+		   <hr />
+ 	        <label htmlFor="nickname">头像:</label>
+  		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
   		      <br/>
-  		      <label htmlfor="nickname">妈妈的工作:</label>
-   		      <input type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange} placeholder=""/>
-   		      <br/>		      		      		     		       		      
-   		      <label htmlfor="nickname">爸爸姓名:</label>
-   		      <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">爸爸电话:</label>
-  		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/> 		          
-   		      <label htmlfor="nickname">爸爸的工作:</label>
-   		      <input type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
-   		      <br/>		     
-   		      <label htmlfor="nickname">家庭住址:</label>
-  		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
-  		      <br/>		
-  		      </fieldset>
-  		      <fieldset>
-  		      <legend>其他信息</legend>
-  		      <label htmlFor="nickname">奶奶电话:</label>
-   		      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">爷爷电话:</label>
-  		      <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  		      <label htmlFor="nickname">外婆电话:</label>
-   		      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
-   		      <br/>
-   		      <label htmlFor="nickname">外公电话:</label>
-  		      <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  		      <label htmlFor="nickname">其他电话:</label>
-  		      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
-  		      <br/>
-  	 		   <AMUIReact.Input type="textarea"
-  		 	 	      label="说明"
-  		 	 	    	 name="note"
-  		 	 	      labelClassName="am-u-sm-2"
-  		 	 	      placeholder="备注"
-  		 	 	      wrapperClassName="am-u-sm-10"
-  		 	 	      amSize="lg" />
-  	 		  <br/>
-  	 		 </fieldset>
-   		      <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">提交</button>
-   		    </form>
-
-   	     </div> 
-   	   </div>
-   	   
-   	   </div>
+  		       <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
+ 		      <br/> 		      
+ 	         <AMUIReact.FormGroup>
+ 	        <label>单选：</label>
+ 	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+ 	      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+ 	     </AMUIReact.FormGroup>     		    
+ 	       <label className={one_classDiv}>姓名</label>
+   		     <div className={two_classDiv}>
+		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange}/>
+		        </div>
+		       <label className={one_classDiv}>昵称</label>
+	   		  <div className={two_classDiv}>  
+   		     <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
+   		    </div>
+   		     <label className={one_classDiv}>生日</label>
+  		      <div className={two_classDiv}>
+  		       <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday} onChange={this.handleChange}/>
+		        </div>
+		       <label className={one_classDiv}>身份证</label>
+			  <div className={two_classDiv}>  
+			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
+		    </div>  		     
+		    <fieldset>
+		    <legend>爸爸妈妈信息</legend> 
+	        <label className={one_classDiv}>妈妈姓名</label>
+	         <div className={two_classDiv}>
+	          <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange}/>
+	           </div>
+	          <label className={one_classDiv}>妈妈电话</label>
+		     <div className={two_classDiv}>  
+		    <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
+	       </div>
+	        <label className={one_classDiv}>妈妈工作</label>
+	         <div className={two_classDiv}>
+		      <PxInput type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange}/>
+	           </div>
+	          <label className={one_classDiv}>爸爸姓名</label>
+		     <div className={two_classDiv}>  
+		    <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange}/>
+	       </div>
+	        <label className={one_classDiv}>爸爸电话</label>
+	         <div className={two_classDiv}>
+		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+	           </div>
+	          <label className={one_classDiv}>爸爸工作</label>
+		     <div className={two_classDiv}>  
+		    <PxInput type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
+	       </div>
+	        <label className={one_classDiv}>家庭住址</label>
+	         <div className={two_classDiv}>
+		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+	           </div>		    
+		      </fieldset>  		    		      
+		      <fieldset>
+		      <legend>其他信息</legend>
+		        <label className={one_classDiv}>奶奶电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		          <label className={one_classDiv}>爷爷电话</label>
+			     <div className={two_classDiv}>  
+			    <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
+		       </div>
+		        <label className={one_classDiv}>外婆电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		          <label className={one_classDiv}>外公电话</label>
+			     <div className={two_classDiv}>  
+			    <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
+		       </div>
+		        <label className={one_classDiv}>其他电话</label>
+		         <div className={two_classDiv}>
+			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
+		           </div>
+		 		   <AMUIReact.Input type="textarea"
+			 	 	      label="说明"
+			 	 	    	 name="note"
+			 	 	      labelClassName="am-u-sm-2"
+			 	 	      placeholder="备注"
+			 	 	      wrapperClassName="am-u-sm-10"
+			 	 	      amSize="lg" />
+		 		      <br/>
+		 		      </fieldset>
+				      <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">提交</button>		      
+   		           </div>  
+   		          </form> 		  
    );
   }
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-  
+	
+	 
+	  
+//	  
+//		
+//		
+//		
+//		<div>
+//		<div className="header">
+//		  <hr />
+//		</div>
+//		<div className="am-g">
+//		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+//		  <form id="editClassStudentForm" method="post" className="am-form">
+//		<input type="hidden" name="uuid"  value={o.uuid}/>
+//		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
+//		
+//		
+//		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
+//		      
+//		
+
+		      
+		      		      
+
+
+//
+//	     </div> 
+//	   </div>
+//	   
+//	   </div>  
+		  
+		 	 
   
   
 //——————————————————————————收支记录<绘制>——————————————————————————

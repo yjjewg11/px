@@ -2156,96 +2156,105 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   	},
   render: function() {
   	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
-   		React.createElement("div", null, 
-   		React.createElement("div", {className: "header"}, 
-   		  React.createElement("hr", null)
-   		), 
-   		React.createElement("div", {className: "am-g"}, 
-   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-   		  React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
-   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-   		     React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
-   		React.createElement("input", {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
-   		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-   		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: ""}), 
-   		       React.createElement("br", null), 
-   		       React.createElement("label", {htmlFor: "nickname"}, "昵称:"), 
-   		       React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange, placeholder: ""}), 
-  		       React.createElement("br", null), 
-  		       React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
-  	 		   React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-  	 		   React.createElement("br", null), 
-  	 		   React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
-  			   React.createElement("br", null), 			      
-  		      React.createElement(AMUIReact.FormGroup, null, 
-  		      React.createElement("label", null, "单选："), 
-  		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-  		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-  		      ), 		      
-  		      React.createElement("label", {htmlFor: "birthday"}, "生日:"), 
-  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange}), 
-  			  React.createElement("br", null), 			 
-  			  React.createElement("label", {htmlFor: "birthday"}, "身份证:"), 
-  			  React.createElement("input", {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 		      		      
-  		      React.createElement("fieldset", null, 
-  		      React.createElement("legend", null, "爸爸妈妈信息"), 		      
-  		      React.createElement("label", {htmlFor: "nickname"}, "妈妈姓名:"), 
-   		      React.createElement(PxInput, {icon: "user", type: "text", name: "ma_name", id: "ma_name", size: "10", maxLength: "45", value: o.ma_name, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "妈妈电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange, placeholder: ""}), 
+		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
+			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
+		   React.createElement("div", {className: "am-form-group"}, 
+		   React.createElement("hr", null), 
+ 	        React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
+  		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
   		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlfor: "nickname"}, "妈妈的工作:"), 
-   		      React.createElement("input", {type: "text", name: "ma_work", id: "ma_work", value: o.ma_work, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 		      		      		     		       		      
-   		      React.createElement("label", {htmlfor: "nickname"}, "爸爸姓名:"), 
-   		      React.createElement(PxInput, {icon: "user", type: "text", name: "ba_name", id: "ba_name", size: "10", maxLength: "45", value: o.ba_name, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "爸爸电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ba_tel", id: "ba_tel", value: o.ba_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 		          
-   		      React.createElement("label", {htmlfor: "nickname"}, "爸爸的工作:"), 
-   		      React.createElement("input", {type: "text", name: "ba_work", id: "ba_work", value: o.ba_work, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 		     
-   		      React.createElement("label", {htmlfor: "nickname"}, "家庭住址:"), 
-  		      React.createElement(PxInput, {icon: "home", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null)		
-  		      ), 
-  		      React.createElement("fieldset", null, 
-  		      React.createElement("legend", null, "其他信息"), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "奶奶电话:"), 
-   		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "nai_tel", id: "nai_tel", value: o.nai_tel, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "爷爷电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ye_tel", id: "ye_tel", value: o.ye_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "外婆电话:"), 
-   		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waipo_tel", id: "waipo_tel", value: o.waipo_tel, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "外公电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waigong_tel", id: "waigong_tel", value: o.waigong_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "其他电话:"), 
-  		      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  	 		   React.createElement(AMUIReact.Input, {type: "textarea", 
-  		 	 	      label: "说明", 
-  		 	 	    	 name: "note", 
-  		 	 	      labelClassName: "am-u-sm-2", 
-  		 	 	      placeholder: "备注", 
-  		 	 	      wrapperClassName: "am-u-sm-10", 
-  		 	 	      amSize: "lg"}), 
-  	 		  React.createElement("br", null)
-  	 		 ), 
-   		      React.createElement("button", {type: "button", onClick: btn_ajax_myclass_student_save, className: "am-btn am-btn-primary"}, "提交")
-   		    )
-
-   	     )
-   	   )
-   	   
-   	   )
+  		       React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
+ 		      React.createElement("br", null), 		      
+ 	         React.createElement(AMUIReact.FormGroup, null, 
+ 	        React.createElement("label", null, "单选："), 
+ 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+ 	     ), 		    
+ 	       React.createElement("label", {className: one_classDiv}, "姓名"), 
+   		     React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange})
+		        ), 
+		       React.createElement("label", {className: one_classDiv}, "昵称"), 
+	   		  React.createElement("div", {className: two_classDiv}, 
+   		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
+   		    ), 
+   		     React.createElement("label", {className: one_classDiv}, "生日"), 
+  		      React.createElement("div", {className: two_classDiv}, 
+  		       React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange})
+		        ), 
+		       React.createElement("label", {className: one_classDiv}, "身份证"), 
+			  React.createElement("div", {className: two_classDiv}, 
+			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
+		    ), 		     
+		    React.createElement("fieldset", null, 
+		    React.createElement("legend", null, "爸爸妈妈信息"), 
+	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 
+	         React.createElement("div", {className: two_classDiv}, 
+	          React.createElement(PxInput, {icon: "user", type: "text", name: "ma_name", id: "ma_name", size: "10", maxLength: "45", value: o.ma_name, onChange: this.handleChange})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "妈妈电话"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {icon: "mobile", type: "text", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "妈妈工作"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {type: "text", name: "ma_work", id: "ma_work", value: o.ma_work, onChange: this.handleChange})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "爸爸姓名"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {icon: "user", type: "text", name: "ba_name", id: "ba_name", size: "10", maxLength: "45", value: o.ba_name, onChange: this.handleChange})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "爸爸电话"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ba_tel", id: "ba_tel", value: o.ba_tel, onChange: this.handleChange, placeholder: ""})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "爸爸工作"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {type: "text", name: "ba_work", id: "ba_work", value: o.ba_work, onChange: this.handleChange, placeholder: ""})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "家庭住址"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "home", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: ""})
+	           )		    
+		      ), 		    		      
+		      React.createElement("fieldset", null, 
+		      React.createElement("legend", null, "其他信息"), 
+		        React.createElement("label", {className: one_classDiv}, "奶奶电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "mobile", type: "text", name: "nai_tel", id: "nai_tel", value: o.nai_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		          React.createElement("label", {className: one_classDiv}, "爷爷电话"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			    React.createElement(PxInput, {icon: "mobile", type: "text", name: "ye_tel", id: "ye_tel", value: o.ye_tel, onChange: this.handleChange, placeholder: ""})
+		       ), 
+		        React.createElement("label", {className: one_classDiv}, "外婆电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waipo_tel", id: "waipo_tel", value: o.waipo_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		          React.createElement("label", {className: one_classDiv}, "外公电话"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			    React.createElement(PxInput, {icon: "mobile", type: "text", name: "waigong_tel", id: "waigong_tel", value: o.waigong_tel, onChange: this.handleChange, placeholder: ""})
+		       ), 
+		        React.createElement("label", {className: one_classDiv}, "其他电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		 		   React.createElement(AMUIReact.Input, {type: "textarea", 
+			 	 	      label: "说明", 
+			 	 	    	 name: "note", 
+			 	 	      labelClassName: "am-u-sm-2", 
+			 	 	      placeholder: "备注", 
+			 	 	      wrapperClassName: "am-u-sm-10", 
+			 	 	      amSize: "lg"}), 
+		 		      React.createElement("br", null)
+		 		      ), 
+				      React.createElement("button", {type: "button", onClick: btn_ajax_class_student_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      
+   		           )
+   		          ) 		  
    );
   }
   });
@@ -2284,6 +2293,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
           React.createElement("tr", null, 
             React.createElement("th", null, "姓名"), 
             React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "职位"), 
             React.createElement("th", null, "邮箱"), 
             React.createElement("th", null, "性别"), 
             React.createElement("th", null, "状态")
@@ -2314,6 +2324,7 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 	      React.createElement("tr", {className: className}, 
 	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ""}, event.name)), 
 	        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
+	        React.createElement("td", null, event.office), 
 	        React.createElement("td", null, event.email), 
 	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
@@ -2321,10 +2332,6 @@ var Teacherinfo_EventRow = React.createClass({displayName: "Teacherinfo_EventRow
 	    );
 	  }
 	}); 
-
-
-
-
 
 
 //——————————————————————————我的收藏<绘制>—————————————————————  
@@ -2956,51 +2963,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————班级互动<绘制>——————————————————————————
 /* 
  * <班级互动>绘制舞台
@@ -3381,42 +3343,6 @@ return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //——————————————————————————食谱管理<绘制>—————————————————————  
 /*
  *(食谱管理)按钮及表单框绘制
@@ -3742,23 +3668,6 @@ return (
 }
 });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4176,102 +4085,142 @@ render: function() {
   	},
   render: function() {
   	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
-   		React.createElement("div", null, 
-   		React.createElement("div", {className: "header"}, 
-   		  React.createElement("hr", null)
-   		), 
-   		React.createElement("div", {className: "am-g"}, 
-   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-   		  React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
-   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-   		     React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
-   		React.createElement("input", {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
-   		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-   		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: ""}), 
-   		       React.createElement("br", null), 
-   		       React.createElement("label", {htmlFor: "nickname"}, "昵称:"), 
-   		       React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange, placeholder: ""}), 
-  		       React.createElement("br", null), 
-  		       React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
-  	 		   React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-  	 		   React.createElement("br", null), 
-  	 		   React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
-  			   React.createElement("br", null), 
-  			      
-  		      React.createElement(AMUIReact.FormGroup, null, 
-  		      React.createElement("label", null, "单选："), 
-  		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-  		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-  		      ), 		      
-  		      React.createElement("label", {htmlFor: "birthday"}, "生日:"), 
-  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange}), 
-  			  React.createElement("br", null), 			 
-  			  React.createElement("label", {htmlFor: "birthday"}, "身份证:"), 
-  			  React.createElement("input", {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 		      		      
-  		      React.createElement("fieldset", null, 
-  		      React.createElement("legend", null, "爸爸妈妈信息"), 		      
-  		      React.createElement("label", {htmlFor: "nickname"}, "妈妈姓名:"), 
-   		      React.createElement(PxInput, {icon: "user", type: "text", name: "ma_name", id: "ma_name", size: "10", maxLength: "45", value: o.ma_name, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "妈妈电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange, placeholder: ""}), 
+		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
+			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
+		   React.createElement("div", {className: "am-form-group"}, 
+		   React.createElement("hr", null), 
+ 	        React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
+  		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
   		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlfor: "nickname"}, "妈妈的工作:"), 
-   		      React.createElement("input", {type: "text", name: "ma_work", id: "ma_work", value: o.ma_work, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 		      		      		     		       		      
-   		      React.createElement("label", {htmlfor: "nickname"}, "爸爸姓名:"), 
-   		      React.createElement(PxInput, {icon: "user", type: "text", name: "ba_name", id: "ba_name", size: "10", maxLength: "45", value: o.ba_name, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "爸爸电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ba_tel", id: "ba_tel", value: o.ba_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 		          
-   		      React.createElement("label", {htmlfor: "nickname"}, "爸爸的工作:"), 
-   		      React.createElement("input", {type: "text", name: "ba_work", id: "ba_work", value: o.ba_work, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 		     
-   		      React.createElement("label", {htmlfor: "nickname"}, "家庭住址:"), 
-  		      React.createElement(PxInput, {icon: "home", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null)		
-  		      ), 
-  		      React.createElement("fieldset", null, 
-  		      React.createElement("legend", null, "其他信息"), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "奶奶电话:"), 
-   		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "nai_tel", id: "nai_tel", value: o.nai_tel, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "爷爷电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ye_tel", id: "ye_tel", value: o.ye_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "外婆电话:"), 
-   		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waipo_tel", id: "waipo_tel", value: o.waipo_tel, onChange: this.handleChange, placeholder: ""}), 
-   		      React.createElement("br", null), 
-   		      React.createElement("label", {htmlFor: "nickname"}, "外公电话:"), 
-  		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waigong_tel", id: "waigong_tel", value: o.waigong_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  		      React.createElement("label", {htmlFor: "nickname"}, "其他电话:"), 
-  		      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""}), 
-  		      React.createElement("br", null), 
-  	 		   React.createElement(AMUIReact.Input, {type: "textarea", 
-  		 	 	      label: "说明", 
-  		 	 	    	 name: "note", 
-  		 	 	      labelClassName: "am-u-sm-2", 
-  		 	 	      placeholder: "备注", 
-  		 	 	      wrapperClassName: "am-u-sm-10", 
-  		 	 	      amSize: "lg"}), 
-  	 		  React.createElement("br", null)
-  	 		 ), 
-   		      React.createElement("button", {type: "button", onClick: btn_ajax_class_student_save_byRight, className: "am-btn am-btn-primary"}, "提交")
-   		    )
-
-   	     )
-   	   )
-   	   
-   	   )
+  		       React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
+ 		      React.createElement("br", null), 		      
+ 	         React.createElement(AMUIReact.FormGroup, null, 
+ 	        React.createElement("label", null, "单选："), 
+ 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+ 	     ), 		    
+ 	       React.createElement("label", {className: one_classDiv}, "姓名"), 
+   		     React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange})
+		        ), 
+		       React.createElement("label", {className: one_classDiv}, "昵称"), 
+	   		  React.createElement("div", {className: two_classDiv}, 
+   		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
+   		    ), 
+   		     React.createElement("label", {className: one_classDiv}, "生日"), 
+  		      React.createElement("div", {className: two_classDiv}, 
+  		       React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange})
+		        ), 
+		       React.createElement("label", {className: one_classDiv}, "身份证"), 
+			  React.createElement("div", {className: two_classDiv}, 
+			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
+		    ), 		     
+		    React.createElement("fieldset", null, 
+		    React.createElement("legend", null, "爸爸妈妈信息"), 
+	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 
+	         React.createElement("div", {className: two_classDiv}, 
+	          React.createElement(PxInput, {icon: "user", type: "text", name: "ma_name", id: "ma_name", size: "10", maxLength: "45", value: o.ma_name, onChange: this.handleChange})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "妈妈电话"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {icon: "mobile", type: "text", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "妈妈工作"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {type: "text", name: "ma_work", id: "ma_work", value: o.ma_work, onChange: this.handleChange})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "爸爸姓名"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {icon: "user", type: "text", name: "ba_name", id: "ba_name", size: "10", maxLength: "45", value: o.ba_name, onChange: this.handleChange})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "爸爸电话"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "ba_tel", id: "ba_tel", value: o.ba_tel, onChange: this.handleChange, placeholder: ""})
+	           ), 
+	          React.createElement("label", {className: one_classDiv}, "爸爸工作"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {type: "text", name: "ba_work", id: "ba_work", value: o.ba_work, onChange: this.handleChange, placeholder: ""})
+	       ), 
+	        React.createElement("label", {className: one_classDiv}, "家庭住址"), 
+	         React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "home", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: ""})
+	           )		    
+		      ), 		    		      
+		      React.createElement("fieldset", null, 
+		      React.createElement("legend", null, "其他信息"), 
+		        React.createElement("label", {className: one_classDiv}, "奶奶电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "mobile", type: "text", name: "nai_tel", id: "nai_tel", value: o.nai_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		          React.createElement("label", {className: one_classDiv}, "爷爷电话"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			    React.createElement(PxInput, {icon: "mobile", type: "text", name: "ye_tel", id: "ye_tel", value: o.ye_tel, onChange: this.handleChange, placeholder: ""})
+		       ), 
+		        React.createElement("label", {className: one_classDiv}, "外婆电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "mobile", type: "text", name: "waipo_tel", id: "waipo_tel", value: o.waipo_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		          React.createElement("label", {className: one_classDiv}, "外公电话"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			    React.createElement(PxInput, {icon: "mobile", type: "text", name: "waigong_tel", id: "waigong_tel", value: o.waigong_tel, onChange: this.handleChange, placeholder: ""})
+		       ), 
+		        React.createElement("label", {className: one_classDiv}, "其他电话"), 
+		         React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""})
+		           ), 
+		 		   React.createElement(AMUIReact.Input, {type: "textarea", 
+			 	 	      label: "说明", 
+			 	 	    	 name: "note", 
+			 	 	      labelClassName: "am-u-sm-2", 
+			 	 	      placeholder: "备注", 
+			 	 	      wrapperClassName: "am-u-sm-10", 
+			 	 	      amSize: "lg"}), 
+		 		      React.createElement("br", null)
+		 		      ), 
+				      React.createElement("button", {type: "button", onClick: btn_ajax_class_student_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      
+   		           )
+   		          ) 		  
    );
   }
   });
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-  
+	
+	 
+	  
+//	  
+//		
+//		
+//		
+//		<div>
+//		<div className="header">
+//		  <hr />
+//		</div>
+//		<div className="am-g">
+//		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+//		  <form id="editClassStudentForm" method="post" className="am-form">
+//		<input type="hidden" name="uuid"  value={o.uuid}/>
+//		     <input type="hidden" name="classuuid"  value={o.classuuid}/>
+//		
+//		
+//		<input type="hidden" name="headimg" id="headimg" value={o.headimg} onChange={this.handleChange}/>
+//		      
+//		
+
+		      
+		      		      
+
+
+//
+//	     </div> 
+//	   </div>
+//	   
+//	   </div>  
+		  
+		 	 
   
   
 //——————————————————————————收支记录<绘制>——————————————————————————
