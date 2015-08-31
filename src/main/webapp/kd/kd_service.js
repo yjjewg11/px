@@ -2723,7 +2723,7 @@ G_ajax_abs_save(opt);
  
 //———————————————————————————————班级管理和(大图标)我的班级—————————————————————————     	  	  	  
  /*
-  * <班级管理>服务器请求
+  * <班级管理>服务器请求 Store.getGroupByRight("KD_class_m")
   * @请求数据成功后执行Class_EventsTable方法绘制
   * */
  function ajax_class_listByGroup_byRight(groupuuid) {
@@ -2744,7 +2744,7 @@ G_ajax_abs_save(opt);
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Class_EventsTable_byRight, {
  					group_uuid:groupuuid,
- 					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
+ 					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
  					events: data.list,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
