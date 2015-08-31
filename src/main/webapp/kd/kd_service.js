@@ -633,6 +633,7 @@ function ajax_class_students_look_info(uuid,title){
  * @ajax_teachingplan_dayShow 直接调用课程表的方法；
  * */
 function class_students_manage_onClick(classuuid,name){
+	console.log("1231231",111111111111111);
 	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:name});
 };
 
