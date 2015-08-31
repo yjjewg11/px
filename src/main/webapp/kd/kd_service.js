@@ -2761,16 +2761,15 @@ G_ajax_abs_save(opt);
  		dataType : "json",
  		success : function(data) {
  			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
+ 			if (data.ResMsg.status == "success"){
  				React.render(React.createElement(Class_EventsTable_byRight, {
  					group_uuid:groupuuid,
  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
  					events: data.list,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById('div_body'));
- 				
- 			} else {
+ 					}), document.getElementById('div_body'));				
+ 			}else{
  				alert(data.ResMsg.message);
  				G_resMsg_filter(data.ResMsg);
  			}
