@@ -30,6 +30,37 @@ public class StudentController extends AbstractRESTController {
 	@Autowired
 	private StudentService studentService;
 
+	
+
+	/**
+	 * 学生改变班级
+	 * student/changeClass.json?classuuid=&studentuuid
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/changeClass", method = RequestMethod.POST)
+	public String changeClass(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String classuuid =request.getParameter("classuuid");
+		String studentuuid=request.getParameter("studentuuid");
+		boolean f=false;
+		try {
+			f = studentService.updateChangeClass(studentuuid,classuuid,responseMessage);
+			if(!f)return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 	/**
 	 * 添加用户
 	 * 
