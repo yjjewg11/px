@@ -10,6 +10,7 @@ var PxInput=AMUIReact.Input;
 
 /**
  * 全局模版-没有内容时显示
+ * <G_check_disable_div_byRight />
  */
 var G_check_disable_div_byRight = React.createClass({ 
 	  render: function() {
@@ -37,7 +38,7 @@ var G_get_upload_img_Div=function(){
 	}
 	return G_upload_img_Div;
 }
-
+//<G_help_popo title={title} msg={msg} />
 var G_help_popo = React.createClass({ 
 	  render: function() {
 		  var title=G_tip.help;

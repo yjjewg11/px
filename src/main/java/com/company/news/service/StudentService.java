@@ -408,4 +408,31 @@ public class StudentService extends AbstractServcice {
 		return list;
 	}
 
+	/**
+	 * 更换学生班级.
+	 * @param studentuuid
+	 * @param classuuid
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean updateChangeClass(String studentuuid, String classuuid,ResponseMessage responseMessage) {
+		Student student = (Student) this.nSimpleHibernateDao.getObjectById(
+				Student.class, studentuuid);
+		if(student==null){
+			responseMessage.setMessage("异常数据,该学生不存在!");
+			return false;
+		}
+		PClass cl = (PClass) this.nSimpleHibernateDao.getObjectById(
+				PClass.class, classuuid);
+		
+		if(cl==null){
+			responseMessage.setMessage("异常数据,转到班级不存在!");
+			return false;
+		}
+		student.setClassuuid(classuuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
+		
+		return false;
+	}
+
 }

@@ -127,18 +127,16 @@ public class ClassService extends AbstractServcice {
 			}
 			isChangeGroupuuid=true;
 		}
+		boolean flag=false;
 		//如果 是更新,只有班主任和管理员可以进行修改,
-			boolean b1=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
-			if(!b1){
-				
-				if(!b1&&RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_class_m,request)){
-					responseMessage.setMessage("不能修改,不是班主任或者管理员");
-					return false;
-				}
-				responseMessage.setMessage("不能修改,不是班主任或者管理员");
-				return false;
-			}
-
+		flag=RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_class_m,request);
+		if(!flag){
+			flag=this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
+		}
+		if(!flag){
+			responseMessage.setMessage("不能修改,不是班主任或者管理员");
+			return false;
+		}
 			obj.setName(classRegJsonform.getName());
 			obj.setGroupuuid(classRegJsonform.getGroupuuid());
 			this.nSimpleHibernateDao.save(obj);
