@@ -513,7 +513,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("div", {className: "am-comment-actions"}, 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_illegal.bind(this,99,o.uuid)}, "举报")
+			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -1869,7 +1869,7 @@ return (
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_illegal.bind(this,3,o.uuid)}, "举报")
+		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
 		    	)
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -1959,6 +1959,11 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  handleClick:function(groupuuid){
 			 btn_click_class_list(groupuuid);
 	  },
+	  showTeachingplanClick:function(classuuid){
+		  G_myCurClassuuid=classuuid;
+		  menu_teachingplan_dayShow_fn();
+	  },
+	  
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -1966,7 +1971,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  React.createElement(AMR_Panel, null, 
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
 		  	  React.createElement(AMR_ButtonToolbar, null, 
-	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick.bind(this,o.uuid,o.name), round: true}, "查看课程"), 
+	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name), round: true}, "查看课程"), 
 	  		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid}), 
 	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,o.groupuuid), round: true}, "添加班级")
 	  		    ), 
@@ -1975,7 +1980,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)
 			  )
 		  ), 
-		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 3, md: 4, lg: 6})
+		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
 	    )
 	  );
 	}
@@ -2664,7 +2669,7 @@ var Announcements_EventRow_byRight = React.createClass({displayName: "Announceme
 	  return (
 	    React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
-	      React.createElement("th", null, Vo.get("announce_status_"+event.type)), 
+	      React.createElement("th", null, Vo.get("announce_status_"+event.status)), 
 	      React.createElement("td", null, event.count), 
 	      React.createElement("td", null, event.create_time), 
 	      React.createElement("td", null, event.create_user)
@@ -2764,14 +2769,14 @@ return (
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
 	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏"), 
-	     React.createElement(AMR_Button, {amStyle: "danger", onClick: common_check_illegal.bind(this,o.type,o.uuid), round: true}, "举报"), 
 	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
 	     )
 	     
 	     ), 
 	    	React.createElement("footer", {className: "am-comment-footer"}, 
 	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+	    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
 	    	)
 	    	), 
 	    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -2979,7 +2984,7 @@ var Classnews_show_byRight = React.createClass({displayName: "Classnews_show_byR
 			    	React.createElement("div", {className: "am-comment-actions"}, 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_illegal.bind(this,99,o.uuid)}, "举报")
+			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 

@@ -1000,7 +1000,12 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 		num=0;
 		g_cookbookPlan_listToShow_point=0;
 	}
-	if(!groupuuid)groupuuid=Store.getCurGroup().uuid;
+	var list=Store.getGroupNoGroup_wjd();
+	if(!list||list.length==0){
+		G_msg_pop("没有加入学校,没得数据.")
+		return;
+	}
+	if(!groupuuid)groupuuid=list[0].uuid;
 	
 	var begDateStr=G_week.getDateStr(now,num);
 	var endDateStr=begDateStr;
@@ -1011,7 +1016,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 		type : "GET",
 		url : url,
 		data : {groupuuid:groupuuid,begDateStr:begDateStr,endDateStr:endDateStr},
-		cooklist:G_selected_dataModelArray_byArray(Store.getGroup (),"uuid" ,"brand_name"),
+		cooklist:G_selected_dataModelArray_byArray(list,"uuid" ,"brand_name"),
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -1020,7 +1025,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 				var formdata=data.list[0];
 				React.render(React.createElement(CookbookPlan_showByOneDay,{
 					groupuuid:groupuuid,
-					ch_group:G_selected_dataModelArray_byArray(Store.getGroup (),"uuid" ,"brand_name"),
+					ch_group:G_selected_dataModelArray_byArray(list,"uuid" ,"brand_name"),
 					ch_day:begDateStr,
 					formdata:formdata
 					}), document.getElementById('div_body'));
@@ -1403,7 +1408,7 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+					group_list:G_selected_dataModelArray_byArray(Store.getGroupNoGroup_wjd(),"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					
