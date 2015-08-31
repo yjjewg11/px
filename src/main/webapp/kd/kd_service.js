@@ -541,7 +541,6 @@ function react_ajax_class_students_manage(uuid){
 			alert(url+",error:"+textStatus);
 		}
 	});
-//根据判断 是我的班级还是班级管理-show我的班级模块
 	Queue.push(function(){react_ajax_class_students_manage(uuid);},"我的班级");
 	if(students){
 		for(var i=0;i<students.length;i++){
@@ -643,6 +642,86 @@ function class_students_manage_onClick(classuuid,name){
 
 	  
 	
+
+
+/*  
+ * （标头）<班级管理>界面添加学生按钮事件处理
+ * @服务器请求:POST rest/student/{uuid}.json;
+ * @ajax_teachingplan_dayShow 直接调用课程表的方法；
+ * */
+function class_students_myclass_onClick(classuuid){
+	ajax_myclass_students_edit({classuuid:classuuid,sex:0});
+};
+
+/*
+* （标头）<班级管理>模板中添加学生按钮服务器请求
+* */
+function ajax_myclass_students_edit(formdata){
+	Queue.push(function(){ajax_myclass_students_edit(formdata);},"新增学生");
+	React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
+	return;
+};
+
+/*
+ * （标头）<班级管理>添加与编辑学生 提交按钮 服务器请求
+ * */
+function btn_ajax_class_student_save(){
+	var objectForm = $('#editClassStudentForm').serializeJson();
+    var opt={
+            formName: "editClassStudentForm",
+            url:hostUrl + "rest/student/save.json",
+            cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
+            	Store.setClassStudentsList(data.uuid,null);
+            	react_ajax_class_students_manage(objectForm.classuuid);
+            }
+            };
+G_ajax_abs_save(opt);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //——————————————————————————(大图标)班级互动——————————————————————————   
 /*
@@ -2726,7 +2805,7 @@ G_ajax_abs_save(opt);
  
  
  
-//———————————————————————————————班级管理和(大图标)我的班级—————————————————————————     	  	  	  
+//———————————————————————————————班级管理—————————————————————————     	  	  	  
  /*
   * <班级管理>服务器请求 Store.getGroupByRight("KD_class_m")
   * @请求数据成功后执行Class_EventsTable方法绘制
@@ -2870,7 +2949,7 @@ G_ajax_abs_save(opt);
  };
 
 /*
- * （主页）班级管理服务器请求；（公共服务请求方法 班级管理也在调用）
+ * （主页）班级管理服务器请求;
  * @Class_students_show:绘制班级方法；
  * @绘制3级界面学生列表页面；
  * @3级界面绘制完成后绑定事件点击ajax_class_students_look_info
