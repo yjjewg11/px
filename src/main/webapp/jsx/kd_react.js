@@ -4059,6 +4059,13 @@ render: function() {
  * 添加学生与编辑绘制
  * */
   var Class_student_edit_byRight = React.createClass({ 
+	  	
+	  btn_ajax_classStudent_admin_byRight: function(groupuuid,studentuuid) {
+		  var callbackFN=function(classuuid){
+			  ajax_student_changeClass(classuuid,studentuuid);
+		  }
+		w_ch_class.open(callbackFN,groupuuid);
+	  	  },
   	 getInitialState: function() {
   		    return this.props.formdata;
   		  },
@@ -4066,9 +4073,7 @@ render: function() {
   		    this.setState($('#editClassStudentForm').serializeJson());
   	  },
   	  componentDidMount:function(){
-  		  var imgGuid=this.state.headimg;
-  		  
-  		  
+  		  var imgGuid=this.state.headimg; 		    		  
   		 if(imgGuid){
   			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
   			 G_img_down404("#img_head_image");
@@ -4086,6 +4091,10 @@ render: function() {
   	},
   render: function() {
   	  var o = this.state;
+	  var calss_btn_className="G_Edit_show am-btn am-btn-primary";
+	  if(!o.uuid){
+		  calss_btn_className="G_Edit_hide";
+	  }
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
@@ -4173,8 +4182,7 @@ render: function() {
 		         <div className={two_classDiv}>
 			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
 		           </div>
-		           <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">改变班级</button>
-//w_ch_class.open(callbackFN,groupuuid)
+		           <button type="button" className={calss_btn_className}  onClick={this.btn_ajax_classStudent_admin_byRight.bind(this,o.groupuuid,o.uuid)} >改变班级</button>
 		           <AMUIReact.Input type="textarea"
 			 	 	      label="说明"
 			 	 	    	 name="note"
