@@ -1971,10 +1971,10 @@ var Class_students_show= React.createClass({
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
-	  		    <AMR_Button amStyle="primary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
-	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,o.groupuuid)} round>添加班级</AMR_Button>
-	  		    <AMR_Button amStyle="primary" onClick={class_students_myclass_onClick.bind(this,o.uuid)} round>添加学生</AMR_Button>
-	  		    <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
+		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
+	  		    <AMR_Button amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
+	  		    <AMR_Button amStyle="warning" onClick={class_students_myclass_onClick.bind(this,o.uuid)} round>添加学生</AMR_Button>
+	  		    <AMR_Button  onClick={this.handleClick.bind(this,o.groupuuid)} round>添加班级</AMR_Button>
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>

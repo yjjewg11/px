@@ -315,7 +315,7 @@ var Userinfo_EventsTable = React.createClass({
 					alert("只能选择一个！");
 					return;
 				};
-				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList());
+				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList(1));
 				  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);

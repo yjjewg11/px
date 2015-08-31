@@ -10,6 +10,7 @@ var PxInput=AMUIReact.Input;
 
 /**
  * 全局模版-没有内容时显示
+ * <G_check_disable_div_byRight />
  */
 var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disable_div_byRight", 
 	  render: function() {
@@ -37,7 +38,7 @@ var G_get_upload_img_Div=function(){
 	}
 	return G_upload_img_Div;
 }
-
+//<G_help_popo title={title} msg={msg} />
 var G_help_popo = React.createClass({displayName: "G_help_popo", 
 	  render: function() {
 		  var title=G_tip.help;
@@ -314,7 +315,7 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 					alert("只能选择一个！");
 					return;
 				};
-				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList());
+				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList(1));
 				  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);
