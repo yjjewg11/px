@@ -119,7 +119,7 @@ render: function() {
  	     React.createElement("br", null)
  	    ), 
  	    React.createElement("hr", null), 
- 	   React.createElement("p", null, "© 2015 成都问界科技有限公司  | 蜀ICP备15021053号-1")
+ 	   React.createElement("p", null, "© 2015 成都问界科技有限公司")
  	     )
  	   )
  	   
@@ -377,7 +377,7 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * @btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */
-var Announcements_class_Div_list = React.createClass({displayName: "Announcements_class_Div_list", 
+var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list", 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
@@ -487,7 +487,6 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 		},
 	render: function() {		  
 		  var  o = this.props.event;
-		  if(!o.dianzanList)o.dianzanList=[];
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)G_def_headImgPath;
 		  
@@ -516,9 +515,9 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
 			    	)
 			    	), 
-			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
 			    	React.createElement("ul", {className: "am-comments-list"}, 
-					  React.createElement(Classnews_reply_list, {uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+					  React.createElement(Classnews_reply_list, {replyPage: o.replyPage, uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
 			    	)
 			     )
 			)
@@ -537,6 +536,19 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 * 
 * */
 var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list", 
+	getInitialState: function() {
+		var o={
+			replyPage:null
+		}
+		if(this.props.replyPage)return o.replyPage=this.props.replyPage;
+		return o;
+	  },
+   componentWillReceiveProps: function(nextProps) {
+		var o={
+				replyPage:commons_ajax_dianzan_getByNewsuuid(nextProps.uuid)
+			}
+	   this.setState(o);
+	},
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -547,9 +559,21 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
 		this.load_more_data();
 	},
+	loadByFirst:function(list_div){
+		React.render(React.createElement(Classnews_reply_list_listshow, {
+			events: this.state.replyPage,
+			newsuuid:this.props.uuid,
+			responsive: true, bordered: true, striped :true,hover:true,striped:true
+			}), document.getElementById(list_div));
+	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		var re_data=this.state.replyPage;
+		if(!re_data){
+			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+		}else{
+			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+		}
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -560,6 +584,7 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		  this.pageNo++;
 	},
 	refreshReplyList:function(){
+		this.setState({replyPage:null});
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
 		this.load_more_data();
@@ -604,9 +629,9 @@ return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
 		      return (
-		    		  React.createElement("li", {className: "am-comment"}, 
-		    		  React.createElement("span", {className: "am-comment-author"}, event.create_user+":"), 
-				        React.createElement("span", {dangerouslySetInnerHTML: {__html:event.content}})
+		    		  React.createElement("li", {className: "am-cf"}, 
+		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
+				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}})
 		    		  )
 		    		  )
 		  })
@@ -1235,28 +1260,39 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 				    	)
 				  ));
 		  }
+		  var divCs1="am-u-sm-4 am-u-md-2 am-u-lg-1";
+		  var divCs2="am-u-sm-8 am-u-md-10 am-u-lg-11";
 			return (
-	    		React.createElement("div", {className: "am-container"}, 
-		    		React.createElement("div", {className: "am-g am-success am-article-title"}, 
-		    		  React.createElement("div", {className: "am-u-sm-4"}, G_week.getWeekStr(o.plandate)), 
-		    		  React.createElement("div", {className: "am-u-sm-8"}, o.plandate.split(" ")[0], 
-		    		  React.createElement(AMR_Button, {amStyle: "primary", onClick:  this.edit.bind( this ,o), round: true}, o.uuid?"修改":"创建")
-		    		  )
-		    		), 
-		    		React.createElement("div", {className: "am-g"}, 
-		    		  React.createElement("div", {className: "am-u-sm-4"}, "上午"), 
-		    		  React.createElement("div", {className: "am-u-sm-8"}, 
-		    		  	o.morning
-		    		  )
-		    		), 
-		    		React.createElement("div", {className: "am-g"}, 
-		    		  React.createElement("div", {className: "am-u-sm-4"}, "下午"), 
-		    		  React.createElement("div", {className: "am-u-sm-8"}, 
-		    		  	o.afternoon
-		    		  )
-		    		), 
-		    		dianzan
-	    		)
+					
+					React.createElement("div", {className: "am-panel am-panel-secondary"}, 
+					  React.createElement("div", {className: "am-panel-hd"}, 
+					  React.createElement("h3", {className: "am-panel-title am-g"}, 
+						  React.createElement("div", {className: divCs1}, G_week.getWeekStr(o.plandate)), 
+			    		  React.createElement("div", {className: divCs2}, o.plandate.split(" ")[0], 
+			    		   React.createElement(AMR_Button, {className: "am-margin-left", amStyle: o.uuid?"default":"warning", onClick:  this.edit.bind( this ,o), round: true}, o.uuid?"修改":"创建")
+			    		  )
+					  )
+					  ), 
+					  React.createElement("div", {className: "am-panel-bd"}, 
+							  React.createElement("div", {className: "am-g"}, 
+				    		  React.createElement("div", {className: divCs1}, "上午"), 
+				    		  React.createElement("div", {className: divCs2}, 
+				    		  	o.morning
+				    		  )
+				    		), 
+				    		React.createElement("div", {className: "am-g"}, 
+				    		  React.createElement("div", {className: divCs1}, "下午"), 
+				    		  React.createElement("div", {className: divCs2}, 
+				    		  	o.afternoon
+				    		  )
+				    		), 
+				    		React.createElement("div", {className: "am-g"}, 
+				    		dianzan
+				    		)
+					  )
+					 
+					)
+	    		
 	    		
 	    );
 	  }
@@ -2972,7 +3008,7 @@ return (
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * @btn_click_announce:点击按钮事件跳转kd_servise方法;
  * */
-var Announcements_class_Div_list_byRight = React.createClass({displayName: "Announcements_class_Div_list_byRight", 
+var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_list_byRight", 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
@@ -3197,9 +3233,9 @@ return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
 		      return (
-		    		  React.createElement("li", {className: "am-comment"}, 
-		    		  React.createElement("span", {className: "am-comment-author"}, event.create_user+":"), 
-				        React.createElement("span", {dangerouslySetInnerHTML: {__html:event.content}})
+		    		  React.createElement("li", {className: "am-cf"}, 
+		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
+				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}})
 		    		  )
 		    		  )
 		  })

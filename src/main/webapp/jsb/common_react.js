@@ -789,6 +789,16 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
  *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
  **/
 var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianzan_show_noAction", 
+	getInitialState: function() {
+		if(this.props.dianzan)return this.props.dianzan;
+		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	  },
+   componentWillReceiveProps: function(nextProps) {
+	   this.setState(commons_ajax_dianzan_getByNewsuuid(nextProps.uuid));
+	},
+	handleChange_selectgroup_uuid:function(groupuuid){
+		  this.setState(this.load_role_bind_user(groupuuid));
+	},
 	obj:null,
 	 componentDidMount:function(){
 		 var that=this;
@@ -798,18 +808,16 @@ var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianz
 			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
 			common_ajax_dianzan_save(that.props.uuid,that.props.type,canDianzan,that.dianzansave_callback);
 		});
-				
-			
 	 },
 	 dianzansave_callback:function(canDianzan){
 		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
 		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
-		 this.forceUpdate();
+		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
 	 },
 render: function() {	
-	 var dianzanObject=commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	var dianzanObject=this.state;
 	 this.obj=dianzanObject;
-	 var showStr="";
+	 var showStr=  (React.createElement("div", null));
 	 if(dianzanObject.names){
 		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
 	 }
