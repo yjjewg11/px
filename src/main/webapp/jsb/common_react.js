@@ -822,7 +822,7 @@ render: function() {
 		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
 	 }
   return (
-		   React.createElement("div", {id: "dianzan", className: "am-margin-left-sm"}, 
+		   React.createElement("small", {id: "dianzan", className: "am-margin-left-sm"}, 
 		   		showStr
 		   )
 

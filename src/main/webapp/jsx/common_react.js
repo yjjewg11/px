@@ -822,9 +822,9 @@ render: function() {
 		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
 	 }
   return (
-		   <div id="dianzan" className="am-margin-left-sm" >
+		   <small id="dianzan" className="am-margin-left-sm" >
 		   		{showStr} 
-		   </div>
+		   </small>
 
 
   );

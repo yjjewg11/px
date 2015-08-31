@@ -93,7 +93,7 @@ public class ReplyController extends AbstractRESTController {
 				user_uuid=user.getUuid();
 			}
 			PaginationData pData=this.getPaginationDataByRequest(request);
-			
+			pData.setPageSize(5);
 			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData);
 			
 			classNewsReplyService.warpVoList(pageQueryResult.getData(), user_uuid);

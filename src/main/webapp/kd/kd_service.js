@@ -327,6 +327,7 @@ function ajax_getUserinfo(isInit) {
 var MessageTimer={
 		create_time:null,
 	start:function(){
+		if(G_CallPhoneFN.isPhoneApp())return;
 		MessageTimer.do_loop();
 	},
 	do_loop:function(){
