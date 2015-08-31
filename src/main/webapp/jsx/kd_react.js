@@ -1956,8 +1956,8 @@ var Class_students_show= React.createClass({
 	  handleChange_selectgroup_uuid:function(val){
 		  react_ajax_class_students_manage(val,"show");
 	  },
-	  handleClick:function(groupuuid){
-			 btn_click_class_list(groupuuid);
+	  handleClick:function(m,groupuuid){
+			 btn_click_class_list(m,groupuuid);
 	  },
 	  showTeachingplanClick:function(classuuid){
 		  G_myCurClassuuid=classuuid;
@@ -1973,8 +1973,8 @@ var Class_students_show= React.createClass({
 		  	  <AMR_ButtonToolbar>
 		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
 	  		    <AMR_Button amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
-	  		    <AMR_Button amStyle="warning" onClick={class_students_myclass_onClick.bind(this,o.uuid)} round>添加学生</AMR_Button>
-	  		    <AMR_Button  onClick={this.handleClick.bind(this,o.groupuuid)} round>添加班级</AMR_Button>
+	  		    <AMR_Button amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.uuid)} round>添加学生</AMR_Button>
+	  		    <AMR_Button  onClick={this.handleClick.bind(this,"addclass",o.groupuuid)} round>添加班级</AMR_Button>
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
@@ -2090,10 +2090,9 @@ var Class_student_look_info =React.createClass({
 	        }
 		 });
 /*
- * <我的班级>详情界面
- * 添加学生
+ * <我的班级>添加学生详情界面
  * */
-  var Class_student_edit = React.createClass({ 
+  var Mylass_student_edit = React.createClass({ 
   	 getInitialState: function() {
   		    return this.props.formdata;
   		  },
@@ -2142,8 +2141,7 @@ var Class_student_look_info =React.createClass({
   	 		   <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
   	 		   <br/>
   	 		   <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
-  			   <br/>
-  			      
+  			   <br/> 			      
   		      <AMUIReact.FormGroup>
   		      <label>单选：</label>
   		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
@@ -2205,7 +2203,7 @@ var Class_student_look_info =React.createClass({
   		 	 	      amSize="lg" />
   	 		  <br/>
   	 		 </fieldset>
-   		      <button type="button"  onClick={btn_ajax_class_student_save}  className="am-btn am-btn-primary">提交</button>
+   		      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>
    		    </form>
 
    	     </div> 

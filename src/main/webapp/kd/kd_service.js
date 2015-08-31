@@ -481,10 +481,6 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 
 
 
-  
-  
-  
-
 
 
 	  
@@ -492,7 +488,7 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 //———————————————————————————————我的班级—————————————————————————     	  	  	  
   
 /*
-* （主页）我的班级 show服务器请求
+* <我的班级> show服务器请求
 * @show老师查看状态进入查看学生详情;
 * @Class_students_show:绘制班级方法；
 * @绘制3级界面学生列表页面；
@@ -560,17 +556,46 @@ function react_ajax_class_students_manage(uuid){
 };
 
 /*
- * <我的班级>添加班级按钮处理事件
+ * <我的班级>添加班级和添加学生按钮处理事件
  * */	  
-function btn_click_class_list(groupuuid,uuids){
-		Queue.push(function(){btn_click_class_list(m,groupuuid,uuids);},"新增班级");
-		react_ajax_class_edit_get({groupuuid:groupuuid});
-		
+function btn_click_class_list(m,id){
+	if(m=="addstudent"){
+		Queue.push(function(){btn_click_class_list(m,id);},"新增学生");
+		ajax_myclass_students_edit({classuuid:id,sex:0});
+	}else{
+		Queue.push(function(){btn_click_class_list(m,id);},"新增班级");
+		react_ajax_class_edit_get({groupuuid:id});
+	}		
 };
 
 /*
- * <我的班级>添加班级按钮服务请求
- * 添加直接就调用Class_edit，不发服务器请求
+* <我的班级>添加学生详情绘制入口
+* */
+function ajax_myclass_students_edit(formdata){
+	React.render(React.createElement(Mylass_student_edit,{formdata:formdata}), document.getElementById('div_body'));
+	return;
+};
+
+/*
+ * <我的班级>添加学生 提交按钮 服务器请求
+ * */
+function btn_ajax_myclass_student_save(){
+	var objectForm = $('#editClassStudentForm').serializeJson();
+    var opt={
+            formName: "editClassStudentForm",
+            url:hostUrl + "rest/student/save.json",
+            cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
+            	Store.setClassStudentsList(data.uuid,null);
+            	react_ajax_class_students_manage(objectForm.classuuid);
+            }
+            };
+G_ajax_abs_save(opt);
+}
+
+
+/*
+ * <我的班级>添加班级按钮详情绘制入口
  * */	 
 function react_ajax_class_edit_get(formdata){
 	var userinfo=Store.getUserinfo();
@@ -582,7 +607,7 @@ function react_ajax_class_edit_get(formdata){
 		}), document.getElementById('div_body'));
 };
 /*
- * <我的班级>添加班级提交按钮服务请求
+ * <我的班级>添加班级提交保存按钮服务请求
  * 直接把Form表单发给服务器，服务器自己取参数;
  * */
 function ajax_class_save(){
@@ -591,14 +616,14 @@ function ajax_class_save(){
             url:hostUrl + "rest/class/save.json",
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
 				Store.setMyClassList(null);
+				Queue.doBackFN();
             }
             };
 G_ajax_abs_save(opt);
 }	
 /*
- * （主页）我的班级界面下的二级界面学生详细信息
+ * （主页）我的班级学生详情服务器请求
  * @服务器请求:POST rest/student/{uuid}.json;
  * uuid:用户ID;
  * @根据数据在 Kd_react做绘制处理 
@@ -626,96 +651,6 @@ function ajax_class_students_look_info(uuid,title){
 		}
 	});
 };
-
-/*  
- * （主页）我的班级课程表的方法按钮事件处理
- * @服务器请求:POST rest/student/{uuid}.json;
- * @ajax_teachingplan_dayShow 直接调用课程表的方法；
- * */
-function class_students_manage_onClick(classuuid,name){
-	console.log("1231231",111111111111111);
-	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:name});
-};
-
-
-
-
-
-	  
-	
-
-
-/*  
- * （标头）<班级管理>界面添加学生按钮事件处理
- * @服务器请求:POST rest/student/{uuid}.json;
- * @ajax_teachingplan_dayShow 直接调用课程表的方法；
- * */
-function class_students_myclass_onClick(classuuid){
-	ajax_myclass_students_edit({classuuid:classuuid,sex:0});
-};
-
-/*
-* （标头）<班级管理>模板中添加学生按钮服务器请求
-* */
-function ajax_myclass_students_edit(formdata){
-	Queue.push(function(){ajax_myclass_students_edit(formdata);},"新增学生");
-	React.render(React.createElement(Class_student_edit,{formdata:formdata}), document.getElementById('div_body'));
-	return;
-};
-
-/*
- * （标头）<班级管理>添加与编辑学生 提交按钮 服务器请求
- * */
-function btn_ajax_class_student_save(){
-	var objectForm = $('#editClassStudentForm').serializeJson();
-    var opt={
-            formName: "editClassStudentForm",
-            url:hostUrl + "rest/student/save.json",
-            cbFN:function(data){
-            	G_msg_pop(data.ResMsg.message);
-            	Store.setClassStudentsList(data.uuid,null);
-            	react_ajax_class_students_manage(objectForm.classuuid);
-            }
-            };
-G_ajax_abs_save(opt);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2929,8 +2864,9 @@ G_ajax_abs_save(opt);
              url:hostUrl + "rest/class/save.json",
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
- 				Queue.doBackFN();
  				Store.setMyClassList(null);
+ 				Queue.doBackFN();
+
              }
              };
  G_ajax_abs_save(opt);
