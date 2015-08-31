@@ -2254,7 +2254,8 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 		 		      ), 
 				      React.createElement("button", {type: "button", onClick: btn_ajax_class_student_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      
    		           )
-   		          ) 		  
+   		          ) 	
+   		          
    );
   }
   });
@@ -4172,7 +4173,9 @@ render: function() {
 		         React.createElement("div", {className: two_classDiv}, 
 			      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""})
 		           ), 
-		 		   React.createElement(AMUIReact.Input, {type: "textarea", 
+		           React.createElement("button", {type: "button", onClick: btn_ajax_class_student_save_byRight, className: "am-btn am-btn-primary"}, "改变班级"), 
+"//w_ch_class.open(callbackFN,groupuuid)", 
+		           React.createElement(AMUIReact.Input, {type: "textarea", 
 			 	 	      label: "说明", 
 			 	 	    	 name: "note", 
 			 	 	      labelClassName: "am-u-sm-2", 

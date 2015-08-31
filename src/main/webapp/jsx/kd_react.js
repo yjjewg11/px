@@ -2254,7 +2254,8 @@ var Class_student_look_info =React.createClass({
 		 		      </fieldset>
 				      <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">提交</button>		      
    		           </div>  
-   		          </form> 		  
+   		          </form> 	
+   		          
    );
   }
   });
@@ -4172,7 +4173,9 @@ render: function() {
 		         <div className={two_classDiv}>
 			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
 		           </div>
-		 		   <AMUIReact.Input type="textarea"
+		           <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">改变班级</button>
+//w_ch_class.open(callbackFN,groupuuid)
+		           <AMUIReact.Input type="textarea"
 			 	 	      label="说明"
 			 	 	    	 name="note"
 			 	 	      labelClassName="am-u-sm-2"
