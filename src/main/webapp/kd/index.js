@@ -1,29 +1,38 @@
-function login_affter_init(){
-	Vo.init();
-	//主页顶部按钮；
-	var div_header_props = {
-			  "title":"主页",
-			  "link": "#title-link",
-			  data: {
-			    "left": [
-			             {
-			 		        "link": "javascript:Queue.doBackFN();",
-			 		        "icon": "chevron-left"
-			 		      },
-			      {
-			        "link": "javascript:menu_dohome();",
-			        "icon": "home"
-			      }
-			    ],
-			    "right": [
-			      {
+
+	//统一换标头方法
+	function title_info_init(type){
+		//主页顶部按钮；
+		var header_right=null;
+		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+			header_right= [{
 			        "link": "javascript:menu_queryMyTimely_fn()",
 			        "customIcon":hostUrl+"i/icon-msg-wu.png",
 			        "title": "消息"
-			      }
-			    ]
-			  }
-			};
+			      }];
+		}
+		var div_header_title_info = {
+				  "title":type,
+				  "link": "#title-link",
+				  data: {
+				    "left": [
+				             {
+				 		        "link": "javascript:Queue.doBackFN();",
+				 		        "icon": "chevron-left"
+				 		      },
+				      {
+				        "link": "javascript:menu_dohome();",
+				        "icon": "home"
+				      }
+				    ],
+				    "right": header_right
+				  }
+				};
+		
+		React.render(React.createElement(AMUIReact.Header,div_header_title_info), document.getElementById('div_header'));
+		MessageTimer.start();
+	}
+function login_affter_init(){
+	Vo.init();
 	
 
 	
@@ -236,44 +245,16 @@ function login_affter_init(){
 	                }
 	                
 	              ];
-	
-	menu_data=menu_data.concat(div_menu_data);
-	$("#div_header").html("");
-	React.render(React.createElement(AMUIReact.Header,div_header_props), document.getElementById('div_header'));
+	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+		menu_data=menu_data.concat(div_menu_data);
+	}
 	
 	$("#div_menu").html("");
+	title_info_init("首页");
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
-	MessageTimer.start();
+	
 }
-//统一换标头方法
-function title_info_init(type){
-	//主页顶部按钮；
-	var div_header_title_info = {
-			  "title":type,
-			  "link": "#title-link",
-			  data: {
-			    "left": [
-			             {
-			 		        "link": "javascript:Queue.doBackFN();",
-			 		        "icon": "chevron-left"
-			 		      },
-			      {
-			        "link": "javascript:menu_dohome();",
-			        "icon": "home"
-			      }
-			    ],
-			    "right": [
-			      {
-			        "link": "javascript:menu_queryMyTimely_fn()",
-			        "customIcon":hostUrl+"i/icon-msg-wu.png",
-			        "title": "消息"
-			      }
-			    ]
-			  }
-			};
 
-	React.render(React.createElement(AMUIReact.Header,div_header_title_info), document.getElementById('div_header'));
-}
 
 /*
  * 显示bodydiv,隐藏其他所有控件div

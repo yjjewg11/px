@@ -39,16 +39,33 @@ input[type="button"]{
   -webkit-transition: background-color 300ms ease-out, border-color 300ms ease-out;
           transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
-.G_div_msg_pop{
-position:fixed; ; 
+
+.G_div_loading{
+	position:fixed; 
+margin:-100px 0px 0px -100px;
 height:60px; 
-width:200px; 
+width:200px;
+padding: 4px 10px;
+border: 1px solid #efe;
+top: 50%; 
+left: 50%; 
+text-align: center; 
+color: #000;
+overflow: auto;
+z-index: 9997;
+}
+.G_div_msg_pop{
+position:fixed; 
+height:60px; 
+width:200px;
+padding: 4px 10px;
+border: 1px solid #efe;
 margin:-100px 0px 0px -100px; 
 top: 35%; 
 left: 50%; 
 text-align: center; 
 padding: 0px; 
-background-color: #E0690C; 
+background-color: #5eb95e; 
 color: #fff;
 overflow: auto;
 display: none;
@@ -114,9 +131,22 @@ z-index: 9999;
 			
 			
 	
-.G_cookplan_Img{width:135px; height:100px; position:relative; margin:0px 10px 10px 0px; float:left;}
+.G_cookplan_Img{width:135px; height:100px; position:relative; margin:15px 5px 10px 0px; float:left;}
 .G_cookplan_Img_img{width: 134px;height: 100px;}
 .G_cookplan_Img_close{position:absolute; top:0px; right:0px;cursor: pointer;}
+
+.px_reply_comment_bd{
+	overflow: hidden;
+	 margin:0rem 0rem 0rem 1.5rem;
+}
+.px_hr{
+	display: block;
+height: 0px;
+border-top: 1px solid #EEE;
+box-sizing: content-box;
+margin-top: 0.2rem;
+	
+}
 
 .cls{clear:both;height:0px;}
 

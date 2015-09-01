@@ -812,13 +812,14 @@ var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianz
 render: function() {	
 	var dianzanObject=this.state;
 	 this.obj=dianzanObject;
-	 var showStr=  (React.createElement("div", null));
-	 if(dianzanObject.names){
-		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 var showStr=  null;
+	 if(!dianzanObject.names){
+		 return null;
 	 }
   return (
-		   React.createElement("div", {id: "dianzan", className: "am-margin-left-sm"}, 
-		   		showStr
+		   React.createElement("small", {id: "dianzan", className: "am-margin-left-sm"}, 
+		   dianzanObject.names+",等一共"+dianzanObject.count+"人点赞", 
+		   		React.createElement("hr", {className: "px_hr"})
 		   )
 
 

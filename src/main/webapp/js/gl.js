@@ -102,7 +102,12 @@ function G_user_status_normal(){
 	}
 	return false;
 }
-
+$.AMUI.progress.start=function(){
+	$("#div_loading").show();
+}
+$.AMUI.progress.done=function(){
+	$("#div_loading").hide();
+}
 /**
  * 成功消息提示,3秒后消失
  * @param m
