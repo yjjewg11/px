@@ -14,65 +14,69 @@ var AMR_Span=AMUIReact.span;
 
 
 //幼儿园注册
-var Div_kd_group_reg = React.createClass({ 
-	
+var Div_kd_group_reg = React.createClass({ 	
 	render: function() {
-	return (
-		<div>
-			<div className="header">
-			  <div className="am-g">
-			    <h1>幼儿园注册</h1>
-			  </div>
-			  <hr/>
-			</div>
-			<div className="am-g">
-			  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-			    <form id="kd_group_reg_form" method="post" className="am-form">
-			    <input type="hidden" name="type"  value="1"/>
-			      <label htmlFor="brand_name">品牌名:</label>
-			      <input type="text" name="brand_name" id="brand_name"  placeholder="必填，不超过45位"/>
-			      <br/>
-			       <label htmlFor="company_name">机构全称:</label>
-			      <input type="text" name="company_name" id="company_name"  placeholder="必填，不超过45位"/>
-			      <br/>
-			       <label htmlFor="address">公司地址:</label>
-			      <input type="text" name="address" id="address"  placeholder="必填，不超过64位"/>
-			      <br/>
-			       <label htmlFor="map_point">地址坐标:</label>
-			      <input type="text" name="map_point" id="map_point"  placeholder="拾取坐标后，复制到这里。格式：1.1,1.1" /> 
-			      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-			      <br/>
-			       <label htmlFor="link_tel">公司电话:</label>
-			      <input type="text" name="link_tel" id="link_tel"  placeholder=""/>
-			      <br/>
-			      
+		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
+	return (			
+			   <div>		
+				<div className="header">
+				  <div className="am-g">
+				    <h1>幼儿园注册</h1>
+				  </div>
+				 <hr/>
+				</div>
+			     <form id="kd_group_reg_form" method="post" className="am-form">
+			      <PxInput type="hidden" name="type"  value="1"/>
+			       <div className= "am-form-group">			    
+				  <label className={one_classDiv}>品牌名:</label>
+				 <div className={two_classDiv}>
+				<PxInput type="text" name="brand_name" id="brand_name"  placeholder="必填，不超过45位"/>
+			   </div>					
+			    <label className={one_classDiv}>机构全称:</label>
+				 <div className={two_classDiv}>
+			      <PxInput type="text" name="company_name" id="company_name"  placeholder="必填，不超过45位"/>
+				   </div>	
+			      <label className={one_classDiv}>公司地址:</label>
+			     <div className={two_classDiv}>
+			    <PxInput type="text" name="address" id="address"  placeholder="必填，不超过64位"/>
+			     </div>	
+                  <label className={one_classDiv}>地址坐标:</label>
+				   <div className={two_classDiv}>
+			        <PxInput type="text" name="map_point" id="map_point"  placeholder="拾取坐标后，复制到这里。格式：1.1,1.1" /> 
+			         <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+			          </div>	
+					 <label className={one_classDiv}>公司电话:</label>
+					<div className={two_classDiv}>
+				   <PxInput type="text" name="link_tel" id="link_tel"/>
+				  </div>				      
 			      <legend><b>管理人员</b></legend>  
-			     
-			      <label htmlFor="tel">手机号码:</label>
-			      <input type="text" name="tel" id="tel"  placeholder=""/>
-			      <br/>
-			      <label htmlFor="name">姓名:</label>
-			      <input type="text" name="name" id="name"  placeholder="必填，不超过15位" />
-			      <br/>
-			       <label htmlFor="">Email:</label>
-			      <input type="email" name="email" id="email"  placeholder="name@xx.com"/>
-			      <br/>
-			      <label htmlFor="password">密码:</label>
-			      <input type="password" name="password" id="password"  />
-			      <br/>
-			      
-			      <label htmlFor="password1">重复密码:</label>
-			      <input type="password" name="password1" id="password1"  />
-			      
-			      <br/>
+                  <label className={one_classDiv}>手机号码:</label>
+				   <div className={two_classDiv}>
+					<PxInput type="text" name="tel" id="tel"/>
+					 </div>	
+					<label className={one_classDiv}>姓名:</label>
+				   <div className={two_classDiv}>
+				  <PxInput type="text" name="name" id="name"  placeholder="必填，不超过15位" />
+				 </div>						
+				  <label className={one_classDiv}>Email:</label>
+				   <div className={two_classDiv}>
+					<PxInput type="email" name="email" id="email"  placeholder="name@xx.com"/>
+					 </div>	
+                    <label className={one_classDiv}>密码:</label>
+				   <div className={two_classDiv}>
+				  <PxInput type="password" name="password" id="password"/>
+				 </div>	
+				  <label className={one_classDiv}>重复密码:</label>
+				   <div className={two_classDiv}>
+					<PxInput type="password" name="password1" id="password1"/>
+					 </div>	
+					<br/>
 			      <button type="button" onClick={ajax_kd_group_reg} className="am-btn am-btn-primary">注册</button>
 			      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
-			     </form>
-			    <hr/>
-			  
-			  </div>
-			</div>
-		</div>
+			     </div>
+		        </form>
+		       </div>
 	);
 	}
 }); 
@@ -259,77 +263,58 @@ var Div_body_index = React.createClass({
  * 老师注册（绘制）
  * */
 var Div_userinfo_reg = React.createClass({ 
-	
 	render: function() {
+		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
 	return (
-		<div>
-		<div className="header">
-		  <div className="am-g">
-		    <h1>老师注册</h1>
-		  </div>
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		    <form id="regform" method="post" className="am-form">
-		     <input type="hidden" name="type"  value="1"/>
-		        
-		      <label htmlFor="tel">手机号码:</label>
-		      <input type="text" name="tel" id="tel"  placeholder=""/>
-		      <br/>
-		      <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",1)} className="am-btn am-btn-primary">发送验证码</button>
-		      <br/>
-		      <label htmlFor="smscode">验证码:</label>
-		      <input type="text" name="smscode" id="smscode"  placeholder=""/>
-		      <br/>
-		      <label htmlFor="name">姓名:</label>
-		      <input type="text" name="name" id="name"  placeholder="必填，不超过15位"/>
-		      <br/>
-		       <label htmlFor="">Email:</label>
-		      <input type="email" name="email" id="email"  placeholder="输入邮箱" placeholder=""/>
-		      <br/>
-		      <label htmlFor="password">密码:</label>
-		      <input type="password" name="password" id="password"  />
-		      <br/>		      
-		      <label htmlFor="password1">重复密码:</label>
-		      <input type="password" name="password1" id="password1" />
-		      <br/>
-		      
+			   <div>
+				<div className="header">
+				 <div className="am-g">
+				  <h1>老师注册</h1>
+				 </div>
+				<hr />
+			   </div>	  
+			   <form id="regform" method="post" className="am-form">
+		         <PxInput type="hidden" name="type"  value="1"/>
+		          <div className= "am-form-group">				       
+				  <label className={one_classDiv}>手机号码:</label>
+				 <div className={two_classDiv}>
+				<PxInput type="text" name="tel" id="tel"/>
+			   </div>			     
+			    <label className={one_classDiv}>手机号码:</label>
+				 <div className={two_classDiv}>
+				  <PxInput type="text" name="tel" id="tel"/>
+                   <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",1)} className="am-btn am-btn-primary">发送验证码</button>	     
+				    </div>
+			       <label className={one_classDiv}>验证码:</label>
+				  <div className={two_classDiv}>
+				 <PxInput type="text" name="smscode" id="smscode"/>
+				</div>				  
+				 <label className={one_classDiv}>姓名:</label>
+				  <div className={two_classDiv}>
+				   <PxInput type="text" name="name" id="name"  placeholder="必填，不超过15位"/>
+				    </div>				   
+				     <label className={one_classDiv}>Email:</label>
+				    <div className={two_classDiv}>
+				   <PxInput type="email" name="email" id="email"  placeholder="输入邮箱"/>
+				  </div>									  
+				   <label className={one_classDiv}>密码:</label>
+				    <div className={two_classDiv}>
+				     <PxInput type="password" name="password" id="password"/>
+				      </div>				  
+				     <label className={one_classDiv}>重复密码:</label>
+				    <div className={two_classDiv}>
+				   <PxInput type="password" name="password1" id="password1"/>
+				  </div>			
+				 <br/>
 		      <button type="button" onClick={ajax_userinfo_reg} className="am-btn am-btn-primary">注册</button>
-		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
-		    </form>
-		    <hr/>		  
+		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>	      
+		    </div>
+		   </form>	
 		  </div>
-		</div>
-		</div>
 	);
 	}
-}); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 
@@ -441,6 +426,7 @@ render: function() {
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
 		    {fn}
+		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
@@ -2000,6 +1986,7 @@ var Class_students_show= React.createClass({
 	  		    <AMR_Button amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
 	  		    <AMR_Button amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.uuid)} round>添加学生</AMR_Button>
 	  		    <AMR_Button  onClick={this.handleClick.bind(this,"addclass",o.groupuuid)} round>添加班级</AMR_Button>
+	  		    <G_help_popo  msg={G_tip.class_show} />
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
@@ -2023,6 +2010,12 @@ var AMR_Col=AMUIReact.Col;
   		    return this.props.formdata;
   		  },
   	 handleChange: function(event) {
+  		 
+  		 if(event==G_group_wjd){
+  			 $('#help1_span').show();
+  		 }else{
+  			 $('#help1_span').hide();
+  		 }
   		    this.setState($('#editClassForm').serializeJson());
   	  },
   render: function() {
@@ -2039,7 +2032,10 @@ var AMR_Col=AMUIReact.Col;
     		     <input type="hidden" name="type"  value="1"/>
     		    <div className="am-form-group"> 		    
     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
-    		    </div> 		    
+    		  <G_help_popo  msg={G_tip.class_edit}/>  
+    		  <br/>
+    		  <span id="help1_span">{G_tip.class_edit_groupwjd}</span>
+    		  </div> 		    
     		      <label htmlFor="name">班级:</label>
     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
     		      <br/>   		   
@@ -2152,12 +2148,9 @@ var Class_student_look_info =React.createClass({
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
 		   <div className="am-form-group">
-		   <hr />
- 	        <label htmlFor="nickname">头像:</label>
+		    <hr />
   		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  		      <br/>
-  		       <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
- 		      <br/> 		      
+  		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>	      
  	         <AMUIReact.FormGroup>
  	        <label>单选：</label>
  	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
@@ -2475,7 +2468,8 @@ var rect_teacherDailyTask = React.createClass({
 render: function() {
     return (
     <div>
-	  <hr/>	  
+	  <hr/>
+	  <G_help_popo  msg={G_tip.teacherDailyTask}/> 
       <AMR_Table {...this.props}>  
         <thead> 
           <tr>
@@ -2647,46 +2641,43 @@ var Group_edit_byRight = React.createClass({
 	   },
   render: function() {
 	  var o = this.state;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
     return (
-    		<div>
-    		<div className="header">
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">    		  
-		<form id="editGroupForm" method="post" className="am-form">
-		<input type="hidden" name="uuid"  value={o.uuid}/>
-	    <input type="hidden" name="type"  value={o.type}/>
-		 <input type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>
-		<label htmlFor="nickname" >LOGO:</label>
-        <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
-        <br/>
-        <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
-            <br/>
-  
-    		<label htmlFor="brand_name">品牌名:</label>
-	      <input type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
-	      <br/>
-	       <label htmlFor="company_name">机构全称:</label>
-	      <input type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-	      <br/>
-	       <label htmlFor="address">公司地址:</label>
-	      <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
-	      <br/>
-	       <label htmlFor="map_point">地址坐标:</label>
-	      <input type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
-	      <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-	      <br/>
-	       <label htmlFor="link_tel">公司电话:</label>
-	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-	      <br/>
-	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-		  	{G_get_upload_img_Div()}
-	      <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
-    	     </form>
-    	     </div>
-    	   </div>   	   
-    	   </div>
+    		<form id="editGroupForm" method="post" className="am-form">
+  		     <hr />
+    		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
+    	       <PxInput type="hidden" name="type"  value={o.type}/>
+    		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
+              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+             <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <div className= "am-form-group">
+    		 <label className={one_classDiv }>品牌名:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	        </div>    		
+    	       <label className={one_classDiv }>机构全称:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	    </div>    	      
+    	     <label className={one_classDiv }>公司地址:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+     	        </div>    	      
+    	       <label className={one_classDiv }>地址坐标:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
+    	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+    	   </div>   	      
+    	    <label className={one_classDiv }>公司电话:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+  		  	  {G_get_upload_img_Div()}
+  	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
+	    	 </div>
+    		</form>   	   
     );
   }
 });
@@ -3764,7 +3755,7 @@ return (
 	   
 	   </div>
 		<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-		<Boss_message_save parent_React={this} send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
+		<Boss_message_save_byRight parent_React={this} send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
 		</div>
 		
 );
@@ -4095,12 +4086,9 @@ render: function() {
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
 		   <div className="am-form-group">
-		   <hr />
- 	        <label htmlFor="nickname">头像:</label>
-  		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  		      <br/>
-  		       <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
- 		      <br/> 		      
+		    <hr />
+  		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>  		      
+  		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button> 		      		      
  	         <AMUIReact.FormGroup>
  	        <label>单选：</label>
  	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />

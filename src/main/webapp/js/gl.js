@@ -21,7 +21,7 @@ $(this.serializeArray()).each(function(){
 return serializeObj;
 };
 })(jQuery);
-
+var G_group_wjd="group_wjd";
 var hostUrl='/px-rest/';
 var hostUrlCDN='/px-rest/';
 var G_def_headImgPath=hostUrlCDN+"i/header.png";

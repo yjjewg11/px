@@ -138,7 +138,7 @@ render: function() {
   
   React.createElement("div", {className: "am-cf am-margin-top-sm"}, 
   React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid}), 
-  React.createElement(G_help_popo, {title: G_tip.help, msg: G_tip.role_grant_users})
+  React.createElement(G_help_popo, {msg: G_tip.role_grant_users})
   ), 
     React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
       React.createElement("thead", null, 
@@ -334,8 +334,6 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     ), 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用"), 
 	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
 	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 	    ), 
@@ -395,61 +393,58 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
   render: function() {
 	  var o = this.state;
 	  var passwordDiv=null;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 	  if(!o.uuid){
 		  o.password="123456";
 		  o.password1="123456";
 		  passwordDiv=(
 				  React.createElement("div", null, 
-				  React.createElement("label", {htmlFor: "password"}, "密码:(默认:123456)"), 
-    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
-    		      React.createElement("br", null), 
-    		      
-    		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange}), 
-    		      React.createElement("br", null)
-				  )
+			       React.createElement("div", null, "(默认密码：123456)"), 
+				    React.createElement("label", {className: one_classDiv}, "密码:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange})
+    		     ), 		      
+    		      React.createElement("label", {className: one_classDiv}, "重复密码:"), 
+    		       React.createElement("div", {className: two_classDiv}, 
+    		        React.createElement(PxInput, {icon: "lock", type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange})
+    		         )
+				      )
 				  );
 	  }
     return (
-    		React.createElement("div", null, 
-    		React.createElement("div", {className: "header"}, 
-
-    		  React.createElement("hr", null)
-    		), 
-    		React.createElement("div", {className: "am-g"}, 
-    		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-    		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form"}, 
-    			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-    		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
-    			 React.createElement("input", {type: "hidden", id: "group_uuid", name: "group_uuid", value: ""}), 
-    		    React.createElement("div", {className: "am-form-group"}, 
-    		    React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid})
-    		        ), 
-    		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
-    		      React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
-    		      React.createElement("br", null), 
-    		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-    		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
-    		      React.createElement("br", null), 
-    		      React.createElement(AMUIReact.FormGroup, null, 
-    		      React.createElement("label", null, "单选："), 
-    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-    		      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-    		      ), 
-    		       React.createElement("label", {htmlFor: ""}, "Email:"), 
-    		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""}), 
-    		      React.createElement("br", null), 
-    		      passwordDiv, 
-    		      React.createElement("label", {htmlFor: "office"}, "职位:"), 
-    		      React.createElement("input", {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange}), 
-    		      React.createElement("br", null), 
-    		      React.createElement("button", {type: "button", onClick: ajax_userinfo_saveByAdmin, className: "am-btn am-btn-primary"}, "提交")
-    		    )
-
-    	     )
-    	   )
-    	   
-    	   )
+  		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form"}, 
+		   React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid}), 
+		    React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+		     React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
+			  React.createElement(PxInput, {type: "hidden", id: "group_uuid", name: "group_uuid", value: ""}), 
+			   React.createElement("div", {className: "am-form-group"}, 
+			    React.createElement("hr", null), 
+		       React.createElement("label", {className: one_classDiv}, "手机号码:"), 
+		      React.createElement("div", {className: two_classDiv}, 
+		     React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""})
+		    ), 
+		     React.createElement("label", {className: one_classDiv}, "姓名:"), 
+		      React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"})
+		        ), 
+		       React.createElement(AMUIReact.FormGroup, null, 
+		      React.createElement("label", null, "单选："), 
+		     React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+		    React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		   ), 
+		    React.createElement("label", {className: one_classDiv}, "Email:"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""})
+		       ), 
+		      React.createElement("label", {className: one_classDiv}, "职位:"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange})
+		   ), 
+		   passwordDiv, 
+ 	       React.createElement("button", {type: "button", onClick: ajax_userinfo_saveByAdmin, className: "am-btn am-btn-primary"}, "提交")
+		  )		
+		 )    		
     );
   }
 }); 

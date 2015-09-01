@@ -1633,8 +1633,6 @@ function react_ajax_favorites_show(type,reluuid){
 
  
 //———————————————————————————————————每日任务—————————————————————————   
- 
-
  /*
   * <每日任务>
   * 
@@ -1661,21 +1659,6 @@ function react_ajax_favorites_show(type,reluuid){
  	   		}
  	   	});
  	   };
- 
- 
-  
-  
-
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
  	   
  	   
  	   

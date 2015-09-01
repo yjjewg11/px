@@ -14,65 +14,69 @@ var AMR_Span=AMUIReact.span;
 
 
 //幼儿园注册
-var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg", 
-	
+var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg", 	
 	render: function() {
-	return (
-		React.createElement("div", null, 
-			React.createElement("div", {className: "header"}, 
-			  React.createElement("div", {className: "am-g"}, 
-			    React.createElement("h1", null, "幼儿园注册")
-			  ), 
-			  React.createElement("hr", null)
-			), 
-			React.createElement("div", {className: "am-g"}, 
-			  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-			    React.createElement("form", {id: "kd_group_reg_form", method: "post", className: "am-form"}, 
-			    React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
-			      React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
-			      React.createElement("input", {type: "text", name: "brand_name", id: "brand_name", placeholder: "必填，不超过45位"}), 
-			      React.createElement("br", null), 
-			       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
-			      React.createElement("input", {type: "text", name: "company_name", id: "company_name", placeholder: "必填，不超过45位"}), 
-			      React.createElement("br", null), 
-			       React.createElement("label", {htmlFor: "address"}, "公司地址:"), 
-			      React.createElement("input", {type: "text", name: "address", id: "address", placeholder: "必填，不超过64位"}), 
-			      React.createElement("br", null), 
-			       React.createElement("label", {htmlFor: "map_point"}, "地址坐标:"), 
-			      React.createElement("input", {type: "text", name: "map_point", id: "map_point", placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
-			      React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取"), 
-			      React.createElement("br", null), 
-			       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
-			      React.createElement("input", {type: "text", name: "link_tel", id: "link_tel", placeholder: ""}), 
-			      React.createElement("br", null), 
-			      
+		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
+	return (			
+			   React.createElement("div", null, 		
+				React.createElement("div", {className: "header"}, 
+				  React.createElement("div", {className: "am-g"}, 
+				    React.createElement("h1", null, "幼儿园注册")
+				  ), 
+				 React.createElement("hr", null)
+				), 
+			     React.createElement("form", {id: "kd_group_reg_form", method: "post", className: "am-form"}, 
+			      React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
+			       React.createElement("div", {className: "am-form-group"}, 			    
+				  React.createElement("label", {className: one_classDiv}, "品牌名:"), 
+				 React.createElement("div", {className: two_classDiv}, 
+				React.createElement(PxInput, {type: "text", name: "brand_name", id: "brand_name", placeholder: "必填，不超过45位"})
+			   ), 					
+			    React.createElement("label", {className: one_classDiv}, "机构全称:"), 
+				 React.createElement("div", {className: two_classDiv}, 
+			      React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", placeholder: "必填，不超过45位"})
+				   ), 	
+			      React.createElement("label", {className: one_classDiv}, "公司地址:"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			    React.createElement(PxInput, {type: "text", name: "address", id: "address", placeholder: "必填，不超过64位"})
+			     ), 	
+                  React.createElement("label", {className: one_classDiv}, "地址坐标:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+			        React.createElement(PxInput, {type: "text", name: "map_point", id: "map_point", placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
+			         React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取")
+			          ), 	
+					 React.createElement("label", {className: one_classDiv}, "公司电话:"), 
+					React.createElement("div", {className: two_classDiv}, 
+				   React.createElement(PxInput, {type: "text", name: "link_tel", id: "link_tel"})
+				  ), 				      
 			      React.createElement("legend", null, React.createElement("b", null, "管理人员")), 
-			     
-			      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
-			      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
-			      React.createElement("br", null), 
-			      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-			      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
-			      React.createElement("br", null), 
-			       React.createElement("label", {htmlFor: ""}, "Email:"), 
-			      React.createElement("input", {type: "email", name: "email", id: "email", placeholder: "name@xx.com"}), 
-			      React.createElement("br", null), 
-			      React.createElement("label", {htmlFor: "password"}, "密码:"), 
-			      React.createElement("input", {type: "password", name: "password", id: "password"}), 
-			      React.createElement("br", null), 
-			      
-			      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-			      React.createElement("input", {type: "password", name: "password1", id: "password1"}), 
-			      
-			      React.createElement("br", null), 
+                  React.createElement("label", {className: one_classDiv}, "手机号码:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+					React.createElement(PxInput, {type: "text", name: "tel", id: "tel"})
+					 ), 	
+					React.createElement("label", {className: one_classDiv}, "姓名:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+				  React.createElement(PxInput, {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"})
+				 ), 						
+				  React.createElement("label", {className: one_classDiv}, "Email:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+					React.createElement(PxInput, {type: "email", name: "email", id: "email", placeholder: "name@xx.com"})
+					 ), 	
+                    React.createElement("label", {className: one_classDiv}, "密码:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+				  React.createElement(PxInput, {type: "password", name: "password", id: "password"})
+				 ), 	
+				  React.createElement("label", {className: one_classDiv}, "重复密码:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+					React.createElement(PxInput, {type: "password", name: "password1", id: "password1"})
+					 ), 	
+					React.createElement("br", null), 
 			      React.createElement("button", {type: "button", onClick: ajax_kd_group_reg, className: "am-btn am-btn-primary"}, "注册"), 
 			      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
-			     ), 
-			    React.createElement("hr", null)
-			  
-			  )
-			)
-		)
+			     )
+		        )
+		       )
 	);
 	}
 }); 
@@ -259,77 +263,58 @@ var Div_body_index = React.createClass({displayName: "Div_body_index",
  * 老师注册（绘制）
  * */
 var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg", 
-	
 	render: function() {
+		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
 	return (
-		React.createElement("div", null, 
-		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "老师注册")
-		  ), 
-		  React.createElement("hr", null)
-		), 
-		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "regform", method: "post", className: "am-form"}, 
-		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
-		        
-		      React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
-		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
-		      React.createElement("br", null), 
-		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",1), className: "am-btn am-btn-primary"}, "发送验证码"), 
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "smscode"}, "验证码:"), 
-		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: ""}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
-		      React.createElement("input", {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"}), 
-		      React.createElement("br", null), 
-		       React.createElement("label", {htmlFor: ""}, "Email:"), 
-		      React.createElement("input", {type: "email", name: "email", id: "email", placeholder: "输入邮箱", placeholder: ""}), 
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
-		      React.createElement("input", {type: "password", name: "password", id: "password"}), 
-		      React.createElement("br", null), 		      
-		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-		      React.createElement("input", {type: "password", name: "password1", id: "password1"}), 
-		      React.createElement("br", null), 
-		      
+			   React.createElement("div", null, 
+				React.createElement("div", {className: "header"}, 
+				 React.createElement("div", {className: "am-g"}, 
+				  React.createElement("h1", null, "老师注册")
+				 ), 
+				React.createElement("hr", null)
+			   ), 	  
+			   React.createElement("form", {id: "regform", method: "post", className: "am-form"}, 
+		         React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
+		          React.createElement("div", {className: "am-form-group"}, 				       
+				  React.createElement("label", {className: one_classDiv}, "手机号码:"), 
+				 React.createElement("div", {className: two_classDiv}, 
+				React.createElement(PxInput, {type: "text", name: "tel", id: "tel"})
+			   ), 			     
+			    React.createElement("label", {className: one_classDiv}, "手机号码:"), 
+				 React.createElement("div", {className: two_classDiv}, 
+				  React.createElement(PxInput, {type: "text", name: "tel", id: "tel"}), 
+                   React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",1), className: "am-btn am-btn-primary"}, "发送验证码")	     
+				    ), 
+			       React.createElement("label", {className: one_classDiv}, "验证码:"), 
+				  React.createElement("div", {className: two_classDiv}, 
+				 React.createElement(PxInput, {type: "text", name: "smscode", id: "smscode"})
+				), 				  
+				 React.createElement("label", {className: one_classDiv}, "姓名:"), 
+				  React.createElement("div", {className: two_classDiv}, 
+				   React.createElement(PxInput, {type: "text", name: "name", id: "name", placeholder: "必填，不超过15位"})
+				    ), 				   
+				     React.createElement("label", {className: one_classDiv}, "Email:"), 
+				    React.createElement("div", {className: two_classDiv}, 
+				   React.createElement(PxInput, {type: "email", name: "email", id: "email", placeholder: "输入邮箱"})
+				  ), 									  
+				   React.createElement("label", {className: one_classDiv}, "密码:"), 
+				    React.createElement("div", {className: two_classDiv}, 
+				     React.createElement(PxInput, {type: "password", name: "password", id: "password"})
+				      ), 				  
+				     React.createElement("label", {className: one_classDiv}, "重复密码:"), 
+				    React.createElement("div", {className: two_classDiv}, 
+				   React.createElement(PxInput, {type: "password", name: "password1", id: "password1"})
+				  ), 			
+				 React.createElement("br", null), 
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_reg, className: "am-btn am-btn-primary"}, "注册"), 
-		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
-		    ), 
-		    React.createElement("hr", null)		  
+		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")	      
+		    )
+		   )	
 		  )
-		)
-		)
 	);
 	}
-}); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 
@@ -440,7 +425,8 @@ render: function() {
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
 		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
-		    fn
+		    fn, 
+		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    ), 
 		  React.createElement("hr", null), 	  
 		    
@@ -1999,7 +1985,8 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid}), 
 	  		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name), round: true}, "查看课程"), 
 	  		    React.createElement(AMR_Button, {amStyle: "warning", onClick: this.handleClick.bind(this,"addstudent",o.uuid), round: true}, "添加学生"), 
-	  		    React.createElement(AMR_Button, {onClick: this.handleClick.bind(this,"addclass",o.groupuuid), round: true}, "添加班级")
+	  		    React.createElement(AMR_Button, {onClick: this.handleClick.bind(this,"addclass",o.groupuuid), round: true}, "添加班级"), 
+	  		    React.createElement(G_help_popo, {msg: G_tip.class_show})
 	  		    ), 
 			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
@@ -2023,6 +2010,12 @@ var AMR_Col=AMUIReact.Col;
   		    return this.props.formdata;
   		  },
   	 handleChange: function(event) {
+  		 
+  		 if(event==G_group_wjd){
+  			 $('#help1_span').show();
+  		 }else{
+  			 $('#help1_span').hide();
+  		 }
   		    this.setState($('#editClassForm').serializeJson());
   	  },
   render: function() {
@@ -2038,8 +2031,11 @@ var AMR_Col=AMUIReact.Col;
     		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
     		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
     		    React.createElement("div", {className: "am-form-group"}, 		    
-    		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})
-    		    ), 		    
+    		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid}), 
+    		  React.createElement(G_help_popo, {msg: G_tip.class_edit}), 
+    		  React.createElement("br", null), 
+    		  React.createElement("span", {id: "help1_span"}, G_tip.class_edit_groupwjd)
+    		  ), 		    
     		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
     		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45位！"}), 
     		      React.createElement("br", null), 		   
@@ -2152,12 +2148,9 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
-		   React.createElement("hr", null), 
- 	        React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
+		    React.createElement("hr", null), 
   		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-  		      React.createElement("br", null), 
-  		       React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
- 		      React.createElement("br", null), 		      
+  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 	      
  	         React.createElement(AMUIReact.FormGroup, null, 
  	        React.createElement("label", null, "单选："), 
  	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
@@ -2475,7 +2468,8 @@ var rect_teacherDailyTask = React.createClass({displayName: "rect_teacherDailyTa
 render: function() {
     return (
     React.createElement("div", null, 
-	  React.createElement("hr", null), 	  
+	  React.createElement("hr", null), 
+	  React.createElement(G_help_popo, {msg: G_tip.teacherDailyTask}), 
       React.createElement(AMR_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
@@ -2647,46 +2641,43 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 	   },
   render: function() {
 	  var o = this.state;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
     return (
-    		React.createElement("div", null, 
-    		React.createElement("div", {className: "header"}, 
-		  React.createElement("hr", null)
-		), 
-		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 		  
-		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-		 React.createElement("input", {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 
-		React.createElement("label", {htmlFor: "nickname"}, "LOGO:"), 
-        React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.img, className: "G_img_header"}), 
-        React.createElement("br", null), 
-        React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO"), 
-            React.createElement("br", null), 
-  
-    		React.createElement("label", {htmlFor: "brand_name"}, "品牌名:"), 
-	      React.createElement("input", {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
-	      React.createElement("br", null), 
-	       React.createElement("label", {htmlFor: "company_name"}, "机构全称:"), 
-	      React.createElement("input", {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"}), 
-	      React.createElement("br", null), 
-	       React.createElement("label", {htmlFor: "address"}, "公司地址:"), 
-	      React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"}), 
-	      React.createElement("br", null), 
-	       React.createElement("label", {htmlFor: "map_point"}, "地址坐标:"), 
-	      React.createElement("input", {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
-	      React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取"), 
-	      React.createElement("br", null), 
-	       React.createElement("label", {htmlFor: "link_tel"}, "公司电话:"), 
-	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""}), 
-	      React.createElement("br", null), 
-	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
-		  	G_get_upload_img_Div(), 
-	      React.createElement("button", {type: "button", onClick: ajax_group_save_byRight, className: "am-btn am-btn-primary"}, "提交")
-    	     )
-    	     )
-    	   )	   
-    	   )
+    		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+  		     React.createElement("hr", null), 
+    		  React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+    	       React.createElement(PxInput, {type: "hidden", name: "type", value: o.type}), 
+    		    React.createElement(PxInput, {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 		   
+              React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.img, className: "G_img_header"}), 
+             React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO"), 
+            React.createElement("div", {className: "am-form-group"}, 
+    		 React.createElement("label", {className: one_classDiv }, "品牌名:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	       React.createElement(PxInput, {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	        ), 		
+    	       React.createElement("label", {className: one_classDiv }, "机构全称:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	    ), 	      
+    	     React.createElement("label", {className: one_classDiv }, "公司地址:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"})
+     	        ), 	      
+    	       React.createElement("label", {className: one_classDiv }, "地址坐标:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	     React.createElement(PxInput, {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
+    	    React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取")
+    	   ), 	      
+    	    React.createElement("label", {className: one_classDiv }, "公司电话:"), 
+    		 React.createElement("div", {className: two_classDiv }, 
+    	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
+    	       ), 		
+    	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
+  		  	  G_get_upload_img_Div(), 
+  	          React.createElement("button", {type: "button", onClick: ajax_group_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+	    	 )
+    		)   	   
     );
   }
 });
@@ -3764,7 +3755,7 @@ return (
 	   
 	   ), 
 		React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
-		React.createElement(Boss_message_save, {parent_React: this, send_useruuid: this.props.send_useruuid, revice_useruuid: this.props.revice_useruuid})
+		React.createElement(Boss_message_save_byRight, {parent_React: this, send_useruuid: this.props.send_useruuid, revice_useruuid: this.props.revice_useruuid})
 		)
 		
 );
@@ -4095,12 +4086,9 @@ render: function() {
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
-		   React.createElement("hr", null), 
- 	        React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
-  		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-  		      React.createElement("br", null), 
-  		       React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 
- 		      React.createElement("br", null), 		      
+		    React.createElement("hr", null), 
+  		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 		      
+  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 		      		      
  	         React.createElement(AMUIReact.FormGroup, null, 
  	        React.createElement("label", null, "单选："), 
  	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
