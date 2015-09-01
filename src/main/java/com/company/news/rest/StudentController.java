@@ -58,6 +58,7 @@ public class StudentController extends AbstractRESTController {
 			return "";
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("学生切换班级成功");
 		return "";
 	}
 	
