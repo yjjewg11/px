@@ -138,7 +138,7 @@ render: function() {
   
   <div className="am-cf am-margin-top-sm">
   <AMUIReact.Selected  className="am-fl" id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />    
-  <G_help_popo  title={G_tip.help} msg={G_tip.role_grant_users} />
+  <G_help_popo   msg={G_tip.role_grant_users} />
   </div>
     <AMUIReact.Table {...this.props}>  
       <thead> 
@@ -334,8 +334,6 @@ var Userinfo_EventsTable = React.createClass({
     </div>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
-	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
-	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
 	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
 	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
 	    </AMR_ButtonToolbar>
@@ -395,61 +393,58 @@ var Userinfo_edit = React.createClass({
   render: function() {
 	  var o = this.state;
 	  var passwordDiv=null;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 	  if(!o.uuid){
 		  o.password="123456";
 		  o.password1="123456";
 		  passwordDiv=(
 				  <div>
-				  <label htmlFor="password">密码:(默认:123456)</label>
+			       <div>(默认密码：123456)</div>
+				    <label className={one_classDiv}>密码:</label>
+				   <div className={two_classDiv}>
     		      <PxInput  icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange} />
-    		      <br/>
-    		      
-    		      <label htmlFor="password1">重复密码:</label>
-    		      <PxInput  icon="lock" type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
-    		      <br/>
-				  </div>
+    		     </div>    		      
+    		      <label className={one_classDiv}>重复密码:</label>
+    		       <div className={two_classDiv}>
+    		        <PxInput  icon="lock" type="password" name="password1" id="password1" value={o.password1} onChange={this.handleChange}/>
+    		         </div> 
+				      </div>
 				  );
 	  }
     return (
-    		<div>
-    		<div className="header">
-
-    		  <hr />
-    		</div>
-    		<div className="am-g">
-    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-    		  <form id="editUserinfoForm" method="post" className="am-form">
-    			<input type="hidden" name="uuid"  value={o.uuid}/>
-    		     <input type="hidden" name="type"  value="1"/>
-    			 <input type="hidden" id="group_uuid" name="group_uuid"  value=""/>
-    		    <div className="am-form-group">
-    		    <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
-    		        </div>
-    		      <label htmlFor="tel">手机号码:</label>
-    		      <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
-    		      <br/>
-    		      <label htmlFor="name">姓名:</label>
-    		      <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
-    		      <br/>
-    		      <AMUIReact.FormGroup>
-    		      <label>单选：</label>
-    		      <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-    		      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-    		      </AMUIReact.FormGroup>
-    		       <label htmlFor="">Email:</label>
-    		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
-    		      <br/>
-    		      {passwordDiv}
-    		      <label htmlFor="office">职位:</label>
-    		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
-    		      <br/>
-    		      <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">提交</button>
-    		    </form>
-
-    	     </div>
-    	   </div>
-    	   
-    	   </div>
+  		  <form id="editUserinfoForm" method="post" className="am-form">
+		   <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
+		    <PxInput type="hidden" name="uuid"  value={o.uuid}/>
+		     <PxInput type="hidden" name="type"  value="1"/>
+			  <PxInput type="hidden" id="group_uuid" name="group_uuid"  value=""/>
+			   <div className= "am-form-group">
+			    <hr/>
+		       <label className={one_classDiv}>手机号码:</label>
+		      <div className={two_classDiv}>
+		     <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
+		    </div>
+		     <label className={one_classDiv}>姓名:</label>
+		      <div className={two_classDiv}>
+		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
+		        </div> 
+		       <AMUIReact.FormGroup>
+		      <label>单选：</label>
+		     <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+		    <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		   </AMUIReact.FormGroup>
+		    <label className={one_classDiv}>Email:</label>
+		     <div className={two_classDiv}>
+		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
+		       </div> 
+		      <label className={one_classDiv}>职位:</label>
+		     <div className={two_classDiv}>
+		    <PxInput type="text" name="office" id="office" value={o.office} onChange={this.handleChange}/>
+		   </div> 
+		   {passwordDiv}
+ 	       <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">提交</button>
+		  </div>    		
+		 </form>    		
     );
   }
 }); 

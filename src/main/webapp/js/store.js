@@ -301,7 +301,7 @@ var Store={
 			var list =this.getGroup();
 			var nlist=[];
 			for(var i=0;i<list.length;i++){
-				if(list[i].uuid!='group_wjd')
+				if(list[i].uuid!=G_group_wjd)
 					nlist.push(list[i]);
 			}
 			return nlist;
