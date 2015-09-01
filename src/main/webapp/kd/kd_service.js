@@ -3018,7 +3018,7 @@ G_ajax_abs_save(opt);
   * 我的班级学生列表编辑改变班级服务器请求；
   * */
   function  ajax_student_changeClass(classuuid,studentuuid){
-      var url = hostUrl + "student/changeClass.json";
+      var url = hostUrl + "rest/student/changeClass.json";
   	$.ajax({
   		type : "POST",
   		data:{classuuid:classuuid,studentuuid:studentuuid},
@@ -3028,7 +3028,9 @@ G_ajax_abs_save(opt);
   		success : function(data) {
   			$.AMUI.progress.done();
   			if (data.ResMsg.status == "success") {
-  				G_msg_pop("修改成功");
+  				G_msg_pop(data.ResMsg.message);
+  				//Queue.doBackFN();此方法没生效;
+ 				Queue.doBackFN();
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
   			}

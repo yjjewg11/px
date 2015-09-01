@@ -433,7 +433,7 @@ public class StudentService extends AbstractServcice {
 		student.setGroupuuid(cl.getGroupuuid());
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		
-		return false;
+		return true;
 	}
 
 }
