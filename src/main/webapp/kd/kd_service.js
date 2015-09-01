@@ -680,8 +680,7 @@ function ajax_classnews_list_div(type){
  * 在kd_react
  * */
 var g_classnews_pageNo_point=1;
-function ajax_classs_Mygoodlist(list_div,pageNo,type) {
-	var re_data=null;
+function ajax_classs_Mygoodlist(list_div,pageNo,type,callback) {
 	var url;
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
@@ -697,7 +696,7 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type) {
 		url : url,
   		data : {classuuid:"",pageNo:pageNo},
 		dataType : "json",
-		async: false,
+		//async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
@@ -707,15 +706,16 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type) {
 					handleClick:btn_click_classnews,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				
-				re_data=data.list;
+				if(typeof callback=='function'){
+					callback(data.list);
+				}
+				//re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
 		}
 	});
-	return re_data;
 };
 
 /*
@@ -1952,8 +1952,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * 在kd_react
    * */
   var g_classnews_pageNo_point=1;
-  function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type) {
-  	var re_data=null;
+  function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type,callback) {
+//  	var re_data=null;
   	var url;
   	if(!pageNo)pageNo=1;
   	g_classnews_pageNo_point=pageNo;
@@ -1970,7 +1970,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   		url : url,
     		data : {classuuid:"",pageNo:pageNo},
   		dataType : "json",
-  		async: false,
+//  		async: false,
   		success : function(data) {
   			$.AMUI.progress.done();
   			if (data.ResMsg.status == "success") {
@@ -1980,15 +1980,15 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   					handleClick:btn_click_classnews,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					}), document.getElementById(list_div));
-  				
-  				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
   			} else {
   				alert(data.ResMsg.message);
   				G_resMsg_filter(data.ResMsg);
   			}
   		}
   	});
-  	return re_data;
   };
 
   /*

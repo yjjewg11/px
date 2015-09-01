@@ -395,16 +395,19 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			that.pageNo++;
 		}
-		  
-		  this.pageNo++;
+		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
 	},
+
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
@@ -429,9 +432,9 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	var  fn;
 	if(this.type==1){
-	fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",2), round: true}, "他人互动")
+	fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",2), round: true}, "其他班级")
 	}else{
-	fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",1), round: true}, "我的互动")
+	fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",1), round: true}, "我的班级")
 	}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
@@ -605,7 +608,7 @@ render: function() {
 	var parentThis=this;
 return (
 		React.createElement("small", null, 
-		  React.createElement("div", {className: "am-comment-bd am-comment-flip"}, 
+		  React.createElement("div", {className: "px_reply_comment_bd"}, 
 		  React.createElement("div", {id: this.div_reply_save_id}, "   "), 
 		    React.createElement("div", {id: this.classnewsreply_list_div}), 
 		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")		
@@ -1118,7 +1121,7 @@ var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7D
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下周"), 	
 		React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "group_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid})
 		), 
-		
+		React.createElement("hr", null), 
 		React.createElement("div", {className: "am-g", id: "div_detail"}, 
 		
 		React.createElement(G_Teachingplan_7day, {classuuid: this.state.classuuid, startDate: now, list: this.state.list})
@@ -2975,15 +2978,19 @@ var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			that.pageNo++;
 		}
-		  
-		  this.pageNo++;
+	ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
+		
+
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -3009,9 +3016,9 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	var  fn;
 	if(this.type==1){
-		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",2), round: true}, "他人互动")
+		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",2), round: true}, "其他班级")
 	}else{
-		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",1), round: true}, "我的互动")
+		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",1), round: true}, "我的班级")
 	}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 

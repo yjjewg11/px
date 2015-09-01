@@ -817,13 +817,14 @@ var Common_Dianzan_show_noAction = React.createClass({
 render: function() {	
 	var dianzanObject=this.state;
 	 this.obj=dianzanObject;
-	 var showStr=  (<div></div>);
-	 if(dianzanObject.names){
-		 showStr=dianzanObject.names+",等一共"+dianzanObject.count+"人点赞";		   
+	 var showStr=  null;
+	 if(!dianzanObject.names){
+		 return null;
 	 }
   return (
 		   <small id="dianzan" className="am-margin-left-sm" >
-		   		{showStr} 
+		   {dianzanObject.names+",等一共"+dianzanObject.count+"人点赞"}
+		   		<hr className="px_hr"/>
 		   </small>
 
 

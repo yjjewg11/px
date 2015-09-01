@@ -135,6 +135,19 @@ z-index: 9999;
 .G_cookplan_Img_img{width: 134px;height: 100px;}
 .G_cookplan_Img_close{position:absolute; top:0px; right:0px;cursor: pointer;}
 
+.px_reply_comment_bd{
+	overflow: hidden;
+	 margin:0rem 0rem 0rem 1.5rem;
+}
+.px_hr{
+	display: block;
+height: 0px;
+border-top: 1px solid #EEE;
+box-sizing: content-box;
+margin-top: 0.2rem;
+	
+}
+
 .cls{clear:both;height:0px;}
 
 /*µãÔÞ*/
