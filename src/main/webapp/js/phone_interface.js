@@ -12,6 +12,8 @@
  * G_jsCallBack.user_info_updatepassword()；修改密码
  * G_jsCallBack.QueuedoBackFN()；修改密码
  * G_jsCallBack.QueueTeacher()；老师通讯录
+ * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
+ * G_jsCallBack.selectHeadPic_callback_imgUrl(imgUrl,uuid); 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
  * Store.getCurGroup().uuid
  */
 var G_jsCallBack={
@@ -81,7 +83,17 @@ var G_jsCallBack={
 		w_img_upload_nocut.ajax_uploadByphone(base64);
 	},
 	
+	/**
+	 * 选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid。
+	 * selectPic_callback和selectPic_callback_callback_imgUrl只能选择一个来调用
+	 * @param imgUrl：格式：图片地址
+	 * @param uuid
+	 */
 	
+	selectPic_callback_imgUrl:function(imgUrl,uuid){
+		
+		w_img_upload_nocut.callbackFN(imgUrl,uuid);
+	},
 	
 	/**
 	 * 调用选择头像图片,裁剪和调整方向,回调方法.
@@ -90,8 +102,16 @@ var G_jsCallBack={
 	selectHeadPic_callback:function(base64){
 		//console.log('base64='+ base64);
 		w_uploadImg.ajax_uploadByphone(base64);
+	},
+	/**
+	 * 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
+	 * selectHeadPic_callback和selectHeadPic_callback_imgUrl只能选择一个来调用
+	 * @param base64
+	 */
+	selectHeadPic_callback_imgUrl:function(imgUrl,uuid){
+		w_uploadImg.callbackFN(imgUrl,uuid);
 	}
-}
+};
 
 /**
  * 调用手机方法

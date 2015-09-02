@@ -618,6 +618,7 @@ function ajax_class_save(){
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
 				Store.setMyClassList(null);
+				Store.setChooseClass(null);
 				Queue.doBackFN();
             }
             };
@@ -1310,6 +1311,7 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
  *  
  * */
 function ajax_message_queryByParent(parent_uuid,telitename,list_div,pageNo){
+	console.log("测试2",parent_uuid);
 	Queue.push(function(){ajax_message_queryByParent(parent_uuid,list_div,pageNo);},telitename);
 	   var re_data=null;
 	   if(!pageNo)pageNo=1;
@@ -1534,10 +1536,10 @@ function react_ajax_favorites_show(type,reluuid){
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
 	   				if(data.list.length!=0){
-		   				React.render(React.createElement( My_student_tel,{formdata:data.list}), document.getElementById('div_body'));	
+		   				React.render(React.createElement(My_student_tel,{formdata:data.list}), document.getElementById('div_body'));	
 	   				}else{
 	   					G_msg_pop("您的信箱暂无数据!");
-		   				React.render(React.createElement( My_student_tel2), document.getElementById('div_body'));
+		   				React.render(React.createElement(My_student_tel2), document.getElementById('div_body'));
 	   				}
 
 	   			} else {
@@ -1553,83 +1555,83 @@ function react_ajax_favorites_show(type,reluuid){
 	   	   
 	   
 	   
-  /* (我的信箱)创建舞台
-   * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
-   *@Boss_message_list准备开始绘制舞台  
-	* @revice_useruuid:收件人ID；
-	* @send_useruuid:发送者ID；
-	* @send_user:发送者姓名
-   * */
-  function ajax_my_message_list(send_useruuid,revice_useruuid,send_user){
-  	var message_name="我的信箱";
-  	Queue.push(function(){ajax_my_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
-		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
-	   };
-		   
-		   
-  /* (我的信箱)(服务器请求)-绘制每一个Div信息放置在舞台上；
-   * @revice_useruuid:收件人ID；
-   * */
-  function ajax_my_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
-	   var re_data=null;
-	   if(!pageNo)pageNo=1;
-  	$.AMUI.progress.start();
-  $.ajax({
-  	success : function() {
-  		$.AMUI.progress.done();
-  	}
-  });
-  	$.AMUI.progress.start();
-      var url = hostUrl + "rest/message/queryByParent.json?uuid="+revice_useruuid;
-  	$.ajax({
-  		type : "GET",
-  		url : url,
-  		dataType : "json",
-  		 async: false,
-  		success : function(data) {
-  			$.AMUI.progress.done(); 			
-  			if (data.ResMsg.status == "success") {
-  				React.render(React.createElement(My_message_queryLeaderMsgByParents_listpage, {
-					events: data.list,
-					send_useruuid:send_useruuid,
-					revice_useruuid:revice_useruuid,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById(list_div));
-				re_data=data.list;
-				
-  			} else {
-  				alert("加载数据失败："+data.ResMsg.message);
-  			}
-  		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-	   		}
-	   	});
-	   	
-	   	return re_data;
-	      };
- 
- /*(我的信箱)(服务器请求)-我要发送信息
-  * @opt：高级封装做处理 直接把表单和URL地址送进去
-  * @formName:表单信息
-  * @直接传给服务器，服务器根据自己需要的从form表单取参数；
-  * */
- function ajax_my_boss_message_save(that){
- 	var opt={
- 	 formName:"editForm",
- 	 url:hostUrl + "rest/message/saveLeaderToParent.json",
- 	 cbFN:function(data){
-			if (data.ResMsg.status == "success") {
-				that.refresh_data();
-		} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}  		
- 	  }
- 	 };
- 	 G_ajax_abs_save(opt);
- }    
+//  /* (我的信箱)创建舞台
+//   * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
+//   *@Boss_message_list准备开始绘制舞台  
+//	* @revice_useruuid:收件人ID；
+//	* @send_useruuid:发送者ID；
+//	* @send_user:发送者姓名
+//   * */
+//  function ajax_my_message_list(send_useruuid,revice_useruuid,send_user){
+//  	var message_name="我的信箱";
+//  	Queue.push(function(){ajax_my_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
+//		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+//	   };
+//		   
+//		   
+//  /* (我的信箱)(服务器请求)-绘制每一个Div信息放置在舞台上；
+//   * @revice_useruuid:收件人ID；
+//   * */
+//  function ajax_my_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
+//	   var re_data=null;
+//	   if(!pageNo)pageNo=1;
+//  	$.AMUI.progress.start();
+//  $.ajax({
+//  	success : function() {
+//  		$.AMUI.progress.done();
+//  	}
+//  });
+//  	$.AMUI.progress.start();
+//      var url = hostUrl + "rest/message/queryByParent.json?uuid="+revice_useruuid;
+//  	$.ajax({
+//  		type : "GET",
+//  		url : url,
+//  		dataType : "json",
+//  		 async: false,
+//  		success : function(data) {
+//  			$.AMUI.progress.done(); 			
+//  			if (data.ResMsg.status == "success") {
+//  				React.render(React.createElement(My_message_queryLeaderMsgByParents_listpage, {
+//					events: data.list,
+//					send_useruuid:send_useruuid,
+//					revice_useruuid:revice_useruuid,
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//					}), document.getElementById(list_div));
+//				re_data=data.list;
+//				
+//  			} else {
+//  				alert("加载数据失败："+data.ResMsg.message);
+//  			}
+//  		},
+//  		error : function( obj, textStatus, errorThrown ){
+//  			$.AMUI.progress.done();
+//  			alert(url+",error:"+textStatus);
+//	   		}
+//	   	});
+//	   	
+//	   	return re_data;
+//	      };
+// 
+// /*(我的信箱)(服务器请求)-我要发送信息
+//  * @opt：高级封装做处理 直接把表单和URL地址送进去
+//  * @formName:表单信息
+//  * @直接传给服务器，服务器根据自己需要的从form表单取参数；
+//  * */
+// function ajax_my_boss_message_save(that){
+// 	var opt={
+// 	 formName:"editForm",
+// 	 url:hostUrl + "rest/message/saveLeaderToParent.json",
+// 	 cbFN:function(data){
+//			if (data.ResMsg.status == "success") {
+//				that.refresh_data();
+//		} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}  		
+// 	  }
+// 	 };
+// 	 G_ajax_abs_save(opt);
+// }    
 
  
 //———————————————————————————————————每日任务—————————————————————————   
@@ -2392,7 +2394,7 @@ function ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum){
 					begDateStr:begDateStr,
 					endDateStr:endDateStr,
 					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
+					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
 				
@@ -2403,18 +2405,16 @@ function ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum){
 		}
 	});
 };
-/*(课程安排)
- * 班级详情内添加编辑课程等按钮方法判断;
- * */ 
-function btn_click_teachingplan_byRight(m,uuid,groupuuid,classuuid,ch_day){
-	if(m=="add"){
-		react_ajax_teachingplan_edit_byRight({classuuid:classuuid,plandate:ch_day},null,"新增课程");
-	}else if(m=="edit"){
-		react_ajax_teachingplan_edit_byRight(null,uuid,"课程编辑");
-	}else if(m=="del"){
-		//react_ajax_teachingplan_delete(groupuuid,uuid);
-	}
-};
+///*(课程安排)
+// * 班级详情内添加编辑课程等按钮方法判断;
+// * */ 
+//function btn_click_teachingplan_byRight(m,uuid,groupuuid,classuuid,ch_day){
+//   if(m=="edit"){
+//		react_ajax_teachingplan_edit_byRight(null,uuid,"课程编辑");
+//	}else if(m=="del"){
+//		//react_ajax_teachingplan_delete(groupuuid,uuid);
+//	}
+//};
 //删除按钮
 //function react_ajax_teachingplan_delete(groupuuid,uuid){	
 //	$.AMUI.progress.start();
@@ -2439,56 +2439,48 @@ function btn_click_teachingplan_byRight(m,uuid,groupuuid,classuuid,ch_day){
 //		}
 //	});
 //};
-/*(课程安排)
- * 班级详情内添加编辑按钮服务器请求
- * 
- * */ 
-function react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae){
-  	Queue.push(function(){react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae);},nmae);
-	if(!uuid){
-		if(!formdata.classuuid){
-			alert("新建课程，班级id必填");
-			return;
-		}
-		React.render(React.createElement(Teachingplan_edit_byRight,{formdata:formdata}), document.getElementById('div_body'));
-		return;
-	}
-	$.AMUI.progress.start();
-  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Teachingplan_edit_byRight,{
-					formdata:data.data
-					}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
-	});
-};
-/*(课程安排)
- * 班级详情内添加编辑提交按钮服务器请求
- * 直接把Form表单发送给服务器
- * */ 
-function ajax_teachingplan_save_byRight(){
-    var opt={
-            formName: "editTeachingplanForm",
-            url:hostUrl + "rest/teachingplan/save.json",
-            cbFN:null
-            };
-G_ajax_abs_save(opt);
-}  
+///*(课程安排)
+// * 班级详情内添加编辑按钮服务器请求
+// * 
+// * */ 
+//function react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae){
+//  	Queue.push(function(){react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae);},nmae);
+//	$.AMUI.progress.start();
+//  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Teachingplan_edit_byRight,{
+//					formdata:data.data
+//					}), document.getElementById('div_body'));
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : function( obj, textStatus, errorThrown ){
+//			$.AMUI.progress.done();
+//			alert(url+",error:"+textStatus);
+//		}
+//	});
+//};
+///*(课程安排)
+// * 班级详情内添加编辑提交按钮服务器请求
+// * 直接把Form表单发送给服务器
+// * */ 
+//function ajax_teachingplan_save_byRight(){
+//    var opt={
+//            formName: "editTeachingplanForm",
+//            url:hostUrl + "rest/teachingplan/save.json",
+//            cbFN:null
+//            };
+//G_ajax_abs_save(opt);
+//}  
   
 
 
@@ -2629,102 +2621,6 @@ G_ajax_abs_save(opt);
  
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
 //———————————————————————————————班级管理—————————————————————————     	  	  	  
  /*
   * <班级管理>服务器请求 Store.getGroupByRight("KD_class_m")
@@ -2848,6 +2744,7 @@ G_ajax_abs_save(opt);
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
  				Store.setMyClassList(null);
+ 				Store.setChooseClass(null);
  				Queue.doBackFN();
 
              }
