@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.aop.operate.OperateMeta;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -349,6 +350,7 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
+	@OperateMeta(description="用户登陆")
 	public User login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request, ResponseMessage responseMessage)
 			throws Exception {
