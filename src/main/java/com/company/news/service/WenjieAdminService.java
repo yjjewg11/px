@@ -21,7 +21,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class WenjieAdminService extends AbstractServcice {
-
+	private static final String model_name = "管理员模块";
 	/**
 	 * 刷新学生与家长关系表
 	 * @param responseMessage
@@ -152,5 +152,13 @@ public class WenjieAdminService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 }

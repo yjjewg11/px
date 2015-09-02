@@ -30,6 +30,12 @@ public abstract class AbstractServcice {
    */
   public abstract Class getEntityClass();
   
+  /**
+   * 模块名，中文，用于进行日志记录
+   * @return
+   */
+  public abstract String getEntityModelName();
+  
   /*
 	 * 
 	 * 判断是否是班级的班主任老师

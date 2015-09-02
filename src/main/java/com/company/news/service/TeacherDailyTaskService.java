@@ -27,7 +27,7 @@ import com.company.news.right.RightUtils;
  */
 @Service
 public class TeacherDailyTaskService extends AbstractServcice {
-	
+	private static final String model_name = "每日任务模块";
 	/**
 	 * 自动创建任务
 	 * @param user
@@ -242,6 +242,12 @@ public class TeacherDailyTaskService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 	
 

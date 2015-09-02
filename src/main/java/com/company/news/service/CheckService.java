@@ -13,7 +13,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class CheckService extends AbstractServcice {
-
+	private static final String model_name = "check模块";
 
 	/**
 	 * 更新举报计数
@@ -111,6 +111,12 @@ public class CheckService extends AbstractServcice {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

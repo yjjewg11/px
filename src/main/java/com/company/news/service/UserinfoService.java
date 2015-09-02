@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.aop.operate.OperateMeta;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -43,6 +44,7 @@ import com.company.plugin.security.LoginLimit;
  */
 @Service
 public class UserinfoService extends AbstractServcice {
+	private static final String model_name = "用户模块";
 	public static final int USER_disable_default = 0;// 电话号码，验证。默认0，0:启用。1:禁用,
 	public static final int USER_tel_verify_default = 0;// 是否被管理员封号。0：不封。1：封号，不允许登录。
 
@@ -348,6 +350,7 @@ public class UserinfoService extends AbstractServcice {
 	 * @return
 	 * @throws Exception
 	 */
+	@OperateMeta(description="用户登陆")
 	public User login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request, ResponseMessage responseMessage)
 			throws Exception {
@@ -853,6 +856,11 @@ public class UserinfoService extends AbstractServcice {
 				.createSQLQuery(sql).addEntity("t1", UserForJsCache.class);
 
 		return q.list();
+	}
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

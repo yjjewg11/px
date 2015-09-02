@@ -22,8 +22,7 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class AccountsService extends AbstractServcice {
 	public static final int accounts_type_general = 0;// 默认公开通知
-
-
+	private static final String model_name = "账目模块";
 	/**
 	 * 增加
 	 * 
@@ -217,6 +216,12 @@ public class AccountsService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return Accounts.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

@@ -36,7 +36,7 @@ import com.company.web.listener.SessionListener;
  */
 @Service
 public class UserTeacherService extends AbstractServcice {
-
+	private static final String model_name = "教师模块";
 	/**
 	 * 用户注册
 	 * 
@@ -94,6 +94,14 @@ public class UserTeacherService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 
