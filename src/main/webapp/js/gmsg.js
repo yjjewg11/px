@@ -1,4 +1,6 @@
 var G_tip={
+		//添加学生帮助
+		Stutent_edit:"添加学生帮助",
 		//每日任务
 		teacherDailyTask:"如有红色未完成的任务，请点击去完成每日任务吧",
 		//首页-班级互动

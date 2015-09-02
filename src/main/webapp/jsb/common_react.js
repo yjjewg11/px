@@ -310,14 +310,6 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 			  alert("请勾选复选框！");
 			  return;
 		  }
-		  if(m=="getRole"){
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个！");
-					return;
-				};
-				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList(1));
-				  return;
-		  }
 		  btn_click_userinfo(m,uuids,usernames);
 	  },
 	  handleChange_checkbox_all:function(){
@@ -332,19 +324,29 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
     React.createElement("div", {className: "header"}, 
     React.createElement("hr", null)
     ), 
-    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
+    
+React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+    
+    React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+ 	 React.createElement("div", {className: "am-fl"}, 
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+	    ), 
+	    React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
 	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 	    ), 
-	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-	      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
-		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
+	    React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")
+		  ), 
+		  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+		  )
+		  )
 		  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
 	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
-
+  
+	  
     ), 
 	  
       React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -417,7 +419,6 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		   React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid}), 
 		    React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
-			  React.createElement(PxInput, {type: "hidden", id: "group_uuid", name: "group_uuid", value: ""}), 
 			   React.createElement("div", {className: "am-form-group"}, 
 			    React.createElement("hr", null), 
 		       React.createElement("label", {className: one_classDiv}, "手机号码:"), 
