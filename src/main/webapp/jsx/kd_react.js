@@ -3109,6 +3109,7 @@ var Classnews_show_byRight = React.createClass({
 			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
 			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
+			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}/>
 			    	</div>
 			    	</footer>
 			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -3200,7 +3201,7 @@ return (
 		      return (
 		    		  <li className="am-cf">
 		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
-				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span>
+				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span><G_check_disable_div_byRight type={98} uuid={event.uuid}/>
 		    		  </li>
 		    		  )
 		  })}
@@ -4325,6 +4326,10 @@ render: function() {
   		 	formdata.studentuuid="";		 	
   		    this.setState(this.loadData(formdata));
   	  },
+  	handleChange: function(v) {
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		    this.setState(this.loadData(formdata));
+	  },
   	  handleChange_type: function(v) {
   		 	var formdata=$('#editAccountsForm').serializeJson();
   		 	formdata.type=v;
@@ -4355,6 +4360,8 @@ render: function() {
   		if(!o.type){			
   			o.type="0";
   		};
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8s";
    return (
    		<div>
    		<div className="header">
@@ -4366,7 +4373,6 @@ render: function() {
    	    <div className="am-form-group">
    		<AMUIReact.Selected name="groupuuid"  onChange={this.handleChange_groupuuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid+""} />  	 			          
   	    </div> 
-   		<label htmlFor="type">收支类型:</label>
    		<div className="am-form-group">
     		<AMUIReact.Selected name="type" onChange={this.handleChange_type} btnWidth="200"  multiple= {false} data={this.props.type_list} btnStyle="primary" value={o.type+""} />  	 
     	    <br/>
@@ -4375,16 +4381,22 @@ render: function() {
     		<AMUIReact.Selected name="studentuuid"placeholder="学生选择" onChange={this.handleChange_studentuuid} btnWidth="200"  multiple= {false} data={o.tmp_studentList} btnStyle="primary" value={o.studentuuid+""} />  	 
           </div> 
    	    <br/>	    
-   	    <label htmlFor="accounts_timeStr">收支日期:</label>
+   	    <label htmlFor="accounts_timeStr"  className={one_classDiv}>收支日期:</label>
+   	  <div className={two_classDiv}>
    	    <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_time} showTimePicker={false}  onChange={this.handleChange}/>
-   	       <label htmlFor="title">内容:</label>
+   	  </div>
+   	    <label htmlFor="title" className={one_classDiv}>内容:</label>
+   	 <div className={two_classDiv}>
    	      <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
-   	      <br/>	
-   	       <label htmlFor="num">金额:</label>
+   	   </div>
+   	       <label htmlFor="num" className={one_classDiv}>金额:</label>
+   	    <div className={two_classDiv}>
    	      <input type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder=""/> 
-   	    <label htmlFor="description">备注:</label>
+   	      </div>
+   	    <label htmlFor="description" className={one_classDiv}>备注:</label>
+   	 <div className={two_classDiv}>
   	      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
-  	      <br/>
+  	    </div>
   	      <button type="button"  onClick={ajax_accounts_saveAndAdd_byRight}  className="am-btn am-btn-primary">保存继续</button>
    	      <button type="button"  onClick={ajax_accounts_save_byRight}  className="am-btn am-btn-primary">保存返回</button>
    	     </form>

@@ -35,12 +35,12 @@ public class AccountsService extends AbstractServcice {
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(accountsJsonform.getTitle())
 				|| accountsJsonform.getTitle().length() > 45) {
-			responseMessage.setMessage("Title不能为空！，且长度不能超过45位！");
+			responseMessage.setMessage("内容不能为空！，且长度不能超过45位！");
 			return false;
 		}
 
 		if (StringUtils.isBlank(accountsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 		
@@ -48,12 +48,12 @@ public class AccountsService extends AbstractServcice {
 				accountsJsonform.getAccounts_timeStr());
 
 		if (accounts_time == null) {
-			responseMessage.setMessage("accounts_time格式不正确");
+			responseMessage.setMessage("收支日期格式不正确");
 			return false;
 		}
 
 		if (accountsJsonform.getNum()==null) {
-			responseMessage.setMessage("Num不能为空！");
+			responseMessage.setMessage("金额不能为空！");
 			return false;
 		}
 		
@@ -104,7 +104,7 @@ public class AccountsService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(accountsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 		

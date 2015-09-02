@@ -40,7 +40,7 @@ public class CookbookPlanService extends AbstractServcice {
 	public boolean add(CookbookPlanJsonform cookbookPlanJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(cookbookPlanJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 

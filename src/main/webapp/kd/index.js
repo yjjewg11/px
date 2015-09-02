@@ -680,7 +680,7 @@ function menu_class_list_fn_byRight() {
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn_byRight() {
-	ajax_accounts_listByGroup_byRight(Store.getCurGroupByRight("KD_accounts_m").uuid);
+	ajax_accounts_listByGroup_byRight();
 };
 /*
  * (标头)学生列表

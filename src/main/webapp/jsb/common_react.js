@@ -10,13 +10,13 @@ var PxInput=AMUIReact.Input;
 
 /**
  * 全局模版-没有内容时显示
- * <G_check_disable_div_byRight />
+ * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
  */
 var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disable_div_byRight", 
 	  render: function() {
 		  if(G_user_hasRight("KD_announce_m")){
 			  return (
-					  React.createElement(AMR_Button, {amStyle: "danger", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid), round: true}, "屏蔽")
+					  React.createElement("button", {className: "am-margin-left-xs am-btn-sm am-btn-danger am-round", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
 			    );
 		  }else{
 			  return (
@@ -899,7 +899,8 @@ render: function() {
 		    		    React.createElement("header", {className: "am-comment-hd"}, 
 		    		      React.createElement("div", {className: "am-comment-meta"}, 
 		    		      	React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
-		    		      		React.createElement("time", null, event.create_time)
+		    		      		React.createElement("time", null, event.create_time), "|", 
+		    		      		React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid})
 		    		      )
 		    		    ), 
 		    		    React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 

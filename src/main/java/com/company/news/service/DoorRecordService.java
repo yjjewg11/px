@@ -43,7 +43,7 @@ public class DoorRecordService extends AbstractServcice {
 	public boolean insert(DoorRecordJsonform doorRecordJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(doorRecordJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -90,7 +90,7 @@ public class DoorRecordService extends AbstractServcice {
 	public boolean autobind(DoorUserJsonform doorUserJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(doorUserJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 

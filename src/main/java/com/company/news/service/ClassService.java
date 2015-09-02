@@ -61,7 +61,7 @@ public class ClassService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(classRegJsonform.getGroupuuid())) {
-			responseMessage.setMessage("groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 

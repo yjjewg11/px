@@ -50,7 +50,7 @@ public class CheckController extends AbstractRESTController {
 		}
 		try {
 			boolean flag;
-			flag = checkService.updateDisable(Integer.valueOf(typeStr), uuid, responseMessage);
+			flag = checkService.updateDisable(Integer.valueOf(typeStr), uuid, responseMessage,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

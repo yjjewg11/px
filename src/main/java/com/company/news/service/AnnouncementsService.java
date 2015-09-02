@@ -75,7 +75,7 @@ public class AnnouncementsService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -319,7 +319,6 @@ public class AnnouncementsService extends AbstractServcice {
 	 */
 	public boolean delete(String uuid, ResponseMessage responseMessage, HttpServletRequest request) {
 		if (StringUtils.isBlank(uuid)) {
-
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
@@ -332,6 +331,9 @@ public class AnnouncementsService extends AbstractServcice {
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return false;
 		}
+		
+		String desc="uuid="+uuid+"|title="+obj.getTitle();
+		this.addLog("announcements.delete","删除信息", desc, request);
 		 this.nSimpleHibernateDao.delete(obj);
 //		if (uuid.indexOf(",") != -1)// 多ID
 //		{

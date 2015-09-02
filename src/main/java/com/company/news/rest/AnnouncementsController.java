@@ -63,7 +63,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		try {
 			
 			if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-				responseMessage.setMessage("Groupuuid不能为空！");
+				responseMessage.setMessage("必须选择一个学校");
 				return "";
 			}
 
@@ -158,6 +158,8 @@ public class AnnouncementsController extends AbstractRESTController {
 					responseMessage,request);
 			if (!flag)
 				return "";
+			
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
