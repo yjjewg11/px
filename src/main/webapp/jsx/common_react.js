@@ -310,14 +310,6 @@ var Userinfo_EventsTable = React.createClass({
 			  alert("请勾选复选框！");
 			  return;
 		  }
-		  if(m=="getRole"){
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个！");
-					return;
-				};
-				  ajax_userinfo_getRole(uuids,usernames,$("input[name='group_uuid']").val(),Store.getRoleList(1));
-				  return;
-		  }
 		  btn_click_userinfo(m,uuids,usernames);
 	  },
 	  handleChange_checkbox_all:function(){
@@ -331,20 +323,30 @@ var Userinfo_EventsTable = React.createClass({
     <div>
     <div className="header">
     <hr />
-    </div>
-    <AMR_ButtonToolbar>
+    </div>  
+    
+<form id="editGroupForm" method="post" className="am-form">
+    
+    <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
+ 	 <div className="am-fl">
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
-	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
+	    </div> 
+	    <div className="am-fl am-margin-left-xs">
 	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
-	    </AMR_ButtonToolbar>
-	      <form id="editGroupForm" method="post" className="am-form">
-	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
-		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+	    </div> 
+	    <div className="am-fl am-margin-left-xs">
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>
+		  </div>
+		  <div className="am-fl am-margin-left-xs">
+		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+		  </div>
+		  </AMR_ButtonToolbar>
 		  </form>
 	  <hr/>
 	  <div className="am-form-group">
 	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-
+  
+	  
     </div>
 	  
       <AMR_Table {...this.props}>  
@@ -417,7 +419,6 @@ var Userinfo_edit = React.createClass({
 		   <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
 		    <PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="type"  value="1"/>
-			  <PxInput type="hidden" id="group_uuid" name="group_uuid"  value=""/>
 			   <div className= "am-form-group">
 			    <hr/>
 		       <label className={one_classDiv}>手机号码:</label>
