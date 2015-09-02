@@ -27,6 +27,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class GroupService extends AbstractServcice {
+	private static final String model_name = "组织机构模块";
 	@Autowired
 	private UserinfoService userinfoService;
 
@@ -415,6 +416,12 @@ public class GroupService extends AbstractServcice {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

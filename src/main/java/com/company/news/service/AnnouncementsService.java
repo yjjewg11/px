@@ -37,7 +37,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class AnnouncementsService extends AbstractServcice {
-	
+	private static final String model_name = "文章模块";
 	@Autowired
 	public PushMsgIservice pushMsgIservice;
 
@@ -378,6 +378,12 @@ public class AnnouncementsService extends AbstractServcice {
 
 	public void setPushMsgIservice(PushMsgIservice pushMsgIservice) {
 		this.pushMsgIservice = pushMsgIservice;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

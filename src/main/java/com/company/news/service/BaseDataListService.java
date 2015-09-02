@@ -20,7 +20,7 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class BaseDataListService extends AbstractServcice {
 	public static final int enable_default = 1;// 可用
-
+	private static final String model_name = "基础数据列表模块";
 	/**
 	 * 新增权限
 	 * 
@@ -163,6 +163,12 @@ public class BaseDataListService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return BaseDataListService.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

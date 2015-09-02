@@ -31,6 +31,7 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class ClassNewsService extends AbstractServcice {
 	public static final int USER_type_default = 0;// 0:老师
+	private static final String model_name = "互动模块";
 	@Autowired
 	private CountService countService;
 
@@ -296,5 +297,11 @@ public class ClassNewsService extends AbstractServcice {
 			warpVo(o,cur_user_uuid);
 		}
 		return list;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 }

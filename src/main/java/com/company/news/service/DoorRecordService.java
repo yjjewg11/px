@@ -23,6 +23,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class DoorRecordService extends AbstractServcice {
+	private static final String model_name = "门禁信息同步模块";
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -147,6 +148,12 @@ public class DoorRecordService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return DoorRecord.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

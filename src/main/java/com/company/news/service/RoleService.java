@@ -23,6 +23,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class RoleService extends AbstractServcice {
+	private static final String model_name = "角色模块";
 	/**
 	 * 新增角色
 	 * 
@@ -241,6 +242,12 @@ public class RoleService extends AbstractServcice {
 		String hql = "select roleuuid,useruuid from RoleUserRelation where groupuuid=? ";
 		// TODO Auto-generated method stub
 		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql, groupuuid);
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 

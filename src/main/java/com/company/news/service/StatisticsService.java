@@ -24,6 +24,8 @@ import com.company.news.vo.statistics.PieStatisticsVo;
 
 @Service
 public class StatisticsService extends AbstractServcice {
+	private static final String model_name = "静态统计模块";
+	
 	private static Logger logger = Logger.getLogger(StatisticsService.class);
 	private final static long threeDay = 3 * 24 * 60 * 60 * 1000;// 3天
 	private final static long oneWeek = 7 * 24 * 60 * 60 * 1000;// 一周
@@ -476,6 +478,12 @@ public class StatisticsService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return StatisticsService.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

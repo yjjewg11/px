@@ -30,7 +30,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class StudentBindService extends AbstractServcice {
-
+	private static final String model_name = "学生信息绑定模块";
 	/**
 	 * 用户注册
 	 * 
@@ -185,5 +185,11 @@ public class StudentBindService extends AbstractServcice {
 			return true;
 		
 		return false;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 }

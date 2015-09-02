@@ -36,7 +36,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class TeachingPlanService extends AbstractServcice {
-
+	private static final String model_name = "教学计划模块";
 	/**
 	 * 增加班级
 	 * 
@@ -171,6 +171,12 @@ public class TeachingPlanService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return User.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

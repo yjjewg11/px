@@ -25,6 +25,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class ClassNewsReplyService extends AbstractServcice {
+	private static final String model_name = "回复模块";
 	public static final int USER_type_default = 0;// 0:老师
 	/**
 	 * 增加班级
@@ -175,6 +176,12 @@ public class ClassNewsReplyService extends AbstractServcice {
 			warpVo(o,cur_user_uuid);
 		}
 		return list;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }
