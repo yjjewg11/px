@@ -410,10 +410,12 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 console.log("num1",num);
 			 ajax_classnews_list_div(num); 	
 		 }
 	  },
+	  uphd: function() {
+		  ajax_classnews_list_div(1);
+		  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -428,6 +430,7 @@ render: function() {
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
 		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
 		    fn, 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.uphd.bind(this), round: true}, "刷新互动"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    ), 
 		  React.createElement("hr", null), 	  
@@ -3027,10 +3030,7 @@ render: function() {
 	}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		  React.createElement(AMUIReact.ButtonToolbar, null, 
-		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
-		    fn
-		    ), 
+		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
 		  React.createElement("hr", null), 	  
 		    
 		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
@@ -3943,21 +3943,6 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 				  }
 				 ajax_flowername_download_byRight(this.props.group_uuid,uuids);
 			 }
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  
-			 this.props.handleClick(m,this.props.group_uuid,uuids);
 		 }
 	 },
  handleChange_checkbox_all:function(){
@@ -3971,8 +3956,6 @@ render: function() {
   React.createElement("div", null, 
   React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_class"), round: true}, "添加班级"), 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit_class"), round: true}, "编辑"), 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "graduate_class"), round: true}, "毕业"), 
 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "flower_name"), round: true}, "下载花名册")
 	  ), 
 	  React.createElement("hr", null), 
@@ -4078,6 +4061,7 @@ render: function() {
    * @class_students_manage_onClick 添加学生按钮的方法
    * @add：添加学生
    * @class：查看课程;
+   *   		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"graduate_class",o.groupuuid,o.uuid)} round>毕业</AMR_Button>
    * */
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
@@ -4085,13 +4069,17 @@ render: function() {
   	 componentDidMount:function(){
   			 G_img_down404();
   	  },
+  	handleClick: function(m,groupuuid,uuid) {		 
+  		btn_click_class_list_byRight(m,groupuuid,uuid);
+	 },
   	render: function() {
   		var o=this.props.formdata;
   	  return (
   	  React.createElement("div", null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
   		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid), round: true}, "添加学生"), 
-  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name), round: true}, "查看课程")
+  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name), round: true}, "查看课程"), 
+  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "编辑")
   		    ), 
   		  React.createElement("hr", null), 
   		  React.createElement(AMR_Panel, null, 

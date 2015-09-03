@@ -410,10 +410,12 @@ var Classnews_Div_list = React.createClass({
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 console.log("num1",num);
 			 ajax_classnews_list_div(num); 	
 		 }
 	  },
+	  uphd: function() {
+		  ajax_classnews_list_div(1);
+		  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -428,6 +430,7 @@ render: function() {
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
 		    {fn}
+		    <AMUIReact.Button amStyle="primary" onClick={this.uphd.bind(this)} round>刷新互动</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
@@ -3940,21 +3943,6 @@ var Class_EventsTable_byRight = React.createClass({
 				  }
 				 ajax_flowername_download_byRight(this.props.group_uuid,uuids);
 			 }
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				　if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
-				});
-			  if(!uuids){
-				  alert("请勾选复选框！");
-				  return;
-			  }
-			  
-			 this.props.handleClick(m,this.props.group_uuid,uuids);
 		 }
 	 },
  handleChange_checkbox_all:function(){
@@ -3968,8 +3956,6 @@ render: function() {
   <div>
   <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMR_Button>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "edit_class")} round>编辑</AMR_Button>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "graduate_class")} round>毕业</AMR_Button>
 	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "flower_name")} round>下载花名册</AMR_Button>
 	  </AMR_ButtonToolbar>
 	  <hr/>
@@ -4075,6 +4061,7 @@ render: function() {
    * @class_students_manage_onClick 添加学生按钮的方法
    * @add：添加学生
    * @class：查看课程;
+   *   		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"graduate_class",o.groupuuid,o.uuid)} round>毕业</AMR_Button>
    * */
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
@@ -4082,6 +4069,9 @@ render: function() {
   	 componentDidMount:function(){
   			 G_img_down404();
   	  },
+  	handleClick: function(m,groupuuid,uuid) {		 
+  		btn_click_class_list_byRight(m,groupuuid,uuid);
+	 },
   	render: function() {
   		var o=this.props.formdata;
   	  return (
@@ -4089,6 +4079,7 @@ render: function() {
   	  <AMR_ButtonToolbar>
   		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
   		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
   		    </AMR_ButtonToolbar>
   		  <hr/>
   		  <AMR_Panel>
