@@ -326,8 +326,11 @@ function ajax_getUserinfo(isInit) {
  * */
 var MessageTimer={
 		create_time:null,
+		init:false,
 	start:function(){
 		if(G_CallPhoneFN.isPhoneApp())return;
+		if(this.init)return;
+		this.init=true;
 		MessageTimer.do_loop();
 	},
 	do_loop:function(){
@@ -1412,6 +1415,7 @@ function ajax_parentContact_tels(tels){
  * */
 function ajax_Teacher_listByGroup(groupuuid,name) {
 	  if(!name)name="";
+	  if(!groupuuid)groupuuid="";
 	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
 	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
 	$.AMUI.progress.start();

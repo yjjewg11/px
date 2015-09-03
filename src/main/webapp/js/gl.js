@@ -240,7 +240,22 @@ function loadJS(url,callback,charset)
  */
 var  Queue={
 		isBack:false,
+		/**
+		 * 如果是点击显示原图模式,回退时,操作是关闭原图
+		 * @returns {Boolean}
+		 */
+		galleryDobackFN:function(){
+//			var tmp=$('.am-gallery');
+//			var aa=tmp.pureview();
+//			if(tmp&&tmp.$slides&&tmp.options&&tmp.options.active)
+//			 if (tmp.$slides.find('.' + tmp.options.active).size()>0) {
+//				 tmp.close();
+//				    return true;
+//				  }
+			return false;
+		},
 		doBackFN:function(){
+			if(Queue.galleryDobackFN())return;
 			//If it is not back after the operation, first throw away the current operation. To perform the last operation.
 			if(!this.isBack)this.pop();
 			this.isBack=true;

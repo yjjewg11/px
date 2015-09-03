@@ -29,7 +29,7 @@
 				};
 		
 		React.render(React.createElement(AMUIReact.Header,div_header_title_info), document.getElementById('div_header'));
-		MessageTimer.start();
+	
 	}
 function login_affter_init(){
 	Vo.init();
@@ -578,6 +578,8 @@ function index_init(){
 		    $.AMUI.fullscreen.request();
 		}
 	  ajax_getUserinfo(true);
+	  
+		MessageTimer.start();
 }
 
 //登录操作

@@ -504,7 +504,7 @@ public class UserinfoService extends AbstractServcice {
 				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 		if(StringUtils.isNotBlank(group_uuid)){
-			sql+="and t0.groupuuid='"+ group_uuid + "'";
+			sql+="and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
 		}
 		if(StringUtils.isNotBlank(name)){
 			sql+=" and {t1}.name like '%"+name+"%'";

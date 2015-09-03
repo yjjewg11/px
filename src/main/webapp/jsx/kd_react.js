@@ -2265,7 +2265,7 @@ var Class_student_look_info =React.createClass({
  * */
 var Teacher_info_tel = React.createClass({
 	  handleChange_selectgroup_uuid:function(val){
-		  ajax_Teacher_listByGroup(val,$('#sutdent_name').val());
+		  ajax_Teacher_listByGroup($("input[name='group_uuid']").val(),$('#sutdent_name').val());
 	  },
   render: function() {
     return (
