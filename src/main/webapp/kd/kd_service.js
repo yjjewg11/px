@@ -2367,48 +2367,48 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * 初始进入都为默认第一位
    * */ 
 //记录当前翻页的周数	  <h1>【{this.props.classname}】[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
-var g_cookbookPlan_week_point=0;
-function ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum){
-	if(!classuuid&&Store.getMyClassList().length>0)classuuid=Store.getMyClassList()[0].uuid;
-	var now=new Date();
-	if(weeknum){
-		now=G_week.getDate(now,weeknum*7);
-	}else{
-		g_cookbookPlan_week_point=0;
-	}
-	var begDateStr=G_week.getWeek0(now);
-	var endDateStr=G_week.getWeek6(now);
-  	Queue.push(function(){ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum);},"课程安排");
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/teachingplan/list.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				if(data.list==null)data.list=[];
-				React.render(React.createElement(Teachingplan_EventsTable_byRight, {
-					groupuuid:groupuuid,
-					classuuid:classuuid,
-					events: data.list,
-					weeknum:weeknum,
-					begDateStr:begDateStr,
-					endDateStr:endDateStr,
-					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		}
-	});
-};
+//var g_cookbookPlan_week_point=0;
+//function ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum){
+//	if(!classuuid&&Store.getMyClassList().length>0)classuuid=Store.getMyClassList()[0].uuid;
+//	var now=new Date();
+//	if(weeknum){
+//		now=G_week.getDate(now,weeknum*7);
+//	}else{
+//		g_cookbookPlan_week_point=0;
+//	}
+//	var begDateStr=G_week.getWeek0(now);
+//	var endDateStr=G_week.getWeek6(now);
+//  	Queue.push(function(){ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum);},"课程安排");
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/teachingplan/list.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+//		dataType : "json",
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				if(data.list==null)data.list=[];
+//				React.render(React.createElement(Teachingplan_EventsTable_byRight, {
+//					groupuuid:groupuuid,
+//					classuuid:classuuid,
+//					events: data.list,
+//					weeknum:weeknum,
+//					begDateStr:begDateStr,
+//					endDateStr:endDateStr,
+//					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
+//					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//					}), document.getElementById('div_body'));
+//				
+//			} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}
+//		}
+//	});
+//};
 ///*(课程安排)
 // * 班级详情内添加编辑课程等按钮方法判断;
 // * */ 
