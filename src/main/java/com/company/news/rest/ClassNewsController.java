@@ -22,6 +22,8 @@ import com.company.news.jsonform.ClassNewsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.ClassNewsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.ResponseMessage;
@@ -91,6 +93,7 @@ public class ClassNewsController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
+	@Deprecated
 	@RequestMapping(value = "/getClassNewsByClassuuid", method = RequestMethod.GET)
 	public String getClassNewsByClassuuid(ModelMap model,
 			HttpServletRequest request) {
@@ -146,7 +149,50 @@ public class ClassNewsController extends AbstractRESTController {
 		return "";
 	}
 	/**
-	 * 获取我的相关班级信息
+	 * 管理员-查询我管理学校的互动
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listClassNewsByAdmin", method = RequestMethod.GET)
+	public String listClassNewsByAdmin(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			User user = this.getUserInfoBySession(request);
+			pData.setPageSize(5);
+			String groups=RightUtils.getRightGroups(RightConstants.KD_announce_m, request);
+			if(StringUtils.isBlank(groups)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+			String groupuuid=request.getParameter("groupuuid");
+			if(StringUtils.isNotBlank(groupuuid)&&!groups.contains(groupuuid)){
+				responseMessage.setMessage("选择的幼儿园没有权限");
+				return "";
+			}
+			if(StringUtils.isNotBlank(groupuuid)){
+				groups=groupuuid;
+			}
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAdmin(groups,user, pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list,
+					pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	/**
+	 * 获取我的关联学校-的互动
 	 * 
 	 * @param model
 	 * @param request
@@ -159,11 +205,26 @@ public class ClassNewsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		String type=request.getParameter("type");
 		try {
+			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			User user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
-			PageQueryResult pageQueryResult = classNewsService.getAllClassNews(user,type,
-					request.getParameter("classuuid"), pData);
+			String groups=this.getMyGroupUuidsBySession(request);
+			if(StringUtils.isBlank(groups)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+			String groupuuid=request.getParameter("groupuuid");
+			if(StringUtils.isNotBlank(groupuuid)&&!groups.contains(groupuuid)){
+				responseMessage.setMessage("非法请求:选择的幼儿园没有权限");
+				return "";
+			}
+			if(StringUtils.isNotBlank(groupuuid)){
+				groups=groupuuid;
+			}
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByMygroup(groups,user, pData);
+			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

@@ -14,6 +14,7 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
+import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsJsonform;
@@ -52,18 +53,27 @@ public class ClassNewsService extends AbstractServcice {
 //		}
 
 		if (StringUtils.isBlank(classNewsJsonform.getClassuuid())) {
-			responseMessage.setMessage("必须选择一个学校");
+			responseMessage.setMessage("必须选择一个班级");
 			return false;
 		}
+		
+		PClass pClass=(PClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());
 
+		if(pClass==null){
+			responseMessage.setMessage("选择的班级不存在");
+			return false;
+		}
 		ClassNews cn = new ClassNews();
 
 		BeanUtils.copyProperties(cn, classNewsJsonform);
+		cn.setGroupuuid(pClass.getGroupuuid());
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		cn.setReply_time(TimeUtils.getCurrentTimestamp());
 		cn.setUsertype(USER_type_default);
 		cn.setStatus(SystemConstants.Check_status_fabu);
+		
+		
 		// 有事务管理，统一在Controller调用时处理异常
 		PxStringUtil.addCreateUser(user, cn);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
@@ -303,5 +313,39 @@ public class ClassNewsService extends AbstractServcice {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	public PageQueryResult listClassNewsByAdmin(String groups,User user,
+			PaginationData pData) {
+		String hql = "from ClassNews where status=0 ";
+		if (StringUtils.isNotBlank(groups))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+	
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		List<ClassNews> list=pageQueryResult.getData();
+		this.warpVoList(list, user.getUuid());
+		
+		return pageQueryResult;
+	}
+
+	public PageQueryResult listClassNewsByMygroup(String groups, User user,
+			PaginationData pData) {
+		String hql = "from ClassNews where status=0 ";
+		if (StringUtils.isNotBlank(groups))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+	
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		List<ClassNews> list=pageQueryResult.getData();
+		this.warpVoList(list, user.getUuid());
+		
+		return pageQueryResult;
 	}
 }

@@ -3031,10 +3031,7 @@ render: function() {
 	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-		  <AMUIReact.ButtonToolbar>
-		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
-		    {fn}
-		    </AMUIReact.ButtonToolbar>
+		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
 		  <hr/>	  
 		    
 		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    

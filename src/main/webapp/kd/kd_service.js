@@ -1952,11 +1952,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   	g_classnews_pageNo_point=pageNo;
   	var classnews_class_list=Store.getMyClassList();
   	$.AMUI.progress.start();
-  	if(type==1){
-  	  	url =hostUrl + "rest/classnews/getClassNewsByClassuuid.json";	
-  	}else{
-  		url =hostUrl + "rest/classnews/getAllClassNews.json";
-  	}
+  	url =hostUrl + "rest/classnews/listClassNewsByAdmin.json";
 
   	$.ajax({
   		type : "GET",
