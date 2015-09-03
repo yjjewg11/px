@@ -642,15 +642,30 @@ function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
  * */
 function menu_teachingplan_list_fn_byRight(){
 	var groupList=Store.getGroupByRight("KD_teachingplan_m");
-	//我的主页
-	var classList=Store.getMyClassList();
-	var classuuid;
-	if(!classList||classList.length==0){
-		classuuid=null;
-	}else{
-		classuuid=classList[0].uuid;
+	
+	if(!groupList||groupList.length==0){
+		alert("没有权限。");
+		return;
 	}
-	ajax_teachingplan_listByClass_byRight(groupList.uuid,classuuid);
+	
+	groupuuid=groupList[0].uuid;
+	
+	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
+		groupuuid:groupuuid,
+		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	
+	return;
+//	//我的主页
+//	var classList=Store.getMyClassList();
+//	var classuuid;
+//	if(!classList||classList.length==0){
+//		classuuid=null;
+//	}else{
+//		classuuid=classList[0].uuid;
+//	}
+//	ajax_teachingplan_listByClass_byRight(groupList.uuid,classuuid);
 }
 
 

@@ -282,11 +282,7 @@ var Div_userinfo_reg = React.createClass({
 			   </div>	  
 			   <form id="regform" method="post" className="am-form">
 		         <PxInput type="hidden" name="type"  value="1"/>
-		          <div className= "am-form-group">				       
-				  <label className={one_classDiv}>手机号码:</label>
-				 <div className={two_classDiv}>
-				<PxInput type="text" name="tel" id="tel"/>
-			   </div>			     
+		          <div className= "am-form-group">				       		     
 			    <label className={one_classDiv}>手机号码:</label>
 				 <div className={two_classDiv}>
 				  <PxInput type="text" name="tel" id="tel"/>
@@ -3546,43 +3542,142 @@ render: function() {
 * @add:添加班级课程；
 * @pre:上周；
 * @next:下一周；
+* <Teachingplan_EventsTable_byRight />
+* React.render(React.createElement(Teachingplan_EventsTable_byRight, {
+					groupuuid:groupuuid,
+					classuuid:classuuid,
+					events: data.list,
+					weeknum:weeknum,
+					begDateStr:begDateStr,
+					endDateStr:endDateStr,
+					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
+					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById('div_body'));
 * */
 var Teachingplan_EventsTable_byRight = React.createClass({
-	handleClick: function(m,uuid,groupuuid,classuuid) {
-           if(m=="pre"){
-				 ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,--g_cookbookPlan_week_point);
-				 return;
-			 }else if(m=="next"){
-				 ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,++g_cookbookPlan_week_point);
-				 return;
-			 }
+	
+getInitialState: function() {
+		var classList=Store.getChooseClass(this.props.groupuuid);
+		var classuuid =null;
+		if(classList&&classList.length>0){
+			classuuid=classList[0].uuid;
+		}
+		var obj= {
+				groupuuid:this.props.groupuuid,
+				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+				classuuid:classuuid,
+		    	pageNo:0,
+		    	list: []
+		    };
+	//	this.ajax_list(obj);
+	    return obj;
+	   
 	  },
-	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	 
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  var classList=Store.getChooseClass(this.props.groupuuid);
+			var classuuid =null;
+			if(classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+		  var obj= {
+				  groupuuid:nextProps.groupuuid,
+					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+					classuuid:classuuid,
+			    	pageNo:0,
+			    	list: []
+				 
+			    };
+				
+			obj=this.ajax_list(obj);
+		  this.setState(obj);
+		},
+		 ajax_callback:function(list){
+			  this.state.list=list;
+			  this.setState(this.state);
+		  },
+	 ajax_list:function(obj){
+		 
+		 var now=new Date();
+		  	now=G_week.getDate(now,obj.pageNo*7);
+		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
+		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
+		var that=this;
+		 $.AMUI.progress.start();
+			var url = hostUrl + "rest/teachingplan/list.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						if(data.list==null)data.list=[];
+						that.ajax_callback(data.list);						
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				}
+			});		
+	},
+	pageClick: function(m) {
+		 var obj=this.state;
+		 if(m=="pre"){
+			 obj.pageNo=obj.pageNo-1;
+			 this.ajax_list(obj);
+			 return;
+		 }else if(m=="next"){
+			 obj.pageNo=obj.pageNo+1;
+			 this.ajax_list(obj);
+			 return;
+		 }
+	},
+
+	handleChange_selectgroup: function(val) {
+		this.state.groupuuid=val;
+		var classList=Store.getChooseClass(this.state.groupuuid);
+		var classuuid =null;
+		if(classList&&classList.length>0){
+			classuuid=classList[0].uuid;
+		}
+		this.state.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
+		 this.state.classuuid=classuuid;
+		 this.ajax_list(this.state); 
+    },
+    handleChange_selectclass: function(val) {
+    	 this.state.classuuid=val;
+		 this.ajax_list(this.state);   
+    },
+	componentDidMount: function() {
+		this.ajax_list(this.state); 
 	  },
-//	  handleChange_selectgroup_uuid:function(){
-//		  ajax_announce_listByGroup($('#selectgroup_uuid').val());
-//	  },
-		handleChange_selectgroup: function(val) {
-			this.props.classuuid="";
-			ajax_teachingplan_listByClass_byRight(val,this.props.classuuid,this.props.weeknum);  
-	    },
-	    handleChange_selectclass: function(val) {
-			ajax_teachingplan_listByClass_byRight(this.props.groupuuid,val,this.props.weeknum);  
-	    },
+	   
 render: function() {
+	var weeknum=this.state.pageNo;
+	var now=new Date();
+	if(weeknum){
+		now=G_week.getDate(now,weeknum*7);
+	}else{
+		g_cookbookPlan_week_point=0;
+	}
+	var begDateStr=G_week.getWeek0(now);
+	var endDateStr=G_week.getWeek6(now);
 return (
 <div>
 <div className="header">
 	<hr />
 	</div>
 <AMR_ButtonToolbar>
-<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre",null,this.props.groupuuid,this.props.classuuid)} round>上周</AMR_Button>
-<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next",null,this.props.groupuuid,this.props.classuuid)} round>下周</AMR_Button>
-  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
-  <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={this.props.classuuid}/>    
+<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")} round>上周</AMR_Button>
+<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>
+  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.state.groupuuid}/> 
+  <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.state.classList} btnStyle="primary" value={this.state.classuuid}/>    
 </AMR_ButtonToolbar>
-  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
+  <h1>[{begDateStr} 到 {endDateStr}]</h1>
 	  <hr/>
 <AMR_Table {...this.props}>  
   <thead> 
@@ -3593,7 +3688,7 @@ return (
     </tr> 
   </thead>
   <tbody>
-    {this.props.events.map(function(event) {
+    {this.state.list.map(function(event) {
       return (<Teachingplan_EventRow_byRight  event={event} />);
     })}
   </tbody>
@@ -3627,45 +3722,6 @@ var Teachingplan_EventRow_byRight = React.createClass({
 	}
 	});
 
-///*
-//*<课程安排>班级详情添加与编辑内容绘制;
-//* @add:添加班级课程；
-//* @pre:上周；
-//* @next:下一周；
-//* */
-//var Teachingplan_edit_byRight = React.createClass({ 
-//	 getInitialState: function() {
-//		    return this.props.formdata;
-//		  },
-//	 handleChange: function(event) {
-//		    this.setState($('#editTeachingplanForm').serializeJson());
-//	  },
-//render: function() {
-//	  var o = this.state;
-//return (
-//		<div>
-//		<div className="header">
-//		  <hr />
-//		</div>
-//		<div className="am-g">
-//		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-//		  <form id="editTeachingplanForm" method="post" className="am-form">
-//		<input type="hidden" name="uuid"  value={o.uuid}/>
-//		<input type="hidden" name="classuuid"  value={o.classuuid}/>
-//		 <label htmlFor="name">日期:</label>
-//		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
-//		      <br/>
-//	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
-//		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
-//		      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>
-//	 </form>
-//	     </div>
-//	   </div>
-//	   
-//	   </div>
-//);
-//}
-//});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
