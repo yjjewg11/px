@@ -430,7 +430,7 @@ render: function() {
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
 		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
 		    fn, 
-		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.uphd.bind(this), round: true}, "刷新互动"), 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.uphd.bind(this), round: true}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    ), 
 		  React.createElement("hr", null), 	  
@@ -3022,15 +3022,12 @@ var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	var  fn;
-	if(this.type==1){
-		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",2), round: true}, "其他班级")
-	}else{
-		fn=React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"oth",1), round: true}, "我的班级")
-	}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
+		  React.createElement(AMUIReact.ButtonToolbar, null, 
+"+      ", React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
+		    React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
+		    ), 
 		  React.createElement("hr", null), 	  
 		    
 		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    

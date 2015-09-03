@@ -430,7 +430,7 @@ render: function() {
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
 		    {fn}
-		    <AMUIReact.Button amStyle="primary" onClick={this.uphd.bind(this)} round>刷新互动</AMUIReact.Button>
+		    <AMUIReact.Button amStyle="primary" onClick={this.uphd.bind(this)} round>刷新</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
@@ -3022,15 +3022,12 @@ var Classnews_Div_list_byRight = React.createClass({
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	var  fn;
-	if(this.type==1){
-		fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",2)} round>其他班级</AMUIReact.Button>
-	}else{
-		fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",1)} round>我的班级</AMUIReact.Button>
-	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+		  <AMUIReact.ButtonToolbar>
++		    <AMUIReact.Button amStyle="primary" onClick={this.refresh_data.bind(this)} round>刷新</AMUIReact.Button>
+		    <G_help_popo  msg={G_tip.Classnews_admin}/> 
+		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  
 		    
 		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    

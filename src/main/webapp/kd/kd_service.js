@@ -1950,14 +1950,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   	var url;
   	if(!pageNo)pageNo=1;
   	g_classnews_pageNo_point=pageNo;
-  	var classnews_class_list=Store.getMyClassList();
   	$.AMUI.progress.start();
   	url =hostUrl + "rest/classnews/listClassNewsByAdmin.json";
 
   	$.ajax({
   		type : "GET",
   		url : url,
-    		data : {classuuid:"",pageNo:pageNo},
+    		data : {pageNo:pageNo},
   		dataType : "json",
 //  		async: false,
   		success : function(data) {
@@ -1965,7 +1964,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   			if (data.ResMsg.status == "success") {
   				React.render(React.createElement(Classnews_EventsTable_byRight, {
   					events: data.list,
-  					class_list:G_selected_dataModelArray_byArray(classnews_class_list,"uuid","name"),
   					handleClick:btn_click_classnews,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					}), document.getElementById(list_div));
