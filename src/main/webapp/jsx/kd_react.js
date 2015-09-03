@@ -419,9 +419,10 @@ var Classnews_Div_list = React.createClass({
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+	console.log("我的班级",this.props);
 	var  fn;
 	if(this.type==1){
-	fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",2)} round>其他班级</AMUIReact.Button>
+	fn=<AMUIReact.Button amStyle="warning" onClick={this.handleClick.bind(this,"oth",2)} round>其他班级</AMUIReact.Button>
 	}else{
 	fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",1)} round>我的班级</AMUIReact.Button>
 	}
@@ -1976,14 +1977,13 @@ var Class_students_show= React.createClass({
 	  handleChange_selectgroup_uuid:function(val){
 		  react_ajax_class_students_manage(val,"show");
 	  },
-	  handleClick:function(m,groupuuid){
-			 btn_click_class_list(m,groupuuid);
+	  handleClick:function(m,groupuuid,uuid){
+		  btn_click_class_list(m,groupuuid,uuid); 			
 	  },
 	  showTeachingplanClick:function(classuuid){
 		  G_myCurClassuuid=classuuid;
 		  menu_teachingplan_dayShow_fn();
 	  },
-	  
 	render: function() {
 		var o=this.props.formdata;
 	  return (
@@ -1993,8 +1993,9 @@ var Class_students_show= React.createClass({
 		  	  <AMR_ButtonToolbar>
 		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
 	  		    <AMR_Button amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
-	  		    <AMR_Button amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.uuid)} round>添加学生</AMR_Button>
-	  		    <AMR_Button  onClick={this.handleClick.bind(this,"addclass",o.groupuuid)} round>添加班级</AMR_Button>
+	  		    <AMR_Button amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} round>添加学生</AMR_Button>
+	  		    <AMR_Button  onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} round>添加班级</AMR_Button>
+	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>班级编辑</AMR_Button>
 	  		    <G_help_popo  msg={G_tip.class_show} />
 	  		    </AMR_ButtonToolbar>
 			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
