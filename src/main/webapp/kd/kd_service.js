@@ -1785,10 +1785,18 @@ function react_ajax_favorites_show(type,reluuid){
   * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
   * */
 function ajax_announce_listByGroup_byRight(groupuuid){
+	var grouplist=Store.getGroupByRight("KD_announce_m");
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+	if(!groupuuid){
+		groupuuid=grouplist[0].uuid;
+	}
 	React.render(React.createElement(Announcements_EventsTable_byRight, {
 		groupuuid:groupuuid,
 		pageNo:1,
-		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name"),
+		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 		events: [],
 		type:announce_types,
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -2930,6 +2938,14 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 在kd_react
   * */
  function ajax_accounts_listByGroup_byRight(groupuuid) {
+	var grouplist= Store.getGroupByRight("KD_accounts_m");
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+	if(!groupuuid){
+		groupuuid=grouplist[0].uuid;
+	}
  	Queue.push(function(){ajax_accounts_listByGroup_byRight(groupuuid);},"收支记录");
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
@@ -2943,7 +2959,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Accounts_EventsTable_byRight, {
  					group_uuid:groupuuid,
- 					group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
+ 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
  					events: data.list,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  					}), document.getElementById('div_body'));
@@ -2982,7 +2998,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  if(!formdata.studentuuid)formdata.studentuuid="";
  	React.render(React.createElement(Accounts_edit_byRight,{
  			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
- 			group_list:G_selected_dataModelArray_byArray(Store.getCurGroupByRight("KD_accounts_m"),"uuid","brand_name"),
+ 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_accounts_m"),"uuid","brand_name"),
  			formdata:formdata
  			}),
  			document.getElementById('div_body'));
@@ -3006,8 +3022,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
              url:hostUrl + "rest/accounts/save.json",
              cbFN:function(data){
              	G_msg_pop("保存成功!继续添加.");
-             	 var objectForm = $('#editAccountsForm').serializeJson();
-             	 $("input[name=num]").val("");
+             	// var objectForm = $('#editAccountsForm').serializeJson();
+             	 //$("input[name=num]").val("");
              }
              };
  G_ajax_abs_save(opt);
@@ -3094,7 +3110,14 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  var g_teachingjudge_point=0;
  function ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type) {
  	Queue.push(function(){ ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
- 	  if(!groupuuid)groupuuid=Store.getCurGroupByRight("KD_teachingjudge_q").uuid;	  
+	var grouplist=Store.getGroupByRight("KD_teachingjudge_q");  
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+	if(!groupuuid){
+		groupuuid=grouplist[0].uuid;
+	}
  	  if(!type)type="";
  	  if(!teacher_name)teacher_name="";	
  		var now=new Date();
@@ -3102,7 +3125,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  if(!endDateStr)endDateStr=G_week.getDateStr(now,0);
  		$.AMUI.progress.start();
  		var url = hostUrl + "rest/teachingjudge/query.json";
- 		var grouplist=Store.getGroupByRight("KD_teachingjudge_q");
+ 	
  		$.ajax({          
  			type : "GET",  
  			url : url,
@@ -3132,9 +3155,16 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 
 //幼儿园用户授权
 function menu_kd_roleUser_list_fn() {
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+	if(!groupuuid){
+		groupuuid=grouplist[0].uuid;
+	}
 	Queue.push(menu_kd_roleUser_list_fn,"授权");
 	var opt={
-			groupuuid:Store.getCurGroup().uuid,
+			groupuuid:groupuuid,
 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
 			role_list:Store.getRoleList(1)
 		};

@@ -42,7 +42,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class ClassService extends AbstractServcice {
-	
+	private static final String model_name = "班级模块";	
 
 	/**
 	 * 增加班级
@@ -61,7 +61,7 @@ public class ClassService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(classRegJsonform.getGroupuuid())) {
-			responseMessage.setMessage("groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -330,6 +330,13 @@ public class ClassService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return User.class;
+	}
+
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

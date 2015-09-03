@@ -27,7 +27,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class RightService extends AbstractServcice {
-	
+	private static final String model_name = "权限模块";
 	/**
 	 * 
 	 * @param user
@@ -216,6 +216,12 @@ public class RightService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return RightService.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 	
 }

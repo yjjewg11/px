@@ -30,7 +30,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class StudentService extends AbstractServcice {
-
+	private static final String model_name = "学生模块";
 	/**
 	 * 用户注册
 	 * 
@@ -434,6 +434,12 @@ public class StudentService extends AbstractServcice {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		
 		return true;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

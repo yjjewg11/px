@@ -18,7 +18,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class PushMsgDeviceService extends AbstractServcice {
-
+	private static final String model_name = "PushMsgDeviceService模块";
 	/**
 	 * 增加
 	 * 
@@ -65,5 +65,12 @@ public class PushMsgDeviceService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 }

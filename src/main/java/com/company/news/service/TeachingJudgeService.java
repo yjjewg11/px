@@ -22,6 +22,7 @@ import com.company.news.entity.User4Q;
  */
 @Service
 public class TeachingJudgeService extends AbstractServcice {
+	private static final String model_name = "教师评价模块";
 	private static Logger logger = Logger.getLogger(TeachingJudgeService.class);
 
 
@@ -120,6 +121,12 @@ public class TeachingJudgeService extends AbstractServcice {
 			warpVo(o);
 		}
 		return list;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

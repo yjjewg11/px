@@ -62,7 +62,7 @@ public class AccountsController extends AbstractRESTController {
 		
 		try {
 			if (StringUtils.isBlank(accountsJsonform.getGroupuuid())) {
-				responseMessage.setMessage("groupuuid不能为空！");
+				responseMessage.setMessage("必须选择一个学校");
 				return "";
 			}
 			
@@ -114,7 +114,7 @@ public class AccountsController extends AbstractRESTController {
 			String groupuuid= request.getParameter("groupuuid");
 			
 			if (StringUtils.isBlank(groupuuid)) {
-				responseMessage.setMessage("groupuuid不能为空！");
+				responseMessage.setMessage("必须选择一个学校");
 				return "";
 			}
 			

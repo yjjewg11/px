@@ -10,13 +10,13 @@ var PxInput=AMUIReact.Input;
 
 /**
  * 全局模版-没有内容时显示
- * <G_check_disable_div_byRight />
+ * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
  */
 var G_check_disable_div_byRight = React.createClass({ 
 	  render: function() {
 		  if(G_user_hasRight("KD_announce_m")){
 			  return (
-					  <AMR_Button amStyle="danger" onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} round>屏蔽</AMR_Button>
+					  <button  className="am-margin-left-xs am-btn-sm am-btn-danger am-round" onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
 			    );
 		  }else{
 			  return (
@@ -899,7 +899,8 @@ render: function() {
 		    		    <header className="am-comment-hd">
 		    		      <div className="am-comment-meta">
 		    		      	<a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
-		    		      		<time>{event.create_time}</time>
+		    		      		<time>{event.create_time}</time>|
+		    		      		<G_check_disable_div_byRight type={98} uuid={event.uuid}/>
 		    		      </div>
 		    		    </header>
 		    		    <div className="am-comment-bd am-comment-flip am-inline">

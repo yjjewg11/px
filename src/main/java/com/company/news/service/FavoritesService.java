@@ -27,7 +27,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class FavoritesService extends AbstractServcice {
-
+	private static final String model_name = "收藏模块";
 
 	/**
 	 * 增加
@@ -190,5 +190,11 @@ public class FavoritesService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 }

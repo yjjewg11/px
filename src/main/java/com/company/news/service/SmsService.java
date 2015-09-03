@@ -22,6 +22,8 @@ import com.ucpaas.restDemo.client.JsonReqClient;
 
 @Service
 public class SmsService extends AbstractServcice {
+	private static final String model_name = "短信模块";
+	
 	public static final int SMS_TYPE_USER = 1;// 家长类型
 	@Autowired
 	private UserinfoService userinfoService;
@@ -183,6 +185,12 @@ public class SmsService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return TelSmsCode.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

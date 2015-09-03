@@ -31,6 +31,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class MessageService extends AbstractServcice {
+	private static final String model_name = "消息模块";
 	public static final int announcements_isread_yes = 1;// 已读
 	public static final int announcements_isread_no = 0;// 未读
 	public static final int announcements_isdelete_yes = 1;// 已读
@@ -301,6 +302,11 @@ public class MessageService extends AbstractServcice {
 			warpVo(o);
 		}
 		return list;
+	}
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

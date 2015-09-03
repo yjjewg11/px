@@ -22,8 +22,7 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class AccountsService extends AbstractServcice {
 	public static final int accounts_type_general = 0;// 默认公开通知
-
-
+	private static final String model_name = "账目模块";
 	/**
 	 * 增加
 	 * 
@@ -36,12 +35,12 @@ public class AccountsService extends AbstractServcice {
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(accountsJsonform.getTitle())
 				|| accountsJsonform.getTitle().length() > 45) {
-			responseMessage.setMessage("Title不能为空！，且长度不能超过45位！");
+			responseMessage.setMessage("内容不能为空！，且长度不能超过45位！");
 			return false;
 		}
 
 		if (StringUtils.isBlank(accountsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 		
@@ -49,12 +48,12 @@ public class AccountsService extends AbstractServcice {
 				accountsJsonform.getAccounts_timeStr());
 
 		if (accounts_time == null) {
-			responseMessage.setMessage("accounts_time格式不正确");
+			responseMessage.setMessage("收支日期格式不正确");
 			return false;
 		}
 
 		if (accountsJsonform.getNum()==null) {
-			responseMessage.setMessage("Num不能为空！");
+			responseMessage.setMessage("金额不能为空！");
 			return false;
 		}
 		
@@ -105,7 +104,7 @@ public class AccountsService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(accountsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 		
@@ -217,6 +216,12 @@ public class AccountsService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return Accounts.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

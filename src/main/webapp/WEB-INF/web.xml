@@ -124,7 +124,7 @@
 	</filter-mapping>
 	
 	<!-- 请求操作日志过滤器 -->
-		<filter>
+<!-- 		<filter>
 		<filter-name>operateFilter</filter-name>
 		<filter-class>
 			com.company.web.filter.OperateFilter
@@ -143,7 +143,7 @@
 	<filter-mapping>
 		<filter-name>operateFilter</filter-name>
 		<url-pattern>/rest/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	
 	<session-config>
 		<session-timeout>14400</session-timeout>

@@ -19,7 +19,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class BaseDataTypeService extends AbstractServcice {
-
+	private static final String model_name = "基础数据类型模块";
 	/**
 	 * 新增权限
 	 * 
@@ -177,6 +177,12 @@ public class BaseDataTypeService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return BaseDataTypeService.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

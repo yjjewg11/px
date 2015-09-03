@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.SysexMessage;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,28 @@ public class ShareController extends AbstractRESTController {
 			}
 		}
 		/**
+		 * 获取所有幼儿园列表
+		 * 
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/allKDGroupList", method = RequestMethod.GET)
+		public String allKDGroupList(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			String uuid_not_in=SystemConstants.Group_uuid_wjd+",group_wj1,group_wj2";
+			String hql = "from Group4Q where type=1 and uuid not in("+DBUtil.stringsToWhereInValue(uuid_not_in)+")";
+			hql += " order by create_time asc";
+			PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+					.findByPaginationToHql(hql, pData);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+		}
+		/**
 		 * 获取精品文章列表
 		 * 
 		 * @param model
@@ -97,7 +120,7 @@ public class ShareController extends AbstractRESTController {
 					.addResponseMessageForModelMap(model);
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			
-			String hql = "from Announcements4Q where type="+SystemConstants.common_type_jingpinwenzhang;
+			String hql = "from Announcements4Q where status=0 and type="+SystemConstants.common_type_jingpinwenzhang;
 			hql += " order by create_time desc";
 			PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 					.findByPaginationToHql(hql, pData);
@@ -126,6 +149,7 @@ public class ShareController extends AbstractRESTController {
 					responseMessage.setMessage("数据不存在.");
 					return "";
 				}
+				
 				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
 				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getArticleByUuid(uuid));
 
@@ -192,6 +216,9 @@ public class ShareController extends AbstractRESTController {
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
 				return "/404";
 			}
 			model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
@@ -360,7 +387,7 @@ public class ShareController extends AbstractRESTController {
 		String uuid=request.getParameter("uuid");
 		Announcements a=null;
 		try {
-			String hql = "from Announcements where type= "+SystemConstants.common_type_zhaoshengjihua;
+			String hql = "from Announcements where status=0 and  type= "+SystemConstants.common_type_zhaoshengjihua;
 			if (StringUtils.isNotBlank(uuid)){
 				hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(uuid)+")";
 			}
@@ -372,6 +399,9 @@ public class ShareController extends AbstractRESTController {
 				return "/404";
 			}
 			a=(Announcements)list.get(0);
+			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
+					return "/404";
+			}
 			model.put("group",CommonsCache.get(a.getGroupuuid(), Group4Q.class));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(a.getUuid(), SystemConstants.common_type_zhaoshengjihua));
 		} catch (Exception e) {
@@ -384,5 +414,42 @@ public class ShareController extends AbstractRESTController {
 		model.addAttribute(RestConstants.Return_G_entity,a);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "/getRecruitBygroupuuid";
+	}
+	
+	private String _KDWebUrl="http://kd.wenjienet.com/px-rest/kd/index.html?v1";
+	/**
+	 * 获取老师web登录地址.
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getKDWebUrl", method = RequestMethod.GET)
+	public String getWebUrl(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			
+			if(_KDWebUrl==null){
+					List list=this.nSimpleHibernateDao
+							.getHibernateTemplate().find(
+									"select description from BaseDataList where typeuuid='KDWebUrl' and datakey=1");
+						String url="http://kd.wenjienet.com/px-rest/kd/index.html?v1";
+						if(list!=null&&list.size()>0){
+							_KDWebUrl=list.get(0)+"";
+						}else{
+							_KDWebUrl="http://kd.wenjienet.com/px-rest/kd/index.html?v1";
+						}
+			}
+			
+			model.put("url",_KDWebUrl);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
 	}
 }

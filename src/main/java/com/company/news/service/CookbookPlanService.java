@@ -28,7 +28,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class CookbookPlanService extends AbstractServcice {
-
+	private static final String model_name = "餐饮安排模块";
 	/**
 	 * 增加班级
 	 * 
@@ -40,7 +40,7 @@ public class CookbookPlanService extends AbstractServcice {
 	public boolean add(CookbookPlanJsonform cookbookPlanJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(cookbookPlanJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -248,6 +248,12 @@ public class CookbookPlanService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return CookbookPlan.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

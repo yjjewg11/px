@@ -23,6 +23,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class DoorRecordService extends AbstractServcice {
+	private static final String model_name = "门禁信息同步模块";
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -42,7 +43,7 @@ public class DoorRecordService extends AbstractServcice {
 	public boolean insert(DoorRecordJsonform doorRecordJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(doorRecordJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -89,7 +90,7 @@ public class DoorRecordService extends AbstractServcice {
 	public boolean autobind(DoorUserJsonform doorUserJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(doorUserJsonform.getGroupuuid())) {
-			responseMessage.setMessage("Groupuuid不能为空！");
+			responseMessage.setMessage("必须选择一个学校");
 			return false;
 		}
 
@@ -147,6 +148,12 @@ public class DoorRecordService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return DoorRecord.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }

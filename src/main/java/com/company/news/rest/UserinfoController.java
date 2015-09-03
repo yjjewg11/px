@@ -386,7 +386,9 @@ public class UserinfoController extends AbstractRESTController {
 		boolean noRight=true;
 		try {
 			String groupuuid=request.getParameter("groupuuid");
-			
+			String roleuuids=request.getParameter("roleuuids");
+			String useruuid=request.getParameter("useruuid");
+			String type=request.getParameter("type");
 			//平台管理员所有都可以修改.
 			if(noRight){
 				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request))noRight=false;
@@ -397,12 +399,15 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			
 			boolean flag = userinfoService.updateRoleRightRelation(
-					request.getParameter("roleuuids"),
-					request.getParameter("useruuid"),
-					request.getParameter("groupuuid"),
-					request.getParameter("type"),responseMessage);
+					roleuuids,
+					useruuid,
+					groupuuid,
+					type,responseMessage);
 			if (!flag)
 				return "";
+			
+			String desc="type="+type+"roleuuids="+roleuuids+"|groupuuid="+groupuuid+"|useruuid="+useruuid;
+			userinfoService.addLog("updateRoleByUsers","更新用户权限", desc, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -455,6 +460,8 @@ public class UserinfoController extends AbstractRESTController {
 					groupuuid,responseMessage,request);
 			if (!flag)
 				return "";
+			String desc="roleuuid="+roleuuid+"|groupuuid="+groupuuid+"|useruuids="+useruuids;
+			userinfoService.addLog("updateRoleByUsers","更新用户权限", desc, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -719,7 +726,8 @@ public class UserinfoController extends AbstractRESTController {
 					return "";
 				responseMessage.setMessage("修改成功");
 			}
-			
+			String desc=bodyJson;
+			userinfoService.addLog("saveByAdmin","添加用户", desc, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -752,6 +760,9 @@ public class UserinfoController extends AbstractRESTController {
 					responseMessage,request);
 			if (!flag)
 				return "";
+			
+			String desc="uuid="+request.getParameter("uuid");
+			userinfoService.addLog("deleteByAdmin","删除用户", desc, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

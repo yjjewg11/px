@@ -40,6 +40,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class UploadFileService extends AbstractServcice {
+	private static final String model_name = "文件上传模块";
 	private static Logger logger = Logger.getLogger(UploadFileService.class);
 
 	private static final String imgFormat = ".png";
@@ -402,6 +403,12 @@ public class UploadFileService extends AbstractServcice {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return UploadFile.class;
+	}
+
+	@Override
+	public String getEntityModelName() {
+		// TODO Auto-generated method stub
+		return this.model_name;
 	}
 
 }
