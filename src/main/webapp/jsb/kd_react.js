@@ -419,7 +419,6 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	console.log("我的班级",this.props);
 	var  fn;
 	if(this.type==1){
 	fn=React.createElement(AMUIReact.Button, {amStyle: "warning", onClick: this.handleClick.bind(this,"oth",2), round: true}, "其他班级")
@@ -1967,7 +1966,6 @@ render: function() {
 /*
 * 我的班级 show绘制2级界面班级选择绘制；
 * @show老师查看状态进入查看学生详情;
-* @handleClick:增加添加新班级按钮跳转-班级管理-添加班级方法
 * @Class_students_show（kd_service中服务器请求时调用）;
 * */
 var Class_students_show= React.createClass({displayName: "Class_students_show",
@@ -3544,18 +3542,6 @@ render: function() {
 * @add:添加班级课程；
 * @pre:上周；
 * @next:下一周；
-* <Teachingplan_EventsTable_byRight />
-* React.render(React.createElement(Teachingplan_EventsTable_byRight, {
-					groupuuid:groupuuid,
-					classuuid:classuuid,
-					events: data.list,
-					weeknum:weeknum,
-					begDateStr:begDateStr,
-					endDateStr:endDateStr,
-					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
 * */
 var Teachingplan_EventsTable_byRight = React.createClass({displayName: "Teachingplan_EventsTable_byRight",
 	
@@ -4072,14 +4058,33 @@ render: function() {
   	handleClick: function(m,groupuuid,uuid) {		 
   		btn_click_class_list_byRight(m,groupuuid,uuid);
 	 },
+	 handleChange_selectgroup: function(val) {
+		 var class_uuid;
+		 if(Store.getChooseClass(val).length>0){
+			 class_uuid=Store.getChooseClass(val)[0].uuid; 
+		 }else{
+			 class_uuid="";
+		 }
+		
+		 //document.getElementById("selectclass_uuid2").removeAttribute("selected"); 
+		 //document.getElementById("selectclass_uuid2").selectedIndex = 0;
+		 
+		 btn_click_class_kuang_byRight(class_uuid);
+	 },
+	 handleChange_selectclass: function(val) {		 
+		 btn_click_class_kuang_byRight(val)
+	 },	 
   	render: function() {
   		var o=this.props.formdata;
+  		console.log("o-----",o.uuid);
   	  return (
   	  React.createElement("div", null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
   		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid), round: true}, "添加学生"), 
   		    React.createElement(AMR_Button, {amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name), round: true}, "查看课程"), 
-  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "编辑")
+  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "编辑"), 
+  		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: o.groupuuid}), 
+  		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid2", name: "class_uuid", onChange: this.handleChange_selectclass.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
   		    ), 
   		  React.createElement("hr", null), 
   		  React.createElement(AMR_Panel, null, 

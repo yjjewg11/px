@@ -664,15 +664,6 @@ function menu_teachingplan_list_fn_byRight(){
 		}), document.getElementById('div_body'));
 	
 	return;
-//	//我的主页
-//	var classList=Store.getMyClassList();
-//	var classuuid;
-//	if(!classList||classList.length==0){
-//		classuuid=null;
-//	}else{
-//		classuuid=classList[0].uuid;
-//	}
-//	ajax_teachingplan_listByClass_byRight(groupList.uuid,classuuid);
 }
 
 
