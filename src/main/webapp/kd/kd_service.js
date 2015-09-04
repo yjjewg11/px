@@ -1051,7 +1051,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 	}
 	var list=Store.getGroupNoGroup_wjd();
 	if(!list||list.length==0){
-		G_msg_pop("没有加入学校,没得数据.")
+		G_msg_pop("没有加入学校,没得数据.");
 		return;
 	}
 	if(!groupuuid)groupuuid=list[0].uuid;
@@ -2943,12 +2943,14 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * <学生列表>（获取用户列表服务器请求）；
   * 各属性置空开始，方便后面的的机构、班级、名字搜索；
   * */
+ var g_student_query_point=1;
  function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
  	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
  	  if(!groupuuid)groupuuid="";
  	  if(!classuuid)classuuid="";
  	  if(!name)name="";
- 	  if(!pageNo)pageNo="";
+ 	  if(!pageNo)pageNo=1;
+ 	 g_student_query_point=pageNo;
  		$.AMUI.progress.start();
  		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
  		$.ajax({          
@@ -2962,6 +2964,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					group_uuid:groupuuid,
  	  					class_uuid:classuuid,
  	  					name:name,
+ 	  					totalCount:data.list.totalCount,
+ 	  					pageSize:data.list.pageSize,
  	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
