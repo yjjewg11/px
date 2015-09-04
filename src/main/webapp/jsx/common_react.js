@@ -395,8 +395,35 @@ var Userinfo_edit = React.createClass({
 			 $('#group_uuid').val(event);
 			    this.setState($('#editUserinfoForm').serializeJson());
 		  },
+	 handle_Change: function(tel,group_uuid) {
+		 var thit=this;
+		 $.AMUI.progress.start();
+			var url = hostUrl + "rest/userinfo/getUserBytel.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data:{tel:tel},
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+	     			if (data.ResMsg.status == "success") {
+	     				var o={
+		     					mygroup_uuids:group_uuid,
+		     					formdata:data.data,
+		     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+		     					sex:data.data.sex
+	     				}
+	     				console.log("o",o);
+	     				thit.setState(o);
+	     			} else {
+	     				alert("加载数据失败："+data.ResMsg.message);
+	     			}
+				}
+			});	
+	  },	  
   render: function() {
 	  var o = this.state;
+	 // console.log("this.state",this.state);
 	  var passwordDiv=null;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
@@ -427,7 +454,7 @@ var Userinfo_edit = React.createClass({
 		       <label className={one_classDiv}>手机号码:</label>
 		      <div className={two_classDiv}>
 		     <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
-		    <button type="button"  onClick={ajax_tel_btn_info}  className="am-btn am-btn-primary">号码检查</button>
+		    <button type="button"  onClick={this.handle_Change.bind(this,$('#tel').val(),o.group_uuid)}  className="am-btn am-btn-primary">号码检查</button>
 		    </div>
 		     <label className={one_classDiv}>姓名:</label>
 		      <div className={two_classDiv}>

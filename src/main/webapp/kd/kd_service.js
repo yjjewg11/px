@@ -2129,6 +2129,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
       * */
      function ajax_userinfo_edit(formdata,m,sex){
      	if(m=="add"){
+
      		React.render(React.createElement(Userinfo_edit,{
      			formdata:formdata,
      			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
@@ -2147,7 +2148,12 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      		success : function(data) {
      			$.AMUI.progress.done();
      			if (data.ResMsg.status == "success") {
-     				React.render(React.createElement(Userinfo_edit,{mygroup_uuids:data.mygroup_uuids,formdata:data.data,select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),sex:data.data.sex}), document.getElementById('div_body'));
+     				React.render(React.createElement(Userinfo_edit,{
+     					mygroup_uuids:data.mygroup_uuids,
+     					formdata:data.data,
+     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+     					sex:data.data.sex
+     					}), document.getElementById('div_body'));
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
      			}
@@ -2222,28 +2228,31 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   /*
    * <老师管理>号码检查
    * */
-   function ajax_userinfo_saveByAdmin(){
-   	 var uuids=null;
- 	$.AMUI.progress.start();
-       var url = hostUrl + "rest/userinfo/getUserBytel.json";
-       var opt={
-     			type : "POST",
-     			url : url,
-     			processData: true, 
-     			dataType : "json",
-     			data:{tel:tel},
-     			//contentType : false,  
-     			success : function(data) {
-     				$.AMUI.progress.done();
-     				if (data.ResMsg.status == "success") {
-     					G_msg_pop(data.ResMsg.message);
-     				} else {
-     					alert(data.ResMsg.message);
-     				}
+   function ajax_tel_btn_info(tel,group_uuid){
+     	$.AMUI.progress.start();
+         var url = hostUrl + "rest/userinfo/getUserBytel.json";
+     	$.ajax({
+     		type : "GET",
+     		url : url,
+     		dataType : "json",
+            data:{tel:tel},
+            async: true,
+     		success : function(data) {
+     			$.AMUI.progress.done();
+     			if (data.ResMsg.status == "success") {
+     				React.render(React.createElement(Userinfo_edit,{
+     					mygroup_uuids:group_uuid,
+     					formdata:data,
+     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+     					sex:data.sex
+     					}), document.getElementById('div_body'));
+     			} else {
+     				alert("加载数据失败："+data.ResMsg.message);
      			}
-     		};
- 	$.ajax(opt);
- }
+     		}
+     	});     	
+     };
+ 
   
   
   
