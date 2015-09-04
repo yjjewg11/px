@@ -2944,6 +2944,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 各属性置空开始，方便后面的的机构、班级、名字搜索；
   * */
  var g_student_query_point=1;
+ var maxPageNo;
  function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
  	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
  	  if(!groupuuid)groupuuid="";
@@ -2960,12 +2961,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			success : function(data) {
  				$.AMUI.progress.done();
  				if (data.ResMsg.status == "success") {
+ 					if(data.list.pageNo==1){
+ 	 				   maxPageNo=Math.floor(data.list.totalCount/data.list.pageSize)+1;
+ 					}
  	  				React.render(React.createElement(Query_stutent_list_byRight, {
  	  					group_uuid:groupuuid,
  	  					class_uuid:classuuid,
  	  					name:name,
- 	  					totalCount:data.list.totalCount,
- 	  					pageSize:data.list.pageSize,
  	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true

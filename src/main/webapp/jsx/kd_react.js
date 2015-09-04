@@ -4568,9 +4568,6 @@ render: function() {
   	if(this.state.class_uuid){			
   		this.state.class_uuid="1";
   	};
-	var totalCount=this.props.totalCount;
-	var pageSize=this.props.pageSize;
-	var maxPageNo=Math.floor(totalCount/pageSize)+1;
   	var pre_disabled=g_student_query_point<2;
   	var next_disabled=g_student_query_point>=maxPageNo;
       return (
