@@ -2129,7 +2129,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
       * */
      function ajax_userinfo_edit(formdata,m,sex){
      	if(m=="add"){
-     		console.log("222",Store.getCurGroupByRight("KD_teacher_m"));
      		React.render(React.createElement(Userinfo_edit,{
      			formdata:formdata,
      			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
@@ -2226,13 +2225,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    function ajax_userinfo_saveByAdmin(){
    	 var uuids=null;
  	$.AMUI.progress.start();
-       var url = hostUrl + "rest/userinfo/updateRole.json";
+       var url = hostUrl + "rest/userinfo/getUserBytel.json";
        var opt={
      			type : "POST",
      			url : url,
      			processData: true, 
      			dataType : "json",
-     			data:{useruuid:useruuid,groupuuid:groupuuid,roleuuids:uuids},
+     			data:{tel:tel},
      			//contentType : false,  
      			success : function(data) {
      				$.AMUI.progress.done();
