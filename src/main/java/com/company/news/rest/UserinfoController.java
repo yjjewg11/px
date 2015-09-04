@@ -445,9 +445,8 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			//该幼儿园管理员才可以修改.
 			if(noRight){
-				if(RightUtils.hasRight(groupuuid, RightConstants.KD_role_m, request))noRight=false;
+				if(RightUtils.hasRight(groupuuid, RightConstants.KD_teacher_m, request))noRight=false;
 			}
-		
 			if(noRight){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 				responseMessage.setMessage(RightConstants.Return_msg);
@@ -795,6 +794,34 @@ public class UserinfoController extends AbstractRESTController {
 		UserForJsCache a=null;
 		try {
 			a = userinfoService.getUserForJsCache(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+
+	/**
+	 * 用于客户端缓存
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getUserBytel", method = RequestMethod.GET)
+	public String getUserBytel(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String tel=request.getParameter("tel");
+		User4Q a=null;
+		try {
+			a = userinfoService.getUserBytel(tel);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

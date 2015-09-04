@@ -6,7 +6,7 @@
 		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 			header_right= [{
 			        "link": "javascript:menu_queryMyTimely_fn()",
-			        "customIcon":hostUrl+"i/icon-msg-wu.png",
+			        "customIcon":hostUrlCDN+"i/icon-msg-wu.png",
 			        "title": "消息"
 			      }];
 		}
@@ -296,76 +296,76 @@ function menu_dohome(){
 	$("#div_widget_chooseUser").html("");
 	$("#div_widget_chooseCook").html("");
 	Queue.push(menu_dohome,"主页");
-	var myhead_img=hostUrl+"i/header.png";
+	var myhead_img=hostUrlCDN+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	
 	var div_Gallery_data=[
 	                      {
-	                    	    "img": hostUrl+"i/banji.png",
+	                    	    "img": hostUrlCDN+"i/banji.png",
 	                    	    "link": "javascript:menu_class_students_fn()",
 	                    	    "title": "我的班级"
 	                    	  },
 	                    	  {
-		                    	    "img": hostUrl+"i/hudong.png",
+		                    	    "img": hostUrlCDN+"i/hudong.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
 			                   	  { 
-			                    	    "img": hostUrl+"i/meirirenwu.png",
+			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
 			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
 			                    	    "title": "每日任务"
 			                    	  },
 		                    	  {
-			                    	    "img": hostUrl+"i/kechengbiao.png",
+			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
 			                    	    "title": "课程表"
 			                    	  },  
 	                    	  {
-		                    	    "img": hostUrl+"i/xinxiang.png",
+		                    	    "img": hostUrlCDN+"i/xinxiang.png",
 		                    	    "link": "javascript:menu_queryCountMsgByParents_message_fn()",
 		                    	    "title": "我的信箱"
 		                    	  },   	  
 	                    	  
 	                    	  
 	                    	  {
-		                    	    "img": hostUrl+"i/JZtongxunlu.png",
+		                    	    "img": hostUrlCDN+"i/JZtongxunlu.png",
 		                    	    "link": "javascript:parentContactByMyStudent()",
 		                    	    "title": "家长通讯录"
 		                    	  }, 
 	                    	   {
-		                    	    "img": hostUrl+"i/laoshitongxunlu.png",
+		                    	    "img": hostUrlCDN+"i/laoshitongxunlu.png",
 		                    	    "link": "javascript:menu_Teacher_tel_fn()",
 		                    	    "title": "老师通讯录"
 		                    },
 		                    	  {
-			                    	    "img": hostUrl+"i/gonggao.png",
+			                    	    "img": hostUrlCDN+"i/gonggao.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
 			                 
 		                    	  {
-			                    	    "img": hostUrl+"i/meirisipu.png",
+			                    	    "img": hostUrlCDN+"i/meirisipu.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
 		                    	 
 		                    	
 //		                    	  {
-//	                    	    "img": hostUrl+"i/qiandao.png",
+//	                    	    "img": hostUrlCDN+"i/qiandao.png",
 //	                    	    "link": "###",
 //	                    	    "title": "签到(未)"
 //	                    	  },
 	                    	
 		                    	  {
-		                    		  "img": hostUrl+"i/jpwz.png",
+		                    		  "img": hostUrlCDN+"i/jpwz.png",
 	                                  "link": "javascript:menu_article_list_fn()",
 	                                  "title": "精品文章"
 	                                },
 
 	  		                 
 			                      {
-		                    	    "img": hostUrl+"i/shoucang.png",
+		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
 		                    	  }
@@ -376,12 +376,12 @@ function menu_dohome(){
 	if(!G_user_status_normal()){
 		div_Gallery_data=[
 	                    	  {
-	                    		  "img": hostUrl+"i/jpwz.png",
+	                    		  "img": hostUrlCDN+"i/jpwz.png",
                                   "link": "javascript:menu_article_list_fn()",
                                   "title": "精品文章"
                                 },
 		                      {
-	                    	    "img": hostUrl+"i/shoucang.png",
+	                    	    "img": hostUrlCDN+"i/shoucang.png",
 	                    	    "link": "javascript:menu_favorites_push_fn()",
 	                    	    "title": "我的收藏"
 	                    	  }

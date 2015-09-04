@@ -36,6 +36,7 @@ import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
 import com.company.plugin.security.LoginLimit;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -480,6 +481,18 @@ public class UserinfoService extends AbstractServcice {
 			return false;
 
 	}
+	
+	/**
+	 * 根据手机号码获取
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public User4Q getUserBytel(String loginname) {
+		String attribute = "loginname";
+		return (User4Q)nSimpleHibernateDao.getObjectByAttribute(User4Q.class,
+				attribute, loginname);
+	}
 
 	@Override
 	public Class getEntityClass() {
@@ -672,7 +685,7 @@ public class UserinfoService extends AbstractServcice {
 						.bulkUpdate(
 								"delete from RoleUserRelation where groupuuid=? and roleuuid =? ",groupuuid, roleuuid);
 				this.logger.info("delete from RoleUserRelation count=" + tmpCout);
-				
+				 User user = SessionListener.getUserInfoBySession(request);
 				if (StringUtils.isNotBlank(useruuids)) {
 					String[] str = PxStringUtil.StringDecComma(useruuids).split(",");
 					for (String s : str) {
@@ -680,6 +693,9 @@ public class UserinfoService extends AbstractServcice {
 						r.setRoleuuid(roleuuid);
 						r.setUseruuid(s);
 						r.setGroupuuid(groupuuid);
+						r.setCreate_time(TimeUtils.getCurrentTimestamp());
+						r.setCreate_user(user.getName());
+						r.setCreate_useruuid(user.getUuid());
 						this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 					}
 				}

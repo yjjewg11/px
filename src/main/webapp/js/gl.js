@@ -24,6 +24,7 @@ return serializeObj;
 var G_group_wjd="group_wjd";
 var hostUrl='/px-rest/';
 var hostUrlCDN='/px-rest/';
+hostUrlCDN='http://img.wenjienet.com/';
 var G_def_headImgPath=hostUrlCDN+"i/header.png";
 //取消G_imgPath
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
