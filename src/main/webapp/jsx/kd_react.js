@@ -410,12 +410,14 @@ var Classnews_Div_list = React.createClass({
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 ajax_classnews_list_div(num); 	
+			 this.type=num;
+			 this.pageNo=1;
+//			 ajax_classnews_list_div(num); 	
+			 this.refresh_data();
+			 
+			 
 		 }
 	  },
-	  uphd: function() {
-		  ajax_classnews_list_div(1);
-		  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -430,7 +432,7 @@ render: function() {
 		  <AMUIReact.ButtonToolbar>
 		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} round>发布互动</AMUIReact.Button>
 		    {fn}
-		    <AMUIReact.Button amStyle="primary" onClick={this.uphd.bind(this)} round>刷新</AMUIReact.Button>
+		    <AMUIReact.Button amStyle="primary" onClick={this.refresh_data.bind(this)} round>刷新</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
 		  <hr/>	  

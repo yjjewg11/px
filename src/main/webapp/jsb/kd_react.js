@@ -410,12 +410,14 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 ajax_classnews_list_div(num); 	
+			 this.type=num;
+			 this.pageNo=1;
+//			 ajax_classnews_list_div(num); 	
+			 this.refresh_data();
+			 
+			 
 		 }
 	  },
-	  uphd: function() {
-		  ajax_classnews_list_div(1);
-		  },
 render: function() {
 	this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -430,7 +432,7 @@ render: function() {
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
 		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "发布互动"), 
 		    fn, 
-		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.uphd.bind(this), round: true}, "刷新"), 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    ), 
 		  React.createElement("hr", null), 	  
@@ -3007,9 +3009,9 @@ var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
+		$("#"+this.classnewsreply_list_div).html("");
 		this.forceUpdate();
 		this.pageNo=1;
-		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
 		
 	},
