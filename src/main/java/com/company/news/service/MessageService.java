@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -227,7 +228,7 @@ public class MessageService extends AbstractServcice {
 	 */
 	public List queryCountMsgByParents(String useruuid,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type= "+SystemConstants.Message_type_1;
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type= "+SystemConstants.Message_type_1;
 		sql += " and (" ;
 		sql += "  revice_useruuid ='" + useruuid + "'";//家长发给我的.
 		sql += "  )" ;
@@ -242,6 +243,7 @@ public class MessageService extends AbstractServcice {
 			vo.setSend_useruuid(o[2]+"");
 			vo.setSend_user(o[3]+"");
 			vo.setCount(o[4]+"");
+			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
 			relList.add(vo);
 		}
 		
@@ -258,7 +260,7 @@ public class MessageService extends AbstractServcice {
 	 */
 	public List queryCountLeaderMsgByParents(String group_uuids,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count from px_message where type="+SystemConstants.Message_type_2;
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
 		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
@@ -274,6 +276,7 @@ public class MessageService extends AbstractServcice {
 			vo.setSend_useruuid(o[2]+"");
 			vo.setSend_user(o[3]+"");
 			vo.setCount(o[4]+"");
+			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
 			relList.add(vo);
 		}
 		

@@ -181,7 +181,7 @@ var Store={
 				if(uuid==t_arr[i].uuid)return t_arr[i];
 			}
 		}
-		return {};
+		return {name:"",uuid:""};
 	},
 	/**
 	 * 设置人员选择控件到内存缓存。

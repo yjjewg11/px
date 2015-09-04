@@ -301,69 +301,74 @@ function menu_dohome(){
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
 	
 	var div_Gallery_data=[
+	                      {
+	                    	    "img": hostUrl+"i/banji.png",
+	                    	    "link": "javascript:menu_class_students_fn()",
+	                    	    "title": "我的班级"
+	                    	  },
 	                    	  {
 		                    	    "img": hostUrl+"i/hudong.png",
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
+			                   	  { 
+			                    	    "img": hostUrl+"i/meirirenwu.png",
+			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
+			                    	    "title": "每日任务"
+			                    	  },
+		                    	  {
+			                    	    "img": hostUrl+"i/kechengbiao.png",
+			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
+			                    	    "title": "课程表"
+			                    	  },  
+	                    	  {
+		                    	    "img": hostUrl+"i/xinxiang.png",
+		                    	    "link": "javascript:menu_queryCountMsgByParents_message_fn()",
+		                    	    "title": "我的信箱"
+		                    	  },   	  
+	                    	  
+	                    	  
+	                    	  {
+		                    	    "img": hostUrl+"i/JZtongxunlu.png",
+		                    	    "link": "javascript:parentContactByMyStudent()",
+		                    	    "title": "家长通讯录"
+		                    	  }, 
+	                    	   {
+		                    	    "img": hostUrl+"i/laoshitongxunlu.png",
+		                    	    "link": "javascript:menu_Teacher_tel_fn()",
+		                    	    "title": "老师通讯录"
+		                    },
 		                    	  {
 			                    	    "img": hostUrl+"i/gonggao.png",
 			                    	    "link": "javascript:menu_announce_mylist_fn();",
 			                    	    "title": "公告"
 			                    },
-			                    {
-		                    	    "img": hostUrl+"i/kechengbiao.png",
-		                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
-		                    	    "title": "课程表"
-		                    	  },
+			                 
 		                    	  {
 			                    	    "img": hostUrl+"i/meirisipu.png",
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
 		                    	 
-		                    	  {
-			                    	    "img": hostUrl+"i/JZtongxunlu.png",
-			                    	    "link": "javascript:parentContactByMyStudent()",
-			                    	    "title": "家长通讯录"
-			                    	  }, 
+		                    	
 //		                    	  {
 //	                    	    "img": hostUrl+"i/qiandao.png",
 //	                    	    "link": "###",
 //	                    	    "title": "签到(未)"
 //	                    	  },
-	                    	  {
-		                    	    "img": hostUrl+"i/xinxiang.png",
-		                    	    "link": "javascript:menu_queryCountMsgByParents_message_fn()",
-		                    	    "title": "我的信箱"
-		                    	  },
+	                    	
 		                    	  {
 		                    		  "img": hostUrl+"i/jpwz.png",
 	                                  "link": "javascript:menu_article_list_fn()",
 	                                  "title": "精品文章"
 	                                },
-			                    	
-		                      {
-		                    	    "img": hostUrl+"i/banji.png",
-		                    	    "link": "javascript:menu_class_students_fn()",
-		                    	    "title": "我的班级"
-		                    	  },
 
-	  		                    {
-			                    	    "img": hostUrl+"i/laoshitongxunlu.png",
-			                    	    "link": "javascript:menu_Teacher_tel_fn()",
-			                    	    "title": "老师通讯录"
-			                    },
+	  		                 
 			                      {
 		                    	    "img": hostUrl+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  },
-			                   	  { 
-			                    	    "img": hostUrl+"i/meirirenwu.png",
-			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
-			                    	    "title": "每日任务"
-			                    	  }
+		                    	  }
 	                    	  ];
 	/**
 	 * 禁用用户

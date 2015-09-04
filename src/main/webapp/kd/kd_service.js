@@ -2951,7 +2951,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					class_uuid:classuuid,
  	  					name:name,
  	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
- 	  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  	  					

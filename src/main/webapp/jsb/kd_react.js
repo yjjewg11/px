@@ -2443,9 +2443,12 @@ var My_student_tel =React.createClass({displayName: "My_student_tel",
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true}, 
 		    	this.props.formdata.map(function(event) {
-		            return (React.createElement(AMUIReact.ListItem, null, "家长", event.send_user, "的信息",     
+		            return (
+		            		
+		            		React.createElement(AMUIReact.ListItem, null, 
+		            React.createElement("span", {className: "am-comment-author"}, event.send_user, " "), "家长来信", event.count, "条,最后来信时间:", event.last_time, 
 		            React.createElement(AMR_ButtonToolbar, null, 		            
-		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"我的信箱"), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+		            React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"我的信箱"), amStyle: "success"}, "@信息")
 		            )	        
 		            ));
 		          })		      			      
@@ -3026,7 +3029,7 @@ render: function() {
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
-"+      ", React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
+		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
 		    ), 
 		  React.createElement("hr", null), 	  
@@ -3576,7 +3579,7 @@ getInitialState: function() {
 	 
 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
-		  var classList=Store.getChooseClass(this.props.groupuuid);
+		  var classList=Store.getChooseClass(nextProps.groupuuid);
 			var classuuid =null;
 			if(classList&&classList.length>0){
 				classuuid=classList[0].uuid;
@@ -3742,7 +3745,6 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
      var o =this.state;	
 	 return (
 	 	React.createElement("div", null, 
-	 	  React.createElement("hr", null), 
 	 	    React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	    	     this.props.formdata.map(function(event) {
 	              return (
@@ -3750,9 +3752,9 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
 	      	       React.createElement("a", {href: "javascript:void(0);"}, 
 	   	          React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
 	      	     ), 
-	            "家长", event.send_user, "的信息",     
+	      	   React.createElement("span", {className: "am-comment-author"}, event.send_user, " "), "家长来信", event.count, "条,最后来信时间:", event.last_time, 
 	           React.createElement(AMR_ButtonToolbar, null, 		            
-	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息"), "你们总共发了", event.count, "条信息"
+	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@信息")
 	        )
 	       ));})		      			      
 		 )
@@ -4459,36 +4461,56 @@ render: function() {
    * @btn_query_click:名字查找；
    * */
   var Query_stutent_list_byRight = React.createClass({displayName: "Query_stutent_list_byRight",
-  	group_uuid:null,
-  	class_uuid:null,
-  	handleChange_stutent_Selected: function(val) {
-  		  if(val=="0"){
-  			  this.group_uuid="";
-  		  }else{
-  			  this.group_uuid=val;
-  		  };
-  		  this.class_uuid="";
-  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+		getInitialState: function() {
+			var classList=Store.getChooseClass(this.props.group_uuid);
+			var class_uuid =null;
+			if(classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+			var o={
+					group_uuid:this.props.group_uuid,
+					class_uuid:class_uuid,
+					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
+			}
+			return o;
+		  },
+	   componentWillReceiveProps: function(nextProps) {
+		   var classList=Store.getChooseClass(nextProps.group_uuid);
+			var class_uuid =nextProps.class_uuid;
+			if(!class_uuid&&classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+			var o={
+					group_uuid:nextProps.group_uuid,
+					class_uuid:class_uuid,
+					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
+			}
+		   this.setState(o);
+		},
+		
+  	handleChange_stutent_Selected: function() {
+  		var group_uuid=$("input[name='group_uuid']").val();
+  		  if(group_uuid=="0"){
+  			  group_uuid="";
+  		  }
+	  		var class_uuid=$("input[name='class_uuid']").val();
+		  if(class_uuid=="1"){
+			  class_uuid="";
+		  }
+  		  ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val());
   	  }, 
-  	  handleChange_class_Selected: function(val) {
-  		  if(val=="1"){
-  			  this.class_uuid="";
-  		  }else{
-  			  this.class_uuid=val;
-  		  };
-  		  ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
-  		  }, 
+  	 
   		btn_query_click:function(){
-  			 ajax_student_query_byRight(this.group_uuid,this.class_uuid,$('#sutdent_name').val());
+  			this.handleChange_stutent_Selected();
   		},
   render: function() {
-  	this.props.group_list.unshift({value:"0",label:"所有"});
-  	this.props.class_list.unshift({value:"1",label:"所有"});
-  	if(this.props.group_uuid==""){			
-  		this.props.group_uuid="0";
+  	this.props.group_list.unshift({value:"",label:"所有"});
+  	this.state.class_list.unshift({value:"",label:"所有"});
+  	if(this.state.group_uuid==""){			
+  		this.state.group_uuid="0";
   	};
-  	if(this.props.class_uuid==""){			
-  		this.props.class_uuid="1";
+  	if(this.state.class_uuid){			
+  		this.state.class_uuid="1";
   	};
       return (
   		  
@@ -4499,17 +4521,18 @@ render: function() {
   	React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
   	React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
    	React.createElement("div", {className: "am-fl"}, 
-  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.group_uuid})
   	 ), 	 
   	React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
-  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_class_Selected, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
-  	), 	
-  	React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
-  	React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")
-  	), 	
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", multiple: false, data: this.state.class_list, btnStyle: "primary", value: this.state.class_uuid})
+  	), 
   	React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
   	React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
+  	), 
+  	React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+  	React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")
   	)	
+  	
   	)
   	 ), 
         React.createElement(AMR_Table, React.__spread({},  this.props), 
@@ -4519,6 +4542,7 @@ render: function() {
               React.createElement("th", null, "昵称"), 
               React.createElement("th", null, "性别"), 
               React.createElement("th", null, "生日"), 
+              React.createElement("th", null, "班级"), 
               React.createElement("th", null, "身份证")
             )
           ), 
@@ -4554,6 +4578,7 @@ render: function() {
   	        React.createElement("td", null, event.nickname), 
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
+  	        React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
   	        React.createElement("td", null, event.idcard)
   	      ) 
   	    );

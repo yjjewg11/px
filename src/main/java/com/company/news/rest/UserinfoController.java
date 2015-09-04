@@ -701,10 +701,13 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			//该幼儿园管理员才可以修改.
 			if(noRight){
-				if(!RightUtils.hasRightAnyGroup(RightConstants. KD_teacher_m,request)){
+				mygroup=RightUtils.getRightGroups(RightConstants. KD_teacher_m, request);
+				
+				if(StringUtils.isBlank(mygroup)){
 		            responseMessage.setMessage( RightConstants.Return_msg );
 		            return "";
 				}
+				
 				String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
 				for(int i=0;i<groupStrArr.length;i++){
 					if(!RightUtils.hasRight(groupStrArr[i], RightConstants.KD_role_m, request)){
