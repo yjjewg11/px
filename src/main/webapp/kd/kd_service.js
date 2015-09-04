@@ -654,7 +654,7 @@ function ajax_class_save(){
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
 				Store.setMyClassList(null);
-				Store.setChooseClass(null);
+				Store.clearChooseClass(null);
 				Queue.doBackFN();
             }
             };
@@ -2648,7 +2648,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
  				Store.setMyClassList(null);
- 				Store.setChooseClass(null);
+ 				Store.clearChooseClass(null);
  				Queue.doBackFN();
 
              }
@@ -3066,17 +3066,16 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 
 //幼儿园用户授权
 function menu_kd_roleUser_list_fn() {
+	var grouplist=Store.getGroupByRight("KD_announce_m");
 	if(!grouplist||grouplist.length==0){
 		alert("没有权限!");
 		return "";
 	}
-	if(!groupuuid){
-		groupuuid=grouplist[0].uuid;
-	}
+	var groupuuid=grouplist[0].uuid;
 	Queue.push(menu_kd_roleUser_list_fn,"授权");
 	var opt={
 			groupuuid:groupuuid,
-			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 			role_list:Store.getRoleList(1)
 		};
 	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));

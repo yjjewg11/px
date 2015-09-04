@@ -150,6 +150,18 @@ var Store={
 	setChooseClass:function(groupuuid,v){
 		this.map["ChooseClass"+groupuuid]=v;
 	},
+	/**
+	 * 设置班级选择控件到内存缓存。
+	 * @param v
+	 */
+	clearChooseClass:function(){
+		for(var key in this.map){
+			if(key.indexOf("ChooseClass")>-1){
+				console.log("clearChooseClass:key",key);
+				this.map[key]=null;
+			}
+		}
+	},
 	//v:groupuuid
 	getChooseClass:function(v){
 		if(!v)return [];
@@ -177,14 +189,14 @@ var Store={
 		for(var i=0;i<arr.length;i++){
 			var t_arr=this.getChooseClass(arr[i].uuid);
 			
-			for(var i=0;i<t_arr.length;i++){
-				if(uuid==t_arr[i].uuid)return t_arr[i];
+			for(var k=0;k<t_arr.length;k++){
+				if(uuid==t_arr[k].uuid)return t_arr[k];
 			}
 		}
 		return {name:"",uuid:""};
 	},
 	/**
-	 * 设置人员选择控件到内存缓存。
+	 * 清空班级缓存
 	 * @param v
 	 */
 	setChooseUer:function(groupuuid,v){
