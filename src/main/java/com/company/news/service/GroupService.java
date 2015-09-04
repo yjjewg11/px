@@ -259,7 +259,7 @@ public class GroupService extends AbstractServcice {
 	 * @return
 	 */
 	public List<Group4Q> query(){
-		List list=  (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q", null);
+		List list=  (List<Group4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q order by create_time desc", null);
 		 this.warpVoList(list);
 		 return  list;
 	}
@@ -281,7 +281,7 @@ public class GroupService extends AbstractServcice {
 	public List getGroupByUseruuidByAdmin(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("selec DISTINCT {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("selec DISTINCT {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -308,7 +308,7 @@ public class GroupService extends AbstractServcice {
 	public List getGroupByUseruuid(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type!=0 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc" )
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -327,7 +327,7 @@ public class GroupService extends AbstractServcice {
 //		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 //				.addEntity("t1",Group4Q.class);
 //		
-		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
