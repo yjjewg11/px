@@ -318,6 +318,9 @@ var Userinfo_EventsTable = React.createClass({displayName: "Userinfo_EventsTable
 	  handleChange_selectgroup_uuid:function(val){
 		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
 	  },
+	  handleChange_selectgroup_sou_uuid:function(){
+		  ajax_uesrinfo_listByGroup(this.props.group_uuid,$('#sutdent_name').val());
+	  },
   render: function() {
     return (
     React.createElement("div", null, 
@@ -335,7 +338,7 @@ React.createElement("form", {id: "editGroupForm", method: "post", className: "am
 	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 	    ), 
 	    React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
-		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_sou_uuid, className: "am-btn am-btn-primary"}, "搜索")
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
 		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
@@ -423,7 +426,8 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 			    React.createElement("hr", null), 
 		       React.createElement("label", {className: one_classDiv}, "手机号码:"), 
 		      React.createElement("div", {className: two_classDiv}, 
-		     React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""})
+		     React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
+		    React.createElement("button", {type: "button", onClick: ajax_userinfo_saveByAdmin, className: "am-btn am-btn-primary"}, "号码检查")
 		    ), 
 		     React.createElement("label", {className: one_classDiv}, "姓名:"), 
 		      React.createElement("div", {className: two_classDiv}, 
