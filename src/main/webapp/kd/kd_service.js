@@ -2220,7 +2220,31 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   G_ajax_abs_save(opt);
   }  
   
-  
+  /*
+   * <老师管理>号码检查
+   * */
+   function ajax_userinfo_saveByAdmin(){
+   	 var uuids=null;
+ 	$.AMUI.progress.start();
+       var url = hostUrl + "rest/userinfo/updateRole.json";
+       var opt={
+     			type : "POST",
+     			url : url,
+     			processData: true, 
+     			dataType : "json",
+     			data:{useruuid:useruuid,groupuuid:groupuuid,roleuuids:uuids},
+     			//contentType : false,  
+     			success : function(data) {
+     				$.AMUI.progress.done();
+     				if (data.ResMsg.status == "success") {
+     					G_msg_pop(data.ResMsg.message);
+     				} else {
+     					alert(data.ResMsg.message);
+     				}
+     			}
+     		};
+ 	$.ajax(opt);
+ }
   
   
   
@@ -2948,7 +2972,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
  	  if(!groupuuid)groupuuid="";
  	  if(!classuuid)classuuid="";
- 	  if(!name)name="";
+ 	 if(!name)name="";
  	  if(!pageNo)pageNo=1;
  	 g_student_query_point=pageNo;
  		$.AMUI.progress.start();
@@ -2964,9 +2988,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					group_uuid:groupuuid,
  	  					class_uuid:classuuid,
  	  					name:name,
- 	  					totalCount:data.list.totalCount,
- 	  					pageSize:data.list.pageSize,
  	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+ 	  					data:data,
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  	  					
