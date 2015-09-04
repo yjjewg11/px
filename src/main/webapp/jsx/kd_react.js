@@ -494,7 +494,7 @@ var Classnews_show = React.createClass({
 			  <div className="am-comment-main">
 			    <header className="am-comment-hd">
 			      <div className="am-comment-meta">
-			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
+			        <a href="javascript:void(0);" className="am-comment-author">{Store.getGroupNameByUuid(o.groupuuid)}|{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
 			        发表于 <time>{o.update_time}</time>
 			      </div>
 			    </header>
@@ -534,7 +534,7 @@ var Classnews_reply_list = React.createClass({
 		var o={
 			replyPage:null
 		}
-		if(this.props.replyPage)return o.replyPage=this.props.replyPage;
+		if(this.props.replyPage) o.replyPage=this.props.replyPage;
 		return o;
 	  },
    componentWillReceiveProps: function(nextProps) {
@@ -3007,9 +3007,9 @@ var Classnews_Div_list_byRight = React.createClass({
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
+		$("#"+this.classnewsreply_list_div).html("");
 		this.forceUpdate();
 		this.pageNo=1;
-		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
 		
 	},
@@ -3093,7 +3093,7 @@ var Classnews_show_byRight = React.createClass({
 			  <div className="am-comment-main">
 			    <header className="am-comment-hd">
 			      <div className="am-comment-meta">
-			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
+			        <a href="javascript:void(0);" className="am-comment-author">{Store.getGroupNameByUuid(o.groupuuid)}|{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}</a>
 			        发表于 <time>{o.update_time}</time>
 			      </div>
 			    </header>
@@ -3109,9 +3109,10 @@ var Classnews_show_byRight = React.createClass({
 			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}/>
 			    	</div>
 			    	</footer>
-			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+			    	
+			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
 			    	<ul className="am-comments-list">
-					  <Classnews_reply_list_byRight uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+					  <Classnews_reply_list_byRight replyPage={o.replyPage} uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
 			    	</ul>
 			     </div>
 			</article>
@@ -3131,6 +3132,20 @@ var Classnews_show_byRight = React.createClass({
 * 
 * */
 var Classnews_reply_list_byRight = React.createClass({ 
+	getInitialState: function() {
+		var o={
+			replyPage:null
+		}
+		if(this.props.replyPage) o.replyPage=this.props.replyPage;
+		return o;
+	  },
+   componentWillReceiveProps: function(nextProps) {
+		var o={
+				replyPage:commons_ajax_dianzan_getByNewsuuid(nextProps.uuid)
+			}
+	   this.setState(o);
+	},
+	
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -3141,9 +3156,21 @@ var Classnews_reply_list_byRight = React.createClass({
 		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
 		this.load_more_data();
 	},
+	loadByFirst:function(list_div){
+		React.render(React.createElement(Classnews_reply_list_listshow_byRight, {
+			events: this.state.replyPage,
+			newsuuid:this.props.uuid,
+			responsive: true, bordered: true, striped :true,hover:true,striped:true
+			}), document.getElementById(list_div));
+	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+		var re_data=this.state.replyPage;
+		if(!re_data){
+			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+		}else{
+			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+		}
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -3153,7 +3180,9 @@ var Classnews_reply_list_byRight = React.createClass({
 		  
 		  this.pageNo++;
 	},
+	
 	refreshReplyList:function(){
+		this.setState({replyPage:null});
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
 		this.load_more_data();

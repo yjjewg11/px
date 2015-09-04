@@ -85,6 +85,7 @@ public class AnnouncementsService extends AbstractServcice {
 
 		announcements.setCreate_time(TimeUtils.getCurrentTimestamp());
 		announcements.setStatus(SystemConstants.Check_status_fabu);
+		announcements.setIllegal(0l);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(announcements);
 		// 如果类型是班级通知

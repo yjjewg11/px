@@ -72,7 +72,7 @@ public class ClassNewsService extends AbstractServcice {
 		cn.setReply_time(TimeUtils.getCurrentTimestamp());
 		cn.setUsertype(USER_type_default);
 		cn.setStatus(SystemConstants.Check_status_fabu);
-		
+		cn.setIllegal(0l);
 		
 		// 有事务管理，统一在Controller调用时处理异常
 		PxStringUtil.addCreateUser(user, cn);

@@ -39,19 +39,19 @@ public class CheckService extends AbstractServcice {
 		
 		switch (type) {
 		case SystemConstants.common_type_hudong:
-			 sql="update px_classnews set status=2  where uuid='"+uuid+"'";
+			 sql="update px_classnews set illegal=illegal+1,illegal_time=now()  where uuid='"+uuid+"'";
 			break;
 		case SystemConstants.common_type_gonggao:
-			 sql="update px_announcements set status=2  where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
 			break;
 		case SystemConstants.common_type_neibutongzhi:
-			 sql="update px_announcements set status=2  where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
 			break;
 		case SystemConstants.common_type_jingpinwenzhang:
-			 sql="update px_announcements set status=2  where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1,illegal_time=now()  where uuid='"+uuid+"'";
 			break;
 		case SystemConstants.common_type_zhaoshengjihua:
-			 sql="update px_announcements set status=2  where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
 			break;
 		default:
 			break;
