@@ -1996,9 +1996,11 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "班级编辑"), 
 	  		    React.createElement(G_help_popo, {msg: G_tip.class_show})
 	  		    ), 
-			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
-			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
-			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)
+	  		    
+	  		   React.createElement(AMR_Col, {sm: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+			    React.createElement(AMR_Col, {sm: 3}, " 班级:", o.name), 
+			    React.createElement(AMR_Col, {sm: 3}, "班主任:", o.headTeacher_name), 
+			    React.createElement(AMR_Col, {sm: 3}, "其他老师:", o.teacher_name)
 			  )
 		  ), 
 		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
@@ -4089,9 +4091,10 @@ render: function() {
   		  React.createElement("hr", null), 
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
-  			    React.createElement(AMR_Col, {sm: 4}, " 班级:", o.name), 
-  			    React.createElement(AMR_Col, {sm: 4}, "班主任:", o.headTeacher_name), 
-  			    React.createElement(AMR_Col, {sm: 4}, "其他老师:", o.teacher_name)
+  			  React.createElement(AMR_Col, {sm: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+  			    React.createElement(AMR_Col, {sm: 3}, " 班级:", o.name), 
+  			    React.createElement(AMR_Col, {sm: 3}, "班主任:", o.headTeacher_name), 
+  			    React.createElement(AMR_Col, {sm: 3}, "其他老师:", o.teacher_name)
   			  )
   		  ), 
   		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 3, md: 4, lg: 6})

@@ -47,7 +47,7 @@ public class StudentController extends AbstractRESTController {
 		String studentuuid=request.getParameter("studentuuid");
 		boolean f=false;
 		try {
-			f = studentService.updateChangeClass(studentuuid,classuuid,responseMessage);
+			f = studentService.updateChangeClass(studentuuid,classuuid,responseMessage,request);
 			if(!f)return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

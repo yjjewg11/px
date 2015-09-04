@@ -3,6 +3,8 @@ package com.company.news.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
@@ -106,7 +108,7 @@ public class StudentService extends AbstractServcice {
 			student.setUuid(old_student.getUuid());
 //			student.setName(old_student.getName());
 			student.setClassuuid(old_student.getClassuuid());
-//			student.setGroupuuid(old_student.getGroupuuid());
+			student.setGroupuuid(old_student.getGroupuuid());
 			student.setCreate_time(old_student.getCreate_time());
 
 			// 有事务管理，统一在Controller调用时处理异常
@@ -415,7 +417,7 @@ public class StudentService extends AbstractServcice {
 	 * @param responseMessage
 	 * @return
 	 */
-	public boolean updateChangeClass(String studentuuid, String classuuid,ResponseMessage responseMessage) {
+	public boolean updateChangeClass(String studentuuid, String classuuid,ResponseMessage responseMessage,HttpServletRequest request) {
 		Student student = (Student) this.nSimpleHibernateDao.getObjectById(
 				Student.class, studentuuid);
 		if(student==null){
@@ -431,8 +433,15 @@ public class StudentService extends AbstractServcice {
 		}
 		student.setClassuuid(classuuid);
 		student.setGroupuuid(cl.getGroupuuid());
-		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		
+
+		//更新家长学生联系吧
+		
+		
+		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
+		this.nSimpleHibernateDao.relUpdate_studentChangeClass(student);
+		String msg="姓名:"+student.getName()+",uuid:"+student.getUuid()+",转班到:"+cl.getName();
+		this.addLog("updateChangeClass", "学生换班级", msg, request);
 		return true;
 	}
 

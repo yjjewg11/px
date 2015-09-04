@@ -142,13 +142,8 @@ public class ClassService extends AbstractServcice {
 			this.nSimpleHibernateDao.save(obj);
 			//更新学生学校.
 			if(isChangeGroupuuid){
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update Student set  groupuuid=? where classuuid=?",
-				classRegJsonform.getGroupuuid(),classRegJsonform.getUuid());
-				
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-						"update StudentContactRealation set  groupuuid=? where class_uuid=?",
-						classRegJsonform.getGroupuuid(),classRegJsonform.getUuid());
+				//根据班级的学校uuid
+				this.nSimpleHibernateDao.relUpdate_classChangeGroup(obj);
 			}
 		// 先删除原来数据
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(

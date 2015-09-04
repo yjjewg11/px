@@ -1996,9 +1996,11 @@ var Class_students_show= React.createClass({
 	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>班级编辑</AMR_Button>
 	  		    <G_help_popo  msg={G_tip.class_show} />
 	  		    </AMR_ButtonToolbar>
-			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
-			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
-			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
+	  		    
+	  		   <AMR_Col sm={3} > 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
+			    <AMR_Col sm={3} > 班级:{o.name}</AMR_Col>
+			    <AMR_Col sm={3} >班主任:{o.headTeacher_name}</AMR_Col>
+			    <AMR_Col sm={3}>其他老师:{o.teacher_name}</AMR_Col>
 			  </AMR_Grid>
 		  </AMR_Panel>
 		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />
@@ -4089,9 +4091,10 @@ render: function() {
   		  <hr/>
   		  <AMR_Panel>
   			  <AMR_Grid className="doc-g">
-  			    <AMR_Col sm={4} > 班级:{o.name}</AMR_Col>
-  			    <AMR_Col sm={4} >班主任:{o.headTeacher_name}</AMR_Col>
-  			    <AMR_Col sm={4}>其他老师:{o.teacher_name}</AMR_Col>
+  			  <AMR_Col sm={3} > 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
+  			    <AMR_Col sm={3} > 班级:{o.name}</AMR_Col>
+  			    <AMR_Col sm={3} >班主任:{o.headTeacher_name}</AMR_Col>
+  			    <AMR_Col sm={3}>其他老师:{o.teacher_name}</AMR_Col>
   			  </AMR_Grid>
   		  </AMR_Panel>
   		  <AMR_Gallery data={this.props.students}  sm={3} md={4} lg={6} />
