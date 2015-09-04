@@ -4509,6 +4509,7 @@ render: function() {
 			var o={
 					group_uuid:this.props.group_uuid,
 					class_uuid:class_uuid,
+					maxPageNo:0,
 					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
 			}
 			return o;
@@ -4559,6 +4560,7 @@ render: function() {
   				 return;
   			 }
   		},
+  		maxPageNo:0,
   render: function() {
   	this.props.group_list.unshift({value:"",label:"所有"});
   	this.state.class_list.unshift({value:"",label:"所有"});
@@ -4569,7 +4571,11 @@ render: function() {
   		this.state.class_uuid="1";
   	};
   	var pre_disabled=g_student_query_point<2;
-  	var next_disabled=g_student_query_point>=maxPageNo;
+  	
+  	if(g_student_query_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_student_query_point>=this.maxPageNo;
       return (
   		  
       React.createElement("div", null, 
@@ -4579,7 +4585,7 @@ render: function() {
   	React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
   	
 React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid), round: true}, "« 上一页"), 
-React.createElement("label", null, g_student_query_point, "\\", maxPageNo), 
+React.createElement("label", null, g_student_query_point, "\\", this.maxPageNo), 
 React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid), round: true}, "下一页 »"), 
   
 
