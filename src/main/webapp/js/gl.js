@@ -191,11 +191,11 @@ var G_week={
 		  },
 		  //获取当前时间前个星期天
 	getWeek0:function(d){
-		return G_week.getDateStr(d, 0-G_week.getWeekDayByDate(d));
+		return G_week.getDateStr(d, 1-G_week.getWeekDayByDate(d));
 	},
 	//获取当前时间后个星期6
 	getWeek6:function(d){
-		return G_week.getDateStr(d, 6-G_week.getWeekDayByDate(d));
+		return G_week.getDateStr(d, 7-G_week.getWeekDayByDate(d));
 	}
 };
 

@@ -123,7 +123,7 @@ public class ShareController extends AbstractRESTController {
 			String hql = "from Announcements4Q where status=0 and type="+SystemConstants.common_type_jingpinwenzhang;
 			hql += " order by create_time desc";
 			PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-					.findByPaginationToHql(hql, pData);
+					.findByPaginationToHqlNoTotal(hql, pData);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

@@ -158,7 +158,7 @@ public class ClassNewsService extends AbstractServcice {
 		pData.setOrderType("desc");
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
+				.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
 		this.warpVoList(list, user.getUuid());
 		
@@ -180,7 +180,7 @@ public class ClassNewsService extends AbstractServcice {
 		pData.setOrderType("desc");
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
+				.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
 		this.warpVoList(list, user.getUuid());
 		
@@ -325,7 +325,7 @@ public class ClassNewsService extends AbstractServcice {
 		pData.setOrderType("desc");
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
+				.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
 		this.warpVoList(list, user.getUuid());
 		
@@ -342,7 +342,7 @@ public class ClassNewsService extends AbstractServcice {
 		pData.setOrderType("desc");
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
+				.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNews> list=pageQueryResult.getData();
 		this.warpVoList(list, user.getUuid());
 		
