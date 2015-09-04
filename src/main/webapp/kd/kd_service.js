@@ -2674,7 +2674,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  * */
  function react_ajax_class_students_manage_byRight(uuid){
  	$.AMUI.progress.start();
- 	
+     console.log("uuid",uuid); 	
  	var formdata=null;
      var url = hostUrl + "rest/class/"+uuid+".json";
  	$.ajax({
@@ -2686,6 +2686,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
  				formdata=data.data;
+ 				console.log("formdata",formdata);
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -2727,9 +2728,20 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	}	
  	React.render(React.createElement(Class_students_manage_byRight,{
  		formdata:formdata,
+ 		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
+		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),
  		students:students}), document.getElementById('div_body'));
  };
 
+ 
+
+ 
+ //下拉框选择后方法
+ function  btn_click_class_kuang_byRight(classuuid){
+	 react_ajax_class_students_manage_byRight(classuuid);
+	 };
+
+ 
  /*  
   * （标头）<班级管理>界面添加学生按钮事件处理
   * @服务器请求:POST rest/student/{uuid}.json;
