@@ -337,12 +337,12 @@ var Userinfo_EventsTable = React.createClass({
 	    <div className="am-fl am-margin-left-xs">
 	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
 	    </div> 
-	    <div className="am-fl am-margin-left-xs">
-		  <button type="button"  onClick={this.handleChange_selectgroup_sou_uuid}  className="am-btn am-btn-primary">搜索</button>
-		  </div>
 		  <div className="am-fl am-margin-left-xs">
 		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
 		  </div>
+		    <div className="am-fl am-margin-left-xs">
+			  <button type="button"  onClick={this.handleChange_selectgroup_sou_uuid}  className="am-btn am-btn-primary">搜索</button>
+			  </div>
 		  </AMR_ButtonToolbar>
 		  </form>
 	  <hr/>
@@ -427,7 +427,7 @@ var Userinfo_edit = React.createClass({
 		       <label className={one_classDiv}>手机号码:</label>
 		      <div className={two_classDiv}>
 		     <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
-		    <button type="button"  onClick={ajax_userinfo_saveByAdmin}  className="am-btn am-btn-primary">号码检查</button>
+		    <button type="button"  onClick={ajax_tel_btn_info}  className="am-btn am-btn-primary">号码检查</button>
 		    </div>
 		     <label className={one_classDiv}>姓名:</label>
 		      <div className={two_classDiv}>
