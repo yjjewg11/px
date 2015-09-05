@@ -565,6 +565,10 @@ function react_ajax_class_students_manage(uuid){
  * */	  
 function btn_click_class_list(m,groupuuid,classuuid){
 	if(m=="addstudent"){
+		if(!classuuid){
+			G_msg_pop("请先创建班级!");
+			return;
+		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"新增学生");
 		add_studentsByData({classuuid:classuuid,sex:0});
 	}else if(m=="edit_class"){

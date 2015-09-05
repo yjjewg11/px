@@ -792,7 +792,10 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
+		if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_user_del, request)){
+			responseMessage.setMessage("没有删除权限");
+			return "";
+		}
 		try {
 			
 			boolean flag = userinfoService.delete(request.getParameter("uuid"),

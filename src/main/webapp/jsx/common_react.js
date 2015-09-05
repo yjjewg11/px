@@ -595,11 +595,11 @@ var Div_userinfo_update = React.createClass({
 		       <label htmlFor="">Email:</label>
 		      <PxInput icon="envelope" type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
 		      <br/>
-		      <label >性别:</label>
-		      <div className="am-form-group">
-		      <AMUIReact.UCheck type="radio" name="sex" label="男" value="0" inline defaultChecked checked={o.sex==0}   onChange={this.handleChange} />
-		      <AMUIReact.UCheck type="radio" name="sex" label="女" value="1" inline checked={o.sex==1} onChange={this.handleChange}/>
-		      </div>
+		      <AMUIReact.FormGroup>
+		      <label>单选：</label>
+		     <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+		    <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		   </AMUIReact.FormGroup>
 		      <br/>
 		      <label htmlFor="office">职位:</label>
 		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
