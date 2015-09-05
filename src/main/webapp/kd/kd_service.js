@@ -444,8 +444,9 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 	case 4:                                          
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break;
-    case 7:                                          
-    	   ajax_teachingplan_dayShow(null,{uuid:reluuid,nmae:""});  //(课程表);
+    case 7:   
+    	menu_teachingplan_dayShow_fn();
+    	 //  ajax_teachingplan_dayShow(null,{uuid:reluuid,nmae:""});  //(课程表);
 	       break;
 	case 6:
 		if(num==1){
@@ -583,7 +584,7 @@ function btn_click_class_list(m,groupuuid,classuuid){
 * <我的班级>添加学生详情绘制入口
 * */
 function ajax_myclass_students_edit(formdata){
-	React.render(React.createElement(Mylass_student_edit,{formdata:formdata}), document.getElementById('div_body'));
+	React.render(React.createElement(Mycalss_student_edit,{formdata:formdata}), document.getElementById('div_body'));
 	return;
 };
 
@@ -690,6 +691,35 @@ function ajax_class_students_look_info(uuid,title){
 	});
 };
 
+/*
+ * 我的班级修改学生详情按钮服务器请求
+ * */
+ function ajax_myclass_students_edit(uuid){
+ 	Queue.push(function(){ajax_myclass_students_edit(uuid);},"编辑学生");
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/student/"+uuid+".json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Mycalss_student_edit,{
+ 					formdata:data.data
+ 					}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error : function( obj, textStatus, errorThrown ){
+ 			$.AMUI.progress.done();
+ 			alert(url+",error:"+textStatus);
+ 		}
+ 	});
+ };
 
 
 

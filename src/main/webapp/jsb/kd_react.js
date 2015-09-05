@@ -2093,9 +2093,11 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	  },
 		render: function() {
 	     var o =this.state;
+	     console.log("o",o);
 		 return (
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
+  		      React.createElement("button", {type: "button", onClick: ajax_myclass_students_edit.bind(this,o.uuid), className: "am-btn am-btn-primary"}, "修改学生"), 
 			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
 				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
 				  React.createElement("br", null), 
@@ -2127,7 +2129,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 /*
  * <我的班级>添加学生详情界面
  * */
-  var Mylass_student_edit = React.createClass({displayName: "Mylass_student_edit", 
+  var Mycalss_student_edit = React.createClass({displayName: "Mycalss_student_edit", 
   	 getInitialState: function() {
   		    return this.props.formdata;
   		  },
