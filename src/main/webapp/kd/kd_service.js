@@ -577,9 +577,19 @@ function btn_click_class_list(m,groupuuid,classuuid){
 			return;
 		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"编辑班级");
-		react_ajax_class_edit_get_byRight({groupuuid:groupuuid},classuuid);
+		react_ajax_class_edit_get({groupuuid:groupuuid},classuuid);
 	}else{
+		
+		if(!groupuuid){
+			var tmp_list=Store.getGroup();
+			if(!tmp_list||tmp_list.length==0){
+				G_msg_pop("没有所属学校,不能创建班级!");
+				return;
+			}
+			groupuuid=tmp_list[0].uuid;
+		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"新增班级");
+		
 		react_ajax_class_edit_get({groupuuid:groupuuid},null);
 	}		
 };

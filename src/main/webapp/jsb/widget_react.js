@@ -34,9 +34,7 @@ var ChooseUser_EventRow = React.createClass({displayName: "ChooseUser_EventRow",
       React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox"})
       ), 
         React.createElement("td", null, event.name), 
-        React.createElement("td", null, event.tel), 
-        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-        React.createElement("td", {className: "px_disable_"+event.disable}, event.disable=="1"?"禁用":"正常")
+        React.createElement("td", null, event.sex=="0"?"男":"女")
       ) 
     );
   }
@@ -115,9 +113,7 @@ React.createElement("button", {type: "button", onClick: this.handleChange_select
             React.createElement("input", {type: "checkbox", id: "id_checkbox_all_chuser", onChange: this.handleChange_checkbox_all})
             ), 
             React.createElement("th", null, "昵称"), 
-            React.createElement("th", null, "电话"), 
-            React.createElement("th", null, "性别"), 
-            React.createElement("th", null, "状态")
+            React.createElement("th", null, "性别")
           )
         ), 
         React.createElement("tbody", null, 
