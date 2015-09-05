@@ -6029,6 +6029,16 @@ var Selected = React.createClass({displayName: "Selected",
     };
   },
 
+  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+  componentWillReceiveProps: function(nextProps) {
+	  var obj= {
+			  value: nextProps.value,
+		      dropdownWidth: null,
+		      filterText: null
+		    };
+	  this.setState(obj);
+	},
+
   componentDidMount: function() {
     this.setDropdownWidth();
   },

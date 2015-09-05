@@ -808,7 +808,7 @@ public class UserinfoController extends AbstractRESTController {
 	
 
 	/**
-	 * 用于客户端缓存
+	 * 用于客户端缓存(管理员有可能管理学校的uuid不够,
 	 * @param model
 	 * @param request
 	 * @return
@@ -820,15 +820,24 @@ public class UserinfoController extends AbstractRESTController {
 		
 		String tel=request.getParameter("tel");
 		User4Q a=null;
+		String mygroup_uuids="";
 		try {
 			a = userinfoService.getUserBytel(tel);
+			if(a!=null){
+				List<Group4Q> list = new ArrayList();
+				
+				list = groupService.getGroupByUseruuid(a.getUuid());
+				for(Group4Q o:list){
+					mygroup_uuids+=o.getUuid()+",";
+				}
+				mygroup_uuids=StringOperationUtil.trimSeparatorChars(mygroup_uuids);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 			responseMessage.setMessage("服务器异常:"+e.getMessage());
-			return "";
 		}
+		model.addAttribute("mygroup_uuids",mygroup_uuids);
 		model.addAttribute(RestConstants.Return_G_entity,a);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

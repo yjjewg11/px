@@ -1573,13 +1573,14 @@ var Class_student_tel =React.createClass({
 //	  	  		      </AMUIReact.List>
 //	  	     )  <div className="am-margin-left-sm">
 //	     }  	    		 
+	   	this.props.class_list.unshift({value:"",label:"所有"});
 		 return (
 		 		<div>
 			      <form id="editGroupForm" method="post" className="am-form">
 			     
 	  			  	  <AMR_ButtonToolbar  className="am-cf am-margin-left-xs">
 	  			  	 <div className="am-fl">
-			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.group_uuid}/> 
+			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid}/> 
 			    	  </div>  
 			    	  <div className="am-fl am-margin-left-xs">
 			    	  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入孩子姓名"/>
@@ -1587,34 +1588,36 @@ var Class_student_tel =React.createClass({
 			    	  <div className="am-fl am-margin-left-xs">
 			    	  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>
 			    	  </div>			    	  
-			    	  <div className="am-fl am-margin-left-sm">
-			    	  <AMR_Button amStyle="success" round>邀请全部</AMR_Button>			  		     
-			    	  </div>	  		  		  
+			    	 		  
 				      </AMR_ButtonToolbar>
 
  
 				  </form>  		        
 	  	  	       <ul className="am-list am-list-static am-list-border">
 	  	  			{this.props.formdata.map(function(event) {
+	  	  				var ListItem=null;
+	  	  				var showName=event.student_name+"的"+event.typename;
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(
-	  	  					<AMR_Button amStyle="revise" round>已邀请</AMR_Button>		
-	  	  				);
+	  	  				<AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,showName)} amStyle="success">发信件</AMUIReact.Button>	
+	  	  					);
 	  	  				}else if(event.isreg==0){
+	  	  					//<AMR_Button amStyle="success" onClick={ajax_parentContact_tels.bind(this,event.tel)} round>邀请家长</AMR_Button>	
 		  	  				ListItem=(
-			  	  					<AMR_Button amStyle="success" onClick={ajax_parentContact_tels.bind(this,event.tel)} round>邀请家长</AMR_Button>		
+		  	  						<AMR_Button amStyle="revise" round>未注册</AMR_Button>	
 			  	  				);
 	  	  				}else if(event.isreg==3){
 		  	  				ListItem=(
 			  	  					<AMR_Button amStyle="revise" round>邀请中</AMR_Button>		
 			  	  				);
 	  	  				}
+	  	  				
+	  	  				
 	  	  		        return (
 	  	  		       <li>
-	  	  		        {event.student_name}的{event.typename}:{event.tel}
+	  	  		        {showName}:{event.tel}
 	  	  		        <AMR_ButtonToolbar>
 	  	  		         <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>  
-	  	  		          <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录")} amStyle="success">@信息</AMUIReact.Button>	
 	  	  		           {ListItem}
 	  	  		          </AMR_ButtonToolbar>
 	  	  		       </li>);})}		      			      

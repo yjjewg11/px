@@ -395,8 +395,14 @@ var Userinfo_edit = React.createClass({
 			 $('#group_uuid').val(event);
 			    this.setState($('#editUserinfoForm').serializeJson());
 		  },
-	 handle_Change: function(tel,group_uuid) {
+	 handle_getUserBytel: function(tel,group_uuid) {
 		 var thit=this;
+		 var o=this.state;
+		 if(!tel){
+			 
+			 G_msg_pop("请输入手机号码.");
+			 return;
+		 }
 		 $.AMUI.progress.start();
 			var url = hostUrl + "rest/userinfo/getUserBytel.json";
 			$.ajax({
@@ -407,14 +413,14 @@ var Userinfo_edit = React.createClass({
 				success : function(data) {
 					$.AMUI.progress.done();
 	     			if (data.ResMsg.status == "success") {
-	     				var o={
-		     					mygroup_uuids:group_uuid,
-		     					formdata:data.data,
-		     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
-		     					sex:data.data.sex
+	     				if(data.data){
+	     					o=data.data;
+		     				o.group_uuid=data.mygroup_uuids;
+		     				thit.setState(o);
+	     				}else{
+	     					G_msg_pop("该老师未注册,请填写以下内容!");
 	     				}
-	     				console.log("o",o);
-	     				thit.setState(o);
+	     				
 	     			} else {
 	     				alert("加载数据失败："+data.ResMsg.message);
 	     			}
@@ -427,7 +433,12 @@ var Userinfo_edit = React.createClass({
 	  var passwordDiv=null;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var show_btn_UserBytel=null;
 	  if(!o.uuid){
+		  show_btn_UserBytel=(
+				  <button type="button"  onClick={this.handle_getUserBytel.bind(this,$('#tel').val(),o.group_uuid)}  className="am-btn am-btn-primary">检查是否注册</button>
+				  );
+		  o.sex=1;
 		  o.password="123456";
 		  o.password1="123456";
 		  passwordDiv=(
@@ -454,8 +465,8 @@ var Userinfo_edit = React.createClass({
 		       <label className={one_classDiv}>手机号码:</label>
 		      <div className={two_classDiv}>
 		     <PxInput  icon="mobile" type="text" name="tel" id="tel" value={o.tel} onChange={this.handleChange} placeholder=""/>
-		    <button type="button"  onClick={this.handle_Change.bind(this,$('#tel').val(),o.group_uuid)}  className="am-btn am-btn-primary">号码检查</button>
-		    </div>
+		     {show_btn_UserBytel}
+		     </div>
 		     <label className={one_classDiv}>姓名:</label>
 		      <div className={two_classDiv}>
 		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>

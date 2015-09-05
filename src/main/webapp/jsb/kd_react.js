@@ -1573,48 +1573,51 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 //	  	  		      </AMUIReact.List>
 //	  	     )  <div className="am-margin-left-sm">
 //	     }  	    		 
+	   	this.props.class_list.unshift({value:"",label:"所有"});
 		 return (
 		 		React.createElement("div", null, 
 			      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 			     
 	  			  	  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
 	  			  	 React.createElement("div", {className: "am-fl"}, 
-			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.group_uuid})
+			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
 			    	  ), 
 			    	  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
 			    	  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入孩子姓名"})
 			    	  ), 
 			    	  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
 			    	  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")
-			    	  ), 			    	  
-			    	  React.createElement("div", {className: "am-fl am-margin-left-sm"}, 
-			    	  React.createElement(AMR_Button, {amStyle: "success", round: true}, "邀请全部")			  		     
-			    	  )	  		  		  
+			    	  )			    	  
+			    	 		  
 				      )
 
  
 				  ), 		        
 	  	  	       React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	  	  			this.props.formdata.map(function(event) {
+	  	  				var ListItem=null;
+	  	  				var showName=event.student_name+"的"+event.typename;
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(
-	  	  					React.createElement(AMR_Button, {amStyle: "revise", round: true}, "已邀请")		
-	  	  				);
+	  	  				React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,showName), amStyle: "success"}, "发信件")	
+	  	  					);
 	  	  				}else if(event.isreg==0){
+	  	  					//<AMR_Button amStyle="success" onClick={ajax_parentContact_tels.bind(this,event.tel)} round>邀请家长</AMR_Button>	
 		  	  				ListItem=(
-			  	  					React.createElement(AMR_Button, {amStyle: "success", onClick: ajax_parentContact_tels.bind(this,event.tel), round: true}, "邀请家长")		
+		  	  						React.createElement(AMR_Button, {amStyle: "revise", round: true}, "未注册")	
 			  	  				);
 	  	  				}else if(event.isreg==3){
 		  	  				ListItem=(
 			  	  					React.createElement(AMR_Button, {amStyle: "revise", round: true}, "邀请中")		
 			  	  				);
 	  	  				}
+	  	  				
+	  	  				
 	  	  		        return (
 	  	  		       React.createElement("li", null, 
-	  	  		        event.student_name, "的", event.typename, ":", event.tel, 
+	  	  		        showName, ":", event.tel, 
 	  	  		        React.createElement(AMR_ButtonToolbar, null, 
 	  	  		         React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "disable"}, "电话"), " "), 
-	  	  		          React.createElement(AMUIReact.Button, {onClick: ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,"家长通讯录"), amStyle: "success"}, "@信息"), 	
 	  	  		           ListItem
 	  	  		          )
 	  	  		       ));})		      			      
