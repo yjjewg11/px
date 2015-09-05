@@ -656,7 +656,7 @@ function ajax_class_save(){
             	G_msg_pop(data.ResMsg.message);
 				Store.setMyClassList(null);
 				Store.clearChooseClass(null);
-				Queue.doBackFN();
+				menu_class_students_fn();
             }
             };
 G_ajax_abs_save(opt);
