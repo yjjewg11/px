@@ -21,6 +21,8 @@ import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
 
@@ -136,8 +138,8 @@ public class StudentController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	public String query(ModelMap model,
+	@RequestMapping(value = "/querybyRight", method = RequestMethod.GET)
+	public String querybyRight(ModelMap model,
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -150,11 +152,11 @@ public class StudentController extends AbstractRESTController {
 		
 		  
 		if(StringUtils.isBlank(groupuuid)){ 
-			groupuuid=this.getMyGroupUuidsBySession(request);
+			groupuuid=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
 		}else{
-			String groupUuids=this.getMyGroupUuidsBySession(request);
+			String groupUuids=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
 			if(groupUuids==null||!groupUuids.contains(groupuuid)){
-				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+groupuuid);
+				responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
 				return "";
 			}
 		}

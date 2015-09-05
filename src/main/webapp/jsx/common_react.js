@@ -307,7 +307,7 @@ var Userinfo_EventsTable = React.createClass({
 			　};
 			});
 		  if(!uuids){
-			  alert("请勾选复选框！");
+			  G_msg_pop("请勾选复选框！");
 			  return;
 		  }
 		  btn_click_userinfo(m,uuids,usernames);

@@ -286,7 +286,44 @@ public class UserinfoController extends AbstractRESTController {
 	}
 
 	/**
-	 * 获取机构信息
+	 * 获取用户信息用于通讯录.去掉 wjd的学校.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listForTel", method = RequestMethod.GET)
+	public String listForTel(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			List<User4Q> list;
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+					groupuuid=this.getMyGroupUuidsBySession(request);
+					if (StringUtils.isEmpty(groupuuid)){
+						responseMessage.setMessage("非法用户,没有关联的学校!");
+						return "";
+					}
+				}
+			
+			}
+			list = userinfoService.getUserTelsByGroupuuid(groupuuid,name);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	/**
+	 * 获取用户信息
 	 * 
 	 * @param model
 	 * @param request

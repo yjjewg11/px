@@ -515,12 +515,33 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
+	public List<User4Q> getUserTelsByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		sql+=" and t0.groupuuid !='"+SystemConstants.Group_uuid_wjd+"'";
 		if(StringUtils.isNotBlank(group_uuid)){
-			sql+="and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+		}
+		if(StringUtils.isNotBlank(name)){
+			sql+=" and {t1}.name like '%"+name+"%'";
+		}
+		Query q = s
+				.createSQLQuery(sql).addEntity("t1", User4Q.class);
+
+		return q.list();
+	}
+	/**
+	 * 查询指定机构的用户列表
+	 * 
+	 * @return
+	 */
+	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
 		}
 		if(StringUtils.isNotBlank(name)){
 			sql+=" and {t1}.name like '%"+name+"%'";

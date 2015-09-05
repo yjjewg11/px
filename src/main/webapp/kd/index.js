@@ -654,7 +654,7 @@ function menu_teachingplan_list_fn_byRight(){
 		alert("没有权限。");
 		return;
 	}
-	
+	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
 	groupuuid=groupList[0].uuid;
 	
 	React.render(React.createElement(Teachingplan_EventsTable_byRight, {

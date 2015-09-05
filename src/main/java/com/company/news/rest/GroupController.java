@@ -148,6 +148,30 @@ public class GroupController extends AbstractRESTController {
 		}
 		return "";
 	}
+	
+	
+	/**
+	 * 获取我的机构信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/myListByRight", method = RequestMethod.GET)
+	public String myListByRight(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String groupList=RightUtils.getRightGroups(RightConstants.KD_group_m, request);
+		if(StringUtils.isBlank(groupList)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
+		List list = groupService.getGroupByuuids(groupList);
+		
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 
 	/**
 	 * 获取我的机构信息

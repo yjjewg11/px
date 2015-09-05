@@ -332,7 +332,7 @@ function btn_ajax_updateRole(useruuid,groupuuid){
 		}
 		});
 	  if(!uuids){
-		  alert("请勾选复选框！");
+		  G_msg_pop("请勾选复选框！");
 		  return;
 	  }
 	  
@@ -487,7 +487,7 @@ function btn_ajax_updateRight(roleuuid){
 		}
 		});
 	  if(!uuids){
-		  alert("请勾选复选框！");
+		  G_msg_pop("请勾选复选框！");
 		  return;
 	  }
 	  

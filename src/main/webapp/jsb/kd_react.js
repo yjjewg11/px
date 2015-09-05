@@ -2813,6 +2813,7 @@ handleChange_selectgroup_uuid:function(val){
 
 render: function() {
 	var obj=this.state;
+	if(!this.state.list)this.state.list=[];
   return (
   React.createElement("div", null, 
 React.createElement(AMR_ButtonToolbar, null, 
@@ -3419,7 +3420,7 @@ var CookbookPlan_EventsTable_byRight = React.createClass({displayName: "Cookbook
 				　}
 				});
 			  if(!uuids){
-				  alert("请勾选复选框！");
+				  G_msg_pop("请勾选复选框！");
 				  return;
 			  }
 			  if(!uuids&&uuids.indexOf(",")>-1){

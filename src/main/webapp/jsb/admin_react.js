@@ -209,14 +209,14 @@ var Role_EventsTable = React.createClass({displayName: "Role_EventsTable",
 				　}
 				});
 			  if(!uuids){
-				  alert("请勾选复选框！");
+				  G_msg_pop("请勾选复选框！");
 				  return;
 			  }
 			  
 			  
 			  if(m=="role_bind_right"){
 				if(uuids.indexOf(",")>-1){
-					 alert("只能选择一条数据!");
+					G_msg_pop("只能选择一条数据!");
 					  return;
 				}
 			  
@@ -371,12 +371,12 @@ var AD_Userinfo_EventsTable = React.createClass({displayName: "AD_Userinfo_Event
 			　};
 			});
 		  if(!uuids){
-			  alert("请勾选复选框！");
+			  G_msg_pop("请勾选复选框！");
 			  return;
 		  }
 		  if(m=="getRole"){
 			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个！");
+				  G_msg_pop("只能选择一个！");
 					return;
 				};
 				  var opt={groupuuid:$("input[name='group_uuid']").val(),
@@ -386,7 +386,7 @@ var AD_Userinfo_EventsTable = React.createClass({displayName: "AD_Userinfo_Event
 		  }
 		  if(m=="del"){
 			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个！");
+				  G_msg_pop("只能选择一个！");
 					return;
 				};
 		  }

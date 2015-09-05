@@ -14,9 +14,11 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
+import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -312,6 +314,18 @@ public class GroupService extends AbstractServcice {
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
+		 this.warpVoList(list);
+		 return  list;
+	}
+
+	
+	/**
+	 * 查询指定用户的机构列表
+	 * @return
+	 */
+	public List getGroupByuuids(String uuids){
+		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from Group4Q where uuid in("+DBUtil.stringsToWhereInValue(uuids)+")");
 		 this.warpVoList(list);
 		 return  list;
 	}

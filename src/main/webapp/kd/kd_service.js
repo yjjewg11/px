@@ -1033,7 +1033,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
   	Queue.push(function(){react_ajax_teachingplan_edit(formdata,uuid,nmae);},nmae);
 	if(!uuid){
 		if(!formdata.classuuid){
-			alert("新建课程，班级id必填");
+			G_msg_pop("新建课程，班级id必填");
 			return;
 		}
 		React.render(React.createElement(Teachingplan_edit,{formdata:formdata}), document.getElementById('div_body'));
@@ -1486,12 +1486,17 @@ function ajax_parentContact_tels(tels){
  * @Teacher_info_tel:绘制;
  * */
 function ajax_Teacher_listByGroup(groupuuid,name) {
+		var list=Store.getGroupNoGroup_wjd();
 	  if(!name)name="";
-	  if(!groupuuid)groupuuid="";
+	  if(!groupuuid){
+		  if(list&&list.length>0){
+			  groupuuid=list[0].uuid;
+		  }
+	  }
 	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
 	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid+"&name="+name;
+	var url = hostUrl + "rest/userinfo/listForTel.json?groupuuid="+groupuuid+"&name="+name;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -1502,7 +1507,7 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroupNoGroup_wjd(),"uuid","brand_name"),
+					group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					
@@ -1749,7 +1754,7 @@ function react_ajax_favorites_show(type,reluuid){
    * */
   function ajax_group_myList_byRight() {
   	$.AMUI.progress.start();
-  	var url = hostUrl + "rest/group/myList.json";
+  	var url = hostUrl + "rest/group/myListByRight.json";
   	$.ajax({
   		type : "GET",
   		url : url,
@@ -1863,7 +1868,7 @@ function react_ajax_favorites_show(type,reluuid){
 function ajax_announce_listByGroup_byRight(groupuuid){
 	var grouplist=Store.getGroupByRight("KD_announce_m");
 	if(!grouplist||grouplist.length==0){
-		alert("没有权限!");
+		G_msg_pop("没有权限!");
 		return "";
 	}
 	if(!groupuuid){
@@ -2072,7 +2077,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   function ajax_classnews_edit_byRight(m,formdata){
 	  var myclasslist=G_selected_dataModelArray_byArray(mycalsslist,"uuid","name");
 		if(myclasslist==null||myclasslist.length==0){
-			alert("你没有所属班级,不能发布班级互动.");
+			G_msg_pop("你没有所属班级,不能发布班级互动.");
 			return;
 		}
   	if(m=="add"){
@@ -2376,7 +2381,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   	if(m=="add"){
 	  	Queue.push(function(){react_ajax_cookbookPlan_edit_byRight(m,formdata);},"新增食谱");
   		if(!formdata.groupuuid){
-  			alert("新建食谱，学校id必填");
+  			G_msg_pop("新建食谱，学校id必填");
   			return;
   		}
   		React.render(React.createElement(CookbookPlan_edit_byRight,{
@@ -2660,7 +2665,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		react_ajax_class_edit_get_byRight({groupuuid:groupuuid},null);
  	}else if(m=="edit_class"){
  		if(!uuids&&uuids.indexOf(",")>-1){
- 			alert("只能选择一个班级进行编辑！");
+ 			G_msg_pop("只能选择一个班级进行编辑！");
  			return;
  		}
  		Queue.push(function(){btn_click_class_list_byRight(m,groupuuid,uuids);},"编辑班级");
@@ -3032,7 +3037,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  if(!pageNo)pageNo=1;
  	 g_student_query_point=pageNo;
  		$.AMUI.progress.start();
- 		var url = hostUrl + "rest/student/query.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+ 		var url = hostUrl + "rest/student/querybyRight.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
  		$.ajax({          
  			type : "GET",  
  			url : url,
