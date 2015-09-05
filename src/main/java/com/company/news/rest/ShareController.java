@@ -416,7 +416,7 @@ public class ShareController extends AbstractRESTController {
 		return "/getRecruitBygroupuuid";
 	}
 	
-	private String _KDWebUrl="http://kd.wenjienet.com/px-rest/kd/index.html?v1";
+	private String _KDWebUrl=null;
 	/**
 	 * 获取老师web登录地址.
 	 * @param model
