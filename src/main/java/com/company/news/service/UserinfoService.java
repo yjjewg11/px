@@ -130,7 +130,8 @@ public class UserinfoService extends AbstractServcice {
 		user.setDisable(USER_disable_default);
 		user.setLogin_time(TimeUtils.getCurrentTimestamp());
 		user.setTel_verify(USER_tel_verify_default);
-		user.setSex(SystemConstants.User_sex_male);//默认男
+		user.setSex(SystemConstants.User_sex_female);//默认女
+		user.setOffice("老师");
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
