@@ -46,13 +46,13 @@ public class StudentService extends AbstractServcice {
 
 		// TEL格式验证
 		if (StringUtils.isBlank(studentJsonform.getName())) {
-			responseMessage.setMessage("name不能为空！");
+			responseMessage.setMessage("姓名不能为空！");
 			return false;
 		}
 
 		// name昵称验证
 		if (StringUtils.isBlank(studentJsonform.getClassuuid())) {
-			responseMessage.setMessage("Classuuid不能为空");
+			responseMessage.setMessage("班级不能为空");
 			return false;
 		}
 		
