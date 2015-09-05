@@ -2093,9 +2093,11 @@ var Class_student_look_info =React.createClass({
 	  },
 		render: function() {
 	     var o =this.state;
+	     console.log("o",o);
 		 return (
 		 		<div>
 			    <AMUIReact.List static border striped>
+  		      <button type="button"  onClick={ajax_myclass_students_edit.bind(this,o.uuid)}  className="am-btn am-btn-primary">修改学生</button>
 			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
 				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
 				  <br/>
@@ -2127,7 +2129,7 @@ var Class_student_look_info =React.createClass({
 /*
  * <我的班级>添加学生详情界面
  * */
-  var Mylass_student_edit = React.createClass({ 
+  var Mycalss_student_edit = React.createClass({ 
   	 getInitialState: function() {
   		    return this.props.formdata;
   		  },

@@ -105,7 +105,7 @@ public class StudentController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("增加成功");
+		responseMessage.setMessage("操作成功");
 		return "";
 	}
 
