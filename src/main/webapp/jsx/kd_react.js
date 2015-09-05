@@ -1994,13 +1994,25 @@ var Class_students_show= React.createClass({
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
+		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
-	  		    <AMR_Button amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
-	  		    <AMR_Button amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} round>添加学生</AMR_Button>
-	  		    <AMR_Button  onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} round>添加班级</AMR_Button>
-	  		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>班级编辑</AMR_Button>
-	  		    <G_help_popo  msg={G_tip.class_show} />
-	  		    </AMR_ButtonToolbar>
+		  	</div>  
+		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} round>查看课程</AMR_Button>
+		  	</div>
+		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	  <AMR_Button amSize="xs"  amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} round>添加学生</AMR_Button>
+		  	</div>
+		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	  <AMR_Button amSize="xs"  onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} round>添加班级</AMR_Button>
+		  	</div> 
+		  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	  <AMR_Button amSize="xs" amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>班级编辑</AMR_Button>
+		  	</div>  
+		  	  <G_help_popo  msg={G_tip.class_show} />
+	  		    
+		  	  
+		  	  </AMR_ButtonToolbar>
 	  		    
 	  		   <AMR_Col sm={3} > 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
 			    <AMR_Col sm={3} > 班级:{o.name}</AMR_Col>
@@ -2013,6 +2025,8 @@ var Class_students_show= React.createClass({
 	  );
 	}
 	});
+
+
 
 /*
 * <我的班级>班级添加详情绘制

@@ -1994,13 +1994,25 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  React.createElement(AMR_Panel, null, 
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
 		  	  React.createElement(AMR_ButtonToolbar, null, 
-		  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid}), 
-	  		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name), round: true}, "查看课程"), 
-	  		    React.createElement(AMR_Button, {amStyle: "warning", onClick: this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid), round: true}, "添加学生"), 
-	  		    React.createElement(AMR_Button, {onClick: this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid), round: true}, "添加班级"), 
-	  		    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "班级编辑"), 
-	  		    React.createElement(G_help_popo, {msg: G_tip.class_show})
-	  		    ), 
+		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
+		  	), 
+		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name), round: true}, "查看课程")
+		  	), 
+		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "warning", onClick: this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid), round: true}, "添加学生")
+		  	), 
+		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMR_Button, {amSize: "xs", onClick: this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid), round: true}, "添加班级")
+		  	), 
+		  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "班级编辑")
+		  	), 
+		  	  React.createElement(G_help_popo, {msg: G_tip.class_show})
+	  		    
+		  	  
+		  	  ), 
 	  		    
 	  		   React.createElement(AMR_Col, {sm: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
 			    React.createElement(AMR_Col, {sm: 3}, " 班级:", o.name), 
@@ -2013,6 +2025,8 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  );
 	}
 	});
+
+
 
 /*
 * <我的班级>班级添加详情绘制
