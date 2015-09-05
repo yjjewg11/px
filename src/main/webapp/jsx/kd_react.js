@@ -2009,7 +2009,6 @@ var Class_students_show= React.createClass({
 		  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 		  	  <AMR_Button amSize="xs" amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>班级编辑</AMR_Button>
 		  	</div>  
-		  	  <G_help_popo  msg={G_tip.class_show} />
 	  		    
 		  	  
 		  	  </AMR_ButtonToolbar>

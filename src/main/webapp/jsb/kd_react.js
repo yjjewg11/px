@@ -2008,8 +2008,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  	), 
 		  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "primary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid), round: true}, "班级编辑")
-		  	), 
-		  	  React.createElement(G_help_popo, {msg: G_tip.class_show})
+		  	)
 	  		    
 		  	  
 		  	  ), 
