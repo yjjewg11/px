@@ -555,7 +555,7 @@ public class UserinfoService extends AbstractServcice {
 		// 更新用户状态
 		// Group_uuid昵称验证
 		if (StringUtils.isBlank(useruuids)) {
-			responseMessage.setMessage("useruuid不能为空！");
+			responseMessage.setMessage("请选择用户！");
 			return false;
 		}
 
@@ -602,11 +602,11 @@ public class UserinfoService extends AbstractServcice {
 	public boolean updateRoleRightRelation(String roleuuids, String useruuid,String groupuuid,
 			String type, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(useruuid)) {
-			responseMessage.setMessage("useruuids不能为空");
+			responseMessage.setMessage("用户不能为空");
 			return false;
 		}
 		if (StringUtils.isBlank(groupuuid)) {
-			responseMessage.setMessage("groupuuid不能为空");
+			responseMessage.setMessage("学校不能为空");
 			return false;
 		}
 		String whereType = "";
@@ -650,11 +650,11 @@ public class UserinfoService extends AbstractServcice {
 		
 		
 		if (StringUtils.isBlank(roleuuid)) {
-			responseMessage.setMessage("roleuuid不能为空");
+			responseMessage.setMessage("权限角色不能为空");
 			return false;
 		}
 		if (StringUtils.isBlank(groupuuid)) {
-			responseMessage.setMessage("groupuuid不能为空");
+			responseMessage.setMessage("学校不能为空");
 			return false;
 		}
 		
@@ -718,24 +718,24 @@ public class UserinfoService extends AbstractServcice {
 		}
 
 		if (StringUtils.isBlank(userRegJsonform.getOldpassword())) {
-			responseMessage.setMessage("Oldpassword不能为空！");
+			responseMessage.setMessage("旧密码不能为空！");
 			return false;
 		}
 
 		if (StringUtils.isBlank(userRegJsonform.getPassword())) {
-			responseMessage.setMessage("Password不能为空！");
+			responseMessage.setMessage("密码不能为空！");
 			return false;
 		}
 
 		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
 				userRegJsonform.getUuid());
 		if (user == null) {
-			responseMessage.setMessage("user不存在！");
+			responseMessage.setMessage("用户不存在！");
 			return false;
 		}
 
 		if (!user.getPassword().equals(userRegJsonform.getOldpassword())) {
-			responseMessage.setMessage("Oldpassword不匹配！");
+			responseMessage.setMessage("2次密码不匹配！");
 			return false;
 		}
 
@@ -755,17 +755,17 @@ public class UserinfoService extends AbstractServcice {
 		// 更新用户状态
 		// Group_uuid昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getTel())) {
-			responseMessage.setMessage("Tel不能为空！");
+			responseMessage.setMessage("手机号码不能为空！");
 			return false;
 		}
 
 		if (StringUtils.isBlank(userRegJsonform.getSmscode())) {
-			responseMessage.setMessage("Smscode不能为空！");
+			responseMessage.setMessage("验证码不能为空！");
 			return false;
 		}
 
 		if (StringUtils.isBlank(userRegJsonform.getPassword())) {
-			responseMessage.setMessage("Password不能为空！");
+			responseMessage.setMessage("密码不能为空！");
 			return false;
 		}
 		
