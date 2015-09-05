@@ -2013,10 +2013,10 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		  	  
 		  	  ), 
 	  		    
-	  		   React.createElement(AMR_Col, {sm: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
-			    React.createElement(AMR_Col, {sm: 3}, " 班级:", o.name), 
-			    React.createElement(AMR_Col, {sm: 3}, "班主任:", o.headTeacher_name), 
-			    React.createElement(AMR_Col, {sm: 3}, "其他老师:", o.teacher_name)
+	  		   React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
+			    React.createElement(AMR_Col, {sm: 6, md: 3}, "班主任:", o.headTeacher_name), 
+			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name)
 			  )
 		  ), 
 		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})

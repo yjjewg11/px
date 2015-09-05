@@ -566,7 +566,7 @@ function react_ajax_class_students_manage(uuid){
 function btn_click_class_list(m,groupuuid,classuuid){
 	if(m=="addstudent"){
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"新增学生");
-		ajax_myclass_students_edit({classuuid:classuuid,sex:0});
+		add_studentsByData({classuuid:classuuid,sex:0});
 	}else if(m=="edit_class"){
 		if(!classuuid&&classuuid.indexOf(",")>-1){
 			alert("只能选择一个班级进行编辑！");
@@ -583,7 +583,7 @@ function btn_click_class_list(m,groupuuid,classuuid){
 /*
 * <我的班级>添加学生详情绘制入口
 * */
-function ajax_myclass_students_edit(formdata){
+function add_studentsByData(formdata){
 	React.render(React.createElement(Mycalss_student_edit,{formdata:formdata}), document.getElementById('div_body'));
 	return;
 };
@@ -788,7 +788,7 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type,callback) {
  * */
 function btn_click_classnews(m,formdata){
 	Queue.push(function(){btn_click_classnews(m,formdata);},"发布互动");
-	ajax_classnews_edit(m,formdata,Store.getMyClassList());
+	ajax_classnews_edit(m,formdata);
 };	  
 /*
  * <班级互动>添加与编辑按钮服务器请求（公共方法大图标班级活动也请求此方法）
@@ -796,11 +796,16 @@ function btn_click_classnews(m,formdata){
  * @Classnews_show:大图标班级互动跳转绘制和列表名字点击按钮详情绘制;
  * 在kd_react
  * */
-function ajax_classnews_edit(m,formdata,mycalsslist){
+function ajax_classnews_edit(m,formdata){
+	var myclasslist=Store.getMyClassList();
+	if(!myclasslist||myclasslist.length==0){
+		  G_msg_pop("你没有所属班级,不能发布班级互动.");
+		return;
+	}
 	if(m=="add"){
 		React.render(React.createElement(Classnews_edit,{
 			formdata:formdata,
-			mycalsslist:G_selected_dataModelArray_byArray(mycalsslist,"uuid","name")
+			mycalsslist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
 			}), document.getElementById('div_body'));
 	}
 };
@@ -813,7 +818,15 @@ function ajax_classnews_save(){
 	  $(".G_cookplan_Img_img").each(function(){
 		  imgs+=","+$(this).attr("src");
 		});	  
-	  $('#imgs').val(imgs);	  
+	  $('#imgs').val(imgs);
+	  
+	  
+	  var obj = $('#editClassnewsForm').serializeJson();
+	  if(!obj.imgs&&!obj.content){
+		  G_msg_pop("图片或内容至少填写一项.");
+		  return;
+		  
+	  }
 	var opt={
 			 formName:"editClassnewsForm",
 			 url:hostUrl + "rest/classnews/save.json",
@@ -2048,7 +2061,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * */
   function btn_click_classnews_byRight(m,formdata){
   	Queue.push(function(){btn_click_classnews_byRight(m,formdata);},"发布互动");
-  	ajax_classnews_edit(m,formdata,Store.getMyClassList());
+  	ajax_classnews_edit(m,formdata);
   };	  
   /*
    * <班级互动>添加与编辑按钮服务器请求（公共方法大图标班级活动也请求此方法）
@@ -2056,7 +2069,12 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * @Classnews_show:大图标班级互动跳转绘制和列表名字点击按钮详情绘制;
    * 在kd_react
    * */
-  function ajax_classnews_edit_byRight(m,formdata,mycalsslist){
+  function ajax_classnews_edit_byRight(m,formdata){
+	  var myclasslist=G_selected_dataModelArray_byArray(mycalsslist,"uuid","name");
+		if(myclasslist==null||myclasslist.length==0){
+			alert("你没有所属班级,不能发布班级互动.");
+			return;
+		}
   	if(m=="add"){
   		React.render(React.createElement(Classnews_edit_byRight,{
   			formdata:formdata,

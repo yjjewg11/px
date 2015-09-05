@@ -269,6 +269,7 @@ public class StudentService extends AbstractServcice {
 	 */
 	public Student get(String uuid)throws Exception{
 		Student o= (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+		if(o==null)return null;
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		warpVo(o);
 		return o;
