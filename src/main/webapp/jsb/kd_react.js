@@ -110,7 +110,7 @@ render: function() {
  		  )
  		), 
  		React.createElement("div", {className: "am-g"}, 
- 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+ 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
  		 React.createElement("form", {id: "login_form", method: "post", className: "am-form"}, 
  	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
  	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
@@ -2205,6 +2205,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
+		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
@@ -4231,6 +4232,7 @@ render: function() {
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
+		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
