@@ -37,7 +37,7 @@ var Div_kd_group_reg = React.createClass({
 				 <div className={two_classDiv}>
 			      <PxInput type="text" name="company_name" id="company_name"  placeholder="必填，不超过45位"/>
 				   </div>	
-			      <label className={one_classDiv}>公司地址:</label>
+			      <label className={one_classDiv}>学校地址:</label>
 			     <div className={two_classDiv}>
 			    <PxInput type="text" name="address" id="address"  placeholder="必填，不超过64位"/>
 			     </div>	
@@ -46,7 +46,7 @@ var Div_kd_group_reg = React.createClass({
 			        <PxInput type="text" name="map_point" id="map_point"  placeholder="拾取坐标后，复制到这里。格式：1.1,1.1" /> 
 			         <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
 			          </div>	
-					 <label className={one_classDiv}>公司电话:</label>
+					 <label className={one_classDiv}>学校电话:</label>
 					<div className={two_classDiv}>
 				   <PxInput type="text" name="link_tel" id="link_tel"/>
 				  </div>				      
@@ -2205,7 +2205,7 @@ var Class_student_look_info =React.createClass({
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   <form id="editClassStudentForm" method="post" className="am-form">
-		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}/>
+		   <PxInput type="hidden" name="headimg" d="headimg"  value={o.headimg}/>
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
 		   <div className="am-form-group">
@@ -2623,7 +2623,7 @@ var Group_EventsTable_byRight = React.createClass({
             <th>预览</th>
             <th>机构全称</th>
             <th>电话</th>
-            <th>公司地址</th>
+            <th>学校地址</th>
             <th>创建时间</th>
           </tr> 
         </thead>
@@ -2733,7 +2733,7 @@ var Group_edit_byRight = React.createClass({
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	    </div>    	      
-    	     <label className={one_classDiv }>公司地址:</label>
+    	     <label className={one_classDiv }>学校地址:</label>
     		  <div className={two_classDiv }>
     	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
      	        </div>    	      
@@ -2742,7 +2742,7 @@ var Group_edit_byRight = React.createClass({
     	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
     	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
     	   </div>   	      
-    	    <label className={one_classDiv }>公司电话:</label>
+    	    <label className={one_classDiv }>学校电话:</label>
     		 <div className={two_classDiv }>
     	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
     	       </div> 		
