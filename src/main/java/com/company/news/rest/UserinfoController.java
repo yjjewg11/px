@@ -803,8 +803,7 @@ public class UserinfoController extends AbstractRESTController {
 			if (!flag)
 				return "";
 			
-			String desc="uuid="+request.getParameter("uuid");
-			userinfoService.addLog("deleteByAdmin","删除用户", desc, request);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

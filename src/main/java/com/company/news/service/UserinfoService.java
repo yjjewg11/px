@@ -26,6 +26,7 @@ import com.company.news.entity.User4Q;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.form.UserLoginForm;
+import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.DBUtil;
@@ -865,6 +866,8 @@ public class UserinfoService extends AbstractServcice {
 						"delete from UserGroupRelation where  useruuid =? ", obj.getUuid());
 		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
 		
+		String desc=JSONUtils.getJsonString(obj);
+		this.addLog("deleteByAdmin","删除用户", desc, request);
 		
 		 this.nSimpleHibernateDao.delete(obj);
 //		if (uuid.indexOf(",") != -1)// 多ID

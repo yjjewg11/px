@@ -416,7 +416,7 @@ public class ShareController extends AbstractRESTController {
 		return "/getRecruitBygroupuuid";
 	}
 	
-	private String _KDWebUrl=null;
+	private static String _KDWebUrl=null;
 	/**
 	 * 获取老师web登录地址.
 	 * @param model
