@@ -37,7 +37,7 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 				 React.createElement("div", {className: two_classDiv}, 
 			      React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", placeholder: "必填，不超过45位"})
 				   ), 	
-			      React.createElement("label", {className: one_classDiv}, "公司地址:"), 
+			      React.createElement("label", {className: one_classDiv}, "学校地址:"), 
 			     React.createElement("div", {className: two_classDiv}, 
 			    React.createElement(PxInput, {type: "text", name: "address", id: "address", placeholder: "必填，不超过64位"})
 			     ), 	
@@ -46,7 +46,7 @@ var Div_kd_group_reg = React.createClass({displayName: "Div_kd_group_reg",
 			        React.createElement(PxInput, {type: "text", name: "map_point", id: "map_point", placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
 			         React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取")
 			          ), 	
-					 React.createElement("label", {className: one_classDiv}, "公司电话:"), 
+					 React.createElement("label", {className: one_classDiv}, "学校电话:"), 
 					React.createElement("div", {className: two_classDiv}, 
 				   React.createElement(PxInput, {type: "text", name: "link_tel", id: "link_tel"})
 				  ), 				      
@@ -2205,7 +2205,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
-		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg}), 
+		   React.createElement(PxInput, {type: "hidden", name: "headimg", d: "headimg", value: o.headimg}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
@@ -2623,7 +2623,7 @@ var Group_EventsTable_byRight = React.createClass({displayName: "Group_EventsTab
             React.createElement("th", null, "预览"), 
             React.createElement("th", null, "机构全称"), 
             React.createElement("th", null, "电话"), 
-            React.createElement("th", null, "公司地址"), 
+            React.createElement("th", null, "学校地址"), 
             React.createElement("th", null, "创建时间")
           )
         ), 
@@ -2733,7 +2733,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
     		  React.createElement("div", {className: two_classDiv }, 
     	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"})
     	    ), 	      
-    	     React.createElement("label", {className: one_classDiv }, "公司地址:"), 
+    	     React.createElement("label", {className: one_classDiv }, "学校地址:"), 
     		  React.createElement("div", {className: two_classDiv }, 
     	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"})
      	        ), 	      
@@ -2742,7 +2742,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
     	     React.createElement(PxInput, {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
     	    React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取")
     	   ), 	      
-    	    React.createElement("label", {className: one_classDiv }, "公司电话:"), 
+    	    React.createElement("label", {className: one_classDiv }, "学校电话:"), 
     		 React.createElement("div", {className: two_classDiv }, 
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
     	       ), 		
