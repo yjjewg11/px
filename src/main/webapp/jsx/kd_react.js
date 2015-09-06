@@ -318,8 +318,35 @@ var Div_userinfo_reg = React.createClass({
 	}
 });
 
+//--——————————————————————————帮助文档<绘制>——————————————————————————
+/*
+ * 我-帮助文档绘制
+ * 
+ * */
+var Help_txt =React.createClass({	 
+	render: function() {
+		  return (
+		    <div>
+		    <article className="am-article">
+		    <div className="am-article-hd">
+		      <h1 className="am-article-title">帮组文档</h1>
+		    </div>
 
-
+		    <div className="am-article-bd">
+		      <p className="am-article-lead">Web登录地址：http://www.wenjienet.com</p>
+		      <p className="am-article-lead">遇到问题,请联系问界互动技术部.电话:028-85027422.</p>
+		      <p className="am-article-lead">或者反馈到微信公众号:wenjiehudong</p>
+		    </div>
+		  </article>
+    	        </div> 		 
+		      );
+		   }})	
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+		   
+		   
+		   
+		   
+		   
 //——————————————————————————查看即时消息<绘制>——————————————————————————   
 /* <查看即时消息>信息详情界面绘制；
  * @send_user：信息者名字；"即时消息"

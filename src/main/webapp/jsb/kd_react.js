@@ -318,8 +318,35 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 	}
 });
 
+//--——————————————————————————帮助文档<绘制>——————————————————————————
+/*
+ * 我-帮助文档绘制
+ * 
+ * */
+var Help_txt =React.createClass({displayName: "Help_txt",	 
+	render: function() {
+		  return (
+		    React.createElement("div", null, 
+		    React.createElement("article", {className: "am-article"}, 
+		    React.createElement("div", {className: "am-article-hd"}, 
+		      React.createElement("h1", {className: "am-article-title"}, "帮组文档")
+		    ), 
 
-
+		    React.createElement("div", {className: "am-article-bd"}, 
+		      React.createElement("p", {className: "am-article-lead"}, "Web登录地址：http://www.wenjienet.com"), 
+		      React.createElement("p", {className: "am-article-lead"}, "遇到问题,请联系问界互动技术部.电话:028-85027422."), 
+		      React.createElement("p", {className: "am-article-lead"}, "或者反馈到微信公众号:wenjiehudong")
+		    )
+		  )
+    	        ) 		 
+		      );
+		   }})	
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+		   
+		   
+		   
+		   
+		   
 //——————————————————————————查看即时消息<绘制>——————————————————————————   
 /* <查看即时消息>信息详情界面绘制；
  * @send_user：信息者名字；"即时消息"

@@ -59,8 +59,6 @@ var G_help_popo = React.createClass({
 	  }); 
 
 
-
-
 /**
  * 全局模版-没有内容时显示
  */

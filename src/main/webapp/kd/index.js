@@ -240,7 +240,12 @@ function login_affter_init(){
 	                        "link": "##",
 	                        "fn":menu_userinfo_logout_fn,
 	                        "title": "注销"
-	                      }
+	                      },
+		                    {
+		                        "link": "##",
+		                        "fn":menu_hellp_fn,
+		                        "title": "帮助"
+		                      }
 	                  ]
 	                }
 	                
@@ -419,6 +424,15 @@ function menu_queryMyTimely_fn() {
  * */
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
+}
+
+/*
+ * (标头)我-帮助
+ * 
+ */
+function menu_hellp_fn(){
+	Queue.push(menu_hellp_fn,"帮助文档");
+	React.render(React.createElement(Help_txt), document.getElementById('div_body'));
 }
 
 
