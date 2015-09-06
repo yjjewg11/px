@@ -189,13 +189,18 @@ var G_week={
 		   if(mm.length==1){mm='0'+mm;} if(dd.length==1){dd='0'+dd;}
 		   return (yyyy+'-'+mm+'-'+dd);        
 		  },
-		  //获取当前时间前个星期天
+		  //获取当前时间前个星期天.星期天是0.修改为星期1
 	getWeek0:function(d){
-		return G_week.getDateStr(d, 1-G_week.getWeekDayByDate(d));
+		var t=G_week.getWeekDayByDate(d);
+		if(t==0)t=-6;
+		else t=1-t;
+		return G_week.getDateStr(d,t);
 	},
-	//获取当前时间后个星期6
+	//获取当前时间后个星期6..修改为星期7
 	getWeek6:function(d){
-		return G_week.getDateStr(d, 7-G_week.getWeekDayByDate(d));
+		var t=G_week.getWeekDayByDate(d);
+		if(t>0)t=7-t;
+		return G_week.getDateStr(d, t);
 	}
 };
 

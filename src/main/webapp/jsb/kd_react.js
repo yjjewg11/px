@@ -419,7 +419,7 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 		 }
 	  },
 render: function() {
-	this.type=this.props.type;
+	if(!this.type)this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	var  fn;
 	if(this.type==1){
@@ -1169,8 +1169,12 @@ var G_Teachingplan_7day= React.createClass({displayName: "G_Teachingplan_7day",
 		 */
 		getListByStartDate:function(d1,size,list){ 
 			var ar=[];
+			var t=G_week.getWeekDayByDate(d1);
+			if(t==0)t=-6;
+			else t=1-t;
 			for(var i=0;i<size;i++){
-				var tmp=G_week.getDateStr(d1,i);
+				var tmp=G_week.getDateStr(d1,t);
+				t++;
 				ar.push(this.getOneDayData(tmp,list));
 			}
 			return ar;
