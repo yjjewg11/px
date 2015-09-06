@@ -761,6 +761,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
     	 if(w_uploadImg.cropper)w_uploadImg.cropper.chRotate();
    },
    btnCrop_onClick: function(){
+	   if(!w_uploadImg.cropper)return;
 	   var img = w_uploadImg.cropper.getDataURL();
 	   w_uploadImg.base64=img;
        $('#upload_file_imageBox_cropped').html('<img src="'+img+'">');
