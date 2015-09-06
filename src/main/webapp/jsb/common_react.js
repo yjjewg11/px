@@ -59,8 +59,6 @@ var G_help_popo = React.createClass({displayName: "G_help_popo",
 	  }); 
 
 
-
-
 /**
  * 全局模版-没有内容时显示
  */
