@@ -2205,7 +2205,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
-		   React.createElement(PxInput, {type: "hidden", name: "headimg", d: "headimg", value: o.headimg}), 
+		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
@@ -4232,7 +4232,7 @@ render: function() {
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
-		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg}), 
+		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
