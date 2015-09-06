@@ -270,6 +270,7 @@ var  Queue={
 				return;
 			}
 			var tmp=this.pop();
+			body_show();
 			if(tmp&&typeof tmp=='function'){
 				tmp();
 			}
