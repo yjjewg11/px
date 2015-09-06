@@ -209,9 +209,9 @@ public class UserinfoService extends AbstractServcice {
 				user.setLoginname(userRegJsonform.getTel());
 				user.setCreate_time(TimeUtils.getCurrentTimestamp());
 				user.setDisable(USER_disable_default);
-				user.setLogin_time(TimeUtils.getCurrentTimestamp());
+				//user.setLogin_time(TimeUtils.getCurrentTimestamp());
 				user.setTel_verify(USER_tel_verify_default);
-				user.setSex(0);
+				//user.setSex(0);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(user);
 				responseMessage.setMessage("用户添加成功!");
 		}else{
