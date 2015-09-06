@@ -95,13 +95,7 @@ function Vo_ajax_MyClass_toVo() {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };
 

@@ -59,17 +59,8 @@ var w_ch_cookAddImg={
 				 async: false,
 				success : function(data) {
 					re_data=data;
-					// 登陆成功直接进入主页
-//					if (data.ResMsg.status == "success") {
-//						w_ch_cookAddImg.uuid=data.data.uuid;
-//					} else {
-//						alert(data.ResMsg.message);
-//					}
 				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+",error:"+textStatus);
-				}
+				error : G_ajax_error_fn
 			});
 			
 			if(re_data==null){
@@ -113,10 +104,7 @@ var w_ch_cookAddImg={
 						alert(data.ResMsg.message);
 					}
 				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+",error:"+textStatus);
-				}
+				error : G_ajax_error_fn
 			});
 		},
 		handleClick: function(m) {

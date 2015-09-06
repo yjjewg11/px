@@ -429,13 +429,7 @@ function store_ajax_group_myList_toStroe() {
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };
 
@@ -459,13 +453,7 @@ function store_ajax_class_listByGroup(groupuuid){
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };
 
@@ -490,13 +478,7 @@ function store_ajax_getUserinfo() {
 			}
 			
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 }
 
@@ -519,13 +501,7 @@ function store_ajax_MyClass_toStroe() {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };
 
@@ -548,13 +524,7 @@ function store_ajax_student_getStudentByClassuuid_toStroe(uuid) {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };
 
@@ -616,13 +586,7 @@ function store_ajax_chooseUser_listByGroup(groupuuid){
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 }
 
@@ -644,12 +608,6 @@ function Store_ajax_group_allList_toStroe() {
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 };

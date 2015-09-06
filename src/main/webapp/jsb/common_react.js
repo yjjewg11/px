@@ -422,7 +422,8 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 	     			} else {
 	     				alert("加载数据失败："+data.ResMsg.message);
 	     			}
-				}
+				},
+				error : G_ajax_error_fn
 			});	
 	  },	  
   render: function() {

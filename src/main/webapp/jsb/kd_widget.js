@@ -191,13 +191,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
     						G_resMsg_filter(data.ResMsg);
     					}
     				},
-    				error : function( obj, textStatus, errorThrown ){
-    					$.AMUI.progress.done();
-    					alert(url+","+textStatus+"="+errorThrown);
-    					 console.log(url+',error：', obj);
-    					 console.log(url+',error：', textStatus);
-    					 console.log(url+',error：', errorThrown);
-    				}
+    				error : G_ajax_error_fn
     			});
     		},
     	  render: function() {

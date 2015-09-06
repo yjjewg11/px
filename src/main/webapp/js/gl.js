@@ -331,6 +331,10 @@ function xhEditor_insertUpload(msg) {
 
 function G_ajax_error_fn( obj, textStatus, errorThrown ){
 	$.AMUI.progress.done();
+	if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
+		alert("没连接上互联网.");
+	}else{
 		alert(obj.status+","+textStatus+"="+errorThrown);
+	}
 	 console.log(',ajax_error：', obj.status+","+textStatus+"="+errorThrown);
 }

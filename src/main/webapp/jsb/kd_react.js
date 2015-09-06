@@ -1102,7 +1102,8 @@ var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7D
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
 				}
-			}
+			},
+			error : G_ajax_error_fn
 		});
 		return obj;
 		
@@ -2807,7 +2808,8 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
 				}
-			}
+			},
+			error : G_ajax_error_fn
 		});
 		return obj;
 		
@@ -3693,7 +3695,8 @@ getInitialState: function() {
 						alert(data.ResMsg.message);
 						G_resMsg_filter(data.ResMsg);
 					}
-				}
+				},
+				error : G_ajax_error_fn
 			});		
 	},
 	pageClick: function(m) {

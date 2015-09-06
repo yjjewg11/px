@@ -50,10 +50,11 @@ function ajax_userinfo_login() {
 		error : function( obj, textStatus, errorThrown ){
 			 $btn.button('reset');
 			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
+			if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
+				alert("没连接上互联网.");
+			}else{
+				alert(obj.status+","+textStatus+"="+errorThrown);
+			}
 		}
 	});
 }
@@ -90,10 +91,7 @@ function ajax_userinfo_reg() {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert("error:"+textStatus);
-		}
+		error : G_ajax_error_fn
 	});
 }
 function ajax_kd_group_reg() {
@@ -127,13 +125,7 @@ function ajax_kd_group_reg() {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 }
 function menu_group_change_fn(o){
@@ -168,155 +160,11 @@ function ajax_getUserinfo(isInit) {
 			}
 			
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 }
 
 
-//function ajax_class_updateDisable(groupuuid,useruuid,disable){
-//	if(!groupuuid){
-//		alert("ajax_class_updateDisable:groupuuid is null!");
-//		return;
-//	}
-//	$.AMUI.progress.start();
-//	      var url = hostUrl + "rest/class/updateDisable.json";
-//		$.ajax({
-//			type : "POST",
-//			url : url,
-//			data : {useruuid:useruuid,disable:disable},
-//			dataType : "json",
-//			success : function(data) {
-//				$.AMUI.progress.done();
-//				// 登陆成功直接进入主页
-//				if (data.ResMsg.status == "success") {
-//					G_msg_pop(data.ResMsg.message);
-//					ajax_uesrinfo_listByGroup(groupuuid);
-//				} else {
-//					alert(data.ResMsg.message);
-//					G_resMsg_filter(data.ResMsg);
-//				}
-//			},
-//			error : function( obj, textStatus, errorThrown ){
-//				$.AMUI.progress.done();
-//				alert(url+",error:"+textStatus);
-//				 console.log(url+',error：', obj);
-//				 console.log(url+',error：', textStatus);
-//				 console.log(url+',error：', errorThrown);
-//			}
-//		});
-//	}
-
-
-//function react_ajax_teachingplan_show(uuid){
-//	$.AMUI.progress.start();
-//  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
-//	$.ajax({
-//		type : "GET",
-//		url : url,
-//		dataType : "json",
-//		 async: true,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				React.render(React.createElement(Teachingplanments_show,{data:data.data}), document.getElementById('div_body'));
-//			} else {
-//				alert("加载数据失败："+data.ResMsg.message);
-//			}
-//		},
-//		error : function( obj, textStatus, errorThrown ){
-//			$.AMUI.progress.done();
-//			alert(url+",error:"+textStatus);
-//		}
-//	});
-//};
-
-
-//function react_ajax_cookbookPlan_delete(groupuuid,uuid){
-//	
-//	$.AMUI.progress.start();
-//var url = hostUrl + "rest/cookbookplan/delete.json?uuid="+uuid;
-//	$.ajax({
-//		type : "POST",
-//		url : url,
-//		dataType : "json",
-//		 async: true,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				ajax_cookbookPlan_listByClass(groupuuid);
-//			} else {
-//				alert(data.ResMsg.message);
-//			}
-//		},
-//		error : function( obj, textStatus, errorThrown ){
-//			$.AMUI.progress.done();
-//			alert(url+",error:"+textStatus);
-//		}
-//	});
-//};
-//function react_ajax_cookbookPlan_show(uuid){
-//	Queue.push(function(){react_ajax_cookbookPlan_show(uuid);});
-//	$.AMUI.progress.start();
-//var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
-//	$.ajax({
-//		type : "GET",
-//		url : url,
-//		dataType : "json",
-//		 async: true,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				React.render(React.createElement(CookbookPlanments_show,{data:data.data}), document.getElementById('div_body'));
-//			} else {
-//				alert("加载数据失败："+data.ResMsg.message);
-//			}
-//		},
-//		error : function( obj, textStatus, errorThrown ){
-//			$.AMUI.progress.done();
-//			alert(url+",error:"+textStatus);
-//		}
-//	});
-//};
-
-/*
- * 老师注册（服务器请求） 不用了
- * @Div_userinfo_reg:在kd_rect;
- * */
-//function ajax_loaddata_group_list_for_userinfo_reg() {
-//	$.AMUI.progress.start();
-//    var url = hostUrl + "rest/group/list.json";
-//	$.ajax({
-//		type : "GET",
-//		url : url,
-//		dataType : "json",
-//		 async: false,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				React.render(React.createElement(Div_userinfo_reg,{group_list:data.list})
-//						, document.getElementById('div_login'));
-//				$("#div_seesion_body").hide();
-//				
-//			} else {
-//				alert("加载数据失败："+data.ResMsg.message);
-//			}
-//		},
-//		error : function( obj, textStatus, errorThrown ){
-//			$.AMUI.progress.done();
-//			alert(url+",error:"+textStatus);
-//		}
-//	});
-//}
 /*
  * 每5分钟消息是否有新消息服务请求
  * @data.count:0没新消息   大于0有新消息;
@@ -402,13 +250,7 @@ function ajax_queryMyTimely_myList() {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -517,10 +359,7 @@ function react_ajax_class_students_manage(uuid){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error : G_ajax_error_fn
 	});
 	var students=null;
 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
@@ -537,10 +376,7 @@ function react_ajax_class_students_manage(uuid){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 	Queue.push(function(){react_ajax_class_students_manage(uuid);},"我的班级");
 	if(students){
@@ -652,10 +488,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 /*
@@ -698,10 +531,7 @@ function ajax_class_students_look_info(uuid,title){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error : G_ajax_error_fn
 	});
 };
 
@@ -728,10 +558,7 @@ function ajax_class_students_look_info(uuid,title){
  				alert("加载数据失败："+data.ResMsg.message);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+",error:"+textStatus);
- 		}
+ 		error :G_ajax_error_fn
  	});
  };
 
@@ -791,7 +618,8 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type,callback) {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
-		}
+		},
+		error :G_ajax_error_fn
 	});
 };
 
@@ -868,14 +696,7 @@ function ajax_userinfo_logout(){
 			menu_userinfo_login_fn();
 			G_CallPhoneFN.jsessionToPhone("");
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-			 window.location = hostUrl + "login.html";
-		}
+		error :G_ajax_error_fn
 	});
 }	  
 
@@ -924,13 +745,7 @@ function ajax_announce_Mylist(list_div,pageNo) {
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error :G_ajax_error_fn
 	});
 	return re_data;
 };
@@ -962,10 +777,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1021,7 +833,8 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
-		}
+		},
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1071,10 +884,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 /*(课程表)
@@ -1141,13 +951,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1191,7 +995,8 @@ function ajax_announce_Mygoodlist(list_div,pageNo) {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
-		}
+		},
+		error :G_ajax_error_fn
 	});
 	return re_data;
 };
@@ -1224,10 +1029,7 @@ function react_ajax_announce_good_show(uuid,title){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1279,39 +1081,9 @@ function react_ajax_announce_good_show(uuid,title){
 	  				alert("加载数据失败："+data.ResMsg.message);
 	  			}
 	  		},
-	  		error : function( obj, textStatus, errorThrown ){
-	  			$.AMUI.progress.done();
-	  			alert(url+",error:"+textStatus);
-	  		}
+			error :G_ajax_error_fn
 	  	});
 	  };
-  /*
-   *(精品文章)删除按钮服务请求；
-   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
-   * */  	  
-//  function react_ajax_announce_good_delete(groupuuid,uuid){	  	
-//	  	$.AMUI.progress.start();
-//	      var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
-//  	$.ajax({
-//  		type : "POST",
-//  		url : url,
-//  		dataType : "json",
-//  		 async: true,
-//  		success : function(data) {
-//  			$.AMUI.progress.done();
-//  			// 登陆成功直接进入主页
-//  			if (data.ResMsg.status == "success") {
-//  				ajax_good_announce_div();
-//  			} else {
-//  				alert(data.ResMsg.message);
-//  			}
-//  		},
-//  		error : function( obj, textStatus, errorThrown ){
-//  			$.AMUI.progress.done();
-//  			alert(url+",error:"+textStatus);
-//  		}
-//  	});
-//  };
   /*
   *(精品文章)创建与编辑提交按钮方法
   *@OPT：我们把内容用Form表单提交到Opt我们封装的
@@ -1362,13 +1134,6 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-//			    for(var i=0;i<data.list.length;i++){
-//			    	 if(data.list[i].isreg==1){
-//			    		 queryList.push(data.list[i]);
-//			    	 }else if(data.list[i].isreg==0){
-//			    		 queryArry.push(data.list[i]);
-//			    	 }
-//			     }
 				React.render(React.createElement(Class_student_tel,{
 					//type:g_parentContact_listToShow_type,
 					formdata:data.list,
@@ -1378,10 +1143,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1400,16 +1162,9 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
  *  
  * */
 function ajax_message_queryByParent(parent_uuid,telitename,list_div,pageNo){
-	console.log("测试2",parent_uuid);
 	Queue.push(function(){ajax_message_queryByParent(parent_uuid,list_div,pageNo);},telitename);
 	   var re_data=null;
 	   if(!pageNo)pageNo=1;
-	$.AMUI.progress.start();
-$.ajax({
-	success : function() {
-		$.AMUI.progress.done();
-	}
-});
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/message/queryByParent.json?uuid="+parent_uuid+"&pageNo="+pageNo;
 	$.ajax({
@@ -1432,10 +1187,7 @@ $.ajax({
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 	
 	return re_data;
@@ -1483,10 +1235,7 @@ function ajax_parentContact_tels(tels){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1531,13 +1280,7 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error :G_ajax_error_fn
 	});
 };
 
@@ -1579,7 +1322,8 @@ function ajax_favorites_list(list_div,pageNo) {
 			} else {
 				alert(data.ResMsg.message);
 			}
-		}
+		},
+		error :G_ajax_error_fn
 	});
 	return re_data;
 };
@@ -1641,92 +1385,11 @@ function react_ajax_favorites_show(type,reluuid){
 	   				alert("加载数据失败："+data.ResMsg.message);
 	   			}
 	   		},
-	   		error : function( obj, textStatus, errorThrown ){
-	   			$.AMUI.progress.done();
-	   			alert(url+",error:"+textStatus);
-	   		}
+			error :G_ajax_error_fn
 	   	});
 	   };
 	   	   
 	   
-	   
-//  /* (我的信箱)创建舞台
-//   * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
-//   *@Boss_message_list准备开始绘制舞台  
-//	* @revice_useruuid:收件人ID；
-//	* @send_useruuid:发送者ID；
-//	* @send_user:发送者姓名
-//   * */
-//  function ajax_my_message_list(send_useruuid,revice_useruuid,send_user){
-//  	var message_name="我的信箱";
-//  	Queue.push(function(){ajax_my_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
-//		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
-//	   };
-//		   
-//		   
-//  /* (我的信箱)(服务器请求)-绘制每一个Div信息放置在舞台上；
-//   * @revice_useruuid:收件人ID；
-//   * */
-//  function ajax_my_boss_message(revice_useruuid,send_useruuid,list_div,pageNo){
-//	   var re_data=null;
-//	   if(!pageNo)pageNo=1;
-//  	$.AMUI.progress.start();
-//  $.ajax({
-//  	success : function() {
-//  		$.AMUI.progress.done();
-//  	}
-//  });
-//  	$.AMUI.progress.start();
-//      var url = hostUrl + "rest/message/queryByParent.json?uuid="+revice_useruuid;
-//  	$.ajax({
-//  		type : "GET",
-//  		url : url,
-//  		dataType : "json",
-//  		 async: false,
-//  		success : function(data) {
-//  			$.AMUI.progress.done(); 			
-//  			if (data.ResMsg.status == "success") {
-//  				React.render(React.createElement(My_message_queryLeaderMsgByParents_listpage, {
-//					events: data.list,
-//					send_useruuid:send_useruuid,
-//					revice_useruuid:revice_useruuid,
-//					responsive: true, bordered: true, striped :true,hover:true,striped:true
-//					}), document.getElementById(list_div));
-//				re_data=data.list;
-//				
-//  			} else {
-//  				alert("加载数据失败："+data.ResMsg.message);
-//  			}
-//  		},
-//  		error : function( obj, textStatus, errorThrown ){
-//  			$.AMUI.progress.done();
-//  			alert(url+",error:"+textStatus);
-//	   		}
-//	   	});
-//	   	
-//	   	return re_data;
-//	      };
-// 
-// /*(我的信箱)(服务器请求)-我要发送信息
-//  * @opt：高级封装做处理 直接把表单和URL地址送进去
-//  * @formName:表单信息
-//  * @直接传给服务器，服务器根据自己需要的从form表单取参数；
-//  * */
-// function ajax_my_boss_message_save(that){
-// 	var opt={
-// 	 formName:"editForm",
-// 	 url:hostUrl + "rest/message/saveLeaderToParent.json",
-// 	 cbFN:function(data){
-//			if (data.ResMsg.status == "success") {
-//				that.refresh_data();
-//		} else {
-//				alert(data.ResMsg.message);
-//				G_resMsg_filter(data.ResMsg);
-//			}  		
-// 	  }
-// 	 };
-// 	 G_ajax_abs_save(opt);
-// }    
 
  
 //———————————————————————————————————每日任务—————————————————————————   
@@ -1753,7 +1416,8 @@ function react_ajax_favorites_show(type,reluuid){
  	   			} else {
  	   				alert("加载数据失败："+data.ResMsg.message);
  	   			}
- 	   		}
+ 	   		},
+ 			error :G_ajax_error_fn
  	   	});
  	   };
  	   
@@ -1787,13 +1451,7 @@ function react_ajax_favorites_show(type,reluuid){
   				G_resMsg_filter(data.ResMsg);
   			}
   		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+","+textStatus+"="+errorThrown);
-  			 console.log(url+',error：', obj);
-  			 console.log(url+',error：', textStatus);
-  			 console.log(url+',error：', errorThrown);
-  		}
+		error :G_ajax_error_fn
   	});
   };
   /*
@@ -1843,10 +1501,7 @@ function react_ajax_favorites_show(type,reluuid){
      				alert("加载数据失败："+data.ResMsg.message);
      			}
      		},
-     		error : function( obj, textStatus, errorThrown ){
-     			$.AMUI.progress.done();
-     			alert(url+",error:"+textStatus);
-     		}
+    		error :G_ajax_error_fn
      	});
      }; 	   
  	   
@@ -1922,7 +1577,8 @@ $.ajax({
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
 		}
-	}
+	},
+	error :G_ajax_error_fn
 	});
 }; 
 /*
@@ -1973,7 +1629,8 @@ function react_ajax_announce_edit_byRight(formdata,uuid,nmae){
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
   			}
-  		}
+  		},
+		error :G_ajax_error_fn
   	});
   };
   
@@ -1999,10 +1656,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 };  
   /*
@@ -2069,7 +1723,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				alert(data.ResMsg.message);
   				G_resMsg_filter(data.ResMsg);
   			}
-  		}
+  		},
+		error :G_ajax_error_fn
   	});
   };
 
@@ -2156,13 +1811,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				G_resMsg_filter(data.ResMsg);
      			}
      		},
-     		error : function( obj, textStatus, errorThrown ){
-     			$.AMUI.progress.done();
-     			alert(url+","+textStatus+"="+errorThrown);
-     			 console.log(url+',error：', obj);
-     			 console.log(url+',error：', textStatus);
-     			 console.log(url+',error：', errorThrown);
-     		}
+    		error :G_ajax_error_fn
      	});
      };
 
@@ -2225,10 +1874,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				alert("加载数据失败："+data.ResMsg.message);
      			}
      		},
-     		error : function( obj, textStatus, errorThrown ){
-     			$.AMUI.progress.done();
-     			alert(url+",error:"+textStatus);
-     		}
+    		error :G_ajax_error_fn
      	});
      	
      };
@@ -2316,7 +1962,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
      			}
-     		}
+     		},
+    		error :G_ajax_error_fn
      	});     	
      };
  
@@ -2367,13 +2014,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				G_resMsg_filter(data.ResMsg);
   			}
   		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+","+textStatus+"="+errorThrown);
-  			 console.log(url+',error：', obj);
-  			 console.log(url+',error：', textStatus);
-  			 console.log(url+',error：', errorThrown);
-  		}
+		error :G_ajax_error_fn
   	});
   };
 
@@ -2423,10 +2064,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				alert("加载数据失败："+data.ResMsg.message);
   			}
   		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-  		}
+		error :G_ajax_error_fn
   	});
   };
   /*
@@ -2460,13 +2098,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 					G_resMsg_filter(data.ResMsg);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
+			error :G_ajax_error_fn
 		});
 	}	    
   /*
@@ -2516,10 +2148,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	   				alert("加载数据失败："+data.ResMsg.message);
 	   			}
 	   		},
-	   		error : function( obj, textStatus, errorThrown ){
-	   			$.AMUI.progress.done();
-	   			alert(url+",error:"+textStatus);
-	   		}
+			error :G_ajax_error_fn
 	   	});
 	   };
 //  /* (家长信息)创建舞台
@@ -2559,12 +2188,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	   var re_data=null;
 	   if(!pageNo)pageNo=1;
   	$.AMUI.progress.start();
-  $.ajax({
-  	success : function() {
-  		$.AMUI.progress.done();
-  	}
-  });
-  	$.AMUI.progress.start();
       var url = hostUrl + "rest/message/queryByParentAndLeader.json";
   	$.ajax({
   		type : "GET",
@@ -2588,10 +2211,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				alert("加载数据失败："+data.ResMsg.message);
   			}
   		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-	   		}
+		error :G_ajax_error_fn
 	   	});
 	   	
 	   	return re_data;
@@ -2657,13 +2277,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				G_resMsg_filter(data.ResMsg);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+","+textStatus+"="+errorThrown);
- 			 console.log(url+',error：', obj);
- 			 console.log(url+',error：', textStatus);
- 			 console.log(url+',error：', errorThrown);
- 		}
+		error :G_ajax_error_fn
  	});
  };	  
  /*
@@ -2730,10 +2344,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				alert("加载数据失败："+data.ResMsg.message);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+",error:"+textStatus);
- 		}
+		error :G_ajax_error_fn
  	});
  };
  /*
@@ -2794,10 +2405,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				alert("加载数据失败："+data.ResMsg.message);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+",error:"+textStatus);
- 		}
+		error :G_ajax_error_fn
  	});
  	var students=null;
  	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
@@ -2814,10 +2422,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				alert("加载数据失败："+data.ResMsg.message);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+",error:"+textStatus);
- 		}
+		error :G_ajax_error_fn
  	});
  	Queue.push(function(){react_ajax_class_students_manage_byRight(uuid);},"班级详情");
  	if(students){
@@ -2886,10 +2491,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				alert("加载数据失败："+data.ResMsg.message);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+",error:"+textStatus);
- 		}
+		error :G_ajax_error_fn
  	});
  };
 
@@ -2930,10 +2532,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				alert("加载数据失败："+data.ResMsg.message);
   			}
   		},
-  		error : function( obj, textStatus, errorThrown ){
-  			$.AMUI.progress.done();
-  			alert(url+",error:"+textStatus);
-  		}
+		error :G_ajax_error_fn
   	});
   };
 
@@ -2976,13 +2575,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				G_resMsg_filter(data.ResMsg);
  			}
  		},
- 		error : function( obj, textStatus, errorThrown ){
- 			$.AMUI.progress.done();
- 			alert(url+","+textStatus+"="+errorThrown);
- 			 console.log(url+',error：', obj);
- 			 console.log(url+',error：', textStatus);
- 			 console.log(url+',error：', errorThrown);
- 		}
+		error :G_ajax_error_fn
  	});
  };	  
  /*
@@ -3074,13 +2667,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  					alert(data.ResMsg.message);
  				}
  			},
- 			error : function( obj, textStatus, errorThrown ){
- 				$.AMUI.progress.done();
- 				alert(url+","+textStatus+"="+errorThrown);
- 				 console.log(url+',error：', obj);
- 				 console.log(url+',error：', textStatus);
- 				 console.log(url+',error：', errorThrown);
- 			}
+ 			error :G_ajax_error_fn
  		});
  	};
 
@@ -3106,7 +2693,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
- 		}
+ 		},
+		error :G_ajax_error_fn
  	});
  };	
 

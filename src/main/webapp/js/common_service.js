@@ -57,13 +57,7 @@ $.AMUI.progress.start();
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			 alert(opt.url+",error:"+textStatus);
-			 console.log(opt.url+',error：', obj);
-			 console.log(opt.url+',error：', textStatus);
-			 console.log(opt.url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 }
 
@@ -104,13 +98,7 @@ function G_ajax_shouc_save(opt){
 					alert(data.ResMsg.message);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				 alert(opt.url+",error:"+textStatus);
-				 console.log(opt.url+',error：', obj);
-				 console.log(opt.url+',error：', textStatus);
-				 console.log(opt.url+',error：', errorThrown);
-			}
+			error : G_ajax_error_fn
 		});
 	}
 
@@ -203,10 +191,7 @@ w_img_upload_nocut={
 						alert(data.ResMsg.message);
 					}
 				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+",error:"+textStatus);
-				}
+				error :G_ajax_error_fn
 			});
 			
 		}
@@ -248,10 +233,7 @@ var w_uploadImg={
 						alert(data.ResMsg.message);
 					}
 				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+",error:"+textStatus);
-				}
+				error : G_ajax_error_fn
 			});
 			
 		},
@@ -278,10 +260,7 @@ var w_uploadImg={
 						alert(data.ResMsg.message);
 					}
 				},
-				error : function( obj, textStatus, errorThrown ){
-					$.AMUI.progress.done();
-					alert(url+",error:"+textStatus);
-				}
+				error : G_ajax_error_fn
 			});
 			
 		},
@@ -361,10 +340,7 @@ function ajax_userinfo_updatepassword() {
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert("error:"+textStatus);
-		}
+		error : G_ajax_error_fn
 	});
 }
 function ajax_userinfo_getRole(useruuid,usernames,groupuuid,roleList){
@@ -392,13 +368,7 @@ function ajax_userinfo_getRole(useruuid,usernames,groupuuid,roleList){
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 	
 };
@@ -428,13 +398,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 					G_resMsg_filter(data.ResMsg);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
+			error : G_ajax_error_fn
 		});
 	}
 
@@ -488,10 +452,7 @@ function ajax_sms_sendCode(inputid,type){
 					alert("验证码发送失败："+data.ResMsg.message);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-			}
+			error : G_ajax_error_fn
 		});
 }
 
@@ -539,10 +500,7 @@ var url = hostUrl + "rest/userinfo/updatePasswordBySms.json";
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert("error:"+textStatus);
-		}
+		error : G_ajax_error_fn
 	});
 }
 
@@ -566,10 +524,7 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+",error:"+textStatus);
-		}
+		error :G_ajax_error_fn
 	});
 	
 	return reObj;
@@ -607,13 +562,7 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan,dianzansave_callback)
 					G_resMsg_filter(data.ResMsg);
 				}
 			},
-			error : function( obj, textStatus, errorThrown ){
-				$.AMUI.progress.done();
-				alert(url+",error:"+textStatus);
-				 console.log(url+',error：', obj);
-				 console.log(url+',error：', textStatus);
-				 console.log(url+',error：', errorThrown);
-			}
+			error : G_ajax_error_fn
 		});
 	
 	
@@ -645,13 +594,7 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo,tempateClazz){
 				alert(data.ResMsg.message);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error : G_ajax_error_fn
 	});
 	return re_data;
 };
@@ -795,7 +738,8 @@ function common_check_disable(type,uuid){
 			} else {
 				alert(data.ResMsg.message);
 			}
-		}
+		},
+		error : G_ajax_error_fn
 	});
 }
 
@@ -818,6 +762,7 @@ function common_check_illegal(type,uuid){
 			} else {
 				alert(data.ResMsg.message);
 			}
-		}
+		},
+		error : G_ajax_error_fn
 	});
 }
