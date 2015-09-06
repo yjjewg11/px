@@ -527,6 +527,8 @@ public class UserinfoService extends AbstractServcice {
 		if(StringUtils.isNotBlank(name)){
 			sql+=" and {t1}.name like '%"+name+"%'";
 		}
+		
+		sql+="order by CONVERT( {t1}.name USING gbk)";
 		Query q = s
 				.createSQLQuery(sql).addEntity("t1", User4Q.class);
 
@@ -545,11 +547,18 @@ public class UserinfoService extends AbstractServcice {
 			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
 		}
 		if(StringUtils.isNotBlank(name)){
-			sql+=" and {t1}.name like '%"+name+"%'";
+			if(StringUtils.isNumeric(name)){
+				sql+=" and {t1}.tel like '%"+name+"%'";
+
+			}else{
+				
+				sql+=" and {t1}.name like '%"+name+"%'";
+			}
 		}
+		sql+=" order by {t1}.create_time desc";
 		Query q = s
 				.createSQLQuery(sql).addEntity("t1", User4Q.class);
-
+	//	q.setFirstResult(0).setMaxResults(5);
 		return q.list();
 	}
 	
