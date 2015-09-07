@@ -329,12 +329,12 @@ var Help_txt =React.createClass({displayName: "Help_txt",
 		    React.createElement("div", null, 
 		    React.createElement("article", {className: "am-article"}, 
 		    React.createElement("div", {className: "am-article-hd"}, 
-		      React.createElement("h1", {className: "am-article-title"}, "帮组文档")
+		      React.createElement("h1", {className: "am-article-title"}, "帮助文档")
 		    ), 
 
 		    React.createElement("div", {className: "am-article-bd"}, 
 		      React.createElement("p", {className: "am-article-lead"}, "Web登录地址：http://www.wenjienet.com"), 
-		      React.createElement("p", {className: "am-article-lead"}, "遇到问题,请联系问界互动技术部.电话:028-85027422."), 
+		      React.createElement("p", {className: "am-article-lead"}, "遇到问题，请联系问界互动家园技术部，电话：028-85027422"), 
 		      React.createElement("p", {className: "am-article-lead"}, "或者反馈到微信公众号:wenjiehudong")
 		    )
 		  )
@@ -2333,10 +2333,10 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
 		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
-		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")
+		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入老师姓名"})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
-		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入老师姓名"})	  
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")		  		  
 		  )
 		  )
 		  ), 

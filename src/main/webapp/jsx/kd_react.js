@@ -329,12 +329,12 @@ var Help_txt =React.createClass({
 		    <div>
 		    <article className="am-article">
 		    <div className="am-article-hd">
-		      <h1 className="am-article-title">帮组文档</h1>
+		      <h1 className="am-article-title">帮助文档</h1>
 		    </div>
 
 		    <div className="am-article-bd">
 		      <p className="am-article-lead">Web登录地址：http://www.wenjienet.com</p>
-		      <p className="am-article-lead">遇到问题,请联系问界互动技术部.电话:028-85027422.</p>
+		      <p className="am-article-lead">遇到问题，请联系问界互动家园技术部，电话：028-85027422</p>
 		      <p className="am-article-lead">或者反馈到微信公众号:wenjiehudong</p>
 		    </div>
 		  </article>
@@ -2333,10 +2333,10 @@ var Teacher_info_tel = React.createClass({
 		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />
 		  </div>
 		  <div className="am-fl am-margin-left-xs">
-		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>
+		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>
 		  </div>
 		  <div className="am-fl am-margin-left-xs">
-		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>	  
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
 		  </form>      
