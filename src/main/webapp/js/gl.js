@@ -251,17 +251,20 @@ var  Queue={
 		 * @returns {Boolean}
 		 */
 		galleryDobackFN:function(){
-//			var tmp=$('.am-gallery');
-//			var aa=tmp.pureview();
-//			if(tmp&&tmp.$slides&&tmp.options&&tmp.options.active)
-//			 if (tmp.$slides.find('.' + tmp.options.active).size()>0) {
-//				 tmp.close();
-//				    return true;
-//				  }
+			//原图显示状态,优先退后.
+			if($(".am-pureview:visible").size()>0){
+				$(".am-pureview:visible").hide();
+				return true;
+			}
+			if($("#div_body:visible").size()==0){
+				body_show();
+				return true;
+			}
 			return false;
 		},
 		doBackFN:function(){
 			if(Queue.galleryDobackFN())return;
+			
 			//If it is not back after the operation, first throw away the current operation. To perform the last operation.
 			if(!this.isBack)this.pop();
 			this.isBack=true;
@@ -270,6 +273,7 @@ var  Queue={
 				return;
 			}
 			var tmp=this.pop();
+			
 			body_show();
 			if(tmp&&typeof tmp=='function'){
 				tmp();
@@ -279,7 +283,8 @@ var  Queue={
 		clear:function(){
 			this.arr=[];
 		},
-		push:function(o,title){          			
+		push:function(o,title){        
+			G_clear_pureview();
 			if(typeof title_info_init=='function')title_info_init(title);// 绘制标头方法
 			 this.isBack=false;
 			 if(this.arr.length>50){
@@ -338,4 +343,11 @@ function G_ajax_error_fn( obj, textStatus, errorThrown ){
 		alert(obj.status+","+textStatus+"="+errorThrown);
 	}
 	 console.log(',ajax_error：', obj.status+","+textStatus+"="+errorThrown);
+}
+
+/**
+ * 卸载原图显示用的div,防止内存溢出
+ */
+function G_clear_pureview(){
+	$(".am-pureview").remove();
 }
