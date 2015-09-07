@@ -253,6 +253,9 @@ var  Queue={
 		galleryDobackFN:function(){
 			//原图显示状态,优先退后.
 			if($(".am-pureview:visible").size()>0){
+				$(".am-pureview:visible").removeClass("am-active");
+				$(".am-pureview-slider >li").removeClass("am-active");
+				$("body").removeClass("am-pureview-active");
 				$(".am-pureview:visible").hide();
 				return true;
 			}

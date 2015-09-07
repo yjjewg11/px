@@ -427,7 +427,8 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 //      load_more_data	重新绘制DIV；
 		this.forceUpdate();
 		this.pageNo=1;
-		G_clear_pureview();
+		try{G_clear_pureview();}catch(e){};
+		
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
 		
@@ -3074,7 +3075,7 @@ var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		G_clear_pureview();
+		try{G_clear_pureview();}catch(e){};
 		$("#"+this.classnewsreply_list_div).html("");
 		this.forceUpdate();
 		this.pageNo=1;
