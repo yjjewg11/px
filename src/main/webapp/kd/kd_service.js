@@ -1534,17 +1534,18 @@ function react_ajax_favorites_show(type,reluuid){
   * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
   * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
   * */
-function ajax_announce_listByGroup_byRight(groupuuid){
+var  g_message_groupuuid="";
+function ajax_announce_listByGroup_byRight(){
 	var grouplist=Store.getGroupByRight("KD_announce_m");
 	if(!grouplist||grouplist.length==0){
 		G_msg_pop("没有权限!");
 		return "";
 	}
-	if(!groupuuid){
-		groupuuid=grouplist[0].uuid;
+	if(!g_message_groupuuid){
+		g_message_groupuuid=grouplist[0].uuid;		
 	}
 	React.render(React.createElement(Announcements_EventsTable_byRight, {
-		groupuuid:groupuuid,
+		groupuuid:g_message_groupuuid,
 		pageNo:1,
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 		events: [],
@@ -1604,7 +1605,7 @@ function btn_click_announce_byRight(m,groupuuid,uuid){
  * @if(!uuid):创建；
  * @uuid不是则:编辑；
  * */  	  
-function react_ajax_announce_edit_byRight(formdata,uuid,nmae){
+function react_ajax_announce_edit_byRight(formdata,uuid){
   	if(!uuid){
   		React.render(React.createElement(Announcements_edit_byRight,{
   			formdata:formdata,
@@ -2743,7 +2744,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  				}), document.getElementById('div_body'));					
  				}
  			}
- 		});
+ 		}); 
  	};
  		
 	

@@ -2772,12 +2772,20 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 		    	groupuuid:this.props.groupuuid,
 		    	pageNo:this.props.pageNo,
 		    	type:this.props.type,
-		    	list: this.props.list
+		    	list: []
 		    };
 			
-		obj=this.ajax_list(obj);
+		//obj=this.ajax_list(obj);
 	    return obj;
 	   
+	  },
+		componentDidMount: function() {
+			this.ajax_list(this.state); 
+		  },
+	  ajax_callback:function(list){
+		     if (list== null )list= [];
+		  this.state.list=list;
+		  this.setState(this.state);
 	  },
 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
@@ -2785,25 +2793,28 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 			    	groupuuid:nextProps.groupuuid,
 			    	pageNo:nextProps.pageNo,
 			    	type:nextProps.type,
-			    	list: nextProps.list
+			    	list: []
 			    };
 				
-			obj=this.ajax_list(obj);
-		  this.setState(obj);
+			this.ajax_list(obj);
+		  //this.setState(obj);
 		},
 	 ajax_list:function(obj){
 		$.AMUI.progress.start();
+		var that=this;
+		g_message_groupuuid=obj.groupuuid;
 		var url = hostUrl + "rest/announcements/list.json";
 		$.ajax({
 			type : "GET",
 			url : url,
 			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
 			dataType : "json",
-			async: false,//必须同步执行
+			//async: false,//必须同步执行
 			success : function(data) {
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
 					obj.list=data.list.data;
+				    that.ajax_callback( data.list.data );     
 				} else {
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
@@ -2823,7 +2834,7 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 				 return;
 			 }
 			 obj.pageNo=obj.pageNo-1;
-			 this.setState(this.ajax_list(obj));
+			 this.ajax_list(obj);
 			 return;
 		 }else if(m=="next"){
 			 if(!obj.list||obj.list.length==0){
@@ -2832,17 +2843,17 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 			 }
 			 obj.pageNo=obj.pageNo+1;
 			
-			 this.setState(this.ajax_list(obj));
+			 this.ajax_list(obj);
 			 return;
 		 }
 	},
 	handleClick: function(m,Titlename) {
-		btn_click_announce_byRight(m,this.props.groupuuid,null);
+		btn_click_announce_byRight(m,this.state.groupuuid,null);
 },
 handleChange_selectgroup_uuid:function(val){
 	 var obj=this.state;
 	 obj.groupuuid=val;
-	 this.setState(this.ajax_list(obj));
+	 this.ajax_list(obj);
 },
 
 render: function() {
@@ -2859,7 +2870,7 @@ React.createElement(AMR_ButtonToolbar, null,
   ), 
 React.createElement("hr", null), 
 React.createElement("div", {className: "am-form-group"}, 
-React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
+React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
   ), 	  
     React.createElement(AMR_Table, React.__spread({},  this.props), 
    React.createElement("thead", null, 

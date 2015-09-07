@@ -86,7 +86,7 @@ function login_affter_init(){
 	            "title": "信息管理",
 	            "subMenu": [
 	                        {
-	                          "fn":function(){menu_announce_list_fn_byRight(0,"校园公告",null);},
+	                          "fn":function(){menu_announce_list_fn_byRight(0,"校园公告");},
 	                          "link": "##",
 	                          "title": "校园公告"
 	                        },
@@ -96,17 +96,17 @@ function login_affter_init(){
                                 "title": "班级互动"
                               },
 	                        {
-	                        	  "fn":function(){menu_announce_list_fn_byRight(1,"老师公告",null);},
+	                        	  "fn":function(){menu_announce_list_fn_byRight(1,"老师公告");},
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章",null);},
+	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
 	                              "link": "##",
 	                              "title": "精品文章"
 	                            },
 	                          {
-	                        	  "fn":function(){menu_announce_list_fn_byRight(4,"招生计划",null);},
+	                        	  "fn":function(){menu_announce_list_fn_byRight(4,"招生计划");},
 	                              "link": "##",
 	                              "title": "招生计划"
 	                            }
@@ -625,15 +625,10 @@ function menu_group_myList_fn_byRight() {
  * @跳转kd_service发服务器请求
  * */
 var announce_types="";
-var Group_name="";
-function menu_announce_list_fn_byRight(types,name,groupuuid) {
-	var Group_uuid=null;
-	Queue.push(function(){menu_announce_list_fn_byRight(types,name,groupuuid);},name);
+function menu_announce_list_fn_byRight(types,name) {
+	Queue.push(function(){menu_announce_list_fn_byRight(types,name);},name);
 	announce_types=types; 
-	Group_name=name;
-	if(!groupuuid)Group_uuid=Store.getCurGroupByRight("KD_announce_m").uuid;
-	else Group_uuid=groupuuid;
-	ajax_announce_listByGroup_byRight(Group_uuid,name);
+	ajax_announce_listByGroup_byRight();
 };
 
 /*

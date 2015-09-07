@@ -1,27 +1,31 @@
-Ä¿Â¼ËµÃ÷£º
-jsx/--jsxÎÄ¼þ¼Ð£¬²»ÒýÈëhtml£¬ÐèÒª·­ÒëÎªjsÎÄ¼þ¡£
-jsb/--jsbÎÄ¼þ¼ÐÏÂ£¬·­ÒëºóµÄjsÎÄ¼þ£¬ÒýÈëµ½htmlÖÐ¡£
-kd/--Ó×¶ùÔ°Ä£¿é
-w/--µÚÈý·Ö²å¼þ,²»ÐÞ¸Ä,¼ÓÀëÏß»º´æ
-kd/kd_service.js--¡£ÒµÎñ²ã£¬ÓëºóÌ¨Êý¾Ý½»»¥²ã
-·½·¨ÃûÒÔ£º
-ajax_Ä£¿éÃû_ÇëÇó·½·¨£ºËùÓÐÊý¾ÝÇëÇó
+ç›®å½•è¯´æ˜Žï¼š
+jsx/--jsxæ–‡ä»¶å¤¹ï¼Œä¸å¼•å…¥htmlï¼Œéœ€è¦ç¿»è¯‘ä¸ºjsæ–‡ä»¶ã€‚
+jsb/--jsbæ–‡ä»¶å¤¹ä¸‹ï¼Œç¿»è¯‘åŽçš„jsæ–‡ä»¶ï¼Œå¼•å…¥åˆ°htmlä¸­ã€‚
+kd/--å¹¼å„¿å›­æ¨¡å—
+w/--ç¬¬ä¸‰åˆ†æ’ä»¶,ä¸ä¿®æ”¹,åŠ ç¦»çº¿ç¼“å­˜
+kd/kd_service.js--ã€‚ä¸šåŠ¡å±‚ï¼Œä¸ŽåŽå°æ•°æ®äº¤äº’å±‚
+æ–¹æ³•åä»¥ï¼š
+ajax_æ¨¡å—å_è¯·æ±‚æ–¹æ³•ï¼šæ‰€æœ‰æ•°æ®è¯·æ±‚
 ajax_userinfo_login
-btn_click__Ä£¿éÃû_¶ÔÏó£ºËùÓÐtoolbar°´Å¥ÊÂ¼þ
+btn_click__æ¨¡å—å_å¯¹è±¡ï¼šæ‰€æœ‰toolbaræŒ‰é’®äº‹ä»¶
 btn_click_class_list
-_react£ºÕ¹ÏÖUIÄ£°å¶¨Òå¡£
-kd/index.js--Ö÷Ò³¶ÔÓÚjs²¿·Ö£¬²Ëµ¥·½·¨£¬bodyÄÚÈÝ¡£¡£
-²Ëµ¥Ã÷Ã÷¹æÔò£ºmenu_xx_fn
+_reactï¼šå±•çŽ°UIæ¨¡æ¿å®šä¹‰ã€‚
+kd/index.js--ä¸»é¡µå¯¹äºŽjséƒ¨åˆ†ï¼Œèœå•æ–¹æ³•ï¼Œbodyå†…å®¹ã€‚ã€‚
+èœå•æ˜Žæ˜Žè§„åˆ™ï¼šmenu_xx_fn
 menu_kd_group_reg_fn
-ÃüÃû¹æÔò£º
-²Ëµ¥¹¦ÄÜ°´Å¥£¬µ÷ÓÃ·½·¨£ºmenu_xx_fn
-¹«¹²×é¼þ£¨widget£©¡£Èë¿Ú·½·¨£ºweget_xx_fn
+å‘½åè§„åˆ™ï¼š
+èœå•åŠŸèƒ½æŒ‰é’®ï¼Œè°ƒç”¨æ–¹æ³•ï¼šmenu_xx_fn
+å…¬å…±ç»„ä»¶ï¼ˆwidgetï¼‰ã€‚å…¥å£æ–¹æ³•ï¼šweget_xx_fn
 
-js/common_service.js --¹«¹²ÒµÎñ²ã£¬ÓëºóÌ¨Êý¾Ý½»»¥²ã
-ÃüÃû¹æÔò£ºcommons_XX_Ä£¿é_¶ÔÏó
+js/common_service.js --å…¬å…±ä¸šåŠ¡å±‚ï¼Œä¸ŽåŽå°æ•°æ®äº¤äº’å±‚
+å‘½åè§„åˆ™ï¼šcommons_XX_æ¨¡å—_å¯¹è±¡
 commons_ajax_reply_list
 
-jsx/common_react.js  --¹«¹²UIÄ£°å¶¨Òå
-ÃüÃû¹æÔò£ºCommon_XX_Ä£¿é_¶ÔÏó
-·½·¨ËµÃ÷£º
-menu_userinfo_login_fn();//Ìø×ªµÇÂ¼Ò³Ãæ
+jsx/common_react.js  --å…¬å…±UIæ¨¡æ¿å®šä¹‰
+å‘½åè§„åˆ™ï¼šCommon_XX_æ¨¡å—_å¯¹è±¡
+æ–¹æ³•è¯´æ˜Žï¼š
+menu_userinfo_login_fn();//è·³è½¬ç™»å½•é¡µé¢
+
+
+
+g_message_groupuuidä¿¡æ¯ç®¡ç†å­¦æ ¡UUIDçš„å…¨å±€å˜é‡
