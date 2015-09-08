@@ -201,7 +201,7 @@ public class AnnouncementsService extends AbstractServcice {
 	 * @return
 	 */
 	public PageQueryResult query(String groupuuid, PaginationData pData) {
-		String hql = "from Announcements4Q where type=0 and status=0 ";
+		String hql = "from Announcements4Q where (type=0 or type=1) and status=0 ";
 		if (StringUtils.isNotBlank(groupuuid)){
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		}
