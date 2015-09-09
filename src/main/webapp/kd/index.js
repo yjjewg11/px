@@ -180,7 +180,7 @@ function login_affter_init(){
             "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
-		if(G_user_hasRight("AD_class_m")){
+		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
 		t_menu= {
