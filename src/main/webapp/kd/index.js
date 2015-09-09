@@ -692,7 +692,7 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn_byRight() {
-	ajax_class_listByGroup_byRight(Store.getCurGroupByRight("KD_class_m").uuid);
+	ajax_class_listByGroup_byRight();
 };
 
 
