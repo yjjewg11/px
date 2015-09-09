@@ -288,7 +288,7 @@ public class ClassNewsService extends AbstractServcice {
 			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
 			o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
-			o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
+			//o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
 			o.setReplyPage(this.getReplyPageList(o.getUuid()));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));

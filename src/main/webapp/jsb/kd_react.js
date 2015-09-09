@@ -525,8 +525,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			  React.createElement("div", {className: "am-comment-main"}, 
 			    React.createElement("header", {className: "am-comment-hd"}, 
 			      React.createElement("div", {className: "am-comment-meta"}, 
-			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getGroupNameByUuid(o.groupuuid), "|", Store.getClassNameByUuid(o.classuuid), "|", o.create_user), 
-			        "发表于 ", React.createElement("time", null, o.update_time)
+			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
 			      )
 			    ), 
 			    React.createElement("div", {className: "am-comment-bd"}, 
@@ -535,6 +534,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
+			    	GTimeShow.showByTime(o.update_time), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
@@ -1720,9 +1720,6 @@ var Parent_message_save = React.createClass({displayName: "Parent_message_save",
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
 		 var editor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
-         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-               editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
-         });
 
 	},
 	reply_save_btn_click:function(){
@@ -1953,7 +1950,7 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
 	  },
 render: function() {
@@ -2676,7 +2673,7 @@ var Group_EventRow_byRight = React.createClass({displayName: "Group_EventRow_byR
     return (
   		  React.createElement(AMUIReact.Article, {
   		    title: o.brand_name, 
-  		    meta: o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读0次"}, 
+  		    meta: o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}, 
   			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.description}})
   		   )	
   		   
@@ -2702,7 +2699,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 			  
 			  
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
 	},
 	   /*
@@ -2929,7 +2926,7 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img  width="198" height="198" src="'+imgurl+'"/>')
+              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
         });
 	  },
 render: function() {
@@ -3162,8 +3159,7 @@ var Classnews_show_byRight = React.createClass({displayName: "Classnews_show_byR
 			  React.createElement("div", {className: "am-comment-main"}, 
 			    React.createElement("header", {className: "am-comment-hd"}, 
 			      React.createElement("div", {className: "am-comment-meta"}, 
-			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getGroupNameByUuid(o.groupuuid), "|", Store.getClassNameByUuid(o.classuuid), "|", o.create_user), 
-			        "发表于 ", React.createElement("time", null, o.update_time)
+			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
 			      )
 			    ), 
 			    React.createElement("div", {className: "am-comment-bd"}, 
@@ -3172,6 +3168,7 @@ var Classnews_show_byRight = React.createClass({displayName: "Classnews_show_byR
 			    ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
+			    	GTimeShow.showByTime(o.update_time), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 

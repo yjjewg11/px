@@ -354,3 +354,52 @@ function G_ajax_error_fn( obj, textStatus, errorThrown ){
 function G_clear_pureview(){
 	$(".am-pureview").remove();
 }
+
+/**
+ * JS转换时间戳为“刚刚”、“1分钟前”、“2小时前”“1天前”等格式
+ * GTimeShow.showByTime(s);
+ */
+var GTimeShow={
+	minute:1000 * 60,
+	hour :null,
+	day :  null,
+	month : null,
+	init:function(){
+		this.hour = this.minute * 60;
+		this.day =  this.hour * 24;
+		this.month =  this.day * 30;
+	},
+	showByTime:function(d1){
+		if(typeof(d1)=='string'){
+			d1= d1.replace(/-/ig,'/'); 
+			d1= new Date(d1).getTime();; 
+		}
+		var now = new Date().getTime();
+		var diffValue = now - d1;
+		var monthC =diffValue/this.month;
+		if(monthC>=1){
+		 return parseInt(monthC) + "个月前";
+		}
+		var weekC =diffValue/(7*this.day);
+		if(weekC>=1){
+			return parseInt(weekC) + "周前";
+		}
+		
+		var dayC =diffValue/this.day;
+		if(dayC>=1){
+			return parseInt(dayC) +"天前";
+		}
+		
+		var hourC =diffValue/this.hour;
+		if(hourC>=1){
+			return parseInt(hourC) +"小时前";
+		}
+		
+		var minC =diffValue/this.minute;
+		if(minC>=1){
+			return  parseInt(minC) +"分钟前";
+		}
+		return "刚刚";
+	}
+};
+GTimeShow.init();

@@ -1495,7 +1495,7 @@ function react_ajax_favorites_show(type,reluuid){
      				if(m=="edit"){
      					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), document.getElementById('div_body'));
      				}else{
-     					React.render(React.createElement(Group_show_byRight,{formdata:data.data}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
      				}
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
