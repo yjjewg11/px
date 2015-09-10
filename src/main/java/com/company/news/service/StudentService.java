@@ -254,11 +254,41 @@ public class StudentService extends AbstractServcice {
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
-		
+		hql+=" order by classuuid";
 		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		 
 		warpVoList(list);
 		 
+		 return list;
+	}
+	
+	/**
+	 * 查询所有机构列表
+	 * 
+	 * @return
+	 */
+	public List<Student> queryForOutExcel(String classuuid,String groupuuid) {
+		String hql="from Student where 1=1";
+		
+		if (StringUtils.isNotBlank(groupuuid))
+			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		if (StringUtils.isNotBlank(classuuid))
+			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		hql+=" order by classuuid";
+		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		//warpVoList(list);
+		 return list;
+	}
+	
+	/**
+	 * 查询所有机构列表
+	 * 
+	 * @return
+	 */
+	public List<PClass> queryClassNameForOutExcel(String classuuid) {
+		String hql="from PClass where uuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		hql+=" order by uuid";
+		List<PClass> list=(List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		 return list;
 	}
 	

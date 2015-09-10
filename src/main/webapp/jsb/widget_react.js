@@ -91,8 +91,8 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
           	React.createElement("th", null, 
             React.createElement("input", {type: "checkbox", id: "id_checkbox_all_chuser", onChange: this.handleChange_checkbox_all})
             ), 
-            React.createElement("th", null, "昵称"), 
-            React.createElement("th", null, "性别")
+            React.createElement("th", null, "姓名"), 
+            React.createElement("th", null, "电话")
           )
         ), 
         React.createElement("tbody", null, 
@@ -133,7 +133,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
           React.createElement("input", {type: "checkbox", alt: event.name, value: event.uuid, id: "tb_cbox__chuser"+event.uuid, name: "table_checkbox"})
           ), 
             React.createElement("td", null, event.name), 
-            React.createElement("td", null, event.sex=="0"?"男":"女")
+            React.createElement("td", null, event.tel)
           ) 
         );
       }

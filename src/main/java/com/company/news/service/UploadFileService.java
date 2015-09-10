@@ -186,6 +186,7 @@ public class UploadFileService extends AbstractServcice {
 		if (uploadFile == null) {
 			this.logger.info("uploadFile record is empty!");
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return null;
 		}
 
 		if (UploadFileService.uploadfiletype.equals("oss")) {
