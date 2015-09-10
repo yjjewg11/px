@@ -1,4 +1,4 @@
-目录说明：
+﻿目录说明：
 jsx/--jsx文件夹，不引入html，需要翻译为js文件。
 jsb/--jsb文件夹下，翻译后的js文件，引入到html中。
 kd/--幼儿园模块
@@ -29,3 +29,4 @@ menu_userinfo_login_fn();//跳转登录页面
 
 
 g_message_groupuuid信息管理学校UUID的全局变量
+g_uesrinfo_groupuuid老师管理学校UUID的全局变量

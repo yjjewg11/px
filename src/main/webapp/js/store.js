@@ -209,7 +209,7 @@ var Store={
 	 */
 	getChooseUer:function(uuid){
 		  var key="ChooseUer_"+uuid;
-			 if(this.map[key])return this.map[key];
+//			 if(this.map[key])return this.map[key];
 			 store_ajax_chooseUser_listByGroup(uuid);
 				 if(this.map[key])return this.map[key];
 			 return [];

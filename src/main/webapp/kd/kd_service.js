@@ -1242,39 +1242,94 @@ function ajax_parentContact_tels(tels){
 
 
 
+//老师通讯录废弃物分页代码
+//function ajax_Teacher_listByGroup(groupuuid,name,pageNo) {
+//		var list=Store.getGroupNoGroup_wjd();
+//	  if(!name)name="";
+//	  if(!groupuuid){
+//		  if(list&&list.length>0){
+//			  groupuuid=list[0].uuid;
+//		  }
+//	  }
+//	  if(!pageNo)pageNo=1;
+//	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
+//	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/userinfo/listForTelByPage.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		data : {groupuuid:groupuuid,name:name,pageNo:pageNo},
+//		dataType : "json",
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Teacher_info_tel, {
+//					group_uuid:groupuuid,
+//					group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
+//					events: data.list.data,
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//				}), document.getElementById('div_body'));
+//			} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}
+//		},
+//		error :G_ajax_error_fn
+//	});
+//};
+//
+//
+//
+
+
+
 //—————————————————————————————(大图标)老师通讯录—————————————————————————  
+
+/*
+ * <老师通讯录>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+ * 基本框 等
+ * */
+function ajax_Teacher_tel_div(groupuuid){
+	var list=Store.getGroupNoGroup_wjd();
+	React.render(React.createElement(Announcements_Teacher_tel_div,{
+		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
+		groupuuid:groupuuid
+	}), document.getElementById('div_body'));  	
+};
+
 /*
  * 老师通讯录（获取用户列表服务器请求）；
  * @name:搜索功能 按中文名字;
  * @Teacher_info_tel:绘制;
  * */
-function ajax_Teacher_listByGroup(groupuuid,name) {
-		var list=Store.getGroupNoGroup_wjd();
+function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
+	var re_data=null;
+	var list=Store.getGroupNoGroup_wjd();
 	  if(!name)name="";
-	  if(!groupuuid){
-		  if(list&&list.length>0){
-			  groupuuid=list[0].uuid;
+	  if(!pageNo)pageNo=1;
+		  if(!groupuuid){
+			  if(list&&list.length>0){
+				  groupuuid=list[0].uuid;
+			  }
 		  }
-	  }
-	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
-	  //Queue.push(function(){ajax_Teacher_listByGroup(groupuuid,name);});
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/listForTel.json?groupuuid="+groupuuid+"&name="+name;
+	var url = hostUrl + "rest/userinfo/listForTelByPage.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : "",
+		data : {groupuuid:groupuuid,name:name,pageNo:pageNo},
 		dataType : "json",
+		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
 					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
-					events: data.list,
+					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					
-				}), document.getElementById('div_body'));
+				}), document.getElementById(list_div));
+				re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1282,7 +1337,8 @@ function ajax_Teacher_listByGroup(groupuuid,name) {
 		},
 		error :G_ajax_error_fn
 	});
-};
+	return re_data;
+}; 
 
 
 
@@ -1776,8 +1832,67 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   }
   
   
-//———————————————————————————————————老师管理<管理模块>—————————————————————————      
-  /*
+//———————————————————————————————————老师管理<管理模块>—————————————————————————   
+  
+//  /*暂时弃用
+//  * <老师管理>（获取用户列表服务器请求）；
+//  * @Userinfo_EventsTable
+//  * @btn_click_userinfo（绑定在对象上事件）；
+//  * 并且先在公共模板common_react的
+//  * @Userinfo_EventsTable方法中继续做下一步处理;
+//  * Queue.push@点击学校后进入下个页面返回后学校为最新点击后的学校;
+//  * */
+//     function ajax_uesrinfo_listByGroup(groupuuid,name) {
+//     	  if(!name)name="";
+//     	//Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
+//     	Queue.push(function(){ajax_uesrinfo_listByGroup(groupuuid,name);},"老师管理");
+//     	$.AMUI.progress.start();
+//     	var url = hostUrl + "rest/userinfo/listByPage.json";
+//     	$.ajax({
+//     		type : "GET",
+//     		url : url,
+//     		data :{groupuuid:groupuuid,name:name},
+//     		dataType : "json",
+//     		success : function(data) {
+//     			$.AMUI.progress.done();
+//     			if (data.ResMsg.status == "success") {
+//     				React.render(React.createElement(Userinfo_EventsTable, {
+//     					group_uuid:groupuuid,
+//     					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight('KD_teacher_m'),"uuid","brand_name"),
+//     					events: data.list.data,
+//     					handleClick:btn_click_userinfo,
+//     					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//     					
+//     				}), document.getElementById('div_body'));
+//     			} else {
+//     				alert(data.ResMsg.message);
+//     				G_resMsg_filter(data.ResMsg);
+//     			}
+//     		},
+//    		error :G_ajax_error_fn
+//     	});
+//     };
+
+     
+
+     
+     
+     
+     
+ /*     
+  *
+  * <老师管理>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+  * 基本框 等
+  * */
+ function ajax_uesrinfo_listByGroup_div(groupuuid){
+ 	var list=Store.getGroupByRight('KD_teacher_m');
+ 	React.render(React.createElement(Userinfo_EventsTable_div,{
+ 		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
+	    handleClick:btn_click_userinfo,
+ 		groupuuid:groupuuid
+ 	}), document.getElementById('div_body'));  	
+ };
+ /*
   * <老师管理>（获取用户列表服务器请求）；
   * @Userinfo_EventsTable
   * @btn_click_userinfo（绑定在对象上事件）；
@@ -1785,28 +1900,29 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * @Userinfo_EventsTable方法中继续做下一步处理;
   * Queue.push@点击学校后进入下个页面返回后学校为最新点击后的学校;
   * */
-     function ajax_uesrinfo_listByGroup(groupuuid,name) {
+     function ajax_uesrinfo_listByGroup(list_div,groupuuid,name,pageNo) {    		
+    	 var re_data=null;
      	  if(!name)name="";
+     	 if(!pageNo)pageNo=1;
      	//Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
-     	Queue.push(function(){ajax_uesrinfo_listByGroup(groupuuid,name);},"老师管理");
      	$.AMUI.progress.start();
-     	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid+"&name="+name;
+     	var url = hostUrl + "rest/userinfo/listByPage.json";
      	$.ajax({
      		type : "GET",
      		url : url,
-     		data : "",
+     		data :{groupuuid:groupuuid,name:name,pageNo:pageNo},
      		dataType : "json",
+     		async: false,
      		success : function(data) {
      			$.AMUI.progress.done();
      			if (data.ResMsg.status == "success") {
-     				React.render(React.createElement(Userinfo_EventsTable, {
-     					group_uuid:groupuuid,
-     					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight('KD_teacher_m'),"uuid","brand_name"),
-     					events: data.list,
-     					handleClick:btn_click_userinfo,
+     				React.render(React.createElement(Userinfo_EventRow, {
+     					groupuuid:groupuuid,
+     					events: data.list.data,
      					responsive: true, bordered: true, striped :true,hover:true,striped:true
      					
-     				}), document.getElementById('div_body'));
+     				}), document.getElementById(list_div));
+     				re_data=data.list;
      			} else {
      				alert(data.ResMsg.message);
      				G_resMsg_filter(data.ResMsg);
@@ -1814,8 +1930,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      		},
     		error :G_ajax_error_fn
      	});
-     };
-
+     	return re_data;
+     };     
+              
+     
+     
+     
+     
   /*
    * <老师管理>Button事件 添加、启用、禁用、分配、修改;
    * @ajax_userinfo_getRole:在common_react;

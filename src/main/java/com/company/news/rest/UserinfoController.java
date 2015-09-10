@@ -24,6 +24,8 @@ import com.company.news.entity.User4Q;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.form.UserLoginForm;
 import com.company.news.jsonform.UserRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.right.RightConstants;
@@ -292,6 +294,7 @@ public class UserinfoController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
+	@Deprecated
 	@RequestMapping(value = "/listForTel", method = RequestMethod.GET)
 	public String listForTel(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
@@ -322,6 +325,45 @@ public class UserinfoController extends AbstractRESTController {
 		}
 		return "";
 	}
+	
+	/**
+	 * 获取用户信息用于通讯录.去掉 wjd的学校.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listForTelByPage", method = RequestMethod.GET)
+	public String listForTelByPage(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			pData.setPageSize(2);
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+					groupuuid=this.getMyGroupUuidsBySession(request);
+					if (StringUtils.isEmpty(groupuuid)){
+						responseMessage.setMessage("非法用户,没有关联的学校!");
+						return "";
+					}
+				}
+			
+			}
+			PageQueryResult list = userinfoService.getUserTelsByGroupuuidByPage(groupuuid,name,pData);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
 	/**
 	 * 获取用户信息
 	 * 
@@ -329,6 +371,7 @@ public class UserinfoController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
+	@Deprecated
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
@@ -359,7 +402,44 @@ public class UserinfoController extends AbstractRESTController {
 		}
 		return "";
 	}
+	/**
+	 * 获取用户信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listByPage", method = RequestMethod.GET)
+	public String listByPage(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			pData.setPageSize(5);
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+					groupuuid=this.getMyGroupUuidsBySession(request);
+					if (StringUtils.isEmpty(groupuuid)){
+						responseMessage.setMessage("非法用户,没有关联的学校!");
+						return "";
+					}
+				}
+			
+			}
+			PageQueryResult list = userinfoService.getUserByGroupuuidByPage(groupuuid,name,pData);
 
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
 	/**
 	 * 
 	 * @param model

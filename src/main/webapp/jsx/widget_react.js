@@ -7,38 +7,6 @@ var AMUIReact_Button=AMUIReact.Button;
  * ajax_chooseUser_edit
  */
 
-var ChooseUser_EventRow = React.createClass({ 
-	tr_onClick:function(trid,cbid,e){
-		var cbox=$("#"+cbid);
-		var tr=$("#"+trid);
-		if(tr.hasClass("am-active")){
-				cbox.prop("checked",false); 
-			tr.removeClass("am-active");
-		}else{
-				cbox.prop("checked", true); 
-			tr.addClass("am-active");
-		}
-	},
-	componentDidMount:function(){
-		$(".am-active input[type='checkbox']").prop("checked",true); 
-	},
-  render: function() {
-    var event = this.props.event;
-    var is_Checked=this.props.checkedUseruuid&&this.props.checkedUseruuid.indexOf(event.uuid)>-1;
-    var className = is_Checked ? 'am-active' :
-      event.disabled ? 'am-disabled' : '';
-
-    return (
-      <tr id={"tr_chuser_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}>
-      <td> 
-      <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chuser"+event.uuid} name="table_checkbox"  />
-      </td>
-        <td>{event.name}</td>
-        <td>{event.sex=="0"?"男":"女"}</td>
-      </tr> 
-    );
-  }
-}); 
 
 var ChooseUser_EventsTable = React.createClass({
 //	 getInitialState: function() {
@@ -95,17 +63,28 @@ var ChooseUser_EventsTable = React.createClass({
   </div>
   <hr />
 </div>
-<form id="editGroupForm" method="post" className="am-form">
-<input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
-<button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
-</form>
-	  <div className="am-form-group">
-		  <AMUIReact.Selected id="selectgroup_uuid_chuser" name="ch_group_uuid" onChange={this.handleChange_selectgroup_uuid_chuser} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid?this.props.group_uuid:""} />	  
-      
-      
-      
-    </div>
-	  
+
+
+
+	   <form id="editGroupForm" method="post" className="am-form">
+		<AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
+		 <div className="am-fl am-margin-bottom-sm">
+		  <AMUIReact.Selected id="selectgroup_uuid_chuser" name="ch_group_uuid" onChange={this.handleChange_selectgroup_uuid_chuser} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid?this.props.group_uuid:""} />
+		 </div>
+		<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	   <input type="text" name="sutdent_name" id="sutdent_name"    placeholder="教师姓名"/>	 
+		</div>
+		 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>		  		  
+		 </div>
+		</AMR_ButtonToolbar>
+	   </form> 	 
+
+
+
+
+
+
       <AMUIReact_Table {...this.props}>  
         <thead> 
           <tr>
@@ -126,6 +105,39 @@ var ChooseUser_EventsTable = React.createClass({
     );
   }
 });
+
+    var ChooseUser_EventRow = React.createClass({ 
+    	tr_onClick:function(trid,cbid,e){
+    		var cbox=$("#"+cbid);
+    		var tr=$("#"+trid);
+    		if(tr.hasClass("am-active")){
+    				cbox.prop("checked",false); 
+    			tr.removeClass("am-active");
+    		}else{
+    				cbox.prop("checked", true); 
+    			tr.addClass("am-active");
+    		}
+    	},
+    	componentDidMount:function(){
+    		$(".am-active input[type='checkbox']").prop("checked",true); 
+    	},
+      render: function() {
+        var event = this.props.event;
+        var is_Checked=this.props.checkedUseruuid&&this.props.checkedUseruuid.indexOf(event.uuid)>-1;
+        var className = is_Checked ? 'am-active' :
+          event.disabled ? 'am-disabled' : '';
+
+        return (
+          <tr id={"tr_chuser_"+event.uuid} className={className} onClick={this.tr_onClick.bind(this,"tr_chuser_"+event.uuid,"tb_cbox__chuser"+event.uuid)}>
+          <td> 
+          <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chuser"+event.uuid} name="table_checkbox"  />
+          </td>
+            <td>{event.name}</td>
+            <td>{event.sex=="0"?"男":"女"}</td>
+          </tr> 
+        );
+      }
+    }); 
 //end chooseUser
 
     

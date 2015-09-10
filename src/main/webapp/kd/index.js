@@ -534,10 +534,10 @@ function menu_Teacher_tel_fn() {
 	Queue.push(menu_Teacher_tel_fn,"老师通讯录");
 	var list=Store.getGroupNoGroup_wjd();
 	if(!list||list.length==0){
-		G_msg_pop("没有加入学校,没得数据.");
+		G_msg_pop("没有加入学校,没有数据.");
 		return;
 	}
-	ajax_Teacher_listByGroup(list.uuid);
+	ajax_Teacher_tel_div(list[0].uuid);
 };
 
 /*
@@ -635,8 +635,12 @@ function menu_announce_list_fn_byRight(types,name) {
  * (标头)老师管理管理功能
  * @跳转kd_service发服务器请求
  * */
+var g_uesrinfo_groupuuid="";
 function menu_userinfo_list_fn_byRight() {
-	ajax_uesrinfo_listByGroup(Store.getCurGroupByRight("KD_teacher_m").uuid);
+	Queue.push(function(){menu_userinfo_list_fn_byRight();},"老师管理");
+	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("KD_teacher_m").uuid;
+	console.log("-----g_uesrinfo_groupuuid---监测1--",g_uesrinfo_groupuuid);
+	ajax_uesrinfo_listByGroup_div(g_uesrinfo_groupuuid);
 };
 
 
