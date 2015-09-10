@@ -489,10 +489,9 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			  React.createElement("div", {className: "am-list-news-ft"}, 
 			    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
 			  )		  
-			)		   
-		   
-
+			)		   		   
    );
+   
  }
 } 
    );

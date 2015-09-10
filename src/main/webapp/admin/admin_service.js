@@ -128,45 +128,93 @@ function ajax_userinfo_logout(){
 //user manage
 function menu_userinfo_list_fn_byRight() { 
 	Queue.push(menu_userinfo_list_fn_byRight);
-	ajax_uesrinfo_listByAllGroup(cur_group_ad_uuid);
+	ajax_uesrinfo_listByGroup_div_admin(cur_group_ad_uuid);
 };
+
+/*     
+*
+* <用户管理>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+* 基本框 等
+* */
+function ajax_uesrinfo_listByGroup_div_admin(groupuuid){
+//	var list=Store.getGroupByRight('KD_teacher_m');
+	React.render(React.createElement(Userinfo_EventsTable_div,{
+		group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
+		handleClick:btn_click_userinfo,
+		groupuuid:groupuuid
+	}), document.getElementById('div_body'));  	
+};
+
 
 //老师查询，条件groupuuid
 //
-function ajax_uesrinfo_listByAllGroup(groupuuid) {
+function ajax_uesrinfo_listByAllGroup_admin(list_div,groupuuid,name,pageNo) {
+	var re_data=null;
+	  if(!name)name="";
+  	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/list.json?groupuuid="+groupuuid;
+	var url = hostUrl + "rest/userinfo/listByPage.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : "",
+ 		data :{groupuuid:groupuuid,name:name,pageNo:pageNo},
+		async: false,
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(AD_Userinfo_EventsTable, {
-					group_uuid:groupuuid,
-					group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
-					events: data.list,
-					handleClick:btn_click_userinfo,
-					handleChange_selectgroup_uuid:ajax_uesrinfo_listByAllGroup,
+				React.render(React.createElement(Userinfo_EventRow_admin, {
+					groupuuid:groupuuid,
+					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}), document.getElementById('div_body'));
-				
+					}), document.getElementById(list_div));
+				re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
 			}
 		},
-		error : function( obj, textStatus, errorThrown ){
-			$.AMUI.progress.done();
-			alert(url+","+textStatus+"="+errorThrown);
-			 console.log(url+',error：', obj);
-			 console.log(url+',error：', textStatus);
-			 console.log(url+',error：', errorThrown);
-		}
+		error :G_ajax_error_fn
 	});
+	return re_data;
 };
+//无分页用户管理废弃代码
+////老师查询，条件groupuuid
+////
+//function ajax_uesrinfo_listByAllGroup(groupuuid) {
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/userinfo/listByPage.json?groupuuid="+groupuuid;
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		data : "",
+//		dataType : "json",
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(AD_Userinfo_EventsTable, {
+//					group_uuid:groupuuid,
+//					group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
+//					events: data.list.data,
+//					handleClick:btn_click_userinfo,
+//					handleChange_selectgroup_uuid:ajax_uesrinfo_listByAllGroup,
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//					}), document.getElementById('div_body'));
+//				
+//			} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}
+//		},
+//		error : function( obj, textStatus, errorThrown ){
+//			$.AMUI.progress.done();
+//			alert(url+","+textStatus+"="+errorThrown);
+//			 console.log(url+',error：', obj);
+//			 console.log(url+',error：', textStatus);
+//			 console.log(url+',error：', errorThrown);
+//		}
+//	});
+//};
 
 /*
  * <老师管理>Button事件 添加、启用、禁用、分配、修改;
@@ -211,7 +259,7 @@ function btn_click_userinfo(m,obj,usernames,sex){
  				// 登陆成功直接进入主页
  				if (data.ResMsg.status == "success") {
  					G_msg_pop(data.ResMsg.message);
- 					ajax_uesrinfo_listByAllGroup(groupuuid);
+ 					//ajax_uesrinfo_listByGroup_div_admin(groupuuid);
  				} else {
  					alert(data.ResMsg.message);
  					G_resMsg_filter(data.ResMsg);
