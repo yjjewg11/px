@@ -1551,7 +1551,7 @@ function react_ajax_favorites_show(type,reluuid){
      				if(m=="edit"){
      					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), document.getElementById('div_body'));
      				}else{
-     					React.render(React.createElement(Group_show_byRight,{formdata:data.data}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
      				}
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
@@ -2373,10 +2373,17 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * */
  function ajax_class_listByGroup_byRight(groupuuid) {
  	Queue.push(function(){ajax_class_listByGroup_byRight(groupuuid);},"班级管理");
- 	if(!groupuuid){
- 		alert("ajax_class_listByGroup groupuuid is null.");
+ 	
+ 	var  grouplist=Store.getGroupByRight("KD_class_m");
+ 	if(!grouplist||grouplist.length==0){
+ 		alert("没有班级管理权限不能访问.");
  		return;
  	}
+ 	if(!groupuuid){
+ 		groupuuid=grouplist[0].uuid;
+ 		
+ 	}
+ 	
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/class/list.json?groupuuid="+groupuuid;
  	$.ajax({
@@ -2389,7 +2396,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			if (data.ResMsg.status == "success"){
  				React.render(React.createElement(Class_EventsTable_byRight, {
  					group_uuid:groupuuid,
- 					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+ 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
  					events: data.list,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true

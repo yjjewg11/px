@@ -251,17 +251,23 @@ var  Queue={
 		 * @returns {Boolean}
 		 */
 		galleryDobackFN:function(){
-//			var tmp=$('.am-gallery');
-//			var aa=tmp.pureview();
-//			if(tmp&&tmp.$slides&&tmp.options&&tmp.options.active)
-//			 if (tmp.$slides.find('.' + tmp.options.active).size()>0) {
-//				 tmp.close();
-//				    return true;
-//				  }
+			//原图显示状态,优先退后.
+			if($(".am-pureview:visible").size()>0){
+				$(".am-pureview:visible").removeClass("am-active");
+				$(".am-pureview-slider >li").removeClass("am-active");
+				$("body").removeClass("am-pureview-active");
+				$(".am-pureview:visible").hide();
+				return true;
+			}
+			if($("#div_body:visible").size()==0){
+				body_show();
+				return true;
+			}
 			return false;
 		},
 		doBackFN:function(){
 			if(Queue.galleryDobackFN())return;
+			
 			//If it is not back after the operation, first throw away the current operation. To perform the last operation.
 			if(!this.isBack)this.pop();
 			this.isBack=true;
@@ -270,6 +276,7 @@ var  Queue={
 				return;
 			}
 			var tmp=this.pop();
+			
 			body_show();
 			if(tmp&&typeof tmp=='function'){
 				tmp();
@@ -279,7 +286,8 @@ var  Queue={
 		clear:function(){
 			this.arr=[];
 		},
-		push:function(o,title){          			
+		push:function(o,title){        
+			G_clear_pureview();
 			if(typeof title_info_init=='function')title_info_init(title);// 绘制标头方法
 			 this.isBack=false;
 			 if(this.arr.length>50){
@@ -339,3 +347,59 @@ function G_ajax_error_fn( obj, textStatus, errorThrown ){
 	}
 	 console.log(',ajax_error：', obj.status+","+textStatus+"="+errorThrown);
 }
+
+/**
+ * 卸载原图显示用的div,防止内存溢出
+ */
+function G_clear_pureview(){
+	$(".am-pureview").remove();
+}
+
+/**
+ * JS转换时间戳为“刚刚”、“1分钟前”、“2小时前”“1天前”等格式
+ * GTimeShow.showByTime(s);
+ */
+var GTimeShow={
+	minute:1000 * 60,
+	hour :null,
+	day :  null,
+	month : null,
+	init:function(){
+		this.hour = this.minute * 60;
+		this.day =  this.hour * 24;
+		this.month =  this.day * 30;
+	},
+	showByTime:function(d1){
+		if(typeof(d1)=='string'){
+			d1= d1.replace(/-/ig,'/'); 
+			d1= new Date(d1).getTime();; 
+		}
+		var now = new Date().getTime();
+		var diffValue = now - d1;
+		var monthC =diffValue/this.month;
+		if(monthC>=1){
+		 return parseInt(monthC) + "个月前";
+		}
+		var weekC =diffValue/(7*this.day);
+		if(weekC>=1){
+			return parseInt(weekC) + "周前";
+		}
+		
+		var dayC =diffValue/this.day;
+		if(dayC>=1){
+			return parseInt(dayC) +"天前";
+		}
+		
+		var hourC =diffValue/this.hour;
+		if(hourC>=1){
+			return parseInt(hourC) +"小时前";
+		}
+		
+		var minC =diffValue/this.minute;
+		if(minC>=1){
+			return  parseInt(minC) +"分钟前";
+		}
+		return "刚刚";
+	}
+};
+GTimeShow.init();

@@ -180,7 +180,7 @@ function login_affter_init(){
             "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
-		if(G_user_hasRight("AD_class_m")){
+		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
 		t_menu= {
@@ -696,7 +696,7 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn_byRight() {
-	ajax_class_listByGroup_byRight(Store.getCurGroupByRight("KD_class_m").uuid);
+	ajax_class_listByGroup_byRight();
 };
 
 
