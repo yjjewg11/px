@@ -340,7 +340,119 @@ render: function() {
 
 //end role bind right
 
-
+//无分页用户管理废弃代码
+////userinfo
+///*
+// * 老师管理服务器请求后绘制处理方法；
+// * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+// * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+// * @调用LIS.events.map方法循环绘制老师数组； 
+// * @</select>下拉多选框;
+// * */
+//var AD_Userinfo_EventsTable = React.createClass({
+//	handleClick: function(m) {
+//		
+//		 if(m=="add"){
+//			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
+//			 return;
+//		 }
+//		 var uuids=null;
+//		 var usernames=null;
+//		 $($("input[name='table_checkbox']")).each(function(){
+//			　if(this.checked){
+//				 if(uuids==null){
+//					 uuids=this.value;
+//					 usernames=this.alt;
+//				 }
+//				 else{
+//					 uuids+=','+this.value ;  
+//					 usernames+=','+this.alt;
+//				 };
+//			　};
+//			});
+//		  if(!uuids){
+//			  G_msg_pop("请勾选复选框！");
+//			  return;
+//		  }
+//		  if(m=="getRole"){
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//				  G_msg_pop("只能选择一个！");
+//					return;
+//				};
+//				  var opt={groupuuid:$("input[name='group_uuid']").val(),
+//						  userUuid:uuids};
+//				  btn_click_userinfo(m,opt,usernames);
+//				  return;
+//		  }
+//		  if(m=="del"){
+//			  if(!uuids&&uuids.indexOf(",")>-1){
+//				  G_msg_pop("只能选择一个！");
+//					return;
+//				};
+//		  }
+//	
+//		  btn_click_userinfo(m,uuids,usernames);
+//	  },
+//	  handleChange_checkbox_all:function(){
+//		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+//	  },
+//	  handleChange_selectgroup_uuid:function(val){
+//		  ajax_uesrinfo_listByAllGroup($("input[name='group_uuid']").val(),$('#sutdent_name').val());
+//	  },
+//  render: function() {
+//    return (
+//    <div>
+//    <div className="header">
+//    <hr />
+//    </div>
+//    <AMR_ButtonToolbar>
+//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
+//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
+//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
+//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
+//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+//	    </AMR_ButtonToolbar>
+//	      <form id="editGroupForm" method="post" className="am-form">
+//	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
+//		  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>	  	
+//		  </form>
+//	  <hr/>
+//	  <div className="am-form-group">
+//	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+//
+//    </div>
+//	  
+//      <AMR_Table {...this.props}>  
+//        <thead> 
+//          <tr>
+//          	<th>  
+//            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+//            </th>
+//            <th>帐号</th>
+//            <th>姓名</th>
+//            <th>电话</th>
+//            <th>邮箱</th>
+//            <th>性别</th>
+//            <th>状态</th>
+//            <th>登录时间</th>
+//            <th>创建时间</th>
+//          </tr> 
+//        </thead>
+//        <tbody>
+//          {this.props.events.map(function(event) {
+//            return (<Userinfo_EventRow1 key={event.id} event={event} />);
+//          })}
+//        </tbody>
+//      </AMR_Table>
+//      </div>
+//    );
+//  }
+//});
+    
+    
+    
+    
 //userinfo
 /*
  * 老师管理服务器请求后绘制处理方法；
@@ -349,11 +461,43 @@ render: function() {
  * @调用LIS.events.map方法循环绘制老师数组； 
  * @</select>下拉多选框;
  * */
-var AD_Userinfo_EventsTable = React.createClass({displayName: "AD_Userinfo_EventsTable",
-	handleClick: function(m) {
+var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsTable_div",
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_uesrinfo_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
 		
+	},		
+	
+	handleClick: function(m) {		
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
+			 btn_click_userinfo(m,{group_uuid:this.props.groupuuid,office:"老师"});
 			 return;
 		 }
 		 var uuids=null;
@@ -389,66 +533,97 @@ var AD_Userinfo_EventsTable = React.createClass({displayName: "AD_Userinfo_Event
 				  G_msg_pop("只能选择一个！");
 					return;
 				};
-		  }
-	
+		  }		  
 		  btn_click_userinfo(m,uuids,usernames);
+		  this.refresh_data();
 	  },
 	  handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	  },
-	  handleChange_selectgroup_uuid:function(val){
-		  ajax_uesrinfo_listByAllGroup($("input[name='group_uuid']").val(),$('#sutdent_name').val());
-	  },
   render: function() {
+	  this.load_more_btn_id="load_more_"+this.props.uuid;
     return (
-    React.createElement("div", null, 
-    React.createElement("div", {className: "header"}, 
-    React.createElement("hr", null)
-    ), 
-    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用"), 
-	    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限"), 
-	    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改"), 
-	    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
-	    ), 
-	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-	      React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", size: "1", placeholder: "教师姓名"}), 	  
-		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")	  	
-		  ), 
-	  React.createElement("hr", null), 
-	  React.createElement("div", {className: "am-form-group"}, 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
-
-    ), 
-	  
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-          	React.createElement("th", null, 
-            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-            ), 
-            React.createElement("th", null, "帐号"), 
-            React.createElement("th", null, "姓名"), 
-            React.createElement("th", null, "电话"), 
-            React.createElement("th", null, "邮箱"), 
-            React.createElement("th", null, "性别"), 
-            React.createElement("th", null, "状态"), 
-            React.createElement("th", null, "登录时间"), 
-            React.createElement("th", null, "创建时间")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Userinfo_EventRow, {key: event.id, event: event}));
-          })
-        )
-      )
-      )
+    
+	   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 	
+	    React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
+	     React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 	   
+	      React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+		    ), 		  
+		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+		 ), 		    
+		  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用")
+		    ), 		    
+		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用")
+		 ), 
+		  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限")
+		     ), 		    
+		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
+		  ), 		    
+		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
+		     ), 
+			React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})		  
+		  ), 			  
+		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
+		     )				  
+			  )
+			 ), 
+	    React.createElement("div", {id: this.classnewsreply_list_div}
+		  ), 		   	   		   
+		   React.createElement("div", {className: "am-list-news-ft"}, 
+		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+		   )		  
+		  )	
     );
+    
   }
-});
+});    
+
+    var Userinfo_EventRow_admin = React.createClass({displayName: "Userinfo_EventRow_admin", 
+		  render: function() {
+			    var event = this.props.events;
+			    var className = event.highlight ? 'am-active' :
+		  event.disabled ? 'am-disabled' : '';
+			    return (
+			    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 		   	
+				          React.createElement("tr", null, 
+				            React.createElement("th", null, "帐号"), 
+				            React.createElement("th", null, "姓名"), 
+				            React.createElement("th", null, "电话"), 
+				            React.createElement("th", null, "邮箱"), 
+				            React.createElement("th", null, "性别"), 
+				            React.createElement("th", null, "状态"), 
+				            React.createElement("th", null, "登录时间"), 
+				            React.createElement("th", null, "创建时间")
+				          ), 			 
+			    			  this.props.events.map(function(event) {
+			    			      return (
+			    					      React.createElement("tr", {className: className}, 
+			    				   	      React.createElement("td", null, 
+			    				   	      React.createElement("input", {type: "checkbox", value: event.uuid, alt: event.name, name: "table_checkbox"})
+			    				   	      ), 
+			    				   	        React.createElement("td", null, event.loginname), 
+			    				   	        React.createElement("td", null, event.name), 
+			    				   	        React.createElement("td", null, event.tel), 
+			    				   	        React.createElement("td", null, event.email), 
+			    				   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+			    				   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
+			    				   	        React.createElement("td", null, event.login_time), 
+			    				   	        React.createElement("td", null, event.create_time), "                    ") 
+			    			    		  )
+			    			         })	
+			    			  )		  
+			    	  );
+		}
+  	});   
 //userinfo end
 
 //basedatatype
@@ -457,7 +632,7 @@ var Basedatatype_EventRow = React.createClass({displayName: "Basedatatype_EventR
 		ajax_basedatatype_button_handleClick(m,data);
 	  },
 render: function() {
-var event = this.props.event;
+var event = this.props.events;
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 

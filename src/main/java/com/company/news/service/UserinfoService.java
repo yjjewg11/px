@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ import com.company.news.form.UserLoginForm;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -517,6 +520,7 @@ public class UserinfoService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public List<User4Q> getUserTelsByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
@@ -535,11 +539,37 @@ public class UserinfoService extends AbstractServcice {
 
 		return q.list();
 	}
+	
 	/**
 	 * 查询指定机构的用户列表
 	 * 
 	 * @return
 	 */
+	public PageQueryResult getUserTelsByGroupuuidByPage(String group_uuid,String name,PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		sql+=" and t0.groupuuid !='"+SystemConstants.Group_uuid_wjd+"'";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+		}
+		if(StringUtils.isNotBlank(name)){
+			sql+=" and {t1}.name like '%"+name+"%'";
+		}
+		
+		sql+="order by CONVERT( {t1}.name USING gbk)";
+		SQLQuery  q = s
+				.createSQLQuery(sql).addEntity("t1", User4Q.class);
+
+		return 		this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
+	}
+	
+	/**
+	 * 查询指定机构的用户列表
+	 * 
+	 * @return
+	 */
+	@Deprecated
 	public List<User4Q> getUserByGroupuuid(String group_uuid,String name) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
@@ -563,6 +593,33 @@ public class UserinfoService extends AbstractServcice {
 		return q.list();
 	}
 	
+	
+	
+	/**
+	 * 查询指定机构的用户列表
+	 * 
+	 * @return
+	 */
+	public PageQueryResult getUserByGroupuuidByPage(String group_uuid,String name,PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+		}
+		if(StringUtils.isNotBlank(name)){
+			if(StringUtils.isNumeric(name)){
+				sql+=" and {t1}.tel like '%"+name+"%'";
+			}else{				
+				sql+=" and {t1}.name like '%"+name+"%'";
+			}
+		}
+		sql+="order by CONVERT( {t1}.name USING gbk)";
+		SQLQuery  q = s
+				.createSQLQuery(sql).addEntity("t1", User4Q.class);
+
+		return 		this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
+	}
 	/**
 	 * 根据机构UUID,获取所有班级
 	 * @param tel
