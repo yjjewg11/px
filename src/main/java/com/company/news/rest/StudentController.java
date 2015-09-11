@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.commons.util.ExcelUtil;
+import com.company.export.util.ExcelUtil;
+import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
 import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
@@ -206,6 +207,8 @@ public class StudentController extends AbstractRESTController {
 		
 		String groupuuid=request.getParameter("groupuuid");
 		String classuuid=request.getParameter("classuuid");
+		//导出的格式
+		String xlsname=request.getParameter("xlsname");
 		  
 		if(StringUtils.isBlank(groupuuid)){ 
 			groupuuid=this.getMyGroupUuidsBySession(request);
@@ -216,13 +219,25 @@ public class StudentController extends AbstractRESTController {
 				return "";
 			}
 		}
-		
-		List<Student> list = studentService.query(
+		if(StringUtils.isBlank(groupuuid)){ 
+			responseMessage.setMessage("幼儿园必选/The kindergarten required");
+			return "";
+		}
+		List<Student> list = studentService.queryForOutExcel(
 				classuuid,
 				groupuuid);
-
-		
+		List<PClass> listClass = studentService.queryClassNameForOutExcel(classuuid);
+		if("huaMingCe".equals(xlsname)){
+			ExcelUtil.outXLS_huaMingce(response, "幼儿园花名册",list,listClass);
+			return null;
+		}else if("yiLiaoBaoXian".equals(xlsname)){
+			ExcelUtil.outXLS_yiliaobaoxian(response, "幼儿园花名册",list,listClass);
+			return null;
+		}else{
+			
 			ExcelUtil.outputPrintWriterStream(response, "幼儿园基本情况登记表",list);
+		}
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			responseMessage

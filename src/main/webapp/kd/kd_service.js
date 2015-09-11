@@ -2504,10 +2504,12 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  * @param formdata
  * @param operate
  */
- function ajax_flowername_download_byRight (groupuuid,classuuid){
+ function ajax_flowername_download_byRight (groupuuid,classuuid,xlsname){
  	var inputs;
- 	var url = hostUrl + "rest/student/exportStudentExcel.json?groupuuid="+groupuuid+"&classuuid="+classuuid;
- 	   inputs+='<input type="hidden" groupuuid="'+ groupuuid +'" classuuid="'+ classuuid +'" />'; 
+ 	var url = hostUrl + "rest/student/exportStudentExcel.json";
+ 	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
+ 	  inputs+='<input type="hidden" name="classuuid" value="'+classuuid+'" />'; 
+ 	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
         // request发送请求
  	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
       .appendTo('body').submit().remove();

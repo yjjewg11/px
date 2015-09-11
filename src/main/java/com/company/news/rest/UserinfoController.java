@@ -74,11 +74,18 @@ public class UserinfoController extends AbstractRESTController {
 			HttpSession session = SessionListener
 					.getSession((HttpServletRequest) request);
 
+			
+			boolean isCurUser=false;
+			//判断是否是当前登录用户.
 			if (session != null) {
 				User userInfo = (User) session
 						.getAttribute(RestConstants.Session_UserInfo);
 				if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
-					// 当前用户,在线直接返回当前用户.
+					isCurUser=true;
+				}
+			}
+			if(isCurUser){
+				// 当前用户,在线直接返回当前用户.
 					this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
 					// 返回用户信息
 					UserInfoReturn userInfoReturn = new UserInfoReturn();
@@ -87,35 +94,34 @@ public class UserinfoController extends AbstractRESTController {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					model.put(RestConstants.Return_JSESSIONID, session.getId());
-					model.put(RestConstants.Return_UserInfo, userInfoReturn);			
-				}
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				model.put(RestConstants.Return_UserInfo, userInfoReturn);	
 			}else{
 
-			session = request.getSession(true);
-			// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
-			SessionListener.putSessionByJSESSIONID(session);
-			session.setAttribute(RestConstants.Session_UserInfo, user);
-			// 返回客户端用户信息放入Map
-			// putUserInfoReturnToModel(model, request);
-
-			//取相关权限
-			model.put(RestConstants.Return_JSESSIONID, session.getId());
-			 //List<groupuuid,rightname>
-			List rightList=rightService.getRightListByUser(user);
-			//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
-			//取相关机构
-			List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
-			//老数据兼容,如果没有关联默认学校,则关联.
-			if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
-				if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
-					responseMessage.setMessage("绑定云代理失败");
-					return "";
+				session = request.getSession(true);
+				// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+				SessionListener.putSessionByJSESSIONID(session);
+				session.setAttribute(RestConstants.Session_UserInfo, user);
+				// 返回客户端用户信息放入Map
+				// putUserInfoReturnToModel(model, request);
+	
+				//取相关权限
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				 //List<groupuuid,rightname>
+				List rightList=rightService.getRightListByUser(user);
+				//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+				//取相关机构
+				List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
+				//老数据兼容,如果没有关联默认学校,则关联.
+				if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
+					if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
+						responseMessage.setMessage("绑定云代理失败");
+						return "";
+					}
+					listGroupuuids.add(SystemConstants.Group_uuid_wjd);
 				}
-				listGroupuuids.add(SystemConstants.Group_uuid_wjd);
-			}
-			session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
-			session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+				session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
+				session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
 			}
 			
 			//设置当前用户是否管理员
@@ -339,7 +345,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(2);
+			pData.setPageSize(50);
 			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
 			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
@@ -415,7 +421,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(5);
+			pData.setPageSize(50);
 			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
 			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
@@ -987,7 +993,24 @@ public class UserinfoController extends AbstractRESTController {
 				}
 			
 			}
-			list = userinfoService.listJsCache(groupuuid,name);
+			
+			if(SystemConstants.Group_uuid_wjd.equals(groupuuid)){//云代理只返回自己.
+				
+				//如果是云平台管理方的权限,这返回云平台的用户,用于授权
+				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)){
+					list = userinfoService.listJsCache(SystemConstants.Group_uuid_wjkj,name);
+				}else{
+					User user=this.getUserInfoBySession(request);
+					list=new ArrayList();
+					UserForJsCache d= new UserForJsCache();
+					d.setUuid(user.getUuid());
+					d.setName(user.getName());
+					d.setTel(user.getTel());
+					list.add(d);
+				}
+			}else{
+				list = userinfoService.listJsCache(groupuuid,name);
+			}
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

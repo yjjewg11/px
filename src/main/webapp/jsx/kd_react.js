@@ -4136,23 +4136,48 @@ var Class_EventsTable_byRight = React.createClass({
 			 }
 		 }
 	 },
+	 handleClick_download: function(xlsname) {
+			 var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				　if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				　}
+				});
+			  if(!uuids){
+				  alert("至少选择一个班级");
+				  return;
+			  }
+			  var group_uuid=$("input[name='group_uuid']").val();
+			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
+	 },
  handleChange_checkbox_all:function(){
 	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
  },
  handleChange_selectgroup_uuid:function(val){
 	  ajax_class_listByGroup_byRight(val);
  },
+ getDefaultProps: function() {
+	 var data = [
+	            {value: 'one', label: '学生基本表 '},
+	            {value: 'huaMingCe', label: '幼儿花名册'},
+	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
+	          ];
+
+	    return {
+	      down_list: data
+	    };
+	  },
 render: function() {
   return (
   <div>
   <AMR_ButtonToolbar>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add_class")} round>添加班级</AMR_Button>
-	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "flower_name")} round>下载花名册</AMR_Button>
+  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
+	    <AMUIReact.Selected  amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list} btnStyle="primary" />   
 	  </AMR_ButtonToolbar>
 	  <hr/>
-	  <div className="am-form-group">
-	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
-  </div>
 	  
     <AMR_Table {...this.props}>  
       <thead> 

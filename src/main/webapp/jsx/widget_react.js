@@ -91,8 +91,8 @@ var ChooseUser_EventsTable = React.createClass({
           	<th>  
             <input type="checkbox" id="id_checkbox_all_chuser" onChange={this.handleChange_checkbox_all} />
             </th>
-            <th>昵称</th>
-            <th>性别</th>
+            <th>姓名</th>
+            <th>电话</th>
           </tr> 
         </thead>
         <tbody>
@@ -133,7 +133,7 @@ var ChooseUser_EventsTable = React.createClass({
           <input type="checkbox" alt={event.name} value={event.uuid} id={"tb_cbox__chuser"+event.uuid} name="table_checkbox"  />
           </td>
             <td>{event.name}</td>
-            <td>{event.sex=="0"?"男":"女"}</td>
+            <td>{event.tel}</td>
           </tr> 
         );
       }
