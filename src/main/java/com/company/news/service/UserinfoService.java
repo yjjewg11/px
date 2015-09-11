@@ -603,6 +603,9 @@ public class UserinfoService extends AbstractServcice {
 	public PageQueryResult getUserByGroupuuidByPage(String group_uuid,String name,PaginationData pData) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
+		
+		PageQueryResult 	res=null;
+		{
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid";
 		if(StringUtils.isNotBlank(group_uuid)){
 			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
@@ -618,7 +621,23 @@ public class UserinfoService extends AbstractServcice {
 		SQLQuery  q = s
 				.createSQLQuery(sql).addEntity("t1", User4Q.class);
 
-		return 		this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
+		 	res=	this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
+		
+		
+		}
+		
+		{
+			String sql = "select count(*) from px_usergrouprelation t0 where ";
+			if(StringUtils.isNotBlank(group_uuid)){
+				sql+="  t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+			}
+			Object count=s
+					.createSQLQuery(sql).uniqueResult();
+			
+			res.setTotalCount(Long.valueOf(count.toString()));
+
+		}
+		return res;
 	}
 	/**
 	 * 根据机构UUID,获取所有班级

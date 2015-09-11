@@ -1679,7 +1679,7 @@ var ParentContactByMyStudent_message_list = React.createClass({displayName: "Par
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.props.parent_uuid,this.props.telitename,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=ajax_message_queryByParent(this.classnewsreply_list_div+this.pageNo,this.props.parent_uuid,this.pageNo);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -2020,6 +2020,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  },
 	render: function() {
 		var o=this.props.formdata;
+		var stutent_num=this.props.stutent_num;
 	  return (
 	  React.createElement("div", null, 	 
 		  React.createElement(AMR_Panel, null, 
@@ -2047,7 +2048,8 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  		   React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 6, md: 3}, "班主任:", o.headTeacher_name), 
-			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name)
+			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name), 
+			    React.createElement(AMR_Col, {sm: 6, md: 3}, "学生人数:", stutent_num)
 			  )
 		  ), 
 		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
@@ -4291,19 +4293,19 @@ render: function() {
   		  React.createElement("hr", null), 
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
-  			  React.createElement(AMR_Col, {sm: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
-  			    React.createElement(AMR_Col, {sm: 3}, " 班级:", o.name), 
-  			    React.createElement(AMR_Col, {sm: 3}, "班主任:", o.headTeacher_name), 
-  			    React.createElement(AMR_Col, {sm: 3}, "其他老师:", o.teacher_name)
+  			  React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+  			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
+  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "班主任:", o.headTeacher_name), 
+  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name), 
+  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "学生人数:", students_number)			      			  
   			  )
   		  ), 
-  		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 3, md: 4, lg: 6})
+  		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
   	    )
   	  );
   	}
   	});
-  
- 
+
   
 /*
  * <班级管理>详情界面

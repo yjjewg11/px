@@ -362,6 +362,7 @@ function react_ajax_class_students_manage(uuid){
 		error : G_ajax_error_fn
 	});
 	var students=null;
+	var 
 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
 	$.ajax({
 		type : "GET",
@@ -372,6 +373,7 @@ function react_ajax_class_students_manage(uuid){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				students=data.list;
+				stutent_num=data.list.length;
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -392,6 +394,7 @@ function react_ajax_class_students_manage(uuid){
 		formdata:formdata,
 		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
 		classuuid:uuid,
+		stutent_num:stutent_num,
 		students:students}), document.getElementById('div_body'));
 	return ;
 };
@@ -1151,9 +1154,9 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
  * 因有添加加载信息功能所以创建一个舞台然后把每一次添加的DIV添加到舞台上；
  * */
 function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
+	Queue.push(function(){ajax_parentContactByMyStudent_message_list(parent_uuid,name);},name);
 		React.render(React.createElement(ParentContactByMyStudent_message_list,{
 			parent_uuid:parent_uuid,
-			telitename:name
 			}), document.getElementById('div_body'));
 	   	
    };
@@ -1161,16 +1164,16 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
  *  @parent_uuid:每个用户的ID；
  *  
  * */
-function ajax_message_queryByParent(parent_uuid,telitename,list_div,pageNo){
-	Queue.push(function(){ajax_message_queryByParent(parent_uuid,list_div,pageNo);},telitename);
+function ajax_message_queryByParent(list_div,parent_uuid,pageNo){	
 	   var re_data=null;
 	   if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/message/queryByParent.json?uuid="+parent_uuid+"&pageNo="+pageNo;
+    var url = hostUrl + "rest/message/queryByParent.json";
 	$.ajax({
 		type : "GET",
 		url : url,
 		dataType : "json",
+		data:{uuid:parent_uuid,pageNo:pageNo},
 		 async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -1919,6 +1922,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				React.render(React.createElement(Userinfo_EventRow, {
      					groupuuid:groupuuid,
      					events: data.list.data,
+     					students_number:data.list.totalCount,
+     					pageNo:data.list.pageNo,
      					responsive: true, bordered: true, striped :true,hover:true,striped:true
      					
      				}), document.getElementById(list_div));
@@ -2547,6 +2552,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
  				students=data.list;
+ 				students_number=data.list.length;
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}

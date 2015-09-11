@@ -405,7 +405,6 @@ var Userinfo_EventsTable_div = React.createClass({
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
 		g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
-		console.log("-----g_uesrinfo_groupuuid--监测2-",g_uesrinfo_groupuuid);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -481,7 +480,6 @@ var Userinfo_EventsTable_div = React.createClass({
 					  </div>
 				  </AMR_ButtonToolbar>
 				  </form>
-		   	   
 		   
 		    <div id={this.classnewsreply_list_div} >
 			  </div>		   
@@ -497,13 +495,17 @@ var Userinfo_EventsTable_div = React.createClass({
    );
 
 
-   var Userinfo_EventRow = React.createClass({ 
+   var Userinfo_EventRow = React.createClass({ 	
 		  render: function() {
 			    var event = this.props.events;
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
-			    return (
-			    		  <AMR_Table   bordered className="am-list-news-bd">		   	
+			    if(this.props.pageNo==1){
+			     var number=<h1>老师人数:{this.props.students_number}</h1> 	
+			    } 
+			    return (		  		    
+			    		  <AMR_Table   bordered className="am-list-news-bd">
+				    		{number}
 				          <tr>
 				            <th>帐号</th>
 				            <th>姓名</th>
@@ -534,99 +536,7 @@ var Userinfo_EventsTable_div = React.createClass({
 			    	  );
 		}	     
    	});     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-    
-    
-    
-    
-    
-    
-    
+
     
 /*
 * 老师管理Button事件(添加和修改按钮绘制与标签事件处理)；

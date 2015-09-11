@@ -21,9 +21,6 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
 	  var that=this;
     return (
     React.createElement("div", null, 
-    React.createElement(AMUIReact_ButtonToolbar, null, 
-    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
-  ), 
   React.createElement("div", {className: "header"}, 
   React.createElement("hr", null)
 ), 
