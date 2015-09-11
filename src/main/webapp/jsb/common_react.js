@@ -507,6 +507,9 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 
 				    		number, 
 				          React.createElement("tr", null, 
+				          	React.createElement("th", null, 
+				            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+				            ), 
 				            React.createElement("th", null, "帐号"), 
 				            React.createElement("th", null, "姓名"), 
 				            React.createElement("th", null, "电话"), 
