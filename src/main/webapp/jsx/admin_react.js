@@ -568,6 +568,9 @@ var Userinfo_EventsTable_div = React.createClass({
 		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
 		     </div> 
+			   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+			    <AMR_Button amStyle="danger" onClick={menu_Parent_fn_byRight} round>查询所有家长</AMR_Button>
+			     </div> 
 			<div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		   <input type="text" name="sutdent_name" id="sutdent_name" placeholder="教师姓名"/>		  
 		  </div>			  
@@ -996,3 +999,145 @@ return (
 }
 }); 
 //end accounts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//userinfo
+/*
+ * 家长管理请求后绘制处理方法；
+ * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+ * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+ * @调用LIS.events.map方法循环绘制老师数组； 
+ * @</select>下拉多选框;
+ * */
+var Parent_EventsTable_div = React.createClass({
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=ajax_Parent_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$('#sutdent_name').val(),this.pageNo);
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}		  
+		  this.pageNo++;
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+  render: function() {
+	  this.load_more_btn_id="load_more_"+this.props.uuid;
+    return (
+    
+	   <div data-am-widget="list_news" className="am-list-news am-list-news-default">	
+	    <form id="editGroupForm" method="post" className="am-form">		   
+	     <AMR_ButtonToolbar>	   
+			<div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+		   <input type="text" name="sutdent_name" id="sutdent_name" placeholder="家长姓名"/>		  
+		  </div>			  
+		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+			<button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
+		     </div>				  
+			  </AMR_ButtonToolbar>
+			 </form>                 
+	    <div id={this.classnewsreply_list_div} >
+		  </div>		   	   		   
+		   <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		   </div>		  
+		  </div>	
+    );
+    
+  }
+});    
+
+    var Parent_EventRow_admin = React.createClass({ 
+		  render: function() {
+			    var event = this.props.events;
+			    var className = event.highlight ? 'am-active' :
+		  event.disabled ? 'am-disabled' : '';
+			    return (
+			    		  <AMR_Table   bordered className="am-list-news-bd">		   	
+				          <tr>
+				            <th>帐号</th>
+				            <th>姓名</th>
+				            <th>电话</th>
+				            <th>邮箱</th>
+				            <th>性别</th>
+				            <th>状态</th>
+				            <th>登录时间</th>
+				            <th>创建时间</th>
+				          </tr> 			 
+			    			  {this.props.events.map(function(event) {
+			    			      return (
+			    					      <tr className={className}>
+			    				   	        <td>{event.loginname}</td>
+			    				   	        <td>{event.name}</td>
+			    				   	        <td>{event.tel}</td>
+			    				   	        <td>{event.email}</td>
+			    				   	        <td>{event.sex=="0"?"男":"女"}</td>
+			    				   	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
+			    				   	        <td>{event.login_time}</td>
+			    				   	        <td>{event.create_time}</td>			    					        </tr> 
+			    			    		  )
+			    			         })}	
+			    			  </AMR_Table>		  
+			    	  );
+		}
+  	});   
+//userinfo end

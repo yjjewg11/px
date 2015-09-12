@@ -124,13 +124,81 @@ function ajax_userinfo_logout(){
 
 //userinfo end
 
+/*
+ * 家长管理
+ * */
+function menu_Parent_fn_byRight() { 
+	Queue.push(menu_Parent_fn_byRight);
+	ajax_Parent_div_admin();
+};
+/*     
+*
+* <家长管理>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+* 基本框 等
+* */
+function ajax_Parent_div_admin(){
+//	var list=Store.getGroupByRight('KD_teacher_m');
+	React.render(React.createElement(Parent_EventsTable_div), document.getElementById('div_body'));  	
+};
+
+
+//家长查询，条件groupuuid
+//
+function ajax_Parent_listByAllGroup_admin(list_div,name,pageNo) {
+	var re_data=null;
+	  if(!name)name="";
+  	 if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/parent/listByPage.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+ 		data :{name:name,pageNo:pageNo},
+		async: false,
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Parent_EventRow_admin, {
+					events: data.list.data,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+				re_data=data.list;
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+	return re_data;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //user manage
 function menu_userinfo_list_fn_byRight() { 
 	Queue.push(menu_userinfo_list_fn_byRight);
 	ajax_uesrinfo_listByGroup_div_admin(cur_group_ad_uuid);
 };
-
 /*     
 *
 * <用户管理>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
