@@ -144,7 +144,7 @@ function ajax_Parent_div_admin(){
 
 //家长查询，条件groupuuid
 //
-function ajax_Parent_listByAllGroup_admin(list_div,name,pageNo) {
+function ajax_Parent_listByAllGroup_admin(list_div,name,pageNo,callback) {
 	var re_data=null;
 	  if(!name)name="";
   	 if(!pageNo)pageNo=1;
@@ -163,7 +163,9 @@ function ajax_Parent_listByAllGroup_admin(list_div,name,pageNo) {
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

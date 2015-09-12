@@ -44,6 +44,14 @@ function login_affter_init(){
              // "channelLink": "进入栏目 »",
             },
             {
+                "link": "##",
+                "title": "家长管理",
+                "fn":menu_Parent_fn_byRight,
+                "subCols": 2
+               // "channelLink": "进入栏目 »",
+              }, 
+            
+            {
     		    "link": "##",
     		    "title": "平台用户授权",
     		    "fn":menu_ad_roleUser_list_fn

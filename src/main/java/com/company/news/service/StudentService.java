@@ -266,7 +266,8 @@ public class StudentService extends AbstractServcice {
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
-		hql+=" order by classuuid";
+		
+		hql+=" order by classuuid, convert(name, 'gbk') ";
 		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		 
 		warpVoList(list);
@@ -286,7 +287,7 @@ public class StudentService extends AbstractServcice {
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
-		hql+=" order by classuuid";
+		hql+=" order by classuuid, convert(name, 'gbk') ";
 		List<Student> list=(List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		//warpVoList(list);
 		 return list;
@@ -397,7 +398,7 @@ public class StudentService extends AbstractServcice {
 		if (StringUtils.isNotBlank(name))
 			hql += " and  name  like '%"+name+"%' ";
 		
-		hql += " order by groupuuid,classuuid,name";
+		hql += " order by groupuuid,classuuid, convert(name, 'gbk') ";
 		
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
