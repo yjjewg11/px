@@ -424,29 +424,40 @@ function ajax_userinfo_update() {
 }
 //（我）<修改教师资料资料>
 function menu_userteacher_fn(){
-	Queue.push(menu_userinfo_update_fn,"修改教师资料");	
+	Queue.push(function(){menu_userteacher_fn();},"修改教师资料");
 	$.AMUI.progress.start();
-	      var url = hostUrl + "rest/userteacher/get.json";
-		$.ajax({
-			type : "GET",
-			url : url,
-			data : "",
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					Div_userinfo_update();
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : G_ajax_error_fn
-		});
-	}
-//（我）<修改资料>保存按钮事件处理
-function ajax_userteacher_update() {
+	 var userteacherlist = [
+		            {value: "0", label: "本科"},
+		            {value: "1", label: "大专"},
+		            {value: "2", label: "中专"},
+		            {value: "3", label: "职高"},
+		            {value: "4", label: "硕士"}
+		          ];
+	var url = hostUrl + "rest/userteacher/get.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {useruuid:Store.getUserinfo().uuid},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Div_userteacher_update,{
+					formdata:data.data,
+					userteacherlist:userteacherlist
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
+
+//（我）<修改教师资料资料>保存按钮事件处理
+function ajax_userteacher_save() {
 	var opt={
 			 formName:"commonform",
 			 url:hostUrl + "rest/userteacher/save.json",

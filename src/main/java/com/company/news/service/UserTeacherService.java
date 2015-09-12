@@ -49,13 +49,13 @@ public class UserTeacherService extends AbstractServcice {
 
 		BeanUtils.copyProperties(ut, userTeacherJsonform);
 
-//		try {
-//			if (StringUtils.isNotBlank(userTeacherJsonform.getBirthday()))
-//				ut.setBirthday(TimeUtils.string2Timestamp(null,
-//						userTeacherJsonform.getBirthday()));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			if (StringUtils.isNotBlank(userTeacherJsonform.getBirthday()))
+				ut.setBirthday(TimeUtils.string2Timestamp(null,
+						userTeacherJsonform.getBirthday()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ut.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(ut);
 

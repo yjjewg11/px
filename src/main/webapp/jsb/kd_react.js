@@ -5088,5 +5088,138 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
 
 
   
+//——————————————————————————老师资料管理——————————————————————————
   
-  
+  /*
+  * 老师资料管理服务器请求后绘制处理方法；
+  * @</select>下拉多选框;
+  * */
+  var UserTeacher_EventsTable_div = React.createClass({displayName: "UserTeacher_EventsTable_div",
+  	load_more_btn_id:"load_more_",
+  	pageNo:1,
+  	classnewsreply_list_div:"am-list-news-bd",
+  	componentWillReceiveProps:function(){
+  		this.load_more_data();
+  	},
+  	componentDidMount:function(){
+  		this.load_more_data();
+  	},
+  	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+  	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+  	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+  	load_more_data:function(){
+  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+  		var that=this;
+  		var callback=function(re_data){
+  			if(!re_data)return;
+  			if(re_data.data.length<re_data.pageSize){
+  				$("#"+that.load_more_btn_id).hide();
+  			}else{
+  				$("#"+that.load_more_btn_id).show();
+  			}
+  			if(that.pageNo==1){
+  				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+  			}
+  			that.pageNo++;
+  		}
+  		
+  		ajax_userTeacher_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
+  	},
+  	refresh_data:function(){
+//  		classnewsreply_list_div 清除；
+//        load_more_data	重新绘制DIV；
+  		this.forceUpdate();
+  		this.pageNo=1;
+  		$("#"+this.classnewsreply_list_div).html("");
+  		this.load_more_data();
+  		
+  	},		
+   render: function() {
+  	 this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (
+  		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
+  	   
+  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
+  		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+  		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+  			  ), 
+  				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+  				  ), 
+  				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
+  					  )
+  					  
+  				  )
+  				  ), 
+  				  React.createElement("div", {id: "div_totalNumber"}, "总人数:"
+  				  ), 	
+  		    React.createElement("div", {id: this.classnewsreply_list_div}
+  			  ), 		   
+  		   		   
+  			  React.createElement("div", {className: "am-list-news-ft"}, 
+  			    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+  			  )		  
+  			)		   		   
+     );
+     
+   }
+  } 
+     );
+//1.本科,2.大专,3.中专,4.职高,5.硕士
+
+     var UserTeacher_EventRow = React.createClass({displayName: "UserTeacher_EventRow",
+  		  render: function() {
+  			    var event = this.props.events;
+  			    var className = event.highlight ? 'am-active' :
+  		  event.disabled ? 'am-disabled' : '';
+  			    return (		  		    
+  			    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
+  				          React.createElement("tr", null, 
+  				            React.createElement("th", null, "姓名"), 
+  				            React.createElement("th", null, "电话"), 
+  				            React.createElement("th", null, "性别"), 				            
+  				            React.createElement("th", null, "身份证号码"), 
+  				            React.createElement("th", null, "登录时间"), 
+  				            React.createElement("th", null, "职务"), 
+  				            React.createElement("th", null, "学历"), 
+  				            React.createElement("th", null, "学前教育专业学历"), 
+  				            React.createElement("th", null, "幼教资格证"), 
+  				            React.createElement("th", null, "毕业院校及专业"), 
+  				            React.createElement("th", null, "所教学科"), 
+  				            React.createElement("th", null, "技术职称"), 
+  				            React.createElement("th", null, "教师资格证编号"), 
+  				            React.createElement("th", null, " 工作类型"), 
+  				            React.createElement("th", null, "最后修改时间"), 
+  				            React.createElement("th", null, "家庭住址"), 
+  				            React.createElement("th", null, "备注")
+  				          ), 			 
+  			    			  this.props.events.map(function(event) {
+  			    			      return (
+  			    					      React.createElement("tr", {className: className}, 			    				   	        
+  			    				   	React.createElement("td", null, event.realname), 
+  			    				   	React.createElement("td", null, event.tel), 
+  			    				    React.createElement("td", null, event.sex=="0"?"男":"女"), 
+  			    				React.createElement("td", null, event.idcard), 
+  			    				React.createElement("td", null, event.birthday), 
+  			    				React.createElement("td", null, event.zhiwu), 			    				
+  			    				React.createElement("td", null, event.xueli), 
+  			    				 React.createElement("td", null, event.youxueqianjiaoyu=="0"?"无":"有"), 
+  			    				 React.createElement("td", null, event.youjiaozige=="0"?"无":"有"), 
+  			    				React.createElement("td", null, event.graduated), 
+  			    				React.createElement("td", null, event.teaching_subject), 
+  			    				React.createElement("td", null, event.professional_title), 
+  			    				React.createElement("td", null, event.teacher_certificate_number), 			    				   	        
+  			    				React.createElement("td", null, event.work_type), 
+  			    				React.createElement("td", null, event.update_time), 
+  			    				React.createElement("td", null, event.address), 
+  			    				React.createElement("td", null, event.note)
+  			    				   	        ) 
+  			    			    		  )
+  			    			         })	
+  			    			  )		  
+  			    	  );
+  		}	     
+     	});    
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±± 

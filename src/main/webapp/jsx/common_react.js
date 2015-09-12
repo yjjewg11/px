@@ -490,7 +490,7 @@ var Userinfo_EventsTable_div = React.createClass({
 	 },
 	  getDefaultProps: function() {
 			 var data = [
-					{value: 'huaMingCe', label: '幼儿花名册'}
+					{value: 'huaMingCe', label: '老师花名册'}
 			          ];
 
 			    return {
@@ -713,11 +713,17 @@ var Userinfo_getRole = React.createClass({
 	  );
 	}
 	}); 
-////修改教师资料
-var Div_userinfo_update = React.createClass({ 
-
+////修改教师资料 1.本科,2.大专,3.中专,4.职高,5.硕士
+var Div_userteacher_update = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#commonform').serializeJson());
+	  },
 	render: function() {
-		 var o = this.props.data;
+		var o = this.state;
+		console.log("123321",o.xueli);
 	return (
 		<div>
 		<div className="header">
@@ -726,41 +732,76 @@ var Div_userinfo_update = React.createClass({
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
 		    <form id="commonform" method="post" className="am-form">
-		      <label htmlFor="name">姓名:</label>
-		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
-		      <br/>
-
-		      
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    <label htmlFor="name">姓名:</label>
-		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
-		      <br/>
-		       <label htmlFor="">Email:</label>
-		      <PxInput icon="envelope" type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
-		      <br/>
-		      <AMUIReact.FormGroup>
-		      <label>单选：</label>
+		      <label htmlFor="tel">电话号码:</label>
+		       <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		        <br/>		      
+		       <AMUIReact.FormGroup>
+		      <label>性别：</label>
 		     <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
 		    <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-		   </AMUIReact.FormGroup>
-		      <br/>
-		      <label htmlFor="office">职位:</label>
-		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
-		      <br/>
-		      <button type="button" onClick={ajax_userinfo_update} className="am-btn am-btn-primary">提交</button>
-		    </form>
-		    <hr/>
-		  
-		  </div>
+		   </AMUIReact.FormGroup>		      
+		  <br/> 
+		   <label htmlFor="name">姓名:</label>
+		    <PxInput  type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}/>
+			 <br/>
+	        <label htmlFor="idcard">身份证号码:</label>
+	       <PxInput type="text" name="idcard" id="idcard"  value={o.idcard} onChange={this.handleChange}/>
+	      <br/>	    
+           <label htmlFor="birthday">最后一次登录时间:</label>
+            <PxInput  type="text" name="birthday" id="birthday"  value={o.birthday} onChange={this.handleChange}/>
+             <br/>		    		    
+	        <label htmlFor="zhiwu">职务:</label>
+	       <PxInput  type="text" name="zhiwu" id="zhiwu"  value={o.zhiwu} onChange={this.handleChange}/>
+	      <br/>	    
+	       <AMR_ButtonToolbar>
+	        <AMUIReact.Selected id ="xueli1" name= "xueli" onChange={this.handleChange} btnWidth="200" data={this.props.userteacherlist} btnStyle="primary" value={o.xueli+""}  />      
+	    	 </AMR_ButtonToolbar>
+	    	  <hr/>
+	    	  
+			   <AMUIReact.FormGroup>		      
+			    <label>是否具有学前教育专业学历：</label>
+				 <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="0" label="否" inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==0?"checked":""}  />
+				  <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="1" label="是" inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==1?"checked":""}  />
+				   </AMUIReact.FormGroup>							      
+				    <br/>	
+				     <AMUIReact.FormGroup>	
+                    <label>是否取得幼教资格证：</label>
+	               <AMUIReact.Input type="radio" name="youjiaozige" value="0" label="否" inline onChange={this.handleChange} checked={o.youjiaozige==0?"checked":""}  />
+	              <AMUIReact.Input type="radio" name="youjiaozige" value="1" label="是" inline onChange={this.handleChange} checked={o.youjiaozige==1?"checked":""}  />
+	             </AMUIReact.FormGroup>							      
+	            <br/>		
+     		   <label htmlFor="graduated">毕业院校及专业:</label>
+		      <PxInput  type="text" name="graduated" id="graduated"  value={o.graduated} onChange={this.handleChange}  placeholder="不超过50个字"/>
+		     <br/>	 
+			  <label htmlFor="teaching_subject">所教学科:</label>
+			   <PxInput  type="text" name="teaching_subject" id="teaching_subject"  value={o.teaching_subject} onChange={this.handleChange}  placeholder="不超过50个字"/>
+			    <br/>								      
+	           <label htmlFor="professional_title">专业技术职称:</label>
+	          <PxInput  type="text" name="professional_title" id="professional_title"  value={o.professional_title} onChange={this.handleChange}  placeholder="不超过50个字"/>
+	         <br/>								      
+		    <label htmlFor="teacher_certificate_number">教师资格证编号:</label>
+		     <PxInput  type="text" name="teacher_certificate_number" id="teacher_certificate_number"  value={o.teacher_certificate_number} onChange={this.handleChange}  placeholder="不超过20个字"/>
+		      <br/>	
+			 <label htmlFor="work_type">工作类型:</label>
+			<PxInput  type="text" name="work_type" id="work_type"  value={o.work_type} onChange={this.handleChange}  placeholder="不超过20个字"/>
+		   <br/>	
+		    <label htmlFor="address">家庭住址:</label>
+			 <PxInput  type="text" name="address" id="address"  value={o.address} onChange={this.handleChange}  placeholder="不超过100个字"/>
+			  <br/>					            
+         <AMUIReact.Input type="textarea"
+ 	      label="备注"
+ 	      name="note"
+ 	      labelClassName="am-u-sm-2"
+ 	      placeholder="不超过100个字"
+ 	      wrapperClassName="am-u-sm-10"
+ 	      amSize="lg" />
+          <br/>	
+	      <button type="button" onClick={ajax_userteacher_save} className="am-btn am-btn-primary">提交</button>
+		   </form>
+		  <hr/>
+		 </div>
 		</div>
-		</div>
+	   </div>
 	);
 	}
 }); 
