@@ -50,7 +50,7 @@ $.AMUI.progress.start();
 					opt.cbFN(data);
 				}else{
 					G_msg_pop(data.ResMsg.message);
-					//Queue.doBackFN();
+					Queue.doBackFN();
 				}
 				
 			} else {
