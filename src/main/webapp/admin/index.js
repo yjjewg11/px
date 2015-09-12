@@ -43,7 +43,6 @@ function login_affter_init(){
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
-            
             {
     		    "link": "##",
     		    "title": "平台用户授权",

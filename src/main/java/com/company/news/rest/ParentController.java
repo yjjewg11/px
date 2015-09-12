@@ -39,20 +39,20 @@ public class ParentController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(5);
-			String groupuuid = request.getParameter("groupuuid");
+			pData.setPageSize(3);
+//			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
-			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
-				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
-					groupuuid=this.getMyGroupUuidsBySession(request);
-					if (StringUtils.isEmpty(groupuuid)){
-						responseMessage.setMessage("非法用户,没有关联的学校!");
-						return "";
-					}
-				}
-			
-			}
-			PageQueryResult list = parentService.listByPage(groupuuid,name,pData);
+//			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+//				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+//					groupuuid=this.getMyGroupUuidsBySession(request);
+//					if (StringUtils.isEmpty(groupuuid)){
+//						responseMessage.setMessage("非法用户,没有关联的学校!");
+//						return "";
+//					}
+//				}
+//			
+//			}
+			PageQueryResult list = parentService.listByPage(name,pData);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

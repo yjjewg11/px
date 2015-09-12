@@ -2139,7 +2139,6 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	  },
 		render: function() {
 	     var o =this.state;
-	     console.log("o",o);
 		 return (
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
@@ -3192,7 +3191,6 @@ var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_
 			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 console.log("num",num);
 			 ajax_classnews_list_div_byRight(num); 		
 		 }
 	  },

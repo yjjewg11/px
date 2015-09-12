@@ -17,7 +17,7 @@ public class ParentService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult listByPage(String group_uuid,String name,PaginationData pData) {
+	public PageQueryResult listByPage(String name,PaginationData pData) {
 
 		String hql = "from Parent where 1=1" ;
 //		if (StringUtils.isNotBlank(type))
