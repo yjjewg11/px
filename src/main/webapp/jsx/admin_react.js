@@ -595,6 +595,9 @@ var Userinfo_EventsTable_div = React.createClass({
 			    return (
 			    		  <AMR_Table   bordered className="am-list-news-bd">		   	
 				          <tr>
+				          	<th>  
+				            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+				            </th>
 				            <th>帐号</th>
 				            <th>姓名</th>
 				            <th>电话</th>
