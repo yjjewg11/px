@@ -19,6 +19,7 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Announcements;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.Group;
@@ -208,27 +209,33 @@ public class ClassService extends AbstractServcice {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage) {
+	public boolean delete(String uuid, ResponseMessage responseMessage, HttpServletRequest request) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
 
-		if (uuid.indexOf(",") != -1)// 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from PClass where uuid in(?)", uuid);
-			this.nSimpleHibernateDao
-					.getHibernateTemplate()
-					.bulkUpdate(
-							"delete from UserClassRelation where classuuid in(?)",
-							uuid);
-		} else {
+		
+		PClass obj=(PClass) this.nSimpleHibernateDao.getObject(PClass.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("没有该数据!");
+			return false;
+		}
+		if(!RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_class_m,request)){
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return false;
+		}
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		Object o=s.createSQLQuery("select count(*) from px_student where classuuid='"+uuid+"'").uniqueResult();
+		if(Long.valueOf(o.toString())>0){
+			responseMessage.setMessage("该班级有学生不能删除.");
+			return false;
+		}
 			this.nSimpleHibernateDao.deleteObjectById(PClass.class, uuid);
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 					"delete from UserClassRelation where classuuid =?", uuid);
-		}
 
 		return true;
 	}

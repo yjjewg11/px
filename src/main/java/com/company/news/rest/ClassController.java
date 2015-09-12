@@ -1,6 +1,5 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,16 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.ClassService;
-import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -127,28 +123,18 @@ public class ClassController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(true){
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-		responseMessage.setMessage(RightConstants.Return_msg);
-		return "";
-	}
-//		if(!RightUtils.hasRight(RightConstants.AD_class_m,request)){
-//			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-//			responseMessage.setMessage(RightConstants.Return_msg);
-//			return "";
-////		}
-//		try {
-//			boolean flag = classService.delete(request.getParameter("uuid"),
-//					responseMessage);
-//			if (!flag)
-//				return "";
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-//			responseMessage.setMessage(e.getMessage());
-//			return "";
-//		}
+		try {
+			boolean flag = classService.delete(request.getParameter("uuid"),
+					responseMessage,request);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("删除成功");
