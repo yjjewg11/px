@@ -446,6 +446,14 @@ function add_studentsByData(formdata){
  * */
 function btn_ajax_myclass_student_save(){
 	var objectForm = $('#editClassStudentForm').serializeJson();
+	objectForm.birthday=G_Check.formateDate(objectForm.birthday);
+	if(!G_Check.date1(objectForm.birthday)){
+		G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
+		$("input[name='birthday']").focus()
+		return;
+	}
+	
+	$("input[name='birthday']").val(objectForm.birthday);
     var opt={
             formName: "editClassStudentForm",
             url:hostUrl + "rest/student/save.json",
@@ -1903,7 +1911,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * @Userinfo_EventsTable方法中继续做下一步处理;
   * Queue.push@点击学校后进入下个页面返回后学校为最新点击后的学校;
   * */
-     function ajax_uesrinfo_listByGroup(list_div,groupuuid,name,pageNo) {    		
+     function ajax_uesrinfo_listByGroup(list_div,groupuuid,name,pageNo,callback) {    		
     	 var re_data=null;
      	  if(!name)name="";
      	 if(!pageNo)pageNo=1;
@@ -1915,7 +1923,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      		url : url,
      		data :{groupuuid:groupuuid,name:name,pageNo:pageNo},
      		dataType : "json",
-     		async: false,
+     	//	async: false,
      		success : function(data) {
      			$.AMUI.progress.done();
      			if (data.ResMsg.status == "success") {
@@ -1927,7 +1935,10 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      					responsive: true, bordered: true, striped :true,hover:true,striped:true
      					
      				}), document.getElementById(list_div));
-     				re_data=data.list;
+     				
+     				if(typeof callback=='function'){
+    					callback(data.list);
+    				}
      			} else {
      				alert(data.ResMsg.message);
      				G_resMsg_filter(data.ResMsg);

@@ -981,7 +981,10 @@ public class UserinfoService extends AbstractServcice {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
+		
+		
 		if(StringUtils.isNotBlank(group_uuid)){
+			if(SystemConstants.Group_uuid_wjd.equals(group_uuid))group_uuid=SystemConstants.Group_uuid_wjkj;
 			sql+="and t0.groupuuid='"+ group_uuid + "'";
 		}
 		if(StringUtils.isNotBlank(name)){
@@ -989,7 +992,7 @@ public class UserinfoService extends AbstractServcice {
 		}
 		Query q = s
 				.createSQLQuery(sql).addEntity("t1", UserForJsCache.class);
-
+		q.setMaxResults(200);
 		return q.list();
 	}
 	@Override

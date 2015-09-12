@@ -1295,14 +1295,12 @@ var G_Teachingplan_1day= React.createClass({
 					  <div className="am-panel-bd">
 							  <div className="am-g">
 				    		  <div className={divCs1}>上午</div>
-				    		  <div className={divCs2} >  
-				    		  	{o.morning}
+				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}} >  
 				    		  </div>
 				    		</div>
 				    		<div className="am-g">
 				    		  <div className={divCs1}>下午</div>
-				    		  <div className={divCs2}>
-				    		  	{o.afternoon}
+				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}>
 				    		  </div>
 				    		</div>
 				    		<div className="am-g">
@@ -1347,6 +1345,8 @@ render: function() {
 	  var o = this.state;
 	  o.plandate=o.plandate.split(" ")[0];
 	  this.formid="editTeachingplanForm"+o.plandate;
+	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
+	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
 return (
 		
 		 <form id={this.formid} method="post" className="am-form">
@@ -1364,14 +1364,14 @@ return (
 		<div className="am-g">
 		  <div className="am-u-sm-4">上午</div>
 		  <div className="am-u-sm-8" >  
-		  <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange.bind(this)}/>
-			
+		  <AMR_Input id="morning"  name="morning" type="textarea" rows="12" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange.bind(this)}/>
+
 		  </div>
 		</div>
 		<div className="am-g">
 		  <div className="am-u-sm-4">下午</div>
 		  <div className="am-u-sm-8">
-		  <AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange.bind(this)}/>
+		  <AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="7" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange.bind(this)}/>
 		  </div>
 		</div>
 		 < AMR_Button  amStyle ="primary" onClick={ this.ajax_teachingplan_save.bind( this )} round >保存</AMR_Button >
@@ -2047,9 +2047,9 @@ var Class_students_show= React.createClass({
 	  		    
 	  		   <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
 			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
-			    <AMR_Col sm={6} md={3} >班主任:{o.headTeacher_name}</AMR_Col>
-			    <AMR_Col sm={6} md={3}>其他老师:{o.teacher_name}</AMR_Col>
-			    <AMR_Col sm={6} md={3}>学生人数:{stutent_num}</AMR_Col>
+			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
+			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
+			    <AMR_Col sm={3} md={2}>人数:{stutent_num}</AMR_Col>
 			  </AMR_Grid>
 		  </AMR_Panel>
 		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />
@@ -2104,7 +2104,7 @@ var AMR_Col=AMUIReact.Col;
   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
   			      <br/>
-  			      <label htmlFor="name">其他老师:</label>
+  			      <label htmlFor="name">老师:</label>
   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
   				      <br/>
@@ -2150,7 +2150,7 @@ var Class_student_look_info =React.createClass({
 			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
@@ -2203,8 +2203,8 @@ var Class_student_look_info =React.createClass({
   	},
   render: function() {
   	  var o = this.state;
-  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+  	  var one_classDiv="am-u-lg-1 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-11 am-u-md-10 am-u-sm-8";
    return (
 		   <form id="editClassStudentForm" method="post" className="am-form">
 		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
@@ -2222,15 +2222,15 @@ var Class_student_look_info =React.createClass({
  	     </AMUIReact.FormGroup>     		    
  	       <label className={one_classDiv}>姓名</label>
    		     <div className={two_classDiv}>
-		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange}/>
+		       <PxInput icon="user" type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
 		        </div>
 		       <label className={one_classDiv}>昵称</label>
 	   		  <div className={two_classDiv}>  
-   		     <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
+   		     <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
    		    </div>
-   		     <label className={one_classDiv}>生日</label>
+   		     <label className={one_classDiv}>出生日期</label>
   		      <div className={two_classDiv}>
-  		       <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday} onChange={this.handleChange}/>
+  		    <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
 		        </div>
 		       <label className={one_classDiv}>身份证</label>
 			  <div className={two_classDiv}>  
@@ -2462,7 +2462,7 @@ var Teacher_info_tel = React.createClass({
 	    var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 	    return (
-	    		  <AMR_Table   bordered className="am-list-news-bd">		   	
+	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">		   	
 		          <tr>
 		            <th>姓名</th>
 		            <th>电话</th>
@@ -4259,7 +4259,7 @@ render: function() {
   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
   			      <br/>
-  			      <label htmlFor="name">其他老师:</label>
+  			      <label htmlFor="name">老师:</label>
   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
   				      <br/>
@@ -4318,11 +4318,11 @@ render: function() {
   		  <hr/>
   		  <AMR_Panel>
   			  <AMR_Grid className="doc-g">
-  			  <AMR_Col className="am-hide-sm" sm={6} md={3} > 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
-  			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
-  			    <AMR_Col sm={6} md={3} >班主任:{o.headTeacher_name}</AMR_Col>
-  			    <AMR_Col sm={6} md={3}>其他老师:{o.teacher_name}</AMR_Col>
-  			    <AMR_Col sm={6} md={3}>学生人数:{students_number}</AMR_Col> 			      			  
+  			  <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
+			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
+			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
+			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
+			    <AMR_Col sm={3} md={2}>人数:{stutent_num}</AMR_Col>
   			  </AMR_Grid>
   		  </AMR_Panel>
   		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />
@@ -4397,7 +4397,7 @@ render: function() {
 	   		  <div className={two_classDiv}>  
    		     <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
    		    </div>
-   		     <label className={one_classDiv}>生日</label>
+   		     <label className={one_classDiv}>出生日期</label>
   		      <div className={two_classDiv}>
   		       <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD"  name="birthday" id="birthday" dateTime={o.birthday} onChange={this.handleChange}/>
 		        </div>
@@ -4810,7 +4810,7 @@ render: function() {
               <th>姓名</th>
               <th>昵称</th>
               <th>性别</th>
-              <th>生日</th>
+              <th>出生日期</th>
               <th>班级</th>
               <th>身份证</th>
             </tr> 
@@ -4888,7 +4888,7 @@ render: function() {
   			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>生日:{o.birthday}</AMUIReact.ListItem>
+  			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>

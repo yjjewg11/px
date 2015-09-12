@@ -14,6 +14,9 @@ var G_tip={
 		role_grant_users:"角色授权给用户,园长和管理员有最大权限",
 		//首页-班级互动
 		Classnews_admin:"检查内容是否违规,对违规进行屏蔽,屏蔽后所有不可见",
+		//课程表编辑模版.G_tip.teachingplan_morning
+		teachingplan_morning:"[学习活动]\n活动：\n目标：\n1、\n2、\n[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
+		teachingplan_afternoon:"[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
 		help:"帮助"
 };
 

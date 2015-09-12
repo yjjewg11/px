@@ -421,7 +421,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(5);
+			pData.setPageSize(50);
 			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
 			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户

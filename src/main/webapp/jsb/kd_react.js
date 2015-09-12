@@ -1295,14 +1295,12 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 					  React.createElement("div", {className: "am-panel-bd"}, 
 							  React.createElement("div", {className: "am-g"}, 
 				    		  React.createElement("div", {className: divCs1}, "上午"), 
-				    		  React.createElement("div", {className: divCs2}, 
-				    		  	o.morning
+				    		  React.createElement("div", {className: divCs2, dangerouslySetInnerHTML: {__html:G_textToHTML(o.morning)}}
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
 				    		  React.createElement("div", {className: divCs1}, "下午"), 
-				    		  React.createElement("div", {className: divCs2}, 
-				    		  	o.afternoon
+				    		  React.createElement("div", {className: divCs2, dangerouslySetInnerHTML: {__html:G_textToHTML(o.afternoon)}}
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
@@ -1347,6 +1345,8 @@ render: function() {
 	  var o = this.state;
 	  o.plandate=o.plandate.split(" ")[0];
 	  this.formid="editTeachingplanForm"+o.plandate;
+	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
+	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
 return (
 		
 		 React.createElement("form", {id: this.formid, method: "post", className: "am-form"}, 
@@ -1364,14 +1364,14 @@ return (
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-sm-4"}, "上午"), 
 		  React.createElement("div", {className: "am-u-sm-8"}, 
-		  React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange.bind(this)})
-			
+		  React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "12", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange.bind(this)})
+
 		  )
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-sm-4"}, "下午"), 
 		  React.createElement("div", {className: "am-u-sm-8"}, 
-		  React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange.bind(this)})
+		  React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "7", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange.bind(this)})
 		  )
 		), 
 		 React.createElement(AMR_Button, {amStyle: "primary", onClick:  this.ajax_teachingplan_save.bind( this), round: true}, "保存")
@@ -2047,9 +2047,9 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	  		    
 	  		   React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
-			    React.createElement(AMR_Col, {sm: 6, md: 3}, "班主任:", o.headTeacher_name), 
-			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name), 
-			    React.createElement(AMR_Col, {sm: 6, md: 3}, "学生人数:", stutent_num)
+			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
+			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
+			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", stutent_num)
 			  )
 		  ), 
 		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
@@ -2104,7 +2104,7 @@ var AMR_Col=AMUIReact.Col;
   	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
   			      React.createElement("input", {type: "text", id: "headTeacher_name", value: o.headTeacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid), placeholder: ""}), 
   			      React.createElement("br", null), 
-  			      React.createElement("label", {htmlFor: "name"}, "其他老师:"), 
+  			      React.createElement("label", {htmlFor: "name"}, "老师:"), 
   		  		    React.createElement("input", {type: "hidden", name: "teacher", id: "teacher", value: o.teacher, onChange: this.handleChange}), 
   				      React.createElement("input", {type: "text", id: "teacher_name", value: o.teacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid), placeholder: ""}), 
   				      React.createElement("br", null), 
@@ -2150,7 +2150,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
 			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
 			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
 			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
@@ -2203,8 +2203,8 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   	},
   render: function() {
   	  var o = this.state;
-  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+  	  var one_classDiv="am-u-lg-1 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-11 am-u-md-10 am-u-sm-8";
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
 		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
@@ -2222,15 +2222,15 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
  	     ), 		    
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
-		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange})
+		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
 		        ), 
 		       React.createElement("label", {className: one_classDiv}, "昵称"), 
 	   		  React.createElement("div", {className: two_classDiv}, 
-   		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
+   		     React.createElement(PxInput, {icon: "user-secret", type: "text", maxLength: "20", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
    		    ), 
-   		     React.createElement("label", {className: one_classDiv}, "生日"), 
+   		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
   		      React.createElement("div", {className: two_classDiv}, 
-  		       React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange})
+  		    React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
 		        ), 
 		       React.createElement("label", {className: one_classDiv}, "身份证"), 
 			  React.createElement("div", {className: two_classDiv}, 
@@ -2462,7 +2462,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
 	    var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 	    return (
-	    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 		   	
+	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
 		          React.createElement("tr", null, 
 		            React.createElement("th", null, "姓名"), 
 		            React.createElement("th", null, "电话"), 
@@ -4259,7 +4259,7 @@ render: function() {
   	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
   			      React.createElement("input", {type: "text", id: "headTeacher_name", value: o.headTeacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid), placeholder: ""}), 
   			      React.createElement("br", null), 
-  			      React.createElement("label", {htmlFor: "name"}, "其他老师:"), 
+  			      React.createElement("label", {htmlFor: "name"}, "老师:"), 
   		  		    React.createElement("input", {type: "hidden", name: "teacher", id: "teacher", value: o.teacher, onChange: this.handleChange}), 
   				      React.createElement("input", {type: "text", id: "teacher_name", value: o.teacher_name, onChange: this.handleChange, onClick: w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid), placeholder: ""}), 
   				      React.createElement("br", null), 
@@ -4319,10 +4319,10 @@ render: function() {
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
   			  React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
-  			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
-  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "班主任:", o.headTeacher_name), 
-  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "其他老师:", o.teacher_name), 
-  			    React.createElement(AMR_Col, {sm: 6, md: 3}, "学生人数:", students_number)			      			  
+			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
+			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
+			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
+			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", stutent_num)
   			  )
   		  ), 
   		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
@@ -4397,7 +4397,7 @@ render: function() {
 	   		  React.createElement("div", {className: two_classDiv}, 
    		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
    		    ), 
-   		     React.createElement("label", {className: one_classDiv}, "生日"), 
+   		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
   		      React.createElement("div", {className: two_classDiv}, 
   		       React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "birthday", id: "birthday", dateTime: o.birthday, onChange: this.handleChange})
 		        ), 
@@ -4810,7 +4810,7 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
               React.createElement("th", null, "姓名"), 
               React.createElement("th", null, "昵称"), 
               React.createElement("th", null, "性别"), 
-              React.createElement("th", null, "生日"), 
+              React.createElement("th", null, "出生日期"), 
               React.createElement("th", null, "班级"), 
               React.createElement("th", null, "身份证")
             )
@@ -4888,7 +4888,7 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
   			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
   			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-  			      React.createElement(AMUIReact.ListItem, null, "生日:", o.birthday), 
+  			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
   			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
   			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
   			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 

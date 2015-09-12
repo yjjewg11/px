@@ -476,7 +476,22 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_uesrinfo_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
+		
+		
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		var re_data=ajax_uesrinfo_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -559,9 +574,6 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		  React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用")
 		 ), 
-		  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		    React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "getRole"), round: true}, "分配权限")
-		     ), 		    
 		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		   React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
 		  ), 		    
@@ -576,6 +588,8 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		     )				  
 			  )
 			 ), 
+			  React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
+			  ), 	
 	    React.createElement("div", {id: this.classnewsreply_list_div}
 		  ), 		   	   		   
 		   React.createElement("div", {className: "am-list-news-ft"}, 
@@ -593,7 +607,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
 			    return (
-			    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 		   	
+			    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
 				          React.createElement("tr", null, 
 				          	React.createElement("th", null, 
 				            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})

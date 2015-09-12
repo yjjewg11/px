@@ -67,6 +67,10 @@ public class StudentService extends AbstractServcice {
 		Student student = new Student();
 
 		BeanUtils.copyProperties(student, studentJsonform);
+		
+		//格式纠正
+		student.setBirthday(TimeUtils.getDateFormatString(student.getBirthday()));
+
 		student.setCreate_time(TimeUtils.getCurrentTimestamp());
 		student.setGroupuuid(pClass.getGroupuuid());
 		// 有事务管理，统一在Controller调用时处理异常
@@ -110,6 +114,8 @@ public class StudentService extends AbstractServcice {
 			student.setClassuuid(old_student.getClassuuid());
 			student.setGroupuuid(old_student.getGroupuuid());
 			student.setCreate_time(old_student.getCreate_time());
+			//格式纠正
+			student.setBirthday(TimeUtils.getDateFormatString(student.getBirthday()));
 
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().update(student);
@@ -214,8 +220,14 @@ public class StudentService extends AbstractServcice {
 		
 		//更新家长姓名和头像.多个孩子已最后保存为准
 		if(parent!=null){
-			parent.setName(PxStringUtil.getParentNameByStudentContactRealation(studentContactRealation));
-			parent.setImg(student.getHeadimg());
+			String newParentName=PxStringUtil.getParentNameByStudentContactRealation(studentContactRealation);
+			if(parent.getImg()==null||parent.getImg().equals(student.getHeadimg())){
+				parent.setImg(student.getHeadimg());
+			}
+			if(newParentName!=null&&!newParentName.equals(parent.getName())){
+				parent.setName(newParentName);
+				nSimpleHibernateDao.relUpdate_updateSessionUserInfoInterface(parent);
+			}
 			nSimpleHibernateDao.save(parent);
 		}
 		nSimpleHibernateDao.save(studentContactRealation);

@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
@@ -13,6 +14,7 @@ import com.company.news.jsonform.StudentJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.filter.UserInfoFilter;
 
 /**
  * 
@@ -21,6 +23,8 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class WenjieAdminService extends AbstractServcice {
+	private static final Logger logger = Logger.getLogger(UserInfoFilter.class);
+
 	private static final String model_name = "管理员模块";
 	/**
 	 * 刷新学生与家长关系表
@@ -30,6 +34,28 @@ public class WenjieAdminService extends AbstractServcice {
 	public void updateDataRefresh(ResponseMessage responseMessage) throws Exception {
 		List<Student> listStudent=(List<Student>)this.nSimpleHibernateDao.getHibernateTemplate().find(
 				"from Student ");
+		Integer count =0;
+		for(Student student:listStudent){
+			
+			String dd=TimeUtils.getDateFormatString(student.getBirthday());
+			if(student.getBirthday()!=null&&student.getBirthday().contains("2015")){
+				logger.info(student.getBirthday()+"==>"+dd);
+				count++;
+				student.setBirthday("");
+				this.nSimpleHibernateDao.save(student);
+			}else if(!dd.equals(student.getBirthday())){
+				logger.info(student.getBirthday()+"==>"+dd);
+				student.setBirthday(dd);
+				this.nSimpleHibernateDao.save(student);
+				count++;
+			}
+			
+			
+		}
+		
+		logger.info("count ="+count);
+		if(true)return;
+		//刷新学生和家长关系表.
 		for(Student student:listStudent){
 			this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
 			this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());

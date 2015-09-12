@@ -148,7 +148,7 @@ function ajax_uesrinfo_listByGroup_div_admin(groupuuid){
 
 //老师查询，条件groupuuid
 //
-function ajax_uesrinfo_listByAllGroup_admin(list_div,groupuuid,name,pageNo) {
+function ajax_uesrinfo_listByAllGroup_admin(list_div,groupuuid,name,pageNo,callback) {
 	var re_data=null;
 	  if(!name)name="";
   	 if(!pageNo)pageNo=1;
@@ -168,7 +168,10 @@ function ajax_uesrinfo_listByAllGroup_admin(list_div,groupuuid,name,pageNo) {
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

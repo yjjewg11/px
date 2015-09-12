@@ -403,15 +403,29 @@ var Userinfo_EventsTable_div = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
-		g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		
+		ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
+	//	g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
+//		if(!re_data)return;
+//		if(re_data.data.length<re_data.pageSize){
+//			$("#"+this.load_more_btn_id).hide();
+//		}else{
+//			$("#"+this.load_more_btn_id).show();
+//		}		  
+//		  this.pageNo++;
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -480,7 +494,8 @@ var Userinfo_EventsTable_div = React.createClass({
 					  </div>
 				  </AMR_ButtonToolbar>
 				  </form>
-		   
+				  <div id="div_totalNumber" >总人数:0
+				  </div>	
 		    <div id={this.classnewsreply_list_div} >
 			  </div>		   
 		   		   
@@ -500,18 +515,13 @@ var Userinfo_EventsTable_div = React.createClass({
 			    var event = this.props.events;
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
-			    if(this.props.pageNo==1){
-			     var number=<h1>老师人数:{this.props.students_number}</h1> 	
-			    } 
 			    return (		  		    
-			    		  <AMR_Table   bordered className="am-list-news-bd">
-				    		{number}
+			    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap" >
 				          <tr>
 				          	<th>  
 				            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
 				            </th>
-				            <th>帐号</th>
-				            <th>姓名</th>
+				            <th >姓名</th>
 				            <th>电话</th>
 				            <th>邮箱</th>
 				            <th>性别</th>
@@ -525,10 +535,9 @@ var Userinfo_EventsTable_div = React.createClass({
 			    				   	      <td> 
 			    				   	      <input type="checkbox" value={event.uuid} alt={event.name} name="table_checkbox" />
 			    				   	      </td>
-			    				   	        <td>{event.loginname}</td>
-			    				   	        <td>{event.name}</td>
-			    				   	        <td>{event.tel}</td>
-			    				   	        <td>{event.email}</td>
+			    				   	        <td >{event.name}</td>
+			    				   	        <td > {event.tel}</td>
+			    				   	        <td >{event.email}</td>
 			    				   	        <td>{event.sex=="0"?"男":"女"}</td>
 			    				   	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
 			    				   	        <td>{event.login_time}</td>
@@ -1046,7 +1055,7 @@ var  Common_mg_big_fn  = React.createClass({
 			  };		  		   
 			    return (
 		      <div>
-		      <ul data-am-widget="gallery" className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered" data-am-gallery="{pureview:{target: 'a'}}">
+		      <ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
 			   
 			    {this.props.imgsList.map(function(event) {
 			    	 var  o = event;

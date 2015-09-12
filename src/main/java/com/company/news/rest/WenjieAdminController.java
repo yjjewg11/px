@@ -47,7 +47,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				responseMessage.setMessage("dataRefresh is not admin!");
 				return "";
 			}
-			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_right_m, request)){
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_role_m, request)){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
 				responseMessage.setMessage("dataRefresh is not authorization!");
 				return "";

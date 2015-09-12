@@ -355,6 +355,24 @@ function G_clear_pureview(){
 	$(".am-pureview").remove();
 }
 
+var G_Check={
+	formateDate:function(d1){
+		d1=d1.replace(/\//ig,'-'); 
+		d1=d1.replace(/\./ig,'-'); 
+        return d1;
+	},
+		//验证日期格式
+	date1:function(RQ) {
+		 var date = RQ;
+            var result = date.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+            if (result == null)
+                return false;
+            var d = new Date(result[1], result[3] - 1, result[4]);
+            return (d.getFullYear() == result[1] && (d.getMonth() + 1) == result[3] && d.getDate() == result[4]);
+
+        }
+}
+
 /**
  * JS转换时间戳为“刚刚”、“1分钟前”、“2小时前”“1天前”等格式
  * GTimeShow.showByTime(s);

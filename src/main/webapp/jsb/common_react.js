@@ -403,15 +403,29 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
-		g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		
+		ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
+	//	g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
+//		if(!re_data)return;
+//		if(re_data.data.length<re_data.pageSize){
+//			$("#"+this.load_more_btn_id).hide();
+//		}else{
+//			$("#"+this.load_more_btn_id).show();
+//		}		  
+//		  this.pageNo++;
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -480,7 +494,8 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 					  )
 				  )
 				  ), 
-		   
+				  React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
+				  ), 	
 		    React.createElement("div", {id: this.classnewsreply_list_div}
 			  ), 		   
 		   		   
@@ -500,17 +515,12 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			    var event = this.props.events;
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
-			    if(this.props.pageNo==1){
-			     var number=React.createElement("h1", null, "老师人数:", this.props.students_number) 	
-			    } 
 			    return (		  		    
-			    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 
-				    		number, 
+			    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
 				          React.createElement("tr", null, 
 				          	React.createElement("th", null, 
 				            React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
 				            ), 
-				            React.createElement("th", null, "帐号"), 
 				            React.createElement("th", null, "姓名"), 
 				            React.createElement("th", null, "电话"), 
 				            React.createElement("th", null, "邮箱"), 
@@ -525,9 +535,8 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			    				   	      React.createElement("td", null, 
 			    				   	      React.createElement("input", {type: "checkbox", value: event.uuid, alt: event.name, name: "table_checkbox"})
 			    				   	      ), 
-			    				   	        React.createElement("td", null, event.loginname), 
 			    				   	        React.createElement("td", null, event.name), 
-			    				   	        React.createElement("td", null, event.tel), 
+			    				   	        React.createElement("td", null, " ", event.tel), 
 			    				   	        React.createElement("td", null, event.email), 
 			    				   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 			    				   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
@@ -1046,7 +1055,7 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 			  };		  		   
 			    return (
 		      React.createElement("div", null, 
-		      React.createElement("ul", {"data-am-widget": "gallery", className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered", "data-am-gallery": "{pureview:{target: 'a'}}"}, 
+		      React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
 			   
 			    this.props.imgsList.map(function(event) {
 			    	 var  o = event;

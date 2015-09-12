@@ -476,7 +476,22 @@ var Userinfo_EventsTable_div = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_uesrinfo_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
+		
+		
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		var re_data=ajax_uesrinfo_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
@@ -559,9 +574,6 @@ var Userinfo_EventsTable_div = React.createClass({
 		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		  <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
 		 </div> 
-		  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-		    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
-		     </div> 		    
 		    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		   <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
 		  </div> 		    
@@ -575,7 +587,9 @@ var Userinfo_EventsTable_div = React.createClass({
 			<button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
 		     </div>				  
 			  </AMR_ButtonToolbar>
-			 </form>                 
+			 </form>      
+			  <div id="div_totalNumber" >总人数:0
+			  </div>	
 	    <div id={this.classnewsreply_list_div} >
 		  </div>		   	   		   
 		   <div className="am-list-news-ft">
@@ -593,7 +607,7 @@ var Userinfo_EventsTable_div = React.createClass({
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
 			    return (
-			    		  <AMR_Table   bordered className="am-list-news-bd">		   	
+			    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">		   	
 				          <tr>
 				          	<th>  
 				            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
