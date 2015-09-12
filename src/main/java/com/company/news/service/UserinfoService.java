@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +27,12 @@ import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.entity.UserGroupRelation;
+import com.company.news.entity.UserTeacher;
 import com.company.news.form.UserLoginForm;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
+import com.company.news.jsonform.UserTeacherJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -241,7 +244,7 @@ public class UserinfoService extends AbstractServcice {
 	}
 
 	/**
-	 * 用户注册
+	 * 更新用户基本资料
 	 * 
 	 * @param entityStr
 	 * @param model
@@ -285,6 +288,8 @@ public class UserinfoService extends AbstractServcice {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(user);
 		
+		//更新教师详细资料
+		this.updateUserTeacher(user);
 		if(needUpdateCreateImg)this.nSimpleHibernateDao.relUpdate_updateSessionUserInfoInterface(user);
 		return user;
 	}
@@ -901,6 +906,7 @@ public class UserinfoService extends AbstractServcice {
 				.getObjectById(User4Q.class, uuid);
 
 	}
+	
 	/**
 	 * 获取我关联幼儿园的所有用户的通信录
 	 * @param uuid
@@ -990,6 +996,24 @@ public class UserinfoService extends AbstractServcice {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+	
+	
+	/**
+	 * 更新教师详细资料
+	 * @param form
+	 * @param user
+	 * @return
+	 * @throws Exception 
+	 */
+	private UserTeacher updateUserTeacher(User user) throws Exception{
+		UserTeacher entity=(UserTeacher)this.nSimpleHibernateDao.getObjectByAttribute(UserTeacher.class, "useruuid", user.getUuid());
+		if(entity!=null){
+			entity.setTel(user.getTel());
+			entity.setSex(user.getSex());
+			this.nSimpleHibernateDao.save(entity);
+		}
+		return entity;
 	}
 
 }

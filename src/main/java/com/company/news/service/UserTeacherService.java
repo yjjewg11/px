@@ -1,33 +1,14 @@
 package com.company.news.service;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
-import com.company.news.ProjectProperties;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Group;
-import com.company.news.entity.User;
-import com.company.news.entity.UserGroupRelation;
+import com.company.news.entity.User4Q;
 import com.company.news.entity.UserTeacher;
-import com.company.news.form.UserLoginForm;
-import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.jsonform.UserTeacherJsonform;
-import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
-import com.company.news.vo.UserInfoReturn;
-import com.company.plugin.security.LoginLimit;
-import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -63,14 +44,14 @@ public class UserTeacherService extends AbstractServcice {
 
 		BeanUtils.copyProperties(ut, userTeacherJsonform);
 
-		try {
-			if (StringUtils.isNotBlank(userTeacherJsonform.getBirthdayStr()))
-				ut.setBirthday(TimeUtils.string2Timestamp(null,
-						userTeacherJsonform.getBirthdayStr()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+//		try {
+//			if (StringUtils.isNotBlank(userTeacherJsonform.getBirthday()))
+//				ut.setBirthday(TimeUtils.string2Timestamp(null,
+//						userTeacherJsonform.getBirthday()));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		ut.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(ut);
 
 		return true;
@@ -79,13 +60,22 @@ public class UserTeacherService extends AbstractServcice {
 
 
 	/**
-	 * 查询指定机构的用户列表
+	 *获取用户-老师详细信息.
 	 * 
 	 * @return
 	 */
 	public UserTeacher get(String useruuid) {
-		return (UserTeacher) this.nSimpleHibernateDao.getObjectByAttribute(
+		
+		UserTeacher userTeacher=(UserTeacher) this.nSimpleHibernateDao.getObjectByAttribute(
 				UserTeacher.class, "useruuid",useruuid);
+		if(userTeacher==null){
+			userTeacher=new UserTeacher();
+			User4Q user=(User4Q)this.nSimpleHibernateDao.getHibernateTemplate().get(User4Q.class, useruuid);
+			userTeacher.setUseruuid(user.getUuid());
+			userTeacher.setTel(user.getTel());
+			userTeacher.setSex(user.getSex());
+		}
+		return userTeacher;
 	}
 
 
