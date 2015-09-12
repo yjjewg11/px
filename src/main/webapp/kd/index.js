@@ -242,6 +242,11 @@ function login_affter_init(){
 	                        "title": "注销"
 	                      },
 		                    {
+		                    	 "fn":menu_userteacher_fn,
+		                      "link": "##",
+		                      "title": "修改教师资料"
+		                    },
+		                    {
 		                        "link": "##",
 		                        "fn":menu_hellp_fn,
 		                        "title": "帮助"

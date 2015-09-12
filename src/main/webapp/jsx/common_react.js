@@ -469,7 +469,34 @@ var Userinfo_EventsTable_div = React.createClass({
 	  },
 	  handleChange_selectgroup_sou_uuid:function(){
 		  ajax_uesrinfo_listByGroup(this.props.group_uuid,$('#sutdent_name').val());
-	  },	  
+	  },
+		 handleClick_download: function(xlsname) {
+//			 var uuids=null;
+//			 $($("input[name='table_checkbox']")).each(function(){
+//				
+//				　if(this.checked){
+//					 if(uuids==null)uuids=this.value;
+//					 else
+//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+//				　}
+//				});
+//			  if(!uuids){
+//				  alert("至少选择一个班级");
+//				  return;
+//			  }
+//			  var group_uuid=$("input[name='group_uuid']").val();
+//			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
+			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
+	 },
+	  getDefaultProps: function() {
+			 var data = [
+					{value: 'huaMingCe', label: '幼儿花名册'}
+			          ];
+
+			    return {
+			      down_list: data
+			    };
+			  },
  render: function() {
 	 this.load_more_btn_id="load_more_"+this.props.uuid;
    return (
@@ -492,6 +519,8 @@ var Userinfo_EventsTable_div = React.createClass({
 				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
 					  </div>
+					  
+					  <AMUIReact.Selected  amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list} btnStyle="primary" />
 				  </AMR_ButtonToolbar>
 				  </form>
 				  <div id="div_totalNumber" >总人数:0
@@ -684,7 +713,57 @@ var Userinfo_getRole = React.createClass({
 	  );
 	}
 	}); 
+////修改教师资料
+var Div_userinfo_update = React.createClass({ 
 
+	render: function() {
+		 var o = this.props.data;
+	return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		    <form id="commonform" method="post" className="am-form">
+		      <label htmlFor="name">姓名:</label>
+		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <br/>
+
+		      
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    <label htmlFor="name">姓名:</label>
+		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <br/>
+		       <label htmlFor="">Email:</label>
+		      <PxInput icon="envelope" type="email" name="email" id="email"  value={o.email} onChange={this.handleChange}  placeholder="输入邮箱" />
+		      <br/>
+		      <AMUIReact.FormGroup>
+		      <label>单选：</label>
+		     <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+		    <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		   </AMUIReact.FormGroup>
+		      <br/>
+		      <label htmlFor="office">职位:</label>
+		      <input type="text" name="office" id="office" value={o.office} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
+		      <br/>
+		      <button type="button" onClick={ajax_userinfo_update} className="am-btn am-btn-primary">提交</button>
+		    </form>
+		    <hr/>
+		  
+		  </div>
+		</div>
+		</div>
+	);
+	}
+}); 
 
 
 
@@ -754,8 +833,8 @@ var Div_userinfo_update = React.createClass({
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  
 		    <form id="commonform" method="post" className="am-form">
+
 			<input type="hidden" name="img" id="img" value={o.img} onChange={this.handleChange}/>
 		    <label htmlFor="nickname">头像:</label>
  		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>

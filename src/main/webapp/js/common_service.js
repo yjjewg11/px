@@ -422,6 +422,43 @@ function ajax_userinfo_update() {
 	G_ajax_abs_save(opt);
 	
 }
+//（我）<修改教师资料资料>
+function menu_userteacher_fn(){
+	Queue.push(menu_userinfo_update_fn,"修改教师资料");	
+	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/userteacher/get.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : "",
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					Div_userinfo_update();
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	}
+//（我）<修改资料>保存按钮事件处理
+function ajax_userteacher_update() {
+	var opt={
+			 formName:"commonform",
+			 url:hostUrl + "rest/userteacher/save.json",
+			 cbFN:function(data){
+				 G_msg_pop(data.ResMsg.message);
+				 store_ajax_getUserinfo();
+				 menu_body_fn();
+			 },
+			 };
+	G_ajax_abs_save(opt);
+	
+}
 
 
 function menu_userinfo_updatePasswordBySms_fn(){
