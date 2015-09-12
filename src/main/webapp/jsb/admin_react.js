@@ -1076,14 +1076,21 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_Parent_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$('#sutdent_name').val(),this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		var re_data=ajax_Parent_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$('#sutdent_name').val(),this.pageNo,callback);
+		
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -1109,6 +1116,8 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 		     )				  
 			  )
 			 ), 
+			 React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
+			  ), 	
 	    React.createElement("div", {id: this.classnewsreply_list_div}
 		  ), 		   	   		   
 		   React.createElement("div", {className: "am-list-news-ft"}, 
@@ -1126,13 +1135,11 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
 			    return (
-			    		  React.createElement(AMR_Table, {bordered: true, className: "am-list-news-bd"}, 		   	
+			    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
 				          React.createElement("tr", null, 
 				            React.createElement("th", null, "帐号"), 
 				            React.createElement("th", null, "姓名"), 
 				            React.createElement("th", null, "电话"), 
-				            React.createElement("th", null, "邮箱"), 
-				            React.createElement("th", null, "性别"), 
 				            React.createElement("th", null, "状态"), 
 				            React.createElement("th", null, "登录时间"), 
 				            React.createElement("th", null, "创建时间")
@@ -1143,8 +1150,6 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 			    				   	        React.createElement("td", null, event.loginname), 
 			    				   	        React.createElement("td", null, event.name), 
 			    				   	        React.createElement("td", null, event.tel), 
-			    				   	        React.createElement("td", null, event.email), 
-			    				   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 			    				   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
 			    				   	        React.createElement("td", null, event.login_time), 
 			    				   	        React.createElement("td", null, event.create_time), "                    ") 

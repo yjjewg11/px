@@ -446,8 +446,9 @@ function add_studentsByData(formdata){
  * */
 function btn_ajax_myclass_student_save(){
 	var objectForm = $('#editClassStudentForm').serializeJson();
+	
 	objectForm.birthday=G_Check.formateDate(objectForm.birthday);
-	if(!G_Check.date1(objectForm.birthday)){
+	if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
 		G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
 		$("input[name='birthday']").focus()
 		return;

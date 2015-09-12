@@ -2021,6 +2021,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	render: function() {
 		var o=this.props.formdata;
 		var stutent_num=this.props.stutent_num;
+		if(!this.props.students)this.props.students=[];
 	  return (
 	  React.createElement("div", null, 	 
 		  React.createElement(AMR_Panel, null, 
@@ -2049,7 +2050,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
 			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
-			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", stutent_num)
+			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", this.props.students.length)
 			  )
 		  ), 
 		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})
@@ -4304,6 +4305,7 @@ render: function() {
 	 },	 
   	render: function() {
   		var o=this.props.formdata;
+  		if(!this.props.students)this.props.students=[];
   	  return (
   	  React.createElement("div", null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
@@ -4320,7 +4322,7 @@ render: function() {
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
 			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
-			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", stutent_num)
+			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", this.props.students.length)
   			  )
   		  ), 
   		  React.createElement(AMR_Gallery, {data: this.props.students, sm: 4, md: 6, lg: 8})

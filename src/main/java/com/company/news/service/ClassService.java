@@ -188,7 +188,7 @@ public class ClassService extends AbstractServcice {
 		else
 			return (List<PClass>) this.nSimpleHibernateDao
 					.getHibernateTemplate().find(
-							"from PClass where groupuuid=? ", groupuuid);
+							"from PClass where groupuuid=? order by  convert(name, 'gbk') ", groupuuid);
 	}
 
 	/**

@@ -357,6 +357,7 @@ function G_clear_pureview(){
 
 var G_Check={
 	formateDate:function(d1){
+		if(!d1)return d1;
 		d1=d1.replace(/\//ig,'-'); 
 		d1=d1.replace(/\./ig,'-'); 
         return d1;

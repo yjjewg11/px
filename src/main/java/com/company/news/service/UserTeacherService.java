@@ -2,11 +2,16 @@ package com.company.news.service;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserTeacher;
 import com.company.news.jsonform.UserTeacherJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -92,6 +97,56 @@ public class UserTeacherService extends AbstractServcice {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+
+
+	public PageQueryResult listByPage(String group_uuid, String name,
+			PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		
+		PageQueryResult 	res=null;
+		{
+		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_userteacher {t1} where t0.useruuid={t1}.useruuid";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+		}
+		if(StringUtils.isNotBlank(name)){
+			if(StringUtils.isNumeric(name)){
+				sql+=" and {t1}.tel like '%"+name+"%'";
+			}else{				
+				sql+=" and {t1}.realname like '%"+name+"%'";
+			}
+		}
+		sql+="order by CONVERT( {t1}.realname USING gbk)";
+		SQLQuery  q = s
+				.createSQLQuery(sql).addEntity("t1", UserTeacher.class);
+
+		 	res=	this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
+		
+		
+		}
+		
+		{
+			String sql = "select count(*) from px_usergrouprelation t0,px_userteacher t1 where t0.useruuid=t1.useruuid";
+		if(StringUtils.isNotBlank(group_uuid)){
+			sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+		}
+		if(StringUtils.isNotBlank(name)){
+			if(StringUtils.isNumeric(name)){
+				sql+=" and t1.tel like '%"+name+"%'";
+			}else{				
+				sql+=" and t1.realname like '%"+name+"%'";
+			}
+		}
+			Object count=s
+					.createSQLQuery(sql).uniqueResult();
+			
+			res.setTotalCount(Long.valueOf(count.toString()));
+
+		}
+		return res;
 	}
 
 

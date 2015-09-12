@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.query.PageQueryResult;
@@ -20,8 +21,14 @@ public class ParentService extends AbstractServcice {
 	public PageQueryResult listByPage(String name,PaginationData pData) {
 
 		String hql = "from Parent where 1=1" ;
-//		if (StringUtils.isNotBlank(type))
-//			hql += " and type=" + type;
+		
+		if (StringUtils.isNotBlank(name)){
+			if(StringUtils.isNumeric(name)){
+				hql+=" and tel like '%"+name+"%'";
+			}else{				
+				hql+=" and name like '%"+name+"%'";
+			}
+		}
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 		

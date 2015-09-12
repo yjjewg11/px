@@ -2021,6 +2021,7 @@ var Class_students_show= React.createClass({
 	render: function() {
 		var o=this.props.formdata;
 		var stutent_num=this.props.stutent_num;
+		if(!this.props.students)this.props.students=[];
 	  return (
 	  <div>	 
 		  <AMR_Panel>
@@ -2049,7 +2050,7 @@ var Class_students_show= React.createClass({
 			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
 			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
-			    <AMR_Col sm={3} md={2}>人数:{stutent_num}</AMR_Col>
+			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
 			  </AMR_Grid>
 		  </AMR_Panel>
 		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />
@@ -4304,6 +4305,7 @@ render: function() {
 	 },	 
   	render: function() {
   		var o=this.props.formdata;
+  		if(!this.props.students)this.props.students=[];
   	  return (
   	  <div>
   	  <AMR_ButtonToolbar>
@@ -4320,7 +4322,7 @@ render: function() {
 			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
 			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
-			    <AMR_Col sm={3} md={2}>人数:{stutent_num}</AMR_Col>
+			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
   			  </AMR_Grid>
   		  </AMR_Panel>
   		  <AMR_Gallery data={this.props.students}  sm={4} md={6} lg={8} />

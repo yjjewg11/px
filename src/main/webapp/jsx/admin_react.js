@@ -1076,14 +1076,21 @@ var Parent_EventsTable_div = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_Parent_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$('#sutdent_name').val(),this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+		var that=this;
+		var callback=function(re_data){
+			if(!re_data)return;
+			if(re_data.data.length<re_data.pageSize){
+				$("#"+that.load_more_btn_id).hide();
+			}else{
+				$("#"+that.load_more_btn_id).show();
+			}
+			if(that.pageNo==1){
+				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+			}
+			that.pageNo++;
+		}
+		var re_data=ajax_Parent_listByAllGroup_admin(this.classnewsreply_list_div+this.pageNo,$('#sutdent_name').val(),this.pageNo,callback);
+		
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -1108,7 +1115,9 @@ var Parent_EventsTable_div = React.createClass({
 			<button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
 		     </div>				  
 			  </AMR_ButtonToolbar>
-			 </form>                 
+			 </form>    
+			 <div id="div_totalNumber" >总人数:0
+			  </div>	
 	    <div id={this.classnewsreply_list_div} >
 		  </div>		   	   		   
 		   <div className="am-list-news-ft">
@@ -1126,13 +1135,11 @@ var Parent_EventsTable_div = React.createClass({
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
 			    return (
-			    		  <AMR_Table   bordered className="am-list-news-bd">		   	
+			    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">		   	
 				          <tr>
 				            <th>帐号</th>
 				            <th>姓名</th>
 				            <th>电话</th>
-				            <th>邮箱</th>
-				            <th>性别</th>
 				            <th>状态</th>
 				            <th>登录时间</th>
 				            <th>创建时间</th>
@@ -1143,8 +1150,6 @@ var Parent_EventsTable_div = React.createClass({
 			    				   	        <td>{event.loginname}</td>
 			    				   	        <td>{event.name}</td>
 			    				   	        <td>{event.tel}</td>
-			    				   	        <td>{event.email}</td>
-			    				   	        <td>{event.sex=="0"?"男":"女"}</td>
 			    				   	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
 			    				   	        <td>{event.login_time}</td>
 			    				   	        <td>{event.create_time}</td>			    					        </tr> 
