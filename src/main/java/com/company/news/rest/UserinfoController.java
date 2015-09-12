@@ -345,7 +345,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(50);
+			pData.setPageSize(2);
 			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
 			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
@@ -421,7 +421,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			pData.setPageSize(50);
+			pData.setPageSize(5);
 			String groupuuid = request.getParameter("groupuuid");
 			String name = request.getParameter("name");
 			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
@@ -993,24 +993,7 @@ public class UserinfoController extends AbstractRESTController {
 				}
 			
 			}
-			
-			if(SystemConstants.Group_uuid_wjd.equals(groupuuid)){//云代理只返回自己.
-				
-				//如果是云平台管理方的权限,这返回云平台的用户,用于授权
-				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)){
-					list = userinfoService.listJsCache(SystemConstants.Group_uuid_wjkj,name);
-				}else{
-					User user=this.getUserInfoBySession(request);
-					list=new ArrayList();
-					UserForJsCache d= new UserForJsCache();
-					d.setUuid(user.getUuid());
-					d.setName(user.getName());
-					d.setTel(user.getTel());
-					list.add(d);
-				}
-			}else{
-				list = userinfoService.listJsCache(groupuuid,name);
-			}
+			list = userinfoService.listJsCache(groupuuid,name);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
