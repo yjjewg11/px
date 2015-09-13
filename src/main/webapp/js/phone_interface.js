@@ -11,7 +11,7 @@
  * G_jsCallBack.user_info_update()修改资料；
  * G_jsCallBack.user_info_updatepassword()；修改密码
  * G_jsCallBack.QueuedoBackFN()；修改密码
- * G_jsCallBack.QueueTeacher()；老师通讯录
+ * G_jsCallBack.QueueTeacher();老师通讯录
  * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
  * G_jsCallBack.selectHeadPic_callback_imgUrl(imgUrl,uuid); 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
  * Store.getCurGroup().uuid
@@ -29,10 +29,9 @@ var G_jsCallBack={
 	 * 老师通讯录
 	 * @param base64
 	 */
-		QueueTeacher:function(base64){
-	
-		ajax_Teacher_listByGroup(base64);
-},	
+		QueueTeacher:function(){
+			menu_Teacher_tel_fn();
+		},	
 	/**
 	 * 回退方法
 	 * @param base64

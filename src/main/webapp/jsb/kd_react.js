@@ -1341,19 +1341,14 @@ var Teachingplan_edit_inner = React.createClass({displayName: "Teachingplan_edit
 		            };
 		G_ajax_abs_save(opt);
 	  },
-	  componentDidMount:function(){
-		  var o = this.state;
-		  //onChange={this.handleChange.bind(this) 焦点每次输入后,到最后bug.
-		  if(!o.morning)o.morning=G_tip.teachingplan_morning;
-		  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
-			$("#morning").val(o.morning);
-			$("#afternoon").val(o.afternoon);
-			
-		},
+	  
 render: function() {
 	  var o = this.state;
 	  o.plandate=o.plandate.split(" ")[0];
 	  this.formid="editTeachingplanForm"+o.plandate;
+	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
+	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
+	
 return (
 		
 		 React.createElement("form", {id: this.formid, method: "post", className: "am-form"}, 
@@ -1371,14 +1366,14 @@ return (
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-sm-4"}, "上午"), 
 		  React.createElement("div", {className: "am-u-sm-8"}, 
-		  React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "12", label: "早上:", placeholder: "填写内容"})
+		  React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", defaultValue: o.morning, rows: "12", label: "早上:", placeholder: "填写内容"})
 
 		  )
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-sm-4"}, "下午"), 
 		  React.createElement("div", {className: "am-u-sm-8"}, 
-		  React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "7", label: "下午:", placeholder: "填写内容"})
+		  React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", defaultValue: o.afternoon, rows: "7", label: "下午:", placeholder: "填写内容"})
 		  )
 		), 
 		 React.createElement(AMR_Button, {amStyle: "primary", onClick:  this.ajax_teachingplan_save.bind( this), round: true}, "保存")
