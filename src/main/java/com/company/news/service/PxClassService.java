@@ -96,6 +96,7 @@ public class PxClassService extends AbstractService {
 		PXClass obj = (PXClass) nSimpleHibernateDao.getObject(PXClass.class, pxclassRegJsonform.getUuid());
 		// 班级所在学校切换是,代理云,只能切换到其他学校一次
 		boolean isChangeGroupuuid = false;
+		String oldGroupuuid=obj.getGroupuuid();
 		if (obj.getGroupuuid() != null && !obj.getGroupuuid().equals(pxclassRegJsonform.getGroupuuid())) {
 			// 不允许重其他学校切换到代理平台
 			if (SystemConstants.Group_uuid_wjd.equals(pxclassRegJsonform.getGroupuuid())) {
@@ -120,7 +121,7 @@ public class PxClassService extends AbstractService {
 		// 更新学生学校.
 		if (isChangeGroupuuid) {
 			// 根据班级的学校uuid
-			this.relUpdate_classChangeGroup(obj);
+			this.relUpdate_classChangeGroup(obj,oldGroupuuid);
 		}
 		// 先删除原来数据
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",
@@ -158,11 +159,11 @@ public class PxClassService extends AbstractService {
 	 * @param name
 	 * @param img
 	 */
-	private void relUpdate_classChangeGroup(PXClass obj) {
+	private void relUpdate_classChangeGroup(PXClass obj,String oldGroupuuid) {
 		this.logger.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
 		// 根据班级的学校uuid
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PXStudent set  groupuuid=? where classuuid=?",
-				obj.getGroupuuid(), obj.getUuid());
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PXStudent set  groupuuid=? where groupuuid=?",
+				obj.getGroupuuid(), oldGroupuuid);
 		// 更新班级互动学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate("update ClassNews set  groupuuid=? where classuuid=?", obj.getGroupuuid(), obj.getUuid());
@@ -180,10 +181,10 @@ public class PxClassService extends AbstractService {
 	 */
 	public List<PClass> query(String groupuuid) {
 		if (StringUtils.isBlank(groupuuid))
-			return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find("from PClass", null);
+			return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find("from PXClass", null);
 		else
 			return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from PClass where groupuuid=? order by  convert(name, 'gbk') ", groupuuid);
+					.find("from PXClass where groupuuid=? order by  convert(name, 'gbk') ", groupuuid);
 	}
 
 	/**
@@ -194,7 +195,7 @@ public class PxClassService extends AbstractService {
 	public List queryClassByUseruuid(String useruuid) {
 
 		return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from PClass where uuid in (select classuuid from UserClassRelation where   useruuid=?) order by create_time desc",
+				"from PXClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
 				useruuid);
 	}
 
@@ -210,7 +211,7 @@ public class PxClassService extends AbstractService {
 			return false;
 		}
 
-		PClass obj = (PClass) this.nSimpleHibernateDao.getObject(PClass.class, uuid);
+		PClass obj = (PClass) this.nSimpleHibernateDao.getObject(PXClass.class, uuid);
 		if (obj == null) {
 			responseMessage.setMessage("没有该数据!");
 			return false;
@@ -220,21 +221,21 @@ public class PxClassService extends AbstractService {
 			return false;
 		}
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		Object o = s.createSQLQuery("select count(*) from px_student where classuuid='" + uuid + "'").uniqueResult();
+		Object o = s.createSQLQuery("select count(*) from px_pxstudentpxclasrselation where class_uuid='" + uuid + "'").uniqueResult();
 		if (Long.valueOf(o.toString()) > 0) {
 			responseMessage.setMessage("该班级有学生不能删除.");
 			return false;
 		}
-		this.nSimpleHibernateDao.deleteObjectById(PClass.class, uuid);
+		this.nSimpleHibernateDao.delete(obj);
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",
 				uuid);
 
 		return true;
 	}
 
-	public ClassRegJsonform get(String uuid) throws Exception {
-		ClassRegJsonform c = new ClassRegJsonform();
-		PClass pclass = (PClass) this.nSimpleHibernateDao.getObjectById(PClass.class, uuid);
+	public PxClassRegJsonform get(String uuid) throws Exception {
+		PxClassRegJsonform c = new PxClassRegJsonform();
+		PXClass pclass = (PXClass) this.nSimpleHibernateDao.getObjectById(PXClass.class, uuid);
 		if (pclass == null)
 			return c;
 
@@ -269,58 +270,13 @@ public class PxClassService extends AbstractService {
 		return c;
 	}
 
-	/**
-	 * vo输出转换
-	 * 
-	 * @param list
-	 * @return
-	 */
-	private PClass warpVo(PClass o, String cur_user_uuid) {
-		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
-		try {
 
-			List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from UserClassRelation where classuuid=?", o.getUuid());
-
-			String headTeacher_name = "";
-			String teacher_name = "";
-			for (UserClassRelation u : l) {
-				User user = (User) CommonsCache.get(u.getUseruuid(), User.class);
-				if (user != null) {
-					if (u.getType().intValue() == SystemConstants.class_usertype_head) {
-						headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(), User.class)).getName() + ",");
-					} else {
-						teacher_name += (((User) CommonsCache.get(u.getUseruuid(), User.class)).getName() + ",");
-					}
-				}
-			}
-			o.setHeadTeacher_name(PxStringUtil.StringDecComma(headTeacher_name));
-			o.setTeacher_name(PxStringUtil.StringDecComma(teacher_name));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return o;
-	}
-
-	/**
-	 * vo输出转换
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public List<PClass> warpVoList(List<PClass> list, String cur_user_uuid) {
-		for (PClass o : list) {
-			warpVo(o, cur_user_uuid);
-		}
-		return list;
-	}
 
 	/*
 	 * 
 	 * 判断是否是班级的班主任老师
 	 */
-	public boolean isheadteacher(String user_uuids, String classuuid) {
+	private boolean isheadteacher(String user_uuids, String classuuid) {
 		String hql = "select uuid from UserClassRelation where type=? and classuuid=? and useruuid in("
 				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
 		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, SystemConstants.class_usertype_head,
