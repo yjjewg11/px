@@ -37,8 +37,7 @@ public class FavoritesService extends AbstractServcice {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(FavoritesJsonform favoritesJsonform,
-			ResponseMessage responseMessage) throws Exception {
+	public boolean add(FavoritesJsonform favoritesJsonform, ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(favoritesJsonform.getTitle())) {
 			responseMessage.setMessage("Title不能为空!");
 			return false;
@@ -48,33 +47,33 @@ public class FavoritesService extends AbstractServcice {
 			responseMessage.setMessage("Reluuid不能为空！");
 			return false;
 		}
-		
-		if(isExitFavorites(favoritesJsonform.getUser_uuid(), favoritesJsonform.getReluuid())){
+
+		if (isExitFavorites(favoritesJsonform.getUser_uuid(), favoritesJsonform.getReluuid())) {
 			responseMessage.setMessage("已收藏，不需要再进行收藏");
 			return false;
 		}
 		Favorites favorites = new Favorites();
 		BeanUtils.copyProperties(favorites, favoritesJsonform);
 		favorites.setCreatetime(TimeUtils.getCurrentTimestamp());
-		if(favorites.getType()==null||StringUtils.isBlank(favorites.getReluuid())){
-			
-		}else if(SystemConstants.common_type_gonggao==favorites.getType().intValue()
-				||SystemConstants.common_type_zhaoshengjihua==favorites.getType().intValue()){//公告,招生计划显示学校名和头像
-				Announcements4Q tmp=(Announcements4Q)CommonsCache.get(favorites.getReluuid(), Announcements4Q.class);
-				if(tmp!=null){
-					Group4Q tmp_Group4Q=(Group4Q)CommonsCache.get(tmp.getGroupuuid(), Group4Q.class);
-					if(tmp_Group4Q!=null){
-						favorites.setShow_img(tmp_Group4Q.getImg());
-						favorites.setShow_uuid(tmp.getGroupuuid());
-						favorites.setShow_name(tmp_Group4Q.getBrand_name());
-					}
+		if (favorites.getType() == null || StringUtils.isBlank(favorites.getReluuid())) {
+
+		} else if (SystemConstants.common_type_gonggao == favorites.getType().intValue()
+				|| SystemConstants.common_type_zhaoshengjihua == favorites.getType().intValue()) {// 公告,招生计划显示学校名和头像
+			Announcements4Q tmp = (Announcements4Q) CommonsCache.get(favorites.getReluuid(), Announcements4Q.class);
+			if (tmp != null) {
+				Group4Q tmp_Group4Q = (Group4Q) CommonsCache.get(tmp.getGroupuuid(), Group4Q.class);
+				if (tmp_Group4Q != null) {
+					favorites.setShow_img(tmp_Group4Q.getImg());
+					favorites.setShow_uuid(tmp.getGroupuuid());
+					favorites.setShow_name(tmp_Group4Q.getBrand_name());
 				}
-		}else if(SystemConstants.common_type_jingpinwenzhang==favorites.getType().intValue()){//精品文章显示发布这名和头像
-			Announcements4Q tmp=(Announcements4Q)CommonsCache.get(favorites.getReluuid(), Announcements4Q.class);
+			}
+		} else if (SystemConstants.common_type_jingpinwenzhang == favorites.getType().intValue()) {// 精品文章显示发布这名和头像
+			Announcements4Q tmp = (Announcements4Q) CommonsCache.get(favorites.getReluuid(), Announcements4Q.class);
 			favorites.setShow_uuid(tmp.getCreate_useruuid());
-			if(tmp.getCreate_useruuid()!=null){
-				User tmp_User=(User)CommonsCache.get(tmp.getCreate_useruuid(), User.class);
-				if(tmp_User!=null){//是老师发布
+			if (tmp.getCreate_useruuid() != null) {
+				User tmp_User = (User) CommonsCache.get(tmp.getCreate_useruuid(), User.class);
+				if (tmp_User != null) {// 是老师发布
 					favorites.setShow_img(tmp_User.getImg());
 					favorites.setShow_name(tmp_User.getName());
 				}
@@ -91,17 +90,16 @@ public class FavoritesService extends AbstractServcice {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(String type, String user_uuid,PaginationData pData) {
+	public PageQueryResult query(String type, String user_uuid, PaginationData pData) {
 
-		String hql = "from Favorites where user_uuid='"+user_uuid+"'";
+		String hql = "from Favorites where user_uuid='" + user_uuid + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		pData.setOrderFiled("createtime");
 		pData.setOrderType("desc");
-		
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData);
+
 		this.warpVoList(pageQueryResult.getData(), null);
 		return pageQueryResult;
 	}
@@ -111,25 +109,26 @@ public class FavoritesService extends AbstractServcice {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String user_uuid,String uuid,String reluuid, ResponseMessage responseMessage) {
-		if (StringUtils.isBlank(uuid)&&StringUtils.isBlank(reluuid)) {
+	public boolean delete(String user_uuid, String uuid, String reluuid, ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(uuid) && StringUtils.isBlank(reluuid)) {
 			responseMessage.setMessage("参数:uuid或reluuid不能同时为空！");
 			return false;
-		}	
-		int count=0;
-		if (StringUtils.isNotBlank(uuid))// 多ID
+		}
+		int count = 0;
+		if (StringUtils.isNotBlank(uuid)) // 多ID
 		{
-			count=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Favorites where user_uuid=? and uuid in("+DBUtil.stringsToWhereInValue(uuid)+")", user_uuid);
+			count = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from Favorites where user_uuid=? and uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")",
+					user_uuid);
 
 		} else {
-			count=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Favorites where user_uuid=? and reluuid in("+DBUtil.stringsToWhereInValue(reluuid)+")", user_uuid);
-
+			count = this.nSimpleHibernateDao.getHibernateTemplate()
+					.bulkUpdate("delete from Favorites where user_uuid=? and reluuid in("
+							+ DBUtil.stringsToWhereInValue(reluuid) + ")", user_uuid);
 
 		}
-		this.logger.info("delete Favorites count="+count);
-		if(count==0){
+		this.logger.info("delete Favorites count=" + count);
+		if (count == 0) {
 			return false;
 		}
 		return true;
@@ -142,12 +141,10 @@ public class FavoritesService extends AbstractServcice {
 	 * @throws Exception
 	 */
 	public Favorites get(String uuid) throws Exception {
-		Favorites favorites = (Favorites) this.nSimpleHibernateDao.getObjectById(
-				Favorites.class, uuid);
+		Favorites favorites = (Favorites) this.nSimpleHibernateDao.getObjectById(Favorites.class, uuid);
 
 		return favorites;
 	}
-
 
 	/**
 	 * 是否用户名已被占用
@@ -155,37 +152,63 @@ public class FavoritesService extends AbstractServcice {
 	 * @param loginname
 	 * @return
 	 */
-	private boolean isExitFavorites(String user_uuid,String reluuid) {
-		if(StringUtils.isBlank(reluuid))return false;
-		List list = nSimpleHibernateDao.getHibernateTemplate().find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid,user_uuid);
+	private boolean isExitFavorites(String user_uuid, String reluuid) {
+		if (StringUtils.isBlank(reluuid))
+			return false;
+		List list = nSimpleHibernateDao.getHibernateTemplate()
+				.find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid, user_uuid);
 
-		if (list != null&&list.size()>0)// 已被占用
+		if (list != null && list.size() > 0) // 已被占用
 			return true;
 		else
 			return false;
 
 	}
+
 	/**
 	 * vo输出转换
+	 * 
 	 * @param list
 	 * @return
 	 */
-	private Favorites warpVo(Favorites o,String cur_user_uuid){
+	private Favorites warpVo(Favorites o, String cur_user_uuid) {
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		o.setShow_img(PxStringUtil.imgSmallUrlByUuid(o.getShow_img()));
 		return o;
 	}
+
 	/**
 	 * vo输出转换
+	 * 
 	 * @param list
 	 * @return
 	 */
-	private List<Favorites> warpVoList(List<Favorites> list,String cur_user_uuid){
-		for(Favorites o:list){
-			warpVo(o,cur_user_uuid);
+	private List<Favorites> warpVoList(List<Favorites> list, String cur_user_uuid) {
+		for (Favorites o : list) {
+			warpVo(o, cur_user_uuid);
 		}
 		return list;
 	}
+
+	/**
+	 * 是否可以收藏
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public boolean isFavorites(String user_uuid, String reluuid) {
+		if (StringUtils.isBlank(reluuid) || StringUtils.isBlank(user_uuid))
+			return false;
+		List list = nSimpleHibernateDao.getHibernateTemplate()
+				.find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid, user_uuid);
+
+		if (list != null && list.size() > 0) // 已被占用
+			return false;
+		else
+			return true;
+
+	}
+
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub

@@ -14,6 +14,7 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.ClassNews;
+import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -35,7 +36,8 @@ public class ClassNewsService extends AbstractServcice {
 	private static final String model_name = "互动模块";
 	@Autowired
 	private CountService countService;
-
+	@Autowired
+	private ClassNewsReplyService classNewsReplyService;
 	/**
 	 * 增加班级
 	 * 
@@ -289,7 +291,7 @@ public class ClassNewsService extends AbstractServcice {
 			o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 			//o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
-			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
+			o.setDianzan(classNewsReplyService.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
 			o.setReplyPage(this.getReplyPageList(o.getUuid()));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
 		} catch (Exception e) {
@@ -297,6 +299,34 @@ public class ClassNewsService extends AbstractServcice {
 		}
 		return o;
 	}
+	
+	  /**
+		 * 查询回复列表分页
+		 * 
+		 * @return
+		 */
+		private PageQueryResult getReplyPageList(String newsuuid) {
+			if (StringUtils.isBlank(newsuuid)) {
+				return new PageQueryResult();
+			}
+			
+			PaginationData pData=new PaginationData();
+			pData.setPageSize(5);
+			String hql="from ClassNewsReply where  status ="+SystemConstants.Check_status_fabu +" and  newsuuid='"+newsuuid+"'";
+			pData.setOrderFiled("create_time");
+			pData.setOrderType("desc");
+			
+			PageQueryResult pageQueryResult= this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData);
+			List<ClassNewsReply> list=pageQueryResult.getData();
+			
+			for(ClassNewsReply o:list){
+				this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+				o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
+				o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
+			}
+			return pageQueryResult;
+					
+		}
 	/**
 	 * vo输出转换
 	 * @param list
