@@ -1,11 +1,14 @@
 package com.company.news.service;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.entity.Student;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserTeacher;
 import com.company.news.jsonform.UserTeacherJsonform;
@@ -79,6 +82,7 @@ public class UserTeacherService extends AbstractService {
 			userTeacher.setUseruuid(user.getUuid());
 			userTeacher.setTel(user.getTel());
 			userTeacher.setSex(user.getSex());
+			userTeacher.setRealname(user.getName());
 		}
 		return userTeacher;
 	}
@@ -147,6 +151,24 @@ public class UserTeacherService extends AbstractService {
 
 		}
 		return res;
+	}
+
+
+
+	public List<UserTeacher> queryForOutExcel(String group_uuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+	
+			String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_userteacher {t1} where t0.useruuid={t1}.useruuid";
+			if(StringUtils.isNotBlank(group_uuid)){
+				sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(group_uuid)+")";
+			}
+			sql+="order by CONVERT( {t1}.realname USING gbk)";
+			SQLQuery  q = s
+					.createSQLQuery(sql).addEntity("t1", UserTeacher.class);
+			
+			return q.list();
+
 	}
 
 

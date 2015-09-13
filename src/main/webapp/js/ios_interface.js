@@ -4,15 +4,16 @@
  * 
  * 
  * 调用手机方法
- * 调用选择头像图片.剪切图片为198*198,并可以调整方向
+ * 1.调用选择头像图片.剪切图片为198*198,并可以调整方向
  * G_CallPhoneFN.selectHeadPic();
- * 调用:ios/selectImgPic
- * 回调:G_jsCallBack.selectHeadPic_callback('base64');
- * 调用上传图片,要求不剪切,只压缩在800k以内,并可以调整方向
+ * 调用:ios/selectHeadPic
+ ** G_jsCallBack.selectHeadPic_callback_imgUrl(imgUrl,uuid); 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
+ * 2.调用上传图片,要求不剪切,只压缩在800k以内,并可以调整方向
  * G_CallPhoneFN.selectImgPic();
  * 调用:ios/selectImgPic
- * 回调:G_jsCallBack.selectPic_callback(base64);
- * 判断是否是手机app应用内嵌调用
+ * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
+
+ * 判断是否是手机app应用内嵌调用.(要求ios 启动是,设置标志)
  * G_CallPhoneFN.isPhoneApp();
  * 隐藏应用的弹出的加载层.
  * G_CallPhoneFN.hideLoadingDialog();

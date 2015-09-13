@@ -2,6 +2,7 @@ package com.company.export.util;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +21,11 @@ import jxl.write.biff.RowsExceededException;
 import org.apache.commons.lang.StringUtils;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.CommonsCache;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
+import com.company.news.entity.UserTeacher;
+import com.company.news.rest.util.TimeUtils;
 
 public class ExcelUtil {
 	
@@ -428,6 +432,156 @@ public class ExcelUtil {
 		}
 		return null;
 		
+		
+	}
+	public static void outXLS_TeacherhuaMingce(HttpServletResponse response,
+			String fname, List<UserTeacher> list) throws Exception {
+		response.setHeader("Pragma", "no-cache");
+		fname = java.net.URLEncoder.encode(fname,"UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename="
+				+ new String(fname.getBytes("UTF-8"),"GBK") + ".xls");
+		response.setContentType("application/msexcel");// 定义输出类型
+		response.setCharacterEncoding(SystemConstants.Charset);
+//		createExcel_huaMingce(response.getOutputStream(), list,classlist);
+		OutputStream os=response.getOutputStream();
+		
+		// 创建工作区
+				WritableWorkbook workbook = Workbook.createWorkbook(os);
+				// 创建新的一页，sheet只能在工作簿中使用
+				WritableSheet sheet = workbook.createSheet("教师花名册", 0);
+				// 构造表头
+////				sheet.mergeCells(0, 0, 14, 0);// 添加合并单元格，第一个参数是起始列，第二个参数是起始行，第三个参数是终止列，第四个参数是终止行
+//				WritableFont bold = new WritableFont(WritableFont.ARIAL, 16,
+//						WritableFont.BOLD);// 设置字体种类和黑体显示,字体为Arial,字号大小为10,采用黑体显示
+//				WritableCellFormat titleFormate = new WritableCellFormat(bold);// 生成一个单元格样式控制对象
+//				titleFormate.setAlignment(jxl.format.Alignment.CENTRE);// 单元格中的内容水平方向居中
+//				titleFormate.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);// 单元格的内容垂直方向居中
+
+				sheet.setColumnView(0, 5);
+				sheet.setColumnView(1, 10);
+				sheet.setColumnView(2, 5);
+				sheet.setColumnView(3, 5);
+				sheet.setColumnView(4, 10);
+				sheet.setColumnView(5, 22);
+				sheet.setColumnView(6, 12);
+				sheet.setColumnView(7, 18);
+				sheet.setColumnView(8, 22);
+				sheet.setColumnView(9, 10);
+				WritableCellFormat cf=getWritableFontForBody();
+//				sheet.mergeCells(0, 0, 2, 0);
+				sheet.addCell(new Label(0, 0, "序号", cf));
+				sheet.addCell(new Label(1, 0, "姓名", cf));
+				sheet.addCell(new Label(2, 0, "性别", cf));
+				sheet.addCell(new Label(3, 0, "年龄", cf));
+				sheet.addCell(new Label(4, 0, "学历", cf));
+				sheet.addCell(new Label(5, 0, "毕业院校及专业", cf));
+				sheet.addCell(new Label(6, 0, "所教学科", cf));
+				sheet.addCell(new Label(7, 0, "专业技术职称", cf));
+				sheet.addCell(new Label(8, 0, "教师资格证编号", cf));
+				sheet.addCell(new Label(9, 0, "备注", cf));
+				Integer index=1;
+				 cf=getWritableFontForBody();
+				 
+				 List sexList=CommonsCache.getBaseDataListByTypeuuid("sex");
+				 List xueliList=CommonsCache.getBaseDataListByTypeuuid("xueli");
+				for (UserTeacher s : list) {
+					sheet.addCell(new Label(0, index, (index)+"", cf));
+					sheet.addCell(new Label(1, index, s.getRealname(), cf));
+					sheet.addCell(new Label(2, index, CommonsCache.getBaseDatavalue(s.getSex(), sexList), cf));
+					sheet.addCell(new Label(3, index, TimeUtils.getCurrentAgeByBirthdate(s.getBirthday()), cf));
+					sheet.addCell(new Label(4, index,  CommonsCache.getBaseDatavalue(s.getXueli(), sexList), cf));
+					sheet.addCell(new Label(5, index, s.getGraduated(), cf));
+					sheet.addCell(new Label(6, index, s.getTeaching_subject(), cf));
+					sheet.addCell(new Label(7, index, s.getProfessional_title(), cf));
+					sheet.addCell(new Label(8, index, s.getTeacher_certificate_number(), cf));
+					sheet.addCell(new Label(9, index, "专职", cf));
+					
+					index++;
+				}
+				// 将内容写到输出流中，然后关闭工作区，最后关闭输出流
+				workbook.write();
+				workbook.close();
+				os.close();
+		
+	}
+	public static void outXLS_yiliaobaoxian(HttpServletResponse response,
+			String fname, List<UserTeacher> list) throws Exception {
+		response.setHeader("Pragma", "no-cache");
+		fname = java.net.URLEncoder.encode(fname,"UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename="
+				+ new String(fname.getBytes("UTF-8"),"GBK") + ".xls");
+		response.setContentType("application/msexcel");// 定义输出类型
+		response.setCharacterEncoding(SystemConstants.Charset);
+//		createExcel_huaMingce(response.getOutputStream(), list,classlist);
+		OutputStream os=response.getOutputStream();
+		
+		// 创建工作区
+				WritableWorkbook workbook = Workbook.createWorkbook(os);
+				// 创建新的一页，sheet只能在工作簿中使用
+				WritableSheet sheet = workbook.createSheet("教师基本情况登记表", 0);
+				// 构造表头
+////				sheet.mergeCells(0, 0, 14, 0);// 添加合并单元格，第一个参数是起始列，第二个参数是起始行，第三个参数是终止列，第四个参数是终止行
+//				WritableFont bold = new WritableFont(WritableFont.ARIAL, 16,
+//						WritableFont.BOLD);// 设置字体种类和黑体显示,字体为Arial,字号大小为10,采用黑体显示
+//				WritableCellFormat titleFormate = new WritableCellFormat(bold);// 生成一个单元格样式控制对象
+//				titleFormate.setAlignment(jxl.format.Alignment.CENTRE);// 单元格中的内容水平方向居中
+//				titleFormate.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);// 单元格的内容垂直方向居中
+
+				sheet.setColumnView(0, 5);
+				sheet.setColumnView(1, 10);
+				sheet.setColumnView(2, 5);
+				sheet.setColumnView(3, 5);
+				sheet.setColumnView(4, 10);
+				sheet.setColumnView(5, 12);
+				sheet.setColumnView(6, 12);
+				sheet.setColumnView(7, 12);
+				sheet.setColumnView(8, 12);
+				sheet.setColumnView(9, 20);
+				sheet.setColumnView(10, 20);
+				sheet.setColumnView(11, 20);
+				sheet.setColumnView(12, 20);
+				WritableCellFormat cf=getWritableFontForBody();
+//				sheet.mergeCells(0, 0, 2, 0);
+				sheet.addCell(new Label(0, 0, "序号", cf));
+				sheet.addCell(new Label(1, 0, "姓名", cf));
+				sheet.addCell(new Label(2, 0, "性别", cf));
+				sheet.addCell(new Label(3, 0, "民族", cf));
+				sheet.addCell(new Label(4, 0, "年龄", cf));
+				sheet.addCell(new Label(5, 0, "职务", cf));
+				sheet.addCell(new Label(6, 0, "学历", cf));
+				sheet.addCell(new Label(7, 0, "是否具有学前教育专业学历", cf));
+				sheet.addCell(new Label(8, 0, "是否取得幼教资格证", cf));
+				sheet.addCell(new Label(9, 0, "身份证号码", cf));
+				sheet.addCell(new Label(10, 0, "家庭住址", cf));
+				sheet.addCell(new Label(11, 0, "联系方式（手机）", cf));
+				sheet.addCell(new Label(12, 0, "备注", cf));
+				Integer index=1;
+				 cf=getWritableFontForBody();
+				 
+				 List sexList=CommonsCache.getBaseDataListByTypeuuid("sex");
+				 List xueliList=CommonsCache.getBaseDataListByTypeuuid("xueli");
+				 List yesOrNoList=CommonsCache.getBaseDataListByTypeuuid("yesOrNo");
+				for (UserTeacher s : list) {
+					sheet.addCell(new Label(0, index, (index)+"", cf));
+					sheet.addCell(new Label(1, index, s.getRealname(), cf));
+					sheet.addCell(new Label(2, index, CommonsCache.getBaseDatavalue(s.getSex(), sexList), cf));
+					sheet.addCell(new Label(3, index, s.getNation(), cf));
+					sheet.addCell(new Label(4, index, TimeUtils.getCurrentAgeByBirthdate(s.getBirthday()), cf));
+					sheet.addCell(new Label(5, index, s.getZhiwu(), cf));
+					sheet.addCell(new Label(6, index,  CommonsCache.getBaseDatavalue(s.getXueli(), xueliList), cf));
+					sheet.addCell(new Label(7, index,  CommonsCache.getBaseDatavalue(s.getYouxueqianjiaoyu(), yesOrNoList), cf));
+					sheet.addCell(new Label(8, index,  CommonsCache.getBaseDatavalue(s.getYoujiaozige(), yesOrNoList), cf));
+					sheet.addCell(new Label(9, index, s.getIdcard(), cf));
+					sheet.addCell(new Label(10, index, s.getAddress(), cf));
+					sheet.addCell(new Label(11, index, s.getTel(), cf));
+					sheet.addCell(new Label(12, index, s.getNote(), cf));
+					
+					index++;
+				}
+				// 将内容写到输出流中，然后关闭工作区，最后关闭输出流
+				workbook.write();
+				workbook.close();
+				os.close();
 		
 	}
 }

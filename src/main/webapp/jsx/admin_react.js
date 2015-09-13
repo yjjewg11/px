@@ -580,9 +580,7 @@ var Userinfo_EventsTable_div = React.createClass({
 		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
 		     </div> 
-			   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="danger" onClick={menu_Parent_fn_byRight} round>查询所有家长</AMR_Button>
-			     </div> 
+			   
 			<div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 		   <input type="text" name="sutdent_name" id="sutdent_name" placeholder="教师姓名"/>		  
 		  </div>			  
@@ -652,7 +650,7 @@ var Basedatatype_EventRow = React.createClass({
 		ajax_basedatatype_button_handleClick(m,data);
 	  },
 render: function() {
-var event = this.props.events;
+var event = this.props.event;
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 
