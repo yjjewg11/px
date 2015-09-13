@@ -24,7 +24,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class UserTeacherService extends AbstractServcice {
+public class UserTeacherService extends AbstractService {
 	private static final String model_name = "教师模块";
 	/**
 	 * 用户注册

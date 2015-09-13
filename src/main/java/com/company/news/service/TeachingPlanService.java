@@ -35,7 +35,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class TeachingPlanService extends AbstractServcice {
+public class TeachingPlanService extends AbstractService {
 	private static final String model_name = "教学计划模块";
 	/**
 	 * 增加班级

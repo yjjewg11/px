@@ -26,7 +26,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class RightService extends AbstractServcice {
+public class RightService extends AbstractService {
 	private static final String model_name = "权限模块";
 	/**
 	 * 

@@ -18,7 +18,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class BaseDataTypeService extends AbstractServcice {
+public class BaseDataTypeService extends AbstractService {
 	private static final String model_name = "基础数据类型模块";
 	/**
 	 * 新增权限

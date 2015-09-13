@@ -21,7 +21,7 @@ import com.company.news.entity.User4Q;
  * 
  */
 @Service
-public class TeachingJudgeService extends AbstractServcice {
+public class TeachingJudgeService extends AbstractService {
 	private static final String model_name = "教师评价模块";
 	private static Logger logger = Logger.getLogger(TeachingJudgeService.class);
 

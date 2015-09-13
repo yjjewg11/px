@@ -31,7 +31,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class ClassNewsService extends AbstractServcice {
+public class ClassNewsService extends AbstractService {
 	public static final int USER_type_default = 0;// 0:老师
 	private static final String model_name = "互动模块";
 	@Autowired

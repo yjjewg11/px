@@ -1,35 +1,23 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.DbUtils;
-import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Announcements;
-import com.company.news.entity.ClassNews;
-import com.company.news.entity.ClassNewsReply;
-import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
-import com.company.news.entity.Right;
+import com.company.news.entity.PXClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -39,11 +27,11 @@ import com.company.news.vo.ResponseMessage;
 /**
  * 
  * @author Administrator
- * 
+ * 培训机构班级 px_pxclass
  */
 @Service
-public class ClassService extends AbstractService {
-	private static final String model_name = "幼儿园班级模块";
+public class PxClassService extends AbstractService {
+	private static final String model_name = "培训机构班级模块";
 
 	/**
 	 * 增加班级
@@ -53,41 +41,35 @@ public class ClassService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(ClassRegJsonform classRegJsonform, ResponseMessage responseMessage) throws Exception {
-		if (StringUtils.isBlank(classRegJsonform.getName()) || classRegJsonform.getName().length() > 45) {
-			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+	public boolean add(PxClassRegJsonform pxclassRegJsonform, ResponseMessage responseMessage) throws Exception {
+		if (this.validateRequireAndLengthByRegJsonform(pxclassRegJsonform.getName(), 45, "班级名", responseMessage)
+				||this.validateRequireByRegJsonform(pxclassRegJsonform.getGroupuuid(), "机构名称", responseMessage)) {
 			return false;
 		}
 
-		if (StringUtils.isBlank(classRegJsonform.getGroupuuid())) {
-			responseMessage.setMessage("必须选择一个学校");
-			return false;
-		}
+		PXClass pxClass = new PXClass();
 
-		PClass pClass = new PClass();
-
-		BeanUtils.copyProperties(pClass, classRegJsonform);
-
-		pClass.setCreate_time(TimeUtils.getCurrentTimestamp());
+		BeanUtils.copyProperties(pxClass, pxclassRegJsonform);
+		pxClass.setCreate_time(TimeUtils.getCurrentTimestamp());
 		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().save(pClass);
+		this.nSimpleHibernateDao.getHibernateTemplate().save(pxClass);
 
-		if (StringUtils.isNotBlank(classRegJsonform.getHeadTeacher())) {
-			String[] headTeachers = classRegJsonform.getHeadTeacher().split(",");
+		if (StringUtils.isNotBlank(pxclassRegJsonform.getHeadTeacher())) {
+			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(",");
 			for (String s : headTeachers) {
 				UserClassRelation u = new UserClassRelation();
-				u.setClassuuid(pClass.getUuid());
+				u.setClassuuid(pxClass.getUuid());
 				u.setUseruuid(s);
 				u.setType(SystemConstants.class_usertype_head);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
 
-		if (StringUtils.isNotBlank(classRegJsonform.getTeacher())) {
-			String[] teachers = classRegJsonform.getTeacher().split(",");
+		if (StringUtils.isNotBlank(pxclassRegJsonform.getTeacher())) {
+			String[] teachers = pxclassRegJsonform.getTeacher().split(",");
 			for (String s : teachers) {
 				UserClassRelation u = new UserClassRelation();
-				u.setClassuuid(pClass.getUuid());
+				u.setClassuuid(pxClass.getUuid());
 				u.setUseruuid(s);
 				u.setType(SystemConstants.class_usertype_teacher);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
@@ -105,19 +87,18 @@ public class ClassService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(ClassRegJsonform classRegJsonform, ResponseMessage responseMessage, User user,
+	public boolean update(PxClassRegJsonform pxclassRegJsonform, ResponseMessage responseMessage, User user,
 			HttpServletRequest request) throws Exception {
-		if (StringUtils.isBlank(classRegJsonform.getName()) || classRegJsonform.getName().length() > 45) {
-			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+		if (this.validateRequireAndLengthByRegJsonform(pxclassRegJsonform.getName(), 45, "班级名", responseMessage)) {
 			return false;
 		}
 
-		PClass obj = (PClass) nSimpleHibernateDao.getObject(PClass.class, classRegJsonform.getUuid());
+		PXClass obj = (PXClass) nSimpleHibernateDao.getObject(PXClass.class, pxclassRegJsonform.getUuid());
 		// 班级所在学校切换是,代理云,只能切换到其他学校一次
 		boolean isChangeGroupuuid = false;
-		if (obj.getGroupuuid() != null && !obj.getGroupuuid().equals(classRegJsonform.getGroupuuid())) {
+		if (obj.getGroupuuid() != null && !obj.getGroupuuid().equals(pxclassRegJsonform.getGroupuuid())) {
 			// 不允许重其他学校切换到代理平台
-			if (SystemConstants.Group_uuid_wjd.equals(classRegJsonform.getGroupuuid())) {
+			if (SystemConstants.Group_uuid_wjd.equals(pxclassRegJsonform.getGroupuuid())) {
 				responseMessage.setMessage("不能修改,不能从其他幼儿园切换到云代理幼儿园!");
 				return false;
 			}
@@ -127,14 +108,14 @@ public class ClassService extends AbstractService {
 		// 如果 是更新,只有班主任和管理员可以进行修改,
 		flag = RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m, request);
 		if (!flag) {
-			flag = this.isheadteacher(user.getUuid(), classRegJsonform.getUuid());
+			flag = this.isheadteacher(user.getUuid(), pxclassRegJsonform.getUuid());
 		}
 		if (!flag) {
 			responseMessage.setMessage("不能修改,不是班主任或者管理员");
 			return false;
 		}
-		obj.setName(classRegJsonform.getName());
-		obj.setGroupuuid(classRegJsonform.getGroupuuid());
+		obj.setName(pxclassRegJsonform.getName());
+		obj.setGroupuuid(pxclassRegJsonform.getGroupuuid());
 		this.nSimpleHibernateDao.save(obj);
 		// 更新学生学校.
 		if (isChangeGroupuuid) {
@@ -143,24 +124,24 @@ public class ClassService extends AbstractService {
 		}
 		// 先删除原来数据
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",
-				classRegJsonform.getUuid());
+				pxclassRegJsonform.getUuid());
 
-		if (StringUtils.isNotBlank(classRegJsonform.getHeadTeacher())) {
-			String[] headTeachers = classRegJsonform.getHeadTeacher().split(",");
+		if (StringUtils.isNotBlank(pxclassRegJsonform.getHeadTeacher())) {
+			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(",");
 			for (String s : headTeachers) {
 				UserClassRelation u = new UserClassRelation();
-				u.setClassuuid(classRegJsonform.getUuid());
+				u.setClassuuid(pxclassRegJsonform.getUuid());
 				u.setUseruuid(s);
 				u.setType(SystemConstants.class_usertype_head);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 			}
 		}
 
-		if (StringUtils.isNotBlank(classRegJsonform.getTeacher())) {
-			String[] teachers = classRegJsonform.getTeacher().split(",");
+		if (StringUtils.isNotBlank(pxclassRegJsonform.getTeacher())) {
+			String[] teachers = pxclassRegJsonform.getTeacher().split(",");
 			for (String s : teachers) {
 				UserClassRelation u = new UserClassRelation();
-				u.setClassuuid(classRegJsonform.getUuid());
+				u.setClassuuid(pxclassRegJsonform.getUuid());
 				u.setUseruuid(s);
 				u.setType(SystemConstants.class_usertype_teacher);
 				this.nSimpleHibernateDao.getHibernateTemplate().save(u);
@@ -169,7 +150,7 @@ public class ClassService extends AbstractService {
 
 		return true;
 	}
-
+	
 	/**
 	 * 班级切换学校时
 	 * 
@@ -177,10 +158,10 @@ public class ClassService extends AbstractService {
 	 * @param name
 	 * @param img
 	 */
-	private void relUpdate_classChangeGroup(PClass obj) {
+	private void relUpdate_classChangeGroup(PXClass obj) {
 		this.logger.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
 		// 根据班级的学校uuid
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update Student set  groupuuid=? where classuuid=?",
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PXStudent set  groupuuid=? where classuuid=?",
 				obj.getGroupuuid(), obj.getUuid());
 		// 更新班级互动学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate()

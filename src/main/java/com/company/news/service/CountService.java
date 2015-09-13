@@ -12,7 +12,7 @@ import com.company.news.rest.util.TimeUtils;
  * 
  */
 @Service
-public class CountService extends AbstractServcice {
+public class CountService extends AbstractService {
 	private static final String model_name = "计数模块";
 
 	/**

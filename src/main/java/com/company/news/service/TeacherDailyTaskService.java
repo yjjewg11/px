@@ -26,7 +26,7 @@ import com.company.news.right.RightUtils;
  * 
  */
 @Service
-public class TeacherDailyTaskService extends AbstractServcice {
+public class TeacherDailyTaskService extends AbstractService {
 	private static final String model_name = "每日任务模块";
 	/**
 	 * 自动创建任务

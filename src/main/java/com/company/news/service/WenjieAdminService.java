@@ -22,7 +22,7 @@ import com.company.web.filter.UserInfoFilter;
  * 
  */
 @Service
-public class WenjieAdminService extends AbstractServcice {
+public class WenjieAdminService extends AbstractService {
 	private static final Logger logger = Logger.getLogger(UserInfoFilter.class);
 
 	private static final String model_name = "管理员模块";

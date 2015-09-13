@@ -36,7 +36,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class AnnouncementsService extends AbstractServcice {
+public class AnnouncementsService extends AbstractService {
 	private static final String model_name = "文章模块";
 	@Autowired
 	public PushMsgIservice pushMsgIservice;

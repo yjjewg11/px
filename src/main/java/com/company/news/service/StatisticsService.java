@@ -23,7 +23,7 @@ import com.company.news.vo.statistics.PieSeriesDataVo;
 import com.company.news.vo.statistics.PieStatisticsVo;
 
 @Service
-public class StatisticsService extends AbstractServcice {
+public class StatisticsService extends AbstractService {
 	private static final String model_name = "静态统计模块";
 	
 	private static Logger logger = Logger.getLogger(StatisticsService.class);

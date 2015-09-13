@@ -23,7 +23,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class ClassNewsDianzanService extends AbstractServcice {
+public class ClassNewsDianzanService extends AbstractService {
 	public static final int USER_type_default = 0;// 0:老师
 	private static final String model_name = "点赞模块";
 	@Autowired

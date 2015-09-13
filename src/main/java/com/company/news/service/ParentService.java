@@ -12,7 +12,7 @@ import com.company.news.query.PaginationData;
  * 
  */
 @Service
-public class ParentService extends AbstractServcice {
+public class ParentService extends AbstractService {
 	/**
 	 * 查询指定机构的用户列表
 	 * 

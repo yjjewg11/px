@@ -32,7 +32,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class CookbookService extends AbstractServcice {
+public class CookbookService extends AbstractService {
 	private static final String model_name = "菜谱模块";
 	/**
 	 * 增加班级
