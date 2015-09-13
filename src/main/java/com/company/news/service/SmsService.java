@@ -21,7 +21,7 @@ import com.ucpaas.restDemo.SysConfig;
 import com.ucpaas.restDemo.client.JsonReqClient;
 
 @Service
-public class SmsService extends AbstractServcice {
+public class SmsService extends AbstractService {
 	private static final String model_name = "短信模块";
 	
 	public static final int SMS_TYPE_USER = 1;// 家长类型

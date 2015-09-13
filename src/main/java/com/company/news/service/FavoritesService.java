@@ -26,7 +26,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class FavoritesService extends AbstractServcice {
+public class FavoritesService extends AbstractService {
 	private static final String model_name = "收藏模块";
 
 	/**

@@ -22,7 +22,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class DoorRecordService extends AbstractServcice {
+public class DoorRecordService extends AbstractService {
 	private static final String model_name = "门禁信息同步模块";
 	@Autowired
 	private GroupService groupService;

@@ -22,7 +22,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class RoleService extends AbstractServcice {
+public class RoleService extends AbstractService {
 	private static final String model_name = "角色模块";
 	/**
 	 * 新增角色

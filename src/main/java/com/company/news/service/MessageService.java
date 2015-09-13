@@ -31,7 +31,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class MessageService extends AbstractServcice {
+public class MessageService extends AbstractService {
 	private static final String model_name = "消息模块";
 	public static final int announcements_isread_yes = 1;// 已读
 	public static final int announcements_isread_no = 0;// 未读

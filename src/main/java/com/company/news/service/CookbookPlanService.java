@@ -27,7 +27,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class CookbookPlanService extends AbstractServcice {
+public class CookbookPlanService extends AbstractService {
 	private static final String model_name = "餐饮安排模块";
 	/**
 	 * 增加班级

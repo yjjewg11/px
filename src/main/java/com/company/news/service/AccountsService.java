@@ -20,7 +20,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class AccountsService extends AbstractServcice {
+public class AccountsService extends AbstractService {
 	public static final int accounts_type_general = 0;// 默认公开通知
 	private static final String model_name = "账目模块";
 	/**

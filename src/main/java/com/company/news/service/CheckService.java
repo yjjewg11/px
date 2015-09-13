@@ -17,7 +17,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class CheckService extends AbstractServcice {
+public class CheckService extends AbstractService {
 	private static final String model_name = "check模块";
 
 	/**

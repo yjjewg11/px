@@ -29,7 +29,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class StudentBindService extends AbstractServcice {
+public class StudentBindService extends AbstractService {
 	private static final String model_name = "学生信息绑定模块";
 	/**
 	 * 用户注册

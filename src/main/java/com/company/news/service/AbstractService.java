@@ -21,11 +21,12 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.DianzanListVO;
+import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
-public abstract class AbstractServcice {
+public abstract class AbstractService {
 	public static final String ID_SPLIT_MARK = ",";
-	protected static Logger logger = Logger.getLogger(AbstractServcice.class);
+	protected static Logger logger = Logger.getLogger(AbstractService.class);
 	@Autowired
 	@Qualifier("NSimpleHibernateDao")
 	protected NSimpleHibernateDao nSimpleHibernateDao;
@@ -71,5 +72,37 @@ public abstract class AbstractServcice {
 		}
 
 	}
+	
+	/**
+	 * 
+	 * @param s 检验的字符串
+	 * @param length 允许的最大长度
+	 * @param columnname 错误时提示的字段名
+	 * @return
+	 */
+	protected boolean validateRequireAndLengthByRegJsonform(String s,int length,String columnname,ResponseMessage responseMessage){
+		if (StringUtils.isBlank(s) || s.length() > length) {
+			responseMessage.setMessage(columnname+"不能为空！，且长度不能超过"+length+"位！");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param s 检验的字符串
+	 * @param length 允许的最大长度
+	 * @param columnname 错误时提示的字段名
+	 * @return
+	 */
+	protected boolean validateRequireByRegJsonform(String s,String columnname,ResponseMessage responseMessage){
+		if (StringUtils.isBlank(s)) {
+			responseMessage.setMessage(columnname+"不能为空！");
+			return true;
+		}
+		return false;
+	}
+	
+	
 
 }

@@ -1,25 +1,10 @@
 package com.company.news.aop.operate;
 
-import java.lang.reflect.Method;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import com.company.news.entity.Logs;
-import com.company.news.entity.User;
-import com.company.news.rest.util.TimeUtils;
-import com.company.news.service.AbstractServcice;
-import com.company.web.listener.SessionListener;
 
 //@Aspect
 //@Component

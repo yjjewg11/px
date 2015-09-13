@@ -28,7 +28,7 @@ import com.company.news.vo.ResponseMessage;
  * 
  */
 @Service
-public class GroupService extends AbstractServcice {
+public class GroupService extends AbstractService {
 	private static final String model_name = "组织机构模块";
 	@Autowired
 	private UserinfoService userinfoService;
