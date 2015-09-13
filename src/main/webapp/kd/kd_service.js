@@ -2106,9 +2106,127 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      	});     	
      };
  
+
+ /*
+ * 老师花名册下载
+ * @param formdata
+ * @param operate uesrinfo
+ */
+ function ajax_flowername_download_byRight (groupuuid,classuuid,xlsname){
+ 	var inputs;
+ 	var url = hostUrl + "rest/student/exportStudentExcel.json";
+ 	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
+ 	  inputs+='<input type="hidden" name="classuuid" value="'+classuuid+'" />'; 
+ 	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
+        // request发送请求
+ 	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
+      .appendTo('body').submit().remove();
+ };  
   
-  
-  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+//————————————————————————————老师资料管理<管理模块>—————————————————————————  
+ 
+  /*     
+  *
+  * <老师资料管理>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+  * 基本框 等
+  * */
+ function userTeacher_div_byRight(groupuuid){
+	var list=Store.getGroup();
+ 	React.render(React.createElement(UserTeacher_EventsTable_div,{
+ 		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
+ 		groupuuid:groupuuid
+ 	}), document.getElementById('div_body'));  	
+ };
+ /*
+  * <老师资料管理>（获取用户列表服务器请求）；
+  * */
+     function ajax_userTeacher_listByGroup(list_div,groupuuid,name,pageNo,callback) {    		
+    	 var re_data=null;
+     	  if(!name)name="";
+     	 if(!pageNo)pageNo=1;
+     	//Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
+     	$.AMUI.progress.start();
+     	var url = hostUrl + "rest/userteacher/listByPage.json";
+     	$.ajax({
+     		type : "GET",
+     		url : url,
+     		data :{groupuuid:groupuuid,name:name,pageNo:pageNo},
+     		dataType : "json",
+     		//async: false,
+     		success : function(data) {
+     			$.AMUI.progress.done();
+     			if (data.ResMsg.status == "success") {
+     				React.render(React.createElement(UserTeacher_EventRow, {
+     					events: data.list.data,
+     					students_number:data.list.totalCount,
+     					pageNo:data.list.pageNo,
+     					responsive: true, bordered: true, striped :true,hover:true,striped:true
+     					
+     				}), document.getElementById(list_div));
+     				
+     				if(typeof callback=='function'){
+    					callback(data.list);
+    				}
+     			} else {
+     				alert(data.ResMsg.message);
+     				G_resMsg_filter(data.ResMsg);
+     			}
+     		},
+    		error :G_ajax_error_fn
+     	});
+     	return re_data;
+     };     
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 //————————————————————————————食谱管理<管理模块>—————————————————————————   	  
   /*
    * (食谱管理)服务器请求

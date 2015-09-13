@@ -133,6 +133,11 @@ function login_affter_init(){
                 		    "fn":menu_kd_roleUser_list_fn
                 		   
                 		  },
+                      {
+                          "fn":menu_userTeacher_list_fn_byRight,
+                          "link": "##",
+                          "title": "老师资料管理"
+                        },
                       ]
         };
 
@@ -241,6 +246,11 @@ function login_affter_init(){
 	                        "fn":menu_userinfo_logout_fn,
 	                        "title": "注销"
 	                      },
+		                    {
+		                    	 "fn":menu_userteacher_fn,
+		                      "link": "##",
+		                      "title": "修改教师资料"
+		                    },
 		                    {
 		                        "link": "##",
 		                        "fn":menu_hellp_fn,
@@ -639,10 +649,21 @@ var g_uesrinfo_groupuuid="";
 function menu_userinfo_list_fn_byRight() {
 	Queue.push(function(){menu_userinfo_list_fn_byRight();},"老师管理");
 	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("KD_teacher_m").uuid;
-	console.log("-----g_uesrinfo_groupuuid---监测1--",g_uesrinfo_groupuuid);
 	ajax_uesrinfo_listByGroup_div(g_uesrinfo_groupuuid);
 };
-
+/*
+ * (标头)老师资料管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_userTeacher_list_fn_byRight() {
+	Queue.push(menu_userTeacher_list_fn_byRight,"老师资料管理");
+	var list=Store.getGroup();
+	if(!list||list.length==0){
+		G_msg_pop("没有加入学校,没有数据.");
+		return;
+	}
+	userTeacher_div_byRight(list[0].uuid);
+};
 
 /*
  * (标头)食谱管理功能

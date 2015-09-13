@@ -5091,5 +5091,138 @@ render: function() {
 
 
   
+//——————————————————————————老师资料管理——————————————————————————
   
-  
+  /*
+  * 老师资料管理服务器请求后绘制处理方法；
+  * @</select>下拉多选框;
+  * */
+  var UserTeacher_EventsTable_div = React.createClass({
+  	load_more_btn_id:"load_more_",
+  	pageNo:1,
+  	classnewsreply_list_div:"am-list-news-bd",
+  	componentWillReceiveProps:function(){
+  		this.load_more_data();
+  	},
+  	componentDidMount:function(){
+  		this.load_more_data();
+  	},
+  	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+  	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+  	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+  	load_more_data:function(){
+  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+  		var that=this;
+  		var callback=function(re_data){
+  			if(!re_data)return;
+  			if(re_data.data.length<re_data.pageSize){
+  				$("#"+that.load_more_btn_id).hide();
+  			}else{
+  				$("#"+that.load_more_btn_id).show();
+  			}
+  			if(that.pageNo==1){
+  				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+  			}
+  			that.pageNo++;
+  		}
+  		
+  		ajax_userTeacher_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
+  	},
+  	refresh_data:function(){
+//  		classnewsreply_list_div 清除；
+//        load_more_data	重新绘制DIV；
+  		this.forceUpdate();
+  		this.pageNo=1;
+  		$("#"+this.classnewsreply_list_div).html("");
+  		this.load_more_data();
+  		
+  	},		
+   render: function() {
+  	 this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (
+  		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
+  	   
+  		   <form id="editGroupForm" method="post" className="am-form">		   
+  		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
+  		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />
+  			  </div> 
+  				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+  				  </div>
+  				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
+  					  </div>
+  					  
+  				  </AMR_ButtonToolbar>
+  				  </form>
+  				  <div id="div_totalNumber" >总人数:
+  				  </div>	
+  		    <div id={this.classnewsreply_list_div} >
+  			  </div>		   
+  		   		   
+  			  <div className="am-list-news-ft">
+  			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+  			  </div>		  
+  			</div>		   		   
+     );
+     
+   }
+  } 
+     );
+//1.本科,2.大专,3.中专,4.职高,5.硕士
+
+     var UserTeacher_EventRow = React.createClass({
+  		  render: function() {
+  			    var event = this.props.events;
+  			    var className = event.highlight ? 'am-active' :
+  		  event.disabled ? 'am-disabled' : '';
+  			    return (		  		    
+  			    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap" >
+  				          <tr>
+  				            <th >姓名</th>
+  				            <th>电话</th>
+  				            <th>性别</th>  				            
+  				            <th>身份证号码</th>
+  				            <th>登录时间</th>
+  				            <th>职务</th>
+  				            <th>学历</th>
+  				            <th>学前教育专业学历</th>
+  				            <th>幼教资格证</th>
+  				            <th>毕业院校及专业</th>
+  				            <th>所教学科</th>
+  				            <th>技术职称</th>
+  				            <th>教师资格证编号</th>
+  				            <th> 工作类型</th>
+  				            <th>最后修改时间</th>
+  				            <th>家庭住址</th>
+  				            <th>备注</th>
+  				          </tr> 			 
+  			    			  {this.props.events.map(function(event) {
+  			    			      return (
+  			    					      <tr className={className}>  			    				   	        
+  			    				   	<td>{event.realname}</td>
+  			    				   	<td>{event.tel}</td>
+  			    				    <td>{event.sex=="0"?"男":"女"}</td>
+  			    				<td>{event.idcard}</td>
+  			    				<td>{event.birthday}</td>
+  			    				<td>{event.zhiwu}</td>  			    				
+  			    				<td>{event.xueli}</td>
+  			    				 <td>{event.youxueqianjiaoyu=="0"?"无":"有"}</td>
+  			    				 <td>{event.youjiaozige=="0"?"无":"有"}</td>
+  			    				<td>{event.graduated}</td>
+  			    				<td>{event.teaching_subject}</td>
+  			    				<td>{event.professional_title}</td>
+  			    				<td>{event.teacher_certificate_number}</td>  			    				   	        
+  			    				<td>{event.work_type}</td>
+  			    				<td>{event.update_time}</td>
+  			    				<td>{event.address}</td>
+  			    				<td>{event.note}</td>
+  			    				   	        </tr> 
+  			    			    		  )
+  			    			         })}	
+  			    			  </AMR_Table>		  
+  			    	  );
+  		}	     
+     	});    
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
