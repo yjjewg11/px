@@ -224,48 +224,65 @@ function login_affter_init(){
 	
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
-	var div_menu_data=[
-	                        
-	                {
+	var div_menu_data= {
 	                  "link": "##",
 	                  "title": "我",
 	                  "subCols": 3,
-	                  "subMenu": [
-	                    {
-	                    	 "fn":menu_userinfo_update_fn,
-	                      "link": "##",
-	                      "title": "修改资料"
-	                    },
-	                    {
-	                    	 "fn":menu_userinfo_updatepassword_fn,
-	                        "link": "##",
-	                        "title": "修改密码"
-	                      },
-	                    {
-	                        "link": "##",
-	                        "fn":menu_userinfo_logout_fn,
-	                        "title": "注销"
-	                      },
-		                    {
-		                    	 "fn":menu_userteacher_fn,
-		                      "link": "##",
-		                      "title": "修改教师资料"
-		                    },
-		                    {
-		                        "link": "##",
-		                        "fn":menu_hellp_fn,
-		                        "title": "帮助"
-		                      }
-	                  ]
-	                }
-	                
-	              ];
+	                  "subMenu": []
+	                };
+	
+		
+		t_menu={
+	       	 "fn":menu_userinfo_update_fn,
+	         "link": "##",
+	         "title": "修改资料"
+	       };
+		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+			div_menu_data.subMenu.push(t_menu);
+		}
+		
+		t_menu= {
+       	 "fn":menu_userinfo_updatepassword_fn,
+         "link": "##",
+         "title": "修改密码"
+       };
+		
+		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+			div_menu_data.subMenu.push(t_menu);
+		}
+		t_menu= {
+	          	 "fn":menu_userteacher_fn,
+	            "link": "##",
+	            "title": "修改教师资料"
+	          };
+					
+			div_menu_data.subMenu.push(t_menu);
+		t_menu= {
+                "link": "##",
+                "fn":menu_hellp_fn,
+                "title": "帮助"
+              };
+				
+			div_menu_data.subMenu.push(t_menu);
+			
+	t_menu=  {
+            "link": "##",
+            "fn":menu_userinfo_logout_fn,
+            "title": "注销"
+          };
+			
 	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
-		menu_data=menu_data.concat(div_menu_data);
-	}
+		div_menu_data.subMenu.push(t_menu);
+	}		
+		
+	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+		menu_data.push(div_menu_data);
+	//}
 	
 	$("#div_menu").html("");
+	
 	title_info_init("首页");
+	
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
 }

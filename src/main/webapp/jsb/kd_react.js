@@ -1341,11 +1341,12 @@ var Teachingplan_edit_inner = React.createClass({displayName: "Teachingplan_edit
 		            };
 		G_ajax_abs_save(opt);
 	  },
-	  
+	
 render: function() {
 	  var o = this.state;
 	  o.plandate=o.plandate.split(" ")[0];
 	  this.formid="editTeachingplanForm"+o.plandate;
+	  ////onChange={this.handleChange.bind(this) 焦点每次输入后,到最后bug.
 	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
 	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
 	
@@ -1984,7 +1985,7 @@ render: function() {
         ), 
   		type_div, 
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
@@ -2219,8 +2220,8 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 	      
  	         React.createElement(AMUIReact.FormGroup, null, 
  	        React.createElement("label", null, "单选："), 
- 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
- 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+ 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
  	     ), 		    
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
@@ -2480,7 +2481,7 @@ var Teacher_info_tel = React.createClass({displayName: "Teacher_info_tel",
 	    					        React.createElement("td", null, event.tel, " ", React.createElement("a", {href: "tel:"+event.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话"))), 
 	    					        React.createElement("td", null, event.office), 
 	    					        React.createElement("td", null, event.email), 
-	    					        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+	    					        React.createElement("td", null, Vo.get("sex_"+event.sex)), 
 	    					        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable))
 	    					        ) 
 	    			    		  )
@@ -2778,7 +2779,6 @@ var Group_EventRow_byRight = React.createClass({displayName: "Group_EventRow_byR
   var Group_show_byRight = React.createClass({displayName: "Group_show_byRight", 
   render: function() {
   	  var o = this.props.formdata;
-		console.log("图片地址",o.description)
     return (
   		  React.createElement(AMUIReact.Article, {
   		    title: o.brand_name, 
@@ -4176,7 +4176,7 @@ render: function() {
   React.createElement("div", null, 
   React.createElement(AMR_ButtonToolbar, null, 
   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	    React.createElement(AMUIReact.Selected, {amStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list, btnStyle: "primary"})
+	    React.createElement(AMUIReact.Selected, {className: "am-hide-sm", amStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list, btnStyle: "primary"})
 	  ), 
 	  React.createElement("hr", null), 
 	  
@@ -4388,8 +4388,8 @@ render: function() {
   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-primary"}, "上传头像"), 		      		      
  	         React.createElement(AMUIReact.FormGroup, null, 
  	        React.createElement("label", null, "单选："), 
- 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
- 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+ 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
  	     ), 		    
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
@@ -5136,6 +5136,31 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   		this.load_more_data();
   		
   	},		
+  	 getDefaultProps: function() {
+		 var data = [
+				{value: 'huaMingCe', label: '教师花名册'},
+				{value: 'dengjibiao', label: '教师基本情况登记表'}
+		          ];
+
+		    return {
+		      down_list: data
+		    };
+		  },
+		  handleClick_download: function(xlsname) {
+				 var uuids=null;
+				  var groupuuid=$("input[name='group_uuid']").val();
+				  if(!groupuuid){
+					  G_msg_pop("请选择学校!");
+					  return;
+				  }
+				  var inputs;
+				 	var url = hostUrl + "rest/userteacher/exportExcel.json";
+				 	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
+				 	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
+				        // request发送请求
+				 	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
+				      .appendTo('body').submit().remove();
+		 },
    render: function() {
   	 this.load_more_btn_id="load_more_"+this.props.uuid;
      return (
@@ -5151,9 +5176,11 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   				  ), 
   				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
   					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
+  					  ), 
+  					 React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  					  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", amStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
   					  )
-  					  
-  				  )
+  					  )
   				  ), 
   				  React.createElement("div", {id: "div_totalNumber"}, "总人数:"
   				  ), 	
@@ -5181,9 +5208,10 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   				          React.createElement("tr", null, 
   				            React.createElement("th", null, "姓名"), 
   				            React.createElement("th", null, "电话"), 
-  				            React.createElement("th", null, "性别"), 				            
+  				            React.createElement("th", null, "性别"), 	
+  				          React.createElement("th", null, "民族"), 
   				            React.createElement("th", null, "身份证号码"), 
-  				            React.createElement("th", null, "登录时间"), 
+  				            React.createElement("th", null, "出生年月"), 
   				            React.createElement("th", null, "职务"), 
   				            React.createElement("th", null, "学历"), 
   				            React.createElement("th", null, "学前教育专业学历"), 
@@ -5193,30 +5221,31 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   				            React.createElement("th", null, "技术职称"), 
   				            React.createElement("th", null, "教师资格证编号"), 
   				            React.createElement("th", null, " 工作类型"), 
-  				            React.createElement("th", null, "最后修改时间"), 
   				            React.createElement("th", null, "家庭住址"), 
-  				            React.createElement("th", null, "备注")
+  				            React.createElement("th", null, "备注"), 
+  				            React.createElement("th", null, "最后修改时间")
   				          ), 			 
   			    			  this.props.events.map(function(event) {
   			    			      return (
-  			    					      React.createElement("tr", {className: className}, 			    				   	        
+  			    			 React.createElement("tr", {className: className}, 			    				   	        
   			    				   	React.createElement("td", null, event.realname), 
   			    				   	React.createElement("td", null, event.tel), 
-  			    				    React.createElement("td", null, event.sex=="0"?"男":"女"), 
-  			    				React.createElement("td", null, event.idcard), 
+  			    				    React.createElement("td", null, Vo.get("sex_"+event.sex)), 
+  			    				    React.createElement("td", null, event.nation), 
+  			    				  React.createElement("td", null, event.idcard), 
   			    				React.createElement("td", null, event.birthday), 
   			    				React.createElement("td", null, event.zhiwu), 			    				
-  			    				React.createElement("td", null, event.xueli), 
-  			    				 React.createElement("td", null, event.youxueqianjiaoyu=="0"?"无":"有"), 
-  			    				 React.createElement("td", null, event.youjiaozige=="0"?"无":"有"), 
+  			    				React.createElement("td", null, Vo.get("xueli_"+event.xueli)), 
+  			    				 React.createElement("td", null, Vo.get("youOrWu_"+event.youxueqianjiaoyu)), 
+  			    				 React.createElement("td", null, Vo.get("youOrWu_"+event.youjiaozige)), 
   			    				React.createElement("td", null, event.graduated), 
   			    				React.createElement("td", null, event.teaching_subject), 
   			    				React.createElement("td", null, event.professional_title), 
   			    				React.createElement("td", null, event.teacher_certificate_number), 			    				   	        
   			    				React.createElement("td", null, event.work_type), 
-  			    				React.createElement("td", null, event.update_time), 
   			    				React.createElement("td", null, event.address), 
-  			    				React.createElement("td", null, event.note)
+  			    				React.createElement("td", null, event.note), 
+  			    				React.createElement("td", null, event.update_time)
   			    				   	        ) 
   			    			    		  )
   			    			         })	
@@ -5225,3 +5254,94 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   		}	     
      	});    
  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+ ////修改教师资料 1.本科,2.大专,3.中专,4.职高,5.硕士
+     var Div_userteacher_update = React.createClass({displayName: "Div_userteacher_update", 
+     	 getInitialState: function() {
+     		    return this.props.formdata;
+     		  },
+     	 handleChange: function(event) {
+     		    this.setState($('#commonform').serializeJson());
+     	  },
+     	render: function() {
+     		var o = this.state;
+     	return (
+     		React.createElement("div", null, 
+     		React.createElement("div", {className: "header"}, 
+     		  React.createElement("hr", null)
+     		), 
+     		React.createElement("div", {className: "am-g"}, 
+     		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+     		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+     		      React.createElement("label", {htmlFor: "tel"}, "电话号码:"), 
+     		       React.createElement(PxInput, {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, maxLength: "20", placeholder: "必填，不超过15位"}), 
+     		        React.createElement("br", null), 		      
+     		       React.createElement(AMUIReact.FormGroup, null, 
+     		      React.createElement("label", null, "性别："), 
+     		     React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+     		    React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+     		   ), 		      
+     		  React.createElement("br", null), 
+     		   React.createElement("label", {htmlFor: "name"}, "真实姓名:"), 
+     		    React.createElement(PxInput, {type: "text", name: "realname", id: "realname", maxLength: "20", value: o.realname, onChange: this.handleChange}), 
+     			 React.createElement("br", null), 
+     	        React.createElement("label", {htmlFor: "idcard"}, "身份证号码:"), 
+     	       React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", maxLength: "20", value: o.idcard, onChange: this.handleChange}), 
+     	      React.createElement("br", null), 	    
+     	        React.createElement("label", {htmlFor: "zhiwu"}, "职务:"), 
+     	       React.createElement(PxInput, {type: "text", maxLength: "50", name: "zhiwu", id: "zhiwu", value: o.zhiwu, onChange: this.handleChange, placeholder: "教师"}), 
+     	      React.createElement("br", null), 	   
+     	     React.createElement("label", {htmlFor: "zhiwu"}, "民族:"), 
+   	       React.createElement(PxInput, {type: "text", maxLength: "50", name: "nation", id: "nation", value: o.nation, onChange: this.handleChange, placeholder: "汉"}), 
+   	      React.createElement("br", null), 	   
+     	        React.createElement(AMUIReact.Selected, {id: "xueli1", name: "xueli", onChange: this.handleChange, btnWidth: "200", data: this.props.userteacherlist, btnStyle: "primary", value: o.xueli+""}), 
+     	    	  React.createElement("hr", null), 
+     	    	  
+     			   React.createElement(AMUIReact.FormGroup, null, 		      
+     			    React.createElement("label", null, "是否具有学前教育专业学历："), 
+     				 React.createElement(AMUIReact.Input, {type: "radio", name: "youxueqianjiaoyu", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==0?"checked":""}), 
+     				  React.createElement(AMUIReact.Input, {type: "radio", name: "youxueqianjiaoyu", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==1?"checked":""})
+     				   ), 							      
+     				    React.createElement("br", null), 	
+     				     React.createElement(AMUIReact.FormGroup, null, 	
+                         React.createElement("label", null, "是否取得幼教资格证："), 
+     	               React.createElement(AMUIReact.Input, {type: "radio", name: "youjiaozige", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==0?"checked":""}), 
+     	              React.createElement(AMUIReact.Input, {type: "radio", name: "youjiaozige", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==1?"checked":""})
+     	             ), 							      
+     	            React.createElement("br", null), 		
+          		   React.createElement("label", {htmlFor: "graduated"}, "毕业院校及专业:"), 
+     		      React.createElement(PxInput, {type: "text", name: "graduated", id: "graduated", maxLength: "50", value: o.graduated, onChange: this.handleChange, placeholder: "不超过50个字"}), 
+     		     React.createElement("br", null), 	 
+     			  React.createElement("label", {htmlFor: "teaching_subject"}, "所教学科:"), 
+     			   React.createElement(PxInput, {type: "text", name: "teaching_subject", id: "teaching_subject", maxLength: "50", value: o.teaching_subject, onChange: this.handleChange, placeholder: "主题活动"}), 
+     			    React.createElement("br", null), 								      
+     	           React.createElement("label", {htmlFor: "professional_title"}, "专业技术职称:"), 
+     	          React.createElement(PxInput, {type: "text", name: "professional_title", id: "professional_title", maxLength: "50", value: o.professional_title, onChange: this.handleChange, placeholder: "幼教职称等级"}), 
+     	         React.createElement("br", null), 								      
+     		    React.createElement("label", {htmlFor: "teacher_certificate_number"}, "教师资格证编号:"), 
+     		     React.createElement(PxInput, {type: "text", name: "teacher_certificate_number", id: "teacher_certificate_number", maxLength: "20", value: o.teacher_certificate_number, onChange: this.handleChange, placeholder: ""}), 
+     		      React.createElement("br", null), 	
+     			 React.createElement("label", {htmlFor: "work_type"}, "工作类型:"), 
+     			React.createElement(PxInput, {type: "text", name: "work_type", id: "work_type", value: o.work_type, onChange: this.handleChange, maxLength: "20", placeholder: "专职或兼职"}), 
+     		   React.createElement("br", null), 	
+     		    React.createElement("label", {htmlFor: "address"}, "家庭住址:"), 
+     			 React.createElement(PxInput, {type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, maxLength: "100", placeholder: "不超过100个字"}), 
+     			  React.createElement("br", null), 					            
+              React.createElement(AMUIReact.Input, {type: "textarea", 
+      	      label: "备注", 
+      	      name: "note", 
+      	    	value: o.note, 
+      	    	onChange: this.handleChange, 
+      	      labelClassName: "am-u-sm-2", 
+      	      placeholder: "小学教师证等", 
+      	      wrapperClassName: "am-u-sm-10", 
+      	      amSize: "lg"}), 
+               React.createElement("br", null), 	
+     	      React.createElement("button", {type: "button", onClick: ajax_userteacher_save, className: "am-btn am-btn-primary"}, "提交")
+     		   ), 
+     		  React.createElement("hr", null)
+     		 )
+     		)
+     	   )
+     	);
+     	}
+     }); 

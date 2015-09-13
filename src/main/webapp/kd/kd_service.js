@@ -3034,4 +3034,39 @@ function menu_kd_roleUser_list_fn() {
 	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
 };
 
+//（我）<修改教师资料资料>
+function menu_userteacher_fn(){
+	Queue.push(function(){menu_userteacher_fn();},"修改教师资料");
+	$.AMUI.progress.start();
+//	 var userteacherlist = [
+//		            {value: "0", label: "本科"},
+//		            {value: "1", label: "大专"},
+//		            {value: "2", label: "中专"},
+//		            {value: "3", label: "职高"},
+//		            {value: "4", label: "硕士"}
+//		          ];
+//	 
+	 var userteacherlist=G_selected_dataModelArray_byArray(Vo.getTypeList("xueli"),"key","val");
+	var url = hostUrl + "rest/userteacher/get.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {useruuid:Store.getUserinfo().uuid},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Div_userteacher_update,{
+					formdata:data.data,
+					userteacherlist:userteacherlist
+					}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
   

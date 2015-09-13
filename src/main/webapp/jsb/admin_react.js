@@ -580,9 +580,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
 		     ), 
-			   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "danger", onClick: menu_Parent_fn_byRight, round: true}, "查询所有家长")
-			     ), 
+			   
 			React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		   React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})		  
 		  ), 			  
@@ -652,7 +650,7 @@ var Basedatatype_EventRow = React.createClass({displayName: "Basedatatype_EventR
 		ajax_basedatatype_button_handleClick(m,data);
 	  },
 render: function() {
-var event = this.props.events;
+var event = this.props.event;
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
 

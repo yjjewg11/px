@@ -1985,7 +1985,7 @@ render: function() {
         </div>   
   		{type_div}
   		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		  <br/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
@@ -2220,8 +2220,8 @@ var Class_student_look_info =React.createClass({
   		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>	      
  	         <AMUIReact.FormGroup>
  	        <label>单选：</label>
- 	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
- 	      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+ 	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+ 	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
  	     </AMUIReact.FormGroup>     		    
  	       <label className={one_classDiv}>姓名</label>
    		     <div className={two_classDiv}>
@@ -2481,7 +2481,7 @@ var Teacher_info_tel = React.createClass({
 	    					        <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
 	    					        <td>{event.office}</td>
 	    					        <td>{event.email}</td>
-	    					        <td>{event.sex=="0"?"男":"女"}</td>
+	    					        <td>{Vo.get("sex_"+event.sex)}</td>
 	    					        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
 	    					        </tr> 
 	    			    		  )
@@ -2779,7 +2779,6 @@ var Group_EventRow_byRight = React.createClass({
   var Group_show_byRight = React.createClass({ 
   render: function() {
   	  var o = this.props.formdata;
-		console.log("图片地址",o.description)
     return (
   		  <AMUIReact.Article
   		    title={o.brand_name}
@@ -4177,7 +4176,7 @@ render: function() {
   <div>
   <AMR_ButtonToolbar>
   <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
-	    <AMUIReact.Selected  amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list} btnStyle="primary" />   
+	    <AMUIReact.Selected className="am-hide-sm" amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list} btnStyle="primary" />   
 	  </AMR_ButtonToolbar>
 	  <hr/>
 	  
@@ -4389,8 +4388,8 @@ render: function() {
   		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button> 		      		      
  	         <AMUIReact.FormGroup>
  	        <label>单选：</label>
- 	       <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
- 	      <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+ 	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get( "sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+ 	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get( "sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
  	     </AMUIReact.FormGroup>     		    
  	       <label className={one_classDiv}>姓名</label>
    		     <div className={two_classDiv}>
@@ -5137,6 +5136,31 @@ render: function() {
   		this.load_more_data();
   		
   	},		
+  	 getDefaultProps: function() {
+		 var data = [
+				{value: 'huaMingCe', label: '教师花名册'},
+				{value: 'dengjibiao', label: '教师基本情况登记表'}
+		          ];
+
+		    return {
+		      down_list: data
+		    };
+		  },
+		  handleClick_download: function(xlsname) {
+				 var uuids=null;
+				  var groupuuid=$("input[name='group_uuid']").val();
+				  if(!groupuuid){
+					  G_msg_pop("请选择学校!");
+					  return;
+				  }
+				  var inputs;
+				 	var url = hostUrl + "rest/userteacher/exportExcel.json";
+				 	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
+				 	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
+				        // request发送请求
+				 	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
+				      .appendTo('body').submit().remove();
+		 },
    render: function() {
   	 this.load_more_btn_id="load_more_"+this.props.uuid;
      return (
@@ -5153,8 +5177,10 @@ render: function() {
   				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
   					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
   					  </div>
-  					  
-  				  </AMR_ButtonToolbar>
+  					 <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  					  <AMUIReact.Selected className="am-hide-sm" amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
+  					  </div>
+  					  </AMR_ButtonToolbar>
   				  </form>
   				  <div id="div_totalNumber" >总人数:
   				  </div>	
@@ -5182,9 +5208,10 @@ render: function() {
   				          <tr>
   				            <th >姓名</th>
   				            <th>电话</th>
-  				            <th>性别</th>  				            
+  				            <th>性别</th>  	
+  				          <th>民族</th>  
   				            <th>身份证号码</th>
-  				            <th>登录时间</th>
+  				            <th>出生年月</th>
   				            <th>职务</th>
   				            <th>学历</th>
   				            <th>学前教育专业学历</th>
@@ -5194,30 +5221,31 @@ render: function() {
   				            <th>技术职称</th>
   				            <th>教师资格证编号</th>
   				            <th> 工作类型</th>
-  				            <th>最后修改时间</th>
   				            <th>家庭住址</th>
   				            <th>备注</th>
+  				            <th>最后修改时间</th>
   				          </tr> 			 
   			    			  {this.props.events.map(function(event) {
   			    			      return (
-  			    					      <tr className={className}>  			    				   	        
+  			    			 <tr className={className}>  			    				   	        
   			    				   	<td>{event.realname}</td>
   			    				   	<td>{event.tel}</td>
-  			    				    <td>{event.sex=="0"?"男":"女"}</td>
-  			    				<td>{event.idcard}</td>
+  			    				    <td>{Vo.get("sex_"+event.sex)}</td>
+  			    				    <td>{event.nation}</td>
+  			    				  <td>{event.idcard}</td>
   			    				<td>{event.birthday}</td>
   			    				<td>{event.zhiwu}</td>  			    				
-  			    				<td>{event.xueli}</td>
-  			    				 <td>{event.youxueqianjiaoyu=="0"?"无":"有"}</td>
-  			    				 <td>{event.youjiaozige=="0"?"无":"有"}</td>
+  			    				<td>{Vo.get("xueli_"+event.xueli)}</td>
+  			    				 <td>{Vo.get("youOrWu_"+event.youxueqianjiaoyu)}</td>
+  			    				 <td>{Vo.get("youOrWu_"+event.youjiaozige)}</td>
   			    				<td>{event.graduated}</td>
   			    				<td>{event.teaching_subject}</td>
   			    				<td>{event.professional_title}</td>
   			    				<td>{event.teacher_certificate_number}</td>  			    				   	        
   			    				<td>{event.work_type}</td>
-  			    				<td>{event.update_time}</td>
   			    				<td>{event.address}</td>
   			    				<td>{event.note}</td>
+  			    				<td>{event.update_time}</td>
   			    				   	        </tr> 
   			    			    		  )
   			    			         })}	
@@ -5226,3 +5254,94 @@ render: function() {
   		}	     
      	});    
  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+ ////修改教师资料 1.本科,2.大专,3.中专,4.职高,5.硕士
+     var Div_userteacher_update = React.createClass({ 
+     	 getInitialState: function() {
+     		    return this.props.formdata;
+     		  },
+     	 handleChange: function(event) {
+     		    this.setState($('#commonform').serializeJson());
+     	  },
+     	render: function() {
+     		var o = this.state;
+     	return (
+     		<div>
+     		<div className="header">
+     		  <hr />
+     		</div>
+     		<div className="am-g">
+     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+     		    <form id="commonform" method="post" className="am-form">
+     		      <label htmlFor="tel">电话号码:</label>
+     		       <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange} maxLength="20"  placeholder="必填，不超过15位"/>
+     		        <br/>		      
+     		       <AMUIReact.FormGroup>
+     		      <label>性别：</label>
+     		     <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get( "sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+     		    <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get( "sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+     		   </AMUIReact.FormGroup>		      
+     		  <br/> 
+     		   <label htmlFor="name">真实姓名:</label>
+     		    <PxInput  type="text" name="realname" id="realname" maxLength="20"  value={o.realname} onChange={this.handleChange}/>
+     			 <br/>
+     	        <label htmlFor="idcard">身份证号码:</label>
+     	       <PxInput type="text" name="idcard" id="idcard" maxLength="20"  value={o.idcard} onChange={this.handleChange}/>
+     	      <br/>	    
+     	        <label htmlFor="zhiwu">职务:</label>
+     	       <PxInput  type="text" maxLength="50" name="zhiwu" id="zhiwu"  value={o.zhiwu} onChange={this.handleChange}  placeholder="教师"/>
+     	      <br/>	   
+     	     <label htmlFor="zhiwu">民族:</label>
+   	       <PxInput  type="text" maxLength="50" name="nation" id="nation"  value={o.nation} onChange={this.handleChange}  placeholder="汉"/>
+   	      <br/>	   
+     	        <AMUIReact.Selected id ="xueli1" name= "xueli" onChange={this.handleChange} btnWidth="200" data={this.props.userteacherlist} btnStyle="primary" value={o.xueli+""}  />      
+     	    	  <hr/>
+     	    	  
+     			   <AMUIReact.FormGroup>		      
+     			    <label>是否具有学前教育专业学历：</label>
+     				 <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="0" label={Vo.get( "yesOrNo_0")} inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==0?"checked":""}  />
+     				  <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="1" label={Vo.get( "yesOrNo_1")} inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==1?"checked":""}  />
+     				   </AMUIReact.FormGroup>							      
+     				    <br/>	
+     				     <AMUIReact.FormGroup>	
+                         <label>是否取得幼教资格证：</label>
+     	               <AMUIReact.Input type="radio" name="youjiaozige" value="0" label={Vo.get( "yesOrNo_0")} inline onChange={this.handleChange} checked={o.youjiaozige==0?"checked":""}  />
+     	              <AMUIReact.Input type="radio" name="youjiaozige" value="1" label={Vo.get( "yesOrNo_1")} inline onChange={this.handleChange} checked={o.youjiaozige==1?"checked":""}  />
+     	             </AMUIReact.FormGroup>							      
+     	            <br/>		
+          		   <label htmlFor="graduated">毕业院校及专业:</label>
+     		      <PxInput  type="text" name="graduated" id="graduated" maxLength="50"  value={o.graduated} onChange={this.handleChange}  placeholder="不超过50个字"/>
+     		     <br/>	 
+     			  <label htmlFor="teaching_subject">所教学科:</label>
+     			   <PxInput  type="text" name="teaching_subject" id="teaching_subject"  maxLength="50"  value={o.teaching_subject} onChange={this.handleChange}  placeholder="主题活动"/>
+     			    <br/>								      
+     	           <label htmlFor="professional_title">专业技术职称:</label>
+     	          <PxInput  type="text" name="professional_title" id="professional_title"  maxLength="50"  value={o.professional_title} onChange={this.handleChange}  placeholder="幼教职称等级"/>
+     	         <br/>								      
+     		    <label htmlFor="teacher_certificate_number">教师资格证编号:</label>
+     		     <PxInput  type="text" name="teacher_certificate_number" id="teacher_certificate_number"  maxLength="20"   value={o.teacher_certificate_number} onChange={this.handleChange}  placeholder=""/>
+     		      <br/>	
+     			 <label htmlFor="work_type">工作类型:</label>
+     			<PxInput  type="text" name="work_type" id="work_type"  value={o.work_type} onChange={this.handleChange}  maxLength="20"  placeholder="专职或兼职"/>
+     		   <br/>	
+     		    <label htmlFor="address">家庭住址:</label>
+     			 <PxInput  type="text" name="address" id="address"  value={o.address} onChange={this.handleChange}  maxLength="100"  placeholder="不超过100个字"/>
+     			  <br/>					            
+              <AMUIReact.Input type="textarea"
+      	      label="备注"
+      	      name="note"
+      	    	value={o.note}
+      	    	onChange={this.handleChange}
+      	      labelClassName="am-u-sm-2"
+      	      placeholder="小学教师证等"
+      	      wrapperClassName="am-u-sm-10"
+      	      amSize="lg" />
+               <br/>	
+     	      <button type="button" onClick={ajax_userteacher_save} className="am-btn am-btn-primary">提交</button>
+     		   </form>
+     		  <hr/>
+     		 </div>
+     		</div>
+     	   </div>
+     	);
+     	}
+     }); 
