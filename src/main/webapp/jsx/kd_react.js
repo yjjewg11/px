@@ -4174,9 +4174,13 @@ var Class_EventsTable_byRight = React.createClass({
 render: function() {
   return (
   <div>
-  <AMR_ButtonToolbar>
-  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
-	    <AMUIReact.Selected className="am-hide-sm" amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list} btnStyle="primary" />   
+  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
+	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
+	  </div>
+	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
+	  </div>
 	  </AMR_ButtonToolbar>
 	  <hr/>
 	  
@@ -5168,17 +5172,17 @@ render: function() {
   	   
   		   <form id="editGroupForm" method="post" className="am-form">		   
   		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
-  		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />
   			  </div> 
-  				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  				  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
   				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
   				  </div>
-  				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  				    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
   					  </div>
-  					 <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-  					  <AMUIReact.Selected className="am-hide-sm" amStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
+  					 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  					  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
   					  </div>
   					  </AMR_ButtonToolbar>
   				  </form>

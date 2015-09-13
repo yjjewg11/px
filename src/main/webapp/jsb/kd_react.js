@@ -4174,9 +4174,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 render: function() {
   return (
   React.createElement("div", null, 
-  React.createElement(AMR_ButtonToolbar, null, 
-  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid}), 
-	    React.createElement(AMUIReact.Selected, {className: "am-hide-sm", amStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list, btnStyle: "primary"})
+  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
+	  ), 
+	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
+	  )
 	  ), 
 	  React.createElement("hr", null), 
 	  
@@ -5168,17 +5172,17 @@ React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"},
   	   
   		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
   		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
-  		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
   			  ), 
-  				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  				  React.createElement("div", {className: "am-fl  am-margin-bottom-sm am-margin-left-xs"}, 
   				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
   				  ), 
-  				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+  				    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
   					  ), 
-  					 React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-  					  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", amStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
+  					 React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+  					  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
   					  )
   					  )
   				  ), 
