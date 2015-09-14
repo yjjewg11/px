@@ -13,23 +13,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PClass;
+import com.company.news.entity.PXClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.ClassService;
+import com.company.news.service.PxClassService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/class")
-public class ClassController extends AbstractRESTController {
+@RequestMapping(value = "/pxclass")
+public class PxClassController extends AbstractRESTController {
 
 	@Autowired
-	private ClassService classService;
+	private PxClassService pxClassService;
 
 	/**
-	 * 组织注册
+	 * 培训机构班级注册
 	 * 
 	 * @param model
 	 * @param request
@@ -42,10 +45,10 @@ public class ClassController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
-		ClassRegJsonform classRegJsonform;
+		PxClassRegJsonform pxClassRegJsonform;
 		try {
-			classRegJsonform = (ClassRegJsonform) this.bodyJsonToFormObject(
-					bodyJson, ClassRegJsonform.class);
+			pxClassRegJsonform = (PxClassRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, PxClassRegJsonform.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,21 +56,21 @@ public class ClassController extends AbstractRESTController {
 			return "";
 		}
 		//权限判断
-		if(StringUtils.isBlank(classRegJsonform.getHeadTeacher())){
+		if(StringUtils.isBlank(pxClassRegJsonform.getHeadTeacher())){
 			responseMessage.setMessage("班主任老师必填.");
 			return "";
 		}
 		User user=this.getUserInfoBySession(request);
 		//设置当前用户
-		classRegJsonform.setCreate_user(user.getName());
-		classRegJsonform.setCreate_useruuid(user.getUuid());
+		pxClassRegJsonform.setCreate_user(user.getName());
+		pxClassRegJsonform.setCreate_useruuid(user.getUuid());
 		
 		try {
 			boolean flag;
-			if(StringUtils.isEmpty(classRegJsonform.getUuid()))
-			    flag = classService.add(classRegJsonform, responseMessage);
+			if(StringUtils.isEmpty(pxClassRegJsonform.getUuid()))
+			    flag = pxClassService.add(pxClassRegJsonform, responseMessage);
 			else
-				flag = classService.update(classRegJsonform, responseMessage,user,request);
+				flag = pxClassService.update(pxClassRegJsonform, responseMessage,user,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -104,7 +107,7 @@ public class ClassController extends AbstractRESTController {
 				return "";
 			}
 		}
-		List<PClass> list = classService.query(request.getParameter("groupuuid"));
+		List<PXClass> list = pxClassService.query(request.getParameter("groupuuid"));
 
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -124,7 +127,7 @@ public class ClassController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
-			boolean flag = classService.delete(request.getParameter("uuid"),
+			boolean flag = pxClassService.delete(request.getParameter("uuid"),
 					responseMessage,request);
 			if (!flag)
 				return "";
@@ -153,7 +156,7 @@ public class ClassController extends AbstractRESTController {
 	public String queryClassByUseruuid(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List list = classService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
+		List list = pxClassService.queryClassByUseruuid(this.getUserInfoBySession(request).getUuid());
 
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -165,9 +168,9 @@ public class ClassController extends AbstractRESTController {
 	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PClass c;
+		PXClass c;
 		try {
-			c = classService.get(uuid);
+			c = pxClassService.get(uuid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
