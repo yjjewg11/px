@@ -10,7 +10,7 @@
  <link rel="stylesheet" href="../../css/share.css?090132"/>
 </head>
 
-<body class="div_body">
+<body>
  <h2  class="art_title">${data.title}</h2>
  <div class="art_meta">
   <p> ${group.brand_name}|${group.link_tel}|发布时间:${data.create_time}|浏览${count}次|${group.address}</p>

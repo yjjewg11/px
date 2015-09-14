@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link rel="stylesheet" href="../../css/share.css?090132"/>
 </head>
-<body class="div_body">
+<body >
  
  <h2  class="art_title">${data.title}</h2>
  <div class="art_meta">

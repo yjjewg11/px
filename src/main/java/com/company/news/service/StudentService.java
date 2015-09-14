@@ -447,7 +447,7 @@ public class StudentService extends AbstractService {
 	 */
 	private Student warpVo(Student o) {
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
-		o.setHeadimg(PxStringUtil.imgUrlByUuid(o.getHeadimg()));
+		o.setHeadimg(PxStringUtil.imgSmallUrlByUuid(o.getHeadimg()));
 		return o;
 	}
 

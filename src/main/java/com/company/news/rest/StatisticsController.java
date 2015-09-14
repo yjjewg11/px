@@ -21,6 +21,7 @@ public class StatisticsController extends AbstractRESTController {
 	@Autowired
 	private StatisticsService statisticsService;
 
+	
 	/**
 	 * 
 	 * 我关联学校所有学生查询服务器

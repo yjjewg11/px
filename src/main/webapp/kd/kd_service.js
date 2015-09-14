@@ -417,6 +417,12 @@ function btn_click_class_list(m,groupuuid,classuuid){
 		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"编辑班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},classuuid);
+	}else if(m=="delete"){
+		if(!classuuid&&classuuid.indexOf(",")>-1){
+			alert("只能选择一个班级进行编辑！");
+			return;
+		}
+		ajax_class_delete_byRight(classuuid);
 	}else{
 		
 		if(!groupuuid){
@@ -433,6 +439,37 @@ function btn_click_class_list(m,groupuuid,classuuid){
 	}		
 };
 
+/*
+ *删除空班级.(管理员和普通老师共用)
+ * */  	  
+function ajax_class_delete_byRight(uuid){	  	
+	
+	
+	if(!confirm("确定要删除吗?")){
+		return;
+	}
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/class/delete.json?uuid="+uuid;
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
+				Store.clearChooseClass();
+				Store.setMyClassList(null);
+				Queue.doBackFN();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};  
 /*
 * <我的班级>添加学生详情绘制入口
 * */
@@ -1708,7 +1745,10 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
  *(信息管理)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
  *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
  * */  	  
-function react_ajax_announce_delete_byRight(groupuuid,uuid){	  	
+function react_ajax_announce_delete_byRight(groupuuid,uuid){	 
+	if(!confirm("确定要删除吗?")){
+		return;
+	}
   	$.AMUI.progress.start();
       var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
 	$.ajax({
@@ -2562,7 +2602,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		}
  		Queue.push(function(){btn_click_class_list_byRight(m,groupuuid,uuids);},"编辑班级");
  		react_ajax_class_edit_get_byRight({groupuuid:groupuuid},uuids);
- 	}else if(m=="graduate_class"){
+ 	}else if(m=="delete"){
+		if(!uuids&&uuids.indexOf(",")>-1){
+			alert("只能选择一个班级进行编辑！");
+			return;
+		}
+		ajax_class_delete_byRight(uuids);
+	}else if(m=="graduate_class"){
  		//ajax_class_edit({groupuuid:groupuuid},"edit");
  	}
  		
@@ -2654,8 +2700,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  * */
  function react_ajax_class_students_manage_byRight(uuid){
  	$.AMUI.progress.start();
-     console.log("uuid",uuid); 	
- 	var formdata=null;
+ 	var formdata={};
      var url = hostUrl + "rest/class/"+uuid+".json";
  	$.ajax({
  		type : "GET",
