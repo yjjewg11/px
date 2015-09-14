@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +27,10 @@ import com.company.news.vo.ResponseMessage;
 
 /**
  * 
- * @author Administrator
- * 培训机构班级 px_pxclass
+ * @author Administrator 培训机构班级 px_pxclass
  */
 @Service
-public class PxClassService extends AbstractService {
+public class PxClassService extends AbstractClassService {
 	private static final String model_name = "培训机构班级模块";
 
 	/**
@@ -41,9 +41,13 @@ public class PxClassService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(PxClassRegJsonform pxclassRegJsonform, ResponseMessage responseMessage) throws Exception {
-		if (this.validateRequireAndLengthByRegJsonform(pxclassRegJsonform.getName(), 45, "班级名", responseMessage)
-				||this.validateRequireByRegJsonform(pxclassRegJsonform.getGroupuuid(), "机构名称", responseMessage)) {
+	public boolean add(PxClassRegJsonform pxclassRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if (this.validateRequireAndLengthByRegJsonform(
+				pxclassRegJsonform.getName(), 45, "班级名", responseMessage)
+				|| this.validateRequireByRegJsonform(
+						pxclassRegJsonform.getGroupuuid(), "机构名称",
+						responseMessage)) {
 			return false;
 		}
 
@@ -55,7 +59,8 @@ public class PxClassService extends AbstractService {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxClass);
 
 		if (StringUtils.isNotBlank(pxclassRegJsonform.getHeadTeacher())) {
-			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(",");
+			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(
+					",");
 			for (String s : headTeachers) {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pxClass.getUuid());
@@ -87,19 +92,25 @@ public class PxClassService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(PxClassRegJsonform pxclassRegJsonform, ResponseMessage responseMessage, User user,
+	public boolean update(PxClassRegJsonform pxclassRegJsonform,
+			ResponseMessage responseMessage, User user,
 			HttpServletRequest request) throws Exception {
-		if (this.validateRequireAndLengthByRegJsonform(pxclassRegJsonform.getName(), 45, "班级名", responseMessage)) {
+		if (this.validateRequireAndLengthByRegJsonform(
+				pxclassRegJsonform.getName(), 45, "班级名", responseMessage)) {
 			return false;
 		}
 
-		PXClass obj = (PXClass) nSimpleHibernateDao.getObject(PXClass.class, pxclassRegJsonform.getUuid());
+		PXClass obj = (PXClass) nSimpleHibernateDao.getObject(PXClass.class,
+				pxclassRegJsonform.getUuid());
 		// 班级所在学校切换是,代理云,只能切换到其他学校一次
 		boolean isChangeGroupuuid = false;
-		String oldGroupuuid=obj.getGroupuuid();
-		if (obj.getGroupuuid() != null && !obj.getGroupuuid().equals(pxclassRegJsonform.getGroupuuid())) {
+		String oldGroupuuid = obj.getGroupuuid();
+		if (obj.getGroupuuid() != null
+				&& !obj.getGroupuuid()
+						.equals(pxclassRegJsonform.getGroupuuid())) {
 			// 不允许重其他学校切换到代理平台
-			if (SystemConstants.Group_uuid_wjd.equals(pxclassRegJsonform.getGroupuuid())) {
+			if (SystemConstants.Group_uuid_wjd.equals(pxclassRegJsonform
+					.getGroupuuid())) {
 				responseMessage.setMessage("不能修改,不能从其他幼儿园切换到云代理幼儿园!");
 				return false;
 			}
@@ -107,9 +118,11 @@ public class PxClassService extends AbstractService {
 		}
 		boolean flag = false;
 		// 如果 是更新,只有班主任和管理员可以进行修改,
-		flag = RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m, request);
+		flag = RightUtils.hasRight(obj.getGroupuuid(),
+				RightConstants.KD_class_m, request);
 		if (!flag) {
-			flag = this.isheadteacher(user.getUuid(), pxclassRegJsonform.getUuid());
+			flag = this.isheadteacher(user.getUuid(),
+					pxclassRegJsonform.getUuid());
 		}
 		if (!flag) {
 			responseMessage.setMessage("不能修改,不是班主任或者管理员");
@@ -121,14 +134,16 @@ public class PxClassService extends AbstractService {
 		// 更新学生学校.
 		if (isChangeGroupuuid) {
 			// 根据班级的学校uuid
-			this.relUpdate_classChangeGroup(obj,oldGroupuuid);
+			this.relUpdate_classChangeGroup(obj, oldGroupuuid);
 		}
 		// 先删除原来数据
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from UserClassRelation where classuuid =?",
 				pxclassRegJsonform.getUuid());
 
 		if (StringUtils.isNotBlank(pxclassRegJsonform.getHeadTeacher())) {
-			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(",");
+			String[] headTeachers = pxclassRegJsonform.getHeadTeacher().split(
+					",");
 			for (String s : headTeachers) {
 				UserClassRelation u = new UserClassRelation();
 				u.setClassuuid(pxclassRegJsonform.getUuid());
@@ -151,7 +166,7 @@ public class PxClassService extends AbstractService {
 
 		return true;
 	}
-	
+
 	/**
 	 * 班级切换学校时
 	 * 
@@ -159,18 +174,23 @@ public class PxClassService extends AbstractService {
 	 * @param name
 	 * @param img
 	 */
-	private void relUpdate_classChangeGroup(PXClass obj,String oldGroupuuid) {
-		this.logger.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
+	private void relUpdate_classChangeGroup(PXClass obj, String oldGroupuuid) {
+		this.logger
+				.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
 		// 根据班级的学校uuid
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PXStudent set  groupuuid=? where groupuuid=?",
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update PXStudent set  groupuuid=? where groupuuid=?",
 				obj.getGroupuuid(), oldGroupuuid);
 		// 更新班级互动学校uuid
-		this.nSimpleHibernateDao.getHibernateTemplate()
-				.bulkUpdate("update ClassNews set  groupuuid=? where classuuid=?", obj.getGroupuuid(), obj.getUuid());
-		// 更新家长学生联系吧
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update StudentContactRealation set  groupuuid=? where class_uuid=?", obj.getGroupuuid(),
-				obj.getUuid());
+				"update ClassNews set  groupuuid=? where classuuid=?",
+				obj.getGroupuuid(), obj.getUuid());
+		// 更新家长学生联系吧
+		this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.bulkUpdate(
+						"update StudentContactRealation set  groupuuid=? where class_uuid=?",
+						obj.getGroupuuid(), obj.getUuid());
 
 	}
 
@@ -179,12 +199,19 @@ public class PxClassService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<PClass> query(String groupuuid) {
+	public List<PXClass> query(String groupuuid) {
+		List l = new ArrayList<PXClass>();
 		if (StringUtils.isBlank(groupuuid))
-			return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find("from PXClass", null);
+			l = (List<PXClass>) this.nSimpleHibernateDao.getHibernateTemplate()
+					.find("from PXClass", null);
 		else
-			return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from PXClass where groupuuid=? order by  convert(name, 'gbk') ", groupuuid);
+			l = (List<PXClass>) this.nSimpleHibernateDao
+					.getHibernateTemplate()
+					.find("from PXClass where groupuuid=? order by  convert(name, 'gbk') ",
+							groupuuid);
+
+		warpVoList(l);
+		return l;
 	}
 
 	/**
@@ -194,9 +221,12 @@ public class PxClassService extends AbstractService {
 	 */
 	public List queryClassByUseruuid(String useruuid) {
 
-		return (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find(
-				"from PXClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
-				useruuid);
+		List l = (List<PClass>) this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.find("from PXClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
+						useruuid);
+		warpVoList(l);
+		return l;
 	}
 
 	/**
@@ -204,86 +234,56 @@ public class PxClassService extends AbstractService {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage, HttpServletRequest request) {
+	public boolean delete(String uuid, ResponseMessage responseMessage,
+			HttpServletRequest request) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
 
-		PClass obj = (PClass) this.nSimpleHibernateDao.getObject(PXClass.class, uuid);
+		PXClass obj = (PXClass) this.nSimpleHibernateDao.getObject(PXClass.class,
+				uuid);
 		if (obj == null) {
 			responseMessage.setMessage("没有该数据!");
 			return false;
 		}
-		if (!RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m, request)) {
+		if (!RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m,
+				request)) {
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return false;
 		}
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		Object o = s.createSQLQuery("select count(*) from px_pxstudentpxclasrselation where class_uuid='" + uuid + "'").uniqueResult();
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		Object o = s.createSQLQuery(
+				"select count(*) from px_pxstudentpxclasrselation where class_uuid='"
+						+ uuid + "'").uniqueResult();
 		if (Long.valueOf(o.toString()) > 0) {
 			responseMessage.setMessage("该班级有学生不能删除.");
 			return false;
 		}
 		this.nSimpleHibernateDao.delete(obj);
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from UserClassRelation where classuuid =?",
-				uuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from UserClassRelation where classuuid =?", uuid);
 
 		return true;
 	}
 
-	public PxClassRegJsonform get(String uuid) throws Exception {
-		PxClassRegJsonform c = new PxClassRegJsonform();
-		PXClass pclass = (PXClass) this.nSimpleHibernateDao.getObjectById(PXClass.class, uuid);
-		if (pclass == null)
-			return c;
-
-		BeanUtils.copyProperties(c, pclass);
-
-		List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from UserClassRelation where classuuid=?", uuid);
-
-		String headTeacher = "";
-		String teacher = "";
-		String headTeacher_name = "";
-		String teacher_name = "";
-		for (UserClassRelation u : l) {
-			User user = (User) CommonsCache.get(u.getUseruuid(), User.class);
-			if (user != null) {
-				if (u.getType().intValue() == SystemConstants.class_usertype_head) {
-
-					headTeacher += (u.getUseruuid() + ",");
-					headTeacher_name += (((User) CommonsCache.get(u.getUseruuid(), User.class)).getName() + ",");
-
-				} else {
-					teacher += (u.getUseruuid() + ",");
-					teacher_name += (((User) CommonsCache.get(u.getUseruuid(), User.class)).getName() + ",");
-				}
-			}
-		}
-
-		c.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher));
-		c.setTeacher(PxStringUtil.StringDecComma(teacher));
-		c.setHeadTeacher_name(PxStringUtil.StringDecComma(headTeacher_name));
-		c.setTeacher_name(PxStringUtil.StringDecComma(teacher_name));
-		return c;
-	}
-
-
-
-	/*
+	/**
+	 * 获取班级
 	 * 
-	 * 判断是否是班级的班主任老师
+	 * @param uuid
+	 * @return
+	 * @throws Exception
 	 */
-	private boolean isheadteacher(String user_uuids, String classuuid) {
-		String hql = "select uuid from UserClassRelation where type=? and classuuid=? and useruuid in("
-				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
-		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, SystemConstants.class_usertype_head,
-				classuuid);
-		if (list.size() > 0)
-			return true;
-		return false;
+	public PXClass get(String uuid) throws Exception {
+		PXClass pclass = (PXClass) this.nSimpleHibernateDao.getObjectById(
+				PXClass.class, uuid);
+		if (pclass == null)
+			return null;
+
+		warpVo(pclass);
+		return pclass;
 	}
 
 	@Override
