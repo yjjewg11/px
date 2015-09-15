@@ -7,23 +7,13 @@
   <title>404</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
- 
-  <style>
-    .header {
-      text-align: center;
-    }
-    .header h1 {
-      font-size: 200%;
-      color: #333;
-      margin-top: 30px;
-    }
-    .header p {
-      font-size: 14px;
-    }
-  </style>
+ 	<link rel="stylesheet" href="../../css/share.css?090132"/>
 </head>
 <body>
- 
- <h1>数据不存在!</h1>
+  <div>亲,暂时没有数据!</div>
+<footer class="footer">
+  <p><a href="http://www.wenjienet.com/">问界互动家园</a></p>
+</footer>
+  
 </body>
 </html>

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
+import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
@@ -457,7 +460,8 @@ public class StatisticsService extends AbstractService {
 
 		for (User4Q u : l) {
 			// 登陆时间
-			long time = u.getLogin_time().getTime();
+			long time = 0l;
+			if(u.getLogin_time()!=null)time=u.getLogin_time().getTime();
 			long diff = new Date().getTime() - time;
 			if (diff <= threeDay)
 				lessthreeDay++;
@@ -485,5 +489,7 @@ public class StatisticsService extends AbstractService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
+
+	
 
 }

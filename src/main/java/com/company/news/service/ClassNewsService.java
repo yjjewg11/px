@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.news.vo.statistics.PieSeriesDataVo;
+import com.company.news.vo.statistics.PieStatisticsVo;
 
 /**
  * 
@@ -288,7 +291,7 @@ public class ClassNewsService extends AbstractService {
 			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 			//网页版本需要转为html显示.
 			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
-			o.setImgsList(PxStringUtil.uuids_to_imgurlList(o.getImgs()));
+			o.setImgsList(PxStringUtil.uuids_to_imgMiddleurlList(o.getImgs()));
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 			//o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 			o.setDianzan(classNewsReplyService.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
@@ -377,5 +380,43 @@ public class ClassNewsService extends AbstractService {
 		this.warpVoList(list, user.getUuid());
 		
 		return pageQueryResult;
+	}
+
+	
+	public PieStatisticsVo getMyClassnewStatistics(ResponseMessage responseMessage,
+			User user) {
+		PieStatisticsVo pvo=new PieStatisticsVo();
+		List<PieSeriesDataVo> list=new ArrayList();
+		
+		String str=null;
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		//统计自己发布的互动总数
+		String sql="select count(*) from px_classnews where create_useruuid ='"+user.getUuid()+"'";
+		Object count = s.createSQLQuery(sql).uniqueResult();
+//		 PieSeriesDataVo vo=new PieSeriesDataVo();
+//		 vo.setName("我发布互动");
+//		 vo.setValue(Integer.valueOf(count.toString()));
+//		 list.add(vo);
+		 str="我发布总数:"+count;
+		 
+		//统计自己发布的互动收到点赞的总数
+			sql="select count(*) from px_classnewsdianzan t1,px_classnews t2 where t1.newsuuid=t2.uuid and t2.create_useruuid ='"+user.getUuid()+"'";
+			 count = s.createSQLQuery(sql).uniqueResult();
+//			  vo=new PieSeriesDataVo();
+//				 vo.setName("点赞");
+//				 vo.setValue(Integer.valueOf(count.toString()));
+//				 list.add(vo);
+				 str+=",点赞:"+	count; 
+		//统计自己发布的互动收到回复的总数
+		sql="select count(*) from px_classnewsreply t1,px_classnews t2 where t1.newsuuid=t2.uuid and t2.create_useruuid ='"+user.getUuid()+"'";
+		 count = s.createSQLQuery(sql).uniqueResult();
+//		  vo=new PieSeriesDataVo();
+//		 vo.setName("评论");
+//		 vo.setValue(Integer.valueOf(count.toString()));
+//		 list.add(vo);
+		 str+=",评论:"+	count; 
+		pvo.setSeries_data(list);
+		pvo.setTitle_text(str);
+		return pvo;
 	}
 }

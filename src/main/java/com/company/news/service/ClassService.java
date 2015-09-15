@@ -1,6 +1,5 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,34 +7,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.DbUtils;
-import com.company.news.commons.util.MyUbbUtils;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Announcements;
-import com.company.news.entity.ClassNews;
-import com.company.news.entity.ClassNewsReply;
-import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
-import com.company.news.entity.Right;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.rest.util.DBUtil;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -191,16 +176,14 @@ public class ClassService extends AbstractClassService {
 	 * @return
 	 */
 	public List<PClass> query(String groupuuid) {
-		List l = new ArrayList<PClass>();
-
+		String hql=null;
 		if (StringUtils.isBlank(groupuuid))
-			l = (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from PClass", null);
+			hql="from PClass  order by groupuuid, convert(name, 'gbk') ";
 		else
-			l = (List<PClass>) this.nSimpleHibernateDao
-					.getHibernateTemplate()
-					.find("from PClass where groupuuid=? order by  convert(name, 'gbk') ",
-							groupuuid);
+			hql="from PClass where groupuuid='"+groupuuid+"' order by  convert(name, 'gbk') ";
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);//防止大数据
+		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
 		return l;
@@ -213,10 +196,10 @@ public class ClassService extends AbstractClassService {
 	 * @return
 	 */
 	public List queryClassByUseruuid(String useruuid) {
-		List l = (List<PClass>) this.nSimpleHibernateDao
-				.getHibernateTemplate()
-				.find("from PClass where uuid in (select classuuid from UserClassRelation where   useruuid=?) order by create_time desc",
-						useruuid);
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);//防止大数据
+		String hql="from PClass where uuid in (select classuuid from UserClassRelation where   useruuid='"+useruuid+"') order by convert(name, 'gbk')";
+		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
 		return l;
@@ -241,9 +224,19 @@ public class ClassService extends AbstractClassService {
 			responseMessage.setMessage("没有该数据!");
 			return false;
 		}
-		if (!RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m,
-				request)) {
-			responseMessage.setMessage(RightConstants.Return_msg);
+		
+		boolean flag = false;
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		flag = RightUtils.hasRight(obj.getGroupuuid(),
+				RightConstants.KD_class_m, request);
+		User user = SessionListener.getUserInfoBySession(request);
+		
+		if (!flag) {
+			flag = this.isheadteacher(user.getUuid(),
+					obj.getUuid());
+		}
+		if (!flag) {
+			responseMessage.setMessage("不能删除,不是班主任或者管理员");
 			return false;
 		}
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()

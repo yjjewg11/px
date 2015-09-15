@@ -29,7 +29,7 @@ public class ParentService extends AbstractService {
 				hql+=" and name like '%"+name+"%'";
 			}
 		}
-		pData.setOrderFiled("create_time");
+		pData.setOrderFiled("login_time");
 		pData.setOrderType("desc");
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
