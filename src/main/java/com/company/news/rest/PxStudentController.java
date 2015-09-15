@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.export.util.ExcelUtil;
 import com.company.news.entity.PClass;
+import com.company.news.entity.PXStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.User;
+import com.company.news.jsonform.PxStudentJsonform;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -25,14 +27,15 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.PxClassService;
+import com.company.news.service.PxStudentService;
 import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/student")
-public class StudentController extends AbstractRESTController {
+@RequestMapping(value = "/pxstudent")
+public class PxStudentController extends AbstractRESTController {
 	@Autowired
-	private StudentService studentService;
+	private PxStudentService pxStudentService;
 	@Autowired
 	private PxClassService pxClassService;
 	
@@ -44,7 +47,7 @@ public class StudentController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/changeClass", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/changeClass", method = RequestMethod.POST)
 	public String changeClass(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
@@ -52,7 +55,7 @@ public class StudentController extends AbstractRESTController {
 		String studentuuid=request.getParameter("studentuuid");
 		boolean f=false;
 		try {
-			f = studentService.updateChangeClass(studentuuid,classuuid,responseMessage,request);
+			f = pxStudentService.updateChangeClass(studentuuid,classuuid,responseMessage,request);
 			if(!f)return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -65,7 +68,7 @@ public class StudentController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		responseMessage.setMessage("学生切换班级成功");
 		return "";
-	}
+	}*/
 	
 	/**
 	 * 添加用户
@@ -81,10 +84,10 @@ public class StudentController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
-		StudentJsonform studentJsonform;
+		PxStudentJsonform pxStudentJsonform;
 		try {
-			studentJsonform = (StudentJsonform) this.bodyJsonToFormObject(
-					bodyJson, StudentJsonform.class);
+			pxStudentJsonform = (PxStudentJsonform) this.bodyJsonToFormObject(
+					bodyJson, PxStudentJsonform.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,10 +97,10 @@ public class StudentController extends AbstractRESTController {
 
 		try {
 			boolean flag;
-			if (StringUtils.isBlank(studentJsonform.getUuid()))
-				flag = studentService.add(studentJsonform, responseMessage);
+			if (StringUtils.isBlank(pxStudentJsonform.getUuid()))
+				flag = pxStudentService.add(pxStudentJsonform, responseMessage);
 			else
-				flag = studentService.update(studentJsonform, responseMessage);
+				flag = pxStudentService.update(pxStudentJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -126,7 +129,7 @@ public class StudentController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<Student> list = studentService.query(
+		List<PXStudent> list = pxStudentService.query(
 				request.getParameter("classuuid"),
 				request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
@@ -165,7 +168,7 @@ public class StudentController extends AbstractRESTController {
 		}
 		
 		
-		PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,name,pData);
+		PageQueryResult pageQueryResult = pxStudentService.queryByPage(groupuuid,classuuid,name,pData);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list,
 				pageQueryResult);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -177,9 +180,9 @@ public class StudentController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		Student s;
+		PXStudent s;
 		try {
-			s = studentService.get(uuid);
+			s = pxStudentService.get(uuid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -225,10 +228,10 @@ public class StudentController extends AbstractRESTController {
 			responseMessage.setMessage("幼儿园必选/The kindergarten required");
 			return "";
 		}
-		List<Student> list = studentService.queryForOutExcel(
+		List<Student> list = pxStudentService.queryForOutExcel(
 				classuuid,
 				groupuuid);
-		List<PClass> listClass = studentService.queryClassNameForOutExcel(classuuid);
+		List<PClass> listClass = pxStudentService.queryClassNameForOutExcel(classuuid);
 		if("huaMingCe".equals(xlsname)){
 			ExcelUtil.outXLS_huaMingce(response, "幼儿园花名册",list,listClass);
 			return null;
@@ -277,7 +280,7 @@ public class StudentController extends AbstractRESTController {
 		
 			
 			
-			List list = studentService.parentContactByMyStudent(listClassuuids,student_name);
+			List list = pxStudentService.parentContactByMyStudent(listClassuuids,student_name);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
