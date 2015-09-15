@@ -144,6 +144,48 @@ var G_CallPhoneFN={
 			return false;
 		},
 		/**
+		 * 判断是否是手机app应用内嵌调用
+		 * @returns {Boolean}
+		 */
+		isAndorid:function(){
+			if(window.JavaScriptCall){
+				return true;
+			}
+			return false;
+		},
+		/**
+		 * 判断是否是手机app应用内嵌调用
+		 * @returns {Boolean}
+		 */
+		isIos:function(){
+			if(G_CallIosFN.isIos){
+				return true;
+			}
+			return false;
+		},
+		
+		/**
+          *网页内容分享回调接口方法  
+          *setShareContent(title,content,pathurl,httpurl) 
+          *参数说明: titll为标题  content为分享内容，pathurl为分享图片地址，httpurl为链接地址
+          *tml有问题暂时用title代替后续优化 
+		 */
+		setShareContent:function(title,content,pathurl,httpurl){
+			try{
+				if(window.JavaScriptCall){
+					if(!pathurl)pathurl=G_logo;
+					JavaScriptCall.setShareContent(title,title,pathurl,httpurl) ;					
+					return true;
+				}
+			}catch(e){
+				  console.log('Exception:JavaScriptCall.finishProject()=', e.message);
+			}
+			console.log('window.finishProject==false');
+			return false;
+		},
+		
+		
+		/**
 		 * 回退方法finishProject()
 
 		 * @returns {Boolean}
