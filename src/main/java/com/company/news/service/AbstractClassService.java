@@ -84,7 +84,20 @@ public class AbstractClassService extends AbstractService {
 			return true;
 		return false;
 	}
-	
+	/**
+	 * 获取老师相关班级的uuid
+	 * 
+	 * @param classNewsDianzanJsonform
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public List getTeacherRelClassUuids(String user_uuid) throws Exception {
+		this.logger.info("user_uuid=" + user_uuid);
+		List list = this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("select classuuid from UserClassRelation where useruuid=?", user_uuid);
+		return list;
+	}
 	
 	@Override
 	public Class getEntityClass() {
