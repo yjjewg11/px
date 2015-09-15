@@ -27,6 +27,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.ClassNewsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.ResponseMessage;
+import com.company.news.vo.statistics.PieStatisticsVo;
 
 @Controller
 @RequestMapping(value = "/classnews")
@@ -289,6 +290,36 @@ public class ClassNewsController extends AbstractRESTController {
 			return "";
 		}
 		model.addAttribute(RestConstants.Return_G_entity, c);
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 统计我的发布的班级互动数量,收到点赞,和回复的总数.
+	 * @param type
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getMyClassnewStatistics", method = RequestMethod.GET)
+	public String getMyClassnewStatistics( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+			try {
+				User user = this.getUserInfoBySession(request);
+
+				PieStatisticsVo vo = classNewsService.getMyClassnewStatistics(
+					responseMessage, user);
+				model.addAttribute(RestConstants.Return_G_entity, vo.getTitle_text());
+			} catch (Exception e) {
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("服务器错误:"+e.getMessage());
+				return "";
+			}
 		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";

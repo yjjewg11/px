@@ -1,6 +1,6 @@
 var G_tip={
 		//添加学生帮助
-		Stutent_edit:"添加学生帮助",
+		Stutent_edit:"亲,可以找学校管理员将学生换到其他班级,离校的学生换到临时班级.",
 		//每日任务
 		teacherDailyTask:"如有红色未完成的任务，请点击去完成每日任务吧",
 		//首页-班级互动
@@ -17,6 +17,7 @@ var G_tip={
 		//课程表编辑模版.G_tip.teachingplan_morning
 		teachingplan_morning:"[学习活动]\n活动：\n目标：\n1、\n2、\n[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
 		teachingplan_afternoon:"[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
+		editClassStudent_right:"亲,可以将学生换到其他班级,离校的学生换到临时班级.",
 		help:"帮助"
 };
 

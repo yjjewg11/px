@@ -50,9 +50,9 @@ var G_help_popo = React.createClass({displayName: "G_help_popo",
 	 		    trigger: "click", // 设置触发方式
 	 		    amStyle: "warning", // 设置 popover 样式
 	 		    amSize: "sm", // 设置 popover 大小
-	 		    placement: "top", 
+	 		    placement: "right", 
 	 		    popover: React.createElement(AMUIReact.Popover, null, msg)}, 
-	 		    React.createElement(AMUIReact.Button, {amStyle: "primary"}, title)
+	 		    React.createElement(AMUIReact.Button, {amStyle: "warning"}, title)
 	 		  )
 	    );
 	  }
