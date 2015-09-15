@@ -513,8 +513,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)G_def_headImgPath;
-		  
+		  if(!o.create_img)G_def_headImgPath;		  
 	  return (
 			  React.createElement("div", null, 
 			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
@@ -529,7 +528,8 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			      )
 			    ), 
 			    React.createElement("div", {className: "am-comment-bd"}, 
-			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
+			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}
+			    ), 
 			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
 			    ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
@@ -2124,7 +2124,7 @@ var AMR_Col=AMUIReact.Col;
 /*我的班级中查看学生信息
  * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
  * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
- * 
+ * <Common_mg_big_fn  imgsList={o.imgsList} />
  * */
 var Class_student_look_info =React.createClass({displayName: "Class_student_look_info",
 	 getInitialState: function() {
@@ -2133,23 +2133,27 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	 handleChange: function(event) {
 		    this.setState($('#editClassStudentForm').serializeJson());
 	  },
+//	  componentDidMount:function(){
+//		  var imgGuid=this.state.headimg;
+//		 if(imgGuid){
+//			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+//			 G_img_down404("#img_head_image");
+//		 }
+//
+//	  },
 	  componentDidMount:function(){
-		  var imgGuid=this.state.headimg;
-		 if(imgGuid){
-			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-			 G_img_down404("#img_head_image");
-		 }
-
-	  },
+		  $('.am-gallery').pureview();
+		},
 		render: function() {
 	     var o =this.state;
+	     var imgGuid=o.headimg;
+	     var imglist=[imgGuid];
 		 return (
 		 		React.createElement("div", null, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
-  		      React.createElement("button", {type: "button", onClick: ajax_myclass_students_edit.bind(this,o.uuid), className: "am-btn am-btn-primary"}, "修改学生"), 
-			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
-				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
 				  React.createElement("br", null), 
+	  		      React.createElement("button", {type: "button", onClick: ajax_myclass_students_edit.bind(this,o.uuid), className: "am-btn am-btn-primary"}, "修改学生"), 
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
