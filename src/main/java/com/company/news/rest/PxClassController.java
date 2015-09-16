@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PClass;
-import com.company.news.entity.PXClass;
+import com.company.news.entity.PxClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.PxClassRegJsonform;
@@ -107,7 +107,7 @@ public class PxClassController extends AbstractRESTController {
 				return "";
 			}
 		}
-		List<PXClass> list = pxClassService.query(request.getParameter("groupuuid"));
+		List<PxClass> list = pxClassService.query(request.getParameter("groupuuid"));
 
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -168,7 +168,7 @@ public class PxClassController extends AbstractRESTController {
 	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PXClass c;
+		PxClass c;
 		try {
 			c = pxClassService.get(uuid);
 		} catch (Exception e) {

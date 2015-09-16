@@ -332,8 +332,16 @@ public class MessageController extends AbstractRESTController {
 //			responseMessage.setMessage("参数必填:group_uuid");
 //			return "";
 //		}
+			
+			String groupuuid=RightUtils.getRightGroups(RightConstants.KD_Leader_Msg_m, request);
+			if(StringUtils.isBlank(groupuuid)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return "";
+			}
+			
+		
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			List list= messageService.queryCountLeaderMsgByParents(this.getMyGroupUuidsBySession(request),pData);
+			List list= messageService.queryCountLeaderMsgByParents(groupuuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
