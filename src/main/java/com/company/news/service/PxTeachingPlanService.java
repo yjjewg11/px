@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -11,12 +13,14 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
+import com.company.news.entity.PxClass;
 import com.company.news.entity.PxTeachingplan;
 import com.company.news.entity.Right;
 import com.company.news.entity.Teachingplan;
@@ -26,9 +30,12 @@ import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
 import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -47,18 +54,18 @@ public class PxTeachingPlanService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public PxTeachingplan add(PxTeachingPlanJsonform pxTeachingPlanJsonform,
+	public boolean add(PxTeachingPlanJsonform pxTeachingPlanJsonform,
 			ResponseMessage responseMessage) throws Exception {
 		if(this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPlandateStr(), "教学时间", responseMessage)
 				||this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getClassuuid(), "班级", responseMessage)||
 				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
-		return null;
+		return false;
 		
 		Date plandate = TimeUtils.string2Timestamp(null,pxTeachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
 			responseMessage.setMessage("Plandate格式不正确");
-			return null;
+			return false;
 		}
 
 		PxTeachingplan pxTeachingplan = new PxTeachingplan();
@@ -66,10 +73,42 @@ public class PxTeachingPlanService extends AbstractService {
 		
 		pxTeachingplan.setPlandate(plandate);
 		// 有事务管理，统一在Controller调用时处理异常
-		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(
-				pxTeachingplan);
+		this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
 
-		return pxTeachingplan;
+		return true;
+	}
+	
+	
+	/**
+	 * 更新班级
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean update(PxTeachingPlanJsonform pxTeachingPlanJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if(this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPlandateStr(), "教学时间", responseMessage)||
+				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
+		return false;
+		
+		Date plandate = TimeUtils.string2Timestamp(null,pxTeachingPlanJsonform.getPlandateStr());
+
+		if (plandate == null) {
+			responseMessage.setMessage("Plandate格式不正确");
+			return false;
+		}
+		
+		PxTeachingplan pxTeachingplan=(PxTeachingplan) this.nSimpleHibernateDao.getObject(PxTeachingplan.class, pxTeachingPlanJsonform.getUuid());
+		pxTeachingplan.setPlandate(plandate);
+		pxTeachingplan.setName(pxTeachingPlanJsonform.getName());
+		pxTeachingplan.setContext(pxTeachingPlanJsonform.getContext());
+		pxTeachingplan.setDuration(pxTeachingPlanJsonform.getDuration());
+		pxTeachingplan.setReadyfor(pxTeachingPlanJsonform.getReadyfor());
+		
+		this.nSimpleHibernateDao.getHibernateTemplate().update(pxTeachingplan);
+		return true;
 	}
 
 
@@ -78,7 +117,7 @@ public class PxTeachingPlanService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<Teachingplan> query(String begDateStr, String endDateStr,
+	public List<PxTeachingplan> query(String begDateStr, String endDateStr,
 			String classuuid) {
 		if (StringUtils.isBlank(classuuid)) {
 			return null;
@@ -96,7 +135,7 @@ public class PxTeachingPlanService extends AbstractService {
 
 		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
 
-		return (List<Teachingplan>) this.nSimpleHibernateDao
+		return (List<PxTeachingplan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
 				.find("from PxTeachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
 						classuuid, endDate, begDate);
@@ -107,9 +146,9 @@ public class PxTeachingPlanService extends AbstractService {
 	 * @param uuid
 	 * @return
 	 */
-	public Teachingplan get(String uuid) {
-		Teachingplan t = (Teachingplan) this.nSimpleHibernateDao.getObjectById(
-				Teachingplan.class, uuid);
+	public PxTeachingplan get(String uuid) {
+		PxTeachingplan t = (PxTeachingplan) this.nSimpleHibernateDao.getObjectById(
+				PxTeachingplan.class, uuid);
 		
 		return t;
 
@@ -131,10 +170,10 @@ public class PxTeachingPlanService extends AbstractService {
 		if (uuid.indexOf(",") != -1)// 多ID
 		{
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Teachingplan where uuid in(?)", uuid);
+					"delete from PxTeachingplan where uuid in(?)", uuid);
 
 		} else {
-			this.nSimpleHibernateDao.deleteObjectById(Teachingplan.class, uuid);
+			this.nSimpleHibernateDao.deleteObjectById(PxTeachingplan.class, uuid);
 
 		}
 
