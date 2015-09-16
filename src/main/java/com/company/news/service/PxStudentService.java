@@ -143,12 +143,12 @@ public class PxStudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public List<PxStudent> query(String classuuid, String groupuuid) {
-		String hql = "from PXStudent where 1=1";
+		String hql = "from PxStudent where 1=1";
 
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  uuid in (select student_uuid from PXStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
+			hql += " and  uuid in (select student_uuid from PxStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
 
 		hql += " order by classuuid, convert(name, 'gbk') ";
 		List list = (List<PxStudent>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
@@ -191,7 +191,7 @@ public class PxStudentService extends AbstractStudentService {
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  uuid in (select student_uuid from PXStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
+			hql += " and  uuid in (select student_uuid from PxStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
 		if (StringUtils.isNotBlank(name))
 			hql += " and  name  like '%" + name + "%' ";
 
@@ -262,12 +262,12 @@ public class PxStudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public List<Student> queryForOutExcel(String classuuid, String groupuuid) {
-		String hql = "from PXStudent where 1=1";
+		String hql = "from PxStudent where 1=1";
 
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  in (select student_uuid from PXStudentPXClassRelation where class_uuid in(='"+DBUtil.stringsToWhereInValue(classuuid)+"'))";
+			hql += " and  in (select student_uuid from PxStudentPXClassRelation where class_uuid in(='"+DBUtil.stringsToWhereInValue(classuuid)+"'))";
 		hql += " order by classuuid, convert(name, 'gbk') ";
 		List<Student> list = (List<Student>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		// warpVoList(list);
@@ -280,7 +280,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public List<PClass> queryClassNameForOutExcel(String classuuid) {
-		String hql = "from PXStudent where uuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		String hql = "from PxStudent where uuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		hql += " order by uuid";
 		List<PClass> list = (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 		return list;
@@ -300,7 +300,7 @@ public class PxStudentService extends AbstractStudentService {
 			where_student_name = " and student_name like '%" + student_name + "%'";
 		}
 		String hql = "from StudentContactRealation  where student_uuid in"
-				+ "(select student_uuid from PXStudentPXClassRelation where class_uuid in("
+				+ "(select student_uuid from PxStudentPXClassRelation where class_uuid in("
 				+ DBUtil.stringsToWhereInValue(StringUtils.join(listClassuuids, ",")) + ") )" + where_student_name
 				+ "  order by student_name,type";
 

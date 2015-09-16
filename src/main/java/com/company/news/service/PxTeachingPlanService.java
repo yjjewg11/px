@@ -72,23 +72,6 @@ public class PxTeachingPlanService extends AbstractService {
 		return pxTeachingplan;
 	}
 
-	/**
-	 * 
-	 * @param plandate
-	 * @param groupuuid
-	 * @return
-	 */
-	private Teachingplan getByPlandateAndClassuuid(Date plandate,
-			String classuuid) {
-		List<Teachingplan> l = (List<Teachingplan>) this.nSimpleHibernateDao
-				.getHibernateTemplate().find(
-						"from Teachingplan where plandate=? and classuuid=?",
-						plandate, classuuid);
-		if (l != null && l.size() > 0)
-			return l.get(0);
-		else
-			return null;
-	}
 
 	/**
 	 * 查询所有班级
@@ -115,7 +98,7 @@ public class PxTeachingPlanService extends AbstractService {
 
 		return (List<Teachingplan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from Teachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
+				.find("from PxTeachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
 						classuuid, endDate, begDate);
 	}
 

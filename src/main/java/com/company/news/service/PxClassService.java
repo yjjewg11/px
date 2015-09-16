@@ -179,7 +179,7 @@ public class PxClassService extends AbstractClassService {
 				.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
 		// 根据班级的学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update PXStudent set  groupuuid=? where groupuuid=?",
+				"update PxStudent set  groupuuid=? where groupuuid=?",
 				obj.getGroupuuid(), oldGroupuuid);
 		// 更新班级互动学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
@@ -203,11 +203,11 @@ public class PxClassService extends AbstractClassService {
 		List l = new ArrayList<PxClass>();
 		if (StringUtils.isBlank(groupuuid))
 			l = (List<PxClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from PXClass", null);
+					.find("from PxClass", null);
 		else
 			l = (List<PxClass>) this.nSimpleHibernateDao
 					.getHibernateTemplate()
-					.find("from PXClass where groupuuid=? order by  convert(name, 'gbk') ",
+					.find("from PxClass where groupuuid=? order by  convert(name, 'gbk') ",
 							groupuuid);
 
 		warpVoList(l);
@@ -223,7 +223,7 @@ public class PxClassService extends AbstractClassService {
 
 		List l = (List<PClass>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from PXClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
+				.find("from PxClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
 						useruuid);
 		warpVoList(l);
 		return l;
