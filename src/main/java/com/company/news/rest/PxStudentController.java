@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.export.util.ExcelUtil;
 import com.company.news.entity.PClass;
-import com.company.news.entity.PXStudent;
+import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.User;
 import com.company.news.jsonform.PxStudentJsonform;
@@ -129,7 +129,7 @@ public class PxStudentController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List<PXStudent> list = pxStudentService.query(
+		List<PxStudent> list = pxStudentService.query(
 				request.getParameter("classuuid"),
 				request.getParameter("groupuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
@@ -180,7 +180,7 @@ public class PxStudentController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PXStudent s;
+		PxStudent s;
 		try {
 			s = pxStudentService.get(uuid);
 		} catch (Exception e) {

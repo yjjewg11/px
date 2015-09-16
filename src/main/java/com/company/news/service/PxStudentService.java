@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
-import com.company.news.entity.PXClass;
-import com.company.news.entity.PXStudent;
-import com.company.news.entity.PXStudentPXClassRelation;
+import com.company.news.entity.PxClass;
+import com.company.news.entity.PxStudent;
+import com.company.news.entity.PxStudentPXClassRelation;
 import com.company.news.entity.Student;
 import com.company.news.jsonform.PxStudentJsonform;
 import com.company.news.query.PageQueryResult;
@@ -41,7 +41,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * 
 	 */
 	private void addStudentClassRelation(String student_uuid,String class_uuid) throws Exception{
-		PXStudentPXClassRelation pp=new PXStudentPXClassRelation();
+		PxStudentPXClassRelation pp=new PxStudentPXClassRelation();
 		pp.setClass_uuid(class_uuid);
 		pp.setStudent_uuid(student_uuid);
 		this.nSimpleHibernateDao.save(pp);		
@@ -61,7 +61,7 @@ public class PxStudentService extends AbstractStudentService {
 				||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage))
 			return false;
 
-		PXClass pXClass = (PXClass) this.nSimpleHibernateDao.getObjectById(PXClass.class, pxstudentJsonform.getClassuuid());
+		PxClass pXClass = (PxClass) this.nSimpleHibernateDao.getObjectById(PxClass.class, pxstudentJsonform.getClassuuid());
 		// 班级不存在
 		if (pXClass == null) {
 			responseMessage.setMessage("班级不存在");
@@ -69,7 +69,7 @@ public class PxStudentService extends AbstractStudentService {
 		}
 
 		pxstudentJsonform.setHeadimg(PxStringUtil.imgUrlToUuid(pxstudentJsonform.getHeadimg()));
-		PXStudent pxStudent = new PXStudent();
+		PxStudent pxStudent = new PxStudent();
 
 		BeanUtils.copyProperties(pxStudent, pxstudentJsonform);
 
@@ -99,9 +99,9 @@ public class PxStudentService extends AbstractStudentService {
 	 */
 	public boolean update(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage) throws Exception {
 
-		PXStudent pxStudent = (PXStudent) this.nSimpleHibernateDao.getObjectById(PXStudent.class, pxstudentJsonform.getUuid());
+		PxStudent pxStudent = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class, pxstudentJsonform.getUuid());
 
-		PXStudent old_student = new PXStudent();
+		PxStudent old_student = new PxStudent();
 		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 		BeanUtils.copyProperties(old_student, pxStudent);
 		pxstudentJsonform.setHeadimg(PxStringUtil.imgUrlToUuid(pxstudentJsonform.getHeadimg()));
@@ -142,7 +142,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * 
 	 * @return
 	 */
-	public List<PXStudent> query(String classuuid, String groupuuid) {
+	public List<PxStudent> query(String classuuid, String groupuuid) {
 		String hql = "from PXStudent where 1=1";
 
 		if (StringUtils.isNotBlank(groupuuid))
@@ -151,7 +151,7 @@ public class PxStudentService extends AbstractStudentService {
 			hql += " and  uuid in (select student_uuid from PXStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
 
 		hql += " order by classuuid, convert(name, 'gbk') ";
-		List list = (List<PXStudent>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		List list = (List<PxStudent>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
 
 		warpVoList(list);
 
@@ -166,8 +166,8 @@ public class PxStudentService extends AbstractStudentService {
 	 * @param uuid
 	 * @return
 	 */
-	public PXStudent get(String uuid) throws Exception {
-		PXStudent o = (PXStudent) this.nSimpleHibernateDao.getObjectById(PXStudent.class, uuid);
+	public PxStudent get(String uuid) throws Exception {
+		PxStudent o = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class, uuid);
 		if (o == null)
 			return null;
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
