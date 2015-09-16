@@ -91,11 +91,6 @@ function login_affter_init(){
 	                          "title": "校园公告"
 	                        },
 	                        {
-                                "link": "##",
-                                "fn":function(){ajax_classnews_list_div_byRight(1);},
-                                "title": "班级互动"
-                              },
-	                        {
 	                        	  "fn":function(){menu_announce_list_fn_byRight(1,"老师公告");},
 	                        	  "link": "##",
 	                            "title": "老师公告"
@@ -693,12 +688,50 @@ function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
 	ajax_cookbookPlan_listByGroup_byRight(cookbook_Group_uuid,weeknum);
 }
 
-
 /*
  * (标头)课程安排功能
  * @跳转widget发服务器请求
  * */
-function menu_teachingplan_list_fn_byRight(){
+var G_myCurClassuuid=null;
+function menu_teachingplan_list_fn_byRight() {
+	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+//	var myclasslist=Store.getMyClassList();
+//	if(!myclasslist||myclasslist.length==0){
+//		G_msg_pop("请先创建班级!");
+//		return ;
+//	}
+//	if(!G_myCurClassuuid){
+//		G_myCurClassuuid=myclasslist[0].uuid;
+//	}
+	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+	
+	if(!groupList||groupList.length==0){
+		alert("没有权限。");
+		return;
+	}	
+	var groupuuid=groupList[0].uuid;
+	
+//	var classList=Store.getChooseClass(this.props.groupuuid);
+//	var classuuid =null;
+//	if(classList&&classList.length>0){
+//		classuuid=classList[0].uuid;
+//	}
+//	var obj= {
+//			groupuuid:this.props.groupuuid,
+//			classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+//			classuuid:classuuid,
+//	    	pageNo:0,
+//	    	list: []
+//	    };
+////	this.ajax_list(obj);
+//    return obj;	
+
+	React.render(React.createElement(Teachingplan_show7Day_byRight, {
+		    groupuuid:groupuuid,
+		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+			}), document.getElementById('div_body'));
+	return;
+//---------------------------------------------------------------------------------	
 	var groupList=Store.getGroupByRight("KD_teachingplan_m");
 	
 	if(!groupList||groupList.length==0){
@@ -713,11 +746,7 @@ function menu_teachingplan_list_fn_byRight(){
 		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
 		}), document.getElementById('div_body'));
-	
-	return;
-}
-
-
+};
 /*
  * (标头)<园长信箱>
  * @跳转kd_service发服务器请求

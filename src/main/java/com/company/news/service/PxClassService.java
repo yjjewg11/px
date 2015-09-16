@@ -14,7 +14,7 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
-import com.company.news.entity.PXClass;
+import com.company.news.entity.PxClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.jsonform.ClassRegJsonform;
@@ -51,7 +51,7 @@ public class PxClassService extends AbstractClassService {
 			return false;
 		}
 
-		PXClass pxClass = new PXClass();
+		PxClass pxClass = new PxClass();
 
 		BeanUtils.copyProperties(pxClass, pxclassRegJsonform);
 		pxClass.setCreate_time(TimeUtils.getCurrentTimestamp());
@@ -100,7 +100,7 @@ public class PxClassService extends AbstractClassService {
 			return false;
 		}
 
-		PXClass obj = (PXClass) nSimpleHibernateDao.getObject(PXClass.class,
+		PxClass obj = (PxClass) nSimpleHibernateDao.getObject(PxClass.class,
 				pxclassRegJsonform.getUuid());
 		// 班级所在学校切换是,代理云,只能切换到其他学校一次
 		boolean isChangeGroupuuid = false;
@@ -174,12 +174,12 @@ public class PxClassService extends AbstractClassService {
 	 * @param name
 	 * @param img
 	 */
-	private void relUpdate_classChangeGroup(PXClass obj, String oldGroupuuid) {
+	private void relUpdate_classChangeGroup(PxClass obj, String oldGroupuuid) {
 		this.logger
 				.info("relUpdate_classChangeGroup,obj uuid=" + obj.getUuid());
 		// 根据班级的学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update PXStudent set  groupuuid=? where groupuuid=?",
+				"update PxStudent set  groupuuid=? where groupuuid=?",
 				obj.getGroupuuid(), oldGroupuuid);
 		// 更新班级互动学校uuid
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
@@ -199,15 +199,15 @@ public class PxClassService extends AbstractClassService {
 	 * 
 	 * @return
 	 */
-	public List<PXClass> query(String groupuuid) {
-		List l = new ArrayList<PXClass>();
+	public List<PxClass> query(String groupuuid) {
+		List l = new ArrayList<PxClass>();
 		if (StringUtils.isBlank(groupuuid))
-			l = (List<PXClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from PXClass", null);
+			l = (List<PxClass>) this.nSimpleHibernateDao.getHibernateTemplate()
+					.find("from PxClass", null);
 		else
-			l = (List<PXClass>) this.nSimpleHibernateDao
+			l = (List<PxClass>) this.nSimpleHibernateDao
 					.getHibernateTemplate()
-					.find("from PXClass where groupuuid=? order by  convert(name, 'gbk') ",
+					.find("from PxClass where groupuuid=? order by  convert(name, 'gbk') ",
 							groupuuid);
 
 		warpVoList(l);
@@ -223,7 +223,7 @@ public class PxClassService extends AbstractClassService {
 
 		List l = (List<PClass>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from PXClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
+				.find("from PxClass where uuid in (select classuuid from UserClassRelation where useruuid=?) order by create_time desc",
 						useruuid);
 		warpVoList(l);
 		return l;
@@ -242,7 +242,7 @@ public class PxClassService extends AbstractClassService {
 			return false;
 		}
 
-		PXClass obj = (PXClass) this.nSimpleHibernateDao.getObject(PXClass.class,
+		PxClass obj = (PxClass) this.nSimpleHibernateDao.getObject(PxClass.class,
 				uuid);
 		if (obj == null) {
 			responseMessage.setMessage("没有该数据!");
@@ -276,9 +276,9 @@ public class PxClassService extends AbstractClassService {
 	 * @return
 	 * @throws Exception
 	 */
-	public PXClass get(String uuid) throws Exception {
-		PXClass pclass = (PXClass) this.nSimpleHibernateDao.getObjectById(
-				PXClass.class, uuid);
+	public PxClass get(String uuid) throws Exception {
+		PxClass pclass = (PxClass) this.nSimpleHibernateDao.getObjectById(
+				PxClass.class, uuid);
 		if (pclass == null)
 			return null;
 

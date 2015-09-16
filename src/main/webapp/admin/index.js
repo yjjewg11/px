@@ -43,6 +43,11 @@ function login_affter_init(){
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
+  		  {
+                "link": "##",
+                "title": "班级互动",
+                "fn":function(){ajax_classnews_list_div_byRight(1);},
+              },
             {
                 "link": "##",
                 "title": "家长管理",

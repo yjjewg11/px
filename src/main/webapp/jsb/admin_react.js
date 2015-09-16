@@ -1158,3 +1158,459 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 		}
   	});   
 //userinfo end
+  //——————————————————————————班级互动<绘制>——————————————————————————
+    /* 
+     * <班级互动>绘制舞台
+     * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+     * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+     * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+     * */
+    var Classnews_Div_list_byRight = React.createClass({displayName: "Classnews_Div_list_byRight", 
+    	load_more_btn_id:"load_more_",
+    	pageNo:1,
+    	classnewsreply_list_div:"am-list-news-bd",
+    	type:null,
+    	//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+    	  componentWillReceiveProps: function(nextProps) {
+    		  this.type=nextProps.type;
+    			this.load_more_data();
+    		},
+    	componentDidMount:function(){
+    		this.load_more_data();
+    	},
+    	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+    	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+    	load_more_data:function(){
+    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+    		var that=this;
+    		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+    	ajax_classs_Mygoodlist_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
+    		
+
+    	},
+    	refresh_data:function(){
+//    		classnewsreply_list_div 清除；
+//          load_more_data	重新绘制DIV；
+    		try{G_clear_pureview();}catch(e){};
+    		$("#"+this.classnewsreply_list_div).html("");
+    		this.forceUpdate();
+    		this.pageNo=1;
+    		this.load_more_data();
+    		
+    	},
+    	selectclass_uuid_val:null,
+    	handleClick: function(m,num) {
+    		if(m=="add"){
+    			btn_click_classnews_byRight(m,{classuuid:this.selectclass_uuid_val});
+    			 return;
+    		 }else{
+    			 ajax_classnews_list_div_byRight(num); 		
+    		 }
+    	  },
+    render: function() {
+    	this.type=this.props.type;
+    	this.load_more_btn_id="load_more_"+this.props.uuid;
+      return (			
+    		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+    		  React.createElement(AMUIReact.ButtonToolbar, null, 
+    		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
+    		    React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
+    		    ), 
+    		    React.createElement(Div_MyClassnewStatistics_byRight, null), 
+    			React.createElement("hr", null), 	 
+    		    
+    		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
+    		  ), 
+    		  
+    		  React.createElement("div", {className: "am-list-news-ft"}, 
+    		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+    		  )
+    		  
+    		  
+    		  
+    		)
+    		  
+    			
+      );
+    }
+    });
+    //显示我的班级互动统计数据
+    var Div_MyClassnewStatistics_byRight = React.createClass({displayName: "Div_MyClassnewStatistics_byRight", 
+    	
+    	getInitialState: function() {
+    		var o={
+    				disabled:true,
+    				title:"加载中..."
+    		}
+    		return o;
+    	  },
+    	  
+    	componentDidMount:function(){
+    		this.ajax_list();
+    	},
+    	  ajax_callback:function(data){
+    		  this.state.title=data.data;
+    		  this.state.disabled=false;
+    		  this.setState(this.state);
+    	  },
+    	 ajax_list:function(){
+    		 var that=this;
+    		  this.state.disabled=true;
+    		  this.setState(this.state);
+    		var url = hostUrl + "rest/classnews/getMyClassnewStatistics.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			dataType : "json",
+    			success : function(data) {
+    				if (data.ResMsg.status == "success") {
+    					that.ajax_callback(data);
+    				} else {
+    					that.state.disabled=false;
+    					that.setState(that.state);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : function(){
+    				that.state.disabled=false;
+    				that.setState(that.state);
+    			}
+    		});
+    		
+    	},
+    	render: function() {
+    		if(this.state.disabled)this.state.title="加载中...";
+    		return (
+    		 React.createElement(AMR_Button, {className: "am-margin-top-xs", amStyle: "success", amSize: "sm", block: true, disabled: this.state.disabled, onClick: this.ajax_list.bind(this)}, this.state.title)
+    	);
+    	}
+    }); 
+    /*
+    * <班级互动>;
+    * @Classnews_EventRow:绘制列表详情;
+    * */
+    var Classnews_EventsTable_byRight = React.createClass({displayName: "Classnews_EventsTable_byRight",	  
+    render: function() {
+    	var that=this;
+    return (
+    React.createElement("div", null, 
+      this.props.events.data.map(function(event) {
+        return (React.createElement(Classnews_show_byRight, {event: event}));
+      })
+    )
+    );
+    }
+    });
+    /*
+    * <班级互动>MAp详情绘制
+    * var o = this.props.formdata;
+    */
+    var Classnews_show_byRight = React.createClass({displayName: "Classnews_show_byRight", 
+    	handleClick_pinglun:function(val){
+    		  this.selectclass_uuid_val=val;
+    		  ajax_classnews_list_byRight(this.selectclass_uuid_val);
+    	  },	  
+    	  componentDidMount:function(){
+    		  $('.am-gallery').pureview();
+    		},
+    	render: function() {		  
+    		  var  o = this.props.event;
+    		  if(!o.dianzanList)o.dianzanList=[];
+    		  if(!o.imgsList)o.imgsList=[];
+    		  if(!o.create_img)G_def_headImgPath;
+    		  
+    	  return (
+    			  React.createElement("div", null, 
+    			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
+    			  React.createElement("a", {href: "javascript:void(0);"}, 
+    			    React.createElement("img", {src: o.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+    			  ), 
+
+    			  React.createElement("div", {className: "am-comment-main"}, 
+    			    React.createElement("header", {className: "am-comment-hd"}, 
+    			      React.createElement("div", {className: "am-comment-meta"}, 
+    			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
+    			      )
+    			    ), 
+    			    React.createElement("div", {className: "am-comment-bd"}, 
+    			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
+    			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
+    			    ), 
+    			    	React.createElement("footer", {className: "am-comment-footer"}, 
+    			    	React.createElement("div", {className: "am-comment-actions"}, 
+    			    	GTimeShow.showByTime(o.update_time), 
+    			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+    			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+    			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 
+    			    	React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid})
+    			    	)
+    			    	), 
+    			    	
+    			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+    			    	React.createElement("ul", {className: "am-comments-list"}, 
+    					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+    			    	)
+    			     )
+    			)
+    			 
+    			    )		   
+    	  );
+    	}
+    	}); 
+
+
+
+
+    /*
+    * 1.1互动里面单独的评论模板
+    * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+    * 把评论模板插入空Div里面
+    * 
+    * */
+    var Classnews_reply_list_byRight = React.createClass({displayName: "Classnews_reply_list_byRight", 
+    	getInitialState: function() {
+    		var o={
+    			replyPage:null
+    		}
+    		if(this.props.replyPage) o.replyPage=this.props.replyPage;
+    		return o;
+    	  },
+       componentWillReceiveProps: function(nextProps) {
+    		var o={
+    				replyPage:commons_ajax_dianzan_getByNewsuuid(nextProps.uuid)
+    			}
+    	   this.setState(o);
+    	},
+    	
+    	load_more_btn_id:"load_more_",
+    	pageNo:1,
+    	classnewsreply_list_div:"classnewsreply_list_div",
+    	
+    	
+    	componentDidMount:function(){
+    		var that=this;
+    		$("#"+this.props.btn_reply).bind("click",that.btn_reply_show.bind(that));
+    		this.load_more_data();
+    	},
+    	loadByFirst:function(list_div){
+    		React.render(React.createElement(Classnews_reply_list_listshow_byRight, {
+    			events: this.state.replyPage,
+    			newsuuid:this.props.uuid,
+    			responsive: true, bordered: true, striped :true,hover:true,striped:true
+    			}), document.getElementById(list_div));
+    	},
+    	load_more_data:function(){
+    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+    		var re_data=this.state.replyPage;
+    		if(!re_data){
+    			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+    		}else{
+    			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+    		}
+    		if(!re_data)return;
+    		if(re_data.data.length<re_data.pageSize){
+    			$("#"+this.load_more_btn_id).hide();
+    		}else{
+    			$("#"+this.load_more_btn_id).show();
+    		}
+    		  
+    		  this.pageNo++;
+    	},
+    	
+    	refreshReplyList:function(){
+    		this.setState({replyPage:null});
+    		$("#"+this.classnewsreply_list_div).html("");
+    		this.pageNo=1;
+    		this.load_more_data();
+    		
+    		$("#"+this.div_reply_save_id).html("");
+    	},
+    	btn_reply_show:function(){
+    		React.render(React.createElement(Classnews_reply_save_byRight,
+    				{uuid:this.props.uuid,
+    			parentThis:this,
+    			type:this.props.type
+    			}), document.getElementById(this.div_reply_save_id));
+    	},
+    render: function() {
+    	this.load_more_btn_id="load_more_"+this.props.uuid;
+    	this.div_reply_save_id="btn_reply_save"+this.props.uuid;
+    	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+    	var parentThis=this;
+    return (
+    		  
+    		  React.createElement("div", {className: "am-comment-bd am-comment-flip"}, 
+    		  React.createElement("div", {id: this.div_reply_save_id}, "   "), 
+    		    React.createElement("div", {id: this.classnewsreply_list_div}), 
+    		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")		
+    			
+    			)	
+    		   
+    );
+    }
+    }); 
+    /*
+    * 1.2互动里面单独的评论模板-item
+    * 逻辑：建立以个空Div然后点击评论按钮触发事件绘制评论模板
+    * 把评论模板插入空Div里面
+    * 
+    * */
+    var Classnews_reply_list_listshow_byRight = React.createClass({displayName: "Classnews_reply_list_listshow_byRight", 	
+    render: function() {
+    return (
+    		  React.createElement("div", null, 
+    		  this.props.events.data.map(function(event) {
+    		      return (
+    		    		  React.createElement("li", {className: "am-cf"}, 
+    		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
+    				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid})
+    		    		  )
+    		    		  )
+    		  })
+    		
+    		    )		   
+    );
+    }
+    }); 
+
+    /*
+    * 绘制评论模板
+    * @componentDidMount:添加表情
+    * */
+    var Classnews_reply_save_byRight = React.createClass({displayName: "Classnews_reply_save_byRight", 
+    	classnewsreply_list_div:"classnewsreply_list_div",
+    	form_id:"editClassnewsreplyForm",
+    	reply_save_btn_click:function(){
+    		var that=this.props.parentThis;
+    		common_ajax_reply_save(function(){
+    			that.refreshReplyList();		
+    		},this.form_id);
+    	
+    	},
+    	componentDidMount:function(){
+    		 $("#"+this.classnews_content).xheditor(xhEditor_upImgOption_emot);
+    	},
+    render: function() {
+    	this.classnews_content="classnews_content_replay"+this.props.uuid;
+    	this.form_id="editClassnewsreplyForm"+this.props.uuid;
+    return (
+    		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
+    			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
+    			React.createElement("input", {type: "hidden", name: "uuid"}), 
+    			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
+    			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "3", label: "我要回复", placeholder: "填写内容", name: "content"}), 
+    			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
+    		    )	   
+    );
+    }
+    }); 
+
+    /*
+    * <班级互动>添加与编辑按钮中可删除图片显示.
+    */
+    var ClassNews_Img_canDel = React.createClass({displayName: "ClassNews_Img_canDel",
+    		deleteImg:function(divid){
+    			$("#"+divid).remove();
+    		},			
+    	  render: function() {
+    		 return (
+              		React.createElement("div", {className: "G_cookplan_Img"}, 
+    	 	       			React.createElement("img", {className: "G_cookplan_Img_img", src: this.props.url, alt: "图片不存在"}), 
+    	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this,this.props.parentDivId)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"}))
+    	 	       		)		
+              	)
+    	  }
+    	});
+
+
+    /*
+    * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
+    * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
+    * 然后Selected的onChange自带value 直接可以传进handleChange_selectclass_uuid方法内 
+    * 我们把值添加到 #editClassnewsForm 表单内 这样保存服务器请求就可以传最新的 classuuid了;
+    * @ w_img_upload_nocut.bind_onchange 图片截取方法绘制在新的Div里面
+    * @ajax_classnews_save_Right:提交按钮在Kd_service;
+    * */
+    var Classnews_edit_byRight = React.createClass({displayName: "Classnews_edit_byRight", 
+    	selectclass_uuid_val:null,
+    	 getInitialState: function() {
+    		    return this.props.formdata;
+    		  },
+    	 handleChange: function(event) {
+    		    this.setState($('#editClassnewsForm').serializeJson());
+    	  },
+    	  handleChange_selectclass_uuid:function(val){
+//    		  this.selectclass_uuid_val=val;
+//    		  this.props.formdata.classuuid=val
+    			// $('#classuuid').val(val);
+    			    this.setState($('#editClassnewsForm').serializeJson());
+    	  },	  
+    	  imgDivNum:0,
+    	  getNewImgDiv:function(){
+    		  this.imgDivNum++;
+    		return "Classnews_edit_"+this.imgDivNum;  
+    	  },	  
+    	  addShowImg:function(url){
+    		  var divid=this.getNewImgDiv();
+    		  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");		 	
+    		  React.render(React.createElement(ClassNews_Img_canDel, {
+    				url: url,parentDivId:divid
+    				}), document.getElementById(divid));  
+    	  },
+    	  componentDidMount:function(){
+    		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+    		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
+    		 var that=this;		 
+    		 //已经有的图片,显示出来.		 
+    		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
+    			  ////data.data.uuid,data.imgUrl
+    			 that.addShowImg(imgurl);
+    			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
+    		  });		 
+    		//已经有的图片,显示出来.
+    		 if(!$('#imgs').val())return;
+    		 var imgArr=$('#imgs').val().split(",");
+    		 for(var i=0;i<imgArr.length;i++){
+    			 this.addShowImg(imgArr[i]);
+    		 }		
+    	},
+    render: function() {
+    	  var o = this.state;
+    	  if(this.props.mycalsslist.length>0){
+    		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
+    	  }
+    return (
+    		React.createElement("div", null, 
+    		React.createElement("div", {className: "header"}, 
+    		  React.createElement("hr", null)
+    		), 
+    		React.createElement("div", {className: "am-g"}, 
+    		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
+    		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
+    		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
+    			
+    		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+    			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
+    		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+    		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
+    		      React.createElement("div", {className: "cls"}), 
+    			  G_get_upload_img_Div(), 
+    		      React.createElement("button", {type: "button", onClick: ajax_classnews_save_Right, className: "am-btn am-btn-primary"}, "提交")
+    		    )
+    	     )
+    	   )
+    	   
+    	   )
+    );
+    }
+    }); 
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±
