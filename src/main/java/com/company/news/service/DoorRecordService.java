@@ -10,6 +10,7 @@ import com.company.common.SerializableUtil;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
 import com.company.news.entity.Student;
+import com.company.news.entity.StudentBind;
 import com.company.news.iservice.StudentSignRecordIservice;
 import com.company.news.jsonform.DoorRecordJsonform;
 import com.company.news.jsonform.DoorUserJsonform;
@@ -99,10 +100,10 @@ public class DoorRecordService extends AbstractService {
 			return false;
 		}
 
-		if (StringUtils.isBlank(doorUserJsonform.getIdNo())) {
-			responseMessage.setMessage("IdNo不能为空！");
-			return false;
-		}
+//		if (StringUtils.isBlank(doorUserJsonform.getIdNo())) {
+//			responseMessage.setMessage("IdNo不能为空！");
+//			return false;
+//		}
 
 		if (StringUtils.isBlank(doorUserJsonform.getUserName())) {
 			responseMessage.setMessage("UserName不能为空！");
@@ -115,32 +116,13 @@ public class DoorRecordService extends AbstractService {
 			return false;
 		}
 
-		if (!group.getPrivate_key().equals(doorUserJsonform.getPrivate_key())) {
+		if (group.getPrivate_key()!=null&&!group.getPrivate_key().equals(doorUserJsonform.getPrivate_key())) {
 			responseMessage.setMessage("Private_key密钥不匹配！");
 			return false;
 		}
-
-		Student s = studentService.getStudentByIdNoAndGroup(
-				doorUserJsonform.getIdNo(), doorUserJsonform.getGroupuuid());
-		if (s == null) {
-			responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
-					+ ",未匹配到对应的账号,不需要绑定！");
-		}else{
-
-		StudentBindJsonform studentBindJsonform = new StudentBindJsonform();
-		studentBindJsonform.setCardid(doorUserJsonform.getCardid());
-		studentBindJsonform.setCreate_user("system");// 系统自动绑定
-		studentBindJsonform.setCreate_useruuid("system");// 系统自动绑定
-		studentBindJsonform.setName(doorUserJsonform.getUserName());
-		studentBindJsonform.setStudentuuid(s.getUuid());
-
-		//调用绑定服务
-		studentBindService.add(studentBindJsonform, responseMessage);
-		responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
-				+ ",绑定成功！");
-		}
-
-		return true;
+		
+		
+		return studentBindService.addByAutoDrinput(doorUserJsonform, responseMessage);
 
 	}
 

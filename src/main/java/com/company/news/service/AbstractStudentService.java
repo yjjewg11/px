@@ -45,9 +45,10 @@ public class AbstractStudentService extends AbstractService {
 	 */
 	private StudentContactRealation updateStudentContactRealation(
 			AbstractStudent student, Integer type, String tel) throws Exception {
-		if (!CommonsValidate.checkCellphone(tel)) {
-			return null;
-		}
+		
+		
+		
+		tel=PxStringUtil.repairCellphone(tel);
 		String student_uuid = student.getUuid();
 		StudentContactRealation studentContactRealation = this
 				.getStudentContactRealationBy(student_uuid, type);

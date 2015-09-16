@@ -16,6 +16,7 @@ import com.company.news.entity.BaseDataList;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
+import com.company.news.service.AbstractStudentService;
 import com.company.news.service.WenjieAdminService;
 import com.company.news.vo.ResponseMessage;
 
@@ -54,8 +55,7 @@ public class WenjieAdminController extends AbstractRESTController {
 			}
 			try {
 				// 修复数据时使用.
-//				wenjieAdminService.updateDataRefresh(responseMessage);
-				
+				wenjieAdminService.updateDataRefresh(responseMessage);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

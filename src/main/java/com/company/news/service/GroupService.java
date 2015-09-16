@@ -412,6 +412,7 @@ public class GroupService extends AbstractService {
 	 * @return
 	 */
 	public Group warpVo(Group o){
+		if(o==null)return o;
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		o.setImg(PxStringUtil.imgSmallUrlByUuid(o.getImg()));
 		return o;
