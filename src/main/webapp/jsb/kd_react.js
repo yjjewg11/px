@@ -5425,9 +5425,8 @@ render: function() {
      	  )
      	  )
      	  ), 
-
-       
-       React.createElement(AMR_Table, React.__spread({},  this.props), 
+	   	      
+       React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
              React.createElement("th", null, "姓名"), 

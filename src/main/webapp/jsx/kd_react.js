@@ -5425,9 +5425,8 @@ render: function() {
      	  </div>
      	  </AMR_ButtonToolbar>
      	  </form>      
-
-       
-       <AMR_Table {...this.props}>  
+	   	      
+       <AMR_Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
          <thead> 
            <tr>
              <th>姓名</th>
