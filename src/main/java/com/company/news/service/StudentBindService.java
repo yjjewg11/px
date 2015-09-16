@@ -133,7 +133,16 @@ public class StudentBindService extends AbstractService {
 			if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
 				studentBind.setUserid(doorUserJsonform.getUserid());
 			}else{
-				studentBind.setUserid(this.nSimpleHibernateDao.getAutoIncrementID().toString());
+				
+				 Object maxUserid= this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(doorUserJsonform.getGroupuuid()) + ")").uniqueResult();
+				 Long startUserid=0l;
+				 try {
+					 startUserid=Long.valueOf(maxUserid+"");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				studentBind.setUserid(startUserid+"");
 			}
 			
 			studentBind.setCardid(doorUserJsonform.getCardid());
