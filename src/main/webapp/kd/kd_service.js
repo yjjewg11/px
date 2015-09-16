@@ -1532,72 +1532,73 @@ function react_ajax_favorites_show(type,reluuid){
    * <刷卡记录>
    * 
    * */	   
-function ajax_class_card(classuuid,name,pageNo) {
-//		var list=Store.getGroupNoGroup_wjd();
-	  if(!name)name="";
-//	  if(!groupuuid){
-//		  if(list&&list.length>0){
-//			  groupuuid=list[0].uuid;
-//		  }
-//	  }
-	  if(!pageNo)pageNo=1;
-	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
-	Queue.push(function(){ajax_class_card(classuuid,name,pageNo);},"刷卡记录");
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/listForTelByPage.json";
+function ajax_class_card(classuuid){
+	Queue.push(function(){ajax_class_card(classuuid);},"刷卡记录");
+	$.AMUI.progress.start();	
+	var formdata=null;
+    var url = hostUrl + "rest/student/getStudentByClassuuid.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {classuuid:classuuid,name:name,pageNo:pageNo},
+		data:{classuuid:classuuid},
 		dataType : "json",
+		 async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Teacher_class_card, {
-					classuuid:classuuid,
-					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","brand_name"),
-					events: data.list.data,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-				}), document.getElementById('div_body'));
+				formdata=data.list;
 			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+	
+	
+	var cards=null;
+	var 
+	url=hostUrl + "rest/studentbind/queryByClassuuid.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		data:{classuuid:classuuid},
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				cards=data.list;
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
 		error :G_ajax_error_fn
 	});
+	if(formdata){
+		for(var i=0;i<formdata.length;i++){
+			formdata[i].cardType="未发卡";       	   
+           }
+		}
+
+	
+	if(cards){
+		for(var i=0;i<formdata.length;i++){
+           for(var s=0;s<cards.length;s++){
+        	if(formdata[i].uuid==cards[s][0]){
+        		formdata[i].cardID=cards[s][1];
+        		formdata[i].cardType="已发卡";
+        	}        	   
+           }
+		}
+	}	
+
+	React.render(React.createElement(Teacher_class_card,{
+		events:formdata,
+		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
+		classuuid:classuuid
+		}), document.getElementById('div_body'));
+	return ;
 };
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
- 	   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -645,7 +645,7 @@ function menu_class_card_fn() {
 	if(!classList||classList.length==0){
 		classuuid=null;
 	}else{
-		classuuid=classList[0].uuid;
+		classuuid=classList[1].uuid;
 	}
 	ajax_class_card(classuuid);
 };

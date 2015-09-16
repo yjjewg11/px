@@ -4189,7 +4189,8 @@ var Class_EventsTable_byRight = React.createClass({
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
-	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
+	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
+	            {value: 'doorrecord', label: '门禁批量制卡导入表'}
 	          ];
 
 	    return {
@@ -5407,37 +5408,9 @@ render: function() {
      /*
       * <刷卡记录>绘制
       * */  
-     var Teacher_class_card = React.createClass({
-//    	handleClick: function(m) {		
-//    		 if(m=="add"){
-//    			 btn_click_userinfo(m,{group_uuid:$("input[name='group_uuid']").val(),office:"老师"});
-//    			 return;
-//    		 }
-//    		 var uuids=null;
-//    		 var usernames=null;
-//    		 $($("input[name='table_checkbox']")).each(function(){
-//    			　if(this.checked){
-//    				 if(uuids==null){
-//    					 uuids=this.value;
-//    					 usernames=this.alt;
-//    				 }
-//    				 else{
-//    					 uuids+=','+this.value ;  
-//    					 usernames+=','+this.alt;
-//    				 };
-//    			　}
-//    			});
-//    		  if(!uuids){
-//    			  G_msg_pop("请勾选复选框！");
-//    			  return;
-//    		  }
-//    		  btn_click_userinfo(m,uuids,usernames);
-//    	  },	 
-      handleChange_checkbox_all:function(){
-    	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
-      },
+     var Teacher_class_card = React.createClass({	 
        handleChange_selectgroup_uuid:function(val){
-    	   ajax_class_card($("input[name='group_uuid']").val(),$('#sutdent_name').val());
+    	   ajax_class_card($("input[name='group_uuid']").val());
        },
      render: function() {
      return (
@@ -5448,13 +5421,7 @@ render: function() {
            <form id="editGroupForm" method="post" className="am-form">
            <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
            <div className="am-fl am-margin-bottom-sm">
-     	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />
-     	  </div>
-     	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-     	  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>
-     	  </div>
-     	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-     	  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>		  		  
+     	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.classList} btnStyle="primary" value={this.props.classuuid} />
      	  </div>
      	  </AMR_ButtonToolbar>
      	  </form>      
@@ -5463,15 +5430,10 @@ render: function() {
        <AMR_Table {...this.props}>  
          <thead> 
            <tr>
-         	<th>  
-            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
-            </th>
              <th>姓名</th>
-             <th>电话</th>
-             <th>职位</th>
-             <th>邮箱</th>
-             <th>性别</th>
-             <th>状态</th>
+             <th>卡号</th>
+             <th>发卡状态</th>
+             <th>打卡状态</th>
            </tr> 
          </thead>
          <tbody>
@@ -5485,9 +5447,7 @@ render: function() {
      }
      });
      /*
-     * 老师通讯录表单详情内容绘制;
-     * 一键拨号
-     * 暂时添加点击事件 后续还未开发； 
+     * 刷卡记录详情内容绘制;am-table-bordered
      * */
      var ClassCard_EventRow = React.createClass({ 
        render: function() {
@@ -5497,15 +5457,10 @@ render: function() {
 
          return (
            <tr className={className} >
-    	      <td> 
-       	      <input type="checkbox" value={event.uuid} alt={event.name} name="table_checkbox" />
-       	      </td>
-             <td><a href="javascript:void(0);" onClick={""}>{event.name}</a></td>
-             <td>{event.tel} <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></td>
-             <td>{event.office}</td>
-             <td>{event.email}</td>
-             <td>{event.sex=="0"?"男":"女"}</td>
-             <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
+             <td>{event.name}</td>
+             <td>{event.cardID}</td>
+             <td>{event.cardType}</td>
+             <td>未开放<AMUIReact.Button amStyle="success">查询</AMUIReact.Button></td>
              </tr> 
          );
        }
