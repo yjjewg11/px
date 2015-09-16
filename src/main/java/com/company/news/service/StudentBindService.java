@@ -1,24 +1,18 @@
 package com.company.news.service;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
-import com.company.news.entity.StudentContactRealation;
-import com.company.news.entity.TeacherJudge;
-import com.company.news.entity.Teachingplan;
 import com.company.news.entity.User;
+import com.company.news.jsonform.DoorUserJsonform;
 import com.company.news.jsonform.StudentBindJsonform;
-import com.company.news.jsonform.StudentJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -31,6 +25,9 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class StudentBindService extends AbstractService {
 	private static final String model_name = "学生信息绑定模块";
+	
+	@Autowired
+	private StudentService studentService;
 	/**
 	 * 用户注册
 	 * 
@@ -65,15 +62,111 @@ public class StudentBindService extends AbstractService {
 			return false;
 		}
 
-
+		Student student=(Student)this.nSimpleHibernateDao.getObject(Student.class,studentBindJsonform.getStudentuuid() );
+		
+		if(student==null){
+			responseMessage.setMessage("学生不存在!");
+			this.logger.warn("学生不存在!uuid="+studentBindJsonform.getStudentuuid());
+			return false;
+		}
 		StudentBind studentBind = new StudentBind();
+		
 
 		BeanUtils.copyProperties(studentBind, studentBindJsonform);
+		studentBind.setGroupuuid(student.getGroupuuid());
 		studentBind.setCreatetime(TimeUtils.getCurrentTimestamp());
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(studentBind);
 
 		return true;
+	}
+	
+	/**
+	 * 用户注册
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean addByAutoDrinput(DoorUserJsonform doorUserJsonform,
+			ResponseMessage responseMessage) throws Exception {
+
+		// TEL格式验证
+
+		// name昵称验证
+		if (StringUtils.isBlank(doorUserJsonform.getCardid())) {
+			responseMessage.setMessage("Cardid不能为空");
+			return false;
+		}
+		
+		// Studentuuid昵称验证
+		if(this.isBind(doorUserJsonform.getCardid())){
+			responseMessage.setMessage("Cardid已被绑定");
+			return false;
+		}
+		
+		if(this.isBind(doorUserJsonform.getCardid())){
+			responseMessage.setMessage("Cardid已被绑定");
+			return false;
+		}
+		
+		StudentBind studentBind =null;
+		//根据uuid查询,有数据则只需要绑定卡id即可.
+		if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
+				studentBind=(StudentBind)this.getStudentBindByUseridAndGroup(doorUserJsonform.getUserid(),doorUserJsonform.getGroupuuid());
+				if(studentBind!=null){
+					studentBind.setCardid(doorUserJsonform.getCardid());
+					this.nSimpleHibernateDao.save(studentBind);
+					return true;
+				}
+		}//如何修改卡号.
+		
+		Student s = this.studentService.getStudentByIdNoAndGroup(
+				doorUserJsonform.getIdNo(), doorUserJsonform.getGroupuuid());
+		
+		if (s == null) {
+			responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
+					+ ",未匹配到对应的账号,不需要绑定！");
+		}else{
+			studentBind=new StudentBind();
+			if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
+				studentBind.setUserid(doorUserJsonform.getUserid());
+			}else{
+				studentBind.setUserid(this.nSimpleHibernateDao.getAutoIncrementID().toString());
+			}
+			
+			studentBind.setCardid(doorUserJsonform.getCardid());
+			studentBind.setCreate_user("system");// 系统自动绑定
+			studentBind.setCreate_useruuid("system");// 系统自动绑定
+			studentBind.setName(doorUserJsonform.getUserName());
+			studentBind.setStudentuuid(s.getUuid());
+			studentBind.setGroupuuid(doorUserJsonform.getGroupuuid());
+			studentBind.setCreatetime(TimeUtils.getCurrentTimestamp());
+			this.nSimpleHibernateDao.save(studentBind);
+		responseMessage.setMessage("idno:" + doorUserJsonform.getIdNo()
+				+ ",绑定成功！");
+		}
+		return true;
+	}
+	
+	/**
+	 * 根据用户标识和学校uuid.
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public StudentBind getStudentBindByUseridAndGroup(String userid, String groupuuid) {
+
+		List<StudentBind> list = (List<StudentBind>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from StudentBind  where userid=? and groupuuid=?)", userid, groupuuid);
+		if (list != null && list.size() > 0)
+		{
+			return list.get(0);
+		}
+		else
+			return null;
 	}
 
 	/**
@@ -191,5 +284,34 @@ public class StudentBindService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	
+	/**
+	 * 查询学生绑定卡号信息.
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @return
+	 */
+	public List<Object[]> query(String classuuid, String groupuuid,String uuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		String sql = "select b2.studentuuid,b2.cardid,b2.userid,s1.name ";
+		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
+		sql+=" where b2.cardid is not null ";
+		if (StringUtils.isNotBlank(groupuuid))
+			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		
+		sql += "order by s1.classuuid";
+		
+		//student_uuid,cardid,userid,student_name
+		List<Object[]> list = s.createSQLQuery(sql).list();
+		
+		return list;
 	}
 }

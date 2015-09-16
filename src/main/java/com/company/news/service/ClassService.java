@@ -14,6 +14,7 @@ import com.company.news.SystemConstants;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
+import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.TimeUtils;
@@ -244,13 +245,32 @@ public class ClassService extends AbstractClassService {
 		Object o = s.createSQLQuery(
 				"select count(*) from px_student where classuuid='" + uuid
 						+ "'").uniqueResult();
+		
+		
 		if (Long.valueOf(o.toString()) > 0) {
-			responseMessage.setMessage("该班级有学生不能删除.");
-			return false;
+			
+			flag = RightUtils.hasRight(obj.getGroupuuid(),
+					RightConstants.KD_class_del, request);
+			if(!flag){
+				responseMessage.setMessage("该班级有学生不能删除.");
+				return false;
+			}
+			String desc = JSONUtils.getJsonString(obj);
+			this.addLog("delete_class", obj.getName()+",student num="+o.toString(), desc, request);
 		}
 		this.nSimpleHibernateDao.deleteObjectById(PClass.class, uuid);
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+		
+		//删除学生与家长关系表.
+		Integer relsut=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from StudentContactRealation where student_uuid in( select uuid from Student where  classuuid =?) ", uuid);
+		this.addLog("delete_class", obj.getName()+",StudentContactRealation num="+relsut, relsut+"", request);
+		relsut=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 				"delete from UserClassRelation where classuuid =?", uuid);
+		this.addLog("delete_class", obj.getName()+",UserClassRelation num="+relsut, relsut+"", request);
+		//删除学生.
+		relsut=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"delete from Student where classuuid =?", uuid);
+		this.addLog("delete_class", obj.getName()+",Student num="+relsut, relsut+"", request);
 
 		return true;
 	}

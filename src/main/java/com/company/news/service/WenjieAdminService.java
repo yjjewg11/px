@@ -3,6 +3,7 @@ package com.company.news.service;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
@@ -26,44 +27,67 @@ public class WenjieAdminService extends AbstractService {
 	private static final Logger logger = Logger.getLogger(UserInfoFilter.class);
 
 	private static final String model_name = "管理员模块";
+	
+	@Autowired
+	private StudentService studentService;
 	/**
 	 * 刷新学生与家长关系表
 	 * @param responseMessage
 	 * @throws Exception
 	 */
 	public void updateDataRefresh(ResponseMessage responseMessage) throws Exception {
+		
+		
+		
+
 		List<Student> listStudent=(List<Student>)this.nSimpleHibernateDao.getHibernateTemplate().find(
 				"from Student ");
-		Integer count =0;
-		for(Student student:listStudent){
-			
-			String dd=TimeUtils.getDateFormatString(student.getBirthday());
-			if(student.getBirthday()!=null&&student.getBirthday().contains("2015")){
-				logger.info(student.getBirthday()+"==>"+dd);
-				count++;
-				student.setBirthday("");
-				this.nSimpleHibernateDao.save(student);
-			}else if(!dd.equals(student.getBirthday())){
-				logger.info(student.getBirthday()+"==>"+dd);
-				student.setBirthday(dd);
-				this.nSimpleHibernateDao.save(student);
-				count++;
-			}
-			
-			
-		}
 		
-		logger.info("count ="+count);
-		if(true)return;
+//		修复学生初始格式bug.
+//		Integer count =0;
+//		for(Student student:listStudent){
+//			
+//			String dd=TimeUtils.getDateFormatString(student.getBirthday());
+//			if(student.getBirthday()!=null&&student.getBirthday().contains("2015")){
+//				logger.info(student.getBirthday()+"==>"+dd);
+//				count++;
+//				student.setBirthday("");
+//				this.nSimpleHibernateDao.save(student);
+//			}else if(!dd.equals(student.getBirthday())){
+//				logger.info(student.getBirthday()+"==>"+dd);
+//				student.setBirthday(dd);
+//				this.nSimpleHibernateDao.save(student);
+//				count++;
+//			}
+//			
+//			
+//		}
+//		
+//		logger.info("count ="+count);
+//		if(true)return;
 		//刷新学生和家长关系表.
 		for(Student student:listStudent){
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_ye, student.getYe_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_nai, student.getNai_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_waigong, student.getWaigong_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_waipo, student.getWaipo_tel());
-			this.updateStudentContactRealation(student, SystemConstants.USER_type_other, student.getOther_tel());
+			
+			
+			student.setBa_tel(PxStringUtil.repairCellphone(student.getBa_tel()));
+			student.setMa_tel(PxStringUtil.repairCellphone(student.getMa_tel()));
+			student.setYe_tel(PxStringUtil.repairCellphone(student.getYe_tel()));
+			student.setNai_tel(PxStringUtil.repairCellphone(student.getNai_tel()));
+			student.setWaigong_tel(PxStringUtil.repairCellphone(student.getWaigong_tel()));
+			student.setOther_tel(PxStringUtil.repairCellphone(student.getOther_tel()));
+			student.setWaipo_tel(PxStringUtil.repairCellphone(student.getWaipo_tel()));
+			
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(student);
+			
+			studentService.updateAllStudentContactRealationByStudent(student);
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ye, student.getYe_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_nai, student.getNai_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_waigong, student.getWaigong_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_waipo, student.getWaipo_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_other, student.getOther_tel());
 		}
 		
 	}

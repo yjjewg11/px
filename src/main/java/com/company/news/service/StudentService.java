@@ -9,22 +9,20 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.AbstractStudent;
 import com.company.news.entity.PClass;
-import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
-import com.company.news.entity.StudentContactRealation;
+import com.company.news.entity.StudentBind;
+import com.company.news.entity.User;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -74,7 +72,15 @@ public class StudentService extends AbstractStudentService {
 
 		// 格式纠正
 		student.setBirthday(TimeUtils.getDateFormatString(student.getBirthday()));
-
+		
+		student.setBa_tel(PxStringUtil.repairCellphone(student.getBa_tel()));
+		student.setMa_tel(PxStringUtil.repairCellphone(student.getMa_tel()));
+		student.setYe_tel(PxStringUtil.repairCellphone(student.getYe_tel()));
+		student.setNai_tel(PxStringUtil.repairCellphone(student.getNai_tel()));
+		student.setWaigong_tel(PxStringUtil.repairCellphone(student.getWaigong_tel()));
+		student.setOther_tel(PxStringUtil.repairCellphone(student.getOther_tel()));
+		student.setWaipo_tel(PxStringUtil.repairCellphone(student.getWaipo_tel()));
+		
 		student.setCreate_time(TimeUtils.getCurrentTimestamp());
 		student.setGroupuuid(pClass.getGroupuuid());
 		// 有事务管理，统一在Controller调用时处理异常
@@ -111,7 +117,13 @@ public class StudentService extends AbstractStudentService {
 			student.setCreate_time(old_student.getCreate_time());
 			// 格式纠正
 			student.setBirthday(TimeUtils.getDateFormatString(student.getBirthday()));
-
+			student.setBa_tel(PxStringUtil.repairCellphone(student.getBa_tel()));
+			student.setMa_tel(PxStringUtil.repairCellphone(student.getMa_tel()));
+			student.setYe_tel(PxStringUtil.repairCellphone(student.getYe_tel()));
+			student.setNai_tel(PxStringUtil.repairCellphone(student.getNai_tel()));
+			student.setWaigong_tel(PxStringUtil.repairCellphone(student.getWaigong_tel()));
+			student.setOther_tel(PxStringUtil.repairCellphone(student.getOther_tel()));
+			student.setWaipo_tel(PxStringUtil.repairCellphone(student.getWaipo_tel()));
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().update(student);
 
@@ -356,6 +368,61 @@ public class StudentService extends AbstractStudentService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	public List<Object[]> update_and_queryFor_doorrecord_OutExcel(String classuuid,
+			String groupuuid,String uuid,User user) throws Exception {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
+		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid ";
+		sql+=" where s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		
+		sql += "order by s1.classuuid,CONVERT( s1.name USING gbk)";
+		
+//原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
+		List<Object[]> list = s.createSQLQuery(sql).list();
+		 Object maxUserid= s.createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
+		 Long startUserid=0l;
+		 try {
+			 startUserid=Long.valueOf(maxUserid+"");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 for(Object[] obj:list){
+			if(obj[2]==null){//用户编号 空,需要生成.
+				StudentBind b2=null;
+				if(obj[11]!=null){
+					b2=(StudentBind)this.nSimpleHibernateDao.getObjectById(StudentBind.class, obj[11].toString());
+				}
+				if(b2==null){
+					 b2=new StudentBind();
+				}
+				
+				b2.setStudentuuid(obj[9]+"");
+				if(StringUtils.isBlank(b2.getStudentuuid())){
+					throw new Exception("学生uuid不能为空");
+				}
+				b2.setUserid((++startUserid)+"");
+				b2.setCard_factory(null);
+				b2.setCreate_user(user.getName());
+				b2.setCreate_useruuid(user.getUuid());
+				b2.setGroupuuid(obj[10]+"");
+				b2.setName(obj[3]+"");
+				b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+				this.nSimpleHibernateDao.save(b2);
+				b2.setType(1);//学生卡
+				
+				//获取新新生成的userid
+				obj[2]=b2.getUserid();
+			}
+		}
+		return list;
 	}
 
 }

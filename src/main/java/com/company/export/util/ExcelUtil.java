@@ -584,4 +584,92 @@ public class ExcelUtil {
 				os.close();
 		
 	}
+	public static void outXLS_doorrecord(HttpServletResponse response,
+			String fname, List<Object[]> list) throws Exception {
+		response.setHeader("Pragma", "no-cache");
+		fname = java.net.URLEncoder.encode(fname,"UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename="
+				+ new String(fname.getBytes("UTF-8"),"GBK") + ".xls");
+		response.setContentType("application/msexcel");// 定义输出类型
+		response.setCharacterEncoding(SystemConstants.Charset);
+//		createExcel_huaMingce(response.getOutputStream(), list,classlist);
+		OutputStream os=response.getOutputStream();
+		
+		// 创建工作区
+				WritableWorkbook workbook = Workbook.createWorkbook(os);
+				// 创建新的一页，sheet只能在工作簿中使用
+				WritableSheet sheet = workbook.createSheet("幼儿园门禁记录表", 0);
+
+				sheet.setColumnView(0, 12);
+				sheet.setColumnView(1, 12);
+				sheet.setColumnView(2, 12);
+				sheet.setColumnView(3, 12);
+				sheet.setColumnView(4, 12);
+				sheet.setColumnView(5, 12);
+				sheet.setColumnView(6, 12);
+				sheet.setColumnView(7, 12);
+				sheet.setColumnView(8, 12);
+				sheet.setColumnView(9, 12);
+				sheet.setColumnView(10, 12);
+				sheet.setColumnView(11, 12);
+				sheet.setColumnView(12, 12);
+				
+				WritableCellFormat cf=getWritableFontForBody();
+//				sheet.mergeCells(0, 0, 2, 0);
+				
+				sheet.addCell(new Label(0, 0, "原始卡号", cf));
+				sheet.addCell(new Label(1, 0, "用户卡号", cf));
+				sheet.addCell(new Label(2, 0, "用户编号", cf));
+				sheet.addCell(new Label(3, 0, "用户名", cf));
+				sheet.addCell(new Label(4, 0, "部门名称", cf));
+				sheet.addCell(new Label(5, 0, "性别", cf));
+				sheet.addCell(new Label(6, 0, "身份证号", cf));
+				sheet.addCell(new Label(7, 0, "出生日期", cf));
+				sheet.addCell(new Label(8, 0, "家庭住址", cf));
+				sheet.addCell(new Label(9, 0, "邮编", cf));
+				sheet.addCell(new Label(10, 0, "联系电话", cf));
+				sheet.addCell(new Label(11, 0, "入学日期", cf));
+				sheet.addCell(new Label(12, 0, "有效期", cf));
+				
+				Integer index=1;
+				 cf=getWritableFontForBody();
+				 
+				 List sexList=CommonsCache.getBaseDataListByTypeuuid("sex");
+				for (Object[] s : list) {
+					for(int i=0;i<13;i++){
+						
+						//测试使用
+//						if(i==0||i==1){
+//							String t="";
+//							if(s[2]!=null)t=s[2]+"";
+//							sheet.addCell(new Label(i, index, t, cf));
+//							continue;
+//						}
+						//end 测试用
+//原始卡号	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空	
+						//	sheet.addCell(new Label(2, index, CommonsCache.getBaseDatavalue(s.getSex(), sexList), cf));
+						if(i==9||i==10||i==11){
+							sheet.addCell(new Label(i, index, "", cf));
+						}else if(i==12){
+							sheet.addCell(new Label(i, index, "2050/8/1", cf));
+						}else if(i==5){//性别
+							String t="";
+							if(s[i]!=null){
+								t=CommonsCache.getBaseDatavalue(Integer.valueOf(s[i]+""), sexList);
+							}
+							sheet.addCell(new Label(i, index, t, cf));
+						}else{
+							String t="";
+							if(s[i]!=null)t=s[i]+"";
+							sheet.addCell(new Label(i, index, t, cf));
+						}
+					}
+					index++;
+				}
+				// 将内容写到输出流中，然后关闭工作区，最后关闭输出流
+				workbook.write();
+				workbook.close();
+				os.close();
+		
+	}
 }

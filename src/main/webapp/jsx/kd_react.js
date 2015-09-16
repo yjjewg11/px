@@ -4218,7 +4218,8 @@ var Class_EventsTable_byRight = React.createClass({
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
-	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
+	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
+	            {value: 'doorrecord', label: '门禁批量制卡导入表'}
 	          ];
 
 	    return {

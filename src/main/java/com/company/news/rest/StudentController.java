@@ -209,6 +209,7 @@ public class StudentController extends AbstractRESTController {
 		
 		String groupuuid=request.getParameter("groupuuid");
 		String classuuid=request.getParameter("classuuid");
+		String uuid=request.getParameter("uuid");
 		//导出的格式
 		String xlsname=request.getParameter("xlsname");
 		  
@@ -225,10 +226,25 @@ public class StudentController extends AbstractRESTController {
 			responseMessage.setMessage("幼儿园必选/The kindergarten required");
 			return "";
 		}
+	
+		//门禁批量制卡用
+		if("doorrecord".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Object[]> list = studentService.update_and_queryFor_doorrecord_OutExcel(
+					classuuid,
+					groupuuid,uuid,user);
+			ExcelUtil.outXLS_doorrecord(response, "幼儿园门禁记录表",list);
+			return null;
+		}
+		
+		
 		List<Student> list = studentService.queryForOutExcel(
 				classuuid,
 				groupuuid);
+		
 		List<PClass> listClass = studentService.queryClassNameForOutExcel(classuuid);
+		
+		
 		if("huaMingCe".equals(xlsname)){
 			ExcelUtil.outXLS_huaMingce(response, "幼儿园花名册",list,listClass);
 			return null;
