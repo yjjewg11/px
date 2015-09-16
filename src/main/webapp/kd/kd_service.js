@@ -1527,6 +1527,123 @@ function react_ajax_favorites_show(type,reluuid){
  			error :G_ajax_error_fn
  	   	});
  	   };
+//———————————————————————————————刷卡记录—————————————————————————   
+  /*
+   * <刷卡记录>
+   * 
+   * */	   
+function ajax_class_card(classuuid,name,pageNo) {
+//		var list=Store.getGroupNoGroup_wjd();
+	  if(!name)name="";
+//	  if(!groupuuid){
+//		  if(list&&list.length>0){
+//			  groupuuid=list[0].uuid;
+//		  }
+//	  }
+	  if(!pageNo)pageNo=1;
+	  //Queue.push:点击机构或班级搜索刷新后的界面保存，不会去其他界面再回来又初始状态;
+	Queue.push(function(){ajax_class_card(classuuid,name,pageNo);},"刷卡记录");
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/listForTelByPage.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {classuuid:classuuid,name:name,pageNo:pageNo},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Teacher_class_card, {
+					classuuid:classuuid,
+					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","brand_name"),
+					events: data.list.data,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+				}), document.getElementById('div_body'));
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  	   
  	   
  	   

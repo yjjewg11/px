@@ -395,7 +395,12 @@ function menu_dohome(){
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  }
+		                    	  },
+		                    	  {
+		                    		  "img": hostUrlCDN+"i/home.png",
+	                                  "link": "javascript:menu_class_card_fn()",
+	                                  "title": "刷卡记录"
+	                                }
 	                    	  ];
 	/**
 	 * 禁用用户
@@ -627,6 +632,29 @@ function index_init(){
 window.onload=function(){ 
 	index_init();
 }; 
+
+
+
+/*
+ * （首页）刷卡记录；
+ * @跳转kd_service发服务器请求
+ * */
+function menu_class_card_fn() {
+	var classList=Store.getMyClassList();
+	var classuuid;
+	if(!classList||classList.length==0){
+		classuuid=null;
+	}else{
+		classuuid=classList[0].uuid;
+	}
+	ajax_class_card(classuuid);
+};
+
+
+
+
+
+
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$管理区域$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
