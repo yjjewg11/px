@@ -740,6 +740,11 @@ function common_teacherDailyTask_status(status){
  * 禁止发布公共组件方法
  * */
 function common_check_disable(type,uuid){
+	
+	if(!confirm("确定要屏蔽吗?")){
+		return;
+	}
+	$.AMUI.progress.start();
 	var url = hostUrl + "rest/check/disable.json";
 	$.ajax({
 		type : "POST",

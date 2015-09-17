@@ -982,6 +982,7 @@ public class UserinfoService extends AbstractService {
 		if (StringUtils.isNotBlank(name)) {
 			sql += " and {t1}.name like '%" + name + "%'";
 		}
+		sql += "order by CONVERT( {t1}.name USING gbk)";
 		Query q = s.createSQLQuery(sql).addEntity("t1", UserForJsCache.class);
 		q.setMaxResults(200);
 		return q.list();

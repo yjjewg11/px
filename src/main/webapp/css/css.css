@@ -91,7 +91,9 @@ z-index: 9999;
    		 color:red;
     	background-color: silver;
     }
-    
+    .px_color_red{
+   		 color:red;
+    }
     
     .G_img_down404{
    	 background-color: silver;

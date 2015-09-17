@@ -16,7 +16,7 @@ var G_check_disable_div_byRight = React.createClass({
 	  render: function() {
 		  if(G_user_hasRight("KD_announce_m")){
 			  return (
-					  <button  className="am-margin-left-xs am-btn-sm am-btn-danger am-round" onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
+					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger am-round" onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
 			    );
 		  }else{
 			  return (
