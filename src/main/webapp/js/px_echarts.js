@@ -57,6 +57,7 @@ var PXECharts_ajax={
 		data.push( {value: 'uss', label: '教师统计（按性别）'});
 		data.push( {value: 'uls', label: '教师统计（按登陆时间）'});
 		data.push( {value: 'sss', label: '学生统计（按性别）'});
+		data.push( {value: 'css', label: '学生统计（按人数）'});
 		data.push( {value: 'cns', label: '班级互动发帖数统计'});
 		data.push( {value: 'cnts', label: '班级互动热门TOP10'});
 		return data;
@@ -89,6 +90,9 @@ var PXECharts_ajax={
 	ajax_cnts:function(data){
 		PXECharts_ajax.ajax_uss(data);
 	},
+	ajax_css:function(data){
+		PXECharts_ajax.ajax_css(data);
+	},
 	/**
 	 * 请求返回数据->图标显示.默认调用PXECharts_ajax.ajax_uss(data);
 	 * @param data
@@ -118,6 +122,52 @@ var PXECharts_ajax={
 			    ]
 			};
 		
+		
+		 PXECharts.loadData(option);
+		
+	},ajax_css:function(data){
+		option = {
+			    title : {
+			        text: data.title_text,
+			        subtext: data.title_subtext
+			    },
+			    tooltip : {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data:data.legend_data
+			    },
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            mark : {show: true},
+			            dataView : {show: true, readOnly: false},
+			            magicType: {show: true, type: ['line', 'bar']},
+			            restore : {show: true},
+			            saveAsImage : {show: true}
+			        }
+			    },
+			    calculable : true,
+			    xAxis : [
+			        {
+			            type : 'value',
+			            boundaryGap : [0, 0.01]
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'category',
+			            data : eval("("+data.yAxis_data+")")
+			        }
+			    ],
+			    series : [
+			        {
+			            name:data.legend_data[0],
+			            type:'bar',
+			            data:eval("("+data.series_data[0].data+")")
+			        }
+			    ]
+			};
 		
 		 PXECharts.loadData(option);
 		
