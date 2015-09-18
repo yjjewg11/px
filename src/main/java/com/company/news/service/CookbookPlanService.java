@@ -59,11 +59,14 @@ public class CookbookPlanService extends AbstractService {
 
 		CookbookPlan cookbookPlan = this.getByPlandateAndGroupuuid(plandate,
 				cookbookPlanJsonform.getGroupuuid());
-
+		String uuid=null;
 		if (cookbookPlan == null)
 			cookbookPlan = new CookbookPlan();
-
+		else{
+			uuid=cookbookPlan.getUuid();
+		}
 		BeanUtils.copyProperties(cookbookPlan, cookbookPlanJsonform);
+		cookbookPlan.setUuid(uuid);
 		cookbookPlan.setPlandate(plandate);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(

@@ -1527,126 +1527,6 @@ function react_ajax_favorites_show(type,reluuid){
  			error :G_ajax_error_fn
  	   	});
  	   };
-//———————————————————————————————刷卡记录—————————————————————————   
-  /*
-   * <刷卡记录>
-   * 
-   * */	   
-function ajax_class_card(classuuid){
-	Queue.push(function(){ajax_class_card(classuuid);},"刷卡记录");
-	$.AMUI.progress.start();	
-	var formdata=null;
-    var url = hostUrl + "rest/student/getStudentByClassuuid.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data:{classuuid:classuuid},
-		dataType : "json",
-		 async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				formdata=data.list;
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : G_ajax_error_fn
-	});
-	
-	
-	var cards=null;
-	var 
-	url=hostUrl + "rest/studentbind/queryByClassuuid.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		data:{classuuid:classuuid},
-		 async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				cards=data.list;
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error :G_ajax_error_fn
-	});
-	if(formdata){
-		for(var i=0;i<formdata.length;i++){
-			formdata[i].cardType="未发卡";       	   
-           }
-		}
-
-	
-	if(cards){
-		for(var i=0;i<formdata.length;i++){
-           for(var s=0;s<cards.length;s++){
-        	if(formdata[i].uuid==cards[s][0]){
-        		formdata[i].cardID=cards[s][1];
-        		formdata[i].cardType="已发卡";
-        	}        	   
-           }
-		}
-	}	
-
-	React.render(React.createElement(Teacher_class_card,{
-		events:formdata,
-		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
-		classuuid:classuuid
-		}), document.getElementById('div_body'));
-	return ;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 	   
- 	   
  	   
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$管理区域$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -1903,6 +1783,106 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   }  
   
 
+//——————————————————————————班级互动<管理模块>—————————————————————————— 	  
+  /*
+   * <班级互动>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+   * 基本框 等
+   * @type：Type：1自己相关的互动 Type:2 所有人的互动;
+   * */
+  var hd_type_byRight="";
+  function ajax_classnews_list_div_byRight(type){
+  	  Queue.push (function(){ajax_classnews_list_div_byRight(type);},"班级互动") ;
+  	  hd_type_byRight=type;
+  	  React.render(React.createElement(Classnews_Div_list_byRight,{
+  		type:hd_type_byRight
+  		}), document.getElementById('div_body'));  	
+  };
+  /*
+   * <班级互动>服务器请求
+   * @请求数据成功后执行Classnews_EventsTable方法绘制
+   * 在kd_react
+   * */
+  var g_classnews_pageNo_point=1;
+  function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type,callback) {
+//  	var re_data=null;
+  	var url;
+  	if(!pageNo)pageNo=1;
+  	g_classnews_pageNo_point=pageNo;
+  	$.AMUI.progress.start();
+  	url =hostUrl + "rest/classnews/getAllClassNews.json";
+
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+    		data : {pageNo:pageNo},
+  		dataType : "json",
+//  		async: false,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Classnews_EventsTable_byRight, {
+  					events: data.list,
+  					handleClick:btn_click_classnews,
+  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+  					}), document.getElementById(list_div));
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
+  			} else {
+  				alert(data.ResMsg.message);
+  				G_resMsg_filter(data.ResMsg);
+  			}
+  		},
+		error :G_ajax_error_fn
+  	});
+  };
+
+  /*
+   * <班级互动>添加与编辑按钮事件和列表点击处理方法
+   * @请求数据成功后执行ajax_classnews_edit方法绘制
+   * 在kd_react
+   * */
+  function btn_click_classnews_byRight(m,formdata){
+  	Queue.push(function(){btn_click_classnews_byRight(m,formdata);},"发布互动");
+  	ajax_classnews_edit(m,formdata);
+  };	  
+  /*
+   * <班级互动>添加与编辑按钮服务器请求（公共方法大图标班级活动也请求此方法）
+   * @请求数据成功后执行Classnews_edit方法绘制;
+   * @Classnews_show:大图标班级互动跳转绘制和列表名字点击按钮详情绘制;
+   * 在kd_react
+   * */
+  function ajax_classnews_edit_byRight(m,formdata){
+	  var myclasslist=G_selected_dataModelArray_byArray(mycalsslist,"uuid","name");
+		if(myclasslist==null||myclasslist.length==0){
+			G_msg_pop("你没有所属班级,不能发布班级互动.");
+			return;
+		}
+  	if(m=="add"){
+  		React.render(React.createElement(Classnews_edit_byRight,{
+  			formdata:formdata,
+  			mycalsslist:G_selected_dataModelArray_byArray(mycalsslist,"uuid","name")
+  			}), document.getElementById('div_body'));
+  	}
+  };
+  /*
+   * <班级互动>添加与编辑提交按钮服务器请求
+   * @Form表单发给服务器，服务器自己取需要的参数；
+   * */
+  function ajax_classnews_save_byRight(){	
+  	  var imgs="";
+  	  $(".G_cookplan_Img_img").each(function(){
+  		  imgs+=","+$(this).attr("src");
+  		});	  
+  	  $('#imgs').val(imgs);	  
+  	var opt={
+  			 formName:"editClassnewsForm",
+  			 url:hostUrl + "rest/classnews/save.json",
+  			 cbFN:null
+  			 };
+  	G_ajax_abs_save(opt);
+  }
+  
 
   
   

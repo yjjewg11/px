@@ -1,4 +1,5 @@
-
+//我选我的班级后的全局记录
+G_myclass_choooose=null;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -95,6 +96,11 @@ function login_affter_init(){
 	                        	  "link": "##",
 	                            "title": "老师公告"
 	                          },
+	                          {
+	                        	                                  "link": "##",
+	                        	                                 "fn":function(){ajax_classnews_list_div_byRight(1);},
+	                        	                                 "title": "班级互动"
+	                        	                               },
 	                          {
 	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
 	                              "link": "##",
@@ -397,9 +403,9 @@ function menu_dohome(){
 		                    	    "title": "我的收藏"
 		                    	  },
 		                    	  {
-		                    		  "img": hostUrlCDN+"i/home.png",
-	                                  "link": "javascript:menu_class_card_fn()",
-	                                  "title": "刷卡记录"
+		                    		  "img": hostUrlCDN+"i/qiandao.png",
+	                                  "link": "javascript:menu_class_sign_today_fn()",
+	                                  "title": "今日签到"
 	                                }
 	                    	  ];
 	/**
@@ -639,15 +645,25 @@ window.onload=function(){
  * （首页）刷卡记录；
  * @跳转kd_service发服务器请求
  * */
-function menu_class_card_fn() {
+
+function menu_class_sign_today_fn() {
+	Queue.push(function(){menu_class_sign_today_fn();},"今日签到");
 	var classList=Store.getMyClassList();
-	var classuuid;
-	if(!classList||classList.length==0){
-		classuuid=null;
-	}else{
-		classuuid=classList[1].uuid;
+	if(!G_myclass_choooose){
+	
+		var classuuid;
+		if(!classList||classList.length==0){
+			classuuid=null;
+		}else{
+			classuuid=classList[1].uuid;
+		}
+		G_myclass_choooose=classuuid;
 	}
-	ajax_class_card(classuuid);
+	React.render(React.createElement(Teacher_class_sign_today,{
+	//	events:formdata,
+		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+		classuuid:G_myclass_choooose
+		}), document.getElementById('div_body'));
 };
 
 

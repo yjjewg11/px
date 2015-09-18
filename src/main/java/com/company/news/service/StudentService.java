@@ -387,7 +387,8 @@ public class StudentService extends AbstractStudentService {
 //原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
 		List<Object[]> list = s.createSQLQuery(sql).list();
 		 Object maxUserid= s.createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
-		 Long startUserid=0l;
+		//从100开始.防止100内,留自定义
+		 Long startUserid=100l;
 		 try {
 			 startUserid=Long.valueOf(maxUserid+"");
 		} catch (Exception e) {

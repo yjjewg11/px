@@ -9,12 +9,10 @@ import org.springframework.stereotype.Service;
 import com.company.common.SerializableUtil;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
-import com.company.news.entity.Student;
-import com.company.news.entity.StudentBind;
+import com.company.news.entity.GroupHeartBeat;
 import com.company.news.iservice.StudentSignRecordIservice;
 import com.company.news.jsonform.DoorRecordJsonform;
 import com.company.news.jsonform.DoorUserJsonform;
-import com.company.news.jsonform.StudentBindJsonform;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -54,7 +52,7 @@ public class DoorRecordService extends AbstractService {
 			return false;
 		}
 
-		if (!group.getPrivate_key().equals(doorRecordJsonform.getPrivate_key())) {
+		if (group.getPrivate_key()!=null&&!group.getPrivate_key().equals(doorRecordJsonform.getPrivate_key())) {
 			responseMessage.setMessage("Private_key密钥不匹配！");
 			return false;
 		}
@@ -136,6 +134,23 @@ public class DoorRecordService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	public boolean updateheartbeat(String groupuuid,String app_id, String frequency,
+			String msg, ResponseMessage responseMessage) throws Exception {
+		GroupHeartBeat obj=null;
+		List list=this.nSimpleHibernateDao.getHibernateTemplate().find("from GroupHeartBeat where group_uuid=? and app_id=?", groupuuid,app_id);
+		if(list.size()>0){
+			obj=(GroupHeartBeat)list.get(0);
+		}else {
+			obj=new GroupHeartBeat();
+			obj.setGroup_uuid(groupuuid);
+			obj.setApp_id(app_id);
+		}
+		obj.setFrequency(frequency);
+		obj.setMsg(msg);
+		this.nSimpleHibernateDao.save(obj);
+		return false;
 	}
 
 }
