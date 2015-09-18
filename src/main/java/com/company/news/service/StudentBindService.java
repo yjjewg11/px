@@ -57,10 +57,10 @@ public class StudentBindService extends AbstractService {
 			return false;
 		}
 		
-		if(this.isBind(studentBindJsonform.getCardid())){
-			responseMessage.setMessage("Cardid已被绑定");
-			return false;
-		}
+//		if(this.isBind(studentBindJsonform.getCardid(),studentBindJsonform.get)){
+//			responseMessage.setMessage("Cardid已被绑定");
+//			return false;
+//		}
 
 		Student student=(Student)this.nSimpleHibernateDao.getObject(Student.class,studentBindJsonform.getStudentuuid() );
 		
@@ -101,16 +101,10 @@ public class StudentBindService extends AbstractService {
 		}
 		
 		// Studentuuid昵称验证
-		if(this.isBind(doorUserJsonform.getCardid())){
+		if(this.isBind(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid())){
 			responseMessage.setMessage("Cardid已被绑定");
 			return false;
 		}
-		
-		if(this.isBind(doorUserJsonform.getCardid())){
-			responseMessage.setMessage("Cardid已被绑定");
-			return false;
-		}
-		
 		StudentBind studentBind =null;
 		//根据uuid查询,有数据则只需要绑定卡id即可.
 		if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
@@ -120,8 +114,18 @@ public class StudentBindService extends AbstractService {
 					this.nSimpleHibernateDao.save(studentBind);
 					return true;
 				}
-		}//如何修改卡号.
+		}
+
+		if(studentBind==null){
+			responseMessage.setMessage("用户id没有找到="+doorUserJsonform.getUserid());
+			return false;
+		}
+		//如何修改卡号.
 		
+		
+		if(StringUtils.isBlank(doorUserJsonform.getIdNo())){
+			return false;
+		}
 		Student s = this.studentService.getStudentByIdNoAndGroup(
 				doorUserJsonform.getIdNo(), doorUserJsonform.getGroupuuid());
 		
@@ -159,6 +163,25 @@ public class StudentBindService extends AbstractService {
 		return true;
 	}
 	
+	
+	/**
+	 * 根据用户标识和学校uuid.
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public StudentBind getStudentBindBycardidAndGroup(String cardid, String groupuuid) {
+
+		List<StudentBind> list = (List<StudentBind>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from StudentBind  where cardid=? and groupuuid=?)", cardid, groupuuid);
+		if (list != null && list.size() > 0)
+		{
+			return list.get(0);
+		}
+		else
+			return null;
+	}
 	/**
 	 * 根据用户标识和学校uuid.
 	 * 
@@ -280,13 +303,16 @@ public class StudentBindService extends AbstractService {
 	 * @param responseMessage
 	 * @return
 	 */
-	private boolean isBind(String cardid) {
-		StudentBind studentBind=(StudentBind) this.nSimpleHibernateDao.getObjectByAttribute(StudentBind.class, "cardid", cardid);
-		
-		if(studentBind!=null)
-			return true;
-		
-		return false;
+	private boolean isBind(String cardid, String groupuuid) {
+
+			List<StudentBind> list = (List<StudentBind>) this.nSimpleHibernateDao.getHibernateTemplate()
+					.find("from StudentBind  where cardid=? and groupuuid=?)", cardid, groupuuid);
+			if (list != null && list.size() > 0)
+			{
+				return true;
+			}
+			else
+				return false;
 	}
 
 	@Override

@@ -994,7 +994,7 @@ return (
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
 		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
-		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,his.props.share_url)} round>分享</AMR_Button>
+		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} round>分享</AMR_Button>
 		     </AMR_ButtonToolbar>		     
 		     </div>
 		    	<footer className="am-comment-footer">

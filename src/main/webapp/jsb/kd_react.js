@@ -994,7 +994,7 @@ return (
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
 		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏"), 
-		     React.createElement(AMR_Button, {className: G_CallPhoneFN.isAndorid()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,his.props.share_url), round: true}, "分享")
+		     React.createElement(AMR_Button, {className: G_CallPhoneFN.isAndorid()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url), round: true}, "分享")
 		     )		     
 		     ), 
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
