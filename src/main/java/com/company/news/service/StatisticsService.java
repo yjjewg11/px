@@ -260,8 +260,7 @@ public class StatisticsService extends AbstractService {
 
 			String ps_data = "";
 			for (PClass p : list) {
-				ps_data += ("'"
-						+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "',");
+				ps_data += ((m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + ",");
 			}
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
 			sdvo.setName("班级人数");
