@@ -6089,3 +6089,235 @@ render: function() {
      );
      }
      }); 
+     
+     
+//±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+ 
+ //——————————————————————————签到查询——————————————————————————
+   /*
+    * <今日签到>绘制
+    * */  
+   var Teacher_class_sign_today_byRight = React.createClass({displayName: "Teacher_class_sign_today_byRight",	 
+  	 ajaxdata:{},
+  	 getInitialState: function() {
+		this.ajaxdata={
+				students:null,
+				cards:null,
+				signs:null,
+				classuuid:this.props.classuuid
+		}
+		return this.ajaxdata;
+	  },
+	 componentDidMount:function(){
+		  this.ajax_list(this.props.classuuid);
+    	},
+	  handleChange_selectgroup_uuid:function(val){
+    	   this.ajax_list(val);
+    	  G_myclass_choooose=val;
+       },
+       //2
+	 ajax_callback:function(obj){
+		 if(obj.students&&obj.cards&&obj.signs){
+			 this.setState(obj);
+		 }
+   	},
+   	//1
+   	ajax_list:function(classuuid){
+   		if(!classuuid){
+   			G_msg_pop("无班级")
+   			return;
+   		}
+   		this.ajaxdata={
+   				students:null,
+				cards:null,
+				signs:null,
+				classuuid:classuuid};
+   		//加载学生
+   		 this.ajax_students(classuuid);
+   		//加载学生绑定卡
+   		 this.ajax_cards(classuuid);
+   		//家长学生今天签到记录
+   		 this.ajax_signs(classuuid);
+   	},
+   	 ajax_students:function(classuuid){
+   		 var that=this;
+   		$.AMUI.progress.start();	
+   		var formdata=null;
+   		//班级学生列表
+   	    var url = hostUrl + "rest/student/getStudentByClassuuid.json";
+   		$.ajax({
+   			type : "GET",
+   			url : url,
+   			data:{classuuid:classuuid},
+   			dataType : "json",
+   			success : function(data) {
+   				$.AMUI.progress.done();
+   				if (data.ResMsg.status == "success") {
+   					if(!data.list)data.list=[];
+   					that.ajaxdata.students=data.list;
+   					//that.setState(that.ajaxdata);
+   					that.ajax_callback(that.ajaxdata);
+   				} else {
+   					alert("加载数据失败："+data.ResMsg.message);
+   				}
+   			},
+   			error : G_ajax_error_fn
+   		});
+   		
+   	},
+   	ajax_cards:function(classuuid){
+  		 var that=this;
+  		$.AMUI.progress.start();	
+  		var formdata=null;
+  		//班级学生列表
+  	    var url = hostUrl + "rest/studentbind/queryByClassuuid.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data:{classuuid:classuuid},
+  			dataType : "json",
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					if(!data.list)data.list=[];
+  					that.ajaxdata.cards=data.list;
+//      					that.setState(that.ajaxdata);
+  					that.ajax_callback(that.ajaxdata);
+  				} else {
+  					alert("加载数据失败："+data.ResMsg.message);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		
+  	},
+  	 ajax_signs:function(classuuid){
+  		 var that=this;
+  		$.AMUI.progress.start();	
+  		var formdata=null;
+  		//班级学生列表
+  	    var url = hostUrl + "rest/studentSignRecord/queryTodayCountByClassuuid.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data:{classuuid:classuuid},
+  			dataType : "json",
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					if(!data.list)data.list=[];
+  					that.ajaxdata.signs=data.list;
+  				//	that.setState(that.ajaxdata);
+  					that.ajax_callback(that.ajaxdata);
+  				} else {
+  					alert("加载数据失败："+data.ResMsg.message);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		
+  	},
+  	 parse_ajaxdata:function(obj){
+  		if(!obj||!obj.students)return obj;
+  		var formdata=obj.students;
+  		var cards=obj.cards;
+  		var signs=obj.signs;
+  		for(var i=0;i<formdata.length;i++){
+  			//卡号
+  			if(cards){
+  		       for(var s=0;s<cards.length;s++){
+  		    	if(formdata[i].uuid==cards[s][0]){
+  		    		if(formdata[i].cardID)formdata[i].cardID+=","+cards[s][1];
+  		    		else formdata[i].cardID=cards[s][1];
+  		    		//formdata[i].cardType="已发卡";
+  		    	}        	   
+  		       }
+  			}
+  			//签到标志
+  			if(signs){
+  			       for(var s=0;s<signs.length;s++){
+  			    	if(formdata[i].uuid==signs[s][0]){
+  			    		formdata[i].qiandao=true;
+  			    	}        	   
+  			       }
+  				}
+  		}
+  		return obj;
+  	},
+  	getDefaultProps: function() {
+  	       var data = [
+  	                  {value: 'one' , label: '学生基本表 ' },
+  	                  {value: 'huaMingCe' , label: '幼儿花名册' },
+  	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
+  	                  {value: 'doorrecord' , label: '导出接送卡表' }
+  	                ];
+
+  	          return {
+  	            down_list: data
+  	          };
+  	        },
+  	        handleClick_download: function(xlsname) {
+  				  var class_uuid=$("input[name='class_uuid']").val();
+  				 ajax_flowername_download_byRight("",class_uuid,xlsname);
+  		 },
+   render: function() {
+  	 var obj=this.parse_ajaxdata(this.state);
+  	 
+  	 if(!obj.students){
+  		 obj.students=[];
+  	 }
+   return (
+   React.createElement("div", null, 
+     React.createElement("div", {className: "am-form-group"}, 
+     React.createElement("hr", null)
+       ), 
+         React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+         React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
+   	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.classList, btnStyle: "primary", value: obj.classuuid})
+   	  ), 
+   	  React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
+   	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
+   	  )
+  	 
+   	  )
+   	  ), 
+   	      
+     React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
+       React.createElement("thead", null, 
+         React.createElement("tr", null, 
+           React.createElement("th", null, "姓名"), 
+           React.createElement("th", null, "卡号"), 
+           React.createElement("th", null, "今日签到")
+         )
+       ), 
+       React.createElement("tbody", null, 
+         obj.students.map(function(event) {
+           return (React.createElement(ClassCard_EventRow_byRight, {key: event.id, event: event}));
+         })
+       )
+     )
+     )
+   );
+   }
+   });
+   /*
+   * 刷卡记录详情内容绘制;am-table-bordered
+   * */
+   var ClassCard_EventRow_byRight = React.createClass({displayName: "ClassCard_EventRow_byRight", 
+     render: function() {
+       var event = this.props.event;
+       var className = event.highlight ? 'am-active' :
+         event.disabled ? 'am-disabled' : '';
+
+       return (
+         React.createElement("tr", {className: className}, 
+           React.createElement("td", null, event.name), 
+           React.createElement("td", null, event.cardID), 
+           React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无")
+           ) 
+       );
+     }
+   });       
+       
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±            

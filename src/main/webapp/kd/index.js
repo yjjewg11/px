@@ -97,9 +97,9 @@ function login_affter_init(){
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                        	                                  "link": "##",
-	                        	                                 "fn":function(){ajax_classnews_list_div_byRight(1);},
-	                        	                                 "title": "班级互动"
+                              "link": "##",
+                             "fn":function(){ajax_classnews_list_div_byRight(1);},
+                             "title": "班级互动"
 	                        	                               },
 	                          {
 	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
@@ -223,6 +223,13 @@ function login_affter_init(){
 					menu_data.push(t_menu);
 				}
 	
+	//————————————签到查询<权限>——————————		
+	t_menu={
+      	   		"link": "##",
+      	   		"fn":menu_class_sign_today_fn_byRight,
+      	   		"title": "签到查询",
+		  };
+		menu_data.push(t_menu);
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
@@ -845,4 +852,29 @@ function menu_statistics_list_fn_byRight() {
  * */
 function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
+};
+
+/*
+ * （标头）签到查询；
+ * @跳转kd_service发服务器请求
+ * */
+
+function menu_class_sign_today_fn_byRight() {
+	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
+	var classList=Store.getMyClassList();
+	if(!G_myclass_choooose){
+	
+		var classuuid;
+		if(!classList||classList.length==0){
+			classuuid=null;
+		}else{
+			classuuid=classList[1].uuid;
+		}
+		G_myclass_choooose=classuuid;
+	}
+	React.render(React.createElement(Teacher_class_sign_today_byRight,{
+	//	events:formdata,
+		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+		classuuid:G_myclass_choooose
+		}), document.getElementById('div_body'));
 };
