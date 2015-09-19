@@ -6104,6 +6104,8 @@ render: function() {
 				students:null,
 				cards:null,
 				signs:null,
+				groupuuid:this.props.groupuuid,
+				classList:this.props.classList,
 				classuuid:this.props.classuuid
 		}
 		return this.ajaxdata;
@@ -6112,9 +6114,16 @@ render: function() {
 		  this.ajax_list(this.props.classuuid);
     	},
 	  handleChange_selectgroup_uuid:function(val){
-    	   this.ajax_list(val);
-    	  G_myclass_choooose=val;
+		  var classList=Store.getChooseClass(val);
+		  this.ajaxdata.groupuuid=val;
+		  this.ajaxdata.classList=G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+    	   this.ajax_list(classList[0].uuid);
+    	   //G_mygroup_choooose=classList[0].uuid;
        },
+ 	  handleChange_selectclass_uuid:function(val){
+   	   this.ajax_list(val);
+   	  G_myclass_choooose=val;
+      },
        //2
 	 ajax_callback:function(obj){
 		 if(obj.students&&obj.cards&&obj.signs){
@@ -6127,11 +6136,10 @@ render: function() {
    			G_msg_pop("无班级")
    			return;
    		}
-   		this.ajaxdata={
-   				students:null,
-				cards:null,
-				signs:null,
-				classuuid:classuuid};
+   		this.ajaxdata.students=null;
+   		this.ajaxdata.cards=null;
+   		this.ajaxdata.signs=null;
+   		this.ajaxdata.classuuid=classuuid;
    		//加载学生
    		 this.ajax_students(classuuid);
    		//加载学生绑定卡
@@ -6274,7 +6282,8 @@ render: function() {
          <form id="editGroupForm" method="post" className="am-form">
          <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
          <div className="am-fl am-margin-bottom-sm">
-   	  <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.classList} btnStyle="primary" value={obj.classuuid} />
+      	  <AMUIReact.Selected id="selectgroup_uuid2" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.grouplist} btnStyle="primary" value={this.props.groupuuid} />
+    	  <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} />
    	  </div>
    	  <div className="am-fl am-margin-bottom-sm">
    	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   

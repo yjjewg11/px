@@ -1,5 +1,7 @@
 //我选我的班级后的全局记录
 G_myclass_choooose=null;
+//我选我的学校后的全局记录
+G_mygroup_choooose=null;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -861,19 +863,34 @@ function menu_teachingjudge_list_fn_byRight () {
 
 function menu_class_sign_today_fn_byRight() {
 	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
-	var classList=Store.getMyClassList();
+	var  grouplist=Store.getGroupByRight("KD_class_m");	
+	if(!G_mygroup_choooose){
+		
+		var groupuuid;
+
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choooose=groupuuid;
+	}
+
+	var classList=Store.getChooseClass(grouplist[0].uuid);
 	if(!G_myclass_choooose){
 	
 		var classuuid;
+
 		if(!classList||classList.length==0){
 			classuuid=null;
 		}else{
-			classuuid=classList[1].uuid;
+			classuuid=classList[0].uuid;
 		}
 		G_myclass_choooose=classuuid;
 	}
 	React.render(React.createElement(Teacher_class_sign_today_byRight,{
-	//	events:formdata,
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:groupuuid,
 		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
 		classuuid:G_myclass_choooose
 		}), document.getElementById('div_body'));
