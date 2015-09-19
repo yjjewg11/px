@@ -1,7 +1,5 @@
 //我选我的班级后的全局记录
 G_myclass_choooose=null;
-//我选我的学校后的全局记录
-G_mygroup_choooose=null;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -864,7 +862,6 @@ function menu_teachingjudge_list_fn_byRight () {
 function menu_class_sign_today_fn_byRight() {
 	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
 	var  grouplist=Store.getGroupByRight("KD_class_m");	
-	if(!G_mygroup_choooose){
 		
 		var groupuuid;
 
@@ -873,8 +870,7 @@ function menu_class_sign_today_fn_byRight() {
 		}else{
 			groupuuid=grouplist[0].uuid;
 		}
-		G_mygroup_choooose=groupuuid;
-	}
+
 
 	var classList=Store.getChooseClass(grouplist[0].uuid);
 	if(!G_myclass_choooose){
