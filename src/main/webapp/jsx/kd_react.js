@@ -6380,12 +6380,148 @@ render: function() {
          <tr className={className} >
            <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event.uuid)}  >{event.name}</a></td>
            <td>{event.cardID}</td>
-           <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}</td>
+           <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}<AMUIReact.Button onClick={ajax_ClassCard_info_byRight.bind(this,event.uuid)} amStyle="success">详情</AMUIReact.Button></td>
            </tr> 
        );
      }
    });       
-       
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   /*
+   *老师通讯录绘制舞台再请求数据方法；
+   * @</select>下拉多选框;
+   * */
+   var Announcements_Div_ClassCard_info_byRight = React.createClass({ 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.load_more_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var re_data=ajax_announce_ClassCard_info(this.classnewsreply_list_div+this.pageNo,this.props.studentuuid,this.pageNo);
+   		if(!re_data)return;
+   		if(re_data.data.length<re_data.pageSize){
+   			$("#"+this.load_more_btn_id).hide();
+   		}else{
+   			$("#"+this.load_more_btn_id).show();
+   		}		  
+   		  this.pageNo++;
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">    
+   		    
+   		    <div id={this.classnewsreply_list_div} >
+   			  </div>
+   	
+   		  
+   		  <div className="am-list-news-ft">
+   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+   		  </div>		  
+   		</div>
+   		
+   			
+     );
+   }
+   });
+
+   /*
+   * 老师通讯录表单详情内容绘制;
+   * 一键拨号
+   * */
+   var Announcements_ClassCard_info_div = React.createClass({ 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+     event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">		   	
+   		          <tr>
+   		            <th>姓名</th>
+   		            <th>学校</th>
+   		            <th>打卡时间</th>
+   		          </tr> 			 
+   	    			  {this.props.events.map(function(event) {
+   	    			      return (
+   	    					      <tr className={className}>
+   	    					        <td>{event.sign_name}</td>
+   	    					        <td>{event.groupname}</td>
+   	    					        <td>{event.sign_time}</td>
+   	    					        </tr> 
+   	    			    		  )
+   	    			         })}	
+   	    			  </AMR_Table>		  
+   	    	  );
+   }
+   });    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±            
 
 

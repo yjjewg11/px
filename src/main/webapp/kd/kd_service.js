@@ -3147,4 +3147,94 @@ function menu_userteacher_fn(){
 		error :G_ajax_error_fn
 	});
 };
-  
+
+//—————————————————————————签到查询（详情接口）—————————————————————————      
+/*签到查询（详情接口）-详情List；
+*
+ * */ 
+// function ajax_ClassCard_info_byRight(uuid){ 
+//	   Queue.push(function(){ajax_ClassCard_info_byRight(groupuuid,classuuid,uuid);},"签到详情");
+//	   	$.AMUI.progress.start();
+//	       var url = hostUrl + "rest/studentSignRecord/queryStudentuuid.json";
+//	   	$.ajax({
+//	   		type : "GET",
+//	   		url : url,
+//	   		data:{studentuuid:uuid},
+//	   		dataType : "json",
+//	   		 async: true,
+//	   		success : function(data) {
+//	   			$.AMUI.progress.done();
+//	   			if (data.ResMsg.status == "success") {
+//	   				if(data.list.length!=0){
+//		   				//React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), document.getElementById('div_body'));	
+//	   				}else{
+//	   					G_msg_pop("暂无刷卡数据!");
+//		   				React.render(React.createElement( Boss_student_tel2_byRight), document.getElementById('div_body'));
+//	   				}
+//
+//	   			} else {
+//	   				alert("加载数据失败："+data.ResMsg.message);
+//	   			}
+//	   		},
+//			error :G_ajax_error_fn
+//	   	});
+//	   };
+	   
+	   
+   /*
+* <公告>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+* 基本框 等
+* */
+   function ajax_ClassCard_info_byRight(uuid){
+	   Queue.push(function(){ajax_ClassCard_info_byRight(uuid);},"签到详情");
+   	React.render(React.createElement(Announcements_Div_ClassCard_info_byRight,{
+   		studentuuid:uuid
+   	}), document.getElementById('div_body'));
+      	
+   };
+   /*
+* <公告>取出数组服务器请求后
+* 开始绘制动态数据内容
+* */
+   function ajax_announce_ClassCard_info(list_div,studentuuid,pageNo) {
+   	var re_data=null;
+   	$.AMUI.progress.start();
+   	if(!pageNo)pageNo=1;
+    var url = hostUrl + "rest/studentSignRecord/queryStudentuuid.json";
+$.ajax({
+	type : "GET",
+	url : url,
+	data:{studentuuid:studentuuid,pageNo:pageNo},
+	dataType : "json",
+	async: false,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+   				React.render(React.createElement(Announcements_ClassCard_info_div, {
+   					events: data.list.data,
+   					responsive: true, bordered: true, striped :true,hover:true,striped:true
+   					}), document.getElementById(list_div));
+   				re_data=data.list;
+   			} else {
+   				alert(data.ResMsg.message);
+   				G_resMsg_filter(data.ResMsg);
+   			}
+   		},
+   		error :G_ajax_error_fn
+   	});
+   	return re_data;
+   };	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   

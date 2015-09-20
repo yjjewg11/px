@@ -6380,12 +6380,148 @@ render: function() {
          React.createElement("tr", {className: className}, 
            React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
            React.createElement("td", null, event.cardID), 
-           React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无")
+           React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无", React.createElement(AMUIReact.Button, {onClick: ajax_ClassCard_info_byRight.bind(this,event.uuid), amStyle: "success"}, "详情"))
            ) 
        );
      }
    });       
-       
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   /*
+   *老师通讯录绘制舞台再请求数据方法；
+   * @</select>下拉多选框;
+   * */
+   var Announcements_Div_ClassCard_info_byRight = React.createClass({displayName: "Announcements_Div_ClassCard_info_byRight", 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.load_more_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var re_data=ajax_announce_ClassCard_info(this.classnewsreply_list_div+this.pageNo,this.props.studentuuid,this.pageNo);
+   		if(!re_data)return;
+   		if(re_data.data.length<re_data.pageSize){
+   			$("#"+this.load_more_btn_id).hide();
+   		}else{
+   			$("#"+this.load_more_btn_id).show();
+   		}		  
+   		  this.pageNo++;
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+   		    
+   		    React.createElement("div", {id: this.classnewsreply_list_div}
+   			  ), 
+   	
+   		  
+   		  React.createElement("div", {className: "am-list-news-ft"}, 
+   		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+   		  )		  
+   		)
+   		
+   			
+     );
+   }
+   });
+
+   /*
+   * 老师通讯录表单详情内容绘制;
+   * 一键拨号
+   * */
+   var Announcements_ClassCard_info_div = React.createClass({displayName: "Announcements_ClassCard_info_div", 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+     event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
+   		          React.createElement("tr", null, 
+   		            React.createElement("th", null, "姓名"), 
+   		            React.createElement("th", null, "学校"), 
+   		            React.createElement("th", null, "打卡时间")
+   		          ), 			 
+   	    			  this.props.events.map(function(event) {
+   	    			      return (
+   	    					      React.createElement("tr", {className: className}, 
+   	    					        React.createElement("td", null, event.sign_name), 
+   	    					        React.createElement("td", null, event.groupname), 
+   	    					        React.createElement("td", null, event.sign_time)
+   	    					        ) 
+   	    			    		  )
+   	    			         })	
+   	    			  )		  
+   	    	  );
+   }
+   });    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±            
 
 
