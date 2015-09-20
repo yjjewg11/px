@@ -2196,8 +2196,67 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 //		 }
 //
 //	  },
+	  //加载绑定卡信息
+	  ajax_loadStudentbind_card:function(studentuuid){
+		  var that=this;
+		  that.last_apply_userid=null;
+		  $.AMUI.progress.start();
+		     var url = hostUrl + "rest/studentbind/queryByClassuuid.json?studentuuid="+studentuuid;
+		 	$.ajax({
+		 		type : "GET",
+		 		url : url,
+		 		dataType : "json",
+		 		 async: true,
+		 		success : function(data) {
+		 			$.AMUI.progress.done();
+		 			// 登陆成功直接进入主页
+		 			if (data.ResMsg.status == "success") {
+		 				$("#btn_cancelApply").hide();
+		 				var list=data.list;
+		 				var s="";
+		 				if(!list||list.length==0){
+		 					s="无";
+		 				}else{
+							//b2.studentuuid,b2.cardid,b2.userid,s1.name
+		 					for(var i=0;i<list.length;i++){
+		 						if(s)s+=",";
+		 						if(!list[i][1]){
+		 							list[i][1]="申请中";
+		 							$("#btn_cancelApply").show();//申请中可以取消
+		 							that.last_apply_userid=list[i][2];
+		 						}
+		 						s+=list[i][1]+"("+list[i][2]+")";
+		 					}
+		 				}
+		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
+		 			} else {
+		 				alert("加载数据失败："+data.ResMsg.message);
+		 			}
+		 		},
+		 		error :G_ajax_error_fn
+		 	});
+	  },
+	  btn_studentbind_apply:function(studentuuid){
+		  var that=this;
+		  ajax_studentbind_apply(studentuuid,function(){
+			  that.ajax_loadStudentbind_card(studentuuid);
+			  
+		  });
+	  },
+	  btn_studentbind_cancelApply:function(studentuuid){
+		  var that=this;
+		  if(!that.last_apply_userid){
+			  alert("只能取消申请中的接送卡!");
+			  return;
+		  }
+		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
+			  that.ajax_loadStudentbind_card(studentuuid);
+			  
+		  });
+	  },
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
+		  	this.ajax_loadStudentbind_card(this.state.uuid);
 		},
 		render: function() {
 	     var o =this.state;
@@ -2205,11 +2264,18 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	     var imglist=[imgGuid];
 		 return (
 		 		React.createElement("div", null, 
+		 		
+		 		 React.createElement(AMR_ButtonToolbar, null, 
+		 	    React.createElement(AMR_Button, {amStyle: "primary", onClick: ajax_myclass_students_edit.bind(this,o.uuid)}, "修改学生"), 
+		 	   React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.btn_studentbind_apply.bind(this,o.uuid)}, "申请接送卡"), 
+		 	  React.createElement(AMR_Button, {amStyle: "warning", id: "btn_cancelApply", onClick: this.btn_studentbind_cancelApply.bind(this,o.uuid)}, "取消申请接送卡"), 
+		 	 React.createElement(G_help_popo, {msg: G_tip.studentbind_app})
+		 	  ), 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
 			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
 				  React.createElement("br", null), 
-	  		      React.createElement("button", {type: "button", onClick: ajax_myclass_students_edit.bind(this,o.uuid), className: "am-btn am-btn-primary"}, "修改学生"), 
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
+			      React.createElement(AMUIReact.ListItem, {id: "input_studentbind_card"}, "接送卡号:加载中..."), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
 			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
@@ -5424,7 +5490,7 @@ render: function() {
       	},
  		  handleChange_selectgroup_uuid:function(val){
  	    	   this.ajax_list(val);
- 	    	  G_myclass_choooose=val;
+ 	    	  G_myclass_choose=val;
  	       },
  	       //2
  		 ajax_callback:function(obj){
@@ -5534,16 +5600,17 @@ render: function() {
     		var cards=obj.cards;
     		var signs=obj.signs;
     		for(var i=0;i<formdata.length;i++){
-    			//卡号
-    			if(cards){
-    		       for(var s=0;s<cards.length;s++){
-    		    	if(formdata[i].uuid==cards[s][0]){
-    		    		if(formdata[i].cardID)formdata[i].cardID+=","+cards[s][1];
-    		    		else formdata[i].cardID=cards[s][1];
-    		    		//formdata[i].cardType="已发卡";
-    		    	}        	   
-    		       }
-    			}
+    			//卡号 b2.studentuuid,b2.cardid,b2.userid,s1.name
+      			if(cards){
+      		       for(var s=0;s<cards.length;s++){
+      		    	if(formdata[i].uuid==cards[s][0]){
+      		    		if(formdata[i].cardID)formdata[i].cardID+=",";
+      		    		else formdata[i].cardID="";
+      		    		if(!cards[s][1])cards[s][1]="申请中("+cards[s][2]+")";
+      		    		formdata[i].cardID+=cards[s][1];
+      		    	}        	   
+      		       }
+      			}
     			//签到标志
     			if(signs){
     			       for(var s=0;s<signs.length;s++){
@@ -5623,7 +5690,7 @@ render: function() {
 
          return (
            React.createElement("tr", {className: className}, 
-             React.createElement("td", null, event.name), 
+           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
              React.createElement("td", null, event.cardID), 
              React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无")
              ) 
@@ -6114,15 +6181,16 @@ render: function() {
 		  this.ajax_list(this.props.classuuid);
     	},
 	  handleChange_selectgroup_uuid:function(val){
+			 $("input[name='class_uuid']").val("");
 		  var classList=Store.getChooseClass(val);
 		  this.ajaxdata.groupuuid=val;
 		  this.ajaxdata.classList=G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
     	   this.ajax_list(classList[0].uuid);
-    	   //G_mygroup_choooose=classList[0].uuid;
+    	   //G_mygroup_choose=classList[0].uuid;
        },
  	  handleChange_selectclass_uuid:function(val){
    	   this.ajax_list(val);
-   	  G_myclass_choooose=val;
+   	  G_myclass_choose=val;
       },
        //2
 	 ajax_callback:function(obj){
@@ -6231,13 +6299,14 @@ render: function() {
   		var cards=obj.cards;
   		var signs=obj.signs;
   		for(var i=0;i<formdata.length;i++){
-  			//卡号
+  			//卡号 b2.studentuuid,b2.cardid,b2.userid,s1.name
   			if(cards){
   		       for(var s=0;s<cards.length;s++){
   		    	if(formdata[i].uuid==cards[s][0]){
-  		    		if(formdata[i].cardID)formdata[i].cardID+=","+cards[s][1];
-  		    		else formdata[i].cardID=cards[s][1];
-  		    		//formdata[i].cardType="已发卡";
+  		    		if(formdata[i].cardID)formdata[i].cardID+=",";
+  		    		else formdata[i].cardID="";
+  		    		if(!cards[s][1])cards[s][1]="申请中("+cards[s][2]+")";
+  		    		formdata[i].cardID+=cards[s][1];
   		    	}        	   
   		       }
   			}
@@ -6252,21 +6321,11 @@ render: function() {
   		}
   		return obj;
   	},
-  	getDefaultProps: function() {
-  	       var data = [
-  	                  {value: 'one' , label: '学生基本表 ' },
-  	                  {value: 'huaMingCe' , label: '幼儿花名册' },
-  	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
-  	                  {value: 'doorrecord' , label: '导出接送卡表' }
-  	                ];
 
-  	          return {
-  	            down_list: data
-  	          };
-  	        },
   	        handleClick_download: function(xlsname) {
   				  var class_uuid=$("input[name='class_uuid']").val();
-  				 ajax_flowername_download_byRight("",class_uuid,xlsname);
+				  var group_uuid=$("input[name='group_uuid']").val();
+  				 ajax_flowername_download_byRight(group_uuid,class_uuid,xlsname);
   		 },
    render: function() {
   	 var obj=this.parse_ajaxdata(this.state);
@@ -6282,12 +6341,10 @@ render: function() {
          React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
          React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
          React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
-      	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.grouplist, btnStyle: "primary", value: this.props.groupuuid}), 
+      	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.grouplist, btnStyle: "primary", value: this.state.groupuuid}), 
     	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", multiple: false, data: this.state.classList, btnStyle: "primary", value: this.state.classuuid})
-   	  ), 
-   	  React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
-   	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
    	  )
+   	
   	 
    	  )
    	  ), 
@@ -6321,7 +6378,7 @@ render: function() {
 
        return (
          React.createElement("tr", {className: className}, 
-           React.createElement("td", null, event.name), 
+           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
            React.createElement("td", null, event.cardID), 
            React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无")
            ) 
@@ -6330,3 +6387,250 @@ render: function() {
    });       
        
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±            
+
+
+
+
+//——————————————————————————接送卡查询<绘制>—————————————————————  
+/*]]
+* */  
+var Studentbind_EventsTable_byRight = React.createClass({displayName: "Studentbind_EventsTable_byRight",
+
+  	        handleClick_download: function(xlsname) {
+  				  var class_uuid=$("input[name='classuuid']").val();
+				  var group_uuid=$("input[name='group_uuid']").val();
+  				 ajax_flowername_download_byRight(group_uuid,class_uuid,xlsname);
+  		 },
+		getDefaultProps: function() {
+  	       var down_list = [  	                  
+  	                  {value: 'doorrecord' , label: '导出接送卡表' },
+				     {value: 'doorrecord_apply' , label: '导出申请接送卡' }
+  	                ];
+
+			 var otherWherelist = [
+  	                  {value: 'cardid_is_null' , label: '申请中' },
+  	                  {value: 'cardid_is_not_null' , label: '接送卡' }
+  	                ];
+
+  	          return {
+  	            otherWherelist: otherWherelist,
+				down_list:down_list
+  	          };
+  	        },
+	getInitialState: function() {
+		var classList=Store.getChooseClass(this.props.groupuuid);
+			var classuuid =this.props.classuuid;
+			if(!classuuid&&classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+		
+		var obj= {
+		    	groupuuid:this.props.groupuuid,
+		    	pageNo:1,
+		    	type:this.props.type,
+				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+				otherWhere:'cardid_is_null',
+				classuuid:classuuid,
+				totalCount:0,
+				cardid:"",
+		    	list: []
+		    };
+				obj.classList.unshift({value:"",label:"所有"});
+		//obj=this.ajax_list(obj);
+	    return obj;
+	   
+	  },
+		componentDidMount: function() {
+			this.ajax_list(this.state); 
+		  },
+	  ajax_callback:function(list){
+		     if (list== null )list= [];
+		  this.state.list=list;
+		  this.setState(this.state);
+	  },
+	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+	  componentWillReceiveProps: function(nextProps) {
+		  
+		var classList=Store.getChooseClass(this.props.groupuuid);
+			var classuuid =null;
+			if(classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+
+
+
+		  var obj= {
+			    	groupuuid:nextProps.groupuuid,
+			    	pageNo:1,
+			    	type:nextProps.type,
+					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),	
+					classuuid:classuuid,
+						totalCount:0,
+					cardid:"",
+			    	list: []
+			    };
+					obj.classList.unshift({value:"",label:"所有"});
+			this.ajax_list(obj);
+		  //this.setState(obj);
+		},
+	 ajax_list:function(obj){
+			
+		$.AMUI.progress.start();
+		var that=this;
+		G_myclass_choose=obj.groupuuid;
+		var url = hostUrl + "rest/studentbind/query.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {groupuuid:obj.groupuuid,classuuid:obj.classuuid,cardid:obj.cardid,pageNo:obj.pageNo,otherWhere:obj.otherWhere},
+			dataType : "json",
+			//async: false,//必须同步执行
+			success : function(data) {	
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					obj.list=data.list.data;
+					if(!obj.pageNo||obj.pageNo==1){
+						that.state.totalCount=data.list.totalCount;
+					}
+				    that.ajax_callback( data.list.data );     
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg); 
+				}
+			},
+			error : G_ajax_error_fn
+		});
+		return obj;
+		
+	},
+	pageClick: function(m) {
+		 var obj=this.state;
+		 if(m=="pre"){
+			
+			 if(obj.pageNo<2){
+				 G_msg_pop("第一页了");
+				 return;
+			 }
+			 obj.pageNo=obj.pageNo-1;
+			 this.ajax_list(obj);
+			 return;
+		 }else if(m=="next"){
+			 if(!obj.list||obj.list.length==0){
+				 G_msg_pop("最后一页了");
+				 return ;
+			 }
+			 obj.pageNo=obj.pageNo+1;
+			
+			 this.ajax_list(obj);
+			 return;
+		 }
+	},
+	
+handleChange_selectgroup_uuid:function(val){
+	 $("input[name='classuuid']").val("");
+	 var obj=this.state;
+	 obj.groupuuid=val;
+	 G_mygroup_choose=val;
+		 var classList=Store.getChooseClass(val);
+				var classuuid =null;
+				if(classList&&classList.length>0){
+					classuuid=classList[0].uuid;
+				}
+		obj.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
+		 	obj.classList.unshift({value:"",label:"所有"});
+			obj.classuuid=classuuid;
+		 this.ajax_list(obj);
+	},
+
+handleChange_selectclass_uuid:function(val){
+	 var obj=this.state;
+		obj.classuuid=val;
+		obj.pageNo=1;
+		 G_myclass_choose=val;
+   	   this.ajax_list(obj);
+   	 
+      },
+ handleChange_selectotherWhere_uuid:function(val){
+		 
+   	  var obj=this.state;
+		obj.otherWhere=val;
+		obj.pageNo=1;
+   	   this.ajax_list(obj);
+      },
+	refresh_data:function(){
+     this.state.cardid=$("input[name='cardid']").val();
+     this.state.pageNo=1;
+     	 this.ajax_list(this.state);
+     		
+     	},
+		
+render: function() {
+			
+	var obj=this.state;
+	 
+	if(!this.state.list)this.state.list=[];
+	var btnSearch = (React.createElement(AMUIReact.Button, {onClick: this.refresh_data.bind(this)}, React.createElement(AMUIReact.Icon, {icon: "search"})));
+  return (
+  React.createElement("div", null, 
+React.createElement(AMR_ButtonToolbar, null, 
+	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上一页"), 
+	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下一页"), 	
+	React.createElement("span", null, "共", obj.totalCount, "条,第", obj.pageNo, "页")
+
+  ), 
+React.createElement("hr", null), 
+
+ React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
+	 React.createElement(AMUIReact.Selected, {id: "selectotherWhere", name: "otherWhere", onChange: this.handleChange_selectotherWhere_uuid, btnWidth: "200", multiple: false, data: this.props.otherWherelist, btnStyle: "primary", value: this.state.otherWhere}), 
+    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.grouplist, btnStyle: "primary", value: this.state.groupuuid}), 
+  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", multiple: false, data: this.state.classList, btnStyle: "primary", value: this.state.classuuid}), 
+ 
+   	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list}), 
+ 	 
+  React.createElement("div", {className: "am-fl  am-margin-bottom-sm am-margin-left-xs"}, 
+	   React.createElement(AMUIReact.Input, {name: "cardid", placeholder: "姓名或卡号", btnAfter: btnSearch}	 ), " ")
+
+
+
+ ), 
+	  
+    React.createElement(AMR_Table, React.__spread({},  this.props), 
+   React.createElement("thead", null, 
+    React.createElement("tr", null, 
+      React.createElement("th", null, "姓名"), 
+      React.createElement("th", null, "接送卡号"), 
+      React.createElement("th", null, "申请号"), 
+		React.createElement("th", null, "申请人"), 
+      React.createElement("th", null, "申请时间")
+      
+    )
+  ), 
+  React.createElement("tbody", null, 
+    this.state.list.map(function(event) {
+      return (React.createElement(Studentbind_EventRow_byRight, {key: event.uuid, event: event}));
+        })
+      )
+    )
+    )
+  );
+}
+});
+  
+//接送卡绘制详情内容Map;   
+var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_EventRow_byRight", 
+	render: function() {
+	  var event = this.props.event;
+	  var className = event.highlight ? 'am-active' :
+	    event.disabled ? 'am-disabled' : '';
+	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
+	  return (
+	    React.createElement("tr", {className: className}, 
+   React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event[0])}, event[3])), 
+	      React.createElement("td", null, event[1]), 
+	       React.createElement("td", null, event[2]), 
+		    React.createElement("td", null, event[4]), 
+		   React.createElement("td", null, event[5])
+	    ) 
+	  );
+	}
+	});   

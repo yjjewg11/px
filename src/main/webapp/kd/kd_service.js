@@ -1,4 +1,64 @@
 
+
+
+/*
+ * 声请学生接送卡
+ * */
+ function ajax_studentbind_apply(uuid,callback){
+		if(!confirm("确定要申请接送卡吗?")){
+			return;
+		}
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/studentbind/apply.json?studentuuid="+uuid;
+ 	$.ajax({
+ 		type : "POST",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") {
+ 				alert(data.ResMsg.message);
+ 				if(typeof callback=='function')callback();
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ };
+ 
+ /*
+  * 声请学生接送卡
+  * */
+  function ajax_studentbind_cancelApply(studentuuid,userid,callback){
+ 		if(!confirm("确定要申请接送卡吗?")){
+ 			return;
+ 		}
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/studentbind/cancelApply.json";
+  	$.ajax({
+  		type : "POST",
+  		url : url,
+  		data:{studentuuid:studentuuid,userid:userid},
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				alert(data.ResMsg.message);
+  				if(typeof callback=='function')callback();
+  			} else {
+  				alert("加载数据失败："+data.ResMsg.message);
+  			}
+  		},
+  		error :G_ajax_error_fn
+  	});
+  };
+  
+ 
 //用户登陆
 function ajax_userinfo_login() {
 	

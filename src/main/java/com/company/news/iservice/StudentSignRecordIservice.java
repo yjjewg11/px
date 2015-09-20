@@ -13,6 +13,7 @@ import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.StudentSignRecord;
+import com.company.news.service.StudentBindService;
 
 
 @Service
@@ -21,6 +22,10 @@ public class StudentSignRecordIservice {
 	  @Autowired
 	  @Qualifier("NSimpleHibernateDao")
 	  protected NSimpleHibernateDao nSimpleHibernateDao;
+	  
+
+		@Autowired
+		private StudentBindService studentBindService;
 	  
 	 /**
 	  * 根据打卡数据,添加学生的签到记录
@@ -38,14 +43,13 @@ public class StudentSignRecordIservice {
 		  obj.setType(SystemConstants.StudentSignRecord_type_1);
 		  obj.setSign_time(doorRecord.getDt());
 		  if(doorRecord.getCardid()!=null){
-			  StudentBind studentBind=(StudentBind) this.nSimpleHibernateDao.getObjectByAttribute(StudentBind.class, "cardid", doorRecord.getCardid());
+			  StudentBind studentBind=(StudentBind) studentBindService.getStudentBindBycardidAndGroup(doorRecord.getCardid(), doorRecord.getGroupuuid());
 			  if(studentBind!=null){
 				  obj.setStudentuuid(studentBind.getStudentuuid());
 				  obj.setSign_name(studentBind.getName());
-//				  obj.setSign_uuid(studentBind.set)
+				  this.nSimpleHibernateDao.save(obj);
 			  }
 		  }
-		this.nSimpleHibernateDao.save(obj);
 		  
 	  }
 	  

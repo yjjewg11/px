@@ -18,6 +18,8 @@ var G_tip={
 		teachingplan_morning:"[学习活动]\n活动：\n目标：\n1、\n2、\n[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
 		teachingplan_afternoon:"[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
 		editClassStudent_right:"亲,可以将学生换到其他班级,离校的学生换到临时班级.",
+		studentbind_app:"申请接送卡后,没绑定卡号前可以取消.",
+		
 		help:"帮助"
 };
 

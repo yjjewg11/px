@@ -13,6 +13,8 @@ import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
 import com.company.news.jsonform.DoorUserJsonform;
 import com.company.news.jsonform.StudentBindJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -101,10 +103,12 @@ public class StudentBindService extends AbstractService {
 		}
 		
 		// Studentuuid昵称验证
-		if(this.isBind(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid())){
-			responseMessage.setMessage("Cardid已被绑定");
-			return false;
-		}
+		
+		
+//		if(this.isBind(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid())){
+//			responseMessage.setMessage("Cardid已被绑定");
+//			return false;
+//		}
 		StudentBind studentBind =null;
 		//根据uuid查询,有数据则只需要绑定卡id即可.
 		if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
@@ -116,9 +120,17 @@ public class StudentBindService extends AbstractService {
 				}
 		}
 
+		
+		
 		if(studentBind==null){
 			responseMessage.setMessage("用户id没有找到="+doorUserJsonform.getUserid());
 			return false;
+		}
+		
+		//1个卡对应多个用户处理.
+		StudentBind studentBind1=getStudentBindBy(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid());
+		if(studentBind1!=null&&!studentBind.getUuid().equals(studentBind1.getUuid())){
+			
 		}
 		//如何修改卡号.
 		
@@ -298,21 +310,21 @@ public class StudentBindService extends AbstractService {
 	
 	
 	/**
-	 * 
+	 * 根据用户编码
 	 * @param uuid
 	 * @param responseMessage
 	 * @return
 	 */
-	private boolean isBind(String cardid, String groupuuid) {
+	private StudentBind getStudentBindBy(String cardid, String groupuuid) {
 
 			List<StudentBind> list = (List<StudentBind>) this.nSimpleHibernateDao.getHibernateTemplate()
-					.find("from StudentBind  where cardid=? and groupuuid=?)", cardid, groupuuid);
+					.find("from StudentBind  where cardid=? and groupuuid=? order by createtime desc )", cardid, groupuuid);
 			if (list != null && list.size() > 0)
 			{
-				return true;
+				 return list.get(0);
 			}
 			else
-				return false;
+				return null;
 	}
 
 	@Override
@@ -329,12 +341,54 @@ public class StudentBindService extends AbstractService {
 	 * @param uuid
 	 * @return
 	 */
-	public List<Object[]> query(String classuuid, String groupuuid,String uuid) {
+	public PageQueryResult query(String classuuid, String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime ";
+		String sql = "";
+		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
+	//	sql+=" where b2.cardid is not null ";
+		sql+=" where  userid is not null";
+		if (StringUtils.isNotBlank(groupuuid))
+			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		if (StringUtils.isNotBlank(cardid)){
+			if(StringUtils.isNumeric(cardid)){
+				sql += " and  b2.cardid like '%"+cardid+"%'";
+			}else{
+				sql += " and  s1.name like '%"+cardid+"%'";
+			}
+			
+		}
+		
+		if ("cardid_is_null".equals(otherWhere))
+			sql += " and  b2.cardid is null ";
+		else if ("cardid_is_not_null".equals(otherWhere))
+			sql += " and  b2.cardid is not null ";
+		
+		sql += "order by s1.classuuid, CONVERT( s1.name USING gbk)";
+		PageQueryResult pageQueryResult=this.nSimpleHibernateDao.findByPageForSqlTotal(select_sql,sql, pData);
+		
+		return pageQueryResult;
+	}
+
+
+	/**
+	 * 查询学生绑定卡号信息.
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @return
+	 */
+	public List<Object[]> queryByClass(String classuuid, String groupuuid,String uuid) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.studentuuid,b2.cardid,b2.userid,s1.name ";
 		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
-		sql+=" where b2.cardid is not null ";
+	//	sql+=" where b2.cardid is not null ";
+		sql+=" where userid is not null ";
 		if (StringUtils.isNotBlank(groupuuid))
 			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
@@ -348,5 +402,85 @@ public class StudentBindService extends AbstractService {
 		List<Object[]> list = s.createSQLQuery(sql).list();
 		
 		return list;
+	}
+
+	
+	/**
+	 * 生成学生接送卡的唯一用户标识(userid在每个学校唯一)
+	 * @param studentuuid
+	 * @return
+	 */
+	public Long getMax_userid(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		 Object maxUserid= s.createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
+			//从100开始.防止100内,留自定义
+		 Long startUserid=100l;
+		 try {
+			 startUserid=Long.valueOf(maxUserid+"");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			 
+			 return startUserid;
+	}
+	/**
+	 * 声请学生接送卡
+	 * @param studentuuid
+	 * @return
+	 * @throws Exception 
+	 */
+	public StudentBind update_apply(String studentuuid, ResponseMessage responseMessage,User user) throws Exception {
+		
+		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class, studentuuid);
+		if (student == null){
+			responseMessage.setMessage("没有该学生 ,uuid="+studentuuid);
+			return null;
+		}
+		StudentBind b2=new StudentBind();
+		
+		b2.setStudentuuid(studentuuid);
+		if(StringUtils.isBlank(b2.getStudentuuid())){
+			throw new Exception("学生uuid不能为空");
+		}
+		Long startUserid=this.getMax_userid(student.getGroupuuid());
+		b2.setUserid((++startUserid)+"");
+		b2.setCard_factory(null);
+		b2.setCreate_user(user.getName());
+		b2.setCreate_useruuid(user.getUuid());
+		b2.setGroupuuid(student.getGroupuuid());
+		b2.setName(student.getName());
+		b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+		b2.setType(1);//学生卡
+		try {
+			this.nSimpleHibernateDao.save(b2);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("申请用户编号:"+startUserid+"冲突,请再次申请.");
+			return null;
+		}
+		return b2;
+	}
+	
+	
+	/**
+	 * 声请学生接送卡
+	 * @param studentuuid
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean cancel_apply(String studentuuid,String userid, ResponseMessage responseMessage,User user) throws Exception {
+		
+		//只允许删除没有绑定卡号的.
+		String hql="delete StudentBind where cardid is  null and studentuuid=? and userid=?";
+		Integer count= this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(hql, studentuuid,userid);
+		if (count==0){
+			responseMessage.setMessage("操作失败,没有该记录.");
+			return false;
+		}
+		
+		return true;
 	}
 }
