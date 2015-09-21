@@ -28,7 +28,7 @@ import com.company.news.vo.statistics.PieStatisticsVo;
 @Service
 public class StatisticsService extends AbstractService {
 	private static final String model_name = "静态统计模块";
-	
+
 	private static Logger logger = Logger.getLogger(StatisticsService.class);
 	private final static long threeDay = 3 * 24 * 60 * 60 * 1000;// 3天
 	private final static long oneWeek = 7 * 24 * 60 * 60 * 1000;// 一周
@@ -41,6 +41,7 @@ public class StatisticsService extends AbstractService {
 	private ClassService classService;
 	@Autowired
 	private ClassNewsService classNewsService;
+
 	/**
 	 * 获取用户性别统计 user sex Statistics
 	 * 
@@ -65,11 +66,11 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师统计（按性别）");
 		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		List legend_data=new ArrayList();
+		List legend_data = new ArrayList();
 		legend_data.add("男");
 		legend_data.add("女");
 		vo.setLegend_data(legend_data);
-//		vo.setLegend_data("['男','女']");
+		// vo.setLegend_data("['男','女']");
 		int sex_male = 0;
 		int sex_female = 0;
 
@@ -129,15 +130,15 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师统计（按登陆时间）");
 		vo.setTitle_subtext("总计 " + count + " 人");
-		List legend_data=new ArrayList();
+		List legend_data = new ArrayList();
 		legend_data.add(lessthreeDay + "%的用户在3天内登陆过");
 		legend_data.add(lessOneWeek + "%的用户在1周内登陆过");
 		legend_data.add(greaterOneWeek + "%的用户在更早前");
 		vo.setLegend_data(legend_data);
-//		
-//		vo.setLegend_data("['" + lessthreeDay + "%的用户在3天内登陆过'" + ",'"
-//				+ lessOneWeek + "%的用户在1周内登陆过','" + greaterOneWeek
-//				+ "%的用户在更早前']");
+		//
+		// vo.setLegend_data("['" + lessthreeDay + "%的用户在3天内登陆过'" + ",'"
+		// + lessOneWeek + "%的用户在1周内登陆过','" + greaterOneWeek
+		// + "%的用户在更早前']");
 
 		PieSeriesDataVo lessthreeDayVo = new PieSeriesDataVo();
 		lessthreeDayVo.setName(lessthreeDay + "%的用户在3天内登陆过");
@@ -184,7 +185,7 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
 		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		List legend_data=new ArrayList();
+		List legend_data = new ArrayList();
 		legend_data.add("男");
 		legend_data.add("女");
 		vo.setLegend_data(legend_data);
@@ -239,7 +240,7 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级学生人数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班");
-		List legend_data=new ArrayList();
+		List legend_data = new ArrayList();
 		legend_data.add("班级人数");
 		vo.setLegend_data(legend_data);
 		String axis_data = "";
@@ -260,7 +261,8 @@ public class StatisticsService extends AbstractService {
 
 			String ps_data = "";
 			for (PClass p : list) {
-				ps_data += ((m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + ",");
+				ps_data += ((m.get(p.getUuid()) == null ? 0 : m
+						.get(p.getUuid())) + ",");
 			}
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
 			sdvo.setName("班级人数");
@@ -282,11 +284,12 @@ public class StatisticsService extends AbstractService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public PieStatisticsVo getCnsBygroup(ResponseMessage responseMessage,String begDateStr, String endDateStr,String group_uuid) {
+	public PieStatisticsVo getCnsBygroup(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
 		// 验证group合法性
 		if (!validateGroup(group_uuid, responseMessage))
 			return null;
-		
+
 		if (StringUtils.isBlank(begDateStr)) {
 			return null;
 		}
@@ -306,8 +309,8 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级互动发帖数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班");
-//		vo.setLegend_data("['互动发帖数']");
-		List legend_data=new ArrayList();
+		// vo.setLegend_data("['互动发帖数']");
+		List legend_data = new ArrayList();
 		legend_data.add("互动发帖数");
 		vo.setLegend_data(legend_data);
 		String axis_data = "";
@@ -317,26 +320,26 @@ public class StatisticsService extends AbstractService {
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
 		// 根据机构ID获取班级人数
-		List<Object[]> slist = classNewsService.getClassNewsCollectionByGroup(group_uuid, begDateStr, endDateStr);
+		List<Object[]> slist = classNewsService.getClassNewsCollectionByGroup(
+				group_uuid, begDateStr, endDateStr);
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		Map m = new HashMap<String, Integer>();
 		if (slist != null && slist.size() > 0) {
-			Map m = new HashMap<String, Integer>();
 			for (Object[] o : slist) {
 				m.put(o[1], o[0]);
 			}
-
-			String ps_data = "";
-			for (PClass p : list) {
-				ps_data += ("'"
-						+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "',");
-			}
-			PieSeriesDataVo sdvo = new PieSeriesDataVo();
-			sdvo.setName("互动发帖数");
-			sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
-
-			plist.add(sdvo);
-
 		}
+
+		String ps_data = "";
+		for (PClass p : list) {
+			ps_data += ("'"
+					+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "',");
+		}
+		PieSeriesDataVo sdvo = new PieSeriesDataVo();
+		sdvo.setName("互动发帖数");
+		sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
+
+		plist.add(sdvo);
 
 		vo.setSeries_data(plist);
 		logger.debug("end 互动发帖数统计");
@@ -350,11 +353,12 @@ public class StatisticsService extends AbstractService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public PieStatisticsVo getCntsBygroup(ResponseMessage responseMessage,String begDateStr, String endDateStr,String group_uuid) {
+	public PieStatisticsVo getCntsBygroup(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
 		// 验证group合法性
 		if (!validateGroup(group_uuid, responseMessage))
 			return null;
-		
+
 		if (StringUtils.isBlank(begDateStr)) {
 			return null;
 		}
@@ -365,7 +369,8 @@ public class StatisticsService extends AbstractService {
 
 		logger.debug("begain 班级互动热门TOP10");
 
-		List<Object[]> list = classNewsService.getClassNewsCountByGroup(group_uuid, begDateStr, endDateStr);
+		List<Object[]> list = classNewsService.getClassNewsCountByGroup(
+				group_uuid, begDateStr, endDateStr);
 		logger.debug("classService.query 查询结束");
 
 		// 返回
@@ -374,20 +379,19 @@ public class StatisticsService extends AbstractService {
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级互动热门TOP10");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
-//		vo.setLegend_data("['班级互动热门TOP10']");
-		List legend_data=new ArrayList();
+		// vo.setLegend_data("['班级互动热门TOP10']");
+		List legend_data = new ArrayList();
 		legend_data.add("班级互动热门TOP10");
 		vo.setLegend_data(legend_data);
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		if (list != null && list.size() > 0) {
-			for(Object[] o:list)
-			{
-			PieSeriesDataVo sdvo = new PieSeriesDataVo();
-			sdvo.setName((String) o[2]);
-			sdvo.setData((String) o[1]);
-			sdvo.setValue((Integer) o[0]);
+			for (Object[] o : list) {
+				PieSeriesDataVo sdvo = new PieSeriesDataVo();
+				sdvo.setName((String) o[2]);
+				sdvo.setData((String) o[1]);
+				sdvo.setValue((Integer) o[0]);
 
-			plist.add(sdvo);
+				plist.add(sdvo);
 			}
 
 		}
@@ -460,7 +464,8 @@ public class StatisticsService extends AbstractService {
 		for (User4Q u : l) {
 			// 登陆时间
 			long time = 0l;
-			if(u.getLogin_time()!=null)time=u.getLogin_time().getTime();
+			if (u.getLogin_time() != null)
+				time = u.getLogin_time().getTime();
 			long diff = new Date().getTime() - time;
 			if (diff <= threeDay)
 				lessthreeDay++;
@@ -488,7 +493,5 @@ public class StatisticsService extends AbstractService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
-
-	
 
 }
