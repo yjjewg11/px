@@ -1,5 +1,7 @@
 //我选我的班级后的全局记录
 var G_myclass_choose=null;
+//我选我的学校后的全局记录
+var G_mygroup_choose=null;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -146,19 +148,6 @@ function login_affter_init(){
 		menu_data.push(t_menu);
 	}
 	
-	
-	
-//————————————食谱管理<权限>——————————	
-	t_menu={
-                "link": "##",
-                "title": "食谱管理",
-                "fn":menu_cookbookPlan_list_fn_byRight,
-                "subCols": 2
-		  };
-	
-	if(G_user_hasRight("KD_cookbookplan_m")){
-		menu_data.push(t_menu);
-	}
 	
 	
 //————————————课程安排<权限>——————————		
@@ -398,18 +387,7 @@ function menu_dohome(){
 			                    	    "title": "公告"
 			                    },
 			                 
-		                    	  {
-			                    	    "img": hostUrlCDN+"i/meirisipu.png",
-			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
-			                    	    "title": "今日食谱"
-			                    	  },
-		                    	 
-		                    	
-//		                    	  {
-//	                    	    "img": hostUrlCDN+"i/qiandao.png",
-//	                    	    "link": "###",
-//	                    	    "title": "签到(未)"
-//	                    	  },
+
 	                    	
 		                    	  {
 		                    		  "img": hostUrlCDN+"i/jpwz.png",
@@ -542,13 +520,7 @@ function menu_teachingplan_dayShow_fn() {
 	}
 	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
-/*
- * （首页）每日食谱
- * 调用ajax_cookbookPlan_dayShow：每天食谱计划
- * */
-function menu_cookbookPlan_dayShow_fn() {
-	ajax_cookbookPlan_dayShow(null);
-};
+
 /* （首页）家长通讯录功能方法
  * @跳转kd_service发服务器请求
  * */
@@ -676,7 +648,7 @@ function menu_class_sign_today_fn() {
 		if(!classList||classList.length==0){
 			classuuid=null;
 		}else{
-			classuuid=classList[0].uuid;
+			classuuid=classList[1].uuid;
 		}
 		G_myclass_choose=classuuid;
 	}
@@ -741,17 +713,6 @@ function menu_userTeacher_list_fn_byRight() {
 	}
 	userTeacher_div_byRight(list[0].uuid);
 };
-
-/*
- * (标头)食谱管理功能
- * @跳转kd_service发服务器请求
- * */
-function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
-	var cookbook_Group_uuid="";
-	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
-	else cookbook_Group_uuid=groupuuid;
-	ajax_cookbookPlan_listByGroup_byRight(cookbook_Group_uuid,weeknum);
-}
 
 /*
  * (标头)课程安排功能

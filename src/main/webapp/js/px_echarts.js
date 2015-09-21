@@ -57,9 +57,9 @@ var PXECharts_ajax={
 		data.push( {value: 'uss', label: '教师统计（按性别）'});
 		data.push( {value: 'uls', label: '教师统计（按登陆时间）'});
 		data.push( {value: 'sss', label: '学生统计（按性别）'});
-		data.push( {value: 'css', label: '学生统计（按人数）'});
+		data.push( {value: 'css', label: '学生统计（按班级人数）'});
 		data.push( {value: 'cns', label: '班级互动发帖数统计'});
-		data.push( {value: 'cnts', label: '班级互动热门TOP10'});
+		//data.push( {value: 'cnts', label: '班级互动热门TOP10'});
 		return data;
 	},
 	/**
@@ -81,15 +81,15 @@ var PXECharts_ajax={
 	 * @param data
 	 */
 	ajax_cns:function(data){
-		PXECharts_ajax.ajax_uss(data);
+		PXECharts_ajax.ajax_css(data);
 	},
 	/**
 	 * 请求返回数据->图标显示.默认调用PXECharts_ajax.ajax_uss(data);
 	 * @param data
 	 */
-	ajax_cnts:function(data){
-		PXECharts_ajax.ajax_uss(data);
-	},
+/*	ajax_cnts:function(data){
+		PXECharts_ajax.ajax_css(data);
+	},*/
 	ajax_css:function(data){
 		PXECharts_ajax.ajax_css(data);
 	},
@@ -160,14 +160,21 @@ var PXECharts_ajax={
 			            data : eval("("+data.yAxis_data+")")
 			        }
 			    ],
-			    series : [
-			        {
-			            name:data.legend_data[0],
-			            type:'bar',
-			            data:eval("("+data.series_data[0].data+")")
-			        }
-			    ]
+			    series : []
 			};
+		
+		//添加数据
+		  for (var i=0,len=data.series_data.length; i<len; i++)
+			 {
+			  var serie_data=data.series_data[i];
+			  var serie= {
+			            name:serie_data.name,
+			            type:'bar',
+			            data:eval("("+serie_data.data+")")
+			        };
+			  option.series.push(serie);
+			 
+			 }
 		
 		 PXECharts.loadData(option);
 		
