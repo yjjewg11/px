@@ -5285,7 +5285,7 @@ render: function() {
   			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />
   			  </div> 
   				  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
-  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="姓名或手机号码"/>	  
   				  </div>
   				    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>

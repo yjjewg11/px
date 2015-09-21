@@ -5285,7 +5285,7 @@ render: function() {
   			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
   			  ), 
   				  React.createElement("div", {className: "am-fl  am-margin-bottom-sm am-margin-left-xs"}, 
-  				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+  				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "姓名或手机号码"})	  
   				  ), 
   				    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
