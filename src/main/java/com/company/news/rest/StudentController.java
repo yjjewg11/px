@@ -180,6 +180,10 @@ public class StudentController extends AbstractRESTController {
 		Student s;
 		try {
 			s = studentService.get(uuid);
+			if(s==null){
+				responseMessage.setMessage("学生资料不存在.uuid="+uuid);
+				return "";
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -232,8 +236,22 @@ public class StudentController extends AbstractRESTController {
 			User user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.update_and_queryFor_doorrecord_OutExcel(
 					classuuid,
-					groupuuid,uuid,user);
-			ExcelUtil.outXLS_doorrecord(response, "幼儿园门禁记录表",list);
+					groupuuid,uuid,null,user);
+			ExcelUtil.outXLS_doorrecord(response, "幼儿园接送卡表",list);
+			return null;
+		}else if("doorrecord_apply".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Object[]> list = studentService.queryFor_doorrecord_apply_OutExcel(
+					classuuid,
+					groupuuid,uuid,xlsname,user);
+			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
+			return null;
+		}else if("doorrecord_all".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Object[]> list = studentService.queryFor_doorrecord_apply_OutExcel(
+					classuuid,
+					groupuuid,uuid,xlsname,user);
+			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
 			return null;
 		}
 		

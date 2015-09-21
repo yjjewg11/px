@@ -70,4 +70,22 @@ public class StudentSignRecordController extends AbstractRESTController {
 	}
 
 
+	@RequestMapping(value = "/queryStudentuuid", method = RequestMethod.GET)
+	public String queryStudentuuid(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		String student_uuid=request.getParameter("studentuuid");
+		if(StringUtils.isBlank(student_uuid)){
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			responseMessage.setMessage("无数据");
+			return "";
+		}
+		PageQueryResult pageQueryResult = studentSignRecordService.query(student_uuid, pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 }

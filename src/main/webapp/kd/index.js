@@ -1,5 +1,7 @@
 //我选我的班级后的全局记录
-G_myclass_choooose=null;
+var G_myclass_choose=null;
+//我选我的学校后的全局记录
+var G_mygroup_choose=null;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -97,9 +99,9 @@ function login_affter_init(){
 	                            "title": "老师公告"
 	                          },
 	                          {
-	                        	                                  "link": "##",
-	                        	                                 "fn":function(){ajax_classnews_list_div_byRight(1);},
-	                        	                                 "title": "班级互动"
+                              "link": "##",
+                             "fn":function(){ajax_classnews_list_div_byRight(1);},
+                             "title": "班级互动"
 	                        	                               },
 	                          {
 	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
@@ -189,14 +191,27 @@ function login_affter_init(){
 		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
-		t_menu= {
-                "link": "##",
-                "fn":menu_accounts_list_fn_byRight,
-                "title": "收支记录"
-              };
-			if(G_user_hasRight("KD_accounts_m")){
-				menu_data.push(t_menu);
-			}
+		//————————————签到查询<权限>——————————		
+		t_menu={
+	      	   		"link": "##",
+	      	   		"title": "接送卡",
+		      	   	 "subMenu": [
+		                         {
+		                           "fn":menu_class_sign_today_fn_byRight,
+		                           "link": "##",
+		                           "title": "今天签到"
+		                         },
+		                         {
+		                   		    "link": "##",
+		                   		    "title": "接送卡查询",
+		                   		    "fn":menu_studentbind_byRight
+		                   		   
+		                   		  }
+		                         ]
+			  };
+		if(G_user_hasRight("KD_class_m")){
+			menu_data.push(t_menu);
+		}
 	t_menu= {
             "link": "##",
             "title": "学生列表",
@@ -224,6 +239,14 @@ function login_affter_init(){
 				}
 	
 
+		t_menu= {
+                "link": "##",
+                "fn":menu_accounts_list_fn_byRight,
+                "title": "收支记录"
+              };
+			if(G_user_hasRight("KD_accounts_m")){
+				menu_data.push(t_menu);
+			}
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",
@@ -649,7 +672,7 @@ window.onload=function(){
 function menu_class_sign_today_fn() {
 	Queue.push(function(){menu_class_sign_today_fn();},"今日签到");
 	var classList=Store.getMyClassList();
-	if(!G_myclass_choooose){
+	if(!G_myclass_choose){
 	
 		var classuuid;
 		if(!classList||classList.length==0){
@@ -657,12 +680,12 @@ function menu_class_sign_today_fn() {
 		}else{
 			classuuid=classList[1].uuid;
 		}
-		G_myclass_choooose=classuuid;
+		G_myclass_choose=classuuid;
 	}
 	React.render(React.createElement(Teacher_class_sign_today,{
 	//	events:formdata,
 		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
-		classuuid:G_myclass_choooose
+		classuuid:G_myclass_choose
 		}), document.getElementById('div_body'));
 };
 
@@ -846,3 +869,66 @@ function menu_statistics_list_fn_byRight() {
 function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
 };
+
+/*
+ * （标头）签到查询；
+ * @跳转kd_service发服务器请求
+ * */
+
+function menu_class_sign_today_fn_byRight() {
+	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
+	var  grouplist=Store.getGroupByRight("KD_class_m");	
+	if(!G_mygroup_choose){
+		
+		var groupuuid;
+
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choose=groupuuid;
+	}
+
+	var classList=Store.getChooseClass(grouplist[0].uuid);
+	if(!G_myclass_choose){
+	
+		var classuuid;
+
+		if(!classList||classList.length==0){
+			classuuid=null;
+		}else{
+			classuuid=classList[0].uuid;
+		}
+		G_myclass_choose=classuuid;
+	}
+	React.render(React.createElement(Teacher_class_sign_today_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:G_mygroup_choose,
+		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
+};
+
+/**
+ * 
+ */
+function menu_studentbind_byRight(){
+	Queue.push(function(){menu_studentbind_byRight();},"接送卡查询");
+	var  grouplist=Store.getGroupByRight("KD_class_m");	
+	if(!G_mygroup_choose){
+		var groupuuid;
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choose=groupuuid;
+	}
+
+	React.render(React.createElement(Studentbind_EventsTable_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:G_mygroup_choose,		
+		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
+}

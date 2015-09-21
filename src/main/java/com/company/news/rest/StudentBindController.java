@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
-import com.company.news.jsonform.StudentBindJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StudentBindService;
 import com.company.news.vo.ResponseMessage;
@@ -60,33 +61,6 @@ public class StudentBindController extends AbstractRESTController {
 
 	
 
-	/**
-	 * 查询我的所有孩子列表
-	 * 
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	public String query(ModelMap model,
-			HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		try {
-			List<StudentBind> list = studentBindService.query(request.getParameter("studentuuid"));
-			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage
-					.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage("服务器异常:"+e.getMessage());
-			return "";
-		}
-		return "";
-	}
-
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	public String get(@PathVariable String uuid, ModelMap model,
 			HttpServletRequest request) {
@@ -104,6 +78,39 @@ public class StudentBindController extends AbstractRESTController {
 			return "";
 		}
 		model.addAttribute(RestConstants.Return_G_entity, s);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 查询一个班级的孩子所有卡数据
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/query", method = RequestMethod.GET)
+	public String query(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			String classuuid =request.getParameter("classuuid");
+			String groupuuid =request.getParameter("groupuuid");
+			String studentuuid =request.getParameter("studentuuid");
+			String otherWhere =request.getParameter("otherWhere");
+			String cardid =request.getParameter("cardid");
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult list = studentBindService.query(classuuid,groupuuid,studentuuid,cardid,otherWhere,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+	responseMessage.setMessage("服务器异常:"+e.getMessage());
+	return "";
+		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
@@ -125,11 +132,11 @@ public class StudentBindController extends AbstractRESTController {
 			String classuuid =request.getParameter("classuuid");
 			String groupuuid =request.getParameter("groupuuid");
 			String studentuuid =request.getParameter("studentuuid");
-			if(StringUtils.isBlank(classuuid)){
-				responseMessage.setMessage("班级必须选择.");
-				return "";
-			}
-			List<Object[]> list = studentBindService.query(classuuid,groupuuid,studentuuid);
+//			if(StringUtils.isBlank(classuuid)){
+//				responseMessage.setMessage("班级必须选择.");
+//				return "";
+//			}
+			List<Object[]> list = studentBindService.queryByClass(classuuid,groupuuid,studentuuid);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -139,6 +146,87 @@ public class StudentBindController extends AbstractRESTController {
 	responseMessage.setMessage("服务器异常:"+e.getMessage());
 	return "";
 		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 声请学生接送卡
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/apply", method = RequestMethod.POST)
+	public String apply(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			String studentuuid =request.getParameter("studentuuid");
+			if(StringUtils.isBlank(studentuuid)){
+				responseMessage.setMessage("请选择学生.");
+				return "";
+			}
+			User user=this.getUserInfoBySession(request);
+			StudentBind obj = studentBindService.update_apply(studentuuid,responseMessage,user);
+			if(obj==null){
+				
+				return "";
+			}
+			responseMessage.setMessage("申请成功!声请号为:"+obj.getUserid());
+			model.addAttribute(RestConstants.Return_G_entity, obj);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	/**
+	 * 删除申请学生接送卡
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/cancelApply", method = RequestMethod.POST)
+	public String cancelApply(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String studentuuid =request.getParameter("studentuuid");
+		String userid =request.getParameter("userid");
+
+		try {
+			if(StringUtils.isBlank(studentuuid)){
+				responseMessage.setMessage("请选择学生.");
+				return "";
+			}
+			if(StringUtils.isBlank(userid)){
+				responseMessage.setMessage("请选择申请号.");
+				return "";
+			}
+			User user=this.getUserInfoBySession(request);
+			boolean obj = studentBindService.cancel_apply(studentuuid,userid,responseMessage,user);
+			if(!obj){
+				return "";
+			}
+			responseMessage.setMessage("操作成功!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

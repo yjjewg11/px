@@ -65,8 +65,10 @@ public class DoorRecordService extends AbstractService {
 				for (DoorRecord d : list) {
 					d.setGroupuuid(doorRecordJsonform.getGroupuuid());
 					this.nSimpleHibernateDao.getHibernateTemplate().save(d);
-					//添加打卡记录.用于查询学生打卡记录
-					studentSignRecordIservice.add(d);
+					//添加打卡记录.用于查询学生打卡记录.家长进出刷一次卡,推送给加载时,屏蔽出.
+					if(!"出".equals(d.getDoorid())){
+						studentSignRecordIservice.add(d);
+					}
 					
 				}
 
