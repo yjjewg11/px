@@ -910,6 +910,7 @@ function menu_class_sign_today_fn_byRight() {
 /**
  * 
  */
+G_studentbind_otherWhere=null;
 function menu_studentbind_byRight(){
 	Queue.push(function(){menu_studentbind_byRight();},"接送卡查询");
 	var  grouplist=Store.getGroupByRight("KD_class_m");	

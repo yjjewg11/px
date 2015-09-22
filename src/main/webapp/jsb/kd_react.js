@@ -199,7 +199,7 @@ var CookbookPlan_edit_EventRow = React.createClass({displayName: "CookbookPlan_e
 				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
-						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+						 checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
 			w_ch_cook.open(function(cooks){
 				  that.setState({
@@ -1635,10 +1635,15 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	      handleChange:function(type){
 	    	  ajax_parentContactByMyStudent(type);
 		  },
+	getInitialState: function() {
+		return {class_uuid:this.props.class_uuid};
+	  },
 	  handleChange_selectgroup_uuid:function(){
+		  	this.setState({class_uuid:$("input[name='class_uuid']").val()});
 		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$("input[name='class_uuid']").val());
 	  },
 	  handleChange_class_uuid:function(val){
+		    	this.setState({class_uuid:val});
 		  ajax_parentContactByMyStudent(null,val);
 	  },
 		render: function() {
@@ -1669,7 +1674,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			     
 	  			  	  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
 	  			  	 React.createElement("div", {className: "am-fl"}, 
-			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.props.class_uuid})
+			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.state.class_uuid})
 			    	  ), 
 			    	  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
 			    	  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入孩子姓名"})
@@ -2549,7 +2554,8 @@ var Announcements_Teacher_tel_div = React.createClass({displayName: "Announcemen
 	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
 	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
-	load_more_data:function(){
+	load_more_data:function(){ 
+		this.setState({groupuuid:$("input[name='group_uuid']").val()});
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
 		if(!re_data)return;
@@ -2560,10 +2566,14 @@ var Announcements_Teacher_tel_div = React.createClass({displayName: "Announcemen
 		}		  
 		  this.pageNo++;
 	},
+		 getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		this.forceUpdate();
+	//	this.forceUpdate();
+			
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
@@ -2577,7 +2587,7 @@ render: function() {
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 	      React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 	      React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入老师姓名"})
@@ -3310,11 +3320,11 @@ var CookbookPlan_EventsTable_byRight = React.createClass({displayName: "Cookbook
 			 var uuids=null;
 			 $($("input[name='table_checkbox']")).each(function(){
 				
-				　if(this.checked){
+				 if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
+					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				 }
 				});
 			  if(!uuids){
 				  G_msg_pop("请勾选复选框！");
@@ -3595,7 +3605,7 @@ var Teachingplan_show7Day_byRight = React.createClass({displayName: "Teachingpla
 		React.createElement("div", {className: "am-g"}, 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上周"), 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下周"), 	
-	    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: this.props.groupuuid}), 
+	    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: this.state.groupuuid}), 
 		React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid})
 		), 
 		React.createElement("hr", null), 
@@ -4215,11 +4225,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 				 var uuids=null;
 				 $($("input[name='table_checkbox']")).each(function(){
 					
-					　if(this.checked){
+					 if(this.checked){
 						 if(uuids==null)uuids=this.value;
 						 else
-						　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-					　}
+						 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					 }
 					});
 				  if(!uuids){
 					  alert("请选择你要下载的班级花名册！");
@@ -4233,11 +4243,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			 var uuids=null;
 			 $($("input[name='table_checkbox']")).each(function(){
 				
-				　if(this.checked){
+				 if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
+					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				 }
 				});
 			  if(!uuids){
 				  alert("至少选择一个班级");
@@ -5220,10 +5230,14 @@ render: function() {
   	componentDidMount:function(){
   		this.load_more_data();
   	},
+		 getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
   	load_more_data:function(){
+	
   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
   		var that=this;
   		var callback=function(re_data){
@@ -5244,7 +5258,8 @@ render: function() {
   	refresh_data:function(){
 //  		classnewsreply_list_div 清除；
 //        load_more_data	重新绘制DIV；
-  		this.forceUpdate();
+	this.setState({groupuuid:$("input[name='group_uuid']").val()});
+  	//	this.forceUpdate();
   		this.pageNo=1;
   		$("#"+this.classnewsreply_list_div).html("");
   		this.load_more_data();
@@ -5283,7 +5298,7 @@ render: function() {
   		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
   		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
   		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-  			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+  			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
   			  ), 
   				  React.createElement("div", {className: "am-fl  am-margin-bottom-sm am-margin-left-xs"}, 
   				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "姓名或手机号码"})	  
@@ -6334,8 +6349,7 @@ render: function() {
   	 if(!obj.students){
   		 obj.students=[];
   	 }
-	 console.log("测试satae---------:",this.state);
-	 console.log("测试obj---------:",obj);
+	
    return (
    React.createElement("div", null, 
      React.createElement("div", {className: "am-form-group"}, 
@@ -6562,13 +6576,13 @@ var Studentbind_EventsTable_byRight = React.createClass({displayName: "Studentbi
 			if(!classuuid&&classList&&classList.length>0){
 				classuuid=classList[0].uuid;
 			}
-		
+		if(!G_studentbind_otherWhere)G_studentbind_otherWhere='cardid_is_null';
 		var obj= {
 		    	groupuuid:this.props.groupuuid,
 		    	pageNo:1,
 		    	type:this.props.type,
 				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-				otherWhere:'cardid_is_null',
+				otherWhere:G_studentbind_otherWhere,
 				classuuid:classuuid,
 				totalCount:0,
 				cardid:"",
@@ -6616,7 +6630,9 @@ var Studentbind_EventsTable_byRight = React.createClass({displayName: "Studentbi
 			
 		$.AMUI.progress.start();
 		var that=this;
-		G_myclass_choose=obj.groupuuid;
+		G_myclass_choose=obj.classuuid;
+		G_mygroup_choose=obj.groupuuid;
+		G_studentbind_otherWhere=obj.otherWhere;
 		var url = hostUrl + "rest/studentbind/query.json";
 		$.ajax({
 			type : "GET",
@@ -6669,15 +6685,16 @@ handleChange_selectgroup_uuid:function(val){
 	 $("input[name='classuuid']").val("");
 	 var obj=this.state;
 	 obj.groupuuid=val;
-	 G_mygroup_choose=val;
+
 		 var classList=Store.getChooseClass(val);
-				var classuuid =null;
-				if(classList&&classList.length>0){
-					classuuid=classList[0].uuid;
-				}
+	var classuuid =null;
+	if(classList&&classList.length>0){
+		classuuid=classList[0].uuid;
+	}
 		obj.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
 		 	obj.classList.unshift({value:"",label:"所有"});
 			obj.classuuid=classuuid;
+	
 		 this.ajax_list(obj);
 	},
 
@@ -6685,7 +6702,6 @@ handleChange_selectclass_uuid:function(val){
 	 var obj=this.state;
 		obj.classuuid=val;
 		obj.pageNo=1;
-		 G_myclass_choose=val;
    	   this.ajax_list(obj);
    	 
       },
@@ -6693,6 +6709,7 @@ handleChange_selectclass_uuid:function(val){
 		 
    	  var obj=this.state;
 		obj.otherWhere=val;
+		G_studentbind_otherWhere=val;
 		obj.pageNo=1;
    	   this.ajax_list(obj);
       },
@@ -6736,6 +6753,7 @@ React.createElement("hr", null),
     React.createElement(AMR_Table, React.__spread({},  this.props), 
    React.createElement("thead", null, 
     React.createElement("tr", null, 
+		    React.createElement("th", null, "班级"), 
       React.createElement("th", null, "姓名"), 
       React.createElement("th", null, "接送卡号"), 
       React.createElement("th", null, "申请号"), 
@@ -6764,6 +6782,7 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
 	  return (
 	    React.createElement("tr", {className: className}, 
+		     React.createElement("td", null, Store.getClassByUuid(event[6]).name), 
    React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event[0])}, event[3])), 
 	      React.createElement("td", null, event[1]), 
 	       React.createElement("td", null, event[2]), 

@@ -199,7 +199,7 @@ var CookbookPlan_edit_EventRow = React.createClass({
 				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
-						　checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+							 checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
 			w_ch_cook.open(function(cooks){
 				  that.setState({
@@ -3812,12 +3812,11 @@ var Class_EventsTable_byRight = React.createClass({
 			 }else if(m=="flower_name"){
 				 var uuids=null;
 				 $($("input[name='table_checkbox']")).each(function(){
-					
-					　if(this.checked){
+					if(this.checked){
 						 if(uuids==null)uuids=this.value;
 						 else
-						　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-					　}
+						 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					 }
 					});
 				  if(!uuids){
 					  alert("请选择你要下载的班级花名册！");
@@ -3831,11 +3830,11 @@ var Class_EventsTable_byRight = React.createClass({
 			 var uuids=null;
 			 $($("input[name='table_checkbox']")).each(function(){
 				
-				　if(this.checked){
+				 if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
+					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				 }
 				});
 			  if(!uuids){
 				  alert("至少选择一个班级");

@@ -61,8 +61,7 @@ var ChooseRight_EventsTable = React.createClass({
 						 uuids+=','+this.value ; 
 						 names+=','+this.alt; 
 					 }
-//遍历被选中CheckBox元素的集合 得到Value值
-				　}
+				 }
 				});
 			  
 			 this.props.handleClick(m,$('#selectgroup_uuid_chright').val(),uuids,names);

@@ -348,7 +348,7 @@ public class StudentBindService extends AbstractService {
 	 */
 	public PageQueryResult query(String classuuid, String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime ";
+		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime,s1.classuuid ";
 		String sql = "";
 		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
 	//	sql+=" where b2.cardid is not null ";
