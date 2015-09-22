@@ -13,7 +13,7 @@ var AMR_Span=AMUIReact.span;
 
 
 
-//幼儿园注册
+//培训机构注册
 var Div_kd_group_reg = React.createClass({ 	
 	render: function() {
 		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
@@ -22,7 +22,7 @@ var Div_kd_group_reg = React.createClass({
 			   <div>		
 				<div className="header">
 				  <div className="am-g">
-				    <h1>幼儿园注册</h1>
+				    <h1>培训机构注册</h1>
 				  </div>
 				 <hr/>
 				</div>
@@ -123,7 +123,7 @@ render: function() {
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	     <div className="am-cf am-margin-top-sm">
- 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
+ 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">培训机构注册</a>
  	     <a href="javascript:void(0);"  onClick={menu_userinfo_reg_fn} className="am-fr">老师注册</a>
  	      </div>
  	     <br/>
@@ -824,6 +824,7 @@ render: function() {
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
+	  console.log("123321",o);
 return (
 		<div>
 		<div className="header">
@@ -1937,6 +1938,8 @@ var Class_students_show= React.createClass({
 	  },
 	render: function() {
 		var o=this.props.formdata;
+		console.log("o",o);
+		if(!o)o="";
 		var stutent_num=this.props.stutent_num;
 		if(!this.props.students)this.props.students=[];
 	  return (
@@ -2057,67 +2060,8 @@ var Class_student_look_info =React.createClass({
 //		 }
 //
 //	  },
-	  //加载绑定卡信息
-	  ajax_loadStudentbind_card:function(studentuuid){
-		  var that=this;
-		  that.last_apply_userid=null;
-		  $.AMUI.progress.start();
-		     var url = hostUrl + "rest/studentbind/queryByClassuuid.json?studentuuid="+studentuuid;
-		 	$.ajax({
-		 		type : "GET",
-		 		url : url,
-		 		dataType : "json",
-		 		 async: true,
-		 		success : function(data) {
-		 			$.AMUI.progress.done();
-		 			// 登陆成功直接进入主页
-		 			if (data.ResMsg.status == "success") {
-		 				$("#btn_cancelApply").hide();
-		 				var list=data.list;
-		 				var s="";
-		 				if(!list||list.length==0){
-		 					s="无";
-		 				}else{
-							//b2.studentuuid,b2.cardid,b2.userid,s1.name
-		 					for(var i=0;i<list.length;i++){
-		 						if(s)s+=",";
-		 						if(!list[i][1]){
-		 							list[i][1]="申请中";
-		 							$("#btn_cancelApply").show();//申请中可以取消
-		 							that.last_apply_userid=list[i][2];
-		 						}
-		 						s+=list[i][1]+"("+list[i][2]+")";
-		 					}
-		 				}
-		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
-		 			} else {
-		 				alert("加载数据失败："+data.ResMsg.message);
-		 			}
-		 		},
-		 		error :G_ajax_error_fn
-		 	});
-	  },
-	  btn_studentbind_apply:function(studentuuid){
-		  var that=this;
-		  ajax_studentbind_apply(studentuuid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
-	  btn_studentbind_cancelApply:function(studentuuid){
-		  var that=this;
-		  if(!that.last_apply_userid){
-			  alert("只能取消申请中的接送卡!");
-			  return;
-		  }
-		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
 	  componentDidMount:function(){
-		  $('.am-gallery').pureview();
-		  	this.ajax_loadStudentbind_card(this.state.uuid);
+
 		},
 		render: function() {
 	     var o =this.state;
@@ -2128,15 +2072,12 @@ var Class_student_look_info =React.createClass({
 		 		
 		 		 <AMR_ButtonToolbar>
 		 	    <AMR_Button amStyle="primary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
-		 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
-		 	  <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
 		 	 <G_help_popo   msg={G_tip.studentbind_app} />
 		 	  </AMR_ButtonToolbar>
 			    <AMUIReact.List static border striped>
 			      <Common_mg_big_fn  imgsList={imglist} />				  
 				  <br/>
 			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem id="input_studentbind_card">接送卡号:加载中...</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
@@ -3913,8 +3854,7 @@ var Class_EventsTable_byRight = React.createClass({
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
-	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
-	            {value: 'doorrecord', label: '导出接送卡表'}
+	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
 	          ];
 
 	    return {
@@ -4536,7 +4476,7 @@ render: function() {
   	if(this.state.group_uuid==""){			
   		this.state.group_uuid="0";
   	};
-  	if(this.state.class_uuid){			
+  	if(this.state.class_uuid==""){			
   		this.state.class_uuid="1";
   	};
   	var pre_disabled=g_student_query_point<2;

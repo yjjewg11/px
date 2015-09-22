@@ -161,6 +161,12 @@ public class UserinfoService extends AbstractService {
 				r.setUseruuid(user.getUuid());
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 
+			}else if (SystemConstants.Group_type_2.equals(group.getType())) {
+				RoleUserRelation r = new RoleUserRelation();
+				r.setRoleuuid(RightConstants.Role_KD_admini);
+				r.setUseruuid(user.getUuid());
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+
 			}
 		}
 		return true;

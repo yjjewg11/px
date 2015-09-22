@@ -69,9 +69,9 @@ public class ClassNewsController extends AbstractRESTController {
 		try {
 			boolean flag;
 			if (StringUtils.isEmpty(classNewsJsonform.getUuid()))
-				flag = classNewsService.add(user,classNewsJsonform, responseMessage);
+				flag = classNewsService.add(user,classNewsJsonform, responseMessage,request);
 			else
-				flag = classNewsService.update(user,classNewsJsonform,responseMessage);
+				flag = classNewsService.update(user,classNewsJsonform,responseMessage,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

@@ -178,27 +178,6 @@ function login_affter_init(){
 		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
-//		//————————————签到查询<权限>——————————		
-//		t_menu={
-//	      	   		"link": "##",
-//	      	   		"title": "接送卡",
-//		      	   	 "subMenu": [
-//		                         {
-//		                           "fn":menu_class_sign_today_fn_byRight,
-//		                           "link": "##",
-//		                           "title": "今天签到"
-//		                         },
-//		                         {
-//		                   		    "link": "##",
-//		                   		    "title": "接送卡查询",
-//		                   		    "fn":menu_studentbind_byRight
-//		                   		   
-//		                   		  }
-//		                         ]
-//			  };
-//		if(G_user_hasRight("KD_class_m")){
-//			menu_data.push(t_menu);
-//		}
 	t_menu= {
             "link": "##",
             "title": "学生列表",
@@ -281,7 +260,7 @@ function login_affter_init(){
             "fn":menu_userinfo_logout_fn,
             "title": "注销"
           };
-			
+ 	
 	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		div_menu_data.subMenu.push(t_menu);
 	}		
@@ -289,7 +268,7 @@ function login_affter_init(){
 	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		menu_data.push(div_menu_data);
 	//}
-	
+
 	$("#div_menu").html("");
 	
 	title_info_init("首页");

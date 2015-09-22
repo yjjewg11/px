@@ -2076,6 +2076,7 @@ var Class_students_show= React.createClass({
 	  },
 	render: function() {
 		var o=this.props.formdata;
+		if(!o)o="";
 		var stutent_num=this.props.stutent_num;
 		if(!this.props.students)this.props.students=[];
 	  return (
