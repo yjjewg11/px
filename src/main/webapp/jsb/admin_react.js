@@ -201,8 +201,7 @@ var Role_EventsTable = React.createClass({displayName: "Role_EventsTable",
 			 
 			 var uuids=null;
 			 $("input[name='table_checkbox']").each(function(){
-				
-				　if(this.checked){
+				if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
 					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值

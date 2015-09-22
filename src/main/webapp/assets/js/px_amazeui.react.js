@@ -6115,14 +6115,16 @@ var Selected = React.createClass({displayName: "Selected",
   },
 
   render: function() {
+	 
     var classSet = this.getClassSet();
     var selectedLabel = [];
     var items = [];
     var filterText = this.state.filterText;
     var groupHeader;
-
+    var checked_value=false;
     this.props.data.forEach(function(option, i) {
       var checked = this.hasValue(option.value);
+      checked_value=checked;
       var checkedClass = checked ? this.setClassNamespace('checked') : null;
       var checkedIcon = checked ? React.createElement(Icon, {icon: "check"}) : null;
 
@@ -6139,7 +6141,7 @@ var Selected = React.createClass({displayName: "Selected",
           )
         );
       }
-
+     
       if (filterText && !this.props.optionFilter(filterText, option)) {
         return;
       }
@@ -6175,7 +6177,10 @@ var Selected = React.createClass({displayName: "Selected",
         overflowY: 'scroll'
       };
     }
-
+    //add lmq .有value但是option中没有
+    if(selectedLabel.length==0){
+		  this.state.value="";
+	  }
     return (
       React.createElement(Dropdown, {
         className: classNames(this.props.className, classSet), 

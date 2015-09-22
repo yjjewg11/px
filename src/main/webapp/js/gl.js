@@ -27,6 +27,7 @@ var hostUrlCDN='/px-rest/';
 hostUrlCDN='http://img.wenjienet.com/';
 var G_logo=hostUrlCDN+"i/logo.png";
 var G_def_headImgPath=hostUrlCDN+"i/header.png";
+var G_def_noImgPath=hostUrlCDN+"i/header.png";
 //取消G_imgPath
 var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
 G_imgPath="";

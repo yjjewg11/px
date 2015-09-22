@@ -1078,7 +1078,7 @@ var  Common_mg_big_fn  = React.createClass({
 			   
 			    {this.props.imgsList.map(function(event) {
 			    	 var  o = event;
-					  var  imgArr=o.split("@");
+					  var  imgArr=o?o.split("@"):"";
 			        return (
 			       	  <li>			     			
 			     	    <div className="am-gallery-item">

@@ -4878,7 +4878,7 @@ render: function() {
   	if(this.state.group_uuid==""){			
   		this.state.group_uuid="0";
   	};
-  	if(this.state.class_uuid){			
+  	if(this.state.class_uuid==""){			
   		this.state.class_uuid="1";
   	};
   	var pre_disabled=g_student_query_point<2;
@@ -4901,10 +4901,10 @@ render: function() {
      <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)} round>下一页 &raquo;</AMR_Button>
     </div>
    	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  placeholder="所有"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
   	   </div>  	 
   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.state.class_list} btnStyle="primary" value={this.state.class_uuid} />      
+  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"   placeholder="所有"  multiple= {false} data={this.state.class_list} btnStyle="primary" value={this.state.class_uuid} />      
   	  </div>  
   	   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   	    <input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
