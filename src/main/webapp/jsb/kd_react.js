@@ -5059,12 +5059,12 @@ render: function() {
     		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
     		 React.createElement("div", null, 
 	    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
+	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
 	    		 
 	    		 ), 
 				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 							    		 
-						 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+						 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
 	    		 ), 
 				 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 					    		 

@@ -5059,12 +5059,12 @@ render: function() {
     		 <form id="editEchartForm" method="post" className="am-form">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
-	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 <AMUIReact.Selected inline name="type" value={o.type}  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
 	    		 
 	    		 </div>
 				<div className="am-u-lg-3 am-u-md-6">
 							    		 
-						 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+						 <AMUIReact.Selected inline name="groupuuid"  value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
 	    		 </div>
 				 <div className="am-u-lg-3 am-u-md-6">
 					    		 
