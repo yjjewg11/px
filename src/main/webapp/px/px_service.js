@@ -1,64 +1,4 @@
 
-
-
-/*
- * 声请学生接送卡
- * */
- function ajax_studentbind_apply(uuid,callback){
-		if(!confirm("确定要申请接送卡吗?")){
-			return;
-		}
- 	$.AMUI.progress.start();
-     var url = hostUrl + "rest/studentbind/apply.json?studentuuid="+uuid;
- 	$.ajax({
- 		type : "POST",
- 		url : url,
- 		dataType : "json",
- 		 async: true,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			// 登陆成功直接进入主页
- 			if (data.ResMsg.status == "success") {
- 				alert(data.ResMsg.message);
- 				if(typeof callback=='function')callback();
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
- 		error :G_ajax_error_fn
- 	});
- };
- 
- /*
-  * 声请学生接送卡
-  * */
-  function ajax_studentbind_cancelApply(studentuuid,userid,callback){
- 		if(!confirm("确定要申请接送卡吗?")){
- 			return;
- 		}
-  	$.AMUI.progress.start();
-      var url = hostUrl + "rest/studentbind/cancelApply.json";
-  	$.ajax({
-  		type : "POST",
-  		url : url,
-  		data:{studentuuid:studentuuid,userid:userid},
-  		dataType : "json",
-  		 async: true,
-  		success : function(data) {
-  			$.AMUI.progress.done();
-  			// 登陆成功直接进入主页
-  			if (data.ResMsg.status == "success") {
-  				alert(data.ResMsg.message);
-  				if(typeof callback=='function')callback();
-  			} else {
-  				alert("加载数据失败："+data.ResMsg.message);
-  			}
-  		},
-  		error :G_ajax_error_fn
-  	});
-  };
-  
- 
 //用户登陆
 function ajax_userinfo_login() {
 	
@@ -72,12 +12,12 @@ function ajax_userinfo_login() {
 		 password=$.md5(password); 
 	}
 	
-	var url = hostUrl + "rest/userinfo/login.json?loginname=" + loginname + "&password="
-			+ password;
+	
+	var url = hostUrl + "rest/userinfo/login.json";
 	$.ajax({
 		type : "POST",
 		url : url,
-		data : "",
+		data :{loginname:loginname,password:password,grouptype:2},
 		dataType : "json",
 		success : function(data) {
 			 $btn.button('reset');
@@ -350,14 +290,6 @@ function ajax_State_style(type,reluuid,group_uuid,num){
     	menu_teachingplan_dayShow_fn();
     	 //  ajax_teachingplan_dayShow(null,{uuid:reluuid,nmae:""});  //(课程表);
 	       break;
-//	case 6:
-//		if(num==1){
-//			   ajax_cookbookPlan_dayShow(null,reluuid);  //(食谱);
-//		}else{
-//			ajax_cookbookPlan_listByGroup(group_uuid);	 //(每日任务食谱发布)
-//		}
-//
-//	       break;
 	case 5:                                          
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
@@ -405,7 +337,7 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 function react_ajax_class_students_manage(uuid){
 	$.AMUI.progress.start();	
 	var formdata=null;
-    var url = hostUrl + "rest/class/"+uuid+".json";
+    var url = hostUrl + "rest/pxclass/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -423,7 +355,7 @@ function react_ajax_class_students_manage(uuid){
 	});
 	var students=null;
 	var 
-	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
+	url=hostUrl + "rest/pxstudent/getStudentByClassuuid.json?classuuid="+uuid;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -471,15 +403,23 @@ function btn_click_class_list(m,groupuuid,classuuid){
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"新增学生");
 		add_studentsByData({classuuid:classuuid,sex:0});
 	}else if(m=="edit_class"){
-		if(!classuuid&&classuuid.indexOf(",")>-1){
+		if(!classuuid){
+			G_msg_pop("请先创建班级!");
+			return;
+		}
+		if(classuuid.indexOf(",")>-1){
 			alert("只能选择一个班级进行编辑！");
 			return;
 		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"编辑班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},classuuid);
 	}else if(m=="delete"){
-		if(!classuuid&&classuuid.indexOf(",")>-1){
-			alert("只能选择一个班级进行编辑！");
+		if(!classuuid){
+			G_msg_pop("请先创建班级!");
+			return;
+		}
+		if(classuuid.indexOf(",")>-1){
+			alert("只能选择一个班级进行删除！");
 			return;
 		}
 		ajax_class_delete_byRight(classuuid);
@@ -509,7 +449,7 @@ function ajax_class_delete_byRight(uuid){
 		return;
 	}
   	$.AMUI.progress.start();
-      var url = hostUrl + "rest/class/delete.json?uuid="+uuid;
+      var url = hostUrl + "rest/pxclass/delete.json?uuid="+uuid;
 	$.ajax({
 		type : "POST",
 		url : url,
@@ -554,7 +494,7 @@ function btn_ajax_myclass_student_save(){
 	$("input[name='birthday']").val(objectForm.birthday);
     var opt={
             formName: "editClassStudentForm",
-            url:hostUrl + "rest/student/save.json",
+            url:hostUrl + "rest/pxstudent/save.json",
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
             	Store.setClassStudentsList(data.uuid,null);
@@ -580,7 +520,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 		return;
 	}
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/class/"+uuid+".json";
+    var url = hostUrl + "rest/pxclass/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -607,7 +547,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 function ajax_class_save(){
     var opt={
             formName: "editClassForm",
-            url:hostUrl + "rest/class/save.json",
+            url:hostUrl + "rest/pxclass/save.json",
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
 				Store.setMyClassList(null);
@@ -619,14 +559,14 @@ G_ajax_abs_save(opt);
 }	
 /*
  * （主页）我的班级学生详情服务器请求
- * @服务器请求:POST rest/student/{uuid}.json;
+ * @服务器请求:POST rest/pxstudent/{uuid}.json;
  * uuid:用户ID;
  * @根据数据在 Kd_react做绘制处理 
  * */
 function ajax_class_students_look_info(uuid,title){
 	Queue.push(function(){ajax_class_students_look_info(uuid,title);},"学生详情");
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/"+uuid+".json";
+    var url = hostUrl + "rest/pxstudent/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -650,7 +590,7 @@ function ajax_class_students_look_info(uuid,title){
  function ajax_myclass_students_edit(uuid){
  	Queue.push(function(){ajax_myclass_students_edit(uuid);},"编辑学生");
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
+     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -1166,7 +1106,7 @@ function react_ajax_announce_good_show(uuid,title){
 //};
 /*
  * （首页）家长通讯录功能；服务器请求
- *@服务器请求：POST rest/student/parentContactByMyStudent.json
+ *@服务器请求：POST rest/pxstudent/parentContactByMyStudent.json
  *@Class_student_tel:开始绘制方法;
  *@formdata:data.list:服务器取回的学生数组数据
  * @isreg:0为未注册  1为已注册用户
@@ -1182,7 +1122,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 	var queryList=[];
 	var queryArry=[];
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/parentContactByMyStudent.json";
+    var url = hostUrl + "rest/pxstudent/parentContactByMyStudent.json";
 	$.ajax({
 		type : "GET",
 		data : {student_name:student_name,class_uuid:class_uuid},
@@ -1278,7 +1218,7 @@ function ajax_parent_message_save(that){
  * */
 function ajax_parentContact_tels(tels){
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/inviteParents.json?tels="+tels;
+    var url = hostUrl + "rest/pxstudent/inviteParents.json?tels="+tels;
 	$.ajax({
 		type : "POST",
 		url : url,
@@ -2163,7 +2103,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  */
  function ajax_flowername_download_byRight (groupuuid,classuuid,xlsname){
  	var inputs;
- 	var url = hostUrl + "rest/student/exportStudentExcel.json";
+ 	var url = hostUrl + "rest/pxstudent/exportStudentExcel.json";
  	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
  	  inputs+='<input type="hidden" name="classuuid" value="'+classuuid+'" />'; 
  	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
@@ -2372,7 +2312,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	}
  	
  	$.AMUI.progress.start();
- 	var url = hostUrl + "rest/class/list.json?groupuuid="+groupuuid;
+ 	var url = hostUrl + "rest/pxclass/list.json?groupuuid="+groupuuid;
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2449,7 +2389,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		return;
  	}
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/class/"+uuid+".json";
+     var url = hostUrl + "rest/pxclass/"+uuid+".json";
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2476,7 +2416,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  function ajax_class_save_byRight(){
      var opt={
              formName: "editClassForm",
-             url:hostUrl + "rest/class/save.json",
+             url:hostUrl + "rest/pxclass/save.json",
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
  				Store.setMyClassList(null);
@@ -2494,7 +2434,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  */
  function ajax_flowername_download_byRight (groupuuid,classuuid,xlsname){
  	var inputs;
- 	var url = hostUrl + "rest/student/exportStudentExcel.json";
+ 	var url = hostUrl + "rest/pxstudent/exportStudentExcel.json";
  	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
  	  inputs+='<input type="hidden" name="classuuid" value="'+classuuid+'" />'; 
  	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
@@ -2513,7 +2453,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  function react_ajax_class_students_manage_byRight(uuid){
  	$.AMUI.progress.start();
  	var formdata={};
-     var url = hostUrl + "rest/class/"+uuid+".json";
+     var url = hostUrl + "rest/pxclass/"+uuid+".json";
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2531,7 +2471,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 		error :G_ajax_error_fn
  	});
  	var students=null;
- 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
+ 	url=hostUrl + "rest/pxstudent/getStudentByClassuuid.json?classuuid="+uuid;
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2576,7 +2516,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  
  /*  
   * （标头）<班级管理>界面添加学生按钮事件处理
-  * @服务器请求:POST rest/student/{uuid}.json;
+  * @服务器请求:POST rest/pxstudent/{uuid}.json;
   * @ajax_teachingplan_dayShow 直接调用课程表的方法；
   * */
  function class_students_manage_onClick_byRight(m,classuuid,name){
@@ -2598,7 +2538,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	}
  	Queue.push(function(){ajax_class_students_edit_byRight(formdata,uuid);},"编辑学生");
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
+     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2626,7 +2566,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	var objectForm = $('#editClassStudentForm').serializeJson();
      var opt={
              formName: "editClassStudentForm",
-             url:hostUrl + "rest/student/save.json",
+             url:hostUrl + "rest/pxstudent/save.json",
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
              	Store.setClassStudentsList(data.uuid,null);
@@ -2639,7 +2579,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 我的班级学生列表编辑改变班级服务器请求；
   * */
   function  ajax_student_changeClass(classuuid,studentuuid){
-      var url = hostUrl + "rest/student/changeClass.json";
+      var url = hostUrl + "rest/pxstudent/changeClass.json";
   	$.ajax({
   		type : "POST",
   		data:{classuuid:classuuid,studentuuid:studentuuid},
@@ -2768,7 +2708,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  if(!pageNo)pageNo=1;
  	 g_student_query_point=pageNo;
  		$.AMUI.progress.start();
- 		var url = hostUrl + "rest/student/querybyRight.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+ 		var url = hostUrl + "rest/pxstudent/querybyRight.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
  		$.ajax({          
  			type : "GET",  
  			url : url,
@@ -2804,7 +2744,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  function ajax_class_students_look_info_byRight(uuid,title){
  	Queue.push(function(){ajax_class_students_look_info_byRight(uuid,title);},"学生详情");
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
+     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2926,94 +2866,3 @@ function menu_userteacher_fn(){
 		error :G_ajax_error_fn
 	});
 };
-
-//—————————————————————————签到查询（详情接口）—————————————————————————      
-/*签到查询（详情接口）-详情List；
-*
- * */ 
-// function ajax_ClassCard_info_byRight(uuid){ 
-//	   Queue.push(function(){ajax_ClassCard_info_byRight(groupuuid,classuuid,uuid);},"签到详情");
-//	   	$.AMUI.progress.start();
-//	       var url = hostUrl + "rest/studentSignRecord/queryStudentuuid.json";
-//	   	$.ajax({
-//	   		type : "GET",
-//	   		url : url,
-//	   		data:{studentuuid:uuid},
-//	   		dataType : "json",
-//	   		 async: true,
-//	   		success : function(data) {
-//	   			$.AMUI.progress.done();
-//	   			if (data.ResMsg.status == "success") {
-//	   				if(data.list.length!=0){
-//		   				//React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), document.getElementById('div_body'));	
-//	   				}else{
-//	   					G_msg_pop("暂无刷卡数据!");
-//		   				React.render(React.createElement( Boss_student_tel2_byRight), document.getElementById('div_body'));
-//	   				}
-//
-//	   			} else {
-//	   				alert("加载数据失败："+data.ResMsg.message);
-//	   			}
-//	   		},
-//			error :G_ajax_error_fn
-//	   	});
-//	   };
-	   
-	   
-   /*
-* <公告>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
-* 基本框 等
-* */
-   function ajax_ClassCard_info_byRight(uuid){
-	   Queue.push(function(){ajax_ClassCard_info_byRight(uuid);},"签到详情");
-   	React.render(React.createElement(Announcements_Div_ClassCard_info_byRight,{
-   		studentuuid:uuid
-   	}), document.getElementById('div_body'));
-      	
-   };
-   /*
-* <公告>取出数组服务器请求后
-* 开始绘制动态数据内容
-* */
-   function ajax_announce_ClassCard_info(list_div,studentuuid,pageNo) {
-   	var re_data=null;
-   	$.AMUI.progress.start();
-   	if(!pageNo)pageNo=1;
-    var url = hostUrl + "rest/studentSignRecord/queryStudentuuid.json";
-$.ajax({
-	type : "GET",
-	url : url,
-	data:{studentuuid:studentuuid,pageNo:pageNo},
-	dataType : "json",
-	async: false,
-	success : function(data) {
-		$.AMUI.progress.done();
-		if (data.ResMsg.status == "success") {
-   				React.render(React.createElement(Announcements_ClassCard_info_div, {
-   					events: data.list.data,
-   					responsive: true, bordered: true, striped :true,hover:true,striped:true
-   					}), document.getElementById(list_div));
-   				re_data=data.list;
-   			} else {
-   				alert(data.ResMsg.message);
-   				G_resMsg_filter(data.ResMsg);
-   			}
-   		},
-   		error :G_ajax_error_fn
-   	});
-   	return re_data;
-   };	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   

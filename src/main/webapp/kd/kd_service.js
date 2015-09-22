@@ -471,15 +471,23 @@ function btn_click_class_list(m,groupuuid,classuuid){
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"新增学生");
 		add_studentsByData({classuuid:classuuid,sex:0});
 	}else if(m=="edit_class"){
-		if(!classuuid&&classuuid.indexOf(",")>-1){
+		if(!classuuid){
+			G_msg_pop("请先创建班级!");
+			return;
+		}
+		if(classuuid.indexOf(",")>-1){
 			alert("只能选择一个班级进行编辑！");
 			return;
 		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"编辑班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},classuuid);
 	}else if(m=="delete"){
-		if(!classuuid&&classuuid.indexOf(",")>-1){
-			alert("只能选择一个班级进行编辑！");
+		if(!classuuid){
+			G_msg_pop("请先创建班级!");
+			return;
+		}
+		if(classuuid.indexOf(",")>-1){
+			alert("只能选择一个班级进行删除！");
 			return;
 		}
 		ajax_class_delete_byRight(classuuid);
