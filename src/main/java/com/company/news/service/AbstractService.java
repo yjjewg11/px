@@ -102,7 +102,24 @@ public abstract class AbstractService {
 		}
 		return false;
 	}
-	
+
+
+	/**
+	 * 是否可以收藏
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public boolean isFavorites(String user_uuid,String reluuid) {
+		if(StringUtils.isBlank(reluuid)||StringUtils.isBlank(user_uuid))return false;
+		List list = nSimpleHibernateDao.getHibernateTemplate().find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid,user_uuid);
+
+		if (list != null&&list.size()>0)// 已被占用
+			return false;
+		else
+			return true;
+
+	}
 	
 
 }

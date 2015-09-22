@@ -676,7 +676,7 @@ function menu_class_sign_today_fn() {
 		if(!classList||classList.length==0){
 			classuuid=null;
 		}else{
-			classuuid=classList[1].uuid;
+			classuuid=classList[0].uuid;
 		}
 		G_myclass_choose=classuuid;
 	}
