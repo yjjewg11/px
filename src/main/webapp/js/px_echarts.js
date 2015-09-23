@@ -58,7 +58,7 @@ var PXECharts_ajax={
 		data.push( {value: 'uls', label: '教师统计（按登陆时间）'});
 		data.push( {value: 'sss', label: '学生统计（按性别）'});
 		data.push( {value: 'css', label: '学生统计（按班级人数）'});
-		data.push( {value: 'cns', label: '班级互动发帖数统计'});
+		data.push( {value: 'cns', label: '互动统计（按班级发帖数）'});
 		//data.push( {value: 'cnts', label: '班级互动热门TOP10'});
 		return data;
 	},
