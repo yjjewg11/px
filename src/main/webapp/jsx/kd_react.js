@@ -2679,7 +2679,7 @@ var rect_favorites_Div_list = React.createClass({
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(!re_data)return;
-		if(re_data.totalCount<re_data.pageSize){
+		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
 			$("#"+this.load_more_btn_id).show();

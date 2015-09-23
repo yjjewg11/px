@@ -187,7 +187,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public PageQueryResult queryByPage(String groupuuid, String classuuid, String name, PaginationData pData) {
-		String hql = "from Student where 1=1";
+		String hql = "from PxStudent where 1=1";
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))

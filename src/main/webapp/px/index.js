@@ -468,21 +468,21 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
-	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
-	var myclasslist=Store.getMyClassList();
-	if(!myclasslist||myclasslist.length==0){
-		G_msg_pop("请先创建班级!");
-		return ;
-	}
-	if(!G_myCurClassuuid){
-		G_myCurClassuuid=myclasslist[0].uuid;
-	}
-	React.render(React.createElement(Teachingplan_show7Day, {
-			classuuid:G_myCurClassuuid,
-			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
-			}), document.getElementById('div_body'));
-	return;
-	
+//	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
+//	var myclasslist=Store.getMyClassList();
+//	if(!myclasslist||myclasslist.length==0){
+//		G_msg_pop("请先创建班级!");
+//		return ;
+//	}
+//	if(!G_myCurClassuuid){
+//		G_myCurClassuuid=myclasslist[0].uuid;
+//	}
+//	React.render(React.createElement(Teachingplan_show7Day, {
+//			classuuid:G_myCurClassuuid,
+//			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
+//			}), document.getElementById('div_body'));
+//	return;
+	var classList=Store.getMyClassList();
 	var classuuid;
 	var classname;
 	if(!classList||classList.length==0){
@@ -668,43 +668,20 @@ function menu_userTeacher_list_fn_byRight() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_list_fn_byRight() {
-	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
-//	var myclasslist=Store.getMyClassList();
-//	if(!myclasslist||myclasslist.length==0){
-//		G_msg_pop("请先创建班级!");
-//		return ;
-//	}
-//	if(!G_myCurClassuuid){
-//		G_myCurClassuuid=myclasslist[0].uuid;
-//	}
-	var groupList=Store.getGroupByRight("KD_teachingplan_m");
-	
-	if(!groupList||groupList.length==0){
-		alert("没有权限。");
-		return;
-	}	
-	var groupuuid=groupList[0].uuid;
-	
-//	var classList=Store.getChooseClass(this.props.groupuuid);
-//	var classuuid =null;
-//	if(classList&&classList.length>0){
-//		classuuid=classList[0].uuid;
-//	}
-//	var obj= {
-//			groupuuid:this.props.groupuuid,
-//			classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-//			classuuid:classuuid,
-//	    	pageNo:0,
-//	    	list: []
-//	    };
-////	this.ajax_list(obj);
-//    return obj;	
-
-	React.render(React.createElement(Teachingplan_show7Day_byRight, {
-		    groupuuid:groupuuid,
-		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
-			}), document.getElementById('div_body'));
-	return;
+//	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+//	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+//	
+//	if(!groupList||groupList.length==0){
+//		alert("没有权限。");
+//		return;
+//	}	
+//	var groupuuid=groupList[0].uuid;	
+//
+//	React.render(React.createElement(Teachingplan_show7Day_byRight, {
+//		    groupuuid:groupuuid,
+//		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+//			}), document.getElementById('div_body'));
+//	return;
 //---------------------------------------------------------------------------------	
 	var groupList=Store.getGroupByRight("KD_teachingplan_m");
 	

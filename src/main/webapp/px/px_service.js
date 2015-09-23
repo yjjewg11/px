@@ -860,7 +860,7 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 	var begDateStr=G_week.getDateStr(now,num);
 	var endDateStr=begDateStr;
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/teachingplan/list.json";
+	var url = hostUrl + "rest/pxteachingplan/list.json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -917,7 +917,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
 		return;
 	}
 	$.AMUI.progress.start();
-  var url = hostUrl + "rest/teachingplan/"+uuid+".json";
+  var url = hostUrl + "rest/pxteachingplan/"+uuid+".json";
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -944,7 +944,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
 function ajax_teachingplan_save(){
     var opt={
             formName: "editTeachingplanForm",
-            url:hostUrl + "rest/teachingplan/save.json",
+            url:hostUrl + "rest/pxteachingplan/save.json",
             cbFN:null
             };
 G_ajax_abs_save(opt);

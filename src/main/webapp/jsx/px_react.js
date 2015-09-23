@@ -1141,7 +1141,7 @@ var Teachingplan_show7Day = React.createClass({
 			//记录老师选择的班级.
 			G_myCurClassuuid=obj.classuuid;
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/teachingplan/list.json";
+		var url = hostUrl + "rest/pxteachingplan/list.json";
 		$.ajax({
 			type : "GET",
 			url : url,
@@ -1389,7 +1389,7 @@ var Teachingplan_edit_inner = React.createClass({
 		  var callback=this.props.callback;
 		    var opt={
 		            formName: this.formid,
-		            url:hostUrl + "rest/teachingplan/save.json",
+		            url:hostUrl + "rest/pxteachingplan/save.json",
 		            cbFN:callback
 		            };
 		G_ajax_abs_save(opt);
@@ -2195,7 +2195,7 @@ var Class_student_Tel_ListItem =React.createClass({
 	           </div>
 	          <label className={one_classDiv}>妈妈电话</label>
 		     <div className={two_classDiv}>  
-		    <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
+		    <PxInput  icon="mobile" type="number" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
 	       </div>
 	        <label className={one_classDiv}>妈妈工作</label>
 	         <div className={two_classDiv}>
@@ -2470,7 +2470,7 @@ var rect_favorites_Div_list = React.createClass({
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
 		if(!re_data)return;
-		if(re_data.totalCount<re_data.pageSize){
+		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{
 			$("#"+this.load_more_btn_id).show();
@@ -3126,7 +3126,7 @@ var Teachingplan_show7Day_byRight = React.createClass({
 			//记录老师选择的班级.
 			G_myCurClassuuid=obj.classuuid;
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/teachingplan/list.json";
+		var url = hostUrl + "rest/pxteachingplan/list.json";
 		$.ajax({
 			type : "GET",
 			url : url,
@@ -3380,7 +3380,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 //		  var callback=this.props.callback;
 //		    var opt={
 //		            formName: this.formid,
-//		            url:hostUrl + "rest/teachingplan/save.json",
+//		            url:hostUrl + "rest/pxteachingplan/save.json",
 //		            cbFN:callback
 //		            };
 //		G_ajax_abs_save(opt);
@@ -3489,7 +3489,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 //		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
 //		var that=this;
 //		 $.AMUI.progress.start();
-//			var url = hostUrl + "rest/teachingplan/list.json";
+//			var url = hostUrl + "rest/pxteachingplan/list.json";
 //			$.ajax({
 //				type : "GET",
 //				url : url,
