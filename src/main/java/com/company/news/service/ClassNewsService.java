@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Service;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.AbstractClass;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.PClass;
+import com.company.news.entity.PxClass;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsJsonform;
@@ -27,6 +31,7 @@ import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
 import com.company.news.vo.statistics.PieStatisticsVo;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -50,7 +55,7 @@ public class ClassNewsService extends AbstractService {
 	 * @return
 	 */
 	public boolean add(SessionUserInfoInterface user,ClassNewsJsonform classNewsJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
 //		if (StringUtils.isBlank(classNewsJsonform.getTitle())
 //				|| classNewsJsonform.getTitle().length() > 128) {
 //			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
@@ -61,8 +66,15 @@ public class ClassNewsService extends AbstractService {
 			responseMessage.setMessage("必须选择一个班级");
 			return false;
 		}
+		AbstractClass pClass=null;
+		if(SystemConstants.Group_type_2.toString().equals(SessionListener.getLoginTypeBySession(request))){
+			 pClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, classNewsJsonform.getClassuuid());
+		}else{
+			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());
+		}
 		
-		PClass pClass=(PClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());
+		
+		
 
 		if(pClass==null){
 			responseMessage.setMessage("选择的班级不存在");
@@ -95,7 +107,7 @@ public class ClassNewsService extends AbstractService {
 	 * @return
 	 */
 	public boolean update(SessionUserInfoInterface user,ClassNewsJsonform classNewsJsonform,
-			ResponseMessage responseMessage) throws Exception {
+			ResponseMessage responseMessage,HttpServletRequest reques) throws Exception {
 		
 //		if (StringUtils.isBlank(classNewsJsonform.getTitle())
 //				|| classNewsJsonform.getTitle().length() > 128) {

@@ -150,19 +150,6 @@ function login_affter_init(){
 	
 	
 	
-//————————————食谱管理<权限>——————————	
-	t_menu={
-                "link": "##",
-                "title": "食谱管理",
-                "fn":menu_cookbookPlan_list_fn_byRight,
-                "subCols": 2
-		  };
-	
-	if(G_user_hasRight("KD_cookbookplan_m")){
-		menu_data.push(t_menu);
-	}
-	
-	
 //————————————课程安排<权限>——————————		
 	t_menu={
       	   		"link": "##",
@@ -188,27 +175,6 @@ function login_affter_init(){
             "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
-		if(G_user_hasRight("KD_class_m")){
-			menu_data.push(t_menu);
-		}
-		//————————————签到查询<权限>——————————		
-		t_menu={
-	      	   		"link": "##",
-	      	   		"title": "接送卡",
-		      	   	 "subMenu": [
-		                         {
-		                           "fn":menu_class_sign_today_fn_byRight,
-		                           "link": "##",
-		                           "title": "今天签到"
-		                         },
-		                         {
-		                   		    "link": "##",
-		                   		    "title": "接送卡查询",
-		                   		    "fn":menu_studentbind_byRight
-		                   		   
-		                   		  }
-		                         ]
-			  };
 		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
@@ -294,7 +260,7 @@ function login_affter_init(){
             "fn":menu_userinfo_logout_fn,
             "title": "注销"
           };
-			
+ 	
 	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		div_menu_data.subMenu.push(t_menu);
 	}		
@@ -302,7 +268,7 @@ function login_affter_init(){
 	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		menu_data.push(div_menu_data);
 	//}
-	
+
 	$("#div_menu").html("");
 	
 	title_info_init("首页");
@@ -400,18 +366,7 @@ function menu_dohome(){
 			                    	    "title": "公告"
 			                    },
 			                 
-		                    	  {
-			                    	    "img": hostUrlCDN+"i/meirisipu.png",
-			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
-			                    	    "title": "今日食谱"
-			                    	  },
-		                    	 
-		                    	
-//		                    	  {
-//	                    	    "img": hostUrlCDN+"i/qiandao.png",
-//	                    	    "link": "###",
-//	                    	    "title": "签到(未)"
-//	                    	  },
+
 	                    	
 		                    	  {
 		                    		  "img": hostUrlCDN+"i/jpwz.png",
@@ -424,12 +379,7 @@ function menu_dohome(){
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  },
-		                    	  {
-		                    		  "img": hostUrlCDN+"i/qiandao.png",
-	                                  "link": "javascript:menu_class_sign_today_fn()",
-	                                  "title": "今日签到"
-	                                }
+		                    	  }
 	                    	  ];
 	/**
 	 * 禁用用户
@@ -544,13 +494,7 @@ function menu_teachingplan_dayShow_fn() {
 	}
 	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
-/*
- * （首页）每日食谱
- * 调用ajax_cookbookPlan_dayShow：每天食谱计划
- * */
-function menu_cookbookPlan_dayShow_fn() {
-	ajax_cookbookPlan_dayShow(null);
-};
+
 /* （首页）家长通讯录功能方法
  * @跳转kd_service发服务器请求
  * */
@@ -664,32 +608,6 @@ window.onload=function(){
 
 
 
-/*
- * （首页）刷卡记录；
- * @跳转kd_service发服务器请求
- * */
-
-function menu_class_sign_today_fn() {
-	Queue.push(function(){menu_class_sign_today_fn();},"今日签到");
-	var classList=Store.getMyClassList();
-	if(!G_myclass_choose){
-	
-		var classuuid;
-		if(!classList||classList.length==0){
-			classuuid=null;
-		}else{
-			classuuid=classList[0].uuid;
-		}
-		G_myclass_choose=classuuid;
-	}
-	React.render(React.createElement(Teacher_class_sign_today,{
-	//	events:formdata,
-		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
-		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
-};
-
-
 
 
 
@@ -743,17 +661,6 @@ function menu_userTeacher_list_fn_byRight() {
 	}
 	userTeacher_div_byRight(list[0].uuid);
 };
-
-/*
- * (标头)食谱管理功能
- * @跳转kd_service发服务器请求
- * */
-function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
-	var cookbook_Group_uuid="";
-	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
-	else cookbook_Group_uuid=groupuuid;
-	ajax_cookbookPlan_listByGroup_byRight(cookbook_Group_uuid,weeknum);
-}
 
 /*
  * (标头)课程安排功能
@@ -869,64 +776,3 @@ function menu_statistics_list_fn_byRight() {
 function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
 };
-
-/*
- * （标头）签到查询；
- * @跳转kd_service发服务器请求
- * */
-
-function menu_class_sign_today_fn_byRight() {
-	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
-	var  grouplist=Store.getGroupByRight("KD_class_m");			
-		var groupuuid;
-
-		if(!grouplist||grouplist.length==0){
-			groupuuid=null;
-		}else{
-			groupuuid=grouplist[0].uuid;
-		}
-
-
-	var classList=Store.getChooseClass(grouplist[0].uuid);
-	if(!G_myclass_choose){
-	
-		var classuuid;
-
-		if(!classList||classList.length==0){
-			classuuid=null;
-		}else{
-			classuuid=classList[0].uuid;
-		}
-		G_myclass_choose=classuuid;
-	}
-	React.render(React.createElement(Teacher_class_sign_today_byRight,{
-		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
-		groupuuid:groupuuid,
-		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
-		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
-};
-
-/**
- * 
- */
-G_studentbind_otherWhere=null;
-function menu_studentbind_byRight(){
-	Queue.push(function(){menu_studentbind_byRight();},"接送卡查询");
-	var  grouplist=Store.getGroupByRight("KD_class_m");	
-	if(!G_mygroup_choose){
-		var groupuuid;
-		if(!grouplist||grouplist.length==0){
-			groupuuid=null;
-		}else{
-			groupuuid=grouplist[0].uuid;
-		}
-		G_mygroup_choose=groupuuid;
-	}
-
-	React.render(React.createElement(Studentbind_EventsTable_byRight,{
-		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
-		groupuuid:G_mygroup_choose,		
-		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
-}

@@ -5,12 +5,14 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
+import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.DoorUserJsonform;
 import com.company.news.jsonform.StudentBindJsonform;
 import com.company.news.query.PageQueryResult;
@@ -101,41 +103,43 @@ public class StudentBindService extends AbstractService {
 			responseMessage.setMessage("Cardid不能为空");
 			return false;
 		}
+//		Transaction  transaction =this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().beginTransaction();
+		//carid允许修改为绑定其他用户,则个设置以前的cardid=null
+		String updateDelHql="update StudentBind set cardid=null where groupuuid=? and cardid=? and userid!=?";
+		Integer relcount=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(updateDelHql, doorUserJsonform.getGroupuuid(),doorUserJsonform.getCardid(),doorUserJsonform.getUserid());
+		if(relcount>0){
+			this.logger.warn(relcount+ ": remove studentBind cardid=null, "+JSONUtils.getJsonString(doorUserJsonform));
+		}
 		
+		//绑定卡号
+		String updateHql="update StudentBind set cardid=? where groupuuid=? and userid=?";
+		relcount=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(updateHql,doorUserJsonform.getCardid(), doorUserJsonform.getGroupuuid(),doorUserJsonform.getUserid());
+		this.logger.error("relcount:"+relcount);
+//		transaction.commit();
+		if(relcount>0){
+			return true;
+		}
+		//如果没找到根据身份证id更新.
 		// Studentuuid昵称验证
-		
-		
-//		if(this.isBind(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid())){
-//			responseMessage.setMessage("Cardid已被绑定");
-//			return false;
-//		}
 		StudentBind studentBind =null;
 		//根据uuid查询,有数据则只需要绑定卡id即可.
-		if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
-				studentBind=(StudentBind)this.getStudentBindByUseridAndGroup(doorUserJsonform.getUserid(),doorUserJsonform.getGroupuuid());
-				if(studentBind!=null){
-					studentBind.setCardid(doorUserJsonform.getCardid());
-					this.nSimpleHibernateDao.save(studentBind);
-					return true;
-				}
-		}
-
-		
-		
-		if(studentBind==null){
-			responseMessage.setMessage("用户id没有找到="+doorUserJsonform.getUserid());
-			return false;
-		}
-		
-		//1个卡对应多个用户处理.
-		StudentBind studentBind1=getStudentBindBy(doorUserJsonform.getCardid(),doorUserJsonform.getGroupuuid());
-		if(studentBind1!=null&&!studentBind.getUuid().equals(studentBind1.getUuid())){
-			
-		}
+//		if (StringUtils.isNotBlank(doorUserJsonform.getUserid())) {
+//				studentBind=(StudentBind)this.getStudentBindByUseridAndGroup(doorUserJsonform.getUserid(),doorUserJsonform.getGroupuuid());
+//				if(studentBind!=null){
+//					studentBind.setCardid(doorUserJsonform.getCardid());
+//					this.nSimpleHibernateDao.save(studentBind);
+//					return true;
+//				}
+//		}
+//		
+//		if(studentBind==null){
+//			responseMessage.setMessage("用户id没有找到="+doorUserJsonform.getUserid());
+//			return false;
+//		}
+//		
 		//如何修改卡号.
-		
-		
 		if(StringUtils.isBlank(doorUserJsonform.getIdNo())){
+			responseMessage.setMessage("匹配失败!");
 			return false;
 		}
 		Student s = this.studentService.getStudentByIdNoAndGroup(
@@ -150,7 +154,8 @@ public class StudentBindService extends AbstractService {
 				studentBind.setUserid(doorUserJsonform.getUserid());
 			}else{
 				
-				 Object maxUserid= this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(doorUserJsonform.getGroupuuid()) + ")").uniqueResult();
+				 Object maxUserid= this.getMax_userid(doorUserJsonform.getGroupuuid());
+				 //this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(doorUserJsonform.getGroupuuid()) + ")").uniqueResult();
 				 Long startUserid=0l;
 				 try {
 					 startUserid=Long.valueOf(maxUserid+"");
@@ -343,7 +348,7 @@ public class StudentBindService extends AbstractService {
 	 */
 	public PageQueryResult query(String classuuid, String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime ";
+		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime,s1.classuuid ";
 		String sql = "";
 		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
 	//	sql+=" where b2.cardid is not null ";

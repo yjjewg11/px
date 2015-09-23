@@ -52,7 +52,7 @@ var ChooseRight_EventsTable = React.createClass({
 			 var uuids=null;
 			 var names=null;
 			 $($("input[name='table_checkbox']")).each(function(){
-				　if(this.checked){
+				 if(this.checked){
 					 if(uuids==null){
 						 uuids=this.value;
 						 names=this.alt;
@@ -61,8 +61,7 @@ var ChooseRight_EventsTable = React.createClass({
 						 uuids+=','+this.value ; 
 						 names+=','+this.alt; 
 					 }
-					　   //遍历被选中CheckBox元素的集合 得到Value值
-				　}
+				 }
 				});
 			  
 			 this.props.handleClick(m,$('#selectgroup_uuid_chright').val(),uuids,names);

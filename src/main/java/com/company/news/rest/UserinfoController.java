@@ -55,6 +55,9 @@ public class UserinfoController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		
+		
+	
 		try {
 			User user;
 			try {
@@ -69,6 +72,12 @@ public class UserinfoController extends AbstractRESTController {
 				return "";
 			}
 			
+			
+			
+			if(SystemConstants.Group_type_2.toString().equals(userLoginForm.getGrouptype())){
+				 pxlogin( user,userLoginForm, model,request);
+				 return "";
+			}
 			
 			// 创建session
 			HttpSession session = SessionListener
@@ -127,6 +136,99 @@ public class UserinfoController extends AbstractRESTController {
 			//设置当前用户是否管理员
 			boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
 			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
+
+			
+			// 返回用户信息
+			this.putUserInfoReturnToModel(model, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("登陆成功");
+		return "";
+	}
+	//培训机构登录
+	public String pxlogin(User user,UserLoginForm userLoginForm, ModelMap model,
+			HttpServletRequest request) {
+		//model.clear();
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+//			User user;
+//			try {
+//				user = userinfoService.login(userLoginForm, model, request,
+//						responseMessage);
+//				if (user==null)// 请求服务返回失败标示
+//					return "";
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				responseMessage.setMessage("服务器异常:"+e.getMessage());
+//				return "";
+//			}
+			// 创建session
+			HttpSession session = SessionListener
+					.getSession((HttpServletRequest) request);
+
+			
+			boolean isCurUser=false;
+			//判断是否是当前登录用户.
+			if (session != null) {
+				User userInfo = (User) session
+						.getAttribute(RestConstants.Session_UserInfo);
+				if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
+					isCurUser=true;
+				}
+			}
+			if(isCurUser){
+				// 当前用户,在线直接返回当前用户.
+					this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
+					// 返回用户信息
+					UserInfoReturn userInfoReturn = new UserInfoReturn();
+					try {
+						BeanUtils.copyProperties(userInfoReturn, user);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				model.put(RestConstants.Return_UserInfo, userInfoReturn);	
+			}else{
+
+				session = request.getSession(true);
+				// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
+				SessionListener.putSessionByJSESSIONID(session);
+				session.setAttribute(RestConstants.Session_UserInfo, user);
+				// 返回客户端用户信息放入Map
+				// putUserInfoReturnToModel(model, request);
+	
+				//取相关权限
+				model.put(RestConstants.Return_JSESSIONID, session.getId());
+				 //List<groupuuid,rightname>
+				List rightList=rightService.getRightListByUser(user);
+				//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
+				//取相关机构
+				List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
+				//老数据兼容,如果没有关联默认学校,则关联.
+//				if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
+//					if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
+//						responseMessage.setMessage("绑定云代理失败");
+//						return "";
+//					}
+//					listGroupuuids.add(SystemConstants.Group_uuid_wjd);
+//				}
+				session.setAttribute(RestConstants.LOGIN_TYPE, userLoginForm.getGrouptype());
+				session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
+				session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+			}
+			
+			//设置当前用户是否管理员
+//			boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
+//			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 
 			
 			// 返回用户信息

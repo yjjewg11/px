@@ -13,7 +13,7 @@ var AMR_Span=AMUIReact.span;
 
 
 
-//幼儿园注册
+//培训机构注册
 var Div_kd_group_reg = React.createClass({ 	
 	render: function() {
 		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
@@ -22,12 +22,12 @@ var Div_kd_group_reg = React.createClass({
 			   <div>		
 				<div className="header">
 				  <div className="am-g">
-				    <h1>幼儿园注册</h1>
+				    <h1>培训机构注册</h1>
 				  </div>
 				 <hr/>
 				</div>
 			     <form id="kd_group_reg_form" method="post" className="am-form">
-			      <PxInput type="hidden" name="type"  value="1"/>
+			      <PxInput type="hidden" name="type"  value="2"/>
 			       <div className= "am-form-group">			    
 				  <label className={one_classDiv}>品牌名:</label>
 				 <div className={two_classDiv}>
@@ -123,7 +123,7 @@ render: function() {
  	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
  	      </div>
  	     <div className="am-cf am-margin-top-sm">
- 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
+ 	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">培训机构注册</a>
  	     <a href="javascript:void(0);"  onClick={menu_userinfo_reg_fn} className="am-fr">老师注册</a>
  	      </div>
  	     <br/>
@@ -199,7 +199,7 @@ var CookbookPlan_edit_EventRow = React.createClass({
 				  		}
 						 if(checkeduuids==null)checkeduuids=this.title;
 						 else
-						 checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
+							 checkeduuids+=','+this.title ;    //遍历被选中CheckBox元素的集合 得到Value值
 					});
 			w_ch_cook.open(function(cooks){
 				  that.setState({
@@ -824,6 +824,7 @@ render: function() {
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
+	  console.log("123321",o);
 return (
 		<div>
 		<div className="header">
@@ -1481,145 +1482,6 @@ return (
 
 
 
-
-//——————————————————————————（首页）今日食谱<绘制>——————————————————————————  
-/*
- * 今日食谱绘制;
- * 
- */
-var CookbookPlan_showByOneDay = React.createClass({ 
-	group_uuid:null,
-	handleClick: function(m,groupuuid) {
-		if(m=="pre"){
-			group_uuid=groupuuid;
-			ajax_cookbookPlan_dayShow(--g_cookbookPlan_listToShow_point,group_uuid);
-			 return;
-		 }else if(m=="next"){
-			 group_uuid=groupuuid;
-			 ajax_cookbookPlan_dayShow(++g_cookbookPlan_listToShow_point,group_uuid);
-			 return;
-		 }
-	},
-	  handleChange_selectgroup_uuid:function(val){
-		  group_uuid=val;
-		  ajax_cookbookPlan_dayShow(g_cookbookPlan_listToShow_point,val);
-	  },
-	render: function() {
-	  var o = this.props.formdata;
-	  var dataShowDiv=null;
-	  if(!o){
-		  dataShowDiv=(<div className="am-g" id="div_detail">今日没有发布食谱</div>)
-	  }else{
-		  dataShowDiv=(	
-	<div className="am-g" id="div_detail">
-		<div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-				 <label>早餐:</label> 
-				 <CookbookPlanShow_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
-		         <div className="cls"></div>
-				 <br/>
-				 <label>早上加餐:</label> 
-				 <CookbookPlanShow_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
-				 <div className="cls"></div>
-				 <br/>
-				 <label>午餐:</label> 
-				 <CookbookPlanShow_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
-				 <div className="cls"></div>
-				 <br/>
-				 <label>下午加餐:</label> 
-				 <CookbookPlanShow_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
-				 <div className="cls"></div>
-				 <br/>
-				 <label>晚餐:</label> 
-				 <CookbookPlanShow_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
-				 <div className="cls"></div>
-				 <br/>
-				 <label>营养分析:</label> 
-				 <div className="g_analysis">
-				 <div dangerouslySetInnerHTML={{__html:G_textToHTML(o.analysis)}}></div>
-				 </div>
-			    	<footer className="am-comment-footer">
-			    	<div className="am-comment-actions">
-			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-			    	</div>
-			    	</footer>
-			    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-				     
-			    	<Common_reply_list uuid={o.uuid}  type={0}/>
-				</div> 
-			</div>
-		  )
-	  }	
-	  return (
-		<div>	
-		  
-		 <div className="am-g">	
-		  <button className="am-btn am-btn-secondary" onClick={this.handleClick.bind(this, "pre",this.props.groupuuid)}>
-		  <i className="am-icon-angle-left"></i>
-		</button>
-		  <button className="am-btn am-btn-secondary" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)}>
-		  <i className="am-icon-angle-right"></i>
-		</button>
-		  <AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />
-		  </div>
-			<div className="header">
-				
-				  <div id="div_detail">{this.props.ch_day}</div>
-			  <hr />
-			</div>
-		{dataShowDiv}
-	   </div>
-	  );
-}
-}); 
-/*
- * 今日食谱绘制;
- * 介绍页面查询的那一天食谱绘制
- */
-var CookbookPlanShow_EventRow = React.createClass({
-	//第而.//使用list<cookbook>
-		componentWillReceiveProps: function(nextProps) {
-			 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-			  this.setState({
-				  items: lists
-			  });
-			},
-	 getInitialState: function() {
-		 var lists=this.cookbookPlan_timeStr_to_list(this.props.uuids);
-		    return {
-	            items: lists
-	        };
-		  },
-		  //list
-	  cookbookPlan_timeStr_to_list:function(cooks){
-		  if(!cooks)cooks=[];
-		  return cooks;		  
-	  },	  
-	  render: function() {
-	    return (
-	    		  <div id={"div_cookPlan_"+this.props.type}>
-	    		  {
-	    			  this.state.items.map(function(event) {
-	    				  var t_uuid=event.uuid;
-	    				  var t_imguuid=event.img;
-	    				  var t_name=event.name;
-	    					 return (
-	     	 	            		<div id={"div_cookPlan_Item_"+t_uuid} title={t_uuid} className="G_cookplan_Img" >
-	    		    	 	       			<img className="G_cookplan_Img_img"  id={"divCookItem_img_"+t_uuid}  src={G_imgPath+t_imguuid} alt="图片不存在" title={t_name} />
-	    		    	 	       			<span >{t_name}</span>
-	    		    	 	       		</div>		
-	     	 	            	);
-	    				
-	    			 })
-	    		  } 
-	    		</div>		
-	   )
-	  }
-	});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-
-
-
 //——————————————————————————家长通讯录<绘制>—————————————————————————— 
 /*
  * 通讯录学生家长联系详情绘制；
@@ -1635,15 +1497,10 @@ var Class_student_tel =React.createClass({
 	      handleChange:function(type){
 	    	  ajax_parentContactByMyStudent(type);
 		  },
-	getInitialState: function() {
-		return {class_uuid:this.props.class_uuid};
-	  },
 	  handleChange_selectgroup_uuid:function(){
-		  	this.setState({class_uuid:$("input[name='class_uuid']").val()});
 		  ajax_parentContactByMyStudent($('#sutdent_name').val(),$("input[name='class_uuid']").val());
 	  },
 	  handleChange_class_uuid:function(val){
-		    	this.setState({class_uuid:val});
 		  ajax_parentContactByMyStudent(null,val);
 	  },
 		render: function() {
@@ -1674,7 +1531,7 @@ var Class_student_tel =React.createClass({
 			     
 	  			  	  <AMR_ButtonToolbar  className="am-cf am-margin-left-xs">
 	  			  	 <div className="am-fl">
-			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.state.class_uuid}/> 
+			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.props.class_uuid}/> 
 			    	  </div>  
 			    	  <div className="am-fl am-margin-left-xs">
 			    	  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入孩子姓名"/>
@@ -2081,6 +1938,7 @@ var Class_students_show= React.createClass({
 	  },
 	render: function() {
 		var o=this.props.formdata;
+		console.log("o",o);
 		if(!o)o="";
 		var stutent_num=this.props.stutent_num;
 		if(!this.props.students)this.props.students=[];
@@ -2202,67 +2060,8 @@ var Class_student_look_info =React.createClass({
 //		 }
 //
 //	  },
-	  //加载绑定卡信息
-	  ajax_loadStudentbind_card:function(studentuuid){
-		  var that=this;
-		  that.last_apply_userid=null;
-		  $.AMUI.progress.start();
-		     var url = hostUrl + "rest/studentbind/queryByClassuuid.json?studentuuid="+studentuuid;
-		 	$.ajax({
-		 		type : "GET",
-		 		url : url,
-		 		dataType : "json",
-		 		 async: true,
-		 		success : function(data) {
-		 			$.AMUI.progress.done();
-		 			// 登陆成功直接进入主页
-		 			if (data.ResMsg.status == "success") {
-		 				$("#btn_cancelApply").hide();
-		 				var list=data.list;
-		 				var s="";
-		 				if(!list||list.length==0){
-		 					s="无";
-		 				}else{
-							//b2.studentuuid,b2.cardid,b2.userid,s1.name
-		 					for(var i=0;i<list.length;i++){
-		 						if(s)s+=",";
-		 						if(!list[i][1]){
-		 							list[i][1]="申请中";
-		 							$("#btn_cancelApply").show();//申请中可以取消
-		 							that.last_apply_userid=list[i][2];
-		 						}
-		 						s+=list[i][1]+"("+list[i][2]+")";
-		 					}
-		 				}
-		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
-		 			} else {
-		 				alert("加载数据失败："+data.ResMsg.message);
-		 			}
-		 		},
-		 		error :G_ajax_error_fn
-		 	});
-	  },
-	  btn_studentbind_apply:function(studentuuid){
-		  var that=this;
-		  ajax_studentbind_apply(studentuuid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
-	  btn_studentbind_cancelApply:function(studentuuid){
-		  var that=this;
-		  if(!that.last_apply_userid){
-			  alert("只能取消申请中的接送卡!");
-			  return;
-		  }
-		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
 	  componentDidMount:function(){
-		  $('.am-gallery').pureview();
-		  	this.ajax_loadStudentbind_card(this.state.uuid);
+
 		},
 		render: function() {
 	     var o =this.state;
@@ -2273,15 +2072,12 @@ var Class_student_look_info =React.createClass({
 		 		
 		 		 <AMR_ButtonToolbar>
 		 	    <AMR_Button amStyle="primary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
-		 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
-		 	  <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
 		 	 <G_help_popo   msg={G_tip.studentbind_app} />
 		 	  </AMR_ButtonToolbar>
 			    <AMUIReact.List static border striped>
 			      <Common_mg_big_fn  imgsList={imglist} />				  
 				  <br/>
 			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem id="input_studentbind_card">接送卡号:加载中...</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
@@ -2554,8 +2350,7 @@ var Announcements_Teacher_tel_div = React.createClass({
 	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
 	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
-	load_more_data:function(){ 
-		this.setState({groupuuid:$("input[name='group_uuid']").val()});
+	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
 		if(!re_data)return;
@@ -2566,14 +2361,10 @@ var Announcements_Teacher_tel_div = React.createClass({
 		}		  
 		  this.pageNo++;
 	},
-		 getInitialState: function() {
-		return {groupuuid:this.props.groupuuid};
-	  },
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-	//	this.forceUpdate();
-			
+		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
@@ -2587,7 +2378,7 @@ render: function() {
 	      <form id="editGroupForm" method="post" className="am-form">
 	      <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
 	      <div className="am-fl am-margin-bottom-sm">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"   data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"   data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>
@@ -3285,210 +3076,7 @@ return (
 }
 }); 
 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//——————————————————————————食谱管理<绘制>—————————————————————  
-/*
- *(食谱管理)按钮及表单框绘制
- *@add:添加
- *@edit:编辑
- *@pre:上周
- *@next:下周
- *@btn_click_announce:点击按钮事件跳转kd_servise方法;
- * */  
-var CookbookPlan_EventsTable_byRight = React.createClass({
-	handleClick: function(m) {		
-		if(m=="add"){
-			btn_click_cookbookPlan_byRight(m,{groupuuid:this.props.group_uuid});
-			 return;
-		 }if(m=="edit"){
-			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				 if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				 }
-				});
-			  if(!uuids){
-				  G_msg_pop("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
-			  btn_click_cookbookPlan_byRight(m,{uuid:uuids});
-		 } else if(m=="pre"){
-			 menu_cookbookPlan_list_fn_byRight(this.props.group_uuid,--g_cookbookPlan_week_point)
-			 return;
-		 }else if(m=="next"){
-			 menu_cookbookPlan_list_fn_byRight(this.props.group_uuid,++g_cookbookPlan_week_point)
-			 return;
-		 }
-	},
-	handleChange_selectgroup_uuid:function(val){
-		menu_cookbookPlan_list_fn_byRight(val,g_cookbookPlan_week_point)
-	},
-	render: function() {
-	return (
-	<div>
-	<AMR_ButtonToolbar>
-	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} round>上周</AMR_Button>
-	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} round>下周</AMR_Button>	
-	<AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} round>添加</AMR_Button>
-	</AMR_ButtonToolbar>
-	<div className="header">
-	<div className="am-g">
-	  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
-	</div>
-	<hr />
-	</div>
-		  <div className="am-form-group">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	</div>		  
-	  <AMR_Table {...this.props}>  
-	    <thead> 
-	      <tr>
-	        <th>一周</th>
-	        <th>早餐</th>
-	        <th>早上加餐</th>
-	        <th>午餐</th>
-	        <th>下午加餐</th>
-	        <th>晚餐</th>
-	        <th>营养分析</th>
-	      </tr> 
-	    </thead>
-	    <tbody>
-	      {this.props.events.map(function(event) {
-	        return (<CookbookPlan_EventRow_byRight  event={event} />);
-	      })}
-	    </tbody>
-	  </AMR_Table>
-	  </div>
-	);
-	}
-});
-
-
-/*
- *(食谱管理)内容绘制
- *@btn_click_cookbookPlan:点击按钮事件跳转kd_servise方法;
- * */ 
-var CookbookPlan_EventRow_byRight = React.createClass({ 
-	parseTimes:function(s){
-		var rs=null;
-		if(!s)return "";
-		var arr=s;
-		for(var i=0;i<arr.length;i++){
-			var t_arr=arr[i];
-			if(rs==null)rs=t_arr.name;
-			else rs+=","+t_arr.name;
-		}  
-		return rs;
-	},
-render: function() {
-var event = this.props.event;
-var className = event.highlight ? 'am-active' :
-  event.disabled ? 'am-disabled' : '';
-
-return (
-  <tr className={className} >
-    <td><a href="javascript:void(0);" onClick={btn_click_cookbookPlan_byRight.bind( this, 'edit',event)}>{G_week.getWeekStr(event.plandate)}</a></td>
-    <td>{this.parseTimes(event.list_time_1)}</td>
-    <td>{this.parseTimes(event.list_time_2)}</td>
-    <td>{this.parseTimes(event.list_time_3)}</td>
-    <td>{this.parseTimes(event.list_time_4)}</td>
-    <td>{this.parseTimes(event.list_time_5)}</td>
-    <td>{event.analysis}</td>
-  </tr> 
-);
-}
-});
-/*
- *(食谱管理)添加与编辑详情界面绘制
- *@ajax_cookbookPlan_save:点击按钮事件跳转kd_servise方法;
- * */ 
-var CookbookPlan_edit_byRight = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editCookbookPlanForm').serializeJson());
-	  },
-	 
-render: function() {
-	  var o = this.state;
-	  
-	  var plandateStr_div;
-	  if (o.uuid) {//只读
-		//2015-07-04 00:00:00=>2015-07-04
-		  o.plandate=o.plandate.split(" ")[0];
-		  plandateStr_div = <PxInput icon="calendar" type="text" name="plandateStr" id="plandateStr" value={o.plandate}  />
-	  } else {
-		  plandateStr_div = <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate} showTimePicker={false}  onChange={this.handleChange}/>
-	  }
-	  return (
-		<div>
-		<div className="header">
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  <form id="editCookbookPlanForm" method="post" className="am-form">
-		<input type="hidden" name="uuid"  value={o.uuid}/>
-		<input type="hidden" name="groupuuid"  value={o.groupuuid}/>
-		<input type="hidden" name="type"  value="1"/>
-		        <label htmlFor="name">日期:</label>
-				 {plandateStr_div}  
-				 <br/>
-		      <label>早餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_1}  type={"time_1"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>早上加餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_2}  type={"time_2"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>午餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_3}  type={"time_3"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>下午加餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_4}  type={"time_4"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <label>晚餐:</label> 
-		      <CookbookPlan_edit_EventRow  uuids={o.list_time_5}  type={"time_5"}/>
-		      <div className="cls"></div>
-		      <br/>
-		      <AMR_Input  name="analysis" type="textarea" rows="2" label="营养分析:" placeholder="填写内容" value={o.analysis} onChange={this.handleChange}/>				
-		      <button type="button"  onClick={ajax_cookbookPlan_save_byRight}  className="am-btn am-btn-primary">提交</button>
-		    </form>
-
-	     </div> 
-	   </div>
-	   
-	   </div>
-);
-}
-}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
@@ -3605,7 +3193,7 @@ var Teachingplan_show7Day_byRight = React.createClass({
 		<div className="am-g" >
 		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  round>上周</AMR_Button>
 		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>	
-	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.state.groupuuid}/> 
+	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
 		<AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
 		</div>
 		<hr/>
@@ -4224,8 +3812,7 @@ var Class_EventsTable_byRight = React.createClass({
 			 }else if(m=="flower_name"){
 				 var uuids=null;
 				 $($("input[name='table_checkbox']")).each(function(){
-					
-					 if(this.checked){
+					if(this.checked){
 						 if(uuids==null)uuids=this.value;
 						 else
 						 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
@@ -4266,8 +3853,7 @@ var Class_EventsTable_byRight = React.createClass({
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
-	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
-	            {value: 'doorrecord', label: '导出接送卡表'}
+	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
 	          ];
 
 	    return {
@@ -4912,10 +4498,10 @@ render: function() {
      <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)} round>下一页 &raquo;</AMR_Button>
     </div>
    	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  placeholder="所有"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
   	   </div>  	 
   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"   placeholder="所有"  multiple= {false} data={this.state.class_list} btnStyle="primary" value={this.state.class_uuid} />      
+  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.state.class_list} btnStyle="primary" value={this.state.class_uuid} />      
   	  </div>  
   	   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   	    <input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
@@ -5070,12 +4656,12 @@ render: function() {
     		 <form id="editEchartForm" method="post" className="am-form">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
-	    		 <AMUIReact.Selected inline name="type" value={o.type}  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
 	    		 
 	    		 </div>
 				<div className="am-u-lg-3 am-u-md-6">
 							    		 
-						 <AMUIReact.Selected inline name="groupuuid"  value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+						 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
 	    		 </div>
 				 <div className="am-u-lg-3 am-u-md-6">
 					    		 
@@ -5230,14 +4816,10 @@ render: function() {
   	componentDidMount:function(){
   		this.load_more_data();
   	},
-		 getInitialState: function() {
-		return {groupuuid:this.props.groupuuid};
-	  },
   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
   	load_more_data:function(){
-	
   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
   		var that=this;
   		var callback=function(re_data){
@@ -5258,8 +4840,7 @@ render: function() {
   	refresh_data:function(){
 //  		classnewsreply_list_div 清除；
 //        load_more_data	重新绘制DIV；
-	this.setState({groupuuid:$("input[name='group_uuid']").val()});
-  	//	this.forceUpdate();
+  		this.forceUpdate();
   		this.pageNo=1;
   		$("#"+this.classnewsreply_list_div).html("");
   		this.load_more_data();
@@ -5298,10 +4879,10 @@ render: function() {
   		   <form id="editGroupForm" method="post" className="am-form">		   
   		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
   		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />
   			  </div> 
   				  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
-  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="姓名或手机号码"/>	  
+  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
   				  </div>
   				    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
@@ -5486,237 +5067,7 @@ render: function() {
      }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
      
-   //——————————————————————————刷卡记录——————————————————————————
-     /*
-      * <今日签到>绘制
-      * */  
-     var Teacher_class_sign_today = React.createClass({	 
-    	 ajaxdata:{},
-    	 getInitialState: function() {
- 			this.ajaxdata={
- 					students:null,
- 					cards:null,
- 					signs:null,
- 					classuuid:this.props.classuuid
- 			}
- 			return this.ajaxdata;
- 		  },
- 		 componentDidMount:function(){
- 			  this.ajax_list(this.props.classuuid);
-      	},
- 		  handleChange_selectgroup_uuid:function(val){
- 	    	   this.ajax_list(val);
- 	    	  G_myclass_choose=val;
- 	       },
- 	       //2
- 		 ajax_callback:function(obj){
- 			 if(obj.students&&obj.cards&&obj.signs){
- 				 this.setState(obj);
- 			 }
-     	},
-     	//1
-     	ajax_list:function(classuuid){
-     		if(!classuuid){
-     			G_msg_pop("无班级")
-     			return;
-     		}
-     		this.ajaxdata={
-     				students:null,
- 					cards:null,
- 					signs:null,
- 					classuuid:classuuid};
-     		//加载学生
-     		 this.ajax_students(classuuid);
-     		//加载学生绑定卡
-     		 this.ajax_cards(classuuid);
-     		//家长学生今天签到记录
-     		 this.ajax_signs(classuuid);
-     	},
-     	 ajax_students:function(classuuid){
-     		 var that=this;
-     		$.AMUI.progress.start();	
-     		var formdata=null;
-     		//班级学生列表
-     	    var url = hostUrl + "rest/student/getStudentByClassuuid.json";
-     		$.ajax({
-     			type : "GET",
-     			url : url,
-     			data:{classuuid:classuuid},
-     			dataType : "json",
-     			success : function(data) {
-     				$.AMUI.progress.done();
-     				if (data.ResMsg.status == "success") {
-     					if(!data.list)data.list=[];
-     					that.ajaxdata.students=data.list;
-     					//that.setState(that.ajaxdata);
-     					that.ajax_callback(that.ajaxdata);
-     				} else {
-     					alert("加载数据失败："+data.ResMsg.message);
-     				}
-     			},
-     			error : G_ajax_error_fn
-     		});
-     		
-     	},
-     	ajax_cards:function(classuuid){
-    		 var that=this;
-    		$.AMUI.progress.start();	
-    		var formdata=null;
-    		//班级学生列表
-    	    var url = hostUrl + "rest/studentbind/queryByClassuuid.json";
-    		$.ajax({
-    			type : "GET",
-    			url : url,
-    			data:{classuuid:classuuid},
-    			dataType : "json",
-    			success : function(data) {
-    				$.AMUI.progress.done();
-    				if (data.ResMsg.status == "success") {
-    					if(!data.list)data.list=[];
-    					that.ajaxdata.cards=data.list;
-//    					that.setState(that.ajaxdata);
-    					that.ajax_callback(that.ajaxdata);
-    				} else {
-    					alert("加载数据失败："+data.ResMsg.message);
-    				}
-    			},
-    			error : G_ajax_error_fn
-    		});
-    		
-    	},
-    	 ajax_signs:function(classuuid){
-    		 var that=this;
-    		$.AMUI.progress.start();	
-    		var formdata=null;
-    		//班级学生列表
-    	    var url = hostUrl + "rest/studentSignRecord/queryTodayCountByClassuuid.json";
-    		$.ajax({
-    			type : "GET",
-    			url : url,
-    			data:{classuuid:classuuid},
-    			dataType : "json",
-    			success : function(data) {
-    				$.AMUI.progress.done();
-    				if (data.ResMsg.status == "success") {
-    					if(!data.list)data.list=[];
-    					that.ajaxdata.signs=data.list;
-    				//	that.setState(that.ajaxdata);
-    					that.ajax_callback(that.ajaxdata);
-    				} else {
-    					alert("加载数据失败："+data.ResMsg.message);
-    				}
-    			},
-    			error : G_ajax_error_fn
-    		});
-    		
-    	},
-    	 parse_ajaxdata:function(obj){
-    		if(!obj||!obj.students)return obj;
-    		var formdata=obj.students;
-    		var cards=obj.cards;
-    		var signs=obj.signs;
-    		for(var i=0;i<formdata.length;i++){
-    			//卡号 b2.studentuuid,b2.cardid,b2.userid,s1.name
-      			if(cards){
-      		       for(var s=0;s<cards.length;s++){
-      		    	if(formdata[i].uuid==cards[s][0]){
-      		    		if(formdata[i].cardID)formdata[i].cardID+=",";
-      		    		else formdata[i].cardID="";
-      		    		if(!cards[s][1])cards[s][1]="申请中("+cards[s][2]+")";
-      		    		formdata[i].cardID+=cards[s][1];
-      		    	}        	   
-      		       }
-      			}
-    			//签到标志
-    			if(signs){
-    			       for(var s=0;s<signs.length;s++){
-    			    	if(formdata[i].uuid==signs[s][0]){
-    			    		formdata[i].qiandao=true;
-    			    	}        	   
-    			       }
-    				}
-    		}
-    		return obj;
-    	},
-    	getDefaultProps: function() {
-    	       var data = [
-    	                  {value: 'one' , label: '学生基本表 ' },
-    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
-    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
-    	                  {value: 'doorrecord' , label: '导出接送卡表' }
-    	                ];
-
-    	          return {
-    	            down_list: data
-    	          };
-    	        },
-    	        handleClick_download: function(xlsname) {
-    				  var class_uuid=$("input[name='class_uuid']").val();
-    				 ajax_flowername_download_byRight("",class_uuid,xlsname);
-    		 },
-     render: function() {
-    	 var obj=this.parse_ajaxdata(this.state);
-    	 
-    	 if(!obj.students){
-    		 obj.students=[];
-    	 }
-     return (
-     <div>   
-       <div className="am-form-group">
-       <hr/>
-         </div>
-           <form id="editGroupForm" method="post" className="am-form">
-           <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
-           <div className="am-fl am-margin-bottom-sm">
-     	  <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.classList} btnStyle="primary" value={obj.classuuid} />
-     	  </div>
-     	  <div className="am-fl am-margin-bottom-sm">
-     	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
-     	  </div>
-    	 
-     	  </AMR_ButtonToolbar>
-     	  </form>      
-	   	      
-       <AMR_Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
-         <thead> 
-           <tr>
-             <th>姓名</th>
-             <th>卡号</th>
-             <th>今日签到</th>
-           </tr> 
-         </thead>
-         <tbody>
-           {obj.students.map(function(event) {
-             return (<ClassCard_EventRow key={event.id} event={event} />);
-           })}
-         </tbody>
-       </AMR_Table>
-       </div>
-     );
-     }
-     });
-     /*
-     * 刷卡记录详情内容绘制;am-table-bordered
-     * */
-     var ClassCard_EventRow = React.createClass({ 
-       render: function() {
-         var event = this.props.event;
-         var className = event.highlight ? 'am-active' :
-           event.disabled ? 'am-disabled' : '';
-
-         return (
-           <tr className={className} >
-           <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event.uuid)}  >{event.name}</a></td>
-             <td>{event.cardID}</td>
-             <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}</td>
-             </tr> 
-         );
-       }
-     });       
-     
-     
-     
-     
+ 
      //——————————————————————————班级互动<绘制>——————————————————————————
      /* 
       * <班级互动>绘制舞台
@@ -6176,619 +5527,5 @@ render: function() {
      
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
- //——————————————————————————签到查询——————————————————————————
-   /*
-    * <今日签到>绘制
-    * */  
-   var Teacher_class_sign_today_byRight = React.createClass({	 
-  	 ajaxdata:{},
-  	 getInitialState: function() {
-		this.ajaxdata={
-				students:null,
-				cards:null,
-				signs:null,
-				groupuuid:this.props.groupuuid,
-				classList:this.props.classList,
-				classuuid:this.props.classuuid
-		}
-		return this.ajaxdata;
-	  },
-	 componentDidMount:function(){
-		  this.ajax_list(this.props.classuuid);
-    	},
-	  handleChange_selectgroup_uuid:function(val){
-			 $("input[name='class_uuid']").val("");
-		  var classList=Store.getChooseClass(val);
-		  this.ajaxdata.groupuuid=val;
-		  this.ajaxdata.classList=G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
-    	   this.ajax_list(classList[0].uuid);
-    	   //G_mygroup_choose=classList[0].uuid;
-       },
- 	  handleChange_selectclass_uuid:function(val){
-   	   this.ajax_list(val);
-   	  G_myclass_choose=val;
-      },
-       //2
-	 ajax_callback:function(obj){
-		 if(obj.students&&obj.cards&&obj.signs){
-			 this.setState(obj);
-		 }
-   	},
-   	//1
-   	ajax_list:function(classuuid){
-   		if(!classuuid){
-   			G_msg_pop("无班级")
-   			return;
-   		}
-   		this.ajaxdata.students=null;
-   		this.ajaxdata.cards=null;
-   		this.ajaxdata.signs=null;
-   		this.ajaxdata.classuuid=classuuid;
-   		//加载学生
-   		 this.ajax_students(classuuid);
-   		//加载学生绑定卡
-   		 this.ajax_cards(classuuid);
-   		//家长学生今天签到记录
-   		 this.ajax_signs(classuuid);
-   	},
-   	 ajax_students:function(classuuid){
-   		 var that=this;
-   		$.AMUI.progress.start();	
-   		var formdata=null;
-   		//班级学生列表
-   	    var url = hostUrl + "rest/student/getStudentByClassuuid.json";
-   		$.ajax({
-   			type : "GET",
-   			url : url,
-   			data:{classuuid:classuuid},
-   			dataType : "json",
-   			success : function(data) {
-   				$.AMUI.progress.done();
-   				if (data.ResMsg.status == "success") {
-   					if(!data.list)data.list=[];
-   					that.ajaxdata.students=data.list;
-   					//that.setState(that.ajaxdata);
-   					that.ajax_callback(that.ajaxdata);
-   				} else {
-   					alert("加载数据失败："+data.ResMsg.message);
-   				}
-   			},
-   			error : G_ajax_error_fn
-   		});
-   		
-   	},
-   	ajax_cards:function(classuuid){
-  		 var that=this;
-  		$.AMUI.progress.start();	
-  		var formdata=null;
-  		//班级学生列表
-  	    var url = hostUrl + "rest/studentbind/queryByClassuuid.json";
-  		$.ajax({
-  			type : "GET",
-  			url : url,
-  			data:{classuuid:classuuid},
-  			dataType : "json",
-  			success : function(data) {
-  				$.AMUI.progress.done();
-  				if (data.ResMsg.status == "success") {
-  					if(!data.list)data.list=[];
-  					that.ajaxdata.cards=data.list;
-//      					that.setState(that.ajaxdata);
-  					that.ajax_callback(that.ajaxdata);
-  				} else {
-  					alert("加载数据失败："+data.ResMsg.message);
-  				}
-  			},
-  			error : G_ajax_error_fn
-  		});
-  		
-  	},
-  	 ajax_signs:function(classuuid){
-  		 var that=this;
-  		$.AMUI.progress.start();	
-  		var formdata=null;
-  		//班级学生列表
-  	    var url = hostUrl + "rest/studentSignRecord/queryTodayCountByClassuuid.json";
-  		$.ajax({
-  			type : "GET",
-  			url : url,
-  			data:{classuuid:classuuid},
-  			dataType : "json",
-  			success : function(data) {
-  				$.AMUI.progress.done();
-  				if (data.ResMsg.status == "success") {
-  					if(!data.list)data.list=[];
-  					that.ajaxdata.signs=data.list;
-  				//	that.setState(that.ajaxdata);
-  					that.ajax_callback(that.ajaxdata);
-  				} else {
-  					alert("加载数据失败："+data.ResMsg.message);
-  				}
-  			},
-  			error : G_ajax_error_fn
-  		});
-  		
-  	},
-  	 parse_ajaxdata:function(obj){
-  		if(!obj||!obj.students)return obj;
-  		var formdata=obj.students;
-  		var cards=obj.cards;
-  		var signs=obj.signs;
-  		for(var i=0;i<formdata.length;i++){
-  			//卡号 b2.studentuuid,b2.cardid,b2.userid,s1.name
-  			if(cards){
-  		       for(var s=0;s<cards.length;s++){
-  		    	if(formdata[i].uuid==cards[s][0]){
-  		    		if(formdata[i].cardID)formdata[i].cardID+=",";
-  		    		else formdata[i].cardID="";
-  		    		if(!cards[s][1])cards[s][1]="申请中("+cards[s][2]+")";
-  		    		formdata[i].cardID+=cards[s][1];
-  		    	}        	   
-  		       }
-  			}
-  			//签到标志
-  			if(signs){
-  			       for(var s=0;s<signs.length;s++){
-  			    	if(formdata[i].uuid==signs[s][0]){
-  			    		formdata[i].qiandao=true;
-  			    	}        	   
-  			       }
-  				}
-  		}
-  		return obj;
-  	},
-
-  	        handleClick_download: function(xlsname) {
-  				  var class_uuid=$("input[name='class_uuid']").val();
-				  var group_uuid=$("input[name='group_uuid']").val();
-  				 ajax_flowername_download_byRight(group_uuid,class_uuid,xlsname);
-  		 },
-   render: function() {
-  	 var obj=this.parse_ajaxdata(this.state);
-  	 
-  	 if(!obj.students){
-  		 obj.students=[];
-  	 }
-	
-   return (
-   <div>   
-     <div className="am-form-group">
-     <hr/>
-       </div>
-         <form id="editGroupForm" method="post" className="am-form">
-         <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
-         <div className="am-fl am-margin-bottom-sm">
-      	 <AMUIReact.Selected id="selectgroup_uuid2" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.grouplist} btnStyle="primary" value={this.state.groupuuid} />
-    	 <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} />
-   	  </div>
-   	
-  	 
-   	  </AMR_ButtonToolbar>
-   	  </form>      
-   	      
-     <AMR_Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
-       <thead> 
-         <tr>
-           <th>姓名</th>
-           <th>卡号</th>
-           <th>今日签到</th>
-         </tr> 
-       </thead>
-       <tbody>
-         {obj.students.map(function(event) {
-           return (<ClassCard_EventRow_byRight key={event.id} event={event} />);
-         })}
-       </tbody>
-     </AMR_Table>
-     </div>
-   );
-   }
-   });
-   /*
-   * 刷卡记录详情内容绘制;am-table-bordered
-   * */
-   var ClassCard_EventRow_byRight = React.createClass({ 
-     render: function() {
-       var event = this.props.event;
-       var className = event.highlight ? 'am-active' :
-         event.disabled ? 'am-disabled' : '';
-
-       return (
-         <tr className={className} >
-           <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event.uuid)}  >{event.name}</a></td>
-           <td>{event.cardID}</td>
-           <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}<AMUIReact.Button onClick={ajax_ClassCard_info_byRight.bind(this,event.uuid)} amStyle="success">详情</AMUIReact.Button></td>
-           </tr> 
-       );
-     }
-   });       
 
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   /*
-   *老师通讯录绘制舞台再请求数据方法；
-   * @</select>下拉多选框;
-   * */
-   var Announcements_Div_ClassCard_info_byRight = React.createClass({ 
-   	load_more_btn_id:"load_more_",
-   	pageNo:1,
-   	classnewsreply_list_div:"am-list-news-bd",
-   	componentWillReceiveProps:function(){
-   		this.load_more_data();
-   	},
-   	componentDidMount:function(){
-   		this.load_more_data();
-   	},
-   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
-   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
-   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
-   	load_more_data:function(){
-   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-   		var re_data=ajax_announce_ClassCard_info(this.classnewsreply_list_div+this.pageNo,this.props.studentuuid,this.pageNo);
-   		if(!re_data)return;
-   		if(re_data.data.length<re_data.pageSize){
-   			$("#"+this.load_more_btn_id).hide();
-   		}else{
-   			$("#"+this.load_more_btn_id).show();
-   		}		  
-   		  this.pageNo++;
-   	},
-   	refresh_data:function(){
-//   		classnewsreply_list_div 清除；
-//         load_more_data	重新绘制DIV；
-   		this.forceUpdate();
-   		this.pageNo=1;
-   		$("#"+this.classnewsreply_list_div).html("");
-   		this.load_more_data();
-   		
-   	},
-   render: function() {
-   	this.load_more_btn_id="load_more_"+this.props.uuid;
-     return (			
-   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">    
-   		    
-   		    <div id={this.classnewsreply_list_div} >
-   			  </div>
-   	
-   		  
-   		  <div className="am-list-news-ft">
-   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
-   		  </div>		  
-   		</div>
-   		
-   			
-     );
-   }
-   });
-
-   /*
-   * 老师通讯录表单详情内容绘制;
-   * 一键拨号
-   * */
-   var Announcements_ClassCard_info_div = React.createClass({ 
-   	  render: function() {
-   	    var event = this.props.events;
-   	    var className = event.highlight ? 'am-active' :
-     event.disabled ? 'am-disabled' : '';
-   	    return (
-   	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">		   	
-   		          <tr>
-   		            <th>姓名</th>
-   		            <th>学校</th>
-   		            <th>打卡时间</th>
-   		          </tr> 			 
-   	    			  {this.props.events.map(function(event) {
-   	    			      return (
-   	    					      <tr className={className}>
-   	    					        <td>{event.sign_name}</td>
-   	    					        <td>{event.groupname}</td>
-   	    					        <td>{event.sign_time}</td>
-   	    					        </tr> 
-   	    			    		  )
-   	    			         })}	
-   	    			  </AMR_Table>		  
-   	    	  );
-   }
-   });    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±            
-
-
-
-
-//——————————————————————————接送卡查询<绘制>—————————————————————  
-/*]]
-* */  
-var Studentbind_EventsTable_byRight = React.createClass({
-
-  	        handleClick_download: function(xlsname) {
-  				  var class_uuid=$("input[name='classuuid']").val();
-				  var group_uuid=$("input[name='group_uuid']").val();
-  				 ajax_flowername_download_byRight(group_uuid,class_uuid,xlsname);
-  		 },
-		getDefaultProps: function() {
-  	       var down_list = [  	                  
-  	                  {value: 'doorrecord' , label: '导出接送卡表' },
-				     {value: 'doorrecord_apply' , label: '导出申请接送卡' }
-  	                ];
-
-			 var otherWherelist = [
-  	                  {value: 'cardid_is_null' , label: '申请中' },
-  	                  {value: 'cardid_is_not_null' , label: '接送卡' }
-  	                ];
-
-  	          return {
-  	            otherWherelist: otherWherelist,
-				down_list:down_list
-  	          };
-  	        },
-	getInitialState: function() {
-		var classList=Store.getChooseClass(this.props.groupuuid);
-			var classuuid =this.props.classuuid;
-			if(!classuuid&&classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
-		if(!G_studentbind_otherWhere)G_studentbind_otherWhere='cardid_is_null';
-		var obj= {
-		    	groupuuid:this.props.groupuuid,
-		    	pageNo:1,
-		    	type:this.props.type,
-				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-				otherWhere:G_studentbind_otherWhere,
-				classuuid:classuuid,
-				totalCount:0,
-				cardid:"",
-		    	list: []
-		    };
-				obj.classList.unshift({value:"",label:"所有"});
-		//obj=this.ajax_list(obj);
-	    return obj;
-	   
-	  },
-		componentDidMount: function() {
-			this.ajax_list(this.state); 
-		  },
-	  ajax_callback:function(list){
-		     if (list== null )list= [];
-		  this.state.list=list;
-		  this.setState(this.state);
-	  },
-	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-	  componentWillReceiveProps: function(nextProps) {
-		  
-		var classList=Store.getChooseClass(this.props.groupuuid);
-			var classuuid =null;
-			if(classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
-
-
-
-		  var obj= {
-			    	groupuuid:nextProps.groupuuid,
-			    	pageNo:1,
-			    	type:nextProps.type,
-					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),	
-					classuuid:classuuid,
-						totalCount:0,
-					cardid:"",
-			    	list: []
-			    };
-					obj.classList.unshift({value:"",label:"所有"});
-			this.ajax_list(obj);
-		  //this.setState(obj);
-		},
-	 ajax_list:function(obj){
-			
-		$.AMUI.progress.start();
-		var that=this;
-		G_myclass_choose=obj.classuuid;
-		G_mygroup_choose=obj.groupuuid;
-		G_studentbind_otherWhere=obj.otherWhere;
-		var url = hostUrl + "rest/studentbind/query.json";
-		$.ajax({
-			type : "GET",
-			url : url,
-			data : {groupuuid:obj.groupuuid,classuuid:obj.classuuid,cardid:obj.cardid,pageNo:obj.pageNo,otherWhere:obj.otherWhere},
-			dataType : "json",
-			//async: false,//必须同步执行
-			success : function(data) {	
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-					obj.list=data.list.data;
-					if(!obj.pageNo||obj.pageNo==1){
-						that.state.totalCount=data.list.totalCount;
-					}
-				    that.ajax_callback( data.list.data );     
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg); 
-				}
-			},
-			error : G_ajax_error_fn
-		});
-		return obj;
-		
-	},
-	pageClick: function(m) {
-		 var obj=this.state;
-		 if(m=="pre"){
-			
-			 if(obj.pageNo<2){
-				 G_msg_pop("第一页了");
-				 return;
-			 }
-			 obj.pageNo=obj.pageNo-1;
-			 this.ajax_list(obj);
-			 return;
-		 }else if(m=="next"){
-			 if(!obj.list||obj.list.length==0){
-				 G_msg_pop("最后一页了");
-				 return ;
-			 }
-			 obj.pageNo=obj.pageNo+1;
-			
-			 this.ajax_list(obj);
-			 return;
-		 }
-	},
-	
-handleChange_selectgroup_uuid:function(val){
-	 $("input[name='classuuid']").val("");
-	 var obj=this.state;
-	 obj.groupuuid=val;
-
-		 var classList=Store.getChooseClass(val);
-	var classuuid =null;
-	if(classList&&classList.length>0){
-		classuuid=classList[0].uuid;
-	}
-		obj.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
-		 	obj.classList.unshift({value:"",label:"所有"});
-			obj.classuuid=classuuid;
-	
-		 this.ajax_list(obj);
-	},
-
-handleChange_selectclass_uuid:function(val){
-	 var obj=this.state;
-		obj.classuuid=val;
-		obj.pageNo=1;
-   	   this.ajax_list(obj);
-   	 
-      },
- handleChange_selectotherWhere_uuid:function(val){
-		 
-   	  var obj=this.state;
-		obj.otherWhere=val;
-		G_studentbind_otherWhere=val;
-		obj.pageNo=1;
-   	   this.ajax_list(obj);
-      },
-	refresh_data:function(){
-     this.state.cardid=$("input[name='cardid']").val();
-     this.state.pageNo=1;
-     	 this.ajax_list(this.state);
-     		
-     	},
-		
-render: function() {
-			
-	var obj=this.state;
-	 
-	if(!this.state.list)this.state.list=[];
-	var btnSearch = (<AMUIReact.Button  onClick={this.refresh_data.bind(this)}><AMUIReact.Icon icon="search" /></AMUIReact.Button>);
-  return (
-  <div>
-<AMR_ButtonToolbar>
-	<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")} round>上一页</AMR_Button>
-	<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下一页</AMR_Button>	
-	<span>共{obj.totalCount}条,第{obj.pageNo}页</span>
-
-  </AMR_ButtonToolbar>
-<hr/>
-
- <div className="am-fl am-margin-bottom-sm">
-	 <AMUIReact.Selected id="selectotherWhere" name="otherWhere" onChange={this.handleChange_selectotherWhere_uuid} btnWidth="200"  multiple= {false} data={this.props.otherWherelist} btnStyle="primary" value={this.state.otherWhere} />
-    <AMUIReact.Selected id="selectgroup_uuid2" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.grouplist} btnStyle="primary" value={this.state.groupuuid} />
-  <AMUIReact.Selected id="selectgroup_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} />
- 
-   	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
- 	 
-  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
-	   <AMUIReact.Input name="cardid"  placeholder="姓名或卡号"   btnAfter={btnSearch}	 /> </div>
-
-
-
- </div>
-	  
-    <AMR_Table {...this.props}>  
-   <thead> 
-    <tr>
-		    <th>班级</th>
-      <th>姓名</th>
-      <th>接送卡号</th>
-      <th>申请号</th>
-		<th>申请人</th>
-      <th>申请时间</th>
-      
-    </tr> 
-  </thead>
-  <tbody>
-    {this.state.list.map(function(event) {
-      return (<Studentbind_EventRow_byRight key={event.uuid} event={event} />);
-        })}
-      </tbody>
-    </AMR_Table>
-    </div>
-  );
-}
-});
-  
-//接送卡绘制详情内容Map;   
-var Studentbind_EventRow_byRight = React.createClass({ 
-	render: function() {
-	  var event = this.props.event;
-	  var className = event.highlight ? 'am-active' :
-	    event.disabled ? 'am-disabled' : '';
-	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
-	  return (
-	    <tr className={className} >
-		     <td>{Store.getClassByUuid(event[6]).name}</td>
-   <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event[0])}  >{event[3]}</a></td>
-	      <td>{event[1]}</td>
-	       <td>{event[2]}</td>
-		    <td>{event[4]}</td>
-		   <td>{event[5]}</td>
-	    </tr> 
-	  );
-	}
-	});   

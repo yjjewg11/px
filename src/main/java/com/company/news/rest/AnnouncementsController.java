@@ -253,8 +253,10 @@ public class AnnouncementsController extends AbstractRESTController {
 					return "";
 				}
 			}
+			User user=this.getUserInfoBySession(request);
 			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
+			model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

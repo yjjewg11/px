@@ -62,7 +62,7 @@ var Right_EventRow = React.createClass({displayName: "Right_EventRow",
 				cbox.prop("checked",false); 
 			tr.removeClass("am-active");
 		}else{
-				cbox.prop("checked", true); 
+			cbox.prop("checked", true); 
 			tr.addClass("am-active");
 		}
 	},
@@ -201,12 +201,11 @@ var Role_EventsTable = React.createClass({displayName: "Role_EventsTable",
 			 
 			 var uuids=null;
 			 $("input[name='table_checkbox']").each(function(){
-				
-				　if(this.checked){
+				if(this.checked){
 					 if(uuids==null)uuids=this.value;
 					 else
-					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				　}
+					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				 }
 				});
 			  if(!uuids){
 				  G_msg_pop("请勾选复选框！");
@@ -359,7 +358,7 @@ render: function() {
 //		 var uuids=null;
 //		 var usernames=null;
 //		 $($("input[name='table_checkbox']")).each(function(){
-//			　if(this.checked){
+//			 if(this.checked){
 //				 if(uuids==null){
 //					 uuids=this.value;
 //					 usernames=this.alt;
@@ -368,7 +367,7 @@ render: function() {
 //					 uuids+=','+this.value ;  
 //					 usernames+=','+this.alt;
 //				 };
-//			　};
+//			 };
 //			});
 //		  if(!uuids){
 //			  G_msg_pop("请勾选复选框！");
@@ -518,7 +517,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		 var uuids=null;
 		 var usernames=null;
 		 $($("input[name='table_checkbox']")).each(function(){
-			　if(this.checked){
+			 if(this.checked){
 				 if(uuids==null){
 					 uuids=this.value;
 					 usernames=this.alt;
@@ -527,7 +526,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 					 uuids+=','+this.value ;  
 					 usernames+=','+this.alt;
 				 };
-			　};
+			 };
 			});
 		  if(!uuids){
 			  G_msg_pop("请勾选复选框！");

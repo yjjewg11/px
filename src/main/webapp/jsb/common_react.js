@@ -273,7 +273,7 @@ render: function() {
 //		 var uuids=null;
 //		 var usernames=null;
 //		 $($("input[name='table_checkbox']")).each(function(){
-//			　if(this.checked){
+//			 if(this.checked){
 //				 if(uuids==null){
 //					 uuids=this.value;
 //					 usernames=this.alt;
@@ -282,7 +282,7 @@ render: function() {
 //					 uuids+=','+this.value ;  
 //					 usernames+=','+this.alt;
 //				 };
-//			　};
+//			 };
 //			});
 //		  if(!uuids){
 //			  G_msg_pop("请勾选复选框！");
@@ -416,7 +416,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			}
 			that.pageNo++;
 		}
-		
+			this.setState({groupuuid:$("input[name='group_uuid']").val()});
 		ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
 	//	g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
 //		if(!re_data)return;
@@ -430,12 +430,17 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		this.forceUpdate();
+
+	
+		//this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
 		
-	},		
+	},	
+	 getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
 	handleClick: function(m) {		
 		 if(m=="add"){
 			 btn_click_userinfo(m,{group_uuid:$("input[name='group_uuid']").val(),office:"老师"});
@@ -444,7 +449,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		 var uuids=null;
 		 var usernames=null;
 		 $($("input[name='table_checkbox']")).each(function(){
-			　if(this.checked){
+			 	if(this.checked){
 				 if(uuids==null){
 					 uuids=this.value;
 					 usernames=this.alt;
@@ -453,7 +458,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 					 uuids+=','+this.value ;  
 					 usernames+=','+this.alt;
 				 };
-			　}
+			 	}
 			});
 		  if(!uuids){
 			  G_msg_pop("请勾选复选框！");
@@ -471,21 +476,6 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		  ajax_uesrinfo_listByGroup(this.props.group_uuid,$('#sutdent_name').val());
 	  },
 		 handleClick_download: function(xlsname) {
-//			 var uuids=null;
-//			 $($("input[name='table_checkbox']")).each(function(){
-//				
-//				　if(this.checked){
-//					 if(uuids==null)uuids=this.value;
-//					 else
-//					　uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-//				　}
-//				});
-//			  if(!uuids){
-//				  alert("至少选择一个班级");
-//				  return;
-//			  }
-//			  var group_uuid=$("input[name='group_uuid']").val();
-//			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
 			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
 	 },
 	 
@@ -497,7 +487,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
 		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 			  ), 
 			  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 			    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
@@ -1078,7 +1068,7 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 			   
 			    this.props.imgsList.map(function(event) {
 			    	 var  o = event;
-					  var  imgArr=o.split("@");
+					  var  imgArr=o?o.split("@"):"";
 			        return (
 			       	  React.createElement("li", null, 			     			
 			     	    React.createElement("div", {className: "am-gallery-item"}, 

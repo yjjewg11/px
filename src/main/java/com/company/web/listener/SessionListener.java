@@ -79,6 +79,17 @@ public class SessionListener implements HttpSessionListener {
     if(session==null)return null;
     return (User)session.getAttribute(RestConstants.Session_UserInfo);
   }
+  
+  /**
+   * 获取session  中用户信息,统一使用该方法.
+   * @param request
+   * @return
+   */
+  public static String   getLoginTypeBySession(HttpServletRequest request){
+    HttpSession session =SessionListener.getSession(request);
+    if(session==null)return null;
+    return (String)session.getAttribute(RestConstants.LOGIN_TYPE);
+  }
     /**
      * Logger for this class
      */
