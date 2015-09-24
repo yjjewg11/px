@@ -58,16 +58,22 @@ function login_affter_init(){
             
             {
     		    "link": "##",
-    		    "title": "平台用户授权",
+    		    "title": "问界平台授权",
     		    "fn":menu_ad_roleUser_list_fn
     		   
     		  },
     		  {
       		    "link": "##",
-      		    "title": "幼儿园用户授权",
+      		    "title": "幼儿园授权",
       		    "fn":menu_kd_roleUser_list_fn
       		   
       		  },
+      		  {
+        		    "link": "##",
+        		    "title": "培训结构授权",
+        		    "fn":menu_px_roleUser_list_fn
+        		   
+        		  },
 		  {
               "link": "##",
               "title": "基础数据",

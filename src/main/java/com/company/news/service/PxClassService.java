@@ -119,7 +119,7 @@ public class PxClassService extends AbstractClassService {
 		boolean flag = false;
 		// 如果 是更新,只有班主任和管理员可以进行修改,
 		flag = RightUtils.hasRight(obj.getGroupuuid(),
-				RightConstants.KD_class_m, request);
+				RightConstants.PX_class_m, request);
 		if (!flag) {
 			flag = this.isheadteacher(user.getUuid(),
 					pxclassRegJsonform.getUuid());
@@ -248,7 +248,7 @@ public class PxClassService extends AbstractClassService {
 			responseMessage.setMessage("没有该数据!");
 			return false;
 		}
-		if (!RightUtils.hasRight(obj.getGroupuuid(), RightConstants.KD_class_m,
+		if (!RightUtils.hasRight(obj.getGroupuuid(), RightConstants.PX_class_m,
 				request)) {
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return false;

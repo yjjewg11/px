@@ -240,8 +240,9 @@ render: function() {
 	  <hr/>
 	  <div className="am-form-group">
     <select id="select_role_type" name="group_uuid"  value={this.props.type} onChange={this.handleChange_select_role_type}>
-    <option value="0" >{Vo.type(0)}</option>
-    <option value="1" >{Vo.type(1)}</option>
+    {Vo.getTypeList("group_type").map(function(event) {
+          return (  <option value={event.key} >{event.val}</option>);
+        })}
     </select>
   </div>
   <div className="header">
@@ -296,8 +297,11 @@ render: function() {
   			<input type="hidden" name="uuid"  value={o.uuid}/>
   		    <div className="am-form-group">
   		          <select id="type" name="type"  value={o.type} onChange={this.handleChange}>
-  		          <option value="0" >{Vo.type(0)}</option>
-  		          <option value="1" >{Vo.type(1)}</option>
+  		          
+  		        {Vo.getTypeList("group_type").map(function(event) {
+  		          return (  <option value={event.key} >{event.val}</option>);
+  		        })}
+  		          
   		          </select>
   		        </div>
   		      <label htmlFor="name">名字:</label>

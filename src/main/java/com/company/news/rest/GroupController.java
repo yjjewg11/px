@@ -22,6 +22,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.CountService;
 import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/group")
@@ -86,7 +87,11 @@ public class GroupController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRightAnyGroup(RightConstants. KD_group_m,request)){
+		String right=RightConstants.KD_group_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_group_m;
+		}
+		if(!RightUtils.hasRightAnyGroup(right,request)){
             responseMessage.setMessage( RightConstants.Return_msg );
             return "";
 		}
@@ -165,7 +170,15 @@ public class GroupController extends AbstractRESTController {
 	public String myListByRight(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		String groupList=RightUtils.getRightGroups(RightConstants.KD_group_m, request);
+		
+		
+		String right=RightConstants.PX_group_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.KD_group_m;
+		}
+		
+		String groupList=RightUtils.getRightGroups(right, request);
+		
 		if(StringUtils.isBlank(groupList)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
@@ -188,8 +201,15 @@ public class GroupController extends AbstractRESTController {
 	public String myList(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		List list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
+		List list=null;
+		if(SessionListener.isPXLogin(request)){
+			 list = groupService.getPXGroupByUseruuid(this.getUserInfoBySession(
 					request).getUuid());
+		}else{
+			 list = groupService.getGroupByUseruuid(this.getUserInfoBySession(
+					request).getUuid());
+		}
+
 		
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

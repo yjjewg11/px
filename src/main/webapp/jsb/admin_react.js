@@ -240,8 +240,9 @@ render: function() {
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
     React.createElement("select", {id: "select_role_type", name: "group_uuid", value: this.props.type, onChange: this.handleChange_select_role_type}, 
-    React.createElement("option", {value: "0"}, Vo.type(0)), 
-    React.createElement("option", {value: "1"}, Vo.type(1))
+    Vo.getTypeList("group_type").map(function(event) {
+          return (  React.createElement("option", {value: event.key}, event.val));
+        })
     )
   ), 
   React.createElement("div", {className: "header"}, 
@@ -296,8 +297,11 @@ render: function() {
   			React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		    React.createElement("div", {className: "am-form-group"}, 
   		          React.createElement("select", {id: "type", name: "type", value: o.type, onChange: this.handleChange}, 
-  		          React.createElement("option", {value: "0"}, Vo.type(0)), 
-  		          React.createElement("option", {value: "1"}, Vo.type(1))
+  		          
+  		        Vo.getTypeList("group_type").map(function(event) {
+  		          return (  React.createElement("option", {value: event.key}, event.val));
+  		        })
+  		          
   		          )
   		        ), 
   		      React.createElement("label", {htmlFor: "name"}, "名字:"), 

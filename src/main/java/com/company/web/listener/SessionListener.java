@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.User;
 import com.company.news.rest.RestConstants;
 
@@ -78,6 +79,19 @@ public class SessionListener implements HttpSessionListener {
     HttpSession session =SessionListener.getSession(request);
     if(session==null)return null;
     return (User)session.getAttribute(RestConstants.Session_UserInfo);
+  }
+  
+
+  /**
+   * 是否是培训机构登陆
+   * @param request
+   * @return
+   */
+  public static boolean   isPXLogin(HttpServletRequest request){
+	  if(SystemConstants.Group_type_2.toString().equals(SessionListener.getLoginTypeBySession(request))){
+		  return true;
+	  }
+	  return false;
   }
   
   /**

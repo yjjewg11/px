@@ -79,7 +79,7 @@ function login_affter_init(){
 		    "fn":menu_group_myList_fn_byRight
                                             
 		  };
-	if(G_user_hasRight("KD_group_m")){
+	if(G_user_hasRight("PX_group_m")){
 		menu_data.push(t_menu);
 	}
 
@@ -116,7 +116,7 @@ function login_affter_init(){
 
 	                        ]                   
 		  };
-	if(G_user_hasRight("KD_announce_m")){
+	if(G_user_hasRight("PX_announce_m")){
 		menu_data.push(t_menu);
 	};
 	
@@ -144,7 +144,7 @@ function login_affter_init(){
                       ]
         };
 
-	if(G_user_hasRight("KD_teacher_m")){
+	if(G_user_hasRight("PX_teacher_m")){
 		menu_data.push(t_menu);
 	}
 	
@@ -157,7 +157,7 @@ function login_affter_init(){
       	   		"title": "课程安排",
       	   		"subCols": 2
 		  };
-	if(G_user_hasRight("KD_teachingplan_m")){
+	if(G_user_hasRight("PX_teachingplan_m")){
 		menu_data.push(t_menu);
 	}
 	
@@ -167,7 +167,7 @@ function login_affter_init(){
         "fn":menu_queryLeaderMsgByParents_message_fn_byRight,
         "title": "园长信箱"
       };
-	if(G_user_hasRight("KD_Leader_Msg_m")){
+	if(G_user_hasRight("PX_Leader_Msg_m")){
 		menu_data.push(t_menu);
 	}
 	t_menu= {
@@ -175,7 +175,7 @@ function login_affter_init(){
             "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
-		if(G_user_hasRight("KD_class_m")){
+		if(G_user_hasRight("PX_class_m")){
 			menu_data.push(t_menu);
 		}
 	t_menu= {
@@ -183,7 +183,7 @@ function login_affter_init(){
             "title": "学生列表",
             "fn":menu_query_list_fn_byRight
           };
-		if(G_user_hasRight("KD_student_allquery")){
+		if(G_user_hasRight("PX_student_allquery")){
 			menu_data.push(t_menu);
 		}	
 		t_menu= {
@@ -191,7 +191,7 @@ function login_affter_init(){
                 "title": "统计",
                 "fn":menu_statistics_list_fn_byRight
               };
-			if(G_user_hasRight("KD_statistics_m")){
+			if(G_user_hasRight("PX_statistics_m")){
 				menu_data.push(t_menu);
 			}	
 	t_menu= {
@@ -200,7 +200,7 @@ function login_affter_init(){
 	                "fn":menu_teachingjudge_list_fn_byRight
 	              };
 			
-				if(G_user_hasRight("KD_teachingjudge_q")){
+				if(G_user_hasRight("PX_teachingjudge_q")){
 					menu_data.push(t_menu);
 				}
 	
@@ -210,7 +210,7 @@ function login_affter_init(){
                 "fn":menu_accounts_list_fn_byRight,
                 "title": "收支记录"
               };
-			if(G_user_hasRight("KD_accounts_m")){
+			if(G_user_hasRight("PX_accounts_m")){
 				menu_data.push(t_menu);
 			}
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -645,7 +645,7 @@ function menu_announce_list_fn_byRight(types,name) {
 var g_uesrinfo_groupuuid="";
 function menu_userinfo_list_fn_byRight() {
 	Queue.push(function(){menu_userinfo_list_fn_byRight();},"老师管理");
-	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("KD_teacher_m").uuid;
+	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("PX_teacher_m").uuid;
 	ajax_uesrinfo_listByGroup_div(g_uesrinfo_groupuuid);
 };
 /*
@@ -669,7 +669,7 @@ function menu_userTeacher_list_fn_byRight() {
 var G_myCurClassuuid=null;
 function menu_teachingplan_list_fn_byRight() {
 //	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
-//	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
 //	
 //	if(!groupList||groupList.length==0){
 //		alert("没有权限。");
@@ -683,7 +683,7 @@ function menu_teachingplan_list_fn_byRight() {
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
-	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+	var groupList=Store.getGroupByRight("PX_teachingplan_m");
 	
 	if(!groupList||groupList.length==0){
 		alert("没有权限。");
@@ -742,7 +742,7 @@ function menu_statistics_list_fn_byRight() {
 	Queue.push(menu_statistics_list_fn_byRight,"统计");
 	React.render(React.createElement(ECharts_Div_byRight, {
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
-		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_statistics_m"),"uuid","brand_name")
+		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_statistics_m"),"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
 

@@ -19,6 +19,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.TeachingJudgeService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/teachingjudge")
@@ -47,7 +48,12 @@ public class TeachingJudgeController extends AbstractRESTController {
 			responseMessage.setMessage( "groupuuid 不能为空");
 			return "";
 		}
-			if(!RightUtils.hasRight(groupuuid,RightConstants.KD_teachingjudge_q, request)){
+		
+		String right=RightConstants.KD_teachingjudge_q;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_teachingjudge_q;
+		}
+			if(!RightUtils.hasRight(groupuuid,right, request)){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_nopower);
 				return "";
 			}

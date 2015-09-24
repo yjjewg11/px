@@ -163,7 +163,7 @@ public class UserinfoService extends AbstractService {
 
 			}else if (SystemConstants.Group_type_2.equals(group.getType())) {
 				RoleUserRelation r = new RoleUserRelation();
-				r.setRoleuuid(RightConstants.Role_KD_admini);
+				r.setRoleuuid(RightConstants.Role_PX_admini);
 				r.setUseruuid(user.getUuid());
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 
@@ -780,7 +780,9 @@ public class UserinfoService extends AbstractService {
 		}
 
 		// 如果是修改管理员权限,必须要有一个管理员有该角色
-		if (RightConstants.Role_AD_admini.equals(roleuuid) || RightConstants.Role_KD_admini.equals(roleuuid)) {
+		if (RightConstants.Role_AD_admini.equals(roleuuid)
+				|| RightConstants.Role_KD_admini.equals(roleuuid)
+				|| RightConstants.Role_PX_admini.equals(roleuuid)) {
 			if (StringUtils.isBlank(useruuids)) {
 				responseMessage.setMessage("管理员权限,必须要有一个管理员有该角色");
 				return false;

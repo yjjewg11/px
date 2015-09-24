@@ -120,8 +120,14 @@ public class ClassService extends AbstractClassService {
 		}
 		boolean flag = false;
 		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		String right=RightConstants.KD_class_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_class_m;
+		}
+		
 		flag = RightUtils.hasRight(obj.getGroupuuid(),
-				RightConstants.KD_class_m, request);
+				right, request);
 		if (!flag) {
 			flag = this.isheadteacher(user.getUuid(),
 					classRegJsonform.getUuid());
@@ -228,8 +234,13 @@ public class ClassService extends AbstractClassService {
 		
 		boolean flag = false;
 		// 如果 是更新,只有班主任和管理员可以进行修改,
+		String right=RightConstants.KD_class_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_class_m;
+		}
+		
 		flag = RightUtils.hasRight(obj.getGroupuuid(),
-				RightConstants.KD_class_m, request);
+				right, request);
 		User user = SessionListener.getUserInfoBySession(request);
 		
 		if (!flag) {
@@ -248,9 +259,12 @@ public class ClassService extends AbstractClassService {
 		
 		
 		if (Long.valueOf(o.toString()) > 0) {
-			
+			String rightdel=RightConstants.KD_class_del;
+			if(SessionListener.isPXLogin(request)){
+				rightdel=RightConstants.KD_class_del;
+			}
 			flag = RightUtils.hasRight(obj.getGroupuuid(),
-					RightConstants.KD_class_del, request);
+					rightdel, request);
 			if(!flag){
 				responseMessage.setMessage("该班级有学生不能删除.");
 				return false;
