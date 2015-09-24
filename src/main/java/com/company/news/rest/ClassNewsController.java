@@ -28,6 +28,7 @@ import com.company.news.service.ClassNewsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieStatisticsVo;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/classnews")
@@ -162,10 +163,17 @@ public class ClassNewsController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
+			
+			String right=RightConstants.KD_announce_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_announce_m;
+			}
+			
+			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			User user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
-			String groups=RightUtils.getRightGroups(RightConstants.KD_announce_m, request);
+			String groups=RightUtils.getRightGroups(right, request);
 			if(StringUtils.isBlank(groups)){
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return "";

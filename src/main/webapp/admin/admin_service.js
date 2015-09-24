@@ -964,7 +964,7 @@ function ajax_wenjieAdmin_dataRefresh(){
 
 //平台用户授权
 function menu_ad_roleUser_list_fn() {
-	Queue.push(menu_ad_roleUser_list_fn,"平台用户授权");
+	Queue.push(menu_ad_roleUser_list_fn,"问界平台授权");
 	var group_list=[];
 	group_list.push(ADStore.getCurGroup());
 	var opt={
@@ -977,11 +977,23 @@ function menu_ad_roleUser_list_fn() {
 };
 //幼儿园用户授权
 function menu_kd_roleUser_list_fn() {
-	Queue.push(menu_kd_roleUser_list_fn,"幼儿园用户授权");
+	Queue.push(menu_kd_roleUser_list_fn,"幼儿园授权");
 	var opt={
 			groupuuid:ADStore.getCurGroup().uuid,
 			group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
 			role_list:Store.getRoleList(1)
+		};
+	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+
+};
+
+//培训机构授权
+function menu_px_roleUser_list_fn() {
+	Queue.push(menu_px_roleUser_list_fn,"培训机构授权");
+	var opt={
+			groupuuid:ADStore.getCurGroup().uuid,
+			group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
+			role_list:Store.getRoleList(2)
 		};
 	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
 

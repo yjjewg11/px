@@ -67,7 +67,7 @@ public class ClassNewsService extends AbstractService {
 			return false;
 		}
 		AbstractClass pClass=null;
-		if(SystemConstants.Group_type_2.toString().equals(SessionListener.getLoginTypeBySession(request))){
+		if(SessionListener.isPXLogin(request)){
 			 pClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, classNewsJsonform.getClassuuid());
 		}else{
 			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());

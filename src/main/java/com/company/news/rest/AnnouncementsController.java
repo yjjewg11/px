@@ -25,6 +25,7 @@ import com.company.news.service.AnnouncementsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/announcements")
@@ -109,18 +110,22 @@ public class AnnouncementsController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
+		String right=RightConstants.KD_announce_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_announce_m;
+		}
 		
 		try {
 			String groupuuid=request.getParameter("groupuuid");
 			if(StringUtils.isBlank(groupuuid)){
-				groupuuid=RightUtils.getRightGroups(RightConstants.KD_announce_m, request);
+				groupuuid=RightUtils.getRightGroups(right, request);
 				if(StringUtils.isBlank(groupuuid)){
 					responseMessage.setStatus(RightConstants.Return_msg);
 					return "";
 				}
 			}else{
 				//判断是否有权限
-				if(!RightUtils.hasRight(groupuuid,RightConstants.KD_announce_m, request)){
+				if(!RightUtils.hasRight(groupuuid,right, request)){
 					responseMessage.setMessage(RightConstants.Return_msg);
 					return "";
 				}
@@ -239,6 +244,13 @@ public class AnnouncementsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		AnnouncementsVo a;
 		try {
+			
+			String right=RightConstants.KD_announce_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_announce_m;
+			}
+			
+			
 			a = announcementsService.get(uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
@@ -246,8 +258,9 @@ public class AnnouncementsController extends AbstractRESTController {
 				return "";
 			}
 			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
+				
 				//判断是否有权限.有权限的人可以浏览.禁用的.
-				if(!RightUtils.hasRight(a.getGroupuuid(),RightConstants.KD_announce_m, request)){
+				if(!RightUtils.hasRight(a.getGroupuuid(),right, request)){
 					
 					responseMessage.setMessage("数据已被禁止浏览!");
 					return "";

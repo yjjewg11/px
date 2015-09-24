@@ -318,6 +318,21 @@ public class GroupService extends AbstractService {
 		 return  list;
 	}
 
+	/**
+	 * 查询指定用户的培训机构列表
+	 * @return
+	 */
+	public List getPXGroupByUseruuid(String uuid){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="";
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=2 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc" )
+				.addEntity("t1",Group4Q.class);
+		
+		List list= q.list();
+		 this.warpVoList(list);
+		 return  list;
+	}
+
 	
 	/**
 	 * 查询指定用户的机构列表

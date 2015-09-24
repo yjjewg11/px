@@ -33,7 +33,9 @@ public class CheckController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if(!RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)){
+		if(RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)||RightUtils.hasRightAnyGroup(RightConstants.PX_announce_m,request)){
+			//有任意权限可以禁止
+		}else{
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return "";
 		}

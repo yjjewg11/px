@@ -29,6 +29,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -57,7 +58,13 @@ public class AnnouncementsService extends AbstractService {
 		}
 		//精品文章都可以新加
 		if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
-			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
+			
+			String right=RightConstants.KD_announce_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_announce_m;
+			}
+			
+			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return false;
 			}
@@ -161,7 +168,12 @@ public class AnnouncementsService extends AbstractService {
 						announcementsJsonform.getUuid());
 				//精品文章都可以新加
 				if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
-					if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.KD_announce_m,request)){
+					String right=RightConstants.KD_announce_m;
+					if(SessionListener.isPXLogin(request)){
+						right=RightConstants.PX_announce_m;
+					}
+					
+					if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
 						responseMessage.setMessage(RightConstants.Return_msg);
 						return false;
 					}
@@ -328,7 +340,12 @@ public class AnnouncementsService extends AbstractService {
 			responseMessage.setMessage("没有该数据!");
 			return false;
 		}
-		if(!RightUtils.hasRight(obj.getGroupuuid(),RightConstants.KD_announce_m,request)){
+		
+		String right=RightConstants.KD_announce_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_announce_m;
+		}
+		if(!RightUtils.hasRight(obj.getGroupuuid(),right,request)){
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return false;
 		}

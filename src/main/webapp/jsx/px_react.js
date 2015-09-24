@@ -2664,7 +2664,7 @@ var Query_teacherDailyTask = React.createClass({
  * */
 var Group_EventsTable_byRight = React.createClass({
 	handleClick: function(m) {
-			btn_click_group_byRight(m,{type:"1"});
+			btn_click_group_byRight(m,{type:G_group_type});
 
 	  },
   render: function() {

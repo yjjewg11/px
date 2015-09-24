@@ -620,7 +620,11 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			//该幼儿园管理员才可以修改.
 			if(noRight){
-				if(RightUtils.hasRight(groupuuid, RightConstants.KD_role_m, request))noRight=false;
+				String right=RightConstants.KD_role_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_role_m;
+				}
+				if(RightUtils.hasRight(groupuuid, right, request))noRight=false;
 			}
 			
 			boolean flag = userinfoService.updateRoleRightRelation(
@@ -670,7 +674,13 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			//该幼儿园管理员才可以修改.
 			if(noRight){
-				if(RightUtils.hasRight(groupuuid, RightConstants.KD_teacher_m, request))noRight=false;
+				
+				String right=RightConstants.KD_teacher_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_teacher_m;
+				}
+				
+				if(RightUtils.hasRight(groupuuid, right, request))noRight=false;
 			}
 			if(noRight){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
@@ -925,7 +935,12 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			//该幼儿园管理员才可以修改.
 			if(noRight){
-				mygroup=RightUtils.getRightGroups(RightConstants. KD_teacher_m, request);
+				
+				String right=RightConstants.KD_teacher_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_teacher_m;
+				}
+				mygroup=RightUtils.getRightGroups(right, request);
 				
 				if(StringUtils.isBlank(mygroup)){
 		            responseMessage.setMessage( RightConstants.Return_msg );
@@ -934,7 +949,8 @@ public class UserinfoController extends AbstractRESTController {
 				
 				String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
 				for(int i=0;i<groupStrArr.length;i++){
-					if(!RightUtils.hasRight(groupStrArr[i], RightConstants.KD_role_m, request)){
+					
+					if(!RightUtils.hasRight(groupStrArr[i], right, request)){
 							responseMessage.setMessage("非法操作,没有该幼儿园老师管理权限.");
 					}
 				}

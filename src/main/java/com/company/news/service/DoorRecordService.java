@@ -13,6 +13,7 @@ import com.company.news.entity.GroupHeartBeat;
 import com.company.news.iservice.StudentSignRecordIservice;
 import com.company.news.jsonform.DoorRecordJsonform;
 import com.company.news.jsonform.DoorUserJsonform;
+import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -151,6 +152,7 @@ public class DoorRecordService extends AbstractService {
 		}
 		obj.setFrequency(frequency);
 		obj.setMsg(msg);
+		obj.setUpdatetime(TimeUtils.getCurrentTimestamp());
 		this.nSimpleHibernateDao.save(obj);
 		return false;
 	}

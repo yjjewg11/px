@@ -27,6 +27,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.MessageService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/message")
@@ -333,7 +334,12 @@ public class MessageController extends AbstractRESTController {
 //			return "";
 //		}
 			
-			String groupuuid=RightUtils.getRightGroups(RightConstants.KD_Leader_Msg_m, request);
+			String right=RightConstants.KD_Leader_Msg_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_Leader_Msg_m;
+			}
+			
+			String groupuuid=RightUtils.getRightGroups(right, request);
 			if(StringUtils.isBlank(groupuuid)){
 					responseMessage.setMessage(RightConstants.Return_msg);
 					return "";

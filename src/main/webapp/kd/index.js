@@ -2,6 +2,8 @@
 var G_myclass_choose=null;
 //我选我的学校后的全局记录
 var G_mygroup_choose=null;
+//用于切换机构类型
+var G_group_type=2;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -501,7 +503,15 @@ function menu_hellp_fn(){
  * 在kd_service;
  * */
 function menu_classnewsbyMy_list_fn() {
-	ajax_classnews_list_div(1);
+	var myclasslist=Store.getMyClassList();
+	var type=1;
+	//默认查询我的班级,如果没有则查询其他班级的.
+	if(!myclasslist||myclasslist.length==0){
+		type=2;
+	}
+	
+	
+	ajax_classnews_list_div(type);
 	
 };
 /*

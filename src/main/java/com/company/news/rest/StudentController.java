@@ -27,6 +27,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.PxClassService;
 import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/student")
@@ -152,12 +153,15 @@ public class StudentController extends AbstractRESTController {
 		String groupuuid=request.getParameter("groupuuid");
 		String classuuid=request.getParameter("classuuid");
 		String name=request.getParameter("name");
-		
+		String right=RightConstants.KD_student_allquery;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_student_allquery;
+		}
 		  
 		if(StringUtils.isBlank(groupuuid)){ 
-			groupuuid=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
+			groupuuid=RightUtils.getRightGroups(right, request);
 		}else{
-			String groupUuids=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
+			String groupUuids=RightUtils.getRightGroups(right, request);
 			if(groupUuids==null||!groupUuids.contains(groupuuid)){
 				responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
 				return "";

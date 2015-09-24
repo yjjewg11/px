@@ -1588,7 +1588,7 @@ function react_ajax_favorites_show(type,reluuid){
   * */
 var  g_message_groupuuid="";
 function ajax_announce_listByGroup_byRight(){
-	var grouplist=Store.getGroupByRight("KD_announce_m");
+	var grouplist=Store.getGroupByRight("PX_announce_m");
 	if(!grouplist||grouplist.length==0){
 		G_msg_pop("没有权限!");
 		return "";
@@ -1661,7 +1661,7 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
   	if(!uuid){
   		React.render(React.createElement(Announcements_edit_byRight,{
   			formdata:formdata,
-  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
+  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
   			}), document.getElementById('div_body'));
   		return;
   	}
@@ -1677,7 +1677,7 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
   			if (data.ResMsg.status == "success") {
   				React.render(React.createElement(Announcements_edit_byRight,{
   					formdata:data.data,
-  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
   					}),document.getElementById('div_body'));
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
@@ -1859,7 +1859,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 //     			if (data.ResMsg.status == "success") {
 //     				React.render(React.createElement(Userinfo_EventsTable, {
 //     					group_uuid:groupuuid,
-//     					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight('KD_teacher_m'),"uuid","brand_name"),
+//     					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight('PX_teacher_m'),"uuid","brand_name"),
 //     					events: data.list.data,
 //     					handleClick:btn_click_userinfo,
 //     					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -1886,7 +1886,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 基本框 等
   * */
  function ajax_uesrinfo_listByGroup_div(groupuuid){
- 	var list=Store.getGroupByRight('KD_teacher_m');
+ 	var list=Store.getGroupByRight('PX_teacher_m');
  	React.render(React.createElement(Userinfo_EventsTable_div,{
  		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 	    handleClick:btn_click_userinfo,
@@ -1976,7 +1976,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 
      		React.render(React.createElement(Userinfo_edit,{
      			formdata:formdata,
-     			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+     			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_teacher_m"),"uuid","brand_name"),
      			sex:formdata.sex
      			}), document.getElementById('div_body'));
      		return;
@@ -1995,7 +1995,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				React.render(React.createElement(Userinfo_edit,{
      					mygroup_uuids:data.mygroup_uuids,
      					formdata:data.data,
-     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_teacher_m"),"uuid","brand_name"),
      					sex:data.data.sex
      					}), document.getElementById('div_body'));
      			} else {
@@ -2084,7 +2084,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				React.render(React.createElement(Userinfo_edit,{
      					mygroup_uuids:group_uuid,
      					formdata:data,
-     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
+     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_teacher_m"),"uuid","brand_name"),
      					sex:data.sex
      					}), document.getElementById('div_body'));
      			} else {
@@ -2295,13 +2295,13 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  
 //———————————————————————————————班级管理—————————————————————————     	  	  	  
  /*
-  * <班级管理>服务器请求 Store.getGroupByRight("KD_class_m")
+  * <班级管理>服务器请求 Store.getGroupByRight("PX_class_m")
   * @请求数据成功后执行Class_EventsTable方法绘制
   * */
  function ajax_class_listByGroup_byRight(groupuuid) {
  	Queue.push(function(){ajax_class_listByGroup_byRight(groupuuid);},"班级管理");
  	
- 	var  grouplist=Store.getGroupByRight("KD_class_m");
+ 	var  grouplist=Store.getGroupByRight("PX_class_m");
  	if(!grouplist||grouplist.length==0){
  		alert("没有班级管理权限不能访问.");
  		return;
@@ -2384,7 +2384,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		formdata.headTeacher_name=userinfo.name;
  		React.render(React.createElement(Class_edit_byRight,{
  			formdata:formdata,
- 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
+ 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_class_m"),"uuid","brand_name")
  			}), document.getElementById('div_body'));
  		return;
  	}
@@ -2400,7 +2400,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Class_edit_byRight,{
  					formdata:data.data,
- 					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
+ 					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_class_m"),"uuid","brand_name")
  					}), document.getElementById('div_body'));
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
@@ -2500,7 +2500,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	}	
  	React.render(React.createElement(Class_students_manage_byRight,{
  		formdata:formdata,
- 		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
+ 		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_class_m"),"uuid","brand_name"),
 		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),
  		students:students}), document.getElementById('div_body'));
  };
@@ -2608,7 +2608,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 在kd_react
   * */
  function ajax_accounts_listByGroup_byRight(groupuuid) {
-	var grouplist= Store.getGroupByRight("KD_accounts_m");
+	var grouplist= Store.getGroupByRight("PX_accounts_m");
 	if(!grouplist||grouplist.length==0){
 		alert("没有权限!");
 		return "";
@@ -2662,7 +2662,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  if(!formdata.studentuuid)formdata.studentuuid="";
  	React.render(React.createElement(Accounts_edit_byRight,{
  			type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
- 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_accounts_m"),"uuid","brand_name"),
+ 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_accounts_m"),"uuid","brand_name"),
  			formdata:formdata
  			}),
  			document.getElementById('div_body'));
@@ -2720,7 +2720,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					group_uuid:groupuuid,
  	  					class_uuid:classuuid,
  	  					name:name,
- 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+ 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_student_allquery"),"uuid","brand_name"),
  	  					data:data,
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
@@ -2771,7 +2771,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  var g_teachingjudge_point=0;
  function ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type) {
  	Queue.push(function(){ ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
-	var grouplist=Store.getGroupByRight("KD_teachingjudge_q");  
+	var grouplist=Store.getGroupByRight("PX_teachingjudge_q");  
 	if(!grouplist||grouplist.length==0){
 		alert("没有权限!");
 		return "";
@@ -2801,7 +2801,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					group_uuid:groupuuid,
  	  					type:type,
  	  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
- 	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
+ 	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("PX_Teachingjudge_type"),"key","val"),
  	  					events: data.list,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
  	  				}), document.getElementById('div_body'));					
@@ -2816,7 +2816,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 
 //幼儿园用户授权
 function menu_kd_roleUser_list_fn() {
-	var grouplist=Store.getGroupByRight("KD_announce_m");
+	var grouplist=Store.getGroupByRight("PX_announce_m");
 	if(!grouplist||grouplist.length==0){
 		alert("没有权限!");
 		return "";

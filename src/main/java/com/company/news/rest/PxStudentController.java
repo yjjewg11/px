@@ -158,9 +158,9 @@ public class PxStudentController extends AbstractRESTController {
 		
 		  
 		if(StringUtils.isBlank(groupuuid)){ 
-			groupuuid=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
+			groupuuid=RightUtils.getRightGroups(RightConstants.PX_student_allquery, request);
 		}else{
-			String groupUuids=RightUtils.getRightGroups(RightConstants.KD_student_allquery, request);
+			String groupUuids=RightUtils.getRightGroups(RightConstants.PX_student_allquery, request);
 			if(groupUuids==null||!groupUuids.contains(groupuuid)){
 				responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
 				return "";
