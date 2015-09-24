@@ -1015,7 +1015,7 @@ return (
 
 
 
-//——————————————————————————（首页）课程表<绘制>——————————————————————————  
+//——————————————————————————（老版首页）课程表<绘制>——————————————————————————  
 /*
  * 课程表班级内详情 课程表
  */
@@ -1101,7 +1101,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 );
 }
 }); 
-//——————————————————————————（首页->课程表）<绘制>——————————————————————————  
+//——————————————————————————（新版首页->课程表）<绘制>——————————————————————————  
 /*
  * 
  * 课程表1周显示
@@ -2195,7 +2195,7 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 	           ), 
 	          React.createElement("label", {className: one_classDiv}, "妈妈电话"), 
 		     React.createElement("div", {className: two_classDiv}, 
-		    React.createElement(PxInput, {icon: "mobile", type: "number", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange})
+		    React.createElement(PxInput, {icon: "mobile", type: "text", name: "ma_tel", id: "ma_tel", value: o.ma_tel, onChange: this.handleChange})
 	       ), 
 	        React.createElement("label", {className: one_classDiv}, "妈妈工作"), 
 	         React.createElement("div", {className: two_classDiv}, 
@@ -3080,7 +3080,7 @@ return (
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-//——————————————————————————课程安排<绘制>——————————————————————————  
+//——————————————————————————<新版>课程安排<管理模块绘制>——————————————————————————  
 /*
  * 
  * 课程安排1周显示
@@ -3430,186 +3430,6 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 //}
 //});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
-
-////——————————————————————————课程安排<绘制>——————————————————————————        
-///*课程安排废弃老代码
-//* <课程安排>班级详情界面按钮列表框等绘制;
-//* @add:添加班级课程；
-//* @pre:上周；
-//* @next:下一周；
-//* */
-//var Teachingplan_EventsTable_byRight = React.createClass({
-//	
-//getInitialState: function() {
-//		var classList=Store.getChooseClass(this.props.groupuuid);
-//		var classuuid =null;
-//		if(classList&&classList.length>0){
-//			classuuid=classList[0].uuid;
-//		}
-//		var obj= {
-//				groupuuid:this.props.groupuuid,
-//				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-//				classuuid:classuuid,
-//		    	pageNo:0,
-//		    	list: []
-//		    };
-//	//	this.ajax_list(obj);
-//	    return obj;
-//	   
-//	  },
-//	 
-//	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-//	  componentWillReceiveProps: function(nextProps) {
-//		  var classList=Store.getChooseClass(nextProps.groupuuid);
-//			var classuuid =null;
-//			if(classList&&classList.length>0){
-//				classuuid=classList[0].uuid;
-//			}
-//		  var obj= {
-//				  groupuuid:nextProps.groupuuid,
-//					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-//					classuuid:classuuid,
-//			    	pageNo:0,
-//			    	list: []
-//				 
-//			    };
-//				
-//			obj=this.ajax_list(obj);
-//		  this.setState(obj);
-//		},
-//		 ajax_callback:function(list){
-//			  this.state.list=list;
-//			  this.setState(this.state);
-//		  },
-//	 ajax_list:function(obj){
-//		 
-//		 var now=new Date();
-//		  	now=G_week.getDate(now,obj.pageNo*7);
-//		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
-//		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
-//		var that=this;
-//		 $.AMUI.progress.start();
-//			var url = hostUrl + "rest/pxteachingplan/list.json";
-//			$.ajax({
-//				type : "GET",
-//				url : url,
-//				data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
-//				dataType : "json",
-//				success : function(data) {
-//					$.AMUI.progress.done();
-//					if (data.ResMsg.status == "success") {
-//						if(data.list==null)data.list=[];
-//						that.ajax_callback(data.list);						
-//					} else {
-//						alert(data.ResMsg.message);
-//						G_resMsg_filter(data.ResMsg);
-//					}
-//				},
-//				error : G_ajax_error_fn
-//			});		
-//	},
-//	pageClick: function(m) {
-//		 var obj=this.state;
-//		 if(m=="pre"){
-//			 obj.pageNo=obj.pageNo-1;
-//			 this.ajax_list(obj);
-//			 return;
-//		 }else if(m=="next"){
-//			 obj.pageNo=obj.pageNo+1;
-//			 this.ajax_list(obj);
-//			 return;
-//		 }
-//	},
-//
-//	handleChange_selectgroup: function(val) {
-//		this.state.groupuuid=val;
-//		var classList=Store.getChooseClass(this.state.groupuuid);
-//		var classuuid =null;
-//		if(classList&&classList.length>0){
-//			classuuid=classList[0].uuid;
-//		}
-//		this.state.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
-//		 this.state.classuuid=classuuid;
-//		 this.ajax_list(this.state); 
-//    },
-//    handleChange_selectclass: function(val) {
-//    	 this.state.classuuid=val;
-//		 this.ajax_list(this.state);   
-//    },
-//	componentDidMount: function() {
-//		this.ajax_list(this.state); 
-//	  },
-//	   
-//render: function() {
-//	var weeknum=this.state.pageNo;
-//	var now=new Date();
-//	if(weeknum){
-//		now=G_week.getDate(now,weeknum*7);
-//	}else{
-//		g_cookbookPlan_week_point=0;
-//	}
-//	var begDateStr=G_week.getWeek0(now);
-//	var endDateStr=G_week.getWeek6(now);
-//return (
-//<div>
-//<div className="header">
-//	<hr />
-//	</div>
-//<AMR_ButtonToolbar>
-//<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")} round>上周</AMR_Button>
-//<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>
-//  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.state.groupuuid}/> 
-//  <AMUIReact.Selected id="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.state.classList} btnStyle="primary" value={this.state.classuuid}/>    
-//</AMR_ButtonToolbar>
-//  <h1>[{begDateStr} 到 {endDateStr}]</h1>
-//	  <hr/>
-//<AMR_Table {...this.props}>  
-//  <thead> 
-//    <tr>
-//    	<th>一周</th>
-//      <th>上午</th>
-//      <th>下午</th>
-//    </tr> 
-//  </thead>
-//  <tbody>
-//    {this.state.list.map(function(event) {
-//      return (<Teachingplan_EventRow_byRight  event={event} />);
-//    })}
-//  </tbody>
-//</AMR_Table>
-//</div>
-//);
-//}
-//});
-///*
-//*<课程安排>班级详情列表详情内容绘制;
-//* @add:添加班级课程；
-//* @pre:上周；
-//* @next:下一周；
-//* */
-//var Teachingplan_EventRow_byRight = React.createClass({ 
-//	render: function() {
-//	var event = this.props.event;
-//	if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
-//		event.highlight=true;
-//	}
-//	var className = event.highlight ? 'am-active' :
-//	  event.disabled ? 'am-disabled' : '';
-//
-//	return (
-//	  <tr className={className} >
-//	    <td>{G_week.getWeekStr(event.plandate)}</td>
-//	    <td>{event.morning}</td>
-//	    <td>{event.afternoon}</td>
-//	  </tr> 
-//	);
-//	}
-//	});
-//
-////±±±±±±±±±±±±±±±±±±±±±±±±±±±
-//
-//
-//
 
 
 
@@ -5529,3 +5349,178 @@ render: function() {
  
 
    
+   //——————————————————————————<老版>课程安排<管理绘制>——————————————————————————        
+ /*
+ * <课程安排>班级详情界面按钮列表框等绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+ var Teachingplan_EventsTable_byRight = React.createClass({displayName: "Teachingplan_EventsTable_byRight",
+ 	
+ getInitialState: function() {
+ 		var classList=Store.getChooseClass(this.props.groupuuid);
+ 		var classuuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		var obj= {
+ 				groupuuid:this.props.groupuuid,
+ 				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+ 				classuuid:classuuid,
+ 		    	pageNo:0,
+ 		    	list: []
+ 		    };
+ 	//	this.ajax_list(obj);
+ 	    return obj;
+ 	   
+ 	  },
+ 	 
+ 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {
+ 		  var classList=Store.getChooseClass(this.props.groupuuid);
+ 			var classuuid =null;
+ 			if(classList&&classList.length>0){
+ 				classuuid=classList[0].uuid;
+ 			}
+ 		  var obj= {
+ 				  groupuuid:nextProps.groupuuid,
+ 					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+ 					classuuid:classuuid,
+ 			    	pageNo:0,
+ 			    	list: []
+ 				 
+ 			    };
+ 				
+ 			obj=this.ajax_list(obj);
+ 		  this.setState(obj);
+ 		},
+ 		 ajax_callback:function(list){
+ 			  this.state.list=list;
+ 			  this.setState(this.state);
+ 		  },
+ 	 ajax_list:function(obj){
+ 		 
+ 		 var now=new Date();
+ 		  	now=G_week.getDate(now,obj.pageNo*7);
+ 		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
+ 		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
+ 		var that=this;
+ 		 $.AMUI.progress.start();
+ 			var url = hostUrl + "rest/teachingplan/list.json";
+ 			$.ajax({
+ 				type : "GET",
+ 				url : url,
+ 				data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+ 				dataType : "json",
+ 				success : function(data) {
+ 					$.AMUI.progress.done();
+ 					if (data.ResMsg.status == "success") {
+ 						if(data.list==null)data.list=[];
+ 						that.ajax_callback(data.list);						
+ 					} else {
+ 						alert(data.ResMsg.message);
+ 						G_resMsg_filter(data.ResMsg);
+ 					}
+ 				}
+ 			});		
+ 	},
+ 	pageClick: function(m) {
+ 		 var obj=this.state;
+ 		 if(m=="pre"){
+ 			 obj.pageNo=obj.pageNo-1;
+ 			 this.ajax_list(obj);
+ 			 return;
+ 		 }else if(m=="next"){
+ 			 obj.pageNo=obj.pageNo+1;
+ 			 this.ajax_list(obj);
+ 			 return;
+ 		 }
+ 	},
+
+ 	handleChange_selectgroup: function(val) {
+ 		this.state.groupuuid=val;
+ 		var classList=Store.getChooseClass(this.state.groupuuid);
+ 		var classuuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		this.state.classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
+ 		 this.state.classuuid=classuuid;
+ 		 this.ajax_list(this.state); 
+     },
+     handleChange_selectclass: function(val) {
+     	 this.state.classuuid=val;
+ 		 this.ajax_list(this.state);   
+     },
+ 	componentDidMount: function() {
+ 		this.ajax_list(this.state); 
+ 	  },
+ 	   
+ render: function() {
+ 	var weeknum=this.state.pageNo;
+ 	var now=new Date();
+ 	if(weeknum){
+ 		now=G_week.getDate(now,weeknum*7);
+ 	}else{
+ 		g_cookbookPlan_week_point=0;
+ 	}
+ 	var begDateStr=G_week.getWeek0(now);
+ 	var endDateStr=G_week.getWeek6(now);
+ return (
+ React.createElement("div", null, 
+ React.createElement("div", {className: "header"}, 
+ 	React.createElement("hr", null)
+ 	), 
+ React.createElement(AMR_ButtonToolbar, null, 
+ React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上周"), 
+ React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下周"), 
+   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: this.state.groupuuid}), 
+   React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass.bind(this), btnWidth: "200", data: this.state.classList, btnStyle: "primary", value: this.state.classuuid})
+ ), 
+   React.createElement("h1", null, "[", begDateStr, " 到 ", endDateStr, "]"), 
+ 	  React.createElement("hr", null), 
+ React.createElement(AMR_Table, React.__spread({},  this.props), 
+   React.createElement("thead", null, 
+     React.createElement("tr", null, 
+     	React.createElement("th", null, "一周"), 
+       React.createElement("th", null, "上午"), 
+       React.createElement("th", null, "下午")
+     )
+   ), 
+   React.createElement("tbody", null, 
+     this.state.list.map(function(event) {
+       return (React.createElement(Teachingplan_EventRow_byRight, {event: event}));
+     })
+   )
+ )
+ )
+ );
+ }
+ });
+ /*
+ *<课程安排>班级详情列表详情内容绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingplan_EventRow_byRight", 
+ 	render: function() {
+ 	var event = this.props.event;
+ 	if(G_week.getWeekStr(event.plandate)==G_week.getWeekStr(new Date())){
+ 		event.highlight=true;
+ 	}
+ 	var className = event.highlight ? 'am-active' :
+ 	  event.disabled ? 'am-disabled' : '';
+
+ 	return (
+ 	  React.createElement("tr", {className: className}, 
+ 	    React.createElement("td", null, G_week.getWeekStr(event.plandate)), 
+ 	    React.createElement("td", null, event.morning), 
+ 	    React.createElement("td", null, event.afternoon)
+ 	  ) 
+ 	);
+ 	}
+ 	});
+
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±

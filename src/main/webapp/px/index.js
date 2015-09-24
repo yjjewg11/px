@@ -482,6 +482,7 @@ function menu_teachingplan_dayShow_fn() {
 //			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
 //			}), document.getElementById('div_body'));
 //	return;
+//---------------------------------------------------------------------------------		
 	var classList=Store.getMyClassList();
 	var classuuid;
 	var classname;
