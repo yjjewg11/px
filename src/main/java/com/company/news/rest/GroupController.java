@@ -172,9 +172,9 @@ public class GroupController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		
 		
-		String right=RightConstants.PX_group_m;
+		String right=RightConstants.KD_group_m;
 		if(SessionListener.isPXLogin(request)){
-			right=RightConstants.KD_group_m;
+			right=RightConstants.PX_group_m;
 		}
 		
 		String groupList=RightUtils.getRightGroups(right, request);
