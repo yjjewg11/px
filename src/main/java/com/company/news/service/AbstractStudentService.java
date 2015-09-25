@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.AbstractStudent;
+import com.company.news.entity.AbstractStudentContactRealation;
 import com.company.news.entity.Parent;
-import com.company.news.entity.Student;
+import com.company.news.entity.PxStudent;
+import com.company.news.entity.PxStudentContactRealation;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
@@ -43,22 +45,27 @@ public class AbstractStudentService extends AbstractService {
 	 * @param type
 	 * @return
 	 */
-	private StudentContactRealation updateStudentContactRealation(
+	private AbstractStudentContactRealation updateStudentContactRealation(
 			AbstractStudent student, Integer type, String tel) throws Exception {
 		
 		
 		
 		tel=PxStringUtil.repairCellphone(tel);
 		String student_uuid = student.getUuid();
-		StudentContactRealation studentContactRealation = this
-				.getStudentContactRealationBy(student_uuid, type);
+		AbstractStudentContactRealation studentContactRealation = this
+				.getStudentContactRealationBy(student, type);
 		
 		//默认需要更新关系表
 		boolean isUpdateStudentContactRealation=true; 
 		if (studentContactRealation == null) {// 不存在,则新建.
 			if (!CommonsValidate.checkCellphone(tel))
 				return null;
-			studentContactRealation = new StudentContactRealation();
+			
+			if(student instanceof PxStudent){
+				studentContactRealation = new PxStudentContactRealation();
+			}else{
+				studentContactRealation = new StudentContactRealation();
+			}
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		} else {
 			// 验证失败则,表示删除关联关系.
@@ -158,7 +165,28 @@ public class AbstractStudentService extends AbstractService {
 		}
 		return studentContactRealation;
 	}
-
+	/**
+	 * 获取
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	private AbstractStudentContactRealation getStudentContactRealationBy(
+			AbstractStudent student, Integer type) {
+		String hqlTableName="StudentContactRealation";
+		if(student instanceof PxStudent){
+			hqlTableName="PxStudentContactRealation";
+		}
+		List<AbstractStudentContactRealation> list = (List<AbstractStudentContactRealation>) this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.find("from "+hqlTableName+" where student_uuid=? and type=?",
+						student.getUuid(), type);
+		if (list.size() > 0) {
+			return (StudentContactRealation) list.get(0);
+		}
+		return null;
+	}
 	/**
 	 * 获取
 	 * 
