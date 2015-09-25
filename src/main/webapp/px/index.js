@@ -468,7 +468,17 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
-//培训机构课程表	
+//培训机构课程安排模块，列表代码	
+		var classList=Store.getMyClassList();
+ 		var class_uuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		G_myClassList=classList;
+	px_ajax_teachingplan_fn(classuuid);
+	return;
+//---------------------------------------------------------------------------------	
+////培训机构课程表	
 //	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
 //	var myclasslist=Store.getMyClassList();
 //	if(!myclasslist||myclasslist.length==0){
@@ -484,7 +494,7 @@ function menu_teachingplan_dayShow_fn() {
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
-//幼儿园新版课程表	
+////幼儿园新版课程表	
 //	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
 //	var myclasslist=Store.getMyClassList();
 //	if(!myclasslist||myclasslist.length==0){
@@ -500,18 +510,18 @@ function menu_teachingplan_dayShow_fn() {
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
-//幼儿园老版课程表	
-	var classList=Store.getMyClassList();
-	var classuuid;
-	var classname;
-	if(!classList||classList.length==0){
-		classuuid=null;
-		classname="";
-	}else{
-		classuuid=classList[0].uuid;
-		classname=classList[0].name;
-	}
-	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
+////幼儿园老版课程表	
+//	var classList=Store.getMyClassList();
+//	var classuuid;
+//	var classname;
+//	if(!classList||classList.length==0){
+//		classuuid=null;
+//		classname="";
+//	}else{
+//		classuuid=classList[0].uuid;
+//		classname=classList[0].name;
+//	}
+//	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
 
 /* （首页）家长通讯录功能方法
@@ -685,6 +695,7 @@ function menu_userTeacher_list_fn_byRight() {
  * @跳转widget发服务器请求
  * */
 var G_myCurClassuuid=null;
+var G_myClassList=null;
 function menu_teachingplan_list_fn_byRight() {
 //培训机构课程安排管理模块，列表代码	
 	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
@@ -697,7 +708,9 @@ function menu_teachingplan_list_fn_byRight() {
  		if(classList&&classList.length>0){
  			classuuid=classList[0].uuid;
  		}
+ 		G_myClassList=classList;
 	px_ajax_teachingplan_byRight(classuuid);	
+	return;
 //---------------------------------------------------------------------------------
 //幼儿园课程安排管理模块，新版代码		
 //	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");

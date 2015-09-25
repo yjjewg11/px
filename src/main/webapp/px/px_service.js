@@ -833,6 +833,108 @@ function react_ajax_announce_show(uuid,Titlenmae){
 
 
 
+//——————————————————————————<培训机构新版>课程安排<列表版>—————————————————————————— 
+/*
+ * <课程安排>（获取用户列表服务器请求）；
+ * */
+var g_begDateStr_pageNo_point=0;	
+ function px_ajax_teachingplan_fn(classuuid,pageNo){ 
+	var now=new Date();
+	if(!pageNo)pageNo=0;
+	g_begDateStr_pageNo_point=pageNo;
+	  	now=G_week.getDate(now,pageNo*7);
+	var begDateStr=G_week.getWeek0(now,pageNo);
+	var endDateStr=G_week.getWeek6(now,pageNo);
+		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"课程安排");
+	   	$.AMUI.progress.start();
+	       var url = hostUrl + "rest/pxteachingplan/list.json";
+	   	$.ajax({
+	   		type : "GET",
+	   		url : url,
+	   		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+	   		dataType : "json",
+	   		 async: false,
+	   		success : function(data) {
+	   			$.AMUI.progress.done();
+	   			if (data.ResMsg.status == "success") {	   				
+					React.render(React.createElement(px_rect_teachingplan_fn, {
+						classuuid:classuuid,
+						classlist:G_myClassList,
+						pageNo:pageNo,
+						events: data.list,
+						responsive: true, bordered: true, striped :true,hover:true,striped:true						
+					}), document.getElementById('div_body'));
+					
+	   			} else {
+	   				alert("加载数据失败："+data.ResMsg.message);
+	   			}
+	   		},
+			error :G_ajax_error_fn
+	   	});
+	   };
+///*  
+//* <课程安排>添加与修改
+//* */
+//   function class_students_manage_onClick_byRight(m,formdata){
+//	   var name;
+//	   if(m=="add"){
+//		   name="新建课程";
+//	   }else{
+//		   name="编辑课程";
+//	   }
+//	   Queue.push(function(){class_students_manage_onClick_byRight(formdata);},name);
+//		React.render(React.createElement(Px_Teachingplan_edit,{
+// 			formdata:formdata,
+// 			}), document.getElementById('div_body'));
+//
+//   };
+// /*(课程安排)
+// * 班级详情内添加编辑提交按钮服务器请求
+// * 直接把Form表单发送给服务器
+// * */ 
+//function ajax_teachingplan_save_byRight(){
+//    var opt={
+//            formName: "editTeachingplanForm",
+//            url:hostUrl + "rest/pxteachingplan/save.json",
+//            cbFN:null
+//            };
+//G_ajax_abs_save(opt);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2869,26 +2971,21 @@ function menu_userteacher_fn(){
 
 
 
-var g_classnews_pageNo_point=1;
-function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type,callback) {
-//	var re_data=null;
-	var url;
-	if(!pageNo)pageNo=1;
-	g_classnews_pageNo_point=pageNo;
+
 
 //——————————————————————————<培训机构新版>课程安排<管理模块>—————————————————————————— 
 /*
  * <课程安排>（获取用户列表服务器请求）；
  * */
-var g_begDateStr_pageNo_point=1;	
+var g_begDateStr_pageNo_point=0;	
  function px_ajax_teachingplan_byRight(classuuid,pageNo){ 
 	var now=new Date();
-	if(!pageNo)pageNo=1;
+	if(!pageNo)pageNo=0;
 	g_begDateStr_pageNo_point=pageNo;
-	  	now=G_week.getDate(now,obj.pageNo*7);
+	  	now=G_week.getDate(now,pageNo*7);
 	var begDateStr=G_week.getWeek0(now,pageNo);
 	var endDateStr=G_week.getWeek6(now,pageNo);
-		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,begDateStr,endDateStr);},"课程安排");
+		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"课程安排");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
@@ -2901,6 +2998,9 @@ var g_begDateStr_pageNo_point=1;
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {	   				
 					React.render(React.createElement(px_rect_teachingplan_byRight, {
+						classuuid:classuuid,
+						classlist:G_myClassList,
+						pageNo:pageNo,
 						events: data.list,
 						responsive: true, bordered: true, striped :true,hover:true,striped:true						
 					}), document.getElementById('div_body'));
@@ -2912,7 +3012,37 @@ var g_begDateStr_pageNo_point=1;
 			error :G_ajax_error_fn
 	   	});
 	   };
-	   
+/*  
+* <课程安排>添加与修改
+* */
+   function class_students_manage_onClick_byRight(m,formdata){
+	   var name;
+	   if(m=="add"){
+		   name="新建课程";
+	   }else{
+		   name="编辑课程";
+	   }
+	   Queue.push(function(){class_students_manage_onClick_byRight(formdata);},name);
+		React.render(React.createElement(Px_Teachingplan_edit,{
+ 			formdata:formdata,
+ 			}), document.getElementById('div_body'));
+
+   };
+ /*(课程安排)
+ * 班级详情内添加编辑提交按钮服务器请求
+ * 直接把Form表单发送给服务器
+ * */ 
+function ajax_teachingplan_save_byRight(){
+    var opt={
+            formName: "editTeachingplanForm",
+            url:hostUrl + "rest/pxteachingplan/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
+}
+
+   
+   
 //废弃代码（老版课程管理模块index直接调用react中请求并且绘制）
 ////———————————————————————————————————<老版>课程安排<管理模块>—————————————————————————      
 //  /*(课程安排)（服务器请求  

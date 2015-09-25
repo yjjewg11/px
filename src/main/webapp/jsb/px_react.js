@@ -824,7 +824,6 @@ render: function() {
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
-	  console.log("123321",o);
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -1010,6 +1009,149 @@ return (
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+
+//——————————————————————————<培训机构新版>课程安排<列表版>——————————————————————————  
+/*
+ * <培训机构新版><课程安排>服务器请求后绘制处理方法；
+ * 
+ * */
+var px_rect_teachingplan_fn = React.createClass({displayName: "px_rect_teachingplan_fn",
+	 handleChange: function(m,classuuid) {
+		var pageNo;
+		 if(m=="pre"){
+			pageNo=g_begDateStr_pageNo_point-1;
+			px_ajax_teachingplan_fn(classuuid,pageNo);
+			return
+		 }else{
+			pageNo=g_begDateStr_pageNo_point+1;
+			px_ajax_teachingplan_fn(classuuid,pageNo);
+			return 
+		 }
+	  },
+//	 handleChange_button: function(classuuid) {
+//		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+//	  },
+render: function() {
+	 var o=this.props;
+    return (
+    React.createElement("div", null, 
+    React.createElement(AMR_ButtonToolbar, null, 
+		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"pre",o.classuuid), round: true}, "上周")
+			), 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"next",o.classuuid), round: true}, "下周")	
+			), 
+		this.props.classlist.map(function(event) {
+			  return(
+			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: px_ajax_teachingplan_fn.bind(this,event.uuid,o.pageNo), round: true}, event.name)
+			  	)  			  	  
+			  )})
+		 ), 
+	 	  React.createElement("hr", null), 
+     React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name), 		 
+
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "课程名称"), 
+            React.createElement("th", null, "时间"), 
+            React.createElement("th", null, "上课地点"), 
+            React.createElement("th", null, "需要工具"), 
+            React.createElement("th", null, "课程时长"), 
+            React.createElement("th", null, "课程详细内容")
+          )
+        ), 
+        React.createElement("tbody", null, 
+          this.props.events.map(function(event) {
+            return (React.createElement(Query_teachingplan_fn, {key: event.id, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * <培训机构新版><课程安排>在表单上绘制详细内容;
+ * */
+var Query_teachingplan_fn = React.createClass({displayName: "Query_teachingplan_fn", 
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
+	  render: function() {
+	    var event = this.props.event;
+	 	var className = event.highlight ? 'am-active' :
+	  	  event.disabled ? 'am-disabled' : '';
+
+	  	return (
+	  	  React.createElement("tr", {className: className}, 
+	  	    React.createElement("td", null, event.name), 
+	  	    React.createElement("td", null, event.plandate), 
+	  	    React.createElement("td", null, event.address), 
+	  	    React.createElement("td", null, event.readyfor), 
+	  	    React.createElement("td", null, event.duration), 
+	  		React.createElement("td", null, event.count)
+	  	  ) 
+	    );
+	  }
+	}); 
+////培训机构新课程表添加与编辑绘制
+//var Px_Teachingplan_edit = React.createClass({ 
+//	 getInitialState: function() {
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editTeachingplanForm').serializeJson());
+//	  },
+//render: function() {
+//	  var o = this.state;
+// 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+// 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+//return (
+//		<form id="editTeachingplanForm" method="post" className="am-form">
+//			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+//		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+//		   <div className="am-form-group">
+//			
+//		       <label className={one_classDiv}>课程名：</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+//			        </div>
+//			       
+//  		     <label className={one_classDiv}>日期:</label>
+//		      <div className={two_classDiv}>
+//				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+//		        </div>
+//			 	
+//			       <label className={one_classDiv}>课时长：</label>
+//				     <div className={two_classDiv}>
+//				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+//				        </div>
+//				 
+//				       <label className={one_classDiv}>上课地点：</label>
+//					     <div className={two_classDiv}>
+//					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+//					        </div>
+//					       
+//	  		     <label className={one_classDiv}>准备工具:</label>
+//			      <div className={two_classDiv}>
+//			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+//			        </div>
+//				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+//				      </div>  
+//		          </form> 	   		   				
+//
+//);
+//}
+//}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+
+
 
 
 
@@ -5327,11 +5469,7 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
-   
 
- 
- 
- 
  
 
  
@@ -5341,23 +5479,45 @@ render: function() {
   * 
   * */
  var px_rect_teachingplan_byRight = React.createClass({displayName: "px_rect_teachingplan_byRight",
- 	 handleChange: function(m) {
+ 	 handleChange: function(m,classuuid) {
+ 		var pageNo;
  		 if(m=="pre"){
- 			px_ajax_teachingplan_byRight(this.paops.classuuid,g_begDateStr_pageNo_point-1);
+ 			pageNo=g_begDateStr_pageNo_point-1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
  			return
  		 }else{
- 			px_ajax_teachingplan_byRight(this.paops.classuuid,g_begDateStr_pageNo_point+1);
+ 			pageNo=g_begDateStr_pageNo_point+1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
  			return 
  		 }
 	  },
+ 	 handleChange_button: function(classuuid) {
+ 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 	  },
  render: function() {
+	 var o=this.props;
      return (
      React.createElement("div", null, 
-		React.createElement("div", {className: "am-g"}, 
-		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleChange.bind(this,"pre"), round: true}, "上周"), 
-		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleChange.bind(this,"next"), round: true}, "下周")	
-		), 
- 	  React.createElement("hr", null), 
+     React.createElement(AMR_ButtonToolbar, null, 
+		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"pre",o.classuuid), round: true}, "上周")
+			), 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"next",o.classuuid), round: true}, "下周")	
+			), 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.classuuid), round: true}, "新增课程")	
+			), 
+		this.props.classlist.map(function(event) {
+			  return(
+			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: px_ajax_teachingplan_byRight.bind(this,event.uuid,o.pageNo), round: true}, event.name)
+			  	)  			  	  
+			  )})
+		 ), 
+	 	  React.createElement("hr", null), 
+      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name), 		 
+
        React.createElement(AMR_Table, React.__spread({},  this.props), 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
@@ -5384,9 +5544,9 @@ render: function() {
   * <培训机构新版><课程安排>在表单上绘制详细内容;
   * */
  var Query_teachingplan_byRight = React.createClass({displayName: "Query_teachingplan_byRight", 
- 	btn_students_list_click:function(type,group_uuid){
- 		ajax_State_style(type,null,group_uuid,2);
- 	},
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
  	  render: function() {
  	    var event = this.props.event;
  	 	var className = event.highlight ? 'am-active' :
@@ -5394,7 +5554,7 @@ render: function() {
 
  	  	return (
  	  	  React.createElement("tr", {className: className}, 
- 	  	    React.createElement("td", null, event.name), 
+ 	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改")), 
  	  	    React.createElement("td", null, event.plandate), 
  	  	    React.createElement("td", null, event.address), 
  	  	    React.createElement("td", null, event.readyfor), 
@@ -5406,15 +5566,14 @@ render: function() {
  	}); 
 //培训机构新课程表添加与编辑绘制
  var Px_Teachingplan_edit = React.createClass({displayName: "Px_Teachingplan_edit", 
- 	 getInitialState: function() {
- 		    return this.props.formdata;
- 		  },
- 	 handleChange: function(event) {
- 		    this.setState($('#editTeachingplanForm').serializeJson());
- 	  },
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
  render: function() {
  	  var o = this.state;
- 	  console.log("o.classuuid",o);
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
  return (
@@ -5447,7 +5606,7 @@ render: function() {
  			      React.createElement("div", {className: two_classDiv}, 
  			       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
  			        ), 
- 				      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save, className: "am-btn am-btn-primary"}, "提交")		      				      
+ 				      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
  				      )
  		          ) 	   		   				
 
@@ -5457,112 +5616,7 @@ render: function() {
  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  
  
  
