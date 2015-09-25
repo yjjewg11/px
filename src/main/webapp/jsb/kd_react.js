@@ -645,10 +645,11 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		var re_data=this.state.replyPage;
-		if(!re_data){
-			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
-		}else{
+		if(re_data&& this.pageNo==1){
 			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+		}else{
+			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+			
 		}
 		if(!re_data)return;
 		if(re_data.data.length<re_data.pageSize){
@@ -5567,7 +5568,8 @@ render: function() {
            React.createElement("tr", {className: className}, 
            React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
              React.createElement("td", null, event.cardID), 
-             React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无")
+			  React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无", React.createElement(AMUIReact.Button, {onClick: ajax_ClassCard_info_byRight.bind(this,event.uuid), amStyle: "success"}, "详情"))
+
              ) 
          );
        }

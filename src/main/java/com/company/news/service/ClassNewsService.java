@@ -215,6 +215,9 @@ public class ClassNewsService extends AbstractService {
 	public List getClassNewsCollectionByGroup(String groupuuid,String begDateStr, String endDateStr) {
 		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
 		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
+		endDate.setHours(23);
+		endDate.setMinutes(59);
+		endDate.setSeconds(59);
 		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("select count(uuid),classuuid from ClassNews  where create_time<=? and create_time >=?  and classuuid in(select uuid from PClass where groupuuid=?) group by classuuid)",endDate,begDate,groupuuid);
 		

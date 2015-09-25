@@ -52,10 +52,14 @@ public class AbstractStudentService extends AbstractService {
 		String student_uuid = student.getUuid();
 		StudentContactRealation studentContactRealation = this
 				.getStudentContactRealationBy(student_uuid, type);
+		
+		//默认需要更新关系表
+		boolean isUpdateStudentContactRealation=true; 
 		if (studentContactRealation == null) {// 不存在,则新建.
 			if (!CommonsValidate.checkCellphone(tel))
 				return null;
 			studentContactRealation = new StudentContactRealation();
+			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		} else {
 			// 验证失败则,表示删除关联关系.
 			if (!CommonsValidate.checkCellphone(tel)) {
@@ -66,20 +70,58 @@ public class AbstractStudentService extends AbstractService {
 			if (tel.equals(studentContactRealation.getTel())
 					&& student.getName().equals(
 							studentContactRealation.getStudent_name())) {
-				return studentContactRealation;
+				isUpdateStudentContactRealation=false;
+				
+//				return studentContactRealation;
 			}
 		}
-		studentContactRealation.setStudent_uuid(student.getUuid());
-		studentContactRealation.setStudent_name(student.getName());
-		studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
-		studentContactRealation.setGroupuuid(student.getGroupuuid());
+		
+		if(isUpdateStudentContactRealation){
+			studentContactRealation.setStudent_uuid(student.getUuid());
+			studentContactRealation.setStudent_name(student.getName());
+		
+			studentContactRealation.setGroupuuid(student.getGroupuuid());
 
-		studentContactRealation.setTel(tel);
-		studentContactRealation.setType(type);
-		studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
+			studentContactRealation.setTel(tel);
+			studentContactRealation.setType(type);
+			studentContactRealation.setUpdate_time(TimeUtils.getCurrentTimestamp());
 
-		studentContactRealation.setClass_uuid(student.getClassuuid());
-		studentContactRealation.setStudent_img(student.getHeadimg());
+			studentContactRealation.setClass_uuid(student.getClassuuid());
+			studentContactRealation.setStudent_img(student.getHeadimg());
+			
+			
+
+			// 1:妈妈,2:爸爸,3:爷爷,4:奶奶,5:外公,6:外婆,7:其他
+			switch (type) {
+			case 1:
+				studentContactRealation.setTypename("妈妈");
+				break;
+			case 2:
+				studentContactRealation.setTypename("爸爸");
+				break;
+			case 3:
+				studentContactRealation.setTypename("爷爷");
+				break;
+			case 4:
+				studentContactRealation.setTypename("奶奶");
+				break;
+			case 5:
+				studentContactRealation.setTypename("外公");
+				break;
+			case 6:
+				studentContactRealation.setTypename("外婆");
+				break;
+			case 7:
+				studentContactRealation.setTypename("其他");
+				break;
+			default:
+				break;
+			}
+			
+			
+			
+		}
+		
 
 		Parent parent = (Parent) nSimpleHibernateDao.getObjectByAttribute(
 				Parent.class, "loginname", tel);
@@ -87,41 +129,17 @@ public class AbstractStudentService extends AbstractService {
 		if (parent != null) {
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_1);
 			studentContactRealation.setParent_uuid(parent.getUuid());
+			isUpdateStudentContactRealation=true;
 		} else {
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
 		}
 
-		// 1:妈妈,2:爸爸,3:爷爷,4:奶奶,5:外公,6:外婆,7:其他
-		switch (type) {
-		case 1:
-			studentContactRealation.setTypename("妈妈");
-			break;
-		case 2:
-			studentContactRealation.setTypename("爸爸");
-			break;
-		case 3:
-			studentContactRealation.setTypename("爷爷");
-			break;
-		case 4:
-			studentContactRealation.setTypename("奶奶");
-			break;
-		case 5:
-			studentContactRealation.setTypename("外公");
-			break;
-		case 6:
-			studentContactRealation.setTypename("外婆");
-			break;
-		case 7:
-			studentContactRealation.setTypename("其他");
-			break;
-		default:
-			break;
-		}
 
 		// 更新家长姓名和头像.多个孩子已最后保存为准
 		if (parent != null) {
 			String newParentName = PxStringUtil
 					.getParentNameByStudentContactRealation(studentContactRealation);
+			
 			if (parent.getImg() == null
 					|| parent.getImg().equals(student.getHeadimg())) {
 				parent.setImg(student.getHeadimg());
@@ -134,7 +152,10 @@ public class AbstractStudentService extends AbstractService {
 			}
 			nSimpleHibernateDao.save(parent);
 		}
-		nSimpleHibernateDao.save(studentContactRealation);
+		
+		if(isUpdateStudentContactRealation){
+			nSimpleHibernateDao.save(studentContactRealation);
+		}
 		return studentContactRealation;
 	}
 
