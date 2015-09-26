@@ -824,7 +824,6 @@ render: function() {
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
-	  console.log("123321",o);
 return (
 		<div>
 		<div className="header">
@@ -1013,9 +1012,479 @@ return (
 
 
 
+//——————————————————————————<培训机构新版>课程安排<列表版>——————————————————————————  
+/*
+ * <培训机构新版><课程安排>服务器请求后绘制处理方法；
+ * 
+ * */
+var px_rect_teachingplan_fn = React.createClass({
+	 handleChange: function(m,classuuid) {
+		var pageNo;
+		 if(m=="pre"){
+			pageNo=g_begDateStr_pageNo_point-1;
+			px_ajax_teachingplan_fn(classuuid,pageNo);
+			return
+		 }else{
+			pageNo=g_begDateStr_pageNo_point+1;
+			px_ajax_teachingplan_fn(classuuid,pageNo);
+			return 
+		 }
+	  },
+//	 handleChange_button: function(classuuid) {
+//		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+//	  },
+render: function() {
+	 var o=this.props;
+    return (
+    <div>
+    <AMR_ButtonToolbar>
+		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"pre",o.classuuid)}  round>上周</AMR_Button>
+			</div> 
+			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"next",o.classuuid)} round>下周</AMR_Button>	
+			</div> 
+		{this.props.classlist.map(function(event) {
+			  return(
+			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={px_ajax_teachingplan_fn.bind(this,event.uuid,o.pageNo)} round>{event.name}</AMR_Button>
+			  	</div>  			  	  
+			  )})}
+		 </AMR_ButtonToolbar>
+	 	  <hr/>
+     <legend>{Store.getClassByUuid(o.classuuid).name}</legend> 		 
+
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>课程名称</th>
+            <th>时间</th>
+            <th>上课地点</th>
+            <th>需要工具</th>
+            <th>课程时长</th>
+            <th>课程详细内容</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Query_teachingplan_fn key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * <培训机构新版><课程安排>在表单上绘制详细内容;
+ * */
+var Query_teachingplan_fn = React.createClass({ 
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
+	  render: function() {
+	    var event = this.props.event;
+	 	var className = event.highlight ? 'am-active' :
+	  	  event.disabled ? 'am-disabled' : '';
+
+	  	return (
+	  	  <tr className={className} >
+	  	    <td>{event.name}</td>
+	  	    <td>{event.plandate}</td>
+	  	    <td>{event.address}</td>
+	  	    <td>{event.readyfor}</td>
+	  	    <td>{event.duration}</td>
+	  		<td>{event.count}</td>
+	  	  </tr> 
+	    );
+	  }
+	}); 
+////培训机构新课程表添加与编辑绘制
+//var Px_Teachingplan_edit = React.createClass({ 
+//	 getInitialState: function() {
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editTeachingplanForm').serializeJson());
+//	  },
+//render: function() {
+//	  var o = this.state;
+// 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+// 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+//return (
+//		<form id="editTeachingplanForm" method="post" className="am-form">
+//			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+//		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+//		   <div className="am-form-group">
+//			
+//		       <label className={one_classDiv}>课程名：</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+//			        </div>
+//			       
+//  		     <label className={one_classDiv}>日期:</label>
+//		      <div className={two_classDiv}>
+//				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+//		        </div>
+//			 	
+//			       <label className={one_classDiv}>课时长：</label>
+//				     <div className={two_classDiv}>
+//				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+//				        </div>
+//				 
+//				       <label className={one_classDiv}>上课地点：</label>
+//					     <div className={two_classDiv}>
+//					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+//					        </div>
+//					       
+//	  		     <label className={one_classDiv}>准备工具:</label>
+//			      <div className={two_classDiv}>
+//			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+//			        </div>
+//				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+//				      </div>  
+//		          </form> 	   		   				
+//
+//);
+//}
+//}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±± 
 
 
-//——————————————————————————（老版首页）课程表<绘制>——————————————————————————  
+
+
+
+//暂时屏蔽，课程安排-培训机构-新展示方式
+///*
+// * 培训机构创建框架显示一周
+// * */
+//var Px_Teachingplan_show7Day = React.createClass({ 
+//	getInitialState: function() {
+//		
+//		var obj= {
+//		    	classuuid:this.props.classuuid,
+//		    	classlist:this.props.classlist,
+//		    	pageNo:0,
+//		    	list: this.props.list
+//		    };
+//		obj=this.ajax_list(obj);
+//	    return obj;
+//	   
+//	  },
+//	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+//	  componentWillReceiveProps: function(nextProps) {
+//		  var obj= {
+//				  classuuid:nextProps.classuuid,
+//				  classlist:nextProps.classlist,
+//			    	pageNo:nextProps.pageNo,
+//			    	type:nextProps.type,
+//			    	list: nextProps.list
+//			    };
+//				
+//			obj=this.ajax_list(obj);
+//		  this.setState(obj);
+//		},
+//	 ajax_list:function(obj){
+//		 var now=new Date();
+//		  	now=G_week.getDate(now,obj.pageNo*7);
+//		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
+//		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
+//			//记录老师选择的班级.
+//			G_myCurClassuuid=obj.classuuid;
+//		$.AMUI.progress.start();
+//		var url = hostUrl + "rest/pxteachingplan/list.json";
+//		$.ajax({
+//			type : "GET",
+//			url : url,
+//		//	data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+//			data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+//			dataType : "json",
+//			async: false,//必须同步执行
+//			success : function(data) {
+//				$.AMUI.progress.done();
+//				if (data.ResMsg.status == "success") {
+//					obj.list=data.list;
+//				} else {
+//					alert(data.ResMsg.message);
+//					G_resMsg_filter(data.ResMsg);
+//				}
+//			},
+//			error : G_ajax_error_fn
+//		});
+//		return obj;
+//		
+//	},
+//	pageClick: function(m) {
+//		 var obj=this.state;
+//		 if(m=="pre"){
+//			 obj.pageNo=obj.pageNo-1;
+//			 this.setState(this.ajax_list(obj));
+//			 return;
+//		 }else if(m=="next"){
+//			 obj.pageNo=obj.pageNo+1;
+//			 this.setState(this.ajax_list(obj));
+//			 return;
+//		 }
+//	},
+//
+//	px_biaoqian_button: function(val) {
+//		 var obj=this.state;
+//		 obj.classuuid=val;
+//		 this.setState(this.ajax_list(obj));
+//    },
+//	componentDidMount: function() {
+////		if(!this.props.formdata){
+////			  $("#div_detail").html("今日没有发布教学计划");
+////		  }	    
+//	  },	  
+//	render: function() {
+//	  var o = this.state;
+//	  var thit=this;
+//	  var now=new Date();
+//	  	now=G_week.getDate(now,o.pageNo*7);
+//	  return (
+//		<div>
+//		  <AMR_ButtonToolbar>
+//		  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  round>上周</AMR_Button>
+//		</div> 
+//		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>	
+//		</div> 
+//		{this.state.classlist.map(function(event) {
+//			  return(
+//			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={thit.px_biaoqian_button.bind(this,event.value)} round>{event.label}</AMR_Button>
+//			  	</div>  			  	  
+//			  )})}
+//		  </AMR_ButtonToolbar>
+//		<hr/>
+//
+//	    
+//		<div className="am-g" id="div_detail">
+//		<legend>{Store.getClassByUuid(o.classuuid).name}</legend> 
+//		<Px_G_Teachingplan_7day classuuid={this.state.classuuid} startDate={now} list={this.state.list} />
+//		
+//		</div>
+//	   
+//	   </div>
+//);
+//}
+//}); 
+//
+//
+///**
+// * 全局模版-没有内容时显示
+// * <G_Teachingplan_7day classuuid={this.state.classuuid} startDate={startDate} list={list} />
+// */
+//var Px_G_Teachingplan_7day= React.createClass({ 
+//	getInitialState: function() {
+//		var obj= {
+//				classuuid:this.props.classuuid,
+//				startDate:this.props.startDate,
+//		    	size:7,
+//		    	list: this.props.list
+//		    };
+//	    return obj;
+//	   
+//	  },
+//	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+//	  componentWillReceiveProps: function(nextProps) {
+//		  var obj= {
+//					startDate:nextProps.startDate,
+//					classuuid:nextProps.classuuid,
+//			    	size:7,
+//			    	list: nextProps.list
+//			    };
+//		  this.setState(obj);
+//		},
+//		/**
+//		 * 根据日期生成课程表,如何返回数据中没有,则创建空的.
+//		 */
+//		getOneDayData:function(d1,list){
+//			console.log("list",list);
+//			for(var i=0;i<list.length;i++){
+//				var tmp=list[i];
+//				if(tmp.plandate.indexOf(d1)>-1){
+//					return tmp;
+//				}
+//			}
+//			return {classuuid:this.state.classuuid,plandate:d1,morning:"",afternoon:"",uuid:null};
+//		},
+//		/**
+//		 * 获取7天的课程表数据
+//		 */
+//		getListByStartDate:function(d1,size,list){ 
+//			var ar=[];
+//			var t=G_week.getWeekDayByDate(d1);
+//			if(t==0)t=-6;
+//			else t=1-t;
+//			for(var i=0;i<size;i++){
+//				var tmp=G_week.getDateStr(d1,t);
+//				t++;
+//				ar.push(this.getOneDayData(tmp,list));
+//			}
+//			return ar;
+//		},
+//	  render: function() {
+//		 var ar=this.getListByStartDate(this.state.startDate,this.state.size,this.state.list);
+//	    return (
+//	    		<div>
+//	    		 {ar.map(function(event) {
+//					  return(							  										  
+//						<Px_G_Teachingplan_1day data={event} />
+//					  )})}
+//	    		 </div>
+//	    );
+//	  }
+//	  }); 
+//var Px_G_Teachingplan_1day= React.createClass({ 
+//	getInitialState: function() {
+//		var obj= {
+//				 isEdit:false,
+//				data:this.props.data
+//		    };
+//	    return obj;
+//	  },
+//	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+//	  componentWillReceiveProps: function(nextProps) {
+//		  var obj= {
+//				  isEdit:false,
+//				  data:nextProps.data
+//			    };
+//		  this.setState(obj);
+//		},
+//	   edit:function(o){
+//		   var obj= {
+//				   	isEdit:true,
+//					  data:o
+//				    };
+//		   this.setState(obj);
+//	   },
+//	   save_callback:function(data){
+//		  	G_msg_pop(data.ResMsg.message);
+//		   var obj= {
+//				   isEdit:false,
+//					  data:data.data
+//				    };
+//		   this.setState(obj);
+//     
+//       },
+//	  render: function() {
+//		  var o=this.state.data;
+//		  var edit_btn_className="G_Edit_hide";
+//		  console.log("this.state",this.state);
+//		  if(this.state.isEdit){
+//			  return (<Px_Teachingplan_edit formdata={o} callback={this.save_callback.bind(this)} />);
+//		  }
+//		  var dianzan=(<div></div>);
+//		  if(o.uuid){
+//			  edit_btn_className="G_Edit_show"
+//			  dianzan=(
+//					  <div>
+//					  <footer className="am-comment-footer">
+//				    	<div className="am-comment-actions">
+//				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+//				    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+//				    	</div>
+//				    	</footer>
+//				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={7}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+//				    	<ul className="am-comments-list">
+//						  <Classnews_reply_list uuid={o.uuid}  type={7} btn_reply={"btn_reply_"+o.uuid}/>
+//				    	</ul>
+//				  </div>);
+//		  }
+//		  var divCs1="am-u-sm-4 am-u-md-2 am-u-lg-1";
+//		  var divCs2="am-u-sm-8 am-u-md-10 am-u-lg-11";
+//		  var cs="am-panel am-panel-secondary";
+//		 
+//		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
+//			  cs="am-panel am-panel-warning";			  
+//		  }
+//			return (
+//					
+//					<div className={cs}>
+//					  <div className="am-panel-hd">
+//					  <h3 className="am-panel-title am-g">
+//						  <div className={divCs1}>{G_week.getWeekStr(o.plandate)}</div>
+//			    		  <div className={divCs2}>{o.plandate.split(" ")[0]}
+//			    		  < AMR_Button className="am-margin-left" amStyle ="warning" onClick={this.edit.bind(this,{afternoon:"",classuuid:o.classuuid,morning:"",plandate:o.plandate,uuid:null})} round >添加课程</AMR_Button >
+//			    		  </div>
+//					  </h3>
+//					  </div>
+//					  <div className="am-panel-bd">
+//						<AMR_Button className={edit_btn_className} amSize="xs" amStyle="secondary" onClick={this.edit.bind(this,o)}  round>{o.name}</AMR_Button>
+//
+//
+//				    		<div className="am-g">
+//				    		{dianzan}
+//				    		</div>
+//					  </div>
+//					 
+//					</div>
+//	    		
+//	    		
+//	    );
+//	  }
+//	  });  
+//
+//
+////培训机构新课程表添加与编辑绘制
+//var Px_Teachingplan_edit = React.createClass({ 
+//	 getInitialState: function() {
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editTeachingplanForm').serializeJson());
+//	  },
+//render: function() {
+//	  var o = this.state;
+//	  console.log("o.classuuid",o);
+// 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+// 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+//return (
+//		<form id="editTeachingplanForm" method="post" className="am-form">
+//			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+//		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+//		   <div className="am-form-group">
+//			
+//		       <label className={one_classDiv}>课程名：</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+//			        </div>
+//			       
+//  		     <label className={one_classDiv}>日期:</label>
+//		      <div className={two_classDiv}>
+//				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+//		        </div>
+//			 	
+//			       <label className={one_classDiv}>课时长：</label>
+//				     <div className={two_classDiv}>
+//				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+//				        </div>
+//				 
+//				       <label className={one_classDiv}>上课地点：</label>
+//					     <div className={two_classDiv}>
+//					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+//					        </div>
+//					       
+//	  		     <label className={one_classDiv}>准备工具:</label>
+//			      <div className={two_classDiv}>
+//			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+//			        </div>
+//				      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>		      				      
+//				      </div>  
+//		          </form> 	   		   				
+//
+//);
+//}
+//});
+
+
+
+
+//——————————————————————————（幼儿园老版首页）课程表<绘制>——————————————————————————  
 /*
  * 课程表班级内详情 课程表
  */
@@ -1032,7 +1501,7 @@ var Teachingplan_showByOneDay = React.createClass({
 	handleChange_selectgroup_uuid: function(val) {
 		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val,name:Store.getClassNameByUuid(val)});  
     },
-	handleClick_class: function(m,uuid,classuuid,ch_day) {
+	handleClick_class: function(m,classuuid,ch_day) {
 			 btn_click_teachingplan(m,null,classuuid,ch_day);
 			 return;
 
@@ -1082,7 +1551,7 @@ var Teachingplan_showByOneDay = React.createClass({
 		  <i className="am-icon-angle-right"></i>
 		</button>
 		<AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth= "200" data={ this.props.classList} btnStyle="primary" value={this.props.ch_class.uuid} />
-		 < AMR_Button className={edit_btn_className} amStyle ="primary" onClick={this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day)} round >新增课程</AMR_Button >
+		 < AMR_Button className={edit_btn_className} amStyle ="primary" onClick={this.handleClick_class.bind( this,"add",this.props.ch_class.uuid,this.props.ch_day)} round >新增课程</AMR_Button >
 		</div>
 		<div className="header">
 		  <div className="am-g">
@@ -1100,8 +1569,47 @@ var Teachingplan_showByOneDay = React.createClass({
 	   </div>
 );
 }
-}); 
-//——————————————————————————（新版首页->课程表）<绘制>——————————————————————————  
+});
+/*
+ *<课程表>班级详情添加与编辑内容绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+var Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editTeachingplanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="classuuid"  value={o.classuuid}/>
+		 <label htmlFor="name">日期:</label>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		      <br/>
+	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
+		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
+		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
+	 </form>
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+});
+//——————————————————————————（幼儿园新版首页->课程表）<绘制>——————————————————————————  
 /*
  * 
  * 课程表1周显示
@@ -1438,45 +1946,7 @@ return (
 );
 }
 });
-/*
- *<课程表>班级详情添加与编辑内容绘制;
- * @add:添加班级课程；
- * @pre:上周；
- * @next:下一周；
- * */
-var Teachingplan_edit = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editTeachingplanForm').serializeJson());
-	  },
-render: function() {
-	  var o = this.state;
-return (
-		<div>
-		<div className="header">
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		  <form id="editTeachingplanForm" method="post" className="am-form">
-		<input type="hidden" name="uuid"  value={o.uuid}/>
-		<input type="hidden" name="classuuid"  value={o.classuuid}/>
-		 <label htmlFor="name">日期:</label>
-		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
-		      <br/>
-	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
-		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
-		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
-	 </form>
-	     </div>
-	   </div>
-	   
-	   </div>
-);
-}
-});
+
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
@@ -3080,356 +3550,7 @@ return (
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-//——————————————————————————<新版>课程安排<管理模块绘制>——————————————————————————  
-/*
- * 
- * 课程安排1周显示
- * <Teachingplan_showByMy  classuuid={classuuid} classlist={classlist} />
- */
-var Teachingplan_show7Day_byRight = React.createClass({ 
-	getInitialState: function() {
-		var classList=Store.getChooseClass(this.props.groupuuid);
-		var class_uuid =null;
-		if(classList&&classList.length>0){
-			classuuid=classList[0].uuid;
-		}
-		var obj= {
-				groupuuid:this.props.groupuuid,
-		    	classuuid:classuuid,
-		    	classlist:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-		    	pageNo:0,
-		    	list: this.props.list
-		    };
-		obj=this.ajax_list(obj);
-	    return obj;
-	   
-	  },
-	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-	  componentWillReceiveProps: function(nextProps) {
-		  var obj= {
-				  groupuuid:nextProps.groupuuid,
-				  classuuid:nextProps.classuuid,
-				  classlist:nextProps.classlist,
-			    	pageNo:nextProps.pageNo,
-			    	type:nextProps.type,
-			    	list: nextProps.list
-			    };
-				
-			obj=this.ajax_list(obj);
-		  this.setState(obj);
-		},
-	 ajax_list:function(obj){
-		 var now=new Date();
-		  	now=G_week.getDate(now,obj.pageNo*7);
-		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
-		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
-			//记录老师选择的班级.
-			G_myCurClassuuid=obj.classuuid;
-		$.AMUI.progress.start();
-		var url = hostUrl + "rest/pxteachingplan/list.json";
-		$.ajax({
-			type : "GET",
-			url : url,
-		//	data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
-			data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
-			dataType : "json",
-			async: false,//必须同步执行
-			success : function(data) {
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-					obj.list=data.list;
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : G_ajax_error_fn
-		});
-		return obj;
-		
-	},
-	pageClick: function(m) {
-		 var obj=this.state;
-		 if(m=="pre"){
-			 obj.pageNo=obj.pageNo-1;
-			 this.setState(this.ajax_list(obj));
-			 return;
-		 }else if(m=="next"){
-			 obj.pageNo=obj.pageNo+1;
-			 this.setState(this.ajax_list(obj));
-			 return;
-		 }
-	},
 
-	
-	handleChange_selectclass_uuid: function(val) {
-		 var obj=this.state;
-		 obj.classuuid=val;
-		 this.setState(this.ajax_list(obj));
-    },
-	handleChange_selectgroup: function(val) {
-	this.state.groupuuid=val;
-	var classlist=Store.getChooseClass(this.state.groupuuid);
-	var classuuid =null;
-	if(classlist&&classlist.length>0){
-		classuuid=classlist[0].uuid;
-	}
-	this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
-	 this.state.classuuid=classuuid;
-	 this.state=this.ajax_list(this.state); 
-	 this.setState(this.state);
-},
-	componentDidMount: function() {
-//		if(!this.props.formdata){
-//			  $("#div_detail").html("今日没有发布教学计划");
-//		  }	    
-	  },
-	render: function() {
-	  var o = this.state;
-	  var now=new Date();
-	  	now=G_week.getDate(now,o.pageNo*7);
-	  return (
-		<div>
-		<div className="am-g" >
-		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  round>上周</AMR_Button>
-		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>	
-	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
-		<AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
-		</div>
-		<hr/>
-		<div className="am-g" id="div_detail">
-		
-		<G_Teachingplan_7day_byRight classuuid={this.state.classuuid} startDate={now} list={this.state.list} />
-		
-		</div>
-	   
-	   </div>
-);
-}
-}); 
-
-
-/**
- * 全局模版-没有内容时显示
- * <G_Teachingplan_7day classuuid={this.state.classuuid} startDate={startDate} list={list} />
- */
-var G_Teachingplan_7day_byRight= React.createClass({ 
-	getInitialState: function() {
-		var obj= {
-				classuuid:this.props.classuuid,
-				startDate:this.props.startDate,
-		    	size:7,
-		    	list: this.props.list
-		    };
-	    return obj;
-	   
-	  },
-	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-	  componentWillReceiveProps: function(nextProps) {
-		  var obj= {
-					startDate:nextProps.startDate,
-					classuuid:nextProps.classuuid,
-			    	size:7,
-			    	list: nextProps.list
-			    };
-		  this.setState(obj);
-		},
-		/**
-		 * 根据日期生成课程表,如何返回数据中没有,则创建空的.
-		 */
-		getOneDayData:function(d1,list){
-			for(var i=0;i<list.length;i++){
-				var tmp=list[i];
-				if(tmp.plandate.indexOf(d1)>-1){
-					return tmp;
-				}
-			}
-			return {classuuid:this.state.classuuid,plandate:d1,morning:"",afternoon:"",uuid:null};
-		},
-		/**
-		 * 获取7天的课程表数据
-		 */
-		getListByStartDate:function(d1,size,list){ 
-			var ar=[];
-			var t=G_week.getWeekDayByDate(d1);
-			if(t==0)t=-6;
-			else t=1-t;
-			for(var i=0;i<size;i++){
-				var tmp=G_week.getDateStr(d1,t);
-				t++;
-				ar.push(this.getOneDayData(tmp,list));
-			}
-			return ar;
-		},
-	  render: function() {
-		 var ar=this.getListByStartDate(this.state.startDate,this.state.size,this.state.list);
-	    return (
-	    		<div>
-	    		 {ar.map(function(event) {
-					  return(							  										  
-						<G_Teachingplan_1day_byRight data={event} />
-					  )})}
-	    		 </div>
-	    );
-	  }
-	  }); 
-var G_Teachingplan_1day_byRight= React.createClass({ 
-	getInitialState: function() {
-		var obj= {
-				 isEdit:false,
-				data:this.props.data
-		    };
-	    return obj;
-	  },
-	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-	  componentWillReceiveProps: function(nextProps) {
-		  var obj= {
-				  isEdit:false,
-				  data:nextProps.data
-			    };
-		  this.setState(obj);
-		},
-	   save_callback:function(data){
-		  	G_msg_pop(data.ResMsg.message);
-		   var obj= {
-				   isEdit:false,
-					  data:data.data
-				    };
-		   this.setState(obj);
-     
-       },
-	  render: function() {
-		  var o=this.state.data;
-//		  if(this.state.isEdit){
-//			  return (<Teachingplan_edit_inner data={o} callback={this.save_callback.bind(this)} />);
-//		  }
-		  var dianzan=(<div></div>);
-		  if(o.uuid){
-			  dianzan=(
-					  <div>
-					  <footer className="am-comment-footer">
-				    	<div className="am-comment-actions">
-				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-				    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
-				    	</div>
-				    	</footer>
-				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={7}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-				    	<ul className="am-comments-list">
-						  <Classnews_reply_list uuid={o.uuid}  type={7} btn_reply={"btn_reply_"+o.uuid}/>
-				    	</ul>
-				  </div>);
-		  }
-		  var divCs1="am-u-sm-4 am-u-md-2 am-u-lg-1";
-		  var divCs2="am-u-sm-8 am-u-md-10 am-u-lg-11";
-		  var cs="am-panel am-panel-secondary";
-		 
-		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
-			  cs="am-panel am-panel-warning";
-		  }
-			return (
-					
-					<div className={cs}>
-					  <div className="am-panel-hd">
-					  <h3 className="am-panel-title am-g">
-						  <div className={divCs1}>{G_week.getWeekStr(o.plandate)}</div>
-			    		  <div className={divCs2}>{o.plandate.split(" ")[0]}
-			    		  </div>
-					  </h3>
-					  </div>
-					  <div className="am-panel-bd">
-							  <div className="am-g">
-				    		  <div className={divCs1}>上午</div>
-				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}} >  
-				    		  </div>
-				    		</div>
-				    		<div className="am-g">
-				    		  <div className={divCs1}>下午</div>
-				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}>
-				    		  </div>
-				    		</div>
-				    		<div className="am-g">
-				    		{dianzan}
-				    		</div>
-					  </div>
-					 
-					</div>
-	    		
-	    		
-	    );
-	  }
-	  }); 
-
-
-/*
- *<课程安排>班级编辑-内嵌在显示1周页面
- *<Teachingplan_edit_inner data={data} callback={callback} />
- * */
-//var Teachingplan_edit_inner = React.createClass({ 
-//	formid:null,
-//	 getInitialState: function() {
-//		    return this.props.data
-//	},
-//		//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-//	  componentWillReceiveProps: function(nextProps) {
-//		  this.setState(nextProps.data);
-//		},
-//	 handleChange: function(event) {
-//		    this.setState($('#'+this.formid).serializeJson());
-//	  },
-//	  ajax_teachingplan_save:function(){
-//		  var callback=this.props.callback;
-//		    var opt={
-//		            formName: this.formid,
-//		            url:hostUrl + "rest/pxteachingplan/save.json",
-//		            cbFN:callback
-//		            };
-//		G_ajax_abs_save(opt);
-//	  },
-//	
-//render: function() {
-//	  var o = this.state;
-//	  o.plandate=o.plandate.split(" ")[0];
-//	  this.formid="editTeachingplanForm"+o.plandate;
-//	  ////onChange={this.handleChange.bind(this) 焦点每次输入后,到最后bug.
-//	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
-//	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
-//	
-//return (
-//		
-//		 <form id={this.formid} method="post" className="am-form">
-//		 <input type="hidden" name="uuid"  value={o.uuid}/>
-//			<input type="hidden" name="classuuid"  value={o.classuuid}/>
-//		<div className="am-container">
-//		<div className="am-g am-success am-article-title">
-//		  <div className="am-u-sm-4">{G_week.getWeekStr(o.plandate)}</div>
-//		  <div className="am-u-sm-8">
-//		  {o.plandate}
-//		  <input type="hidden" name="plandateStr"  value={o.plandate}/>
-//		 
-//		  </div>
-//		</div>
-//		<div className="am-g">
-//		  <div className="am-u-sm-4">上午</div>
-//		  <div className="am-u-sm-8" >  
-//		  <AMR_Input id="morning"  name="morning" type="textarea" defaultValue={o.morning} rows="12" label="早上:" placeholder="填写内容" />
-//
-//		  </div>
-//		</div>
-//		<div className="am-g">
-//		  <div className="am-u-sm-4">下午</div>
-//		  <div className="am-u-sm-8">
-//		  <AMR_Input id="afternoon"  name="afternoon" type="textarea"  defaultValue={o.afternoon} rows="7" label="下午:" placeholder="填写内容"  />
-//		  </div>
-//		</div>
-//		 < AMR_Button  amStyle ="primary" onClick={ this.ajax_teachingplan_save.bind( this )} round >保存</AMR_Button >
-//	</div>
-//	
-//	 </form>
-//	
-//);
-//}
-//});
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 
@@ -5348,8 +5469,514 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
-   
-   //——————————————————————————<老版>课程安排<管理绘制>——————————————————————————        
+
+ 
+
+ 
+//——————————————————————————<培训机构新版>课程安排<管理模块绘制>——————————————————————————  
+ /*
+  * <培训机构新版><课程安排>服务器请求后绘制处理方法；
+  * 
+  * */
+ var px_rect_teachingplan_byRight = React.createClass({
+ 	 handleChange: function(m,classuuid) {
+ 		var pageNo;
+ 		 if(m=="pre"){
+ 			pageNo=g_begDateStr_pageNo_point-1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return
+ 		 }else{
+ 			pageNo=g_begDateStr_pageNo_point+1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return 
+ 		 }
+	  },
+ 	 handleChange_button: function(classuuid) {
+ 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 	  },
+ render: function() {
+	 var o=this.props;
+     return (
+     <div>
+     <AMR_ButtonToolbar>
+		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"pre",o.classuuid)}  round>上周</AMR_Button>
+			</div> 
+			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"next",o.classuuid)} round>下周</AMR_Button>	
+			</div> 
+			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.classuuid)} round>新增课程</AMR_Button>	
+			</div> 
+		{this.props.classlist.map(function(event) {
+			  return(
+			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,o.pageNo)} round>{event.name}</AMR_Button>
+			  	</div>  			  	  
+			  )})}
+		 </AMR_ButtonToolbar>
+	 	  <hr/>
+      <legend>{Store.getClassByUuid(o.classuuid).name}</legend> 		 
+
+       <AMR_Table {...this.props}>  
+         <thead> 
+           <tr>
+             <th>课程名称</th>
+             <th>时间</th>
+             <th>上课地点</th>
+             <th>需要工具</th>
+             <th>课程时长</th>
+             <th>课程详细内容</th>
+           </tr> 
+         </thead>
+         <tbody>
+           {this.props.events.map(function(event) {
+             return (<Query_teachingplan_byRight key={event.id} event={event} />);
+           })}
+         </tbody>
+       </AMR_Table>
+       </div>
+     );
+   }
+ });
+     
+ /*  	
+  * <培训机构新版><课程安排>在表单上绘制详细内容;
+  * */
+ var Query_teachingplan_byRight = React.createClass({ 
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	 	var className = event.highlight ? 'am-active' :
+ 	  	  event.disabled ? 'am-disabled' : '';
+
+ 	  	return (
+ 	  	  <tr className={className} >
+ 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
+ 	  	    <td>{event.plandate}</td>
+ 	  	    <td>{event.address}</td>
+ 	  	    <td>{event.readyfor}</td>
+ 	  	    <td>{event.duration}</td>
+ 	  		<td>{event.count}</td>
+ 	  	  </tr> 
+ 	    );
+ 	  }
+ 	}); 
+//培训机构新课程表添加与编辑绘制
+ var Px_Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+ render: function() {
+ 	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+ return (
+ 		<form id="editTeachingplanForm" method="post" className="am-form">
+ 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+ 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+ 		   <div className="am-form-group">
+ 			
+ 		       <label className={one_classDiv}>课程名：</label>
+ 			     <div className={two_classDiv}>
+ 			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+ 			        </div>
+ 			       
+   		     <label className={one_classDiv}>日期:</label>
+ 		      <div className={two_classDiv}>
+ 				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+ 		        </div>
+ 			 	
+ 			       <label className={one_classDiv}>课时长：</label>
+ 				     <div className={two_classDiv}>
+ 				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+ 				        </div>
+ 				 
+ 				       <label className={one_classDiv}>上课地点：</label>
+ 					     <div className={two_classDiv}>
+ 					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+ 					        </div>
+ 					       
+ 	  		     <label className={one_classDiv}>准备工具:</label>
+ 			      <div className={two_classDiv}>
+ 			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+ 			        </div>
+ 				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+ 				      </div>  
+ 		          </form> 	   		   				
+
+ );
+ }
+ }); 
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+//——————————————————————————<幼儿园新版>课程安排<管理模块绘制>——————————————————————————  
+ /*
+  * 
+  * 课程安排1周显示
+  * <Teachingplan_showByMy  classuuid={classuuid} classlist={classlist} />
+  */
+ var Teachingplan_show7Day_byRight = React.createClass({ 
+ 	getInitialState: function() {
+ 		var classList=Store.getChooseClass(this.props.groupuuid);
+ 		var class_uuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		var obj= {
+ 				groupuuid:this.props.groupuuid,
+ 		    	classuuid:classuuid,
+ 		    	classlist:G_selected_dataModelArray_byArray(classList,"uuid","name"),
+ 		    	pageNo:0,
+ 		    	list: this.props.list
+ 		    };
+ 		obj=this.ajax_list(obj);
+ 	    return obj;
+ 	   
+ 	  },
+ 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {
+ 		  var obj= {
+ 				  groupuuid:nextProps.groupuuid,
+ 				  classuuid:nextProps.classuuid,
+ 				  classlist:nextProps.classlist,
+ 			    	pageNo:nextProps.pageNo,
+ 			    	type:nextProps.type,
+ 			    	list: nextProps.list
+ 			    };
+ 				
+ 			obj=this.ajax_list(obj);
+ 		  this.setState(obj);
+ 		},
+ 	 ajax_list:function(obj){
+ 		 var now=new Date();
+ 		  	now=G_week.getDate(now,obj.pageNo*7);
+ 		 var begDateStr=G_week.getWeek0(now,obj.pageNo);
+ 		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
+ 			//记录老师选择的班级.
+ 			G_myCurClassuuid=obj.classuuid;
+ 		$.AMUI.progress.start();
+ 		var url = hostUrl + "rest/pxteachingplan/list.json";
+ 		$.ajax({
+ 			type : "GET",
+ 			url : url,
+ 		//	data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+ 			data : {classuuid:obj.classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+ 			dataType : "json",
+ 			async: false,//必须同步执行
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				if (data.ResMsg.status == "success") {
+ 					obj.list=data.list;
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 					G_resMsg_filter(data.ResMsg);
+ 				}
+ 			},
+ 			error : G_ajax_error_fn
+ 		});
+ 		return obj;
+ 		
+ 	},
+ 	pageClick: function(m) {
+ 		 var obj=this.state;
+ 		 if(m=="pre"){
+ 			 obj.pageNo=obj.pageNo-1;
+ 			 this.setState(this.ajax_list(obj));
+ 			 return;
+ 		 }else if(m=="next"){
+ 			 obj.pageNo=obj.pageNo+1;
+ 			 this.setState(this.ajax_list(obj));
+ 			 return;
+ 		 }
+ 	},
+
+ 	
+ 	handleChange_selectclass_uuid: function(val) {
+ 		 var obj=this.state;
+ 		 obj.classuuid=val;
+ 		 this.setState(this.ajax_list(obj));
+     },
+ 	handleChange_selectgroup: function(val) {
+ 	this.state.groupuuid=val;
+ 	var classlist=Store.getChooseClass(this.state.groupuuid);
+ 	var classuuid =null;
+ 	if(classlist&&classlist.length>0){
+ 		classuuid=classlist[0].uuid;
+ 	}
+ 	this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+ 	 this.state.classuuid=classuuid;
+ 	 this.state=this.ajax_list(this.state); 
+ 	 this.setState(this.state);
+ },
+ 	componentDidMount: function() {
+// 		if(!this.props.formdata){
+// 			  $("#div_detail").html("今日没有发布教学计划");
+// 		  }	    
+ 	  },
+ 	render: function() {
+ 	  var o = this.state;
+ 	  var now=new Date();
+ 	  	now=G_week.getDate(now,o.pageNo*7);
+ 	  return (
+ 		<div>
+ 		<div className="am-g" >
+ 		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  round>上周</AMR_Button>
+ 		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} round>下周</AMR_Button>	
+ 	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
+ 		<AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
+ 		</div>
+ 		<hr/>
+ 		<div className="am-g" id="div_detail">
+ 		
+ 		<G_Teachingplan_7day_byRight classuuid={this.state.classuuid} startDate={now} list={this.state.list} />
+ 		
+ 		</div>
+ 	   
+ 	   </div>
+ );
+ }
+ }); 
+
+
+ /**
+  * 全局模版-没有内容时显示
+  * <G_Teachingplan_7day classuuid={this.state.classuuid} startDate={startDate} list={list} />
+  */
+ var G_Teachingplan_7day_byRight= React.createClass({ 
+ 	getInitialState: function() {
+ 		var obj= {
+ 				classuuid:this.props.classuuid,
+ 				startDate:this.props.startDate,
+ 		    	size:7,
+ 		    	list: this.props.list
+ 		    };
+ 	    return obj;
+ 	   
+ 	  },
+ 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {
+ 		  var obj= {
+ 					startDate:nextProps.startDate,
+ 					classuuid:nextProps.classuuid,
+ 			    	size:7,
+ 			    	list: nextProps.list
+ 			    };
+ 		  this.setState(obj);
+ 		},
+ 		/**
+ 		 * 根据日期生成课程表,如何返回数据中没有,则创建空的.
+ 		 */
+ 		getOneDayData:function(d1,list){
+ 			for(var i=0;i<list.length;i++){
+ 				var tmp=list[i];
+ 				if(tmp.plandate.indexOf(d1)>-1){
+ 					return tmp;
+ 				}
+ 			}
+ 			return {classuuid:this.state.classuuid,plandate:d1,morning:"",afternoon:"",uuid:null};
+ 		},
+ 		/**
+ 		 * 获取7天的课程表数据
+ 		 */
+ 		getListByStartDate:function(d1,size,list){ 
+ 			var ar=[];
+ 			var t=G_week.getWeekDayByDate(d1);
+ 			if(t==0)t=-6;
+ 			else t=1-t;
+ 			for(var i=0;i<size;i++){
+ 				var tmp=G_week.getDateStr(d1,t);
+ 				t++;
+ 				ar.push(this.getOneDayData(tmp,list));
+ 			}
+ 			return ar;
+ 		},
+ 	  render: function() {
+ 		 var ar=this.getListByStartDate(this.state.startDate,this.state.size,this.state.list);
+ 	    return (
+ 	    		<div>
+ 	    		 {ar.map(function(event) {
+ 					  return(							  										  
+ 						<G_Teachingplan_1day_byRight data={event} />
+ 					  )})}
+ 	    		 </div>
+ 	    );
+ 	  }
+ 	  }); 
+ var G_Teachingplan_1day_byRight= React.createClass({ 
+ 	getInitialState: function() {
+ 		var obj= {
+ 				 isEdit:false,
+ 				data:this.props.data
+ 		    };
+ 	    return obj;
+ 	  },
+ 	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {
+ 		  var obj= {
+ 				  isEdit:false,
+ 				  data:nextProps.data
+ 			    };
+ 		  this.setState(obj);
+ 		},
+ 	   save_callback:function(data){
+ 		  	G_msg_pop(data.ResMsg.message);
+ 		   var obj= {
+ 				   isEdit:false,
+ 					  data:data.data
+ 				    };
+ 		   this.setState(obj);
+      
+        },
+ 	  render: function() {
+ 		  var o=this.state.data;
+// 		  if(this.state.isEdit){
+// 			  return (<Teachingplan_edit_inner data={o} callback={this.save_callback.bind(this)} />);
+// 		  }
+ 		  var dianzan=(<div></div>);
+ 		  if(o.uuid){
+ 			  dianzan=(
+ 					  <div>
+ 					  <footer className="am-comment-footer">
+ 				    	<div className="am-comment-actions">
+ 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+ 				    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+ 				    	</div>
+ 				    	</footer>
+ 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={7}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+ 				    	<ul className="am-comments-list">
+ 						  <Classnews_reply_list uuid={o.uuid}  type={7} btn_reply={"btn_reply_"+o.uuid}/>
+ 				    	</ul>
+ 				  </div>);
+ 		  }
+ 		  var divCs1="am-u-sm-4 am-u-md-2 am-u-lg-1";
+ 		  var divCs2="am-u-sm-8 am-u-md-10 am-u-lg-11";
+ 		  var cs="am-panel am-panel-secondary";
+ 		 
+ 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
+ 			  cs="am-panel am-panel-warning";
+ 		  }
+ 			return (
+ 					
+ 					<div className={cs}>
+ 					  <div className="am-panel-hd">
+ 					  <h3 className="am-panel-title am-g">
+ 						  <div className={divCs1}>{G_week.getWeekStr(o.plandate)}</div>
+ 			    		  <div className={divCs2}>{o.plandate.split(" ")[0]}
+ 			    		  </div>
+ 					  </h3>
+ 					  </div>
+ 					  <div className="am-panel-bd">
+ 							  <div className="am-g">
+ 				    		  <div className={divCs1}>上午</div>
+ 				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.morning)}} >  
+ 				    		  </div>
+ 				    		</div>
+ 				    		<div className="am-g">
+ 				    		  <div className={divCs1}>下午</div>
+ 				    		  <div className={divCs2} dangerouslySetInnerHTML={{__html:G_textToHTML(o.afternoon)}}>
+ 				    		  </div>
+ 				    		</div>
+ 				    		<div className="am-g">
+ 				    		{dianzan}
+ 				    		</div>
+ 					  </div>
+ 					 
+ 					</div>
+ 	    		
+ 	    		
+ 	    );
+ 	  }
+ 	  }); 
+
+
+ /*
+  *<课程安排>班级编辑-内嵌在显示1周页面
+  *<Teachingplan_edit_inner data={data} callback={callback} />
+  * */
+ var Teachingplan_edit_inner = React.createClass({ 
+ 	formid:null,
+ 	 getInitialState: function() {
+ 		    return this.props.data
+ 	},
+ 		//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {
+ 		  this.setState(nextProps.data);
+ 		},
+ 	 handleChange: function(event) {
+ 		    this.setState($('#'+this.formid).serializeJson());
+ 	  },
+ 	  ajax_teachingplan_save:function(){
+ 		  var callback=this.props.callback;
+ 		    var opt={
+ 		            formName: this.formid,
+ 		            url:hostUrl + "rest/pxteachingplan/save.json",
+ 		            cbFN:callback
+ 		            };
+ 		G_ajax_abs_save(opt);
+ 	  },
+ 	
+ render: function() {
+ 	  var o = this.state;
+ 	  o.plandate=o.plandate.split(" ")[0];
+ 	  this.formid="editTeachingplanForm"+o.plandate;
+ 	  ////onChange={this.handleChange.bind(this) 焦点每次输入后,到最后bug.
+ 	  if(!o.morning)o.morning=G_tip.teachingplan_morning;
+ 	  if(!o.afternoon)o.afternoon=G_tip.teachingplan_afternoon;
+ 	
+ return (
+ 		
+ 		 <form id={this.formid} method="post" className="am-form">
+ 		 <input type="hidden" name="uuid"  value={o.uuid}/>
+ 			<input type="hidden" name="classuuid"  value={o.classuuid}/>
+ 		<div className="am-container">
+ 		<div className="am-g am-success am-article-title">
+ 		  <div className="am-u-sm-4">{G_week.getWeekStr(o.plandate)}</div>
+ 		  <div className="am-u-sm-8">
+ 		  {o.plandate}
+ 		  <input type="hidden" name="plandateStr"  value={o.plandate}/>
+ 		 
+ 		  </div>
+ 		</div>
+ 		<div className="am-g">
+ 		  <div className="am-u-sm-4">上午</div>
+ 		  <div className="am-u-sm-8" >  
+ 		  <AMR_Input id="morning"  name="morning" type="textarea" defaultValue={o.morning} rows="12" label="早上:" placeholder="填写内容" />
+ 
+ 		  </div>
+ 		</div>
+ 		<div className="am-g">
+ 		  <div className="am-u-sm-4">下午</div>
+ 		  <div className="am-u-sm-8">
+ 		  <AMR_Input id="afternoon"  name="afternoon" type="textarea"  defaultValue={o.afternoon} rows="7" label="下午:" placeholder="填写内容"  />
+ 		  </div>
+ 		</div>
+ 		 < AMR_Button  amStyle ="primary" onClick={ this.ajax_teachingplan_save.bind( this )} round >保存</AMR_Button >
+ 	</div>
+ 	
+ 	 </form>
+ 	
+ );
+ }
+ });
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ 
+ 
+ 
+ 
+//——————————————————————————<幼儿园老版>课程安排<管理绘制>——————————————————————————        
  /*
  * <课程安排>班级详情界面按钮列表框等绘制;
  * @add:添加班级课程；
@@ -5407,7 +6034,7 @@ render: function() {
  		var endDateStr=G_week.getWeek6(now,obj.pageNo);;
  		var that=this;
  		 $.AMUI.progress.start();
- 			var url = hostUrl + "rest/teachingplan/list.json";
+ 			var url = hostUrl + "rest/pxteachingplan/list.json";
  			$.ajax({
  				type : "GET",
  				url : url,
@@ -5523,4 +6150,4 @@ render: function() {
  	}
  	});
 
- //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±

@@ -959,7 +959,7 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 /*(课程表)
  * 班级详情内添加编辑课程等按钮方法判断;
  * */ 
-function btn_click_teachingplan(m,uuid,groupuuid,classuuid,ch_day){
+function btn_click_teachingplan(m,uuid,classuuid,ch_day){
 	if(m=="add"){
 		react_ajax_teachingplan_edit({classuuid:classuuid,plandate:ch_day},null,"新增课程");
 	}

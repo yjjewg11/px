@@ -1032,7 +1032,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 	handleChange_selectgroup_uuid: function(val) {
 		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val,name:Store.getClassNameByUuid(val)});  
     },
-	handleClick_class: function(m,uuid,classuuid,ch_day) {
+	handleClick_class: function(m,classuuid,ch_day) {
 			 btn_click_teachingplan(m,null,classuuid,ch_day);
 			 return;
 
@@ -1082,7 +1082,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 		  React.createElement("i", {className: "am-icon-angle-right"})
 		), 
 		React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data:  this.props.classList, btnStyle: "primary", value: this.props.ch_class.uuid}), 
-		 React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day), round: true}, "新增课程")
+		 React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick_class.bind( this ,"add",this.props.ch_class.uuid,this.props.ch_day), round: true}, "新增课程")
 		), 
 		React.createElement("div", {className: "header"}, 
 		  React.createElement("div", {className: "am-g"}, 
@@ -1100,7 +1100,46 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 	   )
 );
 }
-}); 
+});
+/*
+ *<课程表>班级详情添加与编辑内容绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+var Teachingplan_edit = React.createClass({displayName: "Teachingplan_edit", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+return (
+		React.createElement("div", null, 
+		React.createElement("div", {className: "header"}, 
+		  React.createElement("hr", null)
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		  React.createElement("form", {id: "editTeachingplanForm", method: "post", className: "am-form"}, 
+		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+		React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+		 React.createElement("label", {htmlFor: "name"}, "日期:"), 
+		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange}), 
+		      React.createElement("br", null), 
+	    React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange}), 
+		React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange}), 
+		      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save, className: "am-btn am-btn-primary"}, "提交")
+	 )
+	     )
+	   )
+	   
+	   )
+);
+}
+});
 //——————————————————————————（新版首页->课程表）<绘制>——————————————————————————  
 /*
  * 
