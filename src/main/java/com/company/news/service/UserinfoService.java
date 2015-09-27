@@ -138,6 +138,7 @@ public class UserinfoService extends AbstractService {
 		user.setTel_verify(USER_tel_verify_default);
 		user.setSex(SystemConstants.User_sex_female);// 默认女
 		user.setOffice("老师");
+		user.setCount(0l);
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(user);

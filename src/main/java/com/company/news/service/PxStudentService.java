@@ -40,7 +40,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @throws Exception 
 	 * 
 	 */
-	private void addStudentClassRelation(String student_uuid,String class_uuid) throws Exception{
+	public void addStudentClassRelation(String student_uuid,String class_uuid) throws Exception{
 		PxStudentPXClassRelation pp=new PxStudentPXClassRelation();
 		pp.setClass_uuid(class_uuid);
 		pp.setStudent_uuid(student_uuid);
@@ -58,7 +58,8 @@ public class PxStudentService extends AbstractStudentService {
 	public boolean add(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage) throws Exception {
 
 		if(this.validateRequireAndLengthByRegJsonform(pxstudentJsonform.getName(), 32, "姓名", responseMessage)
-				||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage))
+				//||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage)
+				)
 			return false;
 
 		PxClass pXClass = (PxClass) this.nSimpleHibernateDao.getObjectById(PxClass.class, pxstudentJsonform.getClassuuid());

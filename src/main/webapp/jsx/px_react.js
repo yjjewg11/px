@@ -2474,6 +2474,8 @@ var AMR_Col=AMUIReact.Col;
   	  },
   render: function() {
   	  var o = this.state;
+	  var course_list=Store.getCourseList(o.groupuuid);
+	  if(!course_list)course_list=[];
     return (
     		<div>
     		<div className="header">
@@ -2488,7 +2490,8 @@ var AMR_Col=AMUIReact.Col;
     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
     		  <G_help_popo  msg={G_tip.class_edit}/>  
     		  <br/>
-    		  <span id="help1_span">{G_tip.class_edit_groupwjd}</span>
+		  <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+    		
     		  </div> 		    
     		      <label htmlFor="name">班级:</label>
     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
