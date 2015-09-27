@@ -10,9 +10,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.ParentService;
 import com.company.news.vo.ResponseMessage;
@@ -38,6 +40,11 @@ public class ParentController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_parent_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
 			PaginationData pData = this.getPaginationDataByRequest(request);
 //			pData.setPageSize(20);
 //			String groupuuid = request.getParameter("groupuuid");

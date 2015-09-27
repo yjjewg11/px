@@ -28,7 +28,9 @@ public class RightConstants {
 		static public String AD_class_m="AD_class_m";//	班级管理员权限-增傻查改
 		static public String AD_user_m="AD_user_m";//	用户管理权限
 		static public String AD_user_del="AD_user_del";//	用户删除权限
-		
+		static public String AD_classnew_m="AD_classnew_m";//	班级互动浏览
+		static public String AD_parent_m="AD_parent_m";//	家长数据浏览.
+			
 		
 	static public String KD_group_m="KD_group_m";//添加分校权限
 	static public String KD_announce_m="KD_announce_m";//发布消息权限(增改)
