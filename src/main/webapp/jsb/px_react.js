@@ -6151,3 +6151,155 @@ render: function() {
  	});
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+//——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
+ /*
+  * <发布课程>服务器请求后绘制处理方法；
+  * 
+  * */
+ var px_rect_teachingplan_byRight = React.createClass({displayName: "px_rect_teachingplan_byRight",
+ 	 handleChange: function(m,classuuid) {
+ 		var pageNo;
+ 		 if(m=="pre"){
+ 			pageNo=g_begDateStr_pageNo_point-1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return
+ 		 }else{
+ 			pageNo=g_begDateStr_pageNo_point+1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return 
+ 		 }
+	  },
+ 	 handleChange_button: function(classuuid) {
+ 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 	  },
+ render: function() {
+	 var o=this.props;
+     return (
+     React.createElement("div", null, 
+     React.createElement(AMR_ButtonToolbar, null, 
+		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"pre",o.classuuid), round: true}, "上周")
+			), 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"next",o.classuuid), round: true}, "下周")	
+			), 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.classuuid), round: true}, "新增课程")	
+			), 
+		this.props.classlist.map(function(event) {
+			  return(
+			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: px_ajax_teachingplan_byRight.bind(this,event.uuid,o.pageNo), round: true}, event.name)
+			  	)  			  	  
+			  )})
+		 ), 
+	 	  React.createElement("hr", null), 
+      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name), 		 
+
+       React.createElement(AMR_Table, React.__spread({},  this.props), 
+         React.createElement("thead", null, 
+           React.createElement("tr", null, 
+             React.createElement("th", null, "课程名称"), 
+             React.createElement("th", null, "时间"), 
+             React.createElement("th", null, "上课地点"), 
+             React.createElement("th", null, "需要工具"), 
+             React.createElement("th", null, "课程时长"), 
+             React.createElement("th", null, "课程详细内容")
+           )
+         ), 
+         React.createElement("tbody", null, 
+           this.props.events.map(function(event) {
+             return (React.createElement(Query_teachingplan_byRight, {key: event.id, event: event}));
+           })
+         )
+       )
+       )
+     );
+   }
+ });
+     
+ /*  	
+  * <发布课程>在表单上绘制详细内容;
+  * */
+ var Query_teachingplan_byRight = React.createClass({displayName: "Query_teachingplan_byRight", 
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	 	var className = event.highlight ? 'am-active' :
+ 	  	  event.disabled ? 'am-disabled' : '';
+
+ 	  	return (
+ 	  	  React.createElement("tr", {className: className}, 
+ 	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改")), 
+ 	  	    React.createElement("td", null, event.plandate), 
+ 	  	    React.createElement("td", null, event.address), 
+ 	  	    React.createElement("td", null, event.readyfor), 
+ 	  	    React.createElement("td", null, event.duration), 
+ 	  		React.createElement("td", null, event.count)
+ 	  	  ) 
+ 	    );
+ 	  }
+ 	}); 
+//发布课程添加与编辑绘制
+ var Px_Teachingplan_edit = React.createClass({displayName: "Px_Teachingplan_edit", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+ render: function() {
+ 	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+ return (
+ 		React.createElement("form", {id: "editTeachingplanForm", method: "post", className: "am-form"}, 
+ 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+ 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
+ 		   React.createElement("div", {className: "am-form-group"}, 
+ 			
+ 		       React.createElement("label", {className: one_classDiv}, "课程名："), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
+ 			        ), 
+ 			       
+   		     React.createElement("label", {className: one_classDiv}, "日期:"), 
+ 		      React.createElement("div", {className: two_classDiv}, 
+ 				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange})
+ 		        ), 
+ 			 	
+ 			       React.createElement("label", {className: one_classDiv}, "课时长："), 
+ 				     React.createElement("div", {className: two_classDiv}, 
+ 				       React.createElement(PxInput, {type: "text", name: "duration", id: "duration", maxLength: "20", value: o.duration, onChange: this.handleChange})
+ 				        ), 
+ 				 
+ 				       React.createElement("label", {className: one_classDiv}, "上课地点："), 
+ 					     React.createElement("div", {className: two_classDiv}, 
+ 					       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
+ 					        ), 
+ 					       
+ 	  		     React.createElement("label", {className: one_classDiv}, "准备工具:"), 
+ 			      React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
+ 			        ), 
+ 				      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
+ 				      )
+ 		          ) 	   		   				
+
+ );
+ }
+ }); 
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±  

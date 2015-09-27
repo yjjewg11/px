@@ -6151,3 +6151,155 @@ render: function() {
  	});
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+//——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
+ /*
+  * <发布课程>服务器请求后绘制处理方法；
+  * 
+  * */
+ var px_rect_teachingplan_byRight = React.createClass({
+ 	 handleChange: function(m,classuuid) {
+ 		var pageNo;
+ 		 if(m=="pre"){
+ 			pageNo=g_begDateStr_pageNo_point-1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return
+ 		 }else{
+ 			pageNo=g_begDateStr_pageNo_point+1;
+ 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+ 			return 
+ 		 }
+	  },
+ 	 handleChange_button: function(classuuid) {
+ 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 	  },
+ render: function() {
+	 var o=this.props;
+     return (
+     <div>
+     <AMR_ButtonToolbar>
+		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"pre",o.classuuid)}  round>上周</AMR_Button>
+			</div> 
+			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"next",o.classuuid)} round>下周</AMR_Button>	
+			</div> 
+			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.classuuid)} round>新增课程</AMR_Button>	
+			</div> 
+		{this.props.classlist.map(function(event) {
+			  return(
+			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,o.pageNo)} round>{event.name}</AMR_Button>
+			  	</div>  			  	  
+			  )})}
+		 </AMR_ButtonToolbar>
+	 	  <hr/>
+      <legend>{Store.getClassByUuid(o.classuuid).name}</legend> 		 
+
+       <AMR_Table {...this.props}>  
+         <thead> 
+           <tr>
+             <th>课程名称</th>
+             <th>时间</th>
+             <th>上课地点</th>
+             <th>需要工具</th>
+             <th>课程时长</th>
+             <th>课程详细内容</th>
+           </tr> 
+         </thead>
+         <tbody>
+           {this.props.events.map(function(event) {
+             return (<Query_teachingplan_byRight key={event.id} event={event} />);
+           })}
+         </tbody>
+       </AMR_Table>
+       </div>
+     );
+   }
+ });
+     
+ /*  	
+  * <发布课程>在表单上绘制详细内容;
+  * */
+ var Query_teachingplan_byRight = React.createClass({ 
+	 handleChange_button: function(event) {
+	 		class_students_manage_onClick_byRight("eit",event);
+	 	  },
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	 	var className = event.highlight ? 'am-active' :
+ 	  	  event.disabled ? 'am-disabled' : '';
+
+ 	  	return (
+ 	  	  <tr className={className} >
+ 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
+ 	  	    <td>{event.plandate}</td>
+ 	  	    <td>{event.address}</td>
+ 	  	    <td>{event.readyfor}</td>
+ 	  	    <td>{event.duration}</td>
+ 	  		<td>{event.count}</td>
+ 	  	  </tr> 
+ 	    );
+ 	  }
+ 	}); 
+//发布课程添加与编辑绘制
+ var Px_Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+ render: function() {
+ 	  var o = this.state;
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+ return (
+ 		<form id="editTeachingplanForm" method="post" className="am-form">
+ 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+ 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+ 		   <div className="am-form-group">
+ 			
+ 		       <label className={one_classDiv}>课程名：</label>
+ 			     <div className={two_classDiv}>
+ 			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+ 			        </div>
+ 			       
+   		     <label className={one_classDiv}>日期:</label>
+ 		      <div className={two_classDiv}>
+ 				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+ 		        </div>
+ 			 	
+ 			       <label className={one_classDiv}>课时长：</label>
+ 				     <div className={two_classDiv}>
+ 				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+ 				        </div>
+ 				 
+ 				       <label className={one_classDiv}>上课地点：</label>
+ 					     <div className={two_classDiv}>
+ 					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+ 					        </div>
+ 					       
+ 	  		     <label className={one_classDiv}>准备工具:</label>
+ 			      <div className={two_classDiv}>
+ 			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+ 			        </div>
+ 				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+ 				      </div>  
+ 		          </form> 	   		   				
+
+ );
+ }
+ }); 
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±  

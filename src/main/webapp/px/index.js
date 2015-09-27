@@ -213,6 +213,14 @@ function login_affter_init(){
 			if(G_user_hasRight("PX_accounts_m")){
 				menu_data.push(t_menu);
 			}
+			t_menu= {
+	                "link": "##",
+	                "fn":menu_course_byRight,
+	                "title": "发布课程"
+	              };
+				//if(G_user_hasRight("PX_accounts_m")){
+					menu_data.push(t_menu);
+				//}	
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",
@@ -798,4 +806,27 @@ function menu_statistics_list_fn_byRight() {
  * */
 function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
+};
+
+
+
+/*
+ * (标头)发布对外课程功能
+ * */
+//var G_myCurClassuuid=null;
+//var G_myClassList=null;
+function menu_course_byRight() {
+	console.log("Store.getCurGroup()",Store.getCurGroup());
+//	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
+//	if(!groupList||groupList.length==0){
+//		alert("没有权限。");
+//		return;
+//	}
+//		var classList=Store.getChooseClass(groupList[0].uuid);
+// 		var class_uuid =null;
+// 		if(classList&&classList.length>0){
+// 			classuuid=classList[0].uuid;
+// 		}
+// 		G_myClassList=classList;
+    	px_ajax_course_byRight();	
 };
