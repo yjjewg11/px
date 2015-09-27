@@ -146,14 +146,18 @@ public class PxCourseService extends AbstractService {
 
 
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
-		String hql = "from PxCourse where 1=1";
-		if (StringUtils.isNotBlank(groupuuid))
-			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		String hql = "from PxCourse where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 
 		hql += " order by groupuuid, convert(title, 'gbk') ";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
 		return pageQueryResult;
+	}
+	
+	public List listForCache(String groupuuid) {
+		String hql = "from PxCourseCache where  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		hql += " order by convert(title, 'gbk') ";
+		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 	}
 
 }

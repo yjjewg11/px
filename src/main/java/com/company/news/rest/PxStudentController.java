@@ -316,4 +316,37 @@ public class PxStudentController extends AbstractRESTController {
 		return "";
 	}
 	
+	
+	/**
+	 * 给班级添加学生
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addStudentClass", method = RequestMethod.POST)
+	public String addStudentClass(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			String student_uuid=request.getParameter("student_uuid");
+			String class_uuid =request.getParameter("class_uuid");
+			
+			this.pxStudentService.addStudentClassRelation(student_uuid,class_uuid);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setMessage("添加成功!");
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	
 }

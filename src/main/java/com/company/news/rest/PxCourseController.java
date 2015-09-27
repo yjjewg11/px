@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PxCourse;
-import com.company.news.entity.PxCourse;
 import com.company.news.entity.User;
 import com.company.news.jsonform.PxCourseJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.PxCourseService;
 import com.company.news.vo.ResponseMessage;
@@ -114,6 +112,41 @@ public class PxCourseController extends AbstractRESTController {
 			
 			}
 			PageQueryResult list = pxCourseService.queryByPage(groupuuid,pData);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+
+	/**
+	 * 获取对外发布课程,用于客户端缓存.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listForCache", method = RequestMethod.GET)
+	public String listForCache(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String groupuuid = request.getParameter("groupuuid");
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+				responseMessage.setMessage("必须选择学校");
+				return "";
+			}
+			List list = pxCourseService.listForCache(groupuuid);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
