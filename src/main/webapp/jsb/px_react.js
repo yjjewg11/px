@@ -6154,3 +6154,167 @@ render: function() {
  	});
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+//——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
+ /*
+  * <发布课程>服务器请求后绘制处理方法；
+  * 
+  * */
+ var px_rect_course_byRight = React.createClass({displayName: "px_rect_course_byRight",
+ 	 handleChange_button: function(groupuuid) {
+ 		px_course_onClick_byRight("add",{groupuuid:groupuuid,uuid:null});
+ 	  },
+     handleChange_selectgroup_uuid: function(val) {
+ 		px_ajax_course_byRight(val);
+ 	  },
+ render: function() {
+	 var o=this.props;
+     return (
+     React.createElement("div", null, 
+     React.createElement(AMR_ButtonToolbar, null, 
+			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: o.groupList, btnStyle: "primary", value: o.groupuuid}), 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.groupuuid), round: true}, "新增课程")	
+			)
+		 ), 
+	 	  React.createElement("hr", null), 		 
+
+       React.createElement(AMR_Table, React.__spread({},  this.props), 
+         React.createElement("thead", null, 
+           React.createElement("tr", null, 
+             React.createElement("th", null, "标题"), 
+             React.createElement("th", null, "课程类型"), 
+             React.createElement("th", null, "具体课程"), 
+             React.createElement("th", null, "上课地点"), 
+             React.createElement("th", null, "课程时长"), 
+             React.createElement("th", null, "收费价格"), 
+             React.createElement("th", null, "优惠价格"), 
+             React.createElement("th", null, "课程详细内容"), 
+             React.createElement("th", null, "更新时间"), 
+             React.createElement("th", null, "发布状态")
+           )
+         ), 
+         React.createElement("tbody", null, 
+           this.props.events.map(function(event) {
+             return (React.createElement(Query_course_byRight, {key: event.id, event: event}));
+           })
+         )
+       )
+       )
+     );
+   }
+ });
+     
+ /*  	
+  * <发布课程>在表单上绘制详细内容;
+  * */
+ var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 
+	 handleChange_button: function(event) {
+		 px_course_onClick_byRight("eit",event);
+	 	  },
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	 	var className = event.highlight ? 'am-active' :
+ 	  	  event.disabled ? 'am-disabled' : '';
+
+ 	  	return (
+ 	  	  React.createElement("tr", {className: className}, 
+ 	  	    React.createElement("td", null, event.title, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改")), 
+ 	  	    React.createElement("td", null, Vo.get("course_type_"+event.type)), 
+ 	  	    React.createElement("td", null, event.subtype), 
+ 	  	    React.createElement("td", null, event.address), 
+ 	  	    React.createElement("td", null, event.schedule), 
+ 	  	    React.createElement("td", null, event.fees), 
+ 	  	    React.createElement("td", null, event.discountfees), 
+ 	  	    React.createElement("td", null, event.context), 
+            React.createElement("td", null, event.updatetime), 
+            React.createElement("td", null, Vo.get("course_status_"+event.status))
+ 	  	  ) 
+ 	    );
+ 	  }
+ 	}); 
+//发布课程添加与编辑绘制
+ var Px_course_edit = React.createClass({displayName: "Px_course_edit", 
+	 getInitialState: function() {
+		 this.props.formdata.groupList=this.props.groupList;
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editCourseForm').serializeJson());
+	  },
+ render: function() {
+ 	  var o = this.state;
+
+  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
+	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
+ return (
+ 		React.createElement("form", {id: "editCourseForm", method: "post", className: "am-form"}, 
+ 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+ 		     React.createElement(PxInput, {type: "hidden", name: "groupuuid", value: o.groupuuid}), 
+
+
+ 		   React.createElement("div", {className: "am-form-group"}, 
+	 	  	React.createElement(AMUIReact.Selected, {amSize: "xs", id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: o.groupList, btnStyle: "primary", value: o.groupuuid}), 		     
+		 	  	React.createElement(AMUIReact.Selected, {id: "type", name: "type", onChange: this.handleChange, btnWidth: "200", data: course_type_list, btnStyle: "primary", value: o.type+""}), 		     
+	 	 	  	React.createElement(AMUIReact.Selected, {id: "status", name: "status", onChange: this.handleChange, btnWidth: "200", data: course_status_list, btnStyle: "primary", value: o.status+""}), 		     
+   	
+	 	  	React.createElement("hr", null), 
+ 		       React.createElement("label", {className: one_classDiv}, "标题:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "20", value: o.title, onChange: this.handleChange})
+ 			        ), 
+ 		 	         
+ 		  		  
+
+ 			    React.createElement("label", {className: one_classDiv}, "具体课程:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "subtype", id: "subtype", maxLength: "20", value: o.subtype, onChange: this.handleChange})
+ 			        ), 
+
+ 			    React.createElement("label", {className: one_classDiv}, "上课地点:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
+ 			        ), 
+
+
+ 			    React.createElement("label", {className: one_classDiv}, "课程时长:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "schedule", id: "schedule", maxLength: "20", value: o.schedule, onChange: this.handleChange})
+ 			        ), 
+
+ 			    React.createElement("label", {className: one_classDiv}, "收费价格:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "fees", id: "fees", maxLength: "20", value: o.fees, onChange: this.handleChange})
+ 			        ), 
+
+ 			    React.createElement("label", {className: one_classDiv}, "优惠价格:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "discountfees", id: "discountfees", maxLength: "20", value: o.discountfees, onChange: this.handleChange})
+ 			        ), 
+
+
+ 			    React.createElement("label", {className: one_classDiv}, "课程详细内容:"), 
+ 			     React.createElement("div", {className: two_classDiv}, 
+ 			       React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", value: o.context, onChange: this.handleChange})
+ 			        ), 		   				
+ 	     
+	  		  
+ 				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
+ 				      )
+ 		          ) 
+ );
+ }
+ }); 
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
