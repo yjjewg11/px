@@ -3187,15 +3187,17 @@ G_ajax_abs_save(opt);
  * <发布课程>（获取用户列表服务器请求）；
  * */
 //var g_begDateStr_pageNo_point=0;	
- function px_ajax_course_byRight(){ 
+ function px_ajax_course_byRight(groupuuid){ 
 //	var now=new Date();
 //	if(!pageNo)pageNo=0;
 //	g_begDateStr_pageNo_point=pageNo;
 //	  	now=G_week.getDate(now,pageNo*7);
 //	var begDateStr=G_week.getWeek0(now,pageNo);
 //	var endDateStr=G_week.getWeek6(now,pageNo);
-	 var groupuuid=Store.getCurGroup().uuid;
-		Queue.push(function(){px_ajax_course_byRight();},"发布课程");
+
+	 var groupList=Store.getGroup();
+     if(!groupuuid)groupuuid=groupList[0].uuid;
+		Queue.push(function(){px_ajax_course_byRight(groupuuid);},"发布课程");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxCourse/list.json";
 	   	$.ajax({
@@ -3207,13 +3209,12 @@ G_ajax_abs_save(opt);
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {	   				
-//					React.render(React.createElement(px_rect_teachingplan_byRight, {
-//						classuuid:classuuid,
-//						classlist:G_myClassList,
-//						pageNo:pageNo,
-//						events: data.list,
-//						responsive: true, bordered: true, striped :true,hover:true,striped:true						
-//					}), document.getElementById('div_body'));
+					React.render(React.createElement(px_rect_course_byRight, {
+						groupuuid:groupuuid,
+						groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+						events: data.list.data,
+						responsive: true, bordered: true, striped :true,hover:true,striped:true						
+					}), document.getElementById('div_body'));
 					
 	   			} else {
 	   				alert("加载数据失败："+data.ResMsg.message);
@@ -3225,15 +3226,16 @@ G_ajax_abs_save(opt);
 /*  
 * <发布课程>添加与修改
 * */
-   function class_students_manage_onClick_byRight(m,formdata){
+   function px_course_onClick_byRight(m,formdata){
 	   var name;
 	   if(m=="add"){
 		   name="新建课程";
 	   }else{
 		   name="编辑课程";
 	   }
-	   Queue.push(function(){class_students_manage_onClick_byRight(formdata);},name);
-		React.render(React.createElement(Px_Teachingplan_edit,{
+	   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
+		React.render(React.createElement(Px_course_edit,{
+			groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
  			formdata:formdata,
  			}), document.getElementById('div_body'));
 
@@ -3242,10 +3244,10 @@ G_ajax_abs_save(opt);
  * 班级详情内添加编辑提交按钮服务器请求
  * 直接把Form表单发送给服务器
  * */ 
-function ajax_teachingplan_save_byRight(){
+function ajax_course_save_byRight(){
     var opt={
-            formName: "editTeachingplanForm",
-            url:hostUrl + "rest/pxteachingplan/save.json",
+            formName: "editCourseForm",
+            url:hostUrl + "rest/pxCourse/save.json",
             cbFN:null
             };
 G_ajax_abs_save(opt);

@@ -36,7 +36,8 @@ public class PxCourseService extends AbstractService {
 			ResponseMessage responseMessage,User user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
 		return false;
-		
+		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))
+			return false;
 
 		PxCourse pxCourse = new PxCourse();
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
@@ -61,7 +62,9 @@ public class PxCourseService extends AbstractService {
 			ResponseMessage responseMessage,User user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
 			return false;
-			
+		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))
+			return false;
+	
 		
 		PxCourse pxCourse=(PxCourse) this.nSimpleHibernateDao.getObject(PxCourse.class, pxCourseJsonform.getUuid());
 		

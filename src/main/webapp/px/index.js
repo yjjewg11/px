@@ -816,7 +816,7 @@ function menu_teachingjudge_list_fn_byRight () {
 //var G_myCurClassuuid=null;
 //var G_myClassList=null;
 function menu_course_byRight() {
-	console.log("Store.getCurGroup()",Store.getCurGroup());
+//	console.log("Store.getCurGroup()",Store.getCurGroup());
 //	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
 //	if(!groupList||groupList.length==0){
 //		alert("没有权限。");
