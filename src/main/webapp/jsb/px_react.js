@@ -2475,7 +2475,9 @@ var AMR_Col=AMUIReact.Col;
   render: function() {
   	  var o = this.state;
 	  var course_list=Store.getCourseList(o.groupuuid);
-	  if(!course_list)course_list=[];
+
+	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -6259,6 +6261,8 @@ render: function() {
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
 	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
+	   if(o.type==null&&course_type_list.length>0)o.type=course_type_list[0].value;
+	   if(o.status==null)o.status=1;
  return (
  		React.createElement("form", {id: "editCourseForm", method: "post", className: "am-form"}, 
  			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 

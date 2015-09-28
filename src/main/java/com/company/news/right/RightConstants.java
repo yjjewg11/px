@@ -58,6 +58,9 @@ public class RightConstants {
 	static public String PX_class_m="PX_class_m";//	班级管理员权限-增傻查改
 	static public String PX_class_del="PX_class_del";//	班级管理员权限-增傻查改
 	static public String PX_role_m="PX_role_m";//	角色管理(增改)
+	static public String PX_course_m="PX_course_m";//	对外课程管理权限
+	
+	
 	
 	
 //	static public String KD_check_disable="KD_check_disable";//	屏蔽非法文章

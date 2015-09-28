@@ -82,7 +82,14 @@ function login_affter_init(){
 	if(G_user_hasRight("PX_group_m")){
 		menu_data.push(t_menu);
 	}
-
+	t_menu= {
+            "link": "##",
+            "fn":menu_course_byRight,
+            "title": "发布课程"
+          };
+		if(G_user_hasRight("PX_course_m")){
+			menu_data.push(t_menu);
+		}	
 //————————————发布消息<权限>——————————	
 	t_menu={
 	            "link": "##",
@@ -213,14 +220,7 @@ function login_affter_init(){
 			if(G_user_hasRight("PX_accounts_m")){
 				menu_data.push(t_menu);
 			}
-			t_menu= {
-	                "link": "##",
-	                "fn":menu_course_byRight,
-	                "title": "发布课程"
-	              };
-				//if(G_user_hasRight("PX_accounts_m")){
-					menu_data.push(t_menu);
-				//}	
+			
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",

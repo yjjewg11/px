@@ -3248,7 +3248,11 @@ function ajax_course_save_byRight(){
     var opt={
             formName: "editCourseForm",
             url:hostUrl + "rest/pxCourse/save.json",
-            cbFN:null
+            cbFN:function(data){
+            	Store.clearCourseList();
+					G_msg_pop(data.ResMsg.message);
+					Queue.doBackFN();
+            }
             };
 G_ajax_abs_save(opt);
 }
