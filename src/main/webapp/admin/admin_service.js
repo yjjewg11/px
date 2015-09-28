@@ -1025,7 +1025,7 @@ function ajax_classs_Mygoodlist_byRight(list_div,pageNo,type,callback) {
 	if(!pageNo)pageNo=1;
 	g_classnews_pageNo_point=pageNo;
 	$.AMUI.progress.start();
-	url =hostUrl + "rest/classnews/listClassNewsByAdmin.json";
+	url =hostUrl + "rest/classnews/getAllClassNewsByWJ.json";
 
 	$.ajax({
 		type : "GET",

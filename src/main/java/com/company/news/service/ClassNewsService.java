@@ -396,6 +396,20 @@ public class ClassNewsService extends AbstractService {
 		
 		return pageQueryResult;
 	}
+	
+	public PageQueryResult getAllClassNewsByWJ( User user,
+			PaginationData pData) {
+		String hql = "from ClassNews where status=0 ";
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHqlNoTotal(hql, pData);
+		List<ClassNews> list=pageQueryResult.getData();
+		this.warpVoList(list, user.getUuid());
+		
+		return pageQueryResult;
+	}
 
 	
 	public PieStatisticsVo getMyClassnewStatistics(ResponseMessage responseMessage,
