@@ -20,7 +20,6 @@ import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.User;
 import com.company.news.jsonform.PxStudentJsonform;
-import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
@@ -28,7 +27,6 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.PxClassService;
 import com.company.news.service.PxStudentService;
-import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -127,11 +125,18 @@ public class PxStudentController extends AbstractRESTController {
 	@RequestMapping(value = "/getStudentByClassuuid", method = RequestMethod.GET)
 	public String getStudentByClassuuid(ModelMap model,
 			HttpServletRequest request) {
+		String classuuid=request.getParameter("classuuid");
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
+		if(StringUtils.isBlank(classuuid)){
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("classuuid 不能为空!班级必选.");
+			return "";
+		}
+		
 		List<PxStudent> list = pxStudentService.query(
-				request.getParameter("classuuid"),
-				request.getParameter("groupuuid"));
+				classuuid);
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
@@ -174,6 +179,7 @@ public class PxStudentController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
 
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	public String get(@PathVariable String uuid, ModelMap model,
@@ -318,7 +324,37 @@ public class PxStudentController extends AbstractRESTController {
 	
 	
 	/**
-	 * 给班级添加学生
+	 *
+	 * 查询学生,根据学生全名或者班级
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryByNameOrTel", method = RequestMethod.GET)
+	public String queryByNameOrTel(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		
+		
+		String name=request.getParameter("name");
+		
+		  
+		if(StringUtils.isBlank(name)){ 
+			responseMessage.setMessage("必须填学生全名或家长手机号码!");
+			return "";
+		}
+		
+		PageQueryResult pageQueryResult = pxStudentService.queryByNameOrTel(name,pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+
+	/**
+	 * 增加班级和学生关系
 	 * 
 	 * @param model
 	 * @param request
@@ -334,8 +370,14 @@ public class PxStudentController extends AbstractRESTController {
 			String student_uuid=request.getParameter("student_uuid");
 			String class_uuid =request.getParameter("class_uuid");
 			
-			this.pxStudentService.addStudentClassRelation(student_uuid,class_uuid);
-			
+			if(StringUtils.isBlank(student_uuid)||StringUtils.isBlank(class_uuid)){
+				responseMessage.setMessage("student_uuid,class_uuid 必填");
+				return "";
+			}
+			boolean flag=this.pxStudentService.addStudentClassRelation(student_uuid,class_uuid,responseMessage);
+			if(!flag){
+				return "";
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -345,6 +387,44 @@ public class PxStudentController extends AbstractRESTController {
 		}
 		responseMessage.setMessage("添加成功!");
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	
+
+	/**
+	 * 删除班级和学生关系
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteStudentClass", method = RequestMethod.POST)
+	public String deleteStudentClass(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			
+			
+			String student_uuid=request.getParameter("student_uuid");
+			String class_uuid =request.getParameter("class_uuid");
+			
+			
+			boolean flag = pxStudentService.update_deleteStudentClassRelation(student_uuid,class_uuid,
+					responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("删除成功");
 		return "";
 	}
 	

@@ -55,7 +55,33 @@ public class RightService extends AbstractService {
 
 		return rightList;
 	}
+	/**
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public List getRightListByUser(User user,String grouptype){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession();
 
+		List rightList = s
+				.createSQLQuery(
+						"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1,px_right t3 where t3.uuid=t1.rightuuid and  t0.roleuuid=t1.roleuuid and t3.type="+grouptype+" and  t0.useruuid='"
+								+ user.getUuid() + "'").list();
+
+		
+			
+		// 测试数据,拥有所有权限
+//		if ("true".equals(ProjectProperties.getProperty("Debug_All_role",
+//				"false"))) {
+//			this.logger.warn("调试模式下面,用户有所有角色权限.");
+//			 rightList = s
+//					.createSQLQuery(
+//							"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1 where  t0.roleuuid=t1.roleuuid").list();
+//		}
+
+		return rightList;
+	}
 	/**
 	 * 新增权限
 	 * 

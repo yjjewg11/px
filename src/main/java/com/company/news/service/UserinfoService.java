@@ -797,7 +797,7 @@ public class UserinfoService extends AbstractService {
 		}
 
 		if (RightConstants.Role_Type_AD.equals(role.getType())) {
-			if (RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)) {
+			if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)) {
 				responseMessage.setMessage("非法授权,平台管理员才可设置.");
 				return false;
 			}
