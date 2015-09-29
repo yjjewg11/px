@@ -250,7 +250,7 @@ public class PxStudentService extends AbstractStudentService {
 		if (StringUtils.isNumeric(name))
 			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
 		else
-			hql += " and  name  = '" + name + "' ";
+			hql += "   name  = '" + name + "' ";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
 		
@@ -260,7 +260,7 @@ public class PxStudentService extends AbstractStudentService {
 			if (StringUtils.isNumeric(name))
 				hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
 			else
-				hql += " and  name  = '" + name + "' ";
+				hql += "   name  = '" + name + "' ";
 
 			 pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
 		}

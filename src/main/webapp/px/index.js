@@ -454,7 +454,6 @@ function menu_hellp_fn(){
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）<班级互动>；
- * @g_classnews_class_list（我的班级列表取成全局变量);
  * @ajax_classnews_list:我的班级服务请求
  * 在kd_service;
  * */
