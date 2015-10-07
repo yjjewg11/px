@@ -1200,12 +1200,6 @@ function react_ajax_announce_good_show(uuid,title){
   
   
 //—————————————————————————————(大图标)家长通讯录—————————————————————————    
-
-////大图标统一定义一个菜单;
-//function menu_parentContactByMyStudent_fn() {
-//	Queue.push(menu_parentContactByMyStudent_fn,"家长通讯录");
-//	ajax_parentContactByMyStudent();
-//};
 /*
  * （首页）家长通讯录功能；服务器请求
  *@服务器请求：POST rest/pxstudent/parentContactByMyStudent.json
