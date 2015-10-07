@@ -4429,6 +4429,8 @@ render: function() {
   	if(g_student_query_point==1){
   		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
   	}
+  	
+  	var class_uuid=this.state.class_uuid;
   	var next_disabled=g_student_query_point>=this.maxPageNo;
       return (
   		  
@@ -4471,7 +4473,7 @@ render: function() {
           ), 
           React.createElement("tbody", null, 
             this.props.events.map(function(event) {
-              return (React.createElement(Query_EventRow_byRight, {key: event.id, event: event}));
+              return (React.createElement(Query_EventRow_byRight, {class_uuid: class_uuid, key: event.id, event: event}));
             })
           )
         )
@@ -4685,7 +4687,7 @@ render: function() {
   	), 
   	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
   	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
-  	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
+  	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "姓名"}), 
   			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
   			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
   			React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
@@ -5483,7 +5485,7 @@ render: function() {
   * <培训机构新版><课程安排>服务器请求后绘制处理方法；
   * 
   * */
- var px_rect_teachingplan_byRight = React.createClass({displayName: "px_rect_teachingplan_byRight",
+ var Px_rect_teachingplan_byRight = React.createClass({displayName: "Px_rect_teachingplan_byRight",
  	 handleChange: function(m,classuuid) {
  		var pageNo;
  		 if(m=="pre"){
@@ -5497,7 +5499,7 @@ render: function() {
  		 }
 	  },
  	 handleChange_button: function(classuuid) {
- 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 		teachingplan_edit_onClick_byRight("add",{classuuid:classuuid,uuid:null});
  	  },
  render: function() {
 	 var o=this.props;
@@ -5594,7 +5596,7 @@ render: function() {
  			       
    		     React.createElement("label", {className: one_classDiv}, "日期:"), 
  		      React.createElement("div", {className: two_classDiv}, 
- 				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange})
+ 				 React.createElement(PxInput, {icon: "calendar", placeholder: "格式：2015-01-01 14:30:00", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange})
  		        ), 
  			 	
  			       React.createElement("label", {className: one_classDiv}, "课时长："), 
@@ -6553,6 +6555,7 @@ render: function() {
 		  this.ajax_queryByNameOrTel();
 	  },
 	  ajax_queryByNameOrTel:function(){
+		  var thit=this;
 		//查询学生根据IDpxstudent_queryByNameOrTel_div绘制
 			$.AMUI.progress.start();
 		    var url = hostUrl + "rest/pxstudent/queryByNameOrTel.json";
@@ -6565,7 +6568,8 @@ render: function() {
 				success : function(data) {
 					$.AMUI.progress.done();
 					if (data.ResMsg.status == "success") {						
-						React.render(React.createElement(Query_adminStudent_list_byRight,{							
+						React.render(React.createElement(Query_adminStudent_list_byRight,{	
+							classuuid:thit.props.formdata.classuuid,
 							events:data.list.data
 							}), document.getElementById('pxstudent_queryByNameOrTel_div'));
 
@@ -6583,7 +6587,7 @@ render: function() {
 				$.AMUI.progress.start();
 			    var url = hostUrl + "rest/pxstudent/deleteStudentClass.json";
 				$.ajax({
-					type : "GET",
+					type : "POST",
 					url : url,
 					data:{class_uuid:class_uuid,student_uuid:student_uuid},
 					dataType : "json",
@@ -6636,7 +6640,7 @@ render: function() {
 				  return(
 
 				  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 				  	
-				  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: thit.ajax_deleteStudentClass.bind(this,event.classuuid,event.uuid), round: true}, event.name)
+				  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: thit.ajax_deleteStudentClass.bind(this,thit.props.formdata.classuuid,event.uuid), round: true}, event.name)
 				  	)  			  	  
 				  )})
 
@@ -6653,7 +6657,15 @@ render: function() {
    * @btn_query_click:名字查找；
    * */
   var Query_adminStudent_list_byRight = React.createClass({displayName: "Query_adminStudent_list_byRight",
+	   getInitialState: function() {
+			return this.props; 
+	   },
+	    //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+ 	  componentWillReceiveProps: function(nextProps) {	
+ 		  this.setState(nextProps);
+ 		},
   render: function() {
+	  var that=this;
       return ( 		  
       React.createElement("div", null, 
   	   React.createElement("div", {className: "am-form-group"}, 
@@ -6672,8 +6684,8 @@ render: function() {
             )
           ), 
           React.createElement("tbody", null, 
-            this.props.events.map(function(event) {
-              return (React.createElement(Query_EventRow_byRight, {key: event.id, event: event}));
+            this.state.events.map(function(event) {
+              return (React.createElement(Query_adminStudent_list_byRight_EventRow, {classuuid: that.state.classuuid, key: event.uuid, event: event}));
             })
           )
         )
@@ -6688,9 +6700,9 @@ render: function() {
    * 调用ajax_class_students_look_info
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
    * */
-  var Query_EventRow_byRight = React.createClass({displayName: "Query_EventRow_byRight", 
-  	btn_students_list_click:function(classuuid,uuid){
-  		add_StudentClass(classuuid,uuid);
+  var Query_adminStudent_list_byRight_EventRow = React.createClass({displayName: "Query_adminStudent_list_byRight_EventRow", 
+  	btn_students_list_click:function(uuid){
+  		add_StudentClass(this.props.classuuid,uuid);
   	},
   	  render: function() {
   	    var event = this.props.event;
@@ -6700,7 +6712,7 @@ render: function() {
 
   	    return (
   	      React.createElement("tr", {className: className}, 
-  	        React.createElement("td", null, event.name, " ", React.createElement(AMUIReact.Button, {onClick: this.btn_students_list_click.bind(this,event.classuuid,event.uuid), amStyle: "success"}, "添加")), 
+  	        React.createElement("td", null, event.name, " ", React.createElement(AMUIReact.Button, {onClick: this.btn_students_list_click.bind(this,event.uuid), amStyle: "success"}, "添加")), 
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.ma_tel), 

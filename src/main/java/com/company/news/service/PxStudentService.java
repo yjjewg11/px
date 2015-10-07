@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,14 @@ public class PxStudentService extends AbstractStudentService {
 		PxClass pxClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, class_uuid);
 		if(pxClass==null){
 			responseMessage.setMessage("没找到对应班级!");
+			return false;
+		}
+		String t_hql="select uuid from PxStudentPXClassRelation where student_uuid=:student_uuid and class_uuid=:class_uuid";
+		Query query2 =this.nSimpleHibernateDao. getSession().createQuery(t_hql);
+		query2.setParameter("student_uuid", student_uuid);
+		query2.setParameter("class_uuid", class_uuid);
+		if(query2.list().size()>0){
+			responseMessage.setMessage("该学生已经在该班级了，不用重复添加！");
 			return false;
 		}
 		PxStudent pxStudent=(PxStudent)this.nSimpleHibernateDao.getObject(PxStudent.class, student_uuid);
@@ -248,7 +257,7 @@ public class PxStudentService extends AbstractStudentService {
 		
 		String hql = "from PxStudent where ";
 		if (StringUtils.isNumeric(name))
-			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
+			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"')";
 		else
 			hql += "   name  = '" + name + "' ";
 
@@ -256,9 +265,9 @@ public class PxStudentService extends AbstractStudentService {
 		
 		//如果没找到对应的,就到幼儿园的数据表里面进行抓取.
 		if(pageQueryResult.getData()==null||pageQueryResult.getData().size()==0){
-			 hql = "from PxStudent where ";
+			 hql = "from Student where ";
 			if (StringUtils.isNumeric(name))
-				hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
+				hql += "  uuid in (select student_uuid from StudentContactRealation where tel ='"+name+"')";
 			else
 				hql += "   name  = '" + name + "' ";
 

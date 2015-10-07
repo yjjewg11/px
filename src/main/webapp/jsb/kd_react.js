@@ -5013,7 +5013,7 @@ render: function() {
   	), 
   	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
   	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
-  	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
+  	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "姓名"}), 
   			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
   			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
   			React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 

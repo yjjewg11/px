@@ -61,10 +61,10 @@ public class PxTeachingPlanService extends AbstractService {
 				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
 		return false;
 		
-		Date plandate = TimeUtils.string2Timestamp(null,pxTeachingPlanJsonform.getPlandateStr());
+		Date plandate = TimeUtils.string2Timestamp(TimeUtils.DEFAULTFORMAT,pxTeachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
-			responseMessage.setMessage("Plandate格式不正确");
+			responseMessage.setMessage("上课时间格式不正确，格式：2015-10-07 14:20:00");
 			return false;
 		}
 
