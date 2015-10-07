@@ -845,7 +845,7 @@ var g_begDateStr_pageNo_point=0;
 	  	now=G_week.getDate(now,pageNo*7);
 	var begDateStr=G_week.getWeek0(now,pageNo);
 	var endDateStr=G_week.getWeek6(now,pageNo);
-		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"课程安排");
+		Queue.push(function(){px_ajax_teachingplan_fn(classuuid,pageNo);},"课程安排");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
@@ -900,41 +900,6 @@ var g_begDateStr_pageNo_point=0;
 //            };
 //G_ajax_abs_save(opt);
 //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1200,12 +1165,6 @@ function react_ajax_announce_good_show(uuid,title){
   
   
 //—————————————————————————————(大图标)家长通讯录—————————————————————————    
-
-////大图标统一定义一个菜单;
-//function menu_parentContactByMyStudent_fn() {
-//	Queue.push(menu_parentContactByMyStudent_fn,"家长通讯录");
-//	ajax_parentContactByMyStudent();
-//};
 /*
  * （首页）家长通讯录功能；服务器请求
  *@服务器请求：POST rest/pxstudent/parentContactByMyStudent.json
