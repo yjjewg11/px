@@ -82,7 +82,14 @@ function login_affter_init(){
 	if(G_user_hasRight("PX_group_m")){
 		menu_data.push(t_menu);
 	}
-
+	t_menu= {
+            "link": "##",
+            "fn":menu_course_byRight,
+            "title": "发布课程"
+          };
+		if(G_user_hasRight("PX_course_m")){
+			menu_data.push(t_menu);
+		}	
 //————————————发布消息<权限>——————————	
 	t_menu={
 	            "link": "##",
@@ -213,6 +220,7 @@ function login_affter_init(){
 			if(G_user_hasRight("PX_accounts_m")){
 				menu_data.push(t_menu);
 			}
+			
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",
@@ -446,7 +454,6 @@ function menu_hellp_fn(){
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）<班级互动>；
- * @g_classnews_class_list（我的班级列表取成全局变量);
  * @ajax_classnews_list:我的班级服务请求
  * 在kd_service;
  * */
@@ -468,6 +475,33 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
+//培训机构课程安排模块，列表代码	
+		var classList=Store.getMyClassList();
+ 		var class_uuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		G_myClassList=classList;
+	px_ajax_teachingplan_fn(classuuid);
+	return;
+//---------------------------------------------------------------------------------	
+////培训机构课程表	
+//	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
+//	var myclasslist=Store.getMyClassList();
+//	if(!myclasslist||myclasslist.length==0){
+//		G_msg_pop("请先创建班级!");
+//		return ;
+//	}
+//	if(!G_myCurClassuuid){
+//		G_myCurClassuuid=myclasslist[0].uuid;
+//	}
+//	React.render(React.createElement(Px_Teachingplan_show7Day, {
+//			classuuid:G_myCurClassuuid,
+//			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
+//			}), document.getElementById('div_body'));
+//	return;
+//---------------------------------------------------------------------------------	
+////幼儿园新版课程表	
 //	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
 //	var myclasslist=Store.getMyClassList();
 //	if(!myclasslist||myclasslist.length==0){
@@ -482,18 +516,19 @@ function menu_teachingplan_dayShow_fn() {
 //			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
 //			}), document.getElementById('div_body'));
 //	return;
-//---------------------------------------------------------------------------------		
-	var classList=Store.getMyClassList();
-	var classuuid;
-	var classname;
-	if(!classList||classList.length==0){
-		classuuid=null;
-		classname="";
-	}else{
-		classuuid=classList[0].uuid;
-		classname=classList[0].name;
-	}
-	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
+//---------------------------------------------------------------------------------	
+////幼儿园老版课程表	
+//	var classList=Store.getMyClassList();
+//	var classuuid;
+//	var classname;
+//	if(!classList||classList.length==0){
+//		classuuid=null;
+//		classname="";
+//	}else{
+//		classuuid=classList[0].uuid;
+//		classname=classList[0].name;
+//	}
+//	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
 
 /* （首页）家长通讯录功能方法
@@ -563,7 +598,6 @@ function menu_queryCountMsgByParents_message_fn() {
  * */
 function menu_teacherDailyTask_fn() {
 	Queue.push(menu_teacherDailyTask_fn,"每日任务");
-//	   Queue.push(function(){ajax_queryCountMsgByParents_message();},"我的信箱");
 	ajax_teacherDailyTask();
 };
 //老师注册
@@ -668,7 +702,24 @@ function menu_userTeacher_list_fn_byRight() {
  * @跳转widget发服务器请求
  * */
 var G_myCurClassuuid=null;
+var G_myClassList=null;
 function menu_teachingplan_list_fn_byRight() {
+//培训机构课程安排管理模块，列表代码	
+	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
+	if(!groupList||groupList.length==0){
+		alert("没有权限。");
+		return;
+	}
+		var classList=Store.getChooseClass(groupList[0].uuid);
+ 		var class_uuid =null;
+ 		if(classList&&classList.length>0){
+ 			classuuid=classList[0].uuid;
+ 		}
+ 		G_myClassList=classList;
+	px_ajax_teachingplan_byRight(classuuid);	
+	return;
+//---------------------------------------------------------------------------------
+//幼儿园课程安排管理模块，新版代码		
 //	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
 //	var groupList=Store.getGroupByRight("PX_teachingplan_m");
 //	
@@ -684,20 +735,21 @@ function menu_teachingplan_list_fn_byRight() {
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
-	var groupList=Store.getGroupByRight("PX_teachingplan_m");
-	
-	if(!groupList||groupList.length==0){
-		alert("没有权限。");
-		return;
-	}
-	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
-	groupuuid=groupList[0].uuid;
-	
-	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
-		groupuuid:groupuuid,
-		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
-		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+//幼儿园课程安排管理模块，老版代码	
+//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
+//	
+//	if(!groupList||groupList.length==0){
+//		alert("没有权限。");
+//		return;
+//	}
+//	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+//	var groupuuid=groupList[0].uuid;
+//	
+//	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
+//		groupuuid:groupuuid,
+//		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+//		responsive: true, bordered: true, striped :true,hover:true,striped:true
+//		}), document.getElementById('div_body'));
 };
 /*
  * (标头)<园长信箱>
@@ -753,4 +805,27 @@ function menu_statistics_list_fn_byRight() {
  * */
 function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
+};
+
+
+
+/*
+ * (标头)发布对外课程功能
+ * */
+//var G_myCurClassuuid=null;
+//var G_myClassList=null;
+function menu_course_byRight() {
+//	console.log("Store.getCurGroup()",Store.getCurGroup());
+//	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
+//	if(!groupList||groupList.length==0){
+//		alert("没有权限。");
+//		return;
+//	}
+//		var classList=Store.getChooseClass(groupList[0].uuid);
+// 		var class_uuid =null;
+// 		if(classList&&classList.length>0){
+// 			classuuid=classList[0].uuid;
+// 		}
+// 		G_myClassList=classList;
+    	px_ajax_course_byRight();	
 };

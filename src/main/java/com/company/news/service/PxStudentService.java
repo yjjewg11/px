@@ -40,11 +40,45 @@ public class PxStudentService extends AbstractStudentService {
 	 * @throws Exception 
 	 * 
 	 */
-	private void addStudentClassRelation(String student_uuid,String class_uuid) throws Exception{
+	public boolean addStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage) throws Exception{
+	
+		PxClass pxClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, class_uuid);
+		if(pxClass==null){
+			responseMessage.setMessage("没找到对应班级!");
+			return false;
+		}
+		PxStudent pxStudent=(PxStudent)this.nSimpleHibernateDao.getObject(PxStudent.class, student_uuid);
+		if(pxStudent==null){
+			Student student=(Student)this.nSimpleHibernateDao.getObject(Student.class, student_uuid);
+			if(student!=null){
+				pxStudent=new PxStudent();
+				BeanUtils.copyProperties(pxStudent, student);
+				pxStudent.setGroupuuid(pxClass.getGroupuuid());
+				pxStudent.setUuid(null);
+				this.nSimpleHibernateDao.save(pxStudent);
+				
+				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PxStudent set uuid=? where uuid=?",student.getUuid(), pxStudent.getUuid());
+//				pxStudent.setUuid(student.getUuid());
+//				this.nSimpleHibernateDao.save(pxStudent);
+//				student_uuid=pxStudent.getUuid();
+			}
+			
+		}
 		PxStudentPXClassRelation pp=new PxStudentPXClassRelation();
 		pp.setClass_uuid(class_uuid);
 		pp.setStudent_uuid(student_uuid);
-		this.nSimpleHibernateDao.save(pp);		
+		this.nSimpleHibernateDao.save(pp);	
+		return true;
+	}
+	
+
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	public boolean update_deleteStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage) throws Exception{
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from PxStudentPXClassRelation where student_uuid=? and class_uuid=?", student_uuid,class_uuid);
+		return true;
 	}
 	
 	/**
@@ -58,7 +92,8 @@ public class PxStudentService extends AbstractStudentService {
 	public boolean add(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage) throws Exception {
 
 		if(this.validateRequireAndLengthByRegJsonform(pxstudentJsonform.getName(), 32, "姓名", responseMessage)
-				||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage))
+				//||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage)
+				)
 			return false;
 
 		PxClass pXClass = (PxClass) this.nSimpleHibernateDao.getObjectById(PxClass.class, pxstudentJsonform.getClassuuid());
@@ -82,7 +117,7 @@ public class PxStudentService extends AbstractStudentService {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxStudent);
 		
 		//保存关联班级
-		this.addStudentClassRelation(pxStudent.getUuid(), pXClass.getUuid());
+		this.addStudentClassRelation(pxStudent.getUuid(), pXClass.getUuid(),responseMessage);
 
         this.updateAllStudentContactRealationByStudent(pxStudent);
 		
@@ -142,19 +177,12 @@ public class PxStudentService extends AbstractStudentService {
 	 * 
 	 * @return
 	 */
-	public List<PxStudent> query(String classuuid, String groupuuid) {
-		String hql = "from PxStudent where 1=1";
-
-		if (StringUtils.isNotBlank(groupuuid))
-			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  uuid in (select student_uuid from PxStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
-
+	public List<PxStudent> query(String classuuid) {
+		
+		String hql = "from PxStudent where  uuid in (select student_uuid from PxStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
 		hql += " order by classuuid, convert(name, 'gbk') ";
 		List list = (List<PxStudent>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
-
 		warpVoList(list);
-
 		return list;
 	}
 
@@ -198,6 +226,44 @@ public class PxStudentService extends AbstractStudentService {
 		hql += " order by groupuuid,classuuid, convert(name, 'gbk') ";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		this.warpVoList(pageQueryResult.getData());
+
+		return pageQueryResult;
+	}
+
+	
+
+	/**
+	 * 
+	 * @param groupuuid
+	 * @param classuuid
+	 * @param name
+	 * @param pData
+	 * @return
+	 */
+	public PageQueryResult queryByNameOrTel( String name, PaginationData pData) {
+		
+		if (StringUtils.isBlank(name))
+			return new PageQueryResult();
+		
+		String hql = "from PxStudent where ";
+		if (StringUtils.isNumeric(name))
+			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
+		else
+			hql += "   name  = '" + name + "' ";
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		
+		//如果没找到对应的,就到幼儿园的数据表里面进行抓取.
+		if(pageQueryResult.getData()==null||pageQueryResult.getData().size()==0){
+			 hql = "from PxStudent where ";
+			if (StringUtils.isNumeric(name))
+				hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"'";
+			else
+				hql += "   name  = '" + name + "' ";
+
+			 pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		}
 		this.warpVoList(pageQueryResult.getData());
 
 		return pageQueryResult;

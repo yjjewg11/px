@@ -225,17 +225,26 @@ var w_ch_user={
 	handleClick:function(m,groupuuid,useruuids,usernames){
 		
 		w_ch_user.hide();
-		if(m=="cancel")return;
-		if(w_ch_user.callback){
-			w_ch_user.callback(useruuids,usernames,groupuuid);
+		if(m=="cancel"){
+			w_ch_user.callback=null;
+			w_ch_user.bind_inputid_uuid=null;
+			w_ch_user.bind_inputid_name=null;
 			return;
 		}
 		if(w_ch_user.bind_inputid_uuid){
 			$("#"+w_ch_user.bind_inputid_uuid).val(useruuids);
+			w_ch_user.bind_inputid_uuid=null;
 		}
 		if(w_ch_user.bind_inputid_name){
 			$("#"+w_ch_user.bind_inputid_name).val(usernames);
+			w_ch_user.bind_inputid_name=null;
 		}
+		if(w_ch_user.callback){
+			w_ch_user.callback(useruuids,usernames,groupuuid);
+			w_ch_user.callback=null;
+			return;
+		}
+		
 	},
 	
 	/**
@@ -252,6 +261,8 @@ var w_ch_user={
 			alert("参数groupuuid不能为null");
 			return;
 		}
+		w_ch_user.bind_inputid_uuid=null;
+		w_ch_user.bind_inputid_name=null;
 		//指定一个学校
 		w_ch_user.groupuuid=groupuuid;
 		w_ch_user.useruuids=useruuids;

@@ -138,6 +138,7 @@ public class UserinfoService extends AbstractService {
 		user.setTel_verify(USER_tel_verify_default);
 		user.setSex(SystemConstants.User_sex_female);// 默认女
 		user.setOffice("老师");
+		user.setCount(0l);
 
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
@@ -796,7 +797,7 @@ public class UserinfoService extends AbstractService {
 		}
 
 		if (RightConstants.Role_Type_AD.equals(role.getType())) {
-			if (RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)) {
+			if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)) {
 				responseMessage.setMessage("非法授权,平台管理员才可设置.");
 				return false;
 			}

@@ -114,7 +114,7 @@ public class StudentBindService extends AbstractService {
 		//绑定卡号
 		String updateHql="update StudentBind set cardid=? where groupuuid=? and userid=?";
 		relcount=this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(updateHql,doorUserJsonform.getCardid(), doorUserJsonform.getGroupuuid(),doorUserJsonform.getUserid());
-		this.logger.error("relcount:"+relcount);
+//		this.logger.error("updateHql,relcount:"+relcount);
 //		transaction.commit();
 		if(relcount>0){
 			return true;

@@ -75,14 +75,15 @@ public class UploadFileService extends AbstractService {
 
 		byte[] b = null;
 		if (base64 != null) {
-			String tmpbase64 = base64.substring(base64.indexOf(";base64,")
-					+ ";base64,".length());
-			contentType = base64.substring("data:".length(),
-					base64.indexOf(";base64,"));
-			// extension=contentType.substring("image/".length());
-
-			BASE64Decoder decoder = new BASE64Decoder();
 			try {
+				String tmpbase64 = base64.substring(base64.indexOf(";base64,")
+						+ ";base64,".length());
+				contentType = base64.substring("data:".length(),
+						base64.indexOf(";base64,"));
+				// extension=contentType.substring("image/".length());
+	
+				BASE64Decoder decoder = new BASE64Decoder();
+				
 				b = decoder.decodeBuffer(tmpbase64);
 			} catch (Exception e) {
 				e.printStackTrace();

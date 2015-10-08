@@ -1032,7 +1032,7 @@ var Teachingplan_showByOneDay = React.createClass({
 	handleChange_selectgroup_uuid: function(val) {
 		 ajax_teachingplan_dayShow(g_teachingplan_listToShow_point,{uuid:val,name:Store.getClassNameByUuid(val)});  
     },
-	handleClick_class: function(m,uuid,classuuid,ch_day) {
+	handleClick_class: function(m,classuuid,ch_day) {
 			 btn_click_teachingplan(m,null,classuuid,ch_day);
 			 return;
 
@@ -1082,7 +1082,7 @@ var Teachingplan_showByOneDay = React.createClass({
 		  <i className="am-icon-angle-right"></i>
 		</button>
 		<AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth= "200" data={ this.props.classList} btnStyle="primary" value={this.props.ch_class.uuid} />
-		 < AMR_Button className={edit_btn_className} amStyle ="primary" onClick={this.handleClick_class.bind( this ,"add",null ,this.props.ch_class.uuid,this.props.ch_day)} round >新增课程</AMR_Button >
+		 < AMR_Button className={edit_btn_className} amStyle ="primary" onClick={this.handleClick_class.bind( this ,"add",this.props.ch_class.uuid,this.props.ch_day)} round >新增课程</AMR_Button >
 		</div>
 		<div className="header">
 		  <div className="am-g">
@@ -1100,7 +1100,46 @@ var Teachingplan_showByOneDay = React.createClass({
 	   </div>
 );
 }
-}); 
+});
+/*
+ *<课程表>班级详情添加与编辑内容绘制;
+ * @add:添加班级课程；
+ * @pre:上周；
+ * @next:下一周；
+ * */
+var Teachingplan_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editTeachingplanForm').serializeJson());
+	  },
+render: function() {
+	  var o = this.state;
+return (
+		<div>
+		<div className="header">
+		  <hr />
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		  <form id="editTeachingplanForm" method="post" className="am-form">
+		<input type="hidden" name="uuid"  value={o.uuid}/>
+		<input type="hidden" name="classuuid"  value={o.classuuid}/>
+		 <label htmlFor="name">日期:</label>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		      <br/>
+	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
+		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
+		      <button type="button"  onClick={ajax_teachingplan_save}  className="am-btn am-btn-primary">提交</button>
+	 </form>
+	     </div>
+	   </div>
+	   
+	   </div>
+);
+}
+});
 //——————————————————————————（新版首页->课程表）<绘制>——————————————————————————  
 /*
  * 

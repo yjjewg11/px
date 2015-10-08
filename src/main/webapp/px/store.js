@@ -17,6 +17,7 @@
  * Store.getCurGroupByRight(rightname)//获取当前学校当前
  * Store.getGroupByRight(rightname);获取有权限的学校列表;
  * Store.getRoleList(type);获取角色列表;type:1 幼儿园
+ * Store.getCourseList(uuid);//根据学校获取发布课程
  * 
  * Store.clear();
  * 
@@ -67,6 +68,7 @@ var Store={
 		if(!o)o="";
 		return o;
 	},
+	
 	setRoleList:function(type,v){
 		this.map["RoleList_"+type]=v;
 	},
@@ -143,6 +145,36 @@ var Store={
 	getChooseCook:function(type){
 		 return this.map["ChooseCook"+type];
 	},
+	
+
+	/**
+	 * 设置对外课程到内存缓存。
+	 * @param v
+	 */
+	setCourseList:function(groupuuid,v){
+		this.map["CourseList"+groupuuid]=v;
+	},
+	/**
+	 * 设置班级选择控件到内存缓存。
+	 * @param v
+	 */
+	clearCourseList:function(){
+		for(var key in this.map){
+			if(key.indexOf("CourseList")>-1){
+				console.log("clearChooseClass:key",key);
+				this.map[key]=null;
+			}
+		}
+	},
+	//getCourseListByGroup
+	getCourseList:function(v){
+		if(!v)return [];
+		var key="CourseList"+v;
+		 if(this.map[key])return this.map[key];
+		 store_ajax_CourseList_listByGroup(v);
+		 if(this.map[key])return this.map[key];
+		 return [];
+	},
 	/**
 	 * 设置班级选择控件到内存缓存。
 	 * @param v
@@ -171,6 +203,7 @@ var Store={
 		 if(this.map[key])return this.map[key];
 		 return [];
 	},
+	
 	getClassNameByUuid:function(uuid){
 		if(!uuid)return "";
 		var arr=this.getGroup();
@@ -603,6 +636,31 @@ function Store_ajax_group_allList_toStroe() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setAllGroup(data.list);
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+};
+
+
+
+//list<object<uuid,title,groupuuid,type>
+function store_ajax_CourseList_listByGroup(groupuuid){
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/pxCourse/listForCache.json?groupuuid="+groupuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setCourseList(groupuuid,data.list)
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);

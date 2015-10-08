@@ -209,7 +209,7 @@ public class UserinfoController extends AbstractRESTController {
 				//取相关权限
 				model.put(RestConstants.Return_JSESSIONID, session.getId());
 				 //List<groupuuid,rightname>
-				List rightList=rightService.getRightListByUser(user);
+				List rightList=rightService.getRightListByUser(user,userLoginForm.getGrouptype());
 				//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
 				//取相关机构
 				List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
