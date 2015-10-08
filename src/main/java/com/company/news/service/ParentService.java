@@ -1,5 +1,7 @@
 package com.company.news.service;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,22 @@ public class ParentService extends AbstractService {
 				.findByPaginationToHql(hql, pData);
 		return pageQueryResult;
 	}
+	
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getParentCountByGroup(String groupuuid) {
+
+		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("select count(parent_uuid),class_uuid from StudentContactRealation where groupuuid=? and parent_uuid is not null group by class_uuid)", groupuuid);
+
+		return list;
+	}
+	
 	@Override
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub

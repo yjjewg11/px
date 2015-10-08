@@ -38,6 +38,8 @@ public class StatisticsService extends AbstractService {
 	@Autowired
 	private StudentService studentService;
 	@Autowired
+	private ParentService parentService;
+	@Autowired
 	private ClassService classService;
 	@Autowired
 	private ClassNewsService classNewsService;
@@ -252,6 +254,68 @@ public class StatisticsService extends AbstractService {
 		// 根据机构ID获取班级人数
 		List<Object[]> slist = studentService
 				.getStudentCountByGroup(group_uuid);
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		if (slist != null && slist.size() > 0) {
+			Map m = new HashMap<String, Integer>();
+			for (Object[] o : slist) {
+				m.put(o[1], o[0]);
+			}
+
+			String ps_data = "";
+			for (PClass p : list) {
+				ps_data += ((m.get(p.getUuid()) == null ? 0 : m
+						.get(p.getUuid())) + ",");
+			}
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("班级人数");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
+
+			plist.add(sdvo);
+
+		}
+
+		vo.setSeries_data(plist);
+		logger.debug("end 用户性别统计");
+		return vo;
+
+	}
+	
+	
+	/**
+	 * 获取班级家长人数统计 class student Statistics
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getCpsBygroup(ResponseMessage responseMessage,
+			String group_uuid) {
+		// 验证group合法性
+		if (!validateGroup(group_uuid, responseMessage))
+			return null;
+
+		logger.debug("begain 班级家长人数统计");
+
+		List<PClass> list = classService.query(group_uuid);
+		logger.debug("classService.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		vo.setTitle_text(g.getCompany_name() + " 班级家长人数统计");
+		vo.setTitle_subtext("总计 " + list.size() + " 班");
+		List legend_data = new ArrayList();
+		legend_data.add("家长人数");
+		vo.setLegend_data(legend_data);
+		String axis_data = "";
+		for (PClass p : list) {
+			axis_data += ("'" + p.getName() + "',");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		// 根据机构ID获取班级人数
+		List<Object[]> slist = parentService
+				.getParentCountByGroup(group_uuid);
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		if (slist != null && slist.size() > 0) {
 			Map m = new HashMap<String, Integer>();
