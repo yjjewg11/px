@@ -56,8 +56,9 @@ var PXECharts_ajax={
 		var data=[];
 		data.push( {value: 'uss', label: '教师统计（按性别）'});
 		data.push( {value: 'uls', label: '教师统计（按登陆时间）'});
-		data.push( {value: 'sss', label: '学生统计（按性别）'});
-		data.push( {value: 'css', label: '学生统计（按班级人数）'});
+		data.push( {value: 'sss', label: '人数统计（按性别）'});
+		data.push( {value: 'css', label: '人数统计（按班级学生）'});
+		data.push( {value: 'cps', label: '人数统计（按班级家长）'});		
 		data.push( {value: 'cns', label: '互动统计（按班级发帖数）'});
 		//data.push( {value: 'cnts', label: '班级互动热门TOP10'});
 		return data;
@@ -91,6 +92,9 @@ var PXECharts_ajax={
 		PXECharts_ajax.ajax_css(data);
 	},*/
 	ajax_css:function(data){
+		PXECharts_ajax.ajax_css(data);
+	},	
+	ajax_cps:function(data){
 		PXECharts_ajax.ajax_css(data);
 	},
 	/**
