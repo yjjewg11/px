@@ -5468,11 +5468,6 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
-     
-
-     
-
- 
 
  
 //——————————————————————————<培训机构新版>课程安排<管理模块绘制>——————————————————————————  
@@ -5481,39 +5476,58 @@ render: function() {
   * 
   * */
  var px_rect_teachingplan_byRight = React.createClass({
-	 isAddStudentFlag:false,
-	  addStudent_btn:function(){
- 		  this.isAddStudentFlag=true;
+	 isAddteachingplanFlag:false,
+	 class_nameFlag:true,
+	 form_data:null,
+	  addteachingplan_btn:function(event){
+		  //新增和修改按钮点击事件；更新form_data
+		  this.form_data=event;
+ 		  this.isAddteachingplanFlag=true;
+ 		  this.class_nameFlag=false;
  		  this.setState(this.state);
  	  },
  	 componentWillReceiveProps: function(nextProps) {
- 		 this.isAddStudentFlag=false;
+ 		 //同一界面数据变化更新作用方法;
+ 		 this.isAddteachingplanFlag=false;
+ 		this.class_nameFlag=true;
+
 		},
- 	 handleChange: function(m,classuuid) {
- 		var pageNo;
- 		 if(m=="pre"){
- 			pageNo=g_begDateStr_pageNo_point-1;
- 			px_ajax_teachingplan_byRight(classuuid,pageNo);
- 			return
- 		 }else{
- 			pageNo=g_begDateStr_pageNo_point+1;
- 			px_ajax_teachingplan_byRight(classuuid,pageNo);
- 			return 
- 		 }
-	  },
- 	 handleChange_button: function(classuuid) {
- 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
- 	  },
+// 	 handleChange: function(m,classuuid) {
+// 		var pageNo;
+// 		 if(m=="pre"){
+// 			pageNo=g_begDateStr_pageNo_point-1;
+// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+// 			return
+// 		 }else{
+// 			pageNo=g_begDateStr_pageNo_point+1;
+// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+// 			return 
+// 		 }
+//	  },
+// 	 handleChange_button: function(classuuid) {
+// 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+// 	  },
+ 	 delete_button: function(event){
+ 		 //删除课程按钮事件
+ 		px_react_ajax_teachingplan_delete(event);
+	  }, 
  render: function() {
 	 var o=this.props;
-	 var formd_ata={classuuid:this.props.classuuid,uuid:null};
+	 var thit=this;
 		 var addStudent=(<div></div>);
- 		 if(this.isAddStudentFlag){
+		 var class_name=(<div></div>);
+		 //新增与修改镶嵌div;
+ 		 if(this.isAddteachingplanFlag){
  			 addStudent=(
- 					 <Px_Teachingplan_edit formdata={formd_ata} />
+ 					 <Px_Teachingplan_edit formdata={this.form_data} />
  				  );
- 		        }
- 		 
+ 		        };	
+ 		 //班级名字头标Div（区分镶嵌的头标而设）;       
+ 		 if(this.class_nameFlag){
+ 			class_name=(
+ 				      <legend>{Store.getClassByUuid(o.classuuid).name}</legend> 
+ 				  );
+ 		        };
      return (
      <div>
      <AMR_ButtonToolbar>
@@ -5526,8 +5540,8 @@ render: function() {
 			  )})}
 		 </AMR_ButtonToolbar>
 	 	  <hr/>
-      <legend>{Store.getClassByUuid(o.classuuid).name}</legend> 		 
-
+	  {class_name}	 
+      {addStudent}
        <AMR_Table {...this.props}>  
          <thead> 
            <tr>
@@ -5541,13 +5555,21 @@ render: function() {
          </thead>
          <tbody>
            {this.props.events.map(function(event) {
-             return (<Query_teachingplan_byRight key={event.id} event={event} />);
+        	  	return (
+        	   	  	  <tr>
+        	   	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={thit.addteachingplan_btn.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={thit.delete_button.bind(this,event)} round>删除</AMR_Button></td>
+        	   	  	    <td>{event.plandate}</td>
+        	   	  	    <td>{event.address}</td>
+        	   	  	    <td>{event.readyfor}</td>
+        	   	  	    <td>{event.duration}</td>
+        	   	  		<td>{event.context}</td>
+        	   	  	  </tr> 
+        	   	    );
            })}
          </tbody>
        </AMR_Table>
-       {addStudent}
 		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addStudent_btn.bind(this)} round>新增课程</AMR_Button>	
+		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} round>新增课程</AMR_Button>	
 		</div> 
 		
        </div>
@@ -5555,33 +5577,33 @@ render: function() {
    }
  });
      
- /*  	
-  * <培训机构新版><课程安排>在表单上绘制详细内容;
-  * */
- var Query_teachingplan_byRight = React.createClass({ 
-	 handleChange_button: function(event) {
-		 Px_class_students_manage_onClick_byRight("eit",event);
-	 	  },
-	 	 delete_button: function(event) {
-	 		px_react_ajax_teachingplan_delete(event);
-		 	  }, 	  
- 	  render: function() {
- 	    var event = this.props.event;
- 	 	var className = event.highlight ? 'am-active' :
- 	  	  event.disabled ? 'am-disabled' : '';
-
- 	  	return (
- 	  	  <tr className={className} >
- 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={this.delete_button.bind(this,event)} round>删除</AMR_Button></td>
- 	  	    <td>{event.plandate}</td>
- 	  	    <td>{event.address}</td>
- 	  	    <td>{event.readyfor}</td>
- 	  	    <td>{event.duration}</td>
- 	  		<td>{event.context}</td>
- 	  	  </tr> 
- 	    );
- 	  }
- 	}); 
+// /*  	
+//  * <培训机构新版><课程安排>在表单上绘制详细内容;
+//  * */
+// var Query_teachingplan_byRight = React.createClass({ 
+//	 handleChange_button: function(event) {
+//		 Px_class_students_manage_onClick_byRight("eit",event);
+//	 	  },
+//	 	 delete_button: function(event) {
+//	 		px_react_ajax_teachingplan_delete(event);
+//		 	  }, 	  
+// 	  render: function() {
+// 	    var event = this.props.event;
+// 	 	var className = event.highlight ? 'am-active' :
+// 	  	  event.disabled ? 'am-disabled' : '';
+//
+// 	  	return (
+// 	  	  <tr className={className} >
+// 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={this.delete_button.bind(this,event)} round>删除</AMR_Button></td>
+// 	  	    <td>{event.plandate}</td>
+// 	  	    <td>{event.address}</td>
+// 	  	    <td>{event.readyfor}</td>
+// 	  	    <td>{event.duration}</td>
+// 	  		<td>{event.context}</td>
+// 	  	  </tr> 
+// 	    );
+// 	  }
+// 	}); 
 //培训机构新课程表添加与编辑绘制
  var Px_Teachingplan_edit = React.createClass({ 
 	 getInitialState: function() {
@@ -5590,47 +5612,61 @@ render: function() {
 	 handleChange: function(event) {
 		    this.setState($('#editTeachingplanForm').serializeJson());
 	  },
+	  componentWillReceiveProps: function(nextProps) {
+  		 this.setState(nextProps.formdata);
+		},
  render: function() {
  	  var o = this.state;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+  	  var class_name=(<div></div>);
+  	  if(o.uuid){
+  		class_name=(
+		<legend>{Store.getClassByUuid(o.classuuid).name+"-"+o.name+"课程修改"}</legend>   
+  	    )
+  	  }else{
+  		class_name=(
+  		<legend>{Store.getClassByUuid(o.classuuid).name+"-新增课程"}</legend> 
+  		)
+  	  }
  return (
  		<form id="editTeachingplanForm" method="post" className="am-form">
  			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
  		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
  		   <div className="am-form-group">
- 			
- 		       <label className={one_classDiv}>课程名：</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
- 			        </div>
+ 			{class_name}
+	       <label className={one_classDiv}>课程名：</label>
+		     <div className={two_classDiv}>
+		       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+		        </div>
  			 	
-    		     <label className={one_classDiv}>日期</label>
-      		      <div className={two_classDiv}>
-      		       <PxInput icon="birthday-cake" type="text"  placeholder="YYYY-MM-DD" name="plandateStr" id="plandate" value={o.plandate} onChange={this.handleChange}/>
-    		        </div>	 
+		       <label className={one_classDiv}>日期</label>
+  		      <div className={two_classDiv}>
+  		     <PxInput icon="birthday-cake" type="text"  placeholder="YYYY-MM-DD" name="plandateStr" id="plandate" value={o.plandate} onChange={this.handleChange}/>
+		    </div>	 
  				 
- 			       <label className={one_classDiv}>课时长：</label>
- 				     <div className={two_classDiv}>
- 				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
- 				        </div>
+	       <label className={one_classDiv}>课时长：</label>
+		     <div className={two_classDiv}>
+		       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
+		        </div>
  				 
- 				       <label className={one_classDiv}>上课地点：</label>
- 					     <div className={two_classDiv}>
- 					       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
- 					        </div>
+		       <label className={one_classDiv}>上课地点：</label>
+			  <div className={two_classDiv}>
+			 <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+			</div>
  					       
- 	  		     <label className={one_classDiv}>准备工具:</label>
- 			      <div className={two_classDiv}>
- 			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
- 			        </div>
+  		     <label className={one_classDiv}>准备工具:</label>
+		      <div className={two_classDiv}>
+		       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+		        </div>
  			       
-				       <label className={one_classDiv}>课程详细内容：</label>
-					     <div className={two_classDiv}>
-					       <PxInput  type="text" name="context" id="context" maxLength="20" value={o.context} onChange={this.handleChange}/>
-					        </div>
+			   <label className={one_classDiv}>课程详细内容：</label>
+			  <div className={two_classDiv}>
+			 <PxInput  type="text" name="context" id="context" maxLength="20" value={o.context} onChange={this.handleChange}/>
+			</div>
  				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
- 				      </div>  
+ 				      </div>
+ 				     <hr/>
  		          </form> 	   		   				
 
  );

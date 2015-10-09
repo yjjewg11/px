@@ -5468,11 +5468,6 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
-     
-
-     
-
- 
 
  
 //——————————————————————————<培训机构新版>课程安排<管理模块绘制>——————————————————————————  
@@ -5481,39 +5476,58 @@ render: function() {
   * 
   * */
  var px_rect_teachingplan_byRight = React.createClass({displayName: "px_rect_teachingplan_byRight",
-	 isAddStudentFlag:false,
-	  addStudent_btn:function(){
- 		  this.isAddStudentFlag=true;
+	 isAddteachingplanFlag:false,
+	 class_nameFlag:true,
+	 form_data:null,
+	  addteachingplan_btn:function(event){
+		  //新增和修改按钮点击事件；更新form_data
+		  this.form_data=event;
+ 		  this.isAddteachingplanFlag=true;
+ 		  this.class_nameFlag=false;
  		  this.setState(this.state);
  	  },
  	 componentWillReceiveProps: function(nextProps) {
- 		 this.isAddStudentFlag=false;
+ 		 //同一界面数据变化更新作用方法;
+ 		 this.isAddteachingplanFlag=false;
+ 		this.class_nameFlag=true;
+
 		},
- 	 handleChange: function(m,classuuid) {
- 		var pageNo;
- 		 if(m=="pre"){
- 			pageNo=g_begDateStr_pageNo_point-1;
- 			px_ajax_teachingplan_byRight(classuuid,pageNo);
- 			return
- 		 }else{
- 			pageNo=g_begDateStr_pageNo_point+1;
- 			px_ajax_teachingplan_byRight(classuuid,pageNo);
- 			return 
- 		 }
-	  },
- 	 handleChange_button: function(classuuid) {
- 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
- 	  },
+// 	 handleChange: function(m,classuuid) {
+// 		var pageNo;
+// 		 if(m=="pre"){
+// 			pageNo=g_begDateStr_pageNo_point-1;
+// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+// 			return
+// 		 }else{
+// 			pageNo=g_begDateStr_pageNo_point+1;
+// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
+// 			return 
+// 		 }
+//	  },
+// 	 handleChange_button: function(classuuid) {
+// 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+// 	  },
+ 	 delete_button: function(event){
+ 		 //删除课程按钮事件
+ 		px_react_ajax_teachingplan_delete(event);
+	  }, 
  render: function() {
 	 var o=this.props;
-	 var formd_ata={classuuid:this.props.classuuid,uuid:null};
+	 var thit=this;
 		 var addStudent=(React.createElement("div", null));
- 		 if(this.isAddStudentFlag){
+		 var class_name=(React.createElement("div", null));
+		 //新增与修改镶嵌div;
+ 		 if(this.isAddteachingplanFlag){
  			 addStudent=(
- 					 React.createElement(Px_Teachingplan_edit, {formdata: formd_ata})
+ 					 React.createElement(Px_Teachingplan_edit, {formdata: this.form_data})
  				  );
- 		        }
- 		 
+ 		        };	
+ 		 //班级名字头标Div（区分镶嵌的头标而设）;       
+ 		 if(this.class_nameFlag){
+ 			class_name=(
+ 				      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name) 
+ 				  );
+ 		        };
      return (
      React.createElement("div", null, 
      React.createElement(AMR_ButtonToolbar, null, 
@@ -5526,8 +5540,8 @@ render: function() {
 			  )})
 		 ), 
 	 	  React.createElement("hr", null), 
-      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name), 		 
-
+	  class_name, 	 
+      addStudent, 
        React.createElement(AMR_Table, React.__spread({},  this.props), 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
@@ -5541,13 +5555,21 @@ render: function() {
          ), 
          React.createElement("tbody", null, 
            this.props.events.map(function(event) {
-             return (React.createElement(Query_teachingplan_byRight, {key: event.id, event: event}));
+        	  	return (
+        	   	  	  React.createElement("tr", null, 
+        	   	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,event), round: true}, "修改"), React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: thit.delete_button.bind(this,event), round: true}, "删除")), 
+        	   	  	    React.createElement("td", null, event.plandate), 
+        	   	  	    React.createElement("td", null, event.address), 
+        	   	  	    React.createElement("td", null, event.readyfor), 
+        	   	  	    React.createElement("td", null, event.duration), 
+        	   	  		React.createElement("td", null, event.context)
+        	   	  	  ) 
+        	   	    );
            })
          )
        ), 
-       addStudent, 
 		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addStudent_btn.bind(this), round: true}, "新增课程")	
+		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null}), round: true}, "新增课程")	
 		)
 		
        )
@@ -5555,33 +5577,33 @@ render: function() {
    }
  });
      
- /*  	
-  * <培训机构新版><课程安排>在表单上绘制详细内容;
-  * */
- var Query_teachingplan_byRight = React.createClass({displayName: "Query_teachingplan_byRight", 
-	 handleChange_button: function(event) {
-		 Px_class_students_manage_onClick_byRight("eit",event);
-	 	  },
-	 	 delete_button: function(event) {
-	 		px_react_ajax_teachingplan_delete(event);
-		 	  }, 	  
- 	  render: function() {
- 	    var event = this.props.event;
- 	 	var className = event.highlight ? 'am-active' :
- 	  	  event.disabled ? 'am-disabled' : '';
-
- 	  	return (
- 	  	  React.createElement("tr", {className: className}, 
- 	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改"), React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.delete_button.bind(this,event), round: true}, "删除")), 
- 	  	    React.createElement("td", null, event.plandate), 
- 	  	    React.createElement("td", null, event.address), 
- 	  	    React.createElement("td", null, event.readyfor), 
- 	  	    React.createElement("td", null, event.duration), 
- 	  		React.createElement("td", null, event.context)
- 	  	  ) 
- 	    );
- 	  }
- 	}); 
+// /*  	
+//  * <培训机构新版><课程安排>在表单上绘制详细内容;
+//  * */
+// var Query_teachingplan_byRight = React.createClass({ 
+//	 handleChange_button: function(event) {
+//		 Px_class_students_manage_onClick_byRight("eit",event);
+//	 	  },
+//	 	 delete_button: function(event) {
+//	 		px_react_ajax_teachingplan_delete(event);
+//		 	  }, 	  
+// 	  render: function() {
+// 	    var event = this.props.event;
+// 	 	var className = event.highlight ? 'am-active' :
+// 	  	  event.disabled ? 'am-disabled' : '';
+//
+// 	  	return (
+// 	  	  <tr className={className} >
+// 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={this.delete_button.bind(this,event)} round>删除</AMR_Button></td>
+// 	  	    <td>{event.plandate}</td>
+// 	  	    <td>{event.address}</td>
+// 	  	    <td>{event.readyfor}</td>
+// 	  	    <td>{event.duration}</td>
+// 	  		<td>{event.context}</td>
+// 	  	  </tr> 
+// 	    );
+// 	  }
+// 	}); 
 //培训机构新课程表添加与编辑绘制
  var Px_Teachingplan_edit = React.createClass({displayName: "Px_Teachingplan_edit", 
 	 getInitialState: function() {
@@ -5590,47 +5612,61 @@ render: function() {
 	 handleChange: function(event) {
 		    this.setState($('#editTeachingplanForm').serializeJson());
 	  },
+	  componentWillReceiveProps: function(nextProps) {
+  		 this.setState(nextProps.formdata);
+		},
  render: function() {
  	  var o = this.state;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+  	  var class_name=(React.createElement("div", null));
+  	  if(o.uuid){
+  		class_name=(
+		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-"+o.name+"课程修改")   
+  	    )
+  	  }else{
+  		class_name=(
+  		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-新增课程") 
+  		)
+  	  }
  return (
  		React.createElement("form", {id: "editTeachingplanForm", method: "post", className: "am-form"}, 
  			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
  		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
  		   React.createElement("div", {className: "am-form-group"}, 
- 			
- 		       React.createElement("label", {className: one_classDiv}, "课程名："), 
- 			     React.createElement("div", {className: two_classDiv}, 
- 			       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
- 			        ), 
+ 			class_name, 
+	       React.createElement("label", {className: one_classDiv}, "课程名："), 
+		     React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
+		        ), 
  			 	
-    		     React.createElement("label", {className: one_classDiv}, "日期"), 
-      		      React.createElement("div", {className: two_classDiv}, 
-      		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", placeholder: "YYYY-MM-DD", name: "plandateStr", id: "plandate", value: o.plandate, onChange: this.handleChange})
-    		        ), 	 
+		       React.createElement("label", {className: one_classDiv}, "日期"), 
+  		      React.createElement("div", {className: two_classDiv}, 
+  		     React.createElement(PxInput, {icon: "birthday-cake", type: "text", placeholder: "YYYY-MM-DD", name: "plandateStr", id: "plandate", value: o.plandate, onChange: this.handleChange})
+		    ), 	 
  				 
- 			       React.createElement("label", {className: one_classDiv}, "课时长："), 
- 				     React.createElement("div", {className: two_classDiv}, 
- 				       React.createElement(PxInput, {type: "text", name: "duration", id: "duration", maxLength: "20", value: o.duration, onChange: this.handleChange})
- 				        ), 
+	       React.createElement("label", {className: one_classDiv}, "课时长："), 
+		     React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {type: "text", name: "duration", id: "duration", maxLength: "20", value: o.duration, onChange: this.handleChange})
+		        ), 
  				 
- 				       React.createElement("label", {className: one_classDiv}, "上课地点："), 
- 					     React.createElement("div", {className: two_classDiv}, 
- 					       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
- 					        ), 
+		       React.createElement("label", {className: one_classDiv}, "上课地点："), 
+			  React.createElement("div", {className: two_classDiv}, 
+			 React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
+			), 
  					       
- 	  		     React.createElement("label", {className: one_classDiv}, "准备工具:"), 
- 			      React.createElement("div", {className: two_classDiv}, 
- 			       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
- 			        ), 
+  		     React.createElement("label", {className: one_classDiv}, "准备工具:"), 
+		      React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
+		        ), 
  			       
-				       React.createElement("label", {className: one_classDiv}, "课程详细内容："), 
-					     React.createElement("div", {className: two_classDiv}, 
-					       React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", value: o.context, onChange: this.handleChange})
-					        ), 
+			   React.createElement("label", {className: one_classDiv}, "课程详细内容："), 
+			  React.createElement("div", {className: two_classDiv}, 
+			 React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", value: o.context, onChange: this.handleChange})
+			), 
  				      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
- 				      )
+ 				      ), 
+ 				     React.createElement("hr", null)
  		          ) 	   		   				
 
  );
