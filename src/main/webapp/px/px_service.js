@@ -875,14 +875,14 @@ var g_begDateStr_pageNo_point=0;
 ///*  
 //* <课程安排>添加与修改
 //* */
-//   function class_students_manage_onClick_byRight(m,formdata){
+//   function Px_class_students_manage_onClick_fn(m,formdata){
 //	   var name;
 //	   if(m=="add"){
 //		   name="新建课程";
 //	   }else{
 //		   name="编辑课程";
 //	   }
-//	   Queue.push(function(){class_students_manage_onClick_byRight(formdata);},name);
+//	   Queue.push(function(){Px_class_students_manage_onClick_fn(formdata);},name);
 //		React.render(React.createElement(Px_Teachingplan_edit,{
 // 			formdata:formdata,
 // 			}), document.getElementById('div_body'));
@@ -2956,7 +2956,7 @@ var g_begDateStr_pageNo_point=0;
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {	   				
-					React.render(React.createElement(Px_rect_teachingplan_byRight, {
+					React.render(React.createElement(px_rect_teachingplan_byRight, {
 						classuuid:classuuid,
 						classlist:G_myClassList,
 						pageNo:pageNo,
@@ -2974,14 +2974,14 @@ var g_begDateStr_pageNo_point=0;
 /*  
 * <课程安排>添加与修改
 * */
-   function teachingplan_edit_onClick_byRight(m,formdata){
+   function Px_class_students_manage_onClick_byRight(m,formdata){
 	   var name;
 	   if(m=="add"){
 		   name="新建课程";
 	   }else{
 		   name="编辑课程";
 	   }
-	   Queue.push(function(){teachingplan_edit_onClick_byRight(formdata);},name);
+	   Queue.push(function(){Px_class_students_manage_onClick_byRight(formdata);},name);
 		React.render(React.createElement(Px_Teachingplan_edit,{
  			formdata:formdata,
  			}), document.getElementById('div_body'));
@@ -2992,15 +2992,60 @@ var g_begDateStr_pageNo_point=0;
  * 直接把Form表单发送给服务器
  * */ 
 function ajax_teachingplan_save_byRight(){
+	var objectForm = $('#editTeachingplanForm').serializeJson();
     var opt={
             formName: "editTeachingplanForm",
             url:hostUrl + "rest/pxteachingplan/save.json",
-            cbFN:null
+            cbFN:function(data){
+            	G_msg_pop(data.ResMsg.message);
+ //           	Store.setClassStudentsList(data.uuid,null);
+            	px_ajax_teachingplan_byRight(objectForm.classuuid);
+            }
             };
 G_ajax_abs_save(opt);
 }
 
-   
+//删除课程按钮
+function px_react_ajax_teachingplan_delete(obj){ 
+	if(!confirm("确定要删除吗?")){
+		return;
+	}
+	   	$.AMUI.progress.start();
+	       var url = hostUrl + "rest/pxteachingplan/delete.json";
+	   	$.ajax({
+	   		type : "POST",
+	   		url : url,
+	   		data : {uuid:obj.uuid},
+	   		dataType : "json",
+	   		 async: false,
+	   		success : function(data) {
+	   			$.AMUI.progress.done();
+	   			if (data.ResMsg.status == "success") {	   				
+	   				px_ajax_teachingplan_byRight(obj.classuuid);
+	   			} else {
+	   				alert("加载数据失败："+data.ResMsg.message);
+	   			}
+	   		},
+			error :G_ajax_error_fn
+	   	});
+	   };
+//objectForm.birthday=G_Check.formateDate(objectForm.birthday);
+//if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
+//	G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
+//	$("input[name='birthday']").focus()
+//	return;
+//}
+//
+//$("input[name='birthday']").val(objectForm.birthday);
+//var opt={
+//        formName: "editClassStudentForm",
+//        url:hostUrl + "rest/pxstudent/save.json",
+//        cbFN:function(data){
+//        	G_msg_pop(data.ResMsg.message);
+//        	Store.setClassStudentsList(data.uuid,null);
+//        	react_ajax_class_students_manage(objectForm.classuuid);
+//        }
+//        };   
    
 //废弃代码（老版课程管理模块index直接调用react中请求并且绘制）
 ////———————————————————————————————————<老版>课程安排<管理模块>—————————————————————————      
