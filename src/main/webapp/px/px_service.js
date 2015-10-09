@@ -2956,7 +2956,7 @@ var g_begDateStr_pageNo_point=0;
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {	   				
-					React.render(React.createElement(px_rect_teachingplan_byRight, {
+					React.render(React.createElement(Px_rect_teachingplan_byRight, {
 						classuuid:classuuid,
 						classlist:G_myClassList,
 						pageNo:pageNo,
@@ -2974,14 +2974,14 @@ var g_begDateStr_pageNo_point=0;
 /*  
 * <课程安排>添加与修改
 * */
-   function Px_class_students_manage_onClick_byRight(m,formdata){
+   function teachingplan_edit_onClick_byRight(m,formdata){
 	   var name;
 	   if(m=="add"){
 		   name="新建课程";
 	   }else{
 		   name="编辑课程";
 	   }
-	   Queue.push(function(){Px_class_students_manage_onClick_byRight(formdata);},name);
+	   Queue.push(function(){teachingplan_edit_onClick_byRight(formdata);},name);
 		React.render(React.createElement(Px_Teachingplan_edit,{
  			formdata:formdata,
  			}), document.getElementById('div_body'));

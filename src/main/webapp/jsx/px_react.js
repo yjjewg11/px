@@ -5475,7 +5475,7 @@ render: function() {
   * <培训机构新版><课程安排>服务器请求后绘制处理方法；
   * 
   * */
- var px_rect_teachingplan_byRight = React.createClass({
+ var Px_rect_teachingplan_byRight = React.createClass({
 	 isAddteachingplanFlag:false,
 	 class_nameFlag:true,
 	 form_data:null,
@@ -5490,7 +5490,6 @@ render: function() {
  		 //同一界面数据变化更新作用方法;
  		 this.isAddteachingplanFlag=false;
  		this.class_nameFlag=true;
-
 		},
 // 	 handleChange: function(m,classuuid) {
 // 		var pageNo;
@@ -5505,7 +5504,7 @@ render: function() {
 // 		 }
 //	  },
 // 	 handleChange_button: function(classuuid) {
-// 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+// 		teachingplan_edit_onClick_byRight("add",{classuuid:classuuid,uuid:null});
 // 	  },
  	 delete_button: function(event){
  		 //删除课程按钮事件
@@ -5582,7 +5581,7 @@ render: function() {
 //  * */
 // var Query_teachingplan_byRight = React.createClass({ 
 //	 handleChange_button: function(event) {
-//		 Px_class_students_manage_onClick_byRight("eit",event);
+//		 teachingplan_edit_onClick_byRight("eit",event);
 //	 	  },
 //	 	 delete_button: function(event) {
 //	 		px_react_ajax_teachingplan_delete(event);
