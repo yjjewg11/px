@@ -1,4 +1,4 @@
-//
+﻿//
 var AMR_Table=AMUIReact.Table;
 var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMR_Button=AMUIReact.Button;
@@ -1031,19 +1031,13 @@ var px_rect_teachingplan_fn = React.createClass({
 		 }
 	  },
 //	 handleChange_button: function(classuuid) {
-//		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+//		Px_class_students_manage_onClick_fn("add",{classuuid:classuuid,uuid:null});
 //	  },
 render: function() {
 	 var o=this.props;
     return (
     <div>
     <AMR_ButtonToolbar>
-		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"pre",o.classuuid)}  round>上周</AMR_Button>
-			</div> 
-			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"next",o.classuuid)} round>下周</AMR_Button>	
-			</div> 
 		{this.props.classlist.map(function(event) {
 			  return(
 			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -1081,7 +1075,7 @@ render: function() {
  * */
 var Query_teachingplan_fn = React.createClass({ 
 	 handleChange_button: function(event) {
-	 		class_students_manage_onClick_byRight("eit",event);
+		 Px_class_students_manage_onClick_fn("eit",event);
 	 	  },
 	  render: function() {
 	    var event = this.props.event;
@@ -1095,7 +1089,7 @@ var Query_teachingplan_fn = React.createClass({
 	  	    <td>{event.address}</td>
 	  	    <td>{event.readyfor}</td>
 	  	    <td>{event.duration}</td>
-	  		<td>{event.count}</td>
+	  		<td>{event.context}</td>
 	  	  </tr> 
 	    );
 	  }
@@ -5474,6 +5468,9 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
+     
+
+     
 
  
 
@@ -5484,6 +5481,14 @@ render: function() {
   * 
   * */
  var px_rect_teachingplan_byRight = React.createClass({
+	 isAddStudentFlag:false,
+	  addStudent_btn:function(){
+ 		  this.isAddStudentFlag=true;
+ 		  this.setState(this.state);
+ 	  },
+ 	 componentWillReceiveProps: function(nextProps) {
+ 		 this.isAddStudentFlag=false;
+		},
  	 handleChange: function(m,classuuid) {
  		var pageNo;
  		 if(m=="pre"){
@@ -5497,22 +5502,22 @@ render: function() {
  		 }
 	  },
  	 handleChange_button: function(classuuid) {
- 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
  	  },
  render: function() {
 	 var o=this.props;
+	 var formd_ata={classuuid:this.props.classuuid,uuid:null};
+		 var addStudent=(<div></div>);
+ 		 if(this.isAddStudentFlag){
+ 			 addStudent=(
+ 					 <Px_Teachingplan_edit formdata={formd_ata} />
+ 				  );
+ 		        }
+ 		 
      return (
      <div>
      <AMR_ButtonToolbar>
-		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"pre",o.classuuid)}  round>上周</AMR_Button>
-			</div> 
-			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange.bind(this,"next",o.classuuid)} round>下周</AMR_Button>	
-			</div> 
-			<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.classuuid)} round>新增课程</AMR_Button>	
-			</div> 
+
 		{this.props.classlist.map(function(event) {
 			  return(
 			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -5540,6 +5545,11 @@ render: function() {
            })}
          </tbody>
        </AMR_Table>
+       {addStudent}
+		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addStudent_btn.bind(this)} round>新增课程</AMR_Button>	
+		</div> 
+		
        </div>
      );
    }
@@ -5550,8 +5560,11 @@ render: function() {
   * */
  var Query_teachingplan_byRight = React.createClass({ 
 	 handleChange_button: function(event) {
-	 		class_students_manage_onClick_byRight("eit",event);
+		 Px_class_students_manage_onClick_byRight("eit",event);
 	 	  },
+	 	 delete_button: function(event) {
+	 		px_react_ajax_teachingplan_delete(event);
+		 	  }, 	  
  	  render: function() {
  	    var event = this.props.event;
  	 	var className = event.highlight ? 'am-active' :
@@ -5559,12 +5572,12 @@ render: function() {
 
  	  	return (
  	  	  <tr className={className} >
- 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
+ 	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={this.delete_button.bind(this,event)} round>删除</AMR_Button></td>
  	  	    <td>{event.plandate}</td>
  	  	    <td>{event.address}</td>
  	  	    <td>{event.readyfor}</td>
  	  	    <td>{event.duration}</td>
- 	  		<td>{event.count}</td>
+ 	  		<td>{event.context}</td>
  	  	  </tr> 
  	    );
  	  }
@@ -5591,12 +5604,12 @@ render: function() {
  			     <div className={two_classDiv}>
  			       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
  			        </div>
- 			       
-   		     <label className={one_classDiv}>日期:</label>
- 		      <div className={two_classDiv}>
- 				 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
- 		        </div>
  			 	
+    		     <label className={one_classDiv}>日期</label>
+      		      <div className={two_classDiv}>
+      		       <PxInput icon="birthday-cake" type="text"  placeholder="YYYY-MM-DD" name="plandateStr" id="plandate" value={o.plandate} onChange={this.handleChange}/>
+    		        </div>	 
+ 				 
  			       <label className={one_classDiv}>课时长：</label>
  				     <div className={two_classDiv}>
  				       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
@@ -5611,6 +5624,11 @@ render: function() {
  			      <div className={two_classDiv}>
  			       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
  			        </div>
+ 			       
+				       <label className={one_classDiv}>课程详细内容：</label>
+					     <div className={two_classDiv}>
+					       <PxInput  type="text" name="context" id="context" maxLength="20" value={o.context} onChange={this.handleChange}/>
+					        </div>
  				      <button type="button"  onClick={ajax_teachingplan_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
  				      </div>  
  		          </form> 	   		   				
@@ -5622,6 +5640,49 @@ render: function() {
  
  
 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
@@ -6413,7 +6474,6 @@ render: function() {
    render: function() {
    	  var o = this.state;
  	  var course_list=Store.getCourseList(o.groupuuid);
-
  	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
  	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
      return (
@@ -6583,7 +6643,7 @@ render: function() {
 				$.AMUI.progress.start();
 			    var url = hostUrl + "rest/pxstudent/deleteStudentClass.json";
 				$.ajax({
-					type : "GET",
+					type : "POST",
 					url : url,
 					data:{class_uuid:class_uuid,student_uuid:student_uuid},
 					dataType : "json",
@@ -6646,7 +6706,7 @@ render: function() {
 	});
  
  /*
-   * 学生列表服务器请求后绘制处理方法；
+   *我的班级-管理学生- 学生列表服务器请求后绘制处理方法；
    * @</select>下拉多选框;
    * @handleChange_stutent_Selected:学校查询；
    * @handleChange_class_Selected::班级查询；
@@ -6673,7 +6733,7 @@ render: function() {
           </thead>
           <tbody>
             {this.props.events.map(function(event) {
-              return (<Query_EventRow_byRight key={event.id} event={event} />);
+              return (<Query_adminStudent_EventRow_byRight key={event.id} event={event} />);
             })}
           </tbody>
         </AMR_Table>
@@ -6683,12 +6743,12 @@ render: function() {
   });
       
   /*  	
-   * 学生列表在表单上绘制详细内容;
+   * 我的班级-管理学生-学生列表在表单上绘制详细内容;
    * @点击后直接调用学生详情方法
    * 调用ajax_class_students_look_info
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
    * */
-  var Query_EventRow_byRight = React.createClass({ 
+  var Query_adminStudent_EventRow_byRight = React.createClass({ 
   	btn_students_list_click:function(classuuid,uuid){
   		add_StudentClass(classuuid,uuid);
   	},

@@ -101,11 +101,13 @@ public class PxTeachingPlanService extends AbstractService {
 		}
 		
 		PxTeachingplan pxTeachingplan=(PxTeachingplan) this.nSimpleHibernateDao.getObject(PxTeachingplan.class, pxTeachingPlanJsonform.getUuid());
-		pxTeachingplan.setPlandate(plandate);
-		pxTeachingplan.setName(pxTeachingPlanJsonform.getName());
-		pxTeachingplan.setContext(pxTeachingPlanJsonform.getContext());
-		pxTeachingplan.setDuration(pxTeachingPlanJsonform.getDuration());
-		pxTeachingplan.setReadyfor(pxTeachingPlanJsonform.getReadyfor());
+		
+		BeanUtils.copyProperties(pxTeachingplan, pxTeachingPlanJsonform);
+//		pxTeachingplan.setPlandate(plandate);
+//		pxTeachingplan.setName(pxTeachingPlanJsonform.getName());
+//		pxTeachingplan.setContext(pxTeachingPlanJsonform.getContext());
+//		pxTeachingplan.setDuration(pxTeachingPlanJsonform.getDuration());
+//		pxTeachingplan.setReadyfor(pxTeachingPlanJsonform.getReadyfor());
 		
 		this.nSimpleHibernateDao.getHibernateTemplate().update(pxTeachingplan);
 		return true;
@@ -122,23 +124,29 @@ public class PxTeachingPlanService extends AbstractService {
 		if (StringUtils.isBlank(classuuid)) {
 			return null;
 		}
-
-		if (StringUtils.isBlank(begDateStr)) {
-			return null;
-		}
-
-		if (StringUtils.isBlank(endDateStr)) {
-			return null;
-		}
-
-		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
-
-		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
+		
 
 		return (List<PxTeachingplan>) this.nSimpleHibernateDao
 				.getHibernateTemplate()
-				.find("from PxTeachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
-						classuuid, endDate, begDate);
+				.find("from PxTeachingplan where classuuid=? order by plandate asc",
+						classuuid);
+//
+//		if (StringUtils.isBlank(begDateStr)) {
+//			return null;
+//		}
+//
+//		if (StringUtils.isBlank(endDateStr)) {
+//			return null;
+//		}
+//
+//		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
+//
+//		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
+
+//		return (List<PxTeachingplan>) this.nSimpleHibernateDao
+//				.getHibernateTemplate()
+//				.find("from PxTeachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
+//						classuuid, endDate, begDate);
 	}
 
 	/**

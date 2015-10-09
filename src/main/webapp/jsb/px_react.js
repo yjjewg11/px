@@ -1031,19 +1031,13 @@ var px_rect_teachingplan_fn = React.createClass({displayName: "px_rect_teachingp
 		 }
 	  },
 //	 handleChange_button: function(classuuid) {
-//		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+//		Px_class_students_manage_onClick_fn("add",{classuuid:classuuid,uuid:null});
 //	  },
 render: function() {
 	 var o=this.props;
     return (
     React.createElement("div", null, 
     React.createElement(AMR_ButtonToolbar, null, 
-		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"pre",o.classuuid), round: true}, "上周")
-			), 
-			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"next",o.classuuid), round: true}, "下周")	
-			), 
 		this.props.classlist.map(function(event) {
 			  return(
 			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -1081,7 +1075,7 @@ render: function() {
  * */
 var Query_teachingplan_fn = React.createClass({displayName: "Query_teachingplan_fn", 
 	 handleChange_button: function(event) {
-	 		class_students_manage_onClick_byRight("eit",event);
+		 Px_class_students_manage_onClick_fn("eit",event);
 	 	  },
 	  render: function() {
 	    var event = this.props.event;
@@ -1095,7 +1089,7 @@ var Query_teachingplan_fn = React.createClass({displayName: "Query_teachingplan_
 	  	    React.createElement("td", null, event.address), 
 	  	    React.createElement("td", null, event.readyfor), 
 	  	    React.createElement("td", null, event.duration), 
-	  		React.createElement("td", null, event.count)
+	  		React.createElement("td", null, event.context)
 	  	  ) 
 	    );
 	  }
@@ -5474,6 +5468,9 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
+     
+
+     
 
  
 
@@ -5484,6 +5481,14 @@ render: function() {
   * 
   * */
  var px_rect_teachingplan_byRight = React.createClass({displayName: "px_rect_teachingplan_byRight",
+	 isAddStudentFlag:false,
+	  addStudent_btn:function(){
+ 		  this.isAddStudentFlag=true;
+ 		  this.setState(this.state);
+ 	  },
+ 	 componentWillReceiveProps: function(nextProps) {
+ 		 this.isAddStudentFlag=false;
+		},
  	 handleChange: function(m,classuuid) {
  		var pageNo;
  		 if(m=="pre"){
@@ -5497,22 +5502,22 @@ render: function() {
  		 }
 	  },
  	 handleChange_button: function(classuuid) {
- 		class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+ 		Px_class_students_manage_onClick_byRight("add",{classuuid:classuuid,uuid:null});
  	  },
  render: function() {
 	 var o=this.props;
+	 var formd_ata={classuuid:this.props.classuuid,uuid:null};
+		 var addStudent=(React.createElement("div", null));
+ 		 if(this.isAddStudentFlag){
+ 			 addStudent=(
+ 					 React.createElement(Px_Teachingplan_edit, {formdata: formd_ata})
+ 				  );
+ 		        }
+ 		 
      return (
      React.createElement("div", null, 
      React.createElement(AMR_ButtonToolbar, null, 
-		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"pre",o.classuuid), round: true}, "上周")
-			), 
-			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange.bind(this,"next",o.classuuid), round: true}, "下周")	
-			), 
-			React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.classuuid), round: true}, "新增课程")	
-			), 
+
 		this.props.classlist.map(function(event) {
 			  return(
 			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -5539,7 +5544,12 @@ render: function() {
              return (React.createElement(Query_teachingplan_byRight, {key: event.id, event: event}));
            })
          )
-       )
+       ), 
+       addStudent, 
+		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addStudent_btn.bind(this), round: true}, "新增课程")	
+		)
+		
        )
      );
    }
@@ -5550,8 +5560,11 @@ render: function() {
   * */
  var Query_teachingplan_byRight = React.createClass({displayName: "Query_teachingplan_byRight", 
 	 handleChange_button: function(event) {
-	 		class_students_manage_onClick_byRight("eit",event);
+		 Px_class_students_manage_onClick_byRight("eit",event);
 	 	  },
+	 	 delete_button: function(event) {
+	 		px_react_ajax_teachingplan_delete(event);
+		 	  }, 	  
  	  render: function() {
  	    var event = this.props.event;
  	 	var className = event.highlight ? 'am-active' :
@@ -5559,12 +5572,12 @@ render: function() {
 
  	  	return (
  	  	  React.createElement("tr", {className: className}, 
- 	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改")), 
+ 	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event), round: true}, "修改"), React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.delete_button.bind(this,event), round: true}, "删除")), 
  	  	    React.createElement("td", null, event.plandate), 
  	  	    React.createElement("td", null, event.address), 
  	  	    React.createElement("td", null, event.readyfor), 
  	  	    React.createElement("td", null, event.duration), 
- 	  		React.createElement("td", null, event.count)
+ 	  		React.createElement("td", null, event.context)
  	  	  ) 
  	    );
  	  }
@@ -5591,12 +5604,12 @@ render: function() {
  			     React.createElement("div", {className: two_classDiv}, 
  			       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
  			        ), 
- 			       
-   		     React.createElement("label", {className: one_classDiv}, "日期:"), 
- 		      React.createElement("div", {className: two_classDiv}, 
- 				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange})
- 		        ), 
  			 	
+    		     React.createElement("label", {className: one_classDiv}, "日期"), 
+      		      React.createElement("div", {className: two_classDiv}, 
+      		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", placeholder: "YYYY-MM-DD", name: "plandateStr", id: "plandate", value: o.plandate, onChange: this.handleChange})
+    		        ), 	 
+ 				 
  			       React.createElement("label", {className: one_classDiv}, "课时长："), 
  				     React.createElement("div", {className: two_classDiv}, 
  				       React.createElement(PxInput, {type: "text", name: "duration", id: "duration", maxLength: "20", value: o.duration, onChange: this.handleChange})
@@ -5611,6 +5624,11 @@ render: function() {
  			      React.createElement("div", {className: two_classDiv}, 
  			       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
  			        ), 
+ 			       
+				       React.createElement("label", {className: one_classDiv}, "课程详细内容："), 
+					     React.createElement("div", {className: two_classDiv}, 
+					       React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", value: o.context, onChange: this.handleChange})
+					        ), 
  				      React.createElement("button", {type: "button", onClick: ajax_teachingplan_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
  				      )
  		          ) 	   		   				
@@ -5622,6 +5640,49 @@ render: function() {
  
  
 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
@@ -6413,7 +6474,6 @@ render: function() {
    render: function() {
    	  var o = this.state;
  	  var course_list=Store.getCourseList(o.groupuuid);
-
  	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
  	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
      return (
@@ -6583,7 +6643,7 @@ render: function() {
 				$.AMUI.progress.start();
 			    var url = hostUrl + "rest/pxstudent/deleteStudentClass.json";
 				$.ajax({
-					type : "GET",
+					type : "POST",
 					url : url,
 					data:{class_uuid:class_uuid,student_uuid:student_uuid},
 					dataType : "json",
@@ -6646,7 +6706,7 @@ render: function() {
 	});
  
  /*
-   * 学生列表服务器请求后绘制处理方法；
+   *我的班级-管理学生- 学生列表服务器请求后绘制处理方法；
    * @</select>下拉多选框;
    * @handleChange_stutent_Selected:学校查询；
    * @handleChange_class_Selected::班级查询；
@@ -6673,7 +6733,7 @@ render: function() {
           ), 
           React.createElement("tbody", null, 
             this.props.events.map(function(event) {
-              return (React.createElement(Query_EventRow_byRight, {key: event.id, event: event}));
+              return (React.createElement(Query_adminStudent_EventRow_byRight, {key: event.id, event: event}));
             })
           )
         )
@@ -6683,12 +6743,12 @@ render: function() {
   });
       
   /*  	
-   * 学生列表在表单上绘制详细内容;
+   * 我的班级-管理学生-学生列表在表单上绘制详细内容;
    * @点击后直接调用学生详情方法
    * 调用ajax_class_students_look_info
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
    * */
-  var Query_EventRow_byRight = React.createClass({displayName: "Query_EventRow_byRight", 
+  var Query_adminStudent_EventRow_byRight = React.createClass({displayName: "Query_adminStudent_EventRow_byRight", 
   	btn_students_list_click:function(classuuid,uuid){
   		add_StudentClass(classuuid,uuid);
   	},

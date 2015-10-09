@@ -256,7 +256,7 @@ public class PxClassService extends AbstractClassService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		Object o = s.createSQLQuery(
-				"select count(*) from px_pxstudentpxclasrselation where class_uuid='"
+				"select count(*) from px_pxstudentpxclassrelation where class_uuid='"
 						+ uuid + "'").uniqueResult();
 		if (Long.valueOf(o.toString()) > 0) {
 			responseMessage.setMessage("该班级有学生不能删除.");
