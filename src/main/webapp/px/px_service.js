@@ -3029,6 +3029,28 @@ function px_react_ajax_teachingplan_delete(obj){
 			error :G_ajax_error_fn
 	   	});
 	   };
+	 //复制课程按钮请求
+	   function px_react_copy_buttn(from_classuuid,to_classuuid){ 
+			  console.log("测试啊测试",from_classuuid,to_classuuid);
+	   	   	$.AMUI.progress.start();
+	   	       var url = hostUrl + "rest/pxteachingplan/copybyclass.json";
+	   	   	$.ajax({
+	   	   		type : "POST",
+	   	   		url : url,
+	   	   		data : {from_classuuid:from_classuuid,to_classuuid:to_classuuid},
+	   	   		dataType : "json",
+	   	   		 async: false,
+	   	   		success : function(data) {
+	   	   			$.AMUI.progress.done();
+	   	   			if (data.ResMsg.status == "success") {	   				
+	   	   				px_ajax_teachingplan_byRight(to_classuuid);
+	   	   			} else {
+	   	   				alert("加载数据失败："+data.ResMsg.message);
+	   	   			}
+	   	   		},
+	   			error :G_ajax_error_fn
+	   	   	});
+	   	   };   
 //objectForm.birthday=G_Check.formateDate(objectForm.birthday);
 //if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
 //	G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");

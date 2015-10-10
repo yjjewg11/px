@@ -5491,28 +5491,34 @@ render: function() {
  		 this.isAddteachingplanFlag=false;
  		this.class_nameFlag=true;
 		},
-// 	 handleChange: function(m,classuuid) {
-// 		var pageNo;
-// 		 if(m=="pre"){
-// 			pageNo=g_begDateStr_pageNo_point-1;
-// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
-// 			return
-// 		 }else{
-// 			pageNo=g_begDateStr_pageNo_point+1;
-// 			px_ajax_teachingplan_byRight(classuuid,pageNo);
-// 			return 
-// 		 }
-//	  },
-// 	 handleChange_button: function(classuuid) {
-// 		teachingplan_edit_onClick_byRight("add",{classuuid:classuuid,uuid:null});
-// 	  },
  	 delete_button: function(event){
  		 //删除课程按钮事件
  		px_react_ajax_teachingplan_delete(event);
 	  }, 
+	componentDidMount: function() {
+		//启动复制课程下拉框
+	   $('#doc-dropdown-js').dropdown({justify: '#doc-dropdown-justify-js'});   
+	 },
+// 	 handleChange: function(m,classuuid) {
+//		var pageNo;
+//		 if(m=="pre"){
+//			pageNo=g_begDateStr_pageNo_point-1;
+//			px_ajax_teachingplan_byRight(classuuid,pageNo);
+//			return
+//		 }else{
+//			pageNo=g_begDateStr_pageNo_point+1;
+//			px_ajax_teachingplan_byRight(classuuid,pageNo);
+//			return 
+//		 }
+//	  },
+//	 handleChange_button: function(classuuid) {
+//		teachingplan_edit_onClick_byRight("add",{classuuid:classuuid,uuid:null});
+//	  }, 
  render: function() {
 	 var o=this.props;
 	 var thit=this;
+	 var classList=o.classlist;
+	 var copybyclassList=[];
 		 var addStudent=(React.createElement("div", null));
 		 var class_name=(React.createElement("div", null));
 		 //新增与修改镶嵌div;
@@ -5527,6 +5533,12 @@ render: function() {
  				      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name) 
  				  );
  		        };
+ 		 //筛选出不是当前的班级数组       
+		for(var i=0;i<classList.length;i++){
+			if(o.classuuid!=classList[i].uuid){
+				copybyclassList.push(classList[i]);
+			}
+		   }
      return (
      React.createElement("div", null, 
      React.createElement(AMR_ButtonToolbar, null, 
@@ -5541,7 +5553,61 @@ render: function() {
 	 	  React.createElement("hr", null), 
 	  class_name, 	 
       addStudent, 
-       React.createElement(AMR_Table, React.__spread({},  this.props), 
+	      
+      
+      
+ 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      React.createElement("div", {id: "doc-dropdown-justify-js"}, 
+      React.createElement("div", {className: "am-dropdown", id: "doc-dropdown-js"}, 
+        React.createElement("button", {className: "am-btn am-btn-success am-dropdown-toggle am-fl am-margin-left-sm am-margin-bottom-xs"}, "将课程复制到", React.createElement("span", {className: "am-icon-caret-down"})), 
+        React.createElement("div", {className: "am-dropdown-content"}, 
+		copybyclassList.map(function(event) {
+			  return(
+					  React.createElement("li", null, React.createElement("a", {href: "javascript:void(0);", onClick: px_react_copy_buttn.bind(this,o.classuuid,event.uuid)}, event.name))
+			  	  
+			  )})
+        )
+      )
+    ), 
+	  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+	  React.createElement(AMR_Table, React.__spread({},  this.props), 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
              React.createElement("th", null, "课程名称"), 
@@ -5567,7 +5633,7 @@ render: function() {
            })
          )
        ), 
-		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-top-xs"}, 
 		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null}), round: true}, "新增课程")	
 		)
 		

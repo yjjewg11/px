@@ -165,5 +165,51 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	/**
+	 * 复制班级
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/copybyclass", method = RequestMethod.POST)
+	public String copybyclass(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String from_classuuid= request.getParameter("from_classuuid");
+		String to_classuuid= request.getParameter("to_classuuid");
+		
+		
+		
+		try {
+			
+			
+			if (StringUtils.isBlank(from_classuuid)) {
+				responseMessage.setMessage("from_classuuid 不能为空！");
+				return "";
+			}
+			if (StringUtils.isBlank(to_classuuid)) {
+				responseMessage.setMessage("to_classuuid 不能为空！");
+				return "";
+			}
+			
+			boolean flag = pxTeachingPlanService.update_copybyclass(from_classuuid,
+					to_classuuid, responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
 
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("复制成功");
+		return "";
+	}
+	
 }

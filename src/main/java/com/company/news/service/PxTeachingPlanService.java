@@ -200,4 +200,26 @@ public class PxTeachingPlanService extends AbstractService {
 		return null;
 	}
 
+
+	public boolean update_copybyclass(String from_classuuid, String to_classuuid,
+			ResponseMessage responseMessage) throws Exception {
+		List<PxTeachingplan> list=(List<PxTeachingplan>) this.nSimpleHibernateDao
+		.getHibernateTemplate()
+		.find("from PxTeachingplan where classuuid=? order by plandate asc",
+				from_classuuid);
+		
+		
+		for(PxTeachingplan obj:list){
+			PxTeachingplan newObj=new PxTeachingplan();
+			
+			BeanUtils.copyProperties(newObj, obj);
+			newObj.setUuid(null);
+			newObj.setClassuuid(to_classuuid);
+			
+			this.nSimpleHibernateDao.save(newObj);
+			
+		}
+		return true;
+	}
+
 }
