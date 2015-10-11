@@ -3031,7 +3031,6 @@ function px_react_ajax_teachingplan_delete(obj){
 	   };
 	 //复制课程按钮请求
 	   function px_react_copy_buttn(from_classuuid,to_classuuid){ 
-			  console.log("测试啊测试",from_classuuid,to_classuuid);
 	   	   	$.AMUI.progress.start();
 	   	       var url = hostUrl + "rest/pxteachingplan/copybyclass.json";
 	   	   	$.ajax({

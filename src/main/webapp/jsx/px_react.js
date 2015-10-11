@@ -5553,21 +5553,7 @@ render: function() {
 	 	  <hr/>
 	  {class_name}	 
       {addStudent} 
-	      
-      
-      
- 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
       
       
       
@@ -5584,55 +5570,46 @@ render: function() {
 			  )})}                
         </div>
       </div>
+    </div>      
+      
+      
+      <div className="am-panel-group" id="accordion">
+      
+		 {this.props.events.map(function(event) {
+			  return(	
+					  
+      <div className="am-panel am-panel-default">      
+        <div className="am-panel-hd">         
+        <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+event.uuid+"'}"}>
+           {event.name}—— 时间：{event.plandate}
+          </h4>
+        </div>               
+        <div id={"do-not-say-"+event.uuid} className="am-panel-collapse am-collapse">
+          <div className="am-panel-bd">
+          <div>
+          上课地点:{event.address}
+          </div>
+          <div>
+          需要工具:{event.readyfor}
+          </div>
+          <div>
+		  课程时长:{event.duration}
+          </div>
+          <div>
+          课程详细内容:{event.context}
+          </div>
+		  <AMR_Button amSize="xs" amStyle="secondary" onClick={thit.addteachingplan_btn.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={thit.delete_button.bind(this,event)} round>删除</AMR_Button>
+          </div>
+        </div>
+      </div>
+			  )})}     
+   
     </div>
-	  
+      
+
+
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	  <AMR_Table {...this.props}>  
-         <thead> 
-           <tr>
-             <th>课程名称</th>
-             <th>时间</th>
-             <th>上课地点</th>
-             <th>需要工具</th>
-             <th>课程时长</th>
-             <th>课程详细内容</th>
-           </tr> 
-         </thead>
-         <tbody>
-           {this.props.events.map(function(event) {
-        	  	return (
-        	   	  	  <tr>
-        	   	  	    <td>{event.name}<AMR_Button amSize="xs" amStyle="secondary" onClick={thit.addteachingplan_btn.bind(this,event)} round>修改</AMR_Button><AMR_Button amSize="xs" amStyle="danger" onClick={thit.delete_button.bind(this,event)} round>删除</AMR_Button></td>
-        	   	  	    <td>{event.plandate}</td>
-        	   	  	    <td>{event.address}</td>
-        	   	  	    <td>{event.readyfor}</td>
-        	   	  	    <td>{event.duration}</td>
-        	   	  		<td>{event.context}</td>
-        	   	  	  </tr> 
-        	   	    );
-           })}
-         </tbody>
-       </AMR_Table>
 		<div className="am-fl am-margin-left-sm am-margin-top-xs">
 		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} round>新增课程</AMR_Button>	
 		</div> 

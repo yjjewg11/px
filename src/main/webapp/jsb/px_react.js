@@ -5553,21 +5553,7 @@ render: function() {
 	 	  React.createElement("hr", null), 
 	  class_name, 	 
       addStudent, 
-	      
-      
-      
- 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
       
       
       
@@ -5585,54 +5571,45 @@ render: function() {
         )
       )
     ), 
-	  
+      
+      
+      React.createElement("div", {className: "am-panel-group", id: "accordion"}, 
+      
+		 this.props.events.map(function(event) {
+			  return(	
+					  
+      React.createElement("div", {className: "am-panel am-panel-default"}, 
+        React.createElement("div", {className: "am-panel-hd"}, 
+        React.createElement("h4", {className: "am-panel-title", "data-am-collapse": "{parent: '#accordion', target: '#do-not-say-"+event.uuid+"'}"}, 
+           event.name, "—— 时间：", event.plandate
+          )
+        ), 
+        React.createElement("div", {id: "do-not-say-"+event.uuid, className: "am-panel-collapse am-collapse"}, 
+          React.createElement("div", {className: "am-panel-bd"}, 
+          React.createElement("div", null, 
+          "上课地点:", event.address
+          ), 
+          React.createElement("div", null, 
+          "需要工具:", event.readyfor
+          ), 
+          React.createElement("div", null, 
+		  "课程时长:", event.duration
+          ), 
+          React.createElement("div", null, 
+          "课程详细内容:", event.context
+          ), 
+		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,event), round: true}, "修改"), React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: thit.delete_button.bind(this,event), round: true}, "删除")
+          )
+        )
+      )
+			  )})
+   
+    ), 
+      
+
+
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	  React.createElement(AMR_Table, React.__spread({},  this.props), 
-         React.createElement("thead", null, 
-           React.createElement("tr", null, 
-             React.createElement("th", null, "课程名称"), 
-             React.createElement("th", null, "时间"), 
-             React.createElement("th", null, "上课地点"), 
-             React.createElement("th", null, "需要工具"), 
-             React.createElement("th", null, "课程时长"), 
-             React.createElement("th", null, "课程详细内容")
-           )
-         ), 
-         React.createElement("tbody", null, 
-           this.props.events.map(function(event) {
-        	  	return (
-        	   	  	  React.createElement("tr", null, 
-        	   	  	    React.createElement("td", null, event.name, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,event), round: true}, "修改"), React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: thit.delete_button.bind(this,event), round: true}, "删除")), 
-        	   	  	    React.createElement("td", null, event.plandate), 
-        	   	  	    React.createElement("td", null, event.address), 
-        	   	  	    React.createElement("td", null, event.readyfor), 
-        	   	  	    React.createElement("td", null, event.duration), 
-        	   	  		React.createElement("td", null, event.context)
-        	   	  	  ) 
-        	   	    );
-           })
-         )
-       ), 
 		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-top-xs"}, 
 		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null}), round: true}, "新增课程")	
 		)
