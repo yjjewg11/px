@@ -4129,7 +4129,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
 	            {value: 'doorrecord', label: '导出接送卡表'}
 	          ];
-
+	/*
+    	       var data = [
+    	                  {value: 'one' , label: '学生基本表 ' },
+    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
+    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
+    	                  {value: 'doorrecord' , label: '导出接送卡表' }
+    	                ];*/
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
 	    return {
 	      down_list: data
 	    };
@@ -5499,13 +5506,8 @@ render: function() {
     		return obj;
     	},
     	getDefaultProps: function() {
-    	       var data = [
-    	                  {value: 'one' , label: '学生基本表 ' },
-    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
-    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
-    	                  {value: 'doorrecord' , label: '导出接送卡表' }
-    	                ];
 
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
     	          return {
     	            down_list: data
     	          };
@@ -6829,3 +6831,153 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 	});
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+//——————————————————————————学生列表<绘制>——————————————————————————  
+  /*
+   * 学生列表服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @handleChange_class_Selected::班级查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_mystutent_list = React.createClass({displayName: "Query_mystutent_list",
+
+	  	getDefaultProps: function() {
+		
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
+    	          return {
+    	            down_list: data
+    	          };
+    	        },
+		getInitialState: function() {
+			
+			var o={
+					class_uuid:this.props.class_uuid,
+					name:this.props.name,
+					maxPageNo:0
+			}
+			return o;
+		  },
+	   componentWillReceiveProps: function(nextProps) {
+		   
+			var o={
+					class_uuid:nextProps.class_uuid,
+					name:nextProps.name
+			}
+		   this.setState(o);
+		},
+		
+  	handleChange_stutent_Selected: function() {
+  	 		var class_uuid=$("input[name='class_uuid']").val();
+		  if(class_uuid=="1"){
+			  class_uuid="";
+		  }
+  		  ajax_mystudents_query(class_uuid,$('#sutdent_name').val());
+  	  }, 
+  	 
+  		btn_query_click:function(){
+  			this.handleChange_stutent_Selected();
+  		},
+  		handleClick: function(m,classuuid) {
+  	  		
+  	  		var class_uuid=$("input[name='class_uuid']").val();
+  		  
+  			if(m=="pre"){
+  				ajax_mystudents_query(class_uuid,$('#sutdent_name').val(),--g_mystudent_query_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_mystudents_query(class_uuid,$('#sutdent_name').val(),++g_mystudent_query_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  handleClick_download: function(xlsname) {
+    				  var class_uuid=$("input[name='class_uuid']").val();
+    				 ajax_flowername_download_byRight("",class_uuid,xlsname);
+    		 },
+  render: function() {
+  	
+  	var pre_disabled=g_mystudent_query_point<2;
+  	var classList=G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name");
+	
+  	if(g_mystudent_query_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_mystudent_query_point>=this.maxPageNo;
+      return (
+  		  
+      React.createElement("div", null, 
+  	   React.createElement("div", {className: "am-form-group"}, 
+  	    React.createElement("hr", null)	 
+  	     ), 
+  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+         React.createElement(AMR_ButtonToolbar, null, 
+        React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+       React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.class_uuid), round: true}, "« 上一页"), 
+      React.createElement("label", null, g_mystudent_query_point, "\\", this.maxPageNo), 
+     React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next",this.state.class_uuid), round: true}, "下一页 »")
+    ), 
+
+  	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+  	   React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", placeholder: "所有", multiple: false, data: classList, btnStyle: "primary", value: this.state.class_uuid})
+  	  ), 
+  	   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+  	    React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
+  	     ), 
+  	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+  	   React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")
+  	  ), 	
+  	React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
+     	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
+     	  )
+  	)
+  	 ), 
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+              React.createElement("th", null, "姓名"), 
+              React.createElement("th", null, "昵称"), 
+              React.createElement("th", null, "性别"), 
+              React.createElement("th", null, "出生日期"), 
+              React.createElement("th", null, "班级"), 
+              React.createElement("th", null, "身份证")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(EventRow_Query_mystutent_list, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+  });
+      
+  /*  	
+   * 学生列表在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var EventRow_Query_mystutent_list = React.createClass({displayName: "EventRow_Query_mystutent_list", 
+  	btn_students_list_click:function(uuid,nmae){
+  		ajax_class_students_look_info_byRight(uuid,nmae)
+  	},
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      React.createElement("tr", {className: className}, 
+  	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
+  	        React.createElement("td", null, event.nickname), 
+  	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+  	        React.createElement("td", null, event.birthday), 
+  	        React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
+  	        React.createElement("td", null, event.idcard)
+  	      ) 
+  	    );
+  	  }
+  	}); 

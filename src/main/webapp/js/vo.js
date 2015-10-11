@@ -19,7 +19,7 @@ var Vo={
 		type_1:"幼儿园",
 		type_2:"培训"
 	},
-	//TypeList[tmp.typeuuid].push({key:tmp.datakey,val:tmp.datavalue});
+	//TypeList[tmp.typeuuid].push({key:tmp.datakey,val:tmp.datavalue,desc:tmp.description});
 	
 	isInit:false,
 	init:function(){
@@ -85,7 +85,7 @@ function Vo_ajax_MyClass_toVo() {
 					var tmp=data.list[i];
 					Vo.map[tmp.typeuuid+"_"+tmp.datakey]=tmp.datavalue;
 					if(!TypeList[tmp.typeuuid])TypeList[tmp.typeuuid]=[];
-					TypeList[tmp.typeuuid].push({key:tmp.datakey,val:tmp.datavalue});
+					TypeList[tmp.typeuuid].push({key:tmp.datakey,val:tmp.datavalue,desc:tmp.description});
 				}
 				Vo.map.TypeList=TypeList;
 				Store.setVo_map(Vo.map);

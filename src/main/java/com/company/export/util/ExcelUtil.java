@@ -2,8 +2,11 @@ package com.company.export.util;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -666,6 +669,153 @@ public class ExcelUtil {
 					}
 					index++;
 				}
+				// 将内容写到输出流中，然后关闭工作区，最后关闭输出流
+				workbook.write();
+				workbook.close();
+				os.close();
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param response
+	 * @param fname
+	 * @param list
+	 * @throws Exception
+	 * 
+	 * 
+	 * select c3.name as class_name,s1.name,s1.sex,s1.birthday 
+	 */
+	public static void outXLS_students_age(HttpServletResponse response,
+			String fname, List<Map> list_stuents) throws Exception {
+		
+		
+		Map tmpMap =new HashMap();
+		List<String> list =new ArrayList<String>();
+		//序号	班级	总数	女	男	2岁及以下	3岁	4岁	5岁	6岁及以上	无出生日期
+		for (Map s : list_stuents) {
+			String class_name= (String)s.get("class_name")+"";
+			String sex= (Object)s.get("sex")+"";
+			String birthday= (Object)s.get("birthday")+"";
+			Timestamp  birthdayTimestamp=null;
+			try {
+				if (StringUtils.isNotBlank(birthday))
+					birthdayTimestamp=TimeUtils.string2Timestamp(null,birthday);
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+			
+			int[] class_nameArr=(int[])tmpMap.get(class_name);
+			if(class_nameArr==null){
+				list.add(class_name);
+				class_nameArr=new int[11];
+				class_nameArr[0]=list.size();
+				//class_nameArr[1]=class_name;
+				class_nameArr[2]=0;
+				class_nameArr[3]=0;
+				class_nameArr[4]=0;
+				class_nameArr[5]=0;
+				class_nameArr[6]=0;
+				class_nameArr[7]=0;
+				class_nameArr[8]=0;
+				class_nameArr[9]=0;
+				
+				tmpMap.put(class_name, class_nameArr);
+			}
+			class_nameArr[2]++;//总数
+			if(SystemConstants.Sex_female.equals(sex)){//女
+				class_nameArr[3]++;//女
+			}else{
+				class_nameArr[4]++;//男
+			}
+			if(birthdayTimestamp!=null){
+				int age=TimeUtils.getStuentAgeByBirthdate(birthdayTimestamp);
+				
+				if(age<=2){//2岁及以下
+					class_nameArr[5]++;
+				}else if(age==3){
+					class_nameArr[6]++;
+				}else if(age==4){
+					class_nameArr[7]++;
+				}else if(age==5){
+					class_nameArr[8]++;
+				}else if(age>=6){
+					class_nameArr[9]++;
+				}
+			}else{//无出生日期
+				class_nameArr[10]++;
+			}
+			
+		}
+		response.setHeader("Pragma", "no-cache");
+		fname = java.net.URLEncoder.encode(fname,"UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename="
+				+ new String(fname.getBytes("UTF-8"),"GBK") + ".xls");
+		response.setContentType("application/msexcel");// 定义输出类型
+		response.setCharacterEncoding(SystemConstants.Charset);
+//		createExcel_huaMingce(response.getOutputStream(), list,classlist);
+		OutputStream os=response.getOutputStream();
+		
+		// 创建工作区
+				WritableWorkbook workbook = Workbook.createWorkbook(os);
+				// 创建新的一页，sheet只能在工作簿中使用
+				WritableSheet sheet = workbook.createSheet("幼儿园、幼儿班分年龄幼儿数", 0);
+
+				sheet.setColumnView(0, 12);
+				sheet.setColumnView(1, 12);
+				sheet.setColumnView(2, 12);
+				sheet.setColumnView(3, 12);
+				sheet.setColumnView(4, 12);
+				sheet.setColumnView(5, 12);
+				sheet.setColumnView(6, 12);
+				sheet.setColumnView(7, 12);
+				sheet.setColumnView(8, 12);
+				sheet.setColumnView(9, 12);
+				sheet.setColumnView(10, 12);
+				
+				WritableCellFormat cf=getWritableFontForBody();
+//				sheet.mergeCells(0, 0, 2, 0);
+				
+				sheet.addCell(new Label(0, 0, "序号", cf));
+				sheet.addCell(new Label(1, 0, "班级", cf));
+				sheet.addCell(new Label(2, 0, "总人数", cf));
+				sheet.addCell(new Label(3, 0, "女", cf));
+				sheet.addCell(new Label(4, 0, "男", cf));
+				sheet.addCell(new Label(5, 0, "2岁及以下", cf));
+				sheet.addCell(new Label(6, 0, "3岁", cf));
+				sheet.addCell(new Label(7, 0, "4岁", cf));
+				sheet.addCell(new Label(8, 0, "5岁", cf));
+				sheet.addCell(new Label(9, 0, "6岁及以上", cf));
+				sheet.addCell(new Label(10, 0, "无出生日期", cf));
+				
+				Integer index=1;
+				 cf=getWritableFontForBody();
+				 
+				 List sexList=CommonsCache.getBaseDataListByTypeuuid("sex");
+				for (String s : list) {
+					int[] class_nameArr=(int[])tmpMap.get(s);
+					for(int i=0;i<class_nameArr.length;i++){
+						if(i==1){
+							sheet.addCell(new Label(i, index, s, cf));
+						}else{
+							sheet.addCell(new jxl.write.Number(i, index, class_nameArr[i], cf));
+						}
+					}
+					index++;
+				}
+				if(index>=2)for(int i=1;i<11;i++){
+					if(i==1){
+						sheet.addCell(new Label(i, index, "求和", cf));
+					}else{
+						String sum= "SUM(C1:C2)";
+						  char ch = (char)('A'+i);
+						  sum= "SUM("+ch+"2:"+ch+index+")";
+						sheet.addCell(new jxl.write.Formula(i, index, sum, cf));
+					}
+				}
+				
+				
 				// 将内容写到输出流中，然后关闭工作区，最后关闭输出流
 				workbook.write();
 				workbook.close();

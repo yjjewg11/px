@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,7 +10,9 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -437,10 +440,35 @@ public class StudentService extends AbstractStudentService {
 			sql += " and  b2.cardid is null ";
 		
 		
-		sql += "order by s1.classuuid,CONVERT( s1.name USING gbk)";
+		sql += " order by s1.classuuid,CONVERT( s1.name USING gbk)";
 		
 //原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
 		List<Object[]> list = s.createSQLQuery(sql).list();
+		
+		return list;
+	}
+	
+	
+
+	public synchronized List<Map>  queryFor_students_age_OutExcel(String classuuid,
+			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		String sql = "select c3.name as class_name,s1.name,s1.sex,s1.birthday ";
+		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid ";
+		sql+=" where s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		
+		sql += " order by CONVERT( c3.name USING gbk)";
+		
+		
+		Query q = s
+				.createSQLQuery(sql);
+		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List list=q.list();
 		
 		return list;
 	}

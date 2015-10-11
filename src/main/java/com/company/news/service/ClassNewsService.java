@@ -240,7 +240,7 @@ public class ClassNewsService extends AbstractService {
 				+ "(select uuid from px_class where groupuuid='"+groupuuid+"'))"
 				+ "order by count desc;");
 
-		
+		q.setMaxResults(10);
 		return q.list();
 	}
 	

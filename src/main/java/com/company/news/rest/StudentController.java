@@ -2,6 +2,7 @@ package com.company.news.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +136,34 @@ public class StudentController extends AbstractRESTController {
 		return "";
 	}
 	
+	
+	/**
+	 *
+	 * 我关联班级所有学生查询服务器
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/querybyTeacher", method = RequestMethod.GET)
+	public String querybyTeacher(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		
+		String classuuid=request.getParameter("classuuid");
+		String name=request.getParameter("name");
+		  
+		if(StringUtils.isBlank(classuuid)){ 
+			responseMessage.setMessage("请选择班级");
+			return "";
+		}
+		PageQueryResult pageQueryResult = studentService.queryByPage(null,classuuid,name,pData);
+		model.addAttribute(RestConstants.Return_ResponseMessage_list,
+				pageQueryResult);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	/**
 	 *
 	 * 我关联学校所有学生查询服务器
@@ -207,6 +236,15 @@ public class StudentController extends AbstractRESTController {
 	 * @param model
 	 * @param request
 	 * @return
+	 * 
+	 * 	exportStudentExcel	导出学生相关Excel格式报表
+	      	       var data = [
+    	                  {value: 'one' , label: '学生基本表 ' },
+    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
+    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
+    	                  {value: 'doorrecord' , label: '导出接送卡表' }
+    	                ];
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
 	 */
 	@RequestMapping(value = "/exportStudentExcel", method = RequestMethod.POST)
 	public String exportStudentExcel(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -257,7 +295,15 @@ public class StudentController extends AbstractRESTController {
 					groupuuid,uuid,xlsname,user);
 			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
 			return null;
+		}else if("students_age".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Map> list = studentService.queryFor_students_age_OutExcel(
+					classuuid,
+					groupuuid,uuid,xlsname,user);
+			ExcelUtil.outXLS_students_age(response, "幼儿园、幼儿班分年龄幼儿数",list);
+			return null;
 		}
+		
 		
 		
 		List<Student> list = studentService.queryForOutExcel(

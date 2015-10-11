@@ -4129,7 +4129,14 @@ var Class_EventsTable_byRight = React.createClass({
 	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
 	            {value: 'doorrecord', label: '导出接送卡表'}
 	          ];
-
+	/*
+    	       var data = [
+    	                  {value: 'one' , label: '学生基本表 ' },
+    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
+    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
+    	                  {value: 'doorrecord' , label: '导出接送卡表' }
+    	                ];*/
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
 	    return {
 	      down_list: data
 	    };
@@ -5499,13 +5506,8 @@ render: function() {
     		return obj;
     	},
     	getDefaultProps: function() {
-    	       var data = [
-    	                  {value: 'one' , label: '学生基本表 ' },
-    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
-    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
-    	                  {value: 'doorrecord' , label: '导出接送卡表' }
-    	                ];
 
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
     	          return {
     	            down_list: data
     	          };
@@ -6829,3 +6831,153 @@ var Teachingplan_EventRow_byRight = React.createClass({
 	});
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+//——————————————————————————学生列表<绘制>——————————————————————————  
+  /*
+   * 学生列表服务器请求后绘制处理方法；
+   * @</select>下拉多选框;
+   * @handleChange_stutent_Selected:学校查询；
+   * @handleChange_class_Selected::班级查询；
+   * @btn_query_click:名字查找；
+   * */
+  var Query_mystutent_list = React.createClass({
+
+	  	getDefaultProps: function() {
+		
+			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
+    	          return {
+    	            down_list: data
+    	          };
+    	        },
+		getInitialState: function() {
+			
+			var o={
+					class_uuid:this.props.class_uuid,
+					name:this.props.name,
+					maxPageNo:0
+			}
+			return o;
+		  },
+	   componentWillReceiveProps: function(nextProps) {
+		   
+			var o={
+					class_uuid:nextProps.class_uuid,
+					name:nextProps.name
+			}
+		   this.setState(o);
+		},
+		
+  	handleChange_stutent_Selected: function() {
+  	 		var class_uuid=$("input[name='class_uuid']").val();
+		  if(class_uuid=="1"){
+			  class_uuid="";
+		  }
+  		  ajax_mystudents_query(class_uuid,$('#sutdent_name').val());
+  	  }, 
+  	 
+  		btn_query_click:function(){
+  			this.handleChange_stutent_Selected();
+  		},
+  		handleClick: function(m,classuuid) {
+  	  		
+  	  		var class_uuid=$("input[name='class_uuid']").val();
+  		  
+  			if(m=="pre"){
+  				ajax_mystudents_query(class_uuid,$('#sutdent_name').val(),--g_mystudent_query_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_mystudents_query(class_uuid,$('#sutdent_name').val(),++g_mystudent_query_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  handleClick_download: function(xlsname) {
+    				  var class_uuid=$("input[name='class_uuid']").val();
+    				 ajax_flowername_download_byRight("",class_uuid,xlsname);
+    		 },
+  render: function() {
+  	
+  	var pre_disabled=g_mystudent_query_point<2;
+  	var classList=G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name");
+	
+  	if(g_mystudent_query_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_mystudent_query_point>=this.maxPageNo;
+      return (
+  		  
+      <div> 
+  	   <div className="am-form-group">
+  	    <hr/>	 
+  	     </div>
+  	      <form id="editGroupForm" method="post" className="am-form">
+         <AMR_ButtonToolbar>
+        <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+       <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.class_uuid)} round>&laquo; 上一页</AMR_Button>
+      <label>{g_mystudent_query_point}\{this.maxPageNo}</label> 
+     <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.class_uuid)} round>下一页 &raquo;</AMR_Button>
+    </div>
+
+  	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"   placeholder="所有"  multiple= {false} data={classList} btnStyle="primary" value={this.state.class_uuid} />      
+  	  </div>  
+  	   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	    <input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+  	     </div>  
+  	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	   <button type="button"   onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>
+  	  </div>  	
+  	<div className="am-fl am-margin-bottom-sm">
+     	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
+     	  </div>
+  	</AMR_ButtonToolbar>
+  	 </form>
+        <AMR_Table {...this.props}>  
+          <thead> 
+            <tr>
+              <th>姓名</th>
+              <th>昵称</th>
+              <th>性别</th>
+              <th>出生日期</th>
+              <th>班级</th>
+              <th>身份证</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<EventRow_Query_mystutent_list key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+  });
+      
+  /*  	
+   * 学生列表在表单上绘制详细内容;
+   * @点击后直接调用学生详情方法
+   * 调用ajax_class_students_look_info
+   * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
+   * */
+  var EventRow_Query_mystutent_list = React.createClass({ 
+  	btn_students_list_click:function(uuid,nmae){
+  		ajax_class_students_look_info_byRight(uuid,nmae)
+  	},
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+
+  	    return (
+  	      <tr className={className} >
+  	        <td><a href="javascript:void(0);" onClick={ajax_class_students_look_info.bind(this,event.uuid)}>{event.name}</a></td>
+  	        <td>{event.nickname}</td>
+  	        <td>{event.sex=="0"?"男":"女"}</td>
+  	        <td>{event.birthday}</td>
+  	        <td> {Store.getClassByUuid(event.classuuid).name}</td>
+  	        <td>{event.idcard}</td>
+  	      </tr> 
+  	    );
+  	  }
+  	}); 

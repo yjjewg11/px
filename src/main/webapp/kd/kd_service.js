@@ -19,7 +19,7 @@
  			$.AMUI.progress.done();
  			// 登陆成功直接进入主页
  			if (data.ResMsg.status == "success") {
- 				alert(data.ResMsg.message);
+ 				G_msg_pop(data.ResMsg.message);
  				if(typeof callback=='function')callback();
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
@@ -3232,138 +3232,54 @@ $.ajax({
    	});
    	return re_data;
    };	   
-	   
-	   
-//废弃代码（老版课程管理模块index直接调用react中请求并且绘制）	   
-// //———————————————————————————————————<老版>课程安排<管理模块>—————————————————————————      
-//   /*(课程安排)（服务器请求  
-//    * Teachingplan_EventsTable在common_rect绘制；
-//    * 初始进入都为默认第一位
-//    * */ 
-// var g_cookbookPlan_week_point=0;
-// function ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum){
-// 	if(!classuuid&&Store.getMyClassList().length>0)classuuid=Store.getMyClassList()[0].uuid;
-// 	var now=new Date();
-// 	if(weeknum){
-// 		now=G_week.getDate(now,weeknum*7);
-// 	}else{
-// 		g_cookbookPlan_week_point=0;
-// 	}
-// 	var begDateStr=G_week.getWeek0(now);
-// 	var endDateStr=G_week.getWeek6(now);
-//   	Queue.push(function(){ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum);},"课程安排");
-// 	$.AMUI.progress.start();
-// 	var url = hostUrl + "rest/teachingplan/list.json";
-// 	$.ajax({
-// 		type : "GET",
-// 		url : url,
-// 		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
-// 		dataType : "json",
-// 		success : function(data) {
-// 			$.AMUI.progress.done();
-// 			if (data.ResMsg.status == "success") {
-// 				if(data.list==null)data.list=[];
-// 				React.render(React.createElement(Teachingplan_EventsTable_byRight, {
-// 					groupuuid:groupuuid,
-// 					classuuid:classuuid,
-// 					events: data.list,
-// 					weeknum:weeknum,
-// 					begDateStr:begDateStr,
-// 					endDateStr:endDateStr,
-// 					groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teachingplan_m"),"uuid","brand_name"),
-// 					classList:G_selected_dataModelArray_byArray(Store.getChooseClass(groupuuid),"uuid","name"),
-// 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-// 					}), document.getElementById('div_body'));
-// 				
-// 			} else {
-// 				alert(data.ResMsg.message);
-// 				G_resMsg_filter(data.ResMsg);
-// 			}
-// 		}
-// 	});
-// };
-// /*(课程安排)
-//  * 班级详情内添加编辑课程等按钮方法判断;
-//  * */ 
-// function btn_click_teachingplan_byRight(m,uuid,groupuuid,classuuid,ch_day){
-//    if(m=="edit"){
-// 		react_ajax_teachingplan_edit_byRight(null,uuid,"课程编辑");
-// 	}else if(m=="del"){
-// 		//react_ajax_teachingplan_delete(groupuuid,uuid);
-// 	}
-// };
-// //删除按钮
-// function react_ajax_teachingplan_delete(groupuuid,uuid){	
-// 	$.AMUI.progress.start();
-//   var url = hostUrl + "rest/teachingplan/delete.json?uuid="+uuid;
-// 	$.ajax({
-// 		type : "POST",
-// 		url : url,
-// 		dataType : "json",
-// 		 async: true,
-// 		success : function(data) {
-// 			$.AMUI.progress.done();
-// 			// 登陆成功直接进入主页
-// 			if (data.ResMsg.status == "success") {
-// 				ajax_teachingplan_listByClass(groupuuid);
-// 			} else {
-// 				alert(data.ResMsg.message);
-// 			}
-// 		},
-// 		error : function( obj, textStatus, errorThrown ){
-// 			$.AMUI.progress.done();
-// 			alert(url+",error:"+textStatus);
-// 		}
-// 	});
-// };
-// /*(课程安排)
-//  * 班级详情内添加编辑按钮服务器请求
-//  * 
-//  * */ 
-// function react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae){
-//   	Queue.push(function(){react_ajax_teachingplan_edit_byRight(formdata,uuid,nmae);},nmae);
-// 	$.AMUI.progress.start();
-//   var url = hostUrl + "rest/teachingplan/"+uuid+".json";
-// 	$.ajax({
-// 		type : "GET",
-// 		url : url,
-// 		dataType : "json",
-// 		 async: true,
-// 		success : function(data) {
-// 			$.AMUI.progress.done();
-// 			// 登陆成功直接进入主页
-// 			if (data.ResMsg.status == "success") {
-// 				React.render(React.createElement(Teachingplan_edit_byRight,{
-// 					formdata:data.data
-// 					}), document.getElementById('div_body'));
-// 			} else {
-// 				alert("加载数据失败："+data.ResMsg.message);
-// 			}
-// 		},
-// 		error : function( obj, textStatus, errorThrown ){
-// 			$.AMUI.progress.done();
-// 			alert(url+",error:"+textStatus);
-// 		}
-// 	});
-// };
-// /*(课程安排)
-//  * 班级详情内添加编辑提交按钮服务器请求
-//  * 直接把Form表单发送给服务器
-//  * */ 
-// function ajax_teachingplan_save_byRight(){
-//     var opt={
-//             formName: "editTeachingplanForm",
-//             url:hostUrl + "rest/teachingplan/save.json",
-//             cbFN:null
-//             };
-// G_ajax_abs_save(opt);
-// }  	   
-	   
-	   
-	   
-	   
-	   
-	   
+
+//——————————————————————————学生列表—————————————————————————— 
+ /*
+  * <学生列表>（获取用户列表服务器请求）；
+  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
+  * */
+ var g_mystudent_query_point=1;
+ function ajax_mystudents_query(classuuid,name,pageNo) {
+ 	Queue.push(function(){ajax_mystudents_query(classuuid,name,pageNo);},"学生列表");
+ 	  
+ 	  if(!classuuid){
+		  var myclasslist=Store.getMyClassList();
+		if(!myclasslist||myclasslist.length==0){
+			G_msg_pop("请先创建班级!");
+				return ;
+		}
+		 classuuid=myclasslist[0].uuid;
+	  }
+	 
+ 	 if(!name)name="";
+ 	  if(!pageNo)pageNo=1;
+ 	 g_mystudent_query_point=pageNo;
+ 		$.AMUI.progress.start();
+ 		var url = hostUrl + "rest/student/querybyTeacher.json?classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+ 		$.ajax({          
+ 			type : "GET",  
+ 			url : url,
+ 			dataType : "json",
+ 			success : function(data) {
+ 				$.AMUI.progress.done();
+ 				if (data.ResMsg.status == "success") {
+ 	  				React.render(React.createElement(Query_mystutent_list, {
+ 	  				class_uuid:classuuid,
+ 	  					name:name,
+ 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+ 	  					data:data,
+ 	  					events: data.list.data,
+ 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 	  					
+ 	  				}), document.getElementById('div_body'));
+ 					
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 				}
+ 			},
+ 			error :G_ajax_error_fn
+ 		});
+ 	};
 	   
 	   
 	   
