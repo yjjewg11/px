@@ -833,9 +833,9 @@ function react_ajax_announce_show(uuid,Titlenmae){
 
 
 
-//——————————————————————————<培训机构新版>课程安排<列表版>—————————————————————————— 
+//——————————————————————————<培训机构新版>课程表<列表版>—————————————————————————— 
 /*
- * <课程安排>（获取用户列表服务器请求）；
+ * <课程表>（获取用户列表服务器请求）；
  * */
 var g_begDateStr_pageNo_point=0;	
  function px_ajax_teachingplan_fn(classuuid,pageNo){ 
@@ -845,7 +845,7 @@ var g_begDateStr_pageNo_point=0;
 	  	now=G_week.getDate(now,pageNo*7);
 	var begDateStr=G_week.getWeek0(now,pageNo);
 	var endDateStr=G_week.getWeek6(now,pageNo);
-		Queue.push(function(){px_ajax_teachingplan_fn(classuuid,pageNo);},"课程安排");
+		Queue.push(function(){px_ajax_teachingplan_fn(classuuid,pageNo);},"课程表");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
@@ -873,7 +873,7 @@ var g_begDateStr_pageNo_point=0;
 	   	});
 	   };
 ///*  
-//* <课程安排>添加与修改
+//* <课程表>添加与修改
 //* */
 //   function Px_class_students_manage_onClick_fn(m,formdata){
 //	   var name;
@@ -888,7 +888,7 @@ var g_begDateStr_pageNo_point=0;
 // 			}), document.getElementById('div_body'));
 //
 //   };
-// /*(课程安排)
+// /*(课程表)
 // * 班级详情内添加编辑提交按钮服务器请求
 // * 直接把Form表单发送给服务器
 // * */ 
@@ -1768,7 +1768,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				ajax_announce_listByGroup(groupuuid);
+				ajax_announce_listByGroup_byRight();
 			} else {
 				alert(data.ResMsg.message);
 			}
@@ -2887,7 +2887,7 @@ function menu_kd_roleUser_list_fn() {
 	var opt={
 			groupuuid:groupuuid,
 			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
-			role_list:Store.getRoleList(1)
+			role_list:Store.getRoleList(2)
 		};
 	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
 };
@@ -2932,9 +2932,9 @@ function menu_userteacher_fn(){
 
 
 
-//——————————————————————————<培训机构新版>课程安排<管理模块>—————————————————————————— 
+//——————————————————————————<培训机构新版>教学计划<管理模块>—————————————————————————— 
 /*
- * <课程安排>（获取用户列表服务器请求）；
+ * <教学计划>（获取用户列表服务器请求）；
  * */
 var g_begDateStr_pageNo_point=0;	
  function px_ajax_teachingplan_byRight(classuuid,pageNo){ 
@@ -2944,7 +2944,7 @@ var g_begDateStr_pageNo_point=0;
 	  	now=G_week.getDate(now,pageNo*7);
 	var begDateStr=G_week.getWeek0(now,pageNo);
 	var endDateStr=G_week.getWeek6(now,pageNo);
-		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"课程安排");
+		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"教学计划");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
@@ -2972,7 +2972,7 @@ var g_begDateStr_pageNo_point=0;
 	   	});
 	   };
 /*  
-* <课程安排>添加与修改
+* <教学计划>添加与修改
 * */
    function teachingplan_edit_onClick_byRight(m,formdata){
 	   var name;
@@ -2987,7 +2987,7 @@ var g_begDateStr_pageNo_point=0;
  			}), document.getElementById('div_body'));
 
    };
- /*(课程安排)
+ /*(教学计划)
  * 班级详情内添加编辑提交按钮服务器请求
  * 直接把Form表单发送给服务器
  * */ 
@@ -3069,8 +3069,8 @@ function px_react_ajax_teachingplan_delete(obj){
 //        };   
    
 //废弃代码（老版课程管理模块index直接调用react中请求并且绘制）
-////———————————————————————————————————<老版>课程安排<管理模块>—————————————————————————      
-//  /*(课程安排)（服务器请求  
+////———————————————————————————————————<老版>教学计划<管理模块>—————————————————————————      
+//  /*(教学计划)（服务器请求  
 //   * Teachingplan_EventsTable在common_rect绘制；
 //   * 初始进入都为默认第一位
 //   * */ 
@@ -3085,7 +3085,7 @@ function px_react_ajax_teachingplan_delete(obj){
 //	}
 //	var begDateStr=G_week.getWeek0(now);
 //	var endDateStr=G_week.getWeek6(now);
-//  	Queue.push(function(){ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum);},"课程安排");
+//  	Queue.push(function(){ajax_teachingplan_listByClass_byRight(groupuuid,classuuid,weeknum);},"教学计划");
 //	$.AMUI.progress.start();
 //	var url = hostUrl + "rest/teachingplan/list.json";
 //	$.ajax({
@@ -3116,7 +3116,7 @@ function px_react_ajax_teachingplan_delete(obj){
 //		}
 //	});
 //};
-///*(课程安排)
+///*(教学计划)
 // * 班级详情内添加编辑课程等按钮方法判断;
 // * */ 
 //function btn_click_teachingplan_byRight(m,uuid,groupuuid,classuuid,ch_day){
@@ -3150,7 +3150,7 @@ function px_react_ajax_teachingplan_delete(obj){
 //		}
 //	});
 //};
-///*(课程安排)
+///*(教学计划)
 // * 班级详情内添加编辑按钮服务器请求
 // * 
 // * */ 
@@ -3180,7 +3180,7 @@ function px_react_ajax_teachingplan_delete(obj){
 //		}
 //	});
 //};
-///*(课程安排)
+///*(教学计划)
 // * 班级详情内添加编辑提交按钮服务器请求
 // * 直接把Form表单发送给服务器
 // * */ 

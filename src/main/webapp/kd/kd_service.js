@@ -1828,7 +1828,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				ajax_announce_listByGroup(groupuuid);
+				ajax_announce_listByGroup_byRight();
 			} else {
 				alert(data.ResMsg.message);
 			}

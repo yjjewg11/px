@@ -157,11 +157,11 @@ function login_affter_init(){
 	
 	
 	
-//————————————课程安排<权限>——————————		
+//————————————教学计划<权限>——————————		
 	t_menu={
       	   		"link": "##",
       	   		"fn":menu_teachingplan_list_fn_byRight,
-      	   		"title": "课程安排",
+      	   		"title": "教学计划",
       	   		"subCols": 2
 		  };
 	if(G_user_hasRight("PX_teachingplan_m")){
@@ -475,7 +475,7 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn() {
-//培训机构课程安排模块，列表代码	
+//培训机构课程表模块，列表代码	
 		var classList=Store.getMyClassList();
  		var class_uuid =null;
  		if(classList&&classList.length>0){
@@ -698,13 +698,13 @@ function menu_userTeacher_list_fn_byRight() {
 };
 
 /*
- * (标头)课程安排功能
+ * (标头)教学计划功能
  * @跳转widget发服务器请求
  * */
 var G_myCurClassuuid=null;
 var G_myClassList=null;
 function menu_teachingplan_list_fn_byRight() {
-//培训机构课程安排管理模块，列表代码	
+//培训机构教学计划管理模块，列表代码	
 	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
 	if(!groupList||groupList.length==0){
 		alert("没有权限。");
@@ -719,8 +719,8 @@ function menu_teachingplan_list_fn_byRight() {
 	px_ajax_teachingplan_byRight(classuuid);	
 	return;
 //---------------------------------------------------------------------------------
-//幼儿园课程安排管理模块，新版代码		
-//	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+//幼儿园教学计划管理模块，新版代码		
+//	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
 //	var groupList=Store.getGroupByRight("PX_teachingplan_m");
 //	
 //	if(!groupList||groupList.length==0){
@@ -735,14 +735,14 @@ function menu_teachingplan_list_fn_byRight() {
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
-//幼儿园课程安排管理模块，老版代码	
+//幼儿园教学计划管理模块，老版代码	
 //	var groupList=Store.getGroupByRight("PX_teachingplan_m");
 //	
 //	if(!groupList||groupList.length==0){
 //		alert("没有权限。");
 //		return;
 //	}
-//	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+//	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
 //	var groupuuid=groupList[0].uuid;
 //	
 //	React.render(React.createElement(Teachingplan_EventsTable_byRight, {

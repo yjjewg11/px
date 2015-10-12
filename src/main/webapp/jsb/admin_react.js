@@ -1617,3 +1617,267 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     }
     }); 
     //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+    
+    
+    
+  //—————————————————————————帮助管理<绘制>—————————————————————  
+    /*
+    *(帮助管理)<幼儿园帮助文档><培训机构帮助文档>表单框绘制
+    *@btn_click_announce_helpbyRight:点击按钮事件跳转kd_servise方法;
+    * */  
+    var Announcements_EventsTable_HelpbyRight = React.createClass({displayName: "Announcements_EventsTable_HelpbyRight",
+    	getInitialState: function() {
+    		var obj= {
+    		    	groupuuid:this.props.groupuuid,
+    		    	pageNo:this.props.pageNo,
+    		    	type:this.props.type,
+    		    	list: []
+    		    };
+    			
+    		//obj=this.ajax_list(obj);
+    	    return obj;
+    	   
+    	  },
+    		componentDidMount: function() {
+    			this.ajax_list(this.state); 
+    		  },
+    	  ajax_callback:function(list){
+    		     if (list== null )list= [];
+    		  this.state.list=list;
+    		  this.setState(this.state);
+    	  },
+    	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+    	  componentWillReceiveProps: function(nextProps) {
+    		  var obj= {
+    			    	groupuuid:nextProps.groupuuid,
+    			    	pageNo:nextProps.pageNo,
+    			    	type:nextProps.type,
+    			    	list: []
+    			    };
+    				
+    			this.ajax_list(obj);
+    		  //this.setState(obj);
+    		},
+    	 ajax_list:function(obj){
+    		$.AMUI.progress.start();
+    		var that=this;
+    		g_Help_groupuuid=obj.groupuuid;
+    		var url = hostUrl + "rest/announcements/list.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+    			dataType : "json",
+    			//async: false,//必须同步执行
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    					obj.list=data.list.data;
+    				    that.ajax_callback( data.list.data );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		return obj;
+    		
+    	},
+    	pageClick: function(m) {
+    		 var obj=this.state;
+    		 if(m=="pre"){
+    			
+    			 if(obj.pageNo<2){
+    				 G_msg_pop("第一页了");
+    				 return;
+    			 }
+    			 obj.pageNo=obj.pageNo-1;
+    			 this.ajax_list(obj);
+    			 return;
+    		 }else if(m=="next"){
+    			 if(!obj.list||obj.list.length==0){
+    				 G_msg_pop("最后一页了");
+    				 return ;
+    			 }
+    			 obj.pageNo=obj.pageNo+1;
+    			
+    			 this.ajax_list(obj);
+    			 return;
+    		 }
+    	},
+    	handleClick: function(m,Titlename) {
+    		btn_click_announce_helpbyRight(m,this.state.groupuuid,null);
+    },
+    handleChange_selectgroup_uuid:function(val){
+    	 var obj=this.state;
+    	 obj.groupuuid=val;
+    	 this.ajax_list(obj);
+    },
+
+    render: function() {
+    	var obj=this.state;
+    	if(!this.state.list)this.state.list=[];
+      return (
+      React.createElement("div", null, 
+    React.createElement(AMR_ButtonToolbar, null, 
+    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上一页"), 
+    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下一页"), 	
+    	React.createElement("span", null, "第", obj.pageNo, "页"), 
+    	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "创建")
+
+      ), 
+    React.createElement("hr", null), 
+    React.createElement("div", {className: "am-form-group"}, 
+    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
+      ), 	  
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+       React.createElement("thead", null, 
+        React.createElement("tr", null, 
+          React.createElement("th", null, "标题"), 
+          React.createElement("th", null, "状态"), 
+          React.createElement("th", null, "浏览次数"), 
+          React.createElement("th", null, "创建时间"), 
+          React.createElement("th", null, "创建人")
+        )
+      ), 
+      React.createElement("tbody", null, 
+        this.state.list.map(function(event) {
+          return (React.createElement(Announcements_EventRow_byRight, {key: event.uuid, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+    });
+      
+    //帮助管理绘制详情内容Map;   
+    var Announcements_EventRow_byRight = React.createClass({displayName: "Announcements_EventRow_byRight", 
+    	render: function() {
+    	  var event = this.props.event;
+    	  var className = event.highlight ? 'am-active' :
+    	    event.disabled ? 'am-disabled' : '';
+
+    	  return (
+    	    React.createElement("tr", {className: className}, 
+    	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_help_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
+    	      React.createElement("th", null, Vo.get("announce_status_"+event.status)), 
+    	      React.createElement("td", null, event.count), 
+    	      React.createElement("td", null, event.create_time), 
+    	      React.createElement("td", null, event.create_user)
+    	    ) 
+    	  );
+    	}
+    	});    
+        
+
+    /*
+    * (帮助管理)<幼儿园帮助文档><培训机构帮助文档>创建与编辑界面绘制；
+    * @w_img_upload_nocut:上传图片后发的请求刷新;
+    * */    
+    var Announcements_edit_helpbyRight = React.createClass({displayName: "Announcements_edit_helpbyRight", 
+    	 getInitialState: function() {
+    		    return this.props.formdata;
+    		  },
+    	 handleChange: function(event) {
+    		    this.setState($('#editAnnouncementsForm').serializeJson());
+    	  },
+    	  componentDidMount:function(){
+    	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+            w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                  editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+            });
+    	  },
+    render: function() {
+    	 var o = this.state;
+    	  var type_div;
+    	  if (announce_Helptypes==2) {
+    		  type_div= 
+    			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
+    		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
+    		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
+    		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
+    		     );
+    	  } else {
+    		  type_div =
+    		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
+    	  }
+    return (
+    		React.createElement("div", null, 		
+    		React.createElement("div", {className: "header"}, 
+    		  React.createElement("hr", null)
+    		), 
+    		React.createElement("div", {className: "am-g"}, 
+    		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+    		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
+    		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+    		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+    		React.createElement("div", {className: "am-form-group"}, 
+    	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
+          ), 
+    		type_div, 
+    		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
+    		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
+    		  React.createElement("br", null), 
+    		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
+    		G_get_upload_img_Div(), 
+    		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_helpbyRight, className: "am-btn am-btn-primary"}, "提交")
+    		  )
+    	     )
+    	   )	   
+    	  )
+    );
+    }
+    }); 
+
+
+    //
+    /*
+     *<帮助>点赞、添加、删除、禁用、评论、加载更多等详情绘制模板；
+     *增加编辑与删除功能
+     * */
+    var Announcements_helpshow_byRight = React.createClass({displayName: "Announcements_helpshow_byRight", 
+    	//创建帮助管理点击按钮事件跳转kd_servise方法;
+     	handleClick: function(m,groupuuid,uuid) {
+     		btn_click_announce_helpbyRight(m,groupuuid,uuid);
+        }, 
+    	//收藏按钮方法;
+    	favorites_push: function(title,type,reluuid,url) {
+    		commons_ajax_favorites_push(title,type,reluuid,url);
+    	},
+    render: function() {
+    	  var o = this.props.data;
+
+    return (
+    	  React.createElement("div", null, 
+           React.createElement("div", {className: "am-margin-left-sm"}, 
+    	 
+           React.createElement(AMUIReact.Article, {
+    	    title: o.title, 
+    	    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+    		React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+    	      ), 		     
+    	     React.createElement(AMR_ButtonToolbar, null, 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
+    	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏"), 
+    	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
+    	     )
+    	     
+    	     ), 
+    	    	React.createElement("footer", {className: "am-comment-footer"}, 
+    	    	React.createElement("div", {className: "am-comment-actions"}, 
+    	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+    	    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
+    	    	)
+    	    	), 
+    	    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+    		  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
+    	   )
+    );
+    }
+    }); 
+
+
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
