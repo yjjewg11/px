@@ -1011,28 +1011,13 @@ return (
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-
-//——————————————————————————<培训机构新版>课程安排<列表版>——————————————————————————  
+//——————————————————————————<培训机构新版>课程表<列表版>——————————————————————————  
 /*
- * <培训机构新版><课程安排>服务器请求后绘制处理方法；
+ * <培训机构新版><课程表>服务器请求后绘制处理方法；
  * 
  * */
+
 var px_rect_teachingplan_fn = React.createClass({displayName: "px_rect_teachingplan_fn",
-	 handleChange: function(m,classuuid) {
-		var pageNo;
-		 if(m=="pre"){
-			pageNo=g_begDateStr_pageNo_point-1;
-			px_ajax_teachingplan_fn(classuuid,pageNo);
-			return
-		 }else{
-			pageNo=g_begDateStr_pageNo_point+1;
-			px_ajax_teachingplan_fn(classuuid,pageNo);
-			return 
-		 }
-	  },
-//	 handleChange_button: function(classuuid) {
-//		Px_class_students_manage_onClick_fn("add",{classuuid:classuuid,uuid:null});
-//	  },
 render: function() {
 	 var o=this.props;
     return (
@@ -1048,52 +1033,41 @@ render: function() {
 	 	  React.createElement("hr", null), 
      React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name), 		 
 
-      React.createElement(AMR_Table, React.__spread({},  this.props), 
-        React.createElement("thead", null, 
-          React.createElement("tr", null, 
-            React.createElement("th", null, "课程名称"), 
-            React.createElement("th", null, "时间"), 
-            React.createElement("th", null, "上课地点"), 
-            React.createElement("th", null, "需要工具"), 
-            React.createElement("th", null, "课程时长"), 
-            React.createElement("th", null, "课程详细内容")
-          )
-        ), 
-        React.createElement("tbody", null, 
-          this.props.events.map(function(event) {
-            return (React.createElement(Query_teachingplan_fn, {key: event.id, event: event}));
-          })
-        )
-      )
+     React.createElement("div", {className: "am-panel-group", id: "accordion"}, 
+     
+	 this.props.events.map(function(event) {
+		  return(	
+				  
+			 React.createElement("div", {className: "am-panel am-panel-default"}, 
+			  React.createElement("div", {className: "am-panel-hd"}, 
+			   React.createElement("h4", {className: "am-panel-title", "data-am-collapse": "{parent: '#accordion', target: '#do-not-say-"+event.uuid+"'}"}, 
+			      event.name, "—— 时间：", event.plandate
+			     )
+			    ), 
+			   React.createElement("div", {id: "do-not-say-"+event.uuid, className: "am-panel-collapse am-collapse"}, 
+			  React.createElement("div", {className: "am-panel-bd"}, 
+			   React.createElement("div", null, 
+			     "上课地点:", event.address
+			   ), 
+			   React.createElement("div", null, 
+			     "需要工具:", event.readyfor
+			   ), 
+			   React.createElement("div", null, 
+				 "课程时长:", event.duration
+			   ), 
+			   React.createElement("div", null, 
+			     "课程详细内容:", event.context
+			   )
+			     )
+			   )
+			 )
+		  )})
+       )
       )
     );
   }
 });
     
-/*  	
- * <培训机构新版><课程安排>在表单上绘制详细内容;
- * */
-var Query_teachingplan_fn = React.createClass({displayName: "Query_teachingplan_fn", 
-	 handleChange_button: function(event) {
-		 Px_class_students_manage_onClick_fn("eit",event);
-	 	  },
-	  render: function() {
-	    var event = this.props.event;
-	 	var className = event.highlight ? 'am-active' :
-	  	  event.disabled ? 'am-disabled' : '';
-
-	  	return (
-	  	  React.createElement("tr", {className: className}, 
-	  	    React.createElement("td", null, event.name), 
-	  	    React.createElement("td", null, event.plandate), 
-	  	    React.createElement("td", null, event.address), 
-	  	    React.createElement("td", null, event.readyfor), 
-	  	    React.createElement("td", null, event.duration), 
-	  		React.createElement("td", null, event.context)
-	  	  ) 
-	    );
-	  }
-	}); 
 ////培训机构新课程表添加与编辑绘制
 //var Px_Teachingplan_edit = React.createClass({ 
 //	 getInitialState: function() {
@@ -1149,7 +1123,7 @@ var Query_teachingplan_fn = React.createClass({displayName: "Query_teachingplan_
 
 
 
-//暂时屏蔽，课程安排-培训机构-新展示方式
+//暂时屏蔽，课程表-培训机构-新展示方式
 ///*
 // * 培训机构创建框架显示一周
 // * */
@@ -1549,7 +1523,7 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 		), 
 		React.createElement("div", {className: "header"}, 
 		  React.createElement("div", {className: "am-g"}, 
-		  "课程安排-", this.props.ch_day
+		  "课程表-", this.props.ch_day
 		
 		  ), 
 		  React.createElement("hr", null)
@@ -5470,9 +5444,9 @@ render: function() {
 
 
  
-//——————————————————————————<培训机构新版>课程安排<管理模块绘制>——————————————————————————  
+//——————————————————————————<培训机构新版>教学计划<管理模块绘制>——————————————————————————  
  /*
-  * <培训机构新版><课程安排>服务器请求后绘制处理方法；
+  * <培训机构新版><教学计划>服务器请求后绘制处理方法；
   * 
   * */
  var Px_rect_teachingplan_byRight = React.createClass({displayName: "Px_rect_teachingplan_byRight",
@@ -5606,10 +5580,7 @@ render: function() {
    
     ), 
       
-
-
-    
-    
+  
 		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-top-xs"}, 
 		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null}), round: true}, "新增课程")	
 		)
@@ -5620,7 +5591,7 @@ render: function() {
  });
      
 // /*  	
-//  * <培训机构新版><课程安排>在表单上绘制详细内容;
+//  * <培训机构新版><教学计划>在表单上绘制详细内容;
 //  * */
 // var Query_teachingplan_byRight = React.createClass({ 
 //	 handleChange_button: function(event) {
@@ -5664,11 +5635,11 @@ render: function() {
   	  var class_name=(React.createElement("div", null));
   	  if(o.uuid){
   		class_name=(
-		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-"+o.name+"课程修改")   
+		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-"+o.name+"教学计划修改")   
   	    )
   	  }else{
   		class_name=(
-  		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-新增课程") 
+  		React.createElement("legend", null, Store.getClassByUuid(o.classuuid).name+"-新增教学计划") 
   		)
   	  }
  return (
@@ -5766,10 +5737,10 @@ render: function() {
  
  
  
-//——————————————————————————<幼儿园新版>课程安排<管理模块绘制>——————————————————————————  
+//——————————————————————————<幼儿园新版>教学计划<管理模块绘制>——————————————————————————  
  /*
   * 
-  * 课程安排1周显示
+  * 教学计划1周显示
   * <Teachingplan_showByMy  classuuid={classuuid} classlist={classlist} />
   */
  var Teachingplan_show7Day_byRight = React.createClass({displayName: "Teachingplan_show7Day_byRight", 
@@ -6047,7 +6018,7 @@ render: function() {
 
 
  /*
-  *<课程安排>班级编辑-内嵌在显示1周页面
+  *<教学计划>班级编辑-内嵌在显示1周页面
   *<Teachingplan_edit_inner data={data} callback={callback} />
   * */
  var Teachingplan_edit_inner = React.createClass({displayName: "Teachingplan_edit_inner", 
@@ -6120,9 +6091,9 @@ render: function() {
  
  
  
-//——————————————————————————<幼儿园老版>课程安排<管理绘制>——————————————————————————        
+//——————————————————————————<幼儿园老版>教学计划<管理绘制>——————————————————————————        
  /*
- * <课程安排>班级详情界面按钮列表框等绘制;
+ * <教学计划>班级详情界面按钮列表框等绘制;
  * @add:添加班级课程；
  * @pre:上周；
  * @next:下一周；
@@ -6270,7 +6241,7 @@ render: function() {
  }
  });
  /*
- *<课程安排>班级详情列表详情内容绘制;
+ *<教学计划>班级详情列表详情内容绘制;
  * @add:添加班级课程；
  * @pre:上周；
  * @next:下一周；

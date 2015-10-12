@@ -1099,3 +1099,151 @@ function ajax_classnews_save_byRight(){
 	G_ajax_abs_save(opt);
 }
 
+//————————————————————————————帮助管理<管理模块>—————————————————————————    
+/*
+*(帮助管理)<幼儿园帮助文档><培训机构帮助文档>服务器请求
+* @types- 91:幼儿园帮助文档  92:培训机构帮助文档
+* @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
+* */
+var  g_Help_groupuuid="";
+function ajax_announce_Help_byRight(){
+	var grouplist=Store.getGroupByRight("PX_announce_m");
+	if(!grouplist||grouplist.length==0){
+		G_msg_pop("没有权限!");
+		return "";
+	}
+	if(!g_Help_groupuuid){
+		g_Help_groupuuid=grouplist[0].uuid;		
+	}
+	React.render(React.createElement(Announcements_EventsTable_HelpbyRight, {
+		groupuuid:g_Help_groupuuid,
+		pageNo:1,
+		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+		events: [],
+		type:announce_Helptypes,
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
+/*
+* 帮助管理模块详情内容绘制
+* @Announcements_show_Right:详情绘制
+* 在kd_rect;
+* */
+function react_ajax_announce_help_byRight(uuid,Titlenmae){
+	Queue.push(function(){react_ajax_announce_help_byRight(uuid,Titlenmae);},Titlenmae);
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/announcements/"+uuid+".json";
+$.ajax({
+	type : "GET",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+			React.render(React.createElement(Announcements_helpshow_byRight,{
+				data:data.data,
+				count:data.count,
+				}), document.getElementById('div_body'));
+		} else {
+			alert("加载数据失败："+data.ResMsg.message);
+		}
+	},
+	error :G_ajax_error_fn
+	});
+}; 
+/*
+*(帮助管理)<幼儿园帮助文档><培训机构帮助文档>创建按钮、详情里面的删除、编辑按钮
+* @add:创建；
+* @edit:编辑；
+* @del:删除；
+* */  
+function btn_click_announce_helpbyRight(m,groupuuid,uuid){
+	if(m=="add"){
+		Queue.push(function(){btn_click_announce_helpbyRight(m,groupuuid,uuid);},"创建信息");
+		react_ajax_announce_edit_helpbyRight({groupuuid:groupuuid,type:announce_Helptypes},null);
+	}else if(m=="edit"){
+		Queue.push(function(){btn_click_announce_helpbyRight(m,groupuuid,uuid);},"编辑信息");
+		react_ajax_announce_edit_helpbyRight(null,uuid);
+	}else if(m=="del"){
+		react_ajax_announce_delete_helpbyRight(groupuuid,uuid);
+	}
+}; 
+
+/*
+*(帮助管理)<幼儿园帮助文档><培训机构帮助文档>创建与编辑服务请求；
+* @if(!uuid):创建；
+* @uuid不是则:编辑；
+* */  	  
+function react_ajax_announce_edit_helpbyRight(formdata,uuid){
+	if(!uuid){
+		React.render(React.createElement(Announcements_edit_helpbyRight,{
+			formdata:formdata,
+			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
+			}), document.getElementById('div_body'));
+		return;
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/announcements/"+uuid+".json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Announcements_edit_helpbyRight,{
+					formdata:data.data,
+					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
+					}),document.getElementById('div_body'));
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
+
+
+/*
+*(帮助管理)<幼儿园帮助文档><培训机构帮助文档>删除按钮服务请求；
+*@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+* */  	  
+function react_ajax_announce_delete_helpbyRight(groupuuid,uuid){	 
+	if(!confirm("确定要删除吗?")){
+		return;
+	}
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_announce_Help_byRight();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};  
+/*
+*(帮助管理)<幼儿园帮助文档><培训机构帮助文档>创建与编辑提交按钮方法
+*@OPT：我们把内容用Form表单提交到Opt我们封装的
+*一个方法内直接传给服务器，服务器从表单取出需要的参数
+* */    
+function ajax_announcements_save_helpbyRight(){
+    var opt={
+            formName: "editAnnouncementsForm",
+        url:hostUrl + "rest/announcements/save.json",
+            cbFN:null
+            };
+G_ajax_abs_save(opt);
+}  

@@ -93,6 +93,23 @@ function login_affter_init(){
     	                    }
     	                  ]
               },
+              {
+                  "link": "##",
+                  "title": "帮助文档",
+                  "subCols": 3,
+                  "subMenu": [
+      	                    {
+      	                    	 "fn":function(){menu_Help_fn(91,"幼儿园帮助文档");},
+      	                      "link": "##",
+      	                      "title": "幼儿园帮助文档"
+      	                    },
+      	                    {
+      	                    	 "fn":function(){menu_Help_fn(92,"培训机构帮助文档");},
+      	                        "link": "##",
+      	                        "title": "培训机构帮助文档"
+      	                      }
+      	                  ]
+                },
             {
                 "link": "##",
                 "title": "我",
@@ -259,6 +276,17 @@ function menu_wenjieAdmin_dataRefresh_fn(){
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
+/*
+ * (帮助管理)<幼儿园帮助文档><培训机构帮助文档>
+ * @types- 91:幼儿园帮助文档  92:培训机构帮助文档
+ * @跳转kd_service发服务器请求
+ * */
+var announce_Helptypes="";
+function menu_Help_fn(types,name) {
+	Queue.push(function(){menu_Help_fn(types,name);},name);
+	announce_Helptypes=types; 
+	ajax_announce_Help_byRight();
+};
 function menu_body_fn (){
 	$("#div_seesion_body").show();
 	//$("#div_login").hide();
