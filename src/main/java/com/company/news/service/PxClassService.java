@@ -47,6 +47,9 @@ public class PxClassService extends AbstractClassService {
 				pxclassRegJsonform.getName(), 45, "班级名", responseMessage)
 				|| this.validateRequireByRegJsonform(
 						pxclassRegJsonform.getGroupuuid(), "机构名称",
+						responseMessage)
+				|| this.validateRequireByRegJsonform(
+						pxclassRegJsonform.getCourseuuid(), "关联课程",
 						responseMessage)) {
 			return false;
 		}
@@ -242,8 +245,8 @@ public class PxClassService extends AbstractClassService {
 			return false;
 		}
 
-		PxClass obj = (PxClass) this.nSimpleHibernateDao.getObject(PxClass.class,
-				uuid);
+		PxClass obj = (PxClass) this.nSimpleHibernateDao.getObject(
+				PxClass.class, uuid);
 		if (obj == null) {
 			responseMessage.setMessage("没有该数据!");
 			return false;
