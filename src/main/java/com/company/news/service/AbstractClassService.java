@@ -9,6 +9,8 @@ import com.company.news.entity.AbstractClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.rest.util.DBUtil;
+import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.ResponseMessage;
 
 public class AbstractClassService extends AbstractService {
 	/**
@@ -70,7 +72,7 @@ public class AbstractClassService extends AbstractService {
 		}
 		return list;
 	}
-	
+
 	/*
 	 * 
 	 * 判断是否是班级的班主任老师
@@ -84,6 +86,7 @@ public class AbstractClassService extends AbstractService {
 			return true;
 		return false;
 	}
+
 	/**
 	 * 获取老师相关班级的uuid
 	 * 
@@ -94,11 +97,12 @@ public class AbstractClassService extends AbstractService {
 	 */
 	public List getTeacherRelClassUuids(String user_uuid) throws Exception {
 		this.logger.info("user_uuid=" + user_uuid);
-		List list = this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("select classuuid from UserClassRelation where useruuid=?", user_uuid);
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(
+				"select classuuid from UserClassRelation where useruuid=?",
+				user_uuid);
 		return list;
 	}
-	
+
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
@@ -109,6 +113,26 @@ public class AbstractClassService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * 结业
+	 * 
+	 * @param classuuid
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean updateDisable(String classuuid, ResponseMessage responseMessage) {
+		if (this.validateRequireByRegJsonform(classuuid, "classuuid",
+				responseMessage))
+			return false;
+
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update " + this.getEntityClass().getName()
+						+ " set isdisable=?,disable_time=? where uuid =?", 1,
+				TimeUtils.getCurrentTimestamp(), classuuid);
+
+		return true;
 	}
 
 }

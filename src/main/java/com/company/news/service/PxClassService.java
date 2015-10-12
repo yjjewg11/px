@@ -292,7 +292,7 @@ public class PxClassService extends AbstractClassService {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return User.class;
+		return PxClass.class;
 	}
 
 	@Override
