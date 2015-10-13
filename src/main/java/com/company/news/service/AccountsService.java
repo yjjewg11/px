@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.company.news.entity.Accounts;
 import com.company.news.entity.Student;
 import com.company.news.jsonform.AccountsJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -174,6 +176,38 @@ public class AccountsService extends AbstractService {
 		return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql.toString());
 	}
 
+	/**
+	 * 分页查询
+	 * 
+	 * @return
+	 */
+	public PageQueryResult listByPage(PaginationData pData,String begDateStr, String endDateStr,AccountsJsonform accountsJsonform) {
+		StringBuffer hql=new StringBuffer("from Accounts where groupuuid='"+accountsJsonform.getGroupuuid()+"'");
+		
+		if(StringUtils.isNotBlank(begDateStr))
+			hql.append(" and accounts_time>="+DBUtil.stringToDateByDBType(begDateStr));
+		
+		if(StringUtils.isNotBlank(endDateStr))
+			hql.append(" and accounts_time<="+DBUtil.stringToDateByDBType(endDateStr));		
+		
+		if(accountsJsonform.getType()!=null)
+			hql.append(" and type="+accountsJsonform.getType());		
+		
+		if(StringUtils.isNotBlank(accountsJsonform.getClassuuid()))
+			hql.append(" and classuuid='"+accountsJsonform.getClassuuid()+"'");
+		
+		if(StringUtils.isNotBlank(accountsJsonform.getCreate_useruuid()))
+			hql.append(" and create_useruuid='"+accountsJsonform.getCreate_useruuid()+"'");
+		if(StringUtils.isNotBlank(accountsJsonform.getTitle())){
+			String title=accountsJsonform.getTitle();
+			hql.append("and ( title  like '%" + title + "%'  or studentname  like '%" + title + "%'   or invoice_num  like '%" + title + "%'  or create_user  like '%" + title + "%'"  );
+		}
+			
+
+		hql.append(" order by accounts_time desc");
+
+		return  this.nSimpleHibernateDao.findByPaginationToHql(hql.toString(), pData);
+	}
 
 	/**
 	 * 删除 支持多个，用逗号分隔

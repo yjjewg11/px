@@ -833,7 +833,22 @@ function menu_class_list_fn_byRight() {
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn_byRight() {
-	ajax_accounts_listByGroup_byRight();
+var grouplist= Store.getGroupByRight("KD_accounts_m");
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+
+		var groupuuid=grouplist[0].uuid;
+	
+ 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收支记录");
+
+	React.render(React.createElement(Accounts_EventsTable_byRight, {
+ 					groupuuid:groupuuid,
+ 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+ 					
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById('div_body'));
 };
 /*
  * (标头)学生列表
