@@ -1107,7 +1107,7 @@ function ajax_classnews_save_byRight(){
 * */
 var  g_Help_groupuuid="";
 function ajax_announce_Help_byRight(){
-	var grouplist=Store.getGroupByRight("PX_announce_m");
+	var grouplist=Store.getAllGroup();
 	if(!grouplist||grouplist.length==0){
 		G_msg_pop("没有权限!");
 		return "";
@@ -1180,7 +1180,7 @@ function react_ajax_announce_edit_helpbyRight(formdata,uuid){
 	if(!uuid){
 		React.render(React.createElement(Announcements_edit_helpbyRight,{
 			formdata:formdata,
-			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
+			group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name")
 			}), document.getElementById('div_body'));
 		return;
 	}
@@ -1196,7 +1196,7 @@ function react_ajax_announce_edit_helpbyRight(formdata,uuid){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Announcements_edit_helpbyRight,{
 					formdata:data.data,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_announce_m"),"uuid","brand_name")
+					group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name")
 					}),document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
