@@ -157,8 +157,7 @@ function ajax_getUserinfo(isInit) {
 			} else {
 				if(!isInit)alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
-			}
-			
+			}			
 		},
 		error : G_ajax_error_fn
 	});
@@ -253,12 +252,6 @@ function ajax_queryMyTimely_myList() {
 		error :G_ajax_error_fn
 	});
 };
-
-
-
-
-
-
 
 
 /*
@@ -3458,7 +3451,6 @@ function ajax_class_delete_byRight(uuid){
 * */
 var G_formdata=null;
 function add_studentsByData(formdata){
-	Queue.push(function(){add_studentsByData(formdata);},"管理学生详情");
 	G_formdata=formdata;
 	//初始取出学生列表
 	$.AMUI.progress.start();
