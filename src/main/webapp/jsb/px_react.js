@@ -3797,7 +3797,9 @@ render: function() {
           React.createElement("th", null, "班主任"), 
           React.createElement("th", null, "老师"), 
           React.createElement("th", null, "学校"), 
-          React.createElement("th", null, "创建时间")
+          React.createElement("th", null, "创建时间"), 
+          React.createElement("th", null, "状态"), 
+          React.createElement("th", null, "最后结业操作时间")
         )
       ), 
       React.createElement("tbody", null, 
@@ -3814,11 +3816,17 @@ render: function() {
    * <班级管理>列表详细内容绘制;
    * @react_ajax_class_students_manage:调用在（我的班级）公共方法 编辑与添加
    * */
-  var Class_EventRow_byRight = React.createClass({displayName: "Class_EventRow_byRight", 
+  var Class_EventRow_byRight = React.createClass({displayName: "Class_EventRow_byRight",
 	  render: function() {
+		var disable;
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
 	      event.disabled ? 'am-disabled' : '';
+	    if(event.isdisable==1){
+	    	disable=React.createElement("td", null, "已结业")
+	    }else{
+	    	disable=React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid), amStyle: "success"}, "结业"))
+	    }
 	    return (
 	      React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, 
@@ -3828,7 +3836,9 @@ render: function() {
 	        React.createElement("td", null, event.headTeacher_name), 
 	        React.createElement("td", null, event.teacher_name), 
 	        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
-	        React.createElement("td", null, event.create_time)
+	        React.createElement("td", null, event.create_time), 
+            disable, 
+            React.createElement("td", null, event.disable_time)
 	      ) 
 	    );
 	   }
@@ -6355,6 +6365,160 @@ render: function() {
  	    );
  	  }
  	}); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editGroupForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+			  
+			  
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+          });
+	},
+	   /*
+	    * (校务管理)<校园列表>内上传LOGO图片
+	    * */
+    btn_class_group_uploadHeadere :function(){      
+        w_uploadImg.open(function (guid){
+             $ ("#img").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+	         });   
+	   },
+  render: function() {
+	  var o = this.state;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+    return (
+    		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+  		     React.createElement("hr", null), 
+    		  React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+    	       React.createElement(PxInput, {type: "hidden", name: "type", value: o.type}), 
+    		    React.createElement(PxInput, {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 		   
+              React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.img, className: "G_img_header"}), 
+             React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO"), 
+            React.createElement("div", {className: "am-form-group"}, 
+    		 React.createElement("label", {className: one_classDiv }, "品牌名:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	       React.createElement(PxInput, {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	        ), 		
+    	       React.createElement("label", {className: one_classDiv }, "机构全称:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	    ), 	      
+    	     React.createElement("label", {className: one_classDiv }, "学校地址:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"})
+     	        ), 	      
+    	       React.createElement("label", {className: one_classDiv }, "地址坐标:"), 
+    		  React.createElement("div", {className: two_classDiv }, 
+    	     React.createElement(PxInput, {type: "text", name: "map_point", id: "map_point", value: o.map_point, onChange: this.handleChange, placeholder: "拾取坐标后，复制到这里。格式：1.1,1.1"}), 
+    	    React.createElement("a", {href: "http://api.map.baidu.com/lbsapi/getpoint/index.html", target: "_blank"}, "坐标拾取")
+    	   ), 	      
+    	    React.createElement("label", {className: one_classDiv }, "学校电话:"), 
+    		 React.createElement("div", {className: two_classDiv }, 
+    	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
+    	       ), 		
+    	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
+  		  	  G_get_upload_img_Div(), 
+  	          React.createElement("button", {type: "button", onClick: ajax_group_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+	    	 )
+    		)   	   
+    );
+  }
+}); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 //发布课程添加与编辑绘制
  var Px_course_edit = React.createClass({displayName: "Px_course_edit", 
 	 getInitialState: function() {
@@ -6364,6 +6528,23 @@ render: function() {
 	 handleChange: function(event) {
 		    this.setState($('#editCourseForm').serializeJson());
 	  },
+	  componentDidMount:function(){
+		  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+		  		  
+      w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+            editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+      });
+      },
+	   /*
+	    * (发布课程)内上传LOGO图片
+	    * */
+   btn_class_group_uploadHeadere :function(){      
+       w_uploadImg.open(function (guid){
+            $ ("#img").val(guid);
+             $("#img_head_image").attr("src",G_imgPath+ guid);
+             G_img_down404("#img_head_image");
+	         });   
+	   },
  render: function() {
  	  var o = this.state;
 
@@ -6377,8 +6558,11 @@ render: function() {
  		React.createElement("form", {id: "editCourseForm", method: "post", className: "am-form"}, 
  			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
  		     React.createElement(PxInput, {type: "hidden", name: "groupuuid", value: o.groupuuid}), 
-
-
+ 			React.createElement("div", null, 
+            React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.logo, className: "G_img_header"}), 
+            React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO")
+            ), 
+            React.createElement("hr", null), 
  		   React.createElement("div", {className: "am-form-group"}, 
 	 	  	React.createElement(AMUIReact.Selected, {amSize: "xs", id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: o.groupList, btnStyle: "primary", value: o.groupuuid}), 		     
 		 	  	React.createElement(AMUIReact.Selected, {id: "type", name: "type", onChange: this.handleChange, btnWidth: "200", data: course_type_list, btnStyle: "primary", value: o.type+""}), 		     
