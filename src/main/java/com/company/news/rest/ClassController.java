@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -177,6 +178,37 @@ public class ClassController extends AbstractRESTController {
 		}
 		model.addAttribute(RestConstants.Return_G_entity,c);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 结业
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/disable", method = RequestMethod.POST)
+	public String disable(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String uuid=request.getParameter("uuid");
+
+		try {
+			boolean flag = classService.updateDisable(uuid, responseMessage);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("修改成功");
 		return "";
 	}
 }

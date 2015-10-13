@@ -333,7 +333,7 @@ public class ClassService extends AbstractClassService {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return User.class;
+		return PClass.class;
 	}
 
 	@Override
