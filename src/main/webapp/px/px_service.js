@@ -157,8 +157,7 @@ function ajax_getUserinfo(isInit) {
 			} else {
 				if(!isInit)alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
-			}
-			
+			}			
 		},
 		error : G_ajax_error_fn
 	});
@@ -253,12 +252,6 @@ function ajax_queryMyTimely_myList() {
 		error :G_ajax_error_fn
 	});
 };
-
-
-
-
-
-
 
 
 /*
@@ -2660,8 +2653,32 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 		error :G_ajax_error_fn
   	});
   };
-
-
+/*
+ * 班级管理结业服务器请求
+ * */
+  function ajax_class_disable_byRight(groupuuid,uuid) {	 
+		if(!confirm("确定该班级要结业嘛?")){
+			return;
+		}
+	 	$.AMUI.progress.start();
+	 	var url = hostUrl + "rest/pxclass/disable.json";
+	 	$.ajax({
+	 		type : "POST",
+	 		url : url,
+	 		data : {uuid:uuid},
+	 		dataType : "json",
+	 		success : function(data) {
+	 			$.AMUI.progress.done();
+	 			if (data.ResMsg.status == "success"){
+	 				ajax_class_listByGroup_byRight(groupuuid);				
+	 			}else{
+	 				alert(data.ResMsg.message);
+	 				G_resMsg_filter(data.ResMsg);
+	 			}
+	 		},
+			error :G_ajax_error_fn
+	 	});
+	 };	  
 //—————————————————————————————————收支记录—————————————————————————
  /*
   * <收支记录>服务器请求
@@ -3434,7 +3451,6 @@ function ajax_class_delete_byRight(uuid){
 * */
 var G_formdata=null;
 function add_studentsByData(formdata){
-	Queue.push(function(){add_studentsByData(formdata);},"管理学生详情");
 	G_formdata=formdata;
 	//初始取出学生列表
 	$.AMUI.progress.start();

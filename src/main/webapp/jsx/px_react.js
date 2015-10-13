@@ -3798,6 +3798,8 @@ render: function() {
           <th>老师</th>
           <th>学校</th>
           <th>创建时间</th>
+          <th>状态</th>
+          <th>最后结业操作时间</th>
         </tr> 
       </thead>
       <tbody>
@@ -3814,11 +3816,17 @@ render: function() {
    * <班级管理>列表详细内容绘制;
    * @react_ajax_class_students_manage:调用在（我的班级）公共方法 编辑与添加
    * */
-  var Class_EventRow_byRight = React.createClass({ 
+  var Class_EventRow_byRight = React.createClass({
 	  render: function() {
+		var disable;
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
 	      event.disabled ? 'am-disabled' : '';
+	    if(event.isdisable==1){
+	    	disable=<td>已结业</td>
+	    }else{
+	    	disable=<td><AMUIReact.Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMUIReact.Button></td>
+	    }
 	    return (
 	      <tr className={className} >
 	      <td> 
@@ -3829,6 +3837,8 @@ render: function() {
 	        <td>{event.teacher_name}</td>
 	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
 	        <td>{event.create_time}</td>
+            {disable}
+            <td>{event.disable_time}</td>
 	      </tr> 
 	    );
 	   }
@@ -6355,6 +6365,160 @@ render: function() {
  	    );
  	  }
  	}); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ var Group_edit_byRight = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editGroupForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+			  
+			  
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+          });
+	},
+	   /*
+	    * (校务管理)<校园列表>内上传LOGO图片
+	    * */
+    btn_class_group_uploadHeadere :function(){      
+        w_uploadImg.open(function (guid){
+             $ ("#img").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+	         });   
+	   },
+  render: function() {
+	  var o = this.state;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+    return (
+    		<form id="editGroupForm" method="post" className="am-form">
+  		     <hr />
+    		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
+    	       <PxInput type="hidden" name="type"  value={o.type}/>
+    		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
+              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+             <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <div className= "am-form-group">
+    		 <label className={one_classDiv }>品牌名:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	        </div>    		
+    	       <label className={one_classDiv }>机构全称:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	    </div>    	      
+    	     <label className={one_classDiv }>学校地址:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+     	        </div>    	      
+    	       <label className={one_classDiv }>地址坐标:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
+    	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+    	   </div>   	      
+    	    <label className={one_classDiv }>学校电话:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+  		  	  {G_get_upload_img_Div()}
+  	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
+	    	 </div>
+    		</form>   	   
+    );
+  }
+}); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 //发布课程添加与编辑绘制
  var Px_course_edit = React.createClass({ 
 	 getInitialState: function() {
@@ -6364,6 +6528,23 @@ render: function() {
 	 handleChange: function(event) {
 		    this.setState($('#editCourseForm').serializeJson());
 	  },
+	  componentDidMount:function(){
+		  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+		  		  
+      w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+            editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+      });
+      },
+	   /*
+	    * (发布课程)内上传LOGO图片
+	    * */
+   btn_class_group_uploadHeadere :function(){      
+       w_uploadImg.open(function (guid){
+            $ ("#img").val(guid);
+             $("#img_head_image").attr("src",G_imgPath+ guid);
+             G_img_down404("#img_head_image");
+	         });   
+	   },
  render: function() {
  	  var o = this.state;
 
@@ -6377,8 +6558,11 @@ render: function() {
  		<form id="editCourseForm" method="post" className="am-form">
  			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
  		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
-
-
+ 			<div>
+            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
+            <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            </div>
+            <hr/>
  		   <div className="am-form-group">
 	 	  	<AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
 		 	  	<AMUIReact.Selected  id="type" name="type" onChange={this.handleChange} btnWidth="200" data={course_type_list} btnStyle="primary" value={o.type+""} />    		     

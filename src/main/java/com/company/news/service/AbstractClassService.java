@@ -129,7 +129,7 @@ public class AbstractClassService extends AbstractService {
 
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 				"update " + this.getEntityClass().getName()
-						+ " set isdisable=?,disable_time=? where uuid =?", 1,
+						+ " set isdisable=?,disable_time=? where uuid =?", SystemConstants.Class_isdisable_1,
 				TimeUtils.getCurrentTimestamp(), classuuid);
 
 		return true;
