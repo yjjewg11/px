@@ -4721,8 +4721,8 @@ render: function() {
   		if(!o.type){			
   			o.type="3";
   		};
-		if(!o.accounts_time){
-			o.accounts_time= new Date().format("yyyy-MM-dd"); 
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
 		}
 			this.auto_addValue(o);
   		    return this.loadData(this.props.formdata);
@@ -4837,8 +4837,8 @@ render: function() {
   		if(!o.type){			
   			o.type="3";
   		};
-		if(!o.accounts_time){
-			o.accounts_time= new Date().format("yyyy-MM-dd"); 
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
 		}
 		if(!this.state.list)this.state.list=[];
   		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
@@ -4866,7 +4866,7 @@ render: function() {
              ), 
 		    React.createElement("label", {className: one_classDiv}, "收费日期:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	 	    React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", value: o.accounts_time, onChange: this.handleChange})		   		
+	 	    React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", value: o.accounts_timeStr, onChange: this.handleChange})		   		
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
 		   React.createElement("div", {className: two_classDiv}, 
