@@ -423,4 +423,14 @@ var GTimeShow={
 		return "刚刚";
 	}
 };
+
+
+ function G_isKeyDown_enter(e){
+	 var e = e || event,
+	 keycode = e.which || e.keyCode;
+	 if (keycode==13) {
+	  return true;
+	 }
+	 return false;
+	}
 GTimeShow.init();

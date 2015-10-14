@@ -100,6 +100,13 @@ var Div_login = React.createClass({displayName: "Div_login",
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
 		    this.setState(o);
 	  },
+	 handle_onKeyDown: function(e){
+		if(G_isKeyDown_enter(e)){
+			ajax_userinfo_login();
+			return false;
+	 }
+	},
+		
 render: function() {
 	  var o = this.state;
  return (
@@ -111,7 +118,7 @@ render: function() {
  		), 
  		React.createElement("div", {className: "am-g"}, 
  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
- 		 React.createElement("form", {id: "login_form", method: "post", className: "am-form"}, 
+ 		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
  	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
  	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
  	      React.createElement("label", {htmlFor: "pw_checked"}, 
@@ -4503,7 +4510,13 @@ render: function() {
   **/
     var Accounts_EventsTable_byRight = React.createClass({displayName: "Accounts_EventsTable_byRight",		
 		getStateByPropes:function(nextProps){
+
+			var begDateStr= new Date().format("yyyy-MM")+"-01"; 
+			var endDateStr= new Date().format("yyyy-MM-dd"); 
+				
 			var queryForm={
+				begDateStr:begDateStr,
+				endDateStr:endDateStr,
 				groupuuid:nextProps.groupuuid
 			};
 			 var obj= {
@@ -4517,6 +4530,8 @@ render: function() {
 		data_type_list:[],
 		getInitialState: function() {
 			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
+
+			this.data_type_list.unshift({value:"",label:"所有"});
     	    return this.getStateByPropes(this.props);
     	  },
 		handleChange: function(v) {
@@ -4598,8 +4613,15 @@ render: function() {
     			btn_click_accounts_byRight(m,{groupuuid:this.props.group_uuid});
 			}
 		},
+		handle_onKeyDown: function(e){
+          if(G_isKeyDown_enter(e)){
+               this.handleClick_query();
+               return false;
+		 }
+     },
     render: function() {
 			var queryForm=this.state.queryForm;
+			   
       return (
       React.createElement("div", null, 
  
@@ -4610,18 +4632,22 @@ render: function() {
     	  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
       ), 
          	  React.createElement("hr", null), 
-		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true}, 
+		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
 			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 	  
     	
-    		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, btnWidth: "200", multiple: false, btnStyle: "primary"}), 	 
-    		 
-	   	    React.createElement(PxInput, {type: "text", name: "title", maxLength: "45", value: queryForm.invoice_num, onChange: this.handleChange, placeholder: "关键词"}), 
+    		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, placeholder: "所有", btnWidth: "200", multiple: false, btnStyle: "primary"}), 	 
+    		 	 
+			 React.createElement(PxInput, {icon: "calendar", type: "text", size: "10", maxLength: "10", placeholder: "YYYY-MM-DD", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange}), 
+	 		"-", React.createElement(PxInput, {icon: "calendar", type: "text", size: "10", maxLength: "10", placeholder: "YYYY-MM-DD", name: "endDateStr", value: queryForm.endDateStr, onChange: this.handleChange}), 		   		
+	 		
+
+	   	    React.createElement(PxInput, {type: "text", name: "title", maxLength: "45", value: queryForm.invoice_num, onChange: this.handleChange, placeholder: "内容、学生名、单据号、填写人"}), 
 	 		
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this), round: true}, "查询")
     	
 		  ), 
-    	  
-        React.createElement(Accounts_EventsTable2_byRight, React.__spread({},  this.props, {events: this.state.list}))
+    	
+        React.createElement(Accounts_EventsTable2_byRight, React.__spread({}, this.props, {events: this.state.list}))
         )
       );
     }
@@ -4634,30 +4660,34 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_EventsTable2_byRight = React.createClass({displayName: "Accounts_EventsTable2_byRight",
-	
+	 getDefaultProps: function() {
+		    return {
+		     responsive: true, bordered: true, striped :true,hover:true,striped:true
+		    };
+		  },
     	render: function() {
       return (
       React.createElement("div", null, 
-       React.createElement(AMR_Table, React.__spread({},  this.props), 
+       React.createElement(AMR_Table, React.__spread({},  this.props, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}), 
           React.createElement("thead", null, 
               React.createElement("tr", null, 
               React.createElement("th", null, "类型"), 
               React.createElement("th", null, "内容"), 
               React.createElement("th", null, "金额"), 
-              React.createElement("th", null, "收费时间"), 
+              React.createElement("th", null, "收费日期"), 
               React.createElement("th", null, "学生"), 
               React.createElement("th", null, "班级"), 
 			  React.createElement("th", null, "单据号"), 
 			  React.createElement("th", null, "备注"), 
               React.createElement("th", null, "学校"), 
-              React.createElement("th", null, "创建人"), 
-              React.createElement("th", null, "创建时间")
+              React.createElement("th", null, "填写人"), 
+              React.createElement("th", null, "填写时间")
             )
           ), 
           React.createElement("tbody", null, 
             this.props.events.map(function(event) {
               return ( 
-				  React.createElement("tr", null, 
+				  React.createElement("tr", {key: "_"+event.uuid}, 
   	    React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
   	    React.createElement("td", null, event.title), 
   	    React.createElement("td", null, " ", event.num), 
@@ -4686,6 +4716,15 @@ render: function() {
    * */ 
   var Accounts_edit_byRight = React.createClass({displayName: "Accounts_edit_byRight", 
   	 getInitialState: function() {
+
+		  var o = this.props.formdata;	  
+  		if(!o.type){			
+  			o.type="3";
+  		};
+		if(!o.accounts_time){
+			o.accounts_time= new Date().format("yyyy-MM-dd"); 
+		}
+			this.auto_addValue(o);
   		    return this.loadData(this.props.formdata);
   		  },
   	  handleChange_groupuuid: function(v) {
@@ -4699,9 +4738,19 @@ render: function() {
 		 	var formdata=$('#editAccountsForm').serializeJson();
 		    this.setState(this.loadData(formdata));
 	  },
+		auto_addValue:function(formdata){
+			formdata.title=Vo.get("KD_Accounts_type_"+formdata.type);
+			if(formdata.accounts_timeStr){
+				var tmp_ind=formdata.accounts_timeStr.lastIndexOf("-");
+				if(tmp_ind>=0){
+					formdata.title+=formdata.accounts_timeStr.substring(0,tmp_ind);
+				}
+			}
+	  },
   	  handleChange_type: function(v) {
   		 	var formdata=$('#editAccountsForm').serializeJson();
   		 	formdata.type=v;
+			this.auto_addValue(formdata);
   		    this.setState(this.loadData(formdata));
   	  },
   	  handleChange_classuuid: function(v) {
@@ -4716,6 +4765,7 @@ render: function() {
   		    this.setState(this.loadData(formdata));
   	  },
   	  loadData:function(formdata){
+			 this.canSave=true;
 		   if(!formdata.groupuuid){
   			  formdata.groupuuid=this.props.group_list[0].value;
   		  }
@@ -4765,13 +4815,18 @@ render: function() {
 		componentDidMount: function() {
 		this.ajax_list(); 
 	  },
+		 canSave:true,//没有变化的数据不允许保存。防止重复保存。
 		ajax_accounts_saveAndAdd_byRight:function(){
 			var that=this;
+			if(!that.canSave){
+				G_msg_pop("数据重复，已保存。请修改内容后保存。");
+			}
 				var opt={
 				 formName: "editAccountsForm",
 				 url:hostUrl + "rest/accounts/save.json",
 				 cbFN:function(data){
 					G_msg_pop("保存成功!");
+					that.canSave=false;
 					that.ajax_list();
 				 }
 		    };
@@ -4780,7 +4835,7 @@ render: function() {
   render: function() {
   	  var o = this.state;	  
   		if(!o.type){			
-  			o.type="0";
+  			o.type="3";
   		};
 		if(!o.accounts_time){
 			o.accounts_time= new Date().format("yyyy-MM-dd"); 
@@ -4809,13 +4864,13 @@ render: function() {
     		 React.createElement(AMUIReact.Selected, {name: "studentuuid", placeholder: "学生选择", onChange: this.handleChange_studentuuid, btnWidth: "200", multiple: false, data: o.tmp_studentList, btnStyle: "primary", value: o.studentuuid+""})	 
     		  )
              ), 
-		    React.createElement("label", {className: one_classDiv}, "收支日期:"), 
+		    React.createElement("label", {className: one_classDiv}, "收费日期:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	 	    React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", value: o.accounts_time, onChange: this.handleChange})		   		
+	 	    React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", id: "accounts_timeStr", value: o.accounts_time, onChange: this.handleChange})		   		
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"})
+   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"})
  		 ), 	
 		  React.createElement("label", {className: one_classDiv}, "金额:"), 
 	       React.createElement("div", {className: two_classDiv}, 
@@ -4823,23 +4878,17 @@ render: function() {
 	 		 ), 	
 	   React.createElement("label", {className: one_classDiv}, "单据号:"), 
 	       React.createElement("div", {className: two_classDiv}, 
-	   	    React.createElement(PxInput, {type: "number", name: "invoice_num", id: "invoice_num", maxLength: "45", value: o.invoice_num, onChange: this.handleChange, placeholder: ""})
+	   	    React.createElement(PxInput, {type: "text", name: "invoice_num", id: "invoice_num", maxLength: "45", value: o.invoice_num, onChange: this.handleChange, placeholder: ""})
 	 		 ), 	
 			React.createElement("label", {className: one_classDiv}, "备注:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"})
+	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"})
 		 ), 
-		 React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
- 	      React.createElement("button", {type: "button", onClick: this.ajax_accounts_saveAndAdd_byRight.bind(this), className: "am-btn am-btn-primary"}, "保存继续")
- 	       ), 
- 	      React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
- 	     React.createElement("button", {type: "button", onClick: ajax_accounts_save_byRight, className: "am-btn am-btn-primary"}, "保存返回")	
-   	      )
+		 React.createElement("button", {type: "button", onClick: this.ajax_accounts_saveAndAdd_byRight.bind(this), className: "am-btn am-btn-primary"}, "提交")
+ 	      
    	       )
    		    ), 
-
-
- React.createElement(Accounts_EventsTable2_byRight, React.__spread({},  this.props, {events: this.state.list}))
+ React.createElement(Accounts_EventsTable2_byRight, {events: this.state.list})
    	         )
    );
   }
@@ -4939,7 +4988,7 @@ render: function() {
   	   React.createElement("div", {className: "am-form-group"}, 
   	    React.createElement("hr", null)	 
   	     ), 
-  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
          React.createElement(AMR_ButtonToolbar, null, 
         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
        React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid), round: true}, "« 上一页"), 
@@ -5102,7 +5151,7 @@ render: function() {
 	  var o = this.state;
     return (
     		React.createElement("div", null, 
-    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
+    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
     		 React.createElement("div", null, 
 	    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
@@ -5177,7 +5226,7 @@ render: function() {
       React.createElement("div", null, 
   	  React.createElement("hr", null), 	  
   	  React.createElement("div", {className: "am-form-group"}, 
-  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
   		React.createElement(AMR_ButtonToolbar, null, 
           React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
   	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
@@ -5330,7 +5379,7 @@ render: function() {
      return (
   		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
   	   
-  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
+  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
   		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
   		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
@@ -5440,7 +5489,7 @@ render: function() {
 			 		React.createElement("div", null, 
 			 	     React.createElement("div", {className: "am-form-group"}, 
 			 	      React.createElement("hr", null), 
-					   React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 		     		
+					   React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 		     		
 		    		  React.createElement("label", {className: one_classDiv }, "电话号码:"), 
 		    		 React.createElement("div", {className: two_classDiv }, 
 		   		    React.createElement(PxInput, {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, maxLength: "20", placeholder: "必填，不超过15位"})
@@ -5695,7 +5744,7 @@ render: function() {
        React.createElement("div", {className: "am-form-group"}, 
        React.createElement("hr", null)
          ), 
-           React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+           React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
            React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
            React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
      	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.classList, btnStyle: "primary", value: obj.classuuid})
@@ -6093,7 +6142,7 @@ render: function() {
      	this.classnews_content="classnews_content_replay"+this.props.uuid;
      	this.form_id="editClassnewsreplyForm"+this.props.uuid;
      return (
-     		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
+     		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form", action: "javascript:void(0);"}, 
      			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
      			React.createElement("input", {type: "hidden", name: "uuid"}), 
      			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
@@ -6185,7 +6234,7 @@ render: function() {
      		), 
      		React.createElement("div", {className: "am-g"}, 
      		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
-     		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
+     		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
      		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
      			
      		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
@@ -6386,7 +6435,7 @@ render: function() {
      React.createElement("div", {className: "am-form-group"}, 
      React.createElement("hr", null)
        ), 
-         React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+         React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
          React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
          React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
       	 React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.grouplist, btnStyle: "primary", value: this.state.groupuuid}), 
@@ -7078,7 +7127,7 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
   	   React.createElement("div", {className: "am-form-group"}, 
   	    React.createElement("hr", null)	 
   	     ), 
-  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
+  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
          React.createElement(AMR_ButtonToolbar, null, 
         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
        React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.class_uuid), round: true}, "« 上一页"), 

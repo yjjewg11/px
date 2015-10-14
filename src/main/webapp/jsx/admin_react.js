@@ -1661,12 +1661,11 @@ var Parent_EventsTable_div = React.createClass({
     	 ajax_list:function(obj){
     		$.AMUI.progress.start();
     		var that=this;
-    		g_Help_groupuuid=obj.groupuuid;
     		var url = hostUrl + "rest/announcements/list.json";
     		$.ajax({
     			type : "GET",
     			url : url,
-    			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+    			data : {type:obj.type,pageNo:obj.pageNo},
     			dataType : "json",
     			//async: false,//必须同步执行
     			success : function(data) {
@@ -1709,12 +1708,7 @@ var Parent_EventsTable_div = React.createClass({
     	handleClick: function(m,Titlename) {
     		btn_click_announce_helpbyRight(m,this.state.groupuuid,null);
     },
-    handleChange_selectgroup_uuid:function(val){
-    	 var obj=this.state;
-    	 obj.groupuuid=val;
-    	 this.ajax_list(obj);
-    },
-
+   
     render: function() {
     	var obj=this.state;
     	if(!this.state.list)this.state.list=[];
@@ -1729,7 +1723,6 @@ var Parent_EventsTable_div = React.createClass({
       </AMR_ButtonToolbar>
     <hr/>
     <div className="am-form-group">
-    <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  data={this.props.group_list} btnStyle="primary" value={obj.groupuuid} />    
       </div> 	  
         <AMR_Table {...this.props}>  
        <thead> 

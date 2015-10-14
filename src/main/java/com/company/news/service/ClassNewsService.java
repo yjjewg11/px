@@ -236,9 +236,9 @@ public class ClassNewsService extends AbstractService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
 		Query q = s.createSQLQuery("SELECT c.count,cn.title,cn.create_user FROM pxdb.px_count c left join px_classnews cn on c.ext_uuid=cn.uuid "
-				+ "where ext_uuid in (select uuid from px_classnews where create_time<='"+endDateStr+"' and create_time>='"+begDateStr+"' and classuuid in "
+				+ "where ext_uuid in (select uuid from px_classnews where create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and create_time>="+DBUtil.stringToDateByDBType(begDateStr)+" and classuuid in "
 				+ "(select uuid from px_class where groupuuid='"+groupuuid+"'))"
-				+ "order by count desc;");
+				+ "order by count desc ");
 
 		q.setMaxResults(10);
 		return q.list();

@@ -244,7 +244,7 @@ function login_affter_init(){
 		t_menu= {
                 "link": "##",
                 "fn":menu_accounts_list_fn_byRight,
-                "title": "收支记录"
+                "title": "收费记录"
               };
 			if(G_user_hasRight("KD_accounts_m")){
 				menu_data.push(t_menu);
@@ -841,7 +841,7 @@ var grouplist= Store.getGroupByRight("KD_accounts_m");
 
 		var groupuuid=grouplist[0].uuid;
 	
- 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收支记录");
+ 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收费记录");
 
 	React.render(React.createElement(Accounts_EventsTable_byRight, {
  					groupuuid:groupuuid,
