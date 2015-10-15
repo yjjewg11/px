@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.PxCourse;
@@ -158,9 +161,12 @@ public class PxCourseService extends AbstractService {
 	}
 	
 	public List listForCache(String groupuuid) {
-		String hql = "from PxCourseCache where  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-		hql += " order by convert(title, 'gbk') ";
-		return this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+		String sql = "select uuid,title from px_pxcourse where  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql += " order by CONVERT( title USING gbk) ";
+		Query  query =this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		return query.list();
 	}
 
 }

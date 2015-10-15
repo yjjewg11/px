@@ -213,4 +213,38 @@ public class PxClassController extends AbstractRESTController {
 		responseMessage.setMessage("修改成功");
 		return "";
 	}
+	
+	/**
+	 * 获取对外发布课程,用于客户端缓存.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listForCache", method = RequestMethod.GET)
+	public String listForCache(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String courseuuid = request.getParameter("courseuuid");
+			if (StringUtils.isEmpty(courseuuid)){// 查询所有用户
+				responseMessage.setMessage("必须选择学校");
+				return "";
+			}
+			List list = pxClassService.listForCache(courseuuid);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 }

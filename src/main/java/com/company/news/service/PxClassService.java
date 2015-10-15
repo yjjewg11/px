@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
@@ -133,6 +135,7 @@ public class PxClassService extends AbstractClassService {
 		}
 		obj.setName(pxclassRegJsonform.getName());
 		obj.setGroupuuid(pxclassRegJsonform.getGroupuuid());
+		obj.setCourseuuid(pxclassRegJsonform.getCourseuuid());
 		this.nSimpleHibernateDao.save(obj);
 		// 更新学生学校.
 		if (isChangeGroupuuid) {
@@ -271,7 +274,14 @@ public class PxClassService extends AbstractClassService {
 
 		return true;
 	}
-
+	public List listForCache(String courseuuid) {
+		String hql = "select uuid,name from px_pxclass where  courseuuid in(" + DBUtil.stringsToWhereInValue(courseuuid) + ")";
+		hql += " order by CONVERT( name USING gbk)  ";
+		Query  query =this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(hql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		return query.list();
+	}
 	/**
 	 * 获取班级
 	 * 

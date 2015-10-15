@@ -5452,17 +5452,264 @@ render: function() {
 //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
  
 
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     var Query_stutent_list_byRight = React.createClass({
+ 		getInitialState: function() {
+ 			var classList=Store.getChooseClass(this.props.group_uuid);
+ 			var class_uuid =null;
+ 			if(classList&&classList.length>0){
+ 				classuuid=classList[0].uuid;
+ 			}
+ 			var o={
+ 					group_uuid:this.props.group_uuid,
+ 					class_uuid:class_uuid,
+ 					maxPageNo:0,
+ 					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
+ 			}
+ 			return o;
+ 		  },
+ 	   componentWillReceiveProps: function(nextProps) {
+ 		   var classList=Store.getChooseClass(nextProps.group_uuid);
+ 			var class_uuid =nextProps.class_uuid;
+ 			if(!class_uuid&&classList&&classList.length>0){
+ 				classuuid=classList[0].uuid;
+ 			}
+ 			var o={
+ 					group_uuid:nextProps.group_uuid,
+ 					class_uuid:class_uuid,
+ 					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
+ 			}
+ 		   this.setState(o);
+ 		},
+ 		
+   	handleChange_stutent_Selected: function() {
+   		var group_uuid=$("input[name='group_uuid']").val();
+   		  if(group_uuid=="0"){
+   			  group_uuid="";
+   		  }
+ 	  		var class_uuid=$("input[name='class_uuid']").val();
+ 		  if(class_uuid=="1"){
+ 			  class_uuid="";
+ 		  }
+   		  ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val());
+   	  }, 
+   	 
+   		btn_query_click:function(){
+   			this.handleChange_stutent_Selected();
+   		},
+   		handleClick: function(m,groupuuid,classuuid) {
+   	  		var group_uuid=$("input[name='group_uuid']").val();
+     		  if(group_uuid=="0"){
+     			  group_uuid="";
+     		  }
+   	  		var class_uuid=$("input[name='class_uuid']").val();
+   		  if(class_uuid=="1"){
+   			  class_uuid="";
+   		  }
+   			if(m=="pre"){
+   				ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val(),--g_student_query_point);
+   				return;
+   			 }else if(m=="next"){
+   				ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val(),++g_student_query_point);
+   				 return;
+   			 }
+   		},
+   		maxPageNo:0,
+   render: function() {
+   	this.props.group_list.unshift({value:"",label:"所有"});
+   	this.state.class_list.unshift({value:"",label:"所有"});
+   	if(this.state.group_uuid==""){			
+   		this.state.group_uuid="0";
+   	};
+   	if(this.state.class_uuid==""){			
+   		this.state.class_uuid="1";
+   	};
+   	var pre_disabled=g_student_query_point<2;
+   	
+   	if(g_student_query_point==1){
+   		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+   	}
+   	var next_disabled=g_student_query_point>=this.maxPageNo;
+       return (
+   		  
+       <div> 
+   	   <div className="am-form-group">
+   	    <hr/>	 
+   	     </div>
+   	      <form id="editGroupForm" method="post" className="am-form">
+          <AMR_ButtonToolbar>
+         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+        <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)} round>&laquo; 上一页</AMR_Button>
+       <label>{g_student_query_point}\{this.maxPageNo}</label> 
+      <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)} round>下一页 &raquo;</AMR_Button>
+     </div>
+    	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+   	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
+   	   </div>  	 
+   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+   	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  multiple= {false} data={this.state.class_list} btnStyle="primary" value={this.state.class_uuid} />      
+   	  </div>  
+   	   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+   	    <input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
+   	     </div>  
+   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+   	   <button type="button"   onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>
+   	  </div>  	
+   	
+   	</AMR_ButtonToolbar>
+   	 </form>
+         <AMR_Table {...this.props}>  
+           <thead> 
+             <tr>
+               <th>姓名</th>
+               <th>昵称</th>
+               <th>性别</th>
+               <th>出生日期</th>
+               <th>班级</th>
+               <th>身份证</th>
+             </tr> 
+           </thead>
+           <tbody>
+             {this.props.events.map(function(event) {
+               return (<Query_EventRow_byRight key={event.id} event={event} />);
+             })}
+           </tbody>
+         </AMR_Table>
+         </div>
+       );
+     }
+   });     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
 
  
 //——————————————————————————<培训机构新版>教学计划<管理模块绘制>——————————————————————————  
  /*
   * <培训机构新版><教学计划>服务器请求后绘制处理方法；
-  * 
+  * courseList  courseuuid   title  groupuuid
+  * classList  classuuid
   * */
  var Px_rect_teachingplan_byRight = React.createClass({
 	 isAddteachingplanFlag:false,
 	 class_nameFlag:true,
 	 form_data:null,
+		 getStateByPropes:function(nextProps){
+		 	var courseList=Store.getCourseList(nextProps.groupuuid);
+			if(!nextProps.courseuuid){
+				if(courseList&&courseList.length>0){
+ 					nextProps.courseuuid=courseList[0].uuid;
+ 				}
+			}
+
+ 	 		   var classList=Store.getClassCourseList(nextProps.courseuuid);
+ 	 			var classuuid =nextProps.classuuid;
+ 	 			if(!classuuid&&classList&&classList.length>0){
+ 	 				classuuid=classList[0].uuid;
+ 	 			}
+				if(!nextProps.events)nextProps.events=[];
+ 	 			var o={
+							events:nextProps.events,
+ 	 					courseuuid:nextProps.courseuuid,
+ 	 					classuuid:classuuid,
+						courseList:G_selected_dataModelArray_byArray(courseList,"uuid","title"),
+ 	 					classList:G_selected_dataModelArray_byArray(classList,"uuid","name")
+ 	 			}
+		return o;
+		},
+		getInitialState: function() {
+
+ 			return this.getStateByPropes(this.props);
+ 		  },
+ 		   componentWillReceiveProps: function(nextProps) {
+ 		 		 //同一界面数据变化更新作用方法;
+ 		 		 this.isAddteachingplanFlag=false;
+ 		 		this.class_nameFlag=true;
+ 	 			var o=this.getStateByPropes(nextProps);
+ 	 		   this.setState(o);
+ 	 		},
 	  addteachingplan_btn:function(event){
 		  //新增和修改按钮点击事件；更新form_data
 		  this.form_data=event;
@@ -5470,11 +5717,6 @@ render: function() {
  		  this.class_nameFlag=false;
  		  this.setState(this.state);
  	  },
- 	 componentWillReceiveProps: function(nextProps) {
- 		 //同一界面数据变化更新作用方法;
- 		 this.isAddteachingplanFlag=false;
- 		this.class_nameFlag=true;
-		},
  	 delete_button: function(event){
  		 //删除课程按钮事件
  		px_react_ajax_teachingplan_delete(event);
@@ -5483,25 +5725,33 @@ render: function() {
 		//启动复制课程下拉框
 	   $('#doc-dropdown-js').dropdown({justify: '#doc-dropdown-justify-js'});   
 	 },
-// 	 handleChange: function(m,classuuid) {
-//		var pageNo;
-//		 if(m=="pre"){
-//			pageNo=g_begDateStr_pageNo_point-1;
-//			px_ajax_teachingplan_byRight(classuuid,pageNo);
-//			return
-//		 }else{
-//			pageNo=g_begDateStr_pageNo_point+1;
-//			px_ajax_teachingplan_byRight(classuuid,pageNo);
-//			return 
-//		 }
-//	  },
-//	 handleChange_button: function(classuuid) {
-//		teachingplan_edit_onClick_byRight("add",{classuuid:classuuid,uuid:null});
-//	  }, 
+	   	handleChange_courseuuid_Selected: function(v) {
+	   		var courseuuid=v;
+
+				  var classList=Store.getClassCourseList(courseuuid);
+ 	 			var classuuid =null;
+ 	 			if(classList&&classList.length>0){
+ 	 				classuuid=classList[0].uuid;
+						px_ajax_teachingplan_byRight(classuuid,courseuuid);
+ 	 			}else{
+					this.state.classList=[];
+					this.setState(this.state);
+					px_ajax_teachingplan_byRight(classuuid,courseuuid);
+				}
+            
+	   	  }, 
+
+			   	handleChange_stutent_Selected: function() {
+	   		var courseuuid=$("input[name='courseuuid']").val();
+
+	 	  		var classuuid=$("input[name='classuuid']").val();
+
+	 		 px_ajax_teachingplan_byRight(classuuid,courseuuid);
+	   	  }, 
  render: function() {
-	 var o=this.props;
+	 var o=this.state;
 	 var thit=this;
-	 var classList=o.classlist;
+	 var classList=o.classList;
 	 var copybyclassList=[];
 		 var addStudent=(<div></div>);
 		 var class_name=(<div></div>);
@@ -5518,7 +5768,7 @@ render: function() {
  				  );
  		        };
  		 //筛选出不是当前的班级数组       
-		for(var i=0;i<classList.length;i++){
+		for(var i=0;i<o.classList.length;i++){
 			if(o.classuuid!=classList[i].uuid){
 				copybyclassList.push(classList[i]);
 			}
@@ -5526,22 +5776,19 @@ render: function() {
      return (
      <div>
      <AMR_ButtonToolbar>
-
-		{this.props.classlist.map(function(event) {
-			  return(
-			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,o.pageNo)} round>{event.name}</AMR_Button>
-			  	</div>  			  	  
-			  )})}
+   
+	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="courseuuid" onChange={this.handleChange_courseuuid_Selected} data={o.courseList} btnStyle="primary" value={o.courseuuid} />      
+  	   </div>  	 
+  	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="classuuid" onChange={this.handleChange_stutent_Selected} data={o.classList} btnStyle="primary" value={o.classuuid} />      
+  	  </div>  
+	
 		 </AMR_ButtonToolbar>
 	 	  <hr/>
 	  {class_name}	 
       {addStudent} 
-
-      
-      
-      
-      
+     
       
       <div id="doc-dropdown-justify-js">
       <div className="am-dropdown" id="doc-dropdown-js">
@@ -5559,7 +5806,7 @@ render: function() {
       
       <div className="am-panel-group" id="accordion">
       
-		 {this.props.events.map(function(event) {
+		 {o.events.map(function(event) {
 			  return(	
 					  
       <div className="am-panel am-panel-default">      
@@ -5633,13 +5880,16 @@ render: function() {
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editTeachingplanForm').serializeJson());
+		 var o=$('#editTeachingplanForm').serializeJson();
+		 o.plandate=o.plandateStr;
+		    this.setState(o);
 	  },
 	  componentWillReceiveProps: function(nextProps) {
   		 this.setState(nextProps.formdata);
 		},
  render: function() {
  	  var o = this.state;
+ 	  
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
   	  var class_name=(<div></div>);
@@ -5663,9 +5913,9 @@ render: function() {
 		       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
 		        </div>
  			 	
-		       <label className={one_classDiv}>日期</label>
+		       <label className={one_classDiv}>日期：</label>
   		      <div className={two_classDiv}>
-  		     <PxInput icon="birthday-cake" type="text"  placeholder="YYYY-MM-DD" name="plandateStr" id="plandate" value={o.plandate} onChange={this.handleChange}/>
+  		     <PxInput icon="birthday-cake" type="text" maxLength="25"  placeholder="YYYY-MM-DD" name="plandateStr"  value={o.plandate} onChange={this.handleChange}/>
 		    </div>	 
  				 
 	       <label className={one_classDiv}>课时长：</label>
@@ -6321,7 +6571,6 @@ render: function() {
              <th>课程时长</th>
              <th>收费价格</th>
              <th>优惠价格</th>
-             <th>课程详细内容</th>
              <th>更新时间</th>
              <th>发布状态</th>
            </tr> 
@@ -6351,14 +6600,13 @@ render: function() {
 
  	  	return (
  	  	  <tr className={className} >
- 	  	    <td>{event.title}<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
+ 	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event)}>{event.title}</a><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
  	  	    <td>{Vo.get("course_type_"+event.type)}</td>
  	  	    <td>{event.subtype}</td>
  	  	    <td>{event.address}</td>
  	  	    <td>{event.schedule}</td>
  	  	    <td>{event.fees}</td>
  	  	    <td>{event.discountfees}</td>
- 	  	    <td>{event.context}</td>
             <td>{event.updatetime}</td>
             <td>{Vo.get("course_status_"+event.status)}</td>
  	  	  </tr> 
@@ -6366,159 +6614,49 @@ render: function() {
  	  }
  	}); 
  
- 
- 
- 
- 
- 
- 
- 
- 
- var Group_edit_byRight = React.createClass({ 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editGroupForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-			  
-			  
-          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
-          });
-	},
-	   /*
-	    * (校务管理)<校园列表>内上传LOGO图片
-	    * */
-    btn_class_group_uploadHeadere :function(){      
-        w_uploadImg.open(function (guid){
-             $ ("#img").val(guid);
-              $("#img_head_image").attr("src",G_imgPath+ guid);
-              G_img_down404("#img_head_image");
-	         });   
-	   },
-  render: function() {
-	  var o = this.state;
-	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-    return (
-    		<form id="editGroupForm" method="post" className="am-form">
-  		     <hr />
-    		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
-    	       <PxInput type="hidden" name="type"  value={o.type}/>
-    		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
-              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
-             <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
-            <div className= "am-form-group">
-    		 <label className={one_classDiv }>品牌名:</label>
-    		  <div className={two_classDiv }>
-    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	        </div>    		
-    	       <label className={one_classDiv }>机构全称:</label>
-    		  <div className={two_classDiv }>
-    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	    </div>    	      
-    	     <label className={one_classDiv }>学校地址:</label>
-    		  <div className={two_classDiv }>
-    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
-     	        </div>    	      
-    	       <label className={one_classDiv }>地址坐标:</label>
-    		  <div className={two_classDiv }>
-    	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
-    	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-    	   </div>   	      
-    	    <label className={one_classDiv }>学校电话:</label>
-    		 <div className={two_classDiv }>
-    	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-    	       </div> 		
-    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-  		  	  {G_get_upload_img_Div()}
-  	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
-	    	 </div>
-    		</form>   	   
-    );
-  }
-}); 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+ /*发布课程中查看课程详情
+  * */
+ var Class_course_look_info =React.createClass({
+ 	 getInitialState: function() {
+ 		    return this.props.formdata;
+ 		  },
+ 	 handleChange: function(event) {
+ 		    this.setState($('#editClassStudentForm').serializeJson());
+ 	  },
+ 	  componentDidMount:function(){
+
+ 		},
+ 		render: function() {
+ 	     var o =this.state;
+ 	     var imgGuid=o.logo;
+ 	     var imglist=[imgGuid];
+ 		 return (
+ 		 		<div>
+ 		 		
+ 			    <AMUIReact.List static border striped>
+ 			      <Common_mg_big_fn  imgsList={imglist} />				  
+ 				  <br/>	      
+ 			      
+ 			         <AMUIReact.ListItem>标题:{o.title}</AMUIReact.ListItem>
+ 			        <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
+ 			       <AMUIReact.ListItem>具体课程:{o.birthday}</AMUIReact.ListItem>
+ 			      <AMUIReact.ListItem>上课地点:{o.address}</AMUIReact.ListItem>
+ 			     <AMUIReact.ListItem>课程时长:{o.schedule}</AMUIReact.ListItem>
+ 			    <AMUIReact.ListItem>收费价格:{o.fees}</AMUIReact.ListItem>
+ 			   <AMUIReact.ListItem>优惠价格:{o.discountfees}</AMUIReact.ListItem>
+ 			  <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
+ 			 <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
+ 			 <AMUIReact.ListItem>课程详细内容:
+ 	 			<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
+ 				</AMUIReact.ListItem>		 			       			      
+ 			 </AMUIReact.List> 		
+ 		    </div> 
+ 		     );
+ 	        }
+ 		 }); 
+ 
+ 
+
 //发布课程添加与编辑绘制
  var Px_course_edit = React.createClass({ 
 	 getInitialState: function() {
@@ -6529,11 +6667,10 @@ render: function() {
 		    this.setState($('#editCourseForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-		  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-		  		  
-      w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-            editor.pasteHTML( '<img   src="'+imgurl+'"/>')
-      });
+		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+	        });
       },
 	   /*
 	    * (发布课程)内上传LOGO图片
@@ -6601,13 +6738,9 @@ render: function() {
  			     <div className={two_classDiv}>
  			       <PxInput  type="text" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
  			        </div>
-
-
- 			    <label className={one_classDiv}>课程详细内容:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="context" id="context" maxLength="20" value={o.context} onChange={this.handleChange}/>
- 			        </div> 		   				
- 	     
+ 			       
+ 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
+ 					{G_get_upload_img_Div()} 
 	  		  
  				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
  				      </div>  
@@ -6617,6 +6750,10 @@ render: function() {
  }); 
  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
 
+ 
+
+ 
+ 
  
  
 //——————————————————————————我的班级<绘制>—————————————————————————— 
@@ -6921,13 +7058,13 @@ render: function() {
 		  <button type="button"  onClick={this.addStudent_btn.bind(this)}  className="am-btn am-btn-primary">创建</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
+		  <legend>12sdasdasdad3</legend>
 		  </form>      
 		  
+		  
 		  <div id="pxstudent_queryByNameOrTel_div"></div>
-		  {addStudent}
 			{this.props.events.map(function(event) {
 				  return(
-
 				  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">				  	
 				  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={thit.ajax_deleteStudentClass.bind(this,event.classuuid,event.uuid)} round>{event.name}</AMR_Button>
 				  	</div>  			  	  
@@ -6990,7 +7127,6 @@ render: function() {
 		console.log("event",event);
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
-
   	    return (
   	      <tr className={className} >
   	        <td>{event.name} <AMUIReact.Button onClick={this.btn_students_list_click.bind(this,event.classuuid,event.uuid)} amStyle="success">添加</AMUIReact.Button></td> 

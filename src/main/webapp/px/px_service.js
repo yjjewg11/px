@@ -2953,21 +2953,22 @@ function menu_userteacher_fn(){
 /*
  * <教学计划>（获取用户列表服务器请求）；
  * */
-var g_begDateStr_pageNo_point=0;	
- function px_ajax_teachingplan_byRight(classuuid,pageNo){ 
-	var now=new Date();
-	if(!pageNo)pageNo=0;
-	g_begDateStr_pageNo_point=pageNo;
-	  	now=G_week.getDate(now,pageNo*7);
-	var begDateStr=G_week.getWeek0(now,pageNo);
-	var endDateStr=G_week.getWeek6(now,pageNo);
+//var g_begDateStr_pageNo_point=0;	
+ function px_ajax_teachingplan_byRight(classuuid,courseuuid){ 
+//	var now=new Date();
+//	if(!pageNo)pageNo=0;
+//	g_begDateStr_pageNo_point=pageNo;
+//	  	now=G_week.getDate(now,pageNo*7);
+//	var begDateStr=G_week.getWeek0(now,pageNo);
+//	var endDateStr=G_week.getWeek6(now,pageNo);
+	var groupuuid=Store.getGroupByRight("PX_teachingplan_m")[0].uuid;
 		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"教学计划");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
 	   		type : "GET",
 	   		url : url,
-	   		data : {classuuid:classuuid,begDateStr:begDateStr,endDateStr:endDateStr},
+	   		data : {classuuid:classuuid},
 	   		dataType : "json",
 	   		 async: false,
 	   		success : function(data) {
@@ -2975,8 +2976,8 @@ var g_begDateStr_pageNo_point=0;
 	   			if (data.ResMsg.status == "success") {	   				
 					React.render(React.createElement(Px_rect_teachingplan_byRight, {
 						classuuid:classuuid,
-						classlist:G_myClassList,
-						pageNo:pageNo,
+						groupuuid:groupuuid,	
+						courseuuid:courseuuid,
 						events: data.list,
 						responsive: true, bordered: true, striped :true,hover:true,striped:true						
 					}), document.getElementById('div_body'));
@@ -3282,6 +3283,15 @@ function px_react_ajax_teachingplan_delete(obj){
  			}), document.getElementById('div_body'));
 
    };
+   
+/*(发布课程)查看课程详情方法按钮 
+* */
+   function px_ajax_class_course_look_info(event){
+   	Queue.push(function(){px_ajax_class_course_look_info(event);},"发布详情");
+	React.render(React.createElement(Class_course_look_info,{
+			formdata:event,
+			}), document.getElementById('div_body'));
+   };   
  /*(发布课程)
  * 班级详情内添加编辑提交按钮服务器请求
  * 直接把Form表单发送给服务器
@@ -3438,6 +3448,8 @@ function ajax_class_delete_byRight(uuid){
 				G_msg_pop(data.ResMsg.message);
 				Store.clearChooseClass();
 				Store.setMyClassList(null);
+				Store.clearClassCourseList();
+				Store.setClassCourseList(null);
 				Queue.doBackFN();
 			} else {
 				alert(data.ResMsg.message);
@@ -3580,6 +3592,8 @@ function ajax_class_save(){
             	G_msg_pop(data.ResMsg.message);
 				Store.setMyClassList(null);
 				Store.clearChooseClass(null);
+				Store.clearClassCourseList(null);
+				Store.setClassCourseList(null);
 				menu_class_students_fn();
             }
             };

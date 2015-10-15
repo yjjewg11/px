@@ -175,6 +175,55 @@ var Store={
 		 if(this.map[key])return this.map[key];
 		 return [];
 	},
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 设置班级内存缓存。
+	 * @param v
+	 */
+	setClassCourseList:function(courseuuid,v){
+		this.map["CourseList"+courseuuid]=v;
+	},
+	/**
+	 * 设置班级控件到内存缓存。
+	 * @param v
+	 */
+	clearClassCourseList:function(){
+		for(var key in this.map){
+			if(key.indexOf("CourseList")>-1){
+				console.log("clearChooseClass:key",key);
+				this.map[key]=null;
+			}
+		}
+	},
+	//根据班级UUID查询
+	getClassCourseList:function(v){
+		if(!v)return [];
+		var key="CourseList"+v;
+		 if(this.map[key])return this.map[key];
+		 store_ajax_ClaseeList_listBy(v);
+		 if(this.map[key])return this.map[key];
+		 return [];
+	},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 设置班级选择控件到内存缓存。
 	 * @param v
@@ -661,6 +710,31 @@ function store_ajax_CourseList_listByGroup(groupuuid){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				Store.setCourseList(groupuuid,data.list)
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+};
+
+
+
+
+function store_ajax_ClaseeList_listBy(courseuuid){
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/pxclass/listForCache.json?courseuuid="+courseuuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		async: false,
+		data : "",
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				Store.setClassCourseList(courseuuid,data.list)
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
