@@ -56,6 +56,22 @@ public class AnnouncementsService extends AbstractService {
 			responseMessage.setMessage("type 不能为空.");
 			return false;
 		}
+		
+		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
+				||SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()){
+			announcementsJsonform.setGroupuuid(SystemConstants.Group_uuid_wjkj);
+			
+			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.AD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
+			}
+		
+		}
+		
+		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
+			responseMessage.setMessage("必须选择一个学校");
+			return false;
+		}
 		//精品文章都可以新加
 		if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
 			
@@ -146,6 +162,22 @@ public class AnnouncementsService extends AbstractService {
 			return false;
 		}
 		
+		
+		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
+				||SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()){
+			announcementsJsonform.setGroupuuid(SystemConstants.Group_uuid_wjkj);
+			
+			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.AD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
+			}
+		
+		}
+		
+		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
+			responseMessage.setMessage("必须选择一个学校");
+			return false;
+		}
 		
 		if (StringUtils.isBlank(announcementsJsonform.getTitle())
 				|| announcementsJsonform.getTitle().length() > 45) {

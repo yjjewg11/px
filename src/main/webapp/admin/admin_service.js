@@ -1105,20 +1105,10 @@ function ajax_classnews_save_byRight(){
 * @types- 91:幼儿园帮助文档  92:培训机构帮助文档
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
-var  g_Help_groupuuid="";
 function ajax_announce_Help_byRight(){
-	var grouplist=Store.getAllGroup();
-	if(!grouplist||grouplist.length==0){
-		G_msg_pop("没有权限!");
-		return "";
-	}
-	if(!g_Help_groupuuid){
-		g_Help_groupuuid=grouplist[0].uuid;		
-	}
+	
 	React.render(React.createElement(Announcements_EventsTable_HelpbyRight, {
-		groupuuid:g_Help_groupuuid,
 		pageNo:1,
-		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 		events: [],
 		type:announce_Helptypes,
 		responsive: true, bordered: true, striped :true,hover:true,striped:true

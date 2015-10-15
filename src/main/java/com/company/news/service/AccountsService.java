@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Accounts;
@@ -46,11 +47,13 @@ public class AccountsService extends AbstractService {
 			return false;
 		}
 		
+		
+		accountsJsonform.setAccounts_timeStr(TimeUtils.getDateFormatString(accountsJsonform.getAccounts_timeStr()));
 		Timestamp accounts_time = TimeUtils.string2Timestamp(null,
 				accountsJsonform.getAccounts_timeStr());
 
 		if (accounts_time == null) {
-			responseMessage.setMessage("收支日期格式不正确");
+			responseMessage.setMessage("日期格式不正确.正确格式：2015-10-01");
 			return false;
 		}
 
@@ -171,9 +174,11 @@ public class AccountsService extends AbstractService {
 		if(StringUtils.isNotBlank(classuuid))
 			hql.append(" and classuuid='"+classuuid+"'");
 
-		hql.append(" order by accounts_time desc");
+		hql.append(" order by create_time desc");
 
-		return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql.toString());
+		Query  q=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createQuery(hql.toString());
+		q.setMaxResults(100);
+		return (List) q.list();
 	}
 
 	/**
@@ -200,11 +205,13 @@ public class AccountsService extends AbstractService {
 			hql.append(" and create_useruuid='"+accountsJsonform.getCreate_useruuid()+"'");
 		if(StringUtils.isNotBlank(accountsJsonform.getTitle())){
 			String title=accountsJsonform.getTitle();
-			hql.append("and ( title  like '%" + title + "%'  or studentname  like '%" + title + "%'   or invoice_num  like '%" + title + "%'  or create_user  like '%" + title + "%'"  );
+			//内容、学生名、单据号、填写人
+			hql.append(" and ( title  like '%" + title + "%'  or studentname  like '%" + title + "%'   or invoice_num  like '%" + title + "%'  or create_user  like '%" + title + "%')"  );
 		}
 			
 
-		hql.append(" order by accounts_time desc");
+		hql.append(" order by create_time desc");
+	
 
 		return  this.nSimpleHibernateDao.findByPaginationToHql(hql.toString(), pData);
 	}

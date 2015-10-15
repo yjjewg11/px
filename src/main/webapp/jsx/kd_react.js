@@ -100,6 +100,13 @@ var Div_login = React.createClass({
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
 		    this.setState(o);
 	  },
+	 handle_onKeyDown: function(e){
+		if(G_isKeyDown_enter(e)){
+			ajax_userinfo_login();
+			return false;
+	 }
+	},
+		
 render: function() {
 	  var o = this.state;
  return (
@@ -111,7 +118,7 @@ render: function() {
  		</div>
  		<div className="am-g">
  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm">
- 		 <form id="login_form" method="post" className="am-form">
+ 		 <form id="login_form" method="post" className="am-form" onKeyDown={this.handle_onKeyDown}>
  	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
  	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
  	      <label htmlFor="pw_checked">
@@ -4503,7 +4510,13 @@ render: function() {
   **/
     var Accounts_EventsTable_byRight = React.createClass({		
 		getStateByPropes:function(nextProps){
+
+			var begDateStr= new Date().format("yyyy-MM")+"-01"; 
+			var endDateStr= new Date().format("yyyy-MM-dd"); 
+				
 			var queryForm={
+				begDateStr:begDateStr,
+				endDateStr:endDateStr,
 				groupuuid:nextProps.groupuuid
 			};
 			 var obj= {
@@ -4517,6 +4530,8 @@ render: function() {
 		data_type_list:[],
 		getInitialState: function() {
 			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
+
+			this.data_type_list.unshift({value:"",label:"所有"});
     	    return this.getStateByPropes(this.props);
     	  },
 		handleChange: function(v) {
@@ -4598,8 +4613,15 @@ render: function() {
     			btn_click_accounts_byRight(m,{groupuuid:this.props.group_uuid});
 			}
 		},
+		handle_onKeyDown: function(e){
+          if(G_isKeyDown_enter(e)){
+               this.handleClick_query();
+               return false;
+		 }
+     },
     render: function() {
 			var queryForm=this.state.queryForm;
+			   
       return (
       <div>
  
@@ -4610,18 +4632,22 @@ render: function() {
     	  <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
       </AMR_ButtonToolbar>
          	  <hr/>
-		  <AMUIReact.Form id="queryForm" inline>
+		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
     	
-    		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange} btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
-    		 
-	   	    <PxInput type="text" name="title" maxLength="45" value={queryForm.invoice_num} onChange={this.handleChange} placeholder="关键词"/> 
+    		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
+    		 	 
+			 <PxInput icon="calendar" type="text" size="10" maxLength="10" placeholder="YYYY-MM-DD" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
+	 		-<PxInput icon="calendar" type="text"  size="10"  maxLength="10" placeholder="YYYY-MM-DD" name="endDateStr"  value={queryForm.endDateStr} onChange={this.handleChange}/> 		   		
+	 		
+
+	   	    <PxInput type="text" name="title" maxLength="45" value={queryForm.invoice_num} onChange={this.handleChange} placeholder="内容、学生名、单据号、填写人"/> 
 	 		
 			 <AMR_Button amStyle="primary" onClick={this.handleClick_query.bind(this)} round>查询</AMR_Button>
     	
 		  </AMUIReact.Form>
-    	  
-        <Accounts_EventsTable2_byRight {...this.props} events={this.state.list} />
+    	
+        <Accounts_EventsTable2_byRight{...this.props} events={this.state.list} />
         </div>
       );
     }
@@ -4634,30 +4660,34 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_EventsTable2_byRight = React.createClass({
-	
+	 getDefaultProps: function() {
+		    return {
+		     responsive: true, bordered: true, striped :true,hover:true,striped:true
+		    };
+		  },
     	render: function() {
       return (
       <div>
-       <AMR_Table {...this.props}>  
+       <AMR_Table {...this.props}  bordered className="am-table-striped am-table-hover am-text-nowrap">  
           <thead> 
               <tr>
               <th>类型</th>
               <th>内容</th>
               <th>金额</th>
-              <th>收费时间</th>            
+              <th>收费日期</th>            
               <th>学生</th>
               <th>班级</th>
 			  <th>单据号</th>
 			  <th>备注</th>
               <th>学校</th>              
-              <th>创建人</th>
-              <th>创建时间</th>
+              <th>填写人</th>
+              <th>填写时间</th>
             </tr> 
           </thead>
           <tbody>
             {this.props.events.map(function(event) {
               return ( 
-				  <tr  >
+				  <tr  key={"_"+event.uuid} >
   	    <td > {Vo.get("KD_Accounts_type_"+event.type)}</td>
   	    <td  >{event.title}</td>
   	    <td > {event.num}</td>
@@ -4686,6 +4716,15 @@ render: function() {
    * */ 
   var Accounts_edit_byRight = React.createClass({ 
   	 getInitialState: function() {
+
+		  var o = this.props.formdata;	  
+  		if(!o.type){			
+  			o.type="3";
+  		};
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
+		}
+			this.auto_addValue(o);
   		    return this.loadData(this.props.formdata);
   		  },
   	  handleChange_groupuuid: function(v) {
@@ -4699,9 +4738,19 @@ render: function() {
 		 	var formdata=$('#editAccountsForm').serializeJson();
 		    this.setState(this.loadData(formdata));
 	  },
+		auto_addValue:function(formdata){
+			formdata.title=Vo.get("KD_Accounts_type_"+formdata.type);
+			if(formdata.accounts_timeStr){
+				var tmp_ind=formdata.accounts_timeStr.lastIndexOf("-");
+				if(tmp_ind>=0){
+					formdata.title+=formdata.accounts_timeStr.substring(0,tmp_ind);
+				}
+			}
+	  },
   	  handleChange_type: function(v) {
   		 	var formdata=$('#editAccountsForm').serializeJson();
   		 	formdata.type=v;
+			this.auto_addValue(formdata);
   		    this.setState(this.loadData(formdata));
   	  },
   	  handleChange_classuuid: function(v) {
@@ -4716,6 +4765,7 @@ render: function() {
   		    this.setState(this.loadData(formdata));
   	  },
   	  loadData:function(formdata){
+			 this.canSave=true;
 		   if(!formdata.groupuuid){
   			  formdata.groupuuid=this.props.group_list[0].value;
   		  }
@@ -4765,13 +4815,18 @@ render: function() {
 		componentDidMount: function() {
 		this.ajax_list(); 
 	  },
+		 canSave:true,//没有变化的数据不允许保存。防止重复保存。
 		ajax_accounts_saveAndAdd_byRight:function(){
 			var that=this;
+			if(!that.canSave){
+				G_msg_pop("数据重复，已保存。请修改内容后保存。");
+			}
 				var opt={
 				 formName: "editAccountsForm",
 				 url:hostUrl + "rest/accounts/save.json",
 				 cbFN:function(data){
 					G_msg_pop("保存成功!");
+					that.canSave=false;
 					that.ajax_list();
 				 }
 		    };
@@ -4780,10 +4835,10 @@ render: function() {
   render: function() {
   	  var o = this.state;	  
   		if(!o.type){			
-  			o.type="0";
+  			o.type="3";
   		};
-		if(!o.accounts_time){
-			o.accounts_time= new Date().format("yyyy-MM-dd"); 
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
 		}
 		if(!this.state.list)this.state.list=[];
   		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
@@ -4809,37 +4864,31 @@ render: function() {
     		 <AMUIReact.Selected name="studentuuid"placeholder="学生选择" onChange={this.handleChange_studentuuid} btnWidth="200"  multiple= {false} data={o.tmp_studentList} btnStyle="primary" value={o.studentuuid+""} />  	 
     		  </div>
              </AMR_ButtonToolbar>
-		    <label className={one_classDiv}>收支日期:</label>
+		    <label className={one_classDiv}>收费日期:</label>
 		   <div className={two_classDiv}>
-	 	    <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="accounts_timeStr" id="accounts_timeStr" value={o.accounts_time} onChange={this.handleChange}/> 		   		
+	 	    <PxInput icon="calendar" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="accounts_timeStr"  value={o.accounts_timeStr} onChange={this.handleChange}/> 		   		
 	 		 </div>	
 		    <label className={one_classDiv}>内容:</label>
 		   <div className={two_classDiv}>
-   	      <PxInput type="text" name="title" id="title" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
+   	      <PxInput type="text" name="title" id="title" maxLength="64" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
  		 </div>	
 		  <label className={one_classDiv}>金额:</label>
 	       <div className={two_classDiv}>
-	   	    <PxInput type="number" name="num" id="num" value={o.num} onChange={this.handleChange} placeholder=""/> 
+	   	    <PxInput type="number" name="num" id="num" value={o.num}  onChange={this.handleChange} placeholder=""/> 
 	 		 </div>	
 	   <label className={one_classDiv}>单据号:</label>
 	       <div className={two_classDiv}>
-	   	    <PxInput type="number" name="invoice_num" id="invoice_num" maxLength="45" value={o.invoice_num} onChange={this.handleChange} placeholder=""/> 
+	   	    <PxInput type="text" name="invoice_num" id="invoice_num" maxLength="45" value={o.invoice_num} onChange={this.handleChange} placeholder=""/> 
 	 		 </div>	
 			<label className={one_classDiv}>备注:</label>
 		   <div className={two_classDiv}>
-	  	  <PxInput type="text" name="description" id="description" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+	  	  <PxInput type="text" name="description" id="description" maxLength="100" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
 		 </div>
-		 <div className="am-fl  am-margin-left-xs">
- 	      <button type="button"  onClick={this.ajax_accounts_saveAndAdd_byRight.bind(this)}  className="am-btn am-btn-primary">保存继续</button>
- 	       </div>
- 	      <div className="am-fl  am-margin-left-xs">
- 	     <button type="button"  onClick={ajax_accounts_save_byRight}  className="am-btn am-btn-primary">保存返回</button>	
-   	      </div>
+		 <button type="button"  onClick={this.ajax_accounts_saveAndAdd_byRight.bind(this)}  className="am-btn am-btn-primary">提交</button>
+ 	      
    	       </div>
    		    </form>
-
-
- <Accounts_EventsTable2_byRight {...this.props} events={this.state.list} />
+ <Accounts_EventsTable2_byRight  events={this.state.list} />
    	         </div>
    );
   }
@@ -4939,7 +4988,7 @@ render: function() {
   	   <div className="am-form-group">
   	    <hr/>	 
   	     </div>
-  	      <form id="editGroupForm" method="post" className="am-form">
+  	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
          <AMR_ButtonToolbar>
         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
        <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)} round>&laquo; 上一页</AMR_Button>
@@ -5102,7 +5151,7 @@ render: function() {
 	  var o = this.state;
     return (
     		<div>
-    		 <form id="editEchartForm" method="post" className="am-form">
+    		 <form id="editEchartForm" method="post" className="am-form" action="javascript:void(0);">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
 	    		 <AMUIReact.Selected inline name="type" value={o.type}  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
@@ -5177,7 +5226,7 @@ render: function() {
       <div>
   	  <hr/>	  
   	  <div className="am-form-group">
-  		<form id="editGroupForm" method="post" className="am-form">
+  		<form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
   		<AMR_ButtonToolbar>
           <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
   	  <AMUIReact.Selected  id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />     
@@ -5330,7 +5379,7 @@ render: function() {
      return (
   		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
   	   
-  		   <form id="editGroupForm" method="post" className="am-form">		   
+  		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
   		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
   		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
@@ -5440,7 +5489,7 @@ render: function() {
 			 		<div>
 			 	     <div className= "am-form-group">
 			 	      <hr/>    
-					   <form id="commonform" method="post" className="am-form">     		     		
+					   <form id="commonform" method="post" className="am-form" action="javascript:void(0);">     		     		
 		    		  <label className={one_classDiv }>电话号码:</label>
 		    		 <div className={two_classDiv }>
 		   		    <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange} maxLength="20"  placeholder="必填，不超过15位"/>
@@ -5695,7 +5744,7 @@ render: function() {
        <div className="am-form-group">
        <hr/>
          </div>
-           <form id="editGroupForm" method="post" className="am-form">
+           <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
            <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
            <div className="am-fl am-margin-bottom-sm">
      	  <AMUIReact.Selected id="selectgroup_uuid" name="class_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.classList} btnStyle="primary" value={obj.classuuid} />
@@ -6093,7 +6142,7 @@ render: function() {
      	this.classnews_content="classnews_content_replay"+this.props.uuid;
      	this.form_id="editClassnewsreplyForm"+this.props.uuid;
      return (
-     		   <form id={this.form_id} method="post" className="am-form">
+     		   <form id={this.form_id} method="post" className="am-form" action="javascript:void(0);">
      			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
      			<input type="hidden" name="uuid" />
      			<input type="hidden" name="type"  value={this.props.uuid}/>						
@@ -6185,7 +6234,7 @@ render: function() {
      		</div>
      		<div className="am-g">
      		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">	      
-     		  <form id="editClassnewsForm" method="post" className="am-form">
+     		  <form id="editClassnewsForm" method="post" className="am-form" action="javascript:void(0);">
      		  <AMUIReact.Selected id="selectclass_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={o.classuuid} />	      
      			
      		  <input type="hidden" name="uuid"  value={o.uuid}/>
@@ -6386,7 +6435,7 @@ render: function() {
      <div className="am-form-group">
      <hr/>
        </div>
-         <form id="editGroupForm" method="post" className="am-form">
+         <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
          <AMR_ButtonToolbar className="am-cf am-margin-bottom-sm am-margin-left-xs">
          <div className="am-fl am-margin-bottom-sm">
       	 <AMUIReact.Selected id="selectgroup_uuid2" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.grouplist} btnStyle="primary" value={this.state.groupuuid} />
@@ -7078,7 +7127,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	   <div className="am-form-group">
   	    <hr/>	 
   	     </div>
-  	      <form id="editGroupForm" method="post" className="am-form">
+  	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
          <AMR_ButtonToolbar>
         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
        <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.class_uuid)} round>&laquo; 上一页</AMR_Button>

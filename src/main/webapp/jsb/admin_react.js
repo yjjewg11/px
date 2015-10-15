@@ -1661,12 +1661,11 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     	 ajax_list:function(obj){
     		$.AMUI.progress.start();
     		var that=this;
-    		g_Help_groupuuid=obj.groupuuid;
     		var url = hostUrl + "rest/announcements/list.json";
     		$.ajax({
     			type : "GET",
     			url : url,
-    			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+    			data : {type:obj.type,pageNo:obj.pageNo},
     			dataType : "json",
     			//async: false,//必须同步执行
     			success : function(data) {
@@ -1709,12 +1708,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     	handleClick: function(m,Titlename) {
     		btn_click_announce_helpbyRight(m,this.state.groupuuid,null);
     },
-    handleChange_selectgroup_uuid:function(val){
-    	 var obj=this.state;
-    	 obj.groupuuid=val;
-    	 this.ajax_list(obj);
-    },
-
+   
     render: function() {
     	var obj=this.state;
     	if(!this.state.list)this.state.list=[];
@@ -1728,8 +1722,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 
       ), 
     React.createElement("hr", null), 
-    React.createElement("div", {className: "am-form-group"}, 
-    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
+    React.createElement("div", {className: "am-form-group"}
       ), 	  
         React.createElement(AMR_Table, React.__spread({},  this.props), 
        React.createElement("thead", null, 

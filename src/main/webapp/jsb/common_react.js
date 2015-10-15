@@ -484,7 +484,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
    return (
 		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
 	   
-		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 		   
+		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
 		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
@@ -639,7 +639,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 				  );
 	  }
     return (
-  		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form"}, 
+  		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 		   React.createElement(AMUIReact.Selected, {name: "group_uuid", onChange: this.handleChange_Selected, btnWidth: "300", multiple: true, data: this.props.select_group_list, btnStyle: "primary", value: o.group_uuid}), 
 		    React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
@@ -707,7 +707,7 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+		    React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 
 		      React.createElement("label", {htmlFor: "oldpassword"}, "当前密码:"), 
 		      React.createElement(PxInput, {icon: "lock", type: "password", name: "oldpassword"}), 
@@ -763,7 +763,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+		    React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 
 			React.createElement("input", {type: "hidden", name: "img", id: "img", value: o.img, onChange: this.handleChange}), 
 		    React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
@@ -884,7 +884,7 @@ var Div_userinfo_updatePasswordBySms = React.createClass({displayName: "Div_user
 		), 
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "commonform", method: "post", className: "am-form"}, 
+		    React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 
 		    React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
 		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
@@ -1204,7 +1204,7 @@ var Common_reply_save = React.createClass({displayName: "Common_reply_save",
 	},
 render: function() {
   return (
-		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form"}, 
+		   React.createElement("form", {id: "editClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
 			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 

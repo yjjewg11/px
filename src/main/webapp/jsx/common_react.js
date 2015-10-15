@@ -484,7 +484,7 @@ var Userinfo_EventsTable_div = React.createClass({
    return (
 		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
 	   
-		   <form id="editGroupForm" method="post" className="am-form">		   
+		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
 		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
@@ -639,7 +639,7 @@ var Userinfo_edit = React.createClass({
 				  );
 	  }
     return (
-  		  <form id="editUserinfoForm" method="post" className="am-form">
+  		  <form id="editUserinfoForm" method="post" className="am-form" action="javascript:void(0);">
 		   <AMUIReact.Selected name="group_uuid" onChange={this.handleChange_Selected} btnWidth="300"  multiple= {true} data={this.props.select_group_list} btnStyle="primary" value={o.group_uuid} />
 		    <PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="type"  value="1"/>
@@ -707,7 +707,7 @@ var Div_userinfo_updatepassword = React.createClass({
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		    <form id="commonform" method="post" className="am-form">
+		    <form id="commonform" method="post" className="am-form" action="javascript:void(0);">
 
 		      <label htmlFor="oldpassword">当前密码:</label>
 		      <PxInput  icon="lock" type="password" name="oldpassword"  />
@@ -763,7 +763,7 @@ var Div_userinfo_update = React.createClass({
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		    <form id="commonform" method="post" className="am-form">
+		    <form id="commonform" method="post" className="am-form" action="javascript:void(0);">
 
 			<input type="hidden" name="img" id="img" value={o.img} onChange={this.handleChange}/>
 		    <label htmlFor="nickname">头像:</label>
@@ -884,7 +884,7 @@ var Div_userinfo_updatePasswordBySms = React.createClass({
 		</div>
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		    <form id="commonform" method="post" className="am-form">
+		    <form id="commonform" method="post" className="am-form" action="javascript:void(0);">
 
 		    <label htmlFor="tel">手机号码:</label>
 		      <input type="text" name="tel" id="tel"  placeholder=""/>
@@ -1204,7 +1204,7 @@ var Common_reply_save = React.createClass({
 	},
 render: function() {
   return (
-		   <form id="editClassnewsreplyForm" method="post" className="am-form">
+		   <form id="editClassnewsreplyForm" method="post" className="am-form" action="javascript:void(0);">
 			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
 			<input type="hidden" name="uuid" />
 			<input type="hidden" name="type"  value={this.props.uuid}/>

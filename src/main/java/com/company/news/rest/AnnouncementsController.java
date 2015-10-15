@@ -63,10 +63,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		}
 		try {
 			
-			if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-				responseMessage.setMessage("必须选择一个学校");
-				return "";
-			}
+		
 
 			//设置当前用户
 			User user=this.getUserInfoBySession(request);
@@ -98,6 +95,58 @@ public class AnnouncementsController extends AbstractRESTController {
 	}
 
 
+	
+	/**
+	 * 根据分类获取所有，管理员用
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listByWjkj", method = RequestMethod.GET)
+	public String listByWjkj(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String right=RightConstants.AD_announce_m;
+		
+		try {
+			String groupuuid=request.getParameter("groupuuid");
+			String type=request.getParameter("type");
+			//帮助文档指定groupuuid
+			if(String.valueOf(SystemConstants.common_type_KDHelp).equals(type)){
+				groupuuid=SystemConstants.Group_uuid_wjkj;
+			}else if(String.valueOf(SystemConstants.common_type_PDHelp).equals(type)){
+				groupuuid=SystemConstants.Group_uuid_wjkj;
+			}
+			
+			if(StringUtils.isBlank(groupuuid)){
+				groupuuid=RightUtils.getRightGroups(right, request);
+				if(StringUtils.isBlank(groupuuid)){
+					responseMessage.setStatus(RightConstants.Return_msg);
+					return "";
+				}
+			}else{
+				//判断是否有权限
+				if(!RightUtils.hasRight(groupuuid,right, request)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return "";
+				}
+			}
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult list = announcementsService.listByRight(type,groupuuid,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	
 	/**
 	 * 根据分类获取所有，管理员用
 	 * 
@@ -117,6 +166,16 @@ public class AnnouncementsController extends AbstractRESTController {
 		
 		try {
 			String groupuuid=request.getParameter("groupuuid");
+			String type=request.getParameter("type");
+			//帮助文档指定groupuuid
+			if(String.valueOf(SystemConstants.common_type_KDHelp).equals(type)){
+				groupuuid=SystemConstants.Group_uuid_wjkj;
+				right=RightConstants.AD_announce_m;
+			}else if(String.valueOf(SystemConstants.common_type_PDHelp).equals(type)){
+				groupuuid=SystemConstants.Group_uuid_wjkj;
+				right=RightConstants.AD_announce_m;
+			}
+			
 			if(StringUtils.isBlank(groupuuid)){
 				groupuuid=RightUtils.getRightGroups(right, request);
 				if(StringUtils.isBlank(groupuuid)){
@@ -131,7 +190,7 @@ public class AnnouncementsController extends AbstractRESTController {
 				}
 			}
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult list = announcementsService.listByRight(request.getParameter("type"),groupuuid,pData);
+			PageQueryResult list = announcementsService.listByRight(type,groupuuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
