@@ -7034,7 +7034,18 @@ render: function() {
 		  },
 	render: function() {
 		var thit=this;
+		console.log("formdata",this.props.events);
 		 var addStudent=(<div></div>);
+		 var addText=(<div></div>);
+		 if(this.props.events.length!=0){
+			 addText=(   
+			 <legend>{Store.getClassByUuid(this.props.formdata.classuuid).name}</legend> 
+			 )
+		 }else{
+			 addText=(   
+			 <legend>{Store.getClassByUuid(this.props.formdata.classuuid).name+"(改班级暂无学生请添加新生)"}</legend>  
+		     )
+		 }
 		 if(this.isAddStudentFlag){
 			 addStudent=(
 					 <Mycalss_student_edit formdata={this.props.formdata} />
@@ -7058,7 +7069,7 @@ render: function() {
 		  <button type="button"  onClick={this.addStudent_btn.bind(this)}  className="am-btn am-btn-primary">创建</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
-		  <legend>12sdasdasdad3</legend>
+		  {addText}		 
 		  </form>      
 		  
 		  

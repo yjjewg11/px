@@ -7034,7 +7034,18 @@ render: function() {
 		  },
 	render: function() {
 		var thit=this;
+		console.log("formdata",this.props.events);
 		 var addStudent=(React.createElement("div", null));
+		 var addText=(React.createElement("div", null));
+		 if(this.props.events.length!=0){
+			 addText=(   
+			 React.createElement("legend", null, Store.getClassByUuid(this.props.formdata.classuuid).name) 
+			 )
+		 }else{
+			 addText=(   
+			 React.createElement("legend", null, Store.getClassByUuid(this.props.formdata.classuuid).name+"(改班级暂无学生请添加新生)")  
+		     )
+		 }
 		 if(this.isAddStudentFlag){
 			 addStudent=(
 					 React.createElement(Mycalss_student_edit, {formdata: this.props.formdata})
@@ -7058,7 +7069,7 @@ render: function() {
 		  React.createElement("button", {type: "button", onClick: this.addStudent_btn.bind(this), className: "am-btn am-btn-primary"}, "创建")		  		  
 		  )
 		  ), 
-		  React.createElement("legend", null, "12sdasdasdad3")
+		  addText		 
 		  ), 
 		  
 		  
