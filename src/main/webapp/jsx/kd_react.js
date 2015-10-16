@@ -133,6 +133,8 @@ render: function() {
  	      <a href="javascript:void(0);"  onClick={menu_kd_group_reg_fn} className="am-fl">幼儿园注册</a>
  	     <a href="javascript:void(0);"  onClick={menu_userinfo_reg_fn} className="am-fr">老师注册</a>
  	      </div>
+ 	      <br/>
+ 	     <a href={"index.html?v="+Math.random()}>重新加载</a>
  	     <br/>
  	    </form>
  	    <hr/>

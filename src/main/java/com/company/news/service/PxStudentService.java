@@ -66,7 +66,7 @@ public class PxStudentService extends AbstractStudentService {
 				pxStudent.setUuid(null);
 				this.nSimpleHibernateDao.save(pxStudent);
 				
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PxStudent set uuid=? where uuid=?",student.getUuid(), pxStudent.getUuid());
+//				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PxStudent set uuid=? where uuid=?",student.getUuid(), pxStudent.getUuid());
 //				pxStudent.setUuid(student.getUuid());
 //				this.nSimpleHibernateDao.save(pxStudent);
 //				student_uuid=pxStudent.getUuid();
@@ -75,7 +75,7 @@ public class PxStudentService extends AbstractStudentService {
 		}
 		PxStudentPXClassRelation pp=new PxStudentPXClassRelation();
 		pp.setClass_uuid(class_uuid);
-		pp.setStudent_uuid(student_uuid);
+		pp.setStudent_uuid(pxStudent.getUuid());
 		this.nSimpleHibernateDao.save(pp);	
 		return true;
 	}
