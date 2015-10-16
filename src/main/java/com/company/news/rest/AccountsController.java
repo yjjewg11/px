@@ -134,6 +134,52 @@ public class AccountsController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	/**
+	 * 根据班级的学生,显示半年的缴费情况.
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listForYear", method = RequestMethod.GET)
+	public String listForYear(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+		
+			String class_uuid= request.getParameter("classuuid");
+			String type= request.getParameter("type");
+			String begDateStr= request.getParameter("begDateStr");
+			String add_month= request.getParameter("add_month");
+			
+			if (StringUtils.isBlank(class_uuid)) {
+				responseMessage.setMessage("选择一个班级");
+				return "";
+			}
+
+			if (StringUtils.isBlank(type)) {
+				responseMessage.setMessage("选择类型");
+				return "";
+			}
+
+			if (StringUtils.isBlank(add_month)) {
+				responseMessage.setMessage("add_month 必填");
+				return "";
+			}
+			
+			List list = accountsService.listForYear(class_uuid,type,
+					begDateStr,Integer.valueOf(add_month));
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	
 	/**
 	 * 根据分类获取所有，管理员用

@@ -4895,6 +4895,177 @@ render: function() {
    );
   }
   });
+
+
+
+
+
+
+  
+//——————————————————————————收支记录<绘制>——————————————————————————
+  /*
+  * <收支记录>
+  * @请求数据成功后执行Accounts_EventsTable方法绘制
+  * 在kd_react
+  **/
+    var Accounts_listForYear_byRight = React.createClass({	
+		 add_month:6,
+		add_monthArr:[],
+		getStateByPropes:function(nextProps){
+			 for(var i=0;i<this.add_month;i++){
+				this.add_monthArr.push(i+"");
+			 }
+			
+			var begDateStr= new Date().format("yyyy-MM")+"-01"; 
+			if(!nextProps.type)nextProps.type="3";
+			var queryForm={
+				begDateStr:begDateStr,
+				type:nextProps.type,
+				groupuuid:nextProps.groupuuid
+			};
+
+			var classlist=Store.getChooseClass(nextProps.groupuuid);
+			var classuuid =null;
+		if(classlist&&classlist.length>0){
+			classuuid=classlist[0].uuid;
+		}
+			 var obj= {
+				queryForm:queryForm,
+				type:nextProps.type,
+				classuuid:classuuid,
+					classlist:G_selected_dataModelArray_byArray(classlist,"uuid","name"),
+				list: []
+			};
+			return obj;
+		},
+		data_type_list:[],
+		getInitialState: function() {
+			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
+
+    	    return this.getStateByPropes(this.props);
+    	  },
+		handleChange: function(v) {
+		 	var queryForm=$('#queryForm').serializeJson();
+			this.state.queryForm=queryForm;
+		    this.setState(this.state);
+	  },
+	   componentWillReceiveProps: function(nextProps) {	
+		   this.setState(this.getStateByPropes(nextProps));
+	},
+
+	  componentDidMount: function() {
+		//this.ajax_list(); 
+	  },
+		ajax_callback:function(list){
+    		 if (list== null ) this.state.list=[];
+			 else
+    		  this.state.list=list;
+			
+    		  this.setState(this.state);
+    	  },
+	
+		ajax_list:function(){
+			var queryForm=this.state.queryForm;
+			queryForm.add_month=this.add_month;
+    		$.AMUI.progress.start();
+    		var that=this;
+    		var url = hostUrl + "rest/accounts/listForYear.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data :queryForm,
+    			dataType : "json",
+    			//async: false,//必须同步执行
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    				    that.ajax_callback( data.list );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		
+    	},
+    	
+    	
+    	  handleChange_selectgroup_uuid: function(val){
+    		  ajax_accounts_listByGroup_byRight(val);
+        },
+		handleClick: function(m) {
+    		if(m=="add"){
+    			btn_click_accounts_byRight(m,{groupuuid:this.props.group_uuid});
+			}
+		},
+		handle_onKeyDown: function(e){
+          if(G_isKeyDown_enter(e)){
+               this.handleClick_query();
+               return false;
+		 }
+     },
+	handleChange_selectgroup: function(val) {
+		this.state.queryForm.groupuuid=val;
+		var classlist=Store.getChooseClass(val);
+		var classuuid =null;
+		if(classlist&&classlist.length>0){
+			classuuid=classlist[0].uuid;
+		}
+		this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+		this.state.queryForm.classuuid=classuuid;
+		this.setState(this.state); 
+		 
+	},
+    render: function() {
+			var queryForm=this.state.queryForm;
+		var that=this;
+      return (
+      <div>
+ 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		
+			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
+
+    		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
+    		 	 
+			 <PxInput icon="calendar" type="text" size="10" maxLength="10" placeholder="YYYY-MM" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
+	 		
+			 <AMR_Button amStyle="primary" onClick={this.ajax_list.bind(this)} round>查询</AMR_Button>
+    	
+		  </AMUIReact.Form>
+    	
+        <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">  
+          <thead> 
+              <tr>
+              <th>学生名</th>
+			  {this.add_monthArr.map(function(event_add,index) {
+					 return (  <th>{index}</th> )
+				
+			 })}
+            
+            </tr> 
+          </thead>
+          <tbody>
+            {this.state.list.map(function(event) {
+				var button_add=( <AMR_Button amStyle="primary" onClick={that.ajax_list.bind(this)} round>添加</AMR_Button>);
+              return ( 
+				  <tr  key={"_"+event.uuid} >
+  				 <td  >{event.name}</td>
+				   {that.add_monthArr.map(function(event_add,index) {
+					  return (  <th>{event["month"+index]?event["month"+index]:button_add}</th> )
+				
+				 })}
+  	    </tr> )
+            })}
+          </tbody>
+        </AMR_Table>
+
+        </div>
+      );
+    }
+    });
+
   //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
 
   

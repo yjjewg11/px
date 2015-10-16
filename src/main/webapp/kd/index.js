@@ -243,8 +243,21 @@ function login_affter_init(){
 
 		t_menu= {
                 "link": "##",
-                "fn":menu_accounts_list_fn_byRight,
-                "title": "收费记录"
+                "title": "收费记录",
+                "subMenu": [
+	                         {
+	                           "fn":menu_accounts_list_fn_byRight,
+	                           "link": "##",
+	                           "title": "收费记录列表"
+	                         },
+	                         {
+	                   		    "link": "##",
+	                   		    "title": "学期费用列表",
+	                   		    "fn":menu_accounts_listForYear_byRight
+	                   		   
+	                   		  }
+	                         ]
+             
               };
 			if(G_user_hasRight("KD_accounts_m")){
 				menu_data.push(t_menu);
@@ -841,7 +854,7 @@ var grouplist= Store.getGroupByRight("KD_accounts_m");
 
 		var groupuuid=grouplist[0].uuid;
 	
- 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收费记录");
+ 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收费记录列表");
 
 	React.render(React.createElement(Accounts_EventsTable_byRight, {
  					groupuuid:groupuuid,
@@ -850,6 +863,24 @@ var grouplist= Store.getGroupByRight("KD_accounts_m");
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  					}), document.getElementById('div_body'));
 };
+function menu_accounts_listForYear_byRight() {
+	var grouplist= Store.getGroupByRight("KD_accounts_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+			var groupuuid=grouplist[0].uuid;
+		
+	 	Queue.push(function(){menu_accounts_listForYear_byRight();},"学期费用列表");
+
+		React.render(React.createElement(Accounts_listForYear_byRight, {
+	 					groupuuid:groupuuid,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};
+
 /*
  * (标头)学生列表
  * @跳转kd_service发服务器请求

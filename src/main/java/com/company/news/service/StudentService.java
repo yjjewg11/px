@@ -230,7 +230,7 @@ public class StudentService extends AbstractStudentService {
 		String hql = "from StudentContactRealation  where student_uuid in"
 				+ "(select uuid from Student where classuuid in("
 				+ DBUtil.stringsToWhereInValue(StringUtils.join(listClassuuids, ",")) + ") " + where_student_name
-				+ " ) order  by student_name,type";
+				+ " ) order  by convert(student_name, 'gbk') ,type";
 
 		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 		warpStudentContactRealationVoList(list);

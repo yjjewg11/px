@@ -1,11 +1,17 @@
 package com.company.news.service;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Accounts;
@@ -263,6 +269,84 @@ public class AccountsService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	/**
+	 * 
+	 * @param class_uuid
+	 * @param type
+	 * @param begDateStr
+	 * @param parameter4
+	 * @return
+	 */
+	public List listForYear(String class_uuid, String type,
+			String begDateStr, Integer add_month) {
+		
+		
+		Timestamp begDate = TimeUtils.string2Timestamp(null,begDateStr);
+		
+		Calendar begCal= Calendar.getInstance();
+		begCal.setTime(begDate);
+		begCal.add(Calendar.MONTH, add_month);
+		 String endDateStr=TimeUtils.getDateTimeString(begCal.getTime());
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		
+
+		String sql_studeng=" SELECT name,uuid  FROM   px_student where  classuuid in(" + DBUtil.stringsToWhereInValue(class_uuid) + ") ";
+		sql_studeng+=" order by  CONVERT( name USING gbk)";
+		
+		Query q = s.createSQLQuery(sql_studeng);
+		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		
+		List<Map> student_list=q.list();
+		Map map=new HashMap();
+		for(Map m:student_list)
+		{
+			map.put(m.get("uuid"), m);
+		}
+		
+		
+		String sql=" SELECT t1.studentuuid,t1.num,t1.accounts_time ";
+		sql+=" FROM   px_accounts t1 ";
+		sql+=" where    t1.classuuid in(" + DBUtil.stringsToWhereInValue(class_uuid) + ")";
+		
+		if(StringUtils.isNotBlank(type)){
+			sql+=" and t1.type ="+type;
+		}
+		
+		if(StringUtils.isNotBlank(begDateStr))
+			sql+=" and accounts_time>="+DBUtil.stringToDateByDBType(begDateStr);
+		
+		if(StringUtils.isNotBlank(endDateStr))
+			sql+=" and accounts_time<="+DBUtil.stringToDateByDBType(endDateStr);
+		
+		Query q1 = s.createSQLQuery(sql);
+		q1.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List<Map> accounts_list=q1.list();
+		for(Map m:accounts_list)
+		{
+			String studentuuid=(String)m.get("studentuuid");
+			Map obj=(Map)map.get(studentuuid);
+			if(obj!=null){
+				Date accounts_time=(Date)m.get("accounts_time");
+				int d1=TimeUtils.getIntervalMonth(begDateStr, TimeUtils.getDateTimeString(accounts_time));
+				String numStr=(String)obj.get("month"+d1);
+				
+				if(numStr!=null){
+					numStr+=","+m.get("num");
+				}
+				else{
+					numStr=m.get("num")+"";
+				}
+				
+				obj.put("month"+d1, numStr);
+			}
+		}
+		
+		return student_list;
 	}
 
 }
