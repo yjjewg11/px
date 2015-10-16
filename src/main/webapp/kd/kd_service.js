@@ -354,7 +354,7 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		if(num==1){
 			   ajax_cookbookPlan_dayShow(null,reluuid);  //(食谱);
 		}else{
-			ajax_cookbookPlan_listByGroup(group_uuid);	 //(每日任务食谱发布)
+			ajax_cookbookPlan_listByGroup_byRight(group_uuid);	 //(每日任务食谱发布)
 		}
 
 	       break;
@@ -362,19 +362,19 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
 	case 99:     
-		   menu_classnewsbyMy_list_fn();
+		   ajax_classnews_list_div(1);
 		   //ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	case 11:                                          
 		   ajax_parentContactByMyStudent_message_list(reluuid,"家长通讯");   //家长通讯录信息(未验证功能);
 	       break;
 	case 12:  
-		ajax_boss_message_list(group_uuid,reluuid); //园长信箱(未验证功能);
+		ajax_boss_message_list_byRight(group_uuid,reluuid); //园长信箱(未验证功能);
 //	 	@revice_useruuid:收件人ID------group_uuid;
 //	 	@send_useruuid:发送者ID--------reluuid;
 	       break;
 	case 13:                                          
-	           Console.WriteLine("Case 13");         //签到记录(未验证功能);
+		menu_class_sign_today_fn();         //签到记录(未验证功能);
 	       break;
 	case 10:                                          
 	           Console.WriteLine("Case 10");         //(未验证功能);

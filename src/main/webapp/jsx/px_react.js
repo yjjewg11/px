@@ -2408,8 +2408,8 @@ render: function() {
 //	  		    
 //	  		   <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
 //			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
-//			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
-//			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
+//			    <AMR_Col sm={5} md={2} >管理员:{o.headTeacher_name}</AMR_Col>
+//			    <AMR_Col sm={4} md={2}>上课老师:{o.teacher_name}</AMR_Col>
 //			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
 //			  </AMR_Grid>
 //		  </AMR_Panel>
@@ -2466,11 +2466,11 @@ render: function() {
 //    		      <label htmlFor="name">班级:</label>
 //    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
 //    		      <br/>   		   
-//  		      <label htmlFor="name">班主任:</label>
+//  		      <label htmlFor="name">管理员:</label>
 //  	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
 //  			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
 //  			      <br/>
-//  			      <label htmlFor="name">老师:</label>
+//  			      <label htmlFor="name">上课老师:</label>
 //  		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
 //  				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
 //  				      <br/>
@@ -3794,12 +3794,12 @@ render: function() {
           <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
           </th>
           <th>班级</th>
-          <th>班主任</th>
-          <th>老师</th>
+          <th>管理员</th>
+          <th>上课老师</th>
           <th>学校</th>
           <th>创建时间</th>
           <th>状态</th>
-          <th>最后结业操作时间</th>
+          <th>结业时间</th>
         </tr> 
       </thead>
       <tbody>
@@ -3873,11 +3873,11 @@ render: function() {
     		      <label htmlFor="name">班级:</label>
     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
     		      <br/>   		   
-  		      <label htmlFor="name">班主任:</label>
+  		      <label htmlFor="name">管理员:</label>
   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
   			      <br/>
-  			      <label htmlFor="name">老师:</label>
+  			      <label htmlFor="name">上课老师:</label>
   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
   				      <br/>
@@ -3941,8 +3941,8 @@ render: function() {
   			  <AMR_Grid className="doc-g">
   			  <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
 			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
-			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
-			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
+			    <AMR_Col sm={5} md={2} >管理员:{o.headTeacher_name}</AMR_Col>
+			    <AMR_Col sm={4} md={2}>上课老师:{o.teacher_name}</AMR_Col>
 			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
   			  </AMR_Grid>
   		  </AMR_Panel>
@@ -6809,8 +6809,8 @@ render: function() {
  	  		    
  	  		   <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
  			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
- 			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
- 			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
+ 			    <AMR_Col sm={5} md={2} >管理员:{o.headTeacher_name}</AMR_Col>
+ 			    <AMR_Col sm={4} md={2}>上课老师:{o.teacher_name}</AMR_Col>
  			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
  			  </AMR_Grid>
  		  </AMR_Panel>
@@ -6866,11 +6866,11 @@ render: function() {
      		      <label htmlFor="name">班级:</label>
      		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
      		      <br/>   		   
-   		      <label htmlFor="name">班主任:</label>
+   		      <label htmlFor="name">管理员:</label>
    	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
    			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
    			      <br/>
-   			      <label htmlFor="name">老师:</label>
+   			      <label htmlFor="name">上课老师:</label>
    		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
    				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
    				      <br/>
@@ -7043,7 +7043,7 @@ render: function() {
 			 )
 		 }else{
 			 addText=(   
-			 <legend>{Store.getClassByUuid(this.props.formdata.classuuid).name+"(改班级暂无学生请添加新生)"}</legend>  
+			 <legend>{Store.getClassByUuid(this.props.formdata.classuuid).name+"(该班级暂无学生请添加新生)"}</legend>  
 		     )
 		 }
 		 if(this.isAddStudentFlag){
