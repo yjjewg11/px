@@ -280,21 +280,21 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break;
     case 7:   
-    	menu_teachingplan_dayShow_fn();
+    	px_ajax_teachingplan_fn();
     	 //  ajax_teachingplan_dayShow(null,{uuid:reluuid,nmae:""});  //(课程表);
 	       break;
 	case 5:                                          
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
 	case 99:     
-		   menu_classnewsbyMy_list_fn();
+		ajax_classnews_list_div(1);
 		   //ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	case 11:                                          
 		   ajax_parentContactByMyStudent_message_list(reluuid,"家长通讯");   //家长通讯录信息(未验证功能);
 	       break;
 	case 12:  
-		ajax_boss_message_list(group_uuid,reluuid); //园长信箱(未验证功能);
+		ajax_boss_message_list_byRight(group_uuid,reluuid); //园长信箱(未验证功能);
 //	 	@revice_useruuid:收件人ID------group_uuid;
 //	 	@send_useruuid:发送者ID--------reluuid;
 	       break;
