@@ -67,10 +67,17 @@ public class AccountsService extends AbstractService {
 			responseMessage.setMessage("金额不能为空！");
 			return false;
 		}
+		if (Double.valueOf(0).equals(accountsJsonform.getNum())) {
+			responseMessage.setMessage("金额不能为0");
+			return false;
+		}
+		
+		
 		
 		//默认type
 		if (accountsJsonform.getType()==null) {
-			accountsJsonform.setType(accounts_type_general);
+			responseMessage.setMessage("缴费类型必填写");
+			return false;
 		}
 
 		Accounts accounts = new Accounts();
@@ -282,13 +289,15 @@ public class AccountsService extends AbstractService {
 	public List listForYear(String class_uuid, String type,
 			String begDateStr, Integer add_month) {
 		
+		begDateStr=begDateStr.split("-")[0]+"-01-01";
 		
 		Timestamp begDate = TimeUtils.string2Timestamp(null,begDateStr);
 		
 		Calendar begCal= Calendar.getInstance();
 		begCal.setTime(begDate);
-		begCal.add(Calendar.MONTH, add_month);
-		 String endDateStr=TimeUtils.getDateTimeString(begCal.getTime());
+		
+		begCal.add(Calendar.YEAR, 1);
+		 String endDateStr=TimeUtils.getDateString(begCal.getTime());
 		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();

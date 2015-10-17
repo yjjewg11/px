@@ -4743,9 +4743,9 @@ render: function() {
 		auto_addValue:function(formdata){
 			formdata.title=Vo.get("KD_Accounts_type_"+formdata.type);
 			if(formdata.accounts_timeStr){
-				var tmp_ind=formdata.accounts_timeStr.lastIndexOf("-");
-				if(tmp_ind>=0){
-					formdata.title+=formdata.accounts_timeStr.substring(0,tmp_ind);
+				var tmpArr=formdata.accounts_timeStr.split("-");
+				if(tmpArr.length>1){
+					formdata.title+=tmpArr[0]+"年"+tmpArr[1]+"月";
 				}
 			}
 	  },
@@ -4909,30 +4909,32 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_listForYear_byRight = React.createClass({displayName: "Accounts_listForYear_byRight",	
-		 add_month:6,
+		 add_month:12,
 		add_monthArr:[],
 		getStateByPropes:function(nextProps){
-			 for(var i=0;i<this.add_month;i++){
-				this.add_monthArr.push(i+"");
-			 }
 			
-			var begDateStr= new Date().format("yyyy-MM")+"-01"; 
+			
+			var begDateStr= new Date().format("yyyy"); 
 			if(!nextProps.type)nextProps.type="3";
-			var queryForm={
-				begDateStr:begDateStr,
-				type:nextProps.type,
-				groupuuid:nextProps.groupuuid
-			};
 
 			var classlist=Store.getChooseClass(nextProps.groupuuid);
 			var classuuid =null;
-		if(classlist&&classlist.length>0){
-			classuuid=classlist[0].uuid;
-		}
+			if(classlist&&classlist.length>0){
+				classuuid=classlist[0].uuid;
+			}
+
+			var queryForm={
+				begDateStr:begDateStr,
+				type:nextProps.type,
+				classuuid:classuuid,
+				groupuuid:nextProps.groupuuid
+			};
+
+			
 			 var obj= {
 				queryForm:queryForm,
 				type:nextProps.type,
-				classuuid:classuuid,
+				
 					classlist:G_selected_dataModelArray_byArray(classlist,"uuid","name"),
 				list: []
 			};
@@ -4940,6 +4942,11 @@ render: function() {
 		},
 		data_type_list:[],
 		getInitialState: function() {
+			 this.add_monthArr=[];
+			 for(var i=1;i<=this.add_month;i++){
+				this.add_monthArr.push(i+"月");
+			 }
+
 			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
 
     	    return this.getStateByPropes(this.props);
@@ -4953,9 +4960,7 @@ render: function() {
 		   this.setState(this.getStateByPropes(nextProps));
 	},
 
-	  componentDidMount: function() {
-		//this.ajax_list(); 
-	  },
+	
 		ajax_callback:function(list){
     		 if (list== null ) this.state.list=[];
 			 else
@@ -4966,7 +4971,7 @@ render: function() {
 	
 		ajax_list:function(){
 			var queryForm=this.state.queryForm;
-			queryForm.add_month=this.add_month;
+			//queryForm.add_month=this.add_month;
     		$.AMUI.progress.start();
     		var that=this;
     		var url = hostUrl + "rest/accounts/listForYear.json";
@@ -4975,7 +4980,6 @@ render: function() {
     			url : url,
     			data :queryForm,
     			dataType : "json",
-    			//async: false,//必须同步执行
     			success : function(data) {
     				$.AMUI.progress.done();
     				if (data.ResMsg.status == "success") {
@@ -4989,9 +4993,7 @@ render: function() {
     		});
     		
     	},
-    	
-    	
-    	  handleChange_selectgroup_uuid: function(val){
+    	handleChange_selectgroup_uuid: function(val){
     		  ajax_accounts_listByGroup_byRight(val);
         },
 		handleClick: function(m) {
@@ -5029,7 +5031,7 @@ render: function() {
 
     		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, placeholder: "所有", btnWidth: "200", multiple: false, btnStyle: "primary"}), 	 
     		 	 
-			 React.createElement(PxInput, {icon: "calendar", type: "text", size: "10", maxLength: "10", placeholder: "YYYY-MM", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange}), 		   		
+			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange}), 		   		
 	 		
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.ajax_list.bind(this), round: true}, "查询")
     	
@@ -5040,7 +5042,7 @@ render: function() {
               React.createElement("tr", null, 
               React.createElement("th", null, "学生名"), 
 			  this.add_monthArr.map(function(event_add,index) {
-					 return (  React.createElement("th", null, index) )
+					 return (  React.createElement("th", null, event_add) )
 				
 			 })
             
@@ -5048,15 +5050,27 @@ render: function() {
           ), 
           React.createElement("tbody", null, 
             this.state.list.map(function(event) {
-				var button_add=( React.createElement(AMR_Button, {amStyle: "primary", onClick: that.ajax_list.bind(this), round: true}, "添加"));
-              return ( 
+			    return ( 
 				  React.createElement("tr", {key: "_"+event.uuid}, 
   				 React.createElement("td", null, event.name), 
-				   that.add_monthArr.map(function(event_add,index) {
-					  return (  React.createElement("th", null, event["month"+index]?event["month"+index]:button_add) )
-				
+				   that.add_monthArr.map(function(event_num,index) {
+						var year=queryForm.begDateStr;
+						var month=index+1;
+						var day= new Date().format("dd"); ;
+						var formData={
+							accounts_timeStr:year+"-"+month+"-"+day,
+							title:"",
+							num:event["month"+index],
+							groupuuid:queryForm.groupuuid,
+							classuuid:queryForm.classuuid,
+							studentuuid:event.uuid,
+							studentname:event.name,
+							type:queryForm.type,
+							invoice_num:""
+						};
+					  return (  React.createElement("td", null, React.createElement(Account_edit_inner, {formData: formData})) )
 				 })
-  	    ) )
+  			  ) )
             })
           )
         )
@@ -5066,10 +5080,74 @@ render: function() {
     }
     });
 
-  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
 
-  
-  
+ var Account_edit_inner = React.createClass({displayName: "Account_edit_inner",
+	 getInitialState: function() {
+		return this.props.formData;
+	  },
+	 componentWillReceiveProps: function(nextProps) {
+			this.setState(nextProps.formData);
+	  },
+	  auto_addValue:function(formdata){
+		formdata.title=Vo.get("KD_Accounts_type_"+formdata.type);
+		if(formdata.accounts_timeStr){
+			var tmpArr=formdata.accounts_timeStr.split("-");
+			if(tmpArr.length>1){
+				formdata.title+=tmpArr[0]+"年"+tmpArr[1]+"月";
+			}
+		}
+  },
+	get_prompt_title:function(){
+		var s=this.state.studentname;//学生姓名			
+		s+=","+this.state.title+",请输入(必填):";
+		return s;
+	  },
+	 save_account: function() {
+		this.auto_addValue(this.state);
+		var sResult=prompt(this.get_prompt_title(), "");
+		if(!sResult)return;
+		this.state.num=sResult;
+
+		var invoice_num=prompt("请输入单据号(非必填):", "");
+		this.state.invoice_num=invoice_num;
+
+		var formdata=this.state;
+		var that=this;
+
+		$.AMUI.progress.start();
+		$.ajax({
+				type : "POST",
+				url :hostUrl+"rest/accounts/save.json",
+				processData: false,
+				data:  JSON.stringify(formdata),				
+				dataType : "json",
+				contentType : false, 
+				success : function(data) {
+					$.AMUI.progress.done();
+					// 登陆成功直接进入主页
+					if (data.ResMsg.status == "success") {
+						G_msg_pop(data.ResMsg.message);
+						that.setState(that.state);
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				error : G_ajax_error_fn
+			});
+	
+	  },
+	 render: function() {
+			if(this.state.num){
+				return(
+					React.createElement("span", null, this.state.num)
+				)
+			}
+      return (
+			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.save_account.bind(this), round: true}, "添加")
+		  )
+	 }
+
+ });
 //——————————————————————————学生列表<绘制>——————————————————————————  
   /*
    * 学生列表服务器请求后绘制处理方法；

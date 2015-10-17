@@ -252,7 +252,7 @@ function login_affter_init(){
 	                         },
 	                         {
 	                   		    "link": "##",
-	                   		    "title": "学期费用列表",
+	                   		    "title": "1年费用列表",
 	                   		    "fn":menu_accounts_listForYear_byRight
 	                   		   
 	                   		  }
