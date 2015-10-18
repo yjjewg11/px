@@ -288,6 +288,20 @@ public class StudentController extends AbstractRESTController {
 					groupuuid,uuid,xlsname,user);
 			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
 			return null;
+		}else if("doorrecord_teacher".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Object[]> list = studentService.update_and_queryFor_doorrecord_teacher_OutExcel(
+					classuuid,
+					groupuuid,uuid,null,user);
+			ExcelUtil.outXLS_doorrecord(response, "老师门禁卡表",list);
+			return null;
+		}else if("doorrecord_apply_teacher".equals(xlsname)){
+			User user=this.getUserInfoBySession(request);
+			List<Object[]> list = studentService.queryFor_doorrecord_apply_teacher_OutExcel(
+					classuuid,
+					groupuuid,uuid,xlsname,user);
+			ExcelUtil.outXLS_doorrecord(response, "老师门禁卡申请表",list);
+			return null;
 		}else if("doorrecord_all".equals(xlsname)){
 			User user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.queryFor_doorrecord_apply_OutExcel(

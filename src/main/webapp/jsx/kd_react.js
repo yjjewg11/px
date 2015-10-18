@@ -6858,18 +6858,6 @@ render: function() {
    });    
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±            
 
 
@@ -6885,45 +6873,54 @@ var Studentbind_EventsTable_byRight = React.createClass({
 				  var group_uuid=$("input[name='group_uuid']").val();
   				 ajax_flowername_download_byRight(group_uuid,class_uuid,xlsname);
   		 },
-		getDefaultProps: function() {
-  	       var down_list = [  	                  
+	
+		getStateByPropes:function(nextProps){
+		  
+		var classList=Store.getChooseClass(nextProps.groupuuid);
+			var classuuid =null;
+			if(classList&&classList.length>0){
+				classuuid=classList[0].uuid;
+			}
+			var down_list = [  	                  
   	                  {value: 'doorrecord' , label: '导出接送卡表' },
 				     {value: 'doorrecord_apply' , label: '导出申请接送卡' }
   	                ];
 
 			 var otherWherelist = [
   	                  {value: 'cardid_is_null' , label: '申请中' },
-  	                  {value: 'cardid_is_not_null' , label: '接送卡' }
+  	                  {value: 'cardid_is_not_null' , label: '门禁卡' }
   	                ];
-
-  	          return {
-  	            otherWherelist: otherWherelist,
-				down_list:down_list
-  	          };
-  	        },
-	getInitialState: function() {
-		var classList=Store.getChooseClass(this.props.groupuuid);
-			var classuuid =this.props.classuuid;
-			if(!classuuid&&classList&&classList.length>0){
-				classuuid=classList[0].uuid;
+			if(nextProps.type==0){
+				down_list = [  	                  
+  	                  {value: 'doorrecord_teacher' , label: '导出门禁卡表' },
+				     {value: 'doorrecord_apply_teacher' , label: '导出申请门禁卡' }
+  	                ];
 			}
-		if(!G_studentbind_otherWhere)G_studentbind_otherWhere='cardid_is_null';
-		var obj= {
-		    	groupuuid:this.props.groupuuid,
-		    	pageNo:1,
-		    	type:this.props.type,
-				classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),
-				otherWhere:G_studentbind_otherWhere,
-				classuuid:classuuid,
-				totalCount:0,
-				cardid:"",
-		    	list: []
-		    };
-				obj.classList.unshift({value:"",label:"所有"});
-		//obj=this.ajax_list(obj);
-	    return obj;
+
+		  var obj= {
+			    	groupuuid:nextProps.groupuuid,
+			    	pageNo:1,
+			    	type:nextProps.type,
+					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),	
+					classuuid:classuuid,
+					totalCount:0,
+					cardid:"",
+					otherWherelist: otherWherelist,
+					down_list:down_list,
+			    	list: []
+			    };
+					obj.classList.unshift({value:"",label:"所有"});
+			return obj;
+		},
+	getInitialState: function() {		
+	    return this.getStateByPropes(this.props);
 	   
 	  },
+	  componentWillReceiveProps: function(nextProps) {		  
+		  var obj= this.getStateByPropes(nextProps);
+		    this.setState(obj);
+			this.ajax_list(obj);
+		},
 		componentDidMount: function() {
 			this.ajax_list(this.state); 
 		  },
@@ -6932,31 +6929,7 @@ var Studentbind_EventsTable_byRight = React.createClass({
 		  this.state.list=list;
 		  this.setState(this.state);
 	  },
-	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
-	  componentWillReceiveProps: function(nextProps) {
-		  
-		var classList=Store.getChooseClass(this.props.groupuuid);
-			var classuuid =null;
-			if(classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
-
-
-
-		  var obj= {
-			    	groupuuid:nextProps.groupuuid,
-			    	pageNo:1,
-			    	type:nextProps.type,
-					classList:G_selected_dataModelArray_byArray(classList,"uuid","name"),	
-					classuuid:classuuid,
-						totalCount:0,
-					cardid:"",
-			    	list: []
-			    };
-					obj.classList.unshift({value:"",label:"所有"});
-			this.ajax_list(obj);
-		  //this.setState(obj);
-		},
+	 
 	 ajax_list:function(obj){
 			
 		$.AMUI.progress.start();
@@ -6968,7 +6941,7 @@ var Studentbind_EventsTable_byRight = React.createClass({
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {groupuuid:obj.groupuuid,classuuid:obj.classuuid,cardid:obj.cardid,pageNo:obj.pageNo,otherWhere:obj.otherWhere},
+			data : {type:obj.type,groupuuid:obj.groupuuid,classuuid:obj.classuuid,cardid:obj.cardid,pageNo:obj.pageNo,otherWhere:obj.otherWhere},
 			dataType : "json",
 			//async: false,//必须同步执行
 			success : function(data) {	
@@ -6986,7 +6959,6 @@ var Studentbind_EventsTable_byRight = React.createClass({
 			},
 			error : G_ajax_error_fn
 		});
-		return obj;
 		
 	},
 	pageClick: function(m) {
@@ -7053,10 +7025,16 @@ handleChange_selectclass_uuid:function(val){
 		
 render: function() {
 			
-	var obj=this.state;
-	 
+	var obj=this.state;	 
 	if(!this.state.list)this.state.list=[];
 	var btnSearch = (<AMUIReact.Button  onClick={this.refresh_data.bind(this)}><AMUIReact.Icon icon="search" /></AMUIReact.Button>);
+	var btnSearch_classuuid = null;
+	var table_th0="电话";
+	if(obj.type==1){
+		btnSearch_classuuid = (<AMUIReact.Selected id="selectgroup_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} /> );
+		table_th0="班级";
+	}
+	
   return (
   <div>
 <AMR_ButtonToolbar>
@@ -7068,23 +7046,19 @@ render: function() {
 <hr/>
 
  <div className="am-fl am-margin-bottom-sm">
-	 <AMUIReact.Selected id="selectotherWhere" name="otherWhere" onChange={this.handleChange_selectotherWhere_uuid} btnWidth="200"  multiple= {false} data={this.props.otherWherelist} btnStyle="primary" value={this.state.otherWhere} />
+	 <AMUIReact.Selected id="selectotherWhere" name="otherWhere" onChange={this.handleChange_selectotherWhere_uuid} btnWidth="200"  multiple= {false} data={this.state.otherWherelist} btnStyle="primary" value={this.state.otherWhere} />
     <AMUIReact.Selected id="selectgroup_uuid2" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.grouplist} btnStyle="primary" value={this.state.groupuuid} />
-  <AMUIReact.Selected id="selectgroup_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} />
- 
-   	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
- 	 
+	{btnSearch_classuuid}	
+	<AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.state.down_list}/>   
+ 	  
   <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
 	   <AMUIReact.Input name="cardid"  placeholder="姓名或卡号"   btnAfter={btnSearch}	 /> </div>
-
-
-
  </div>
 	  
     <AMR_Table {...this.props}>  
    <thead> 
     <tr>
-		    <th>班级</th>
+		    <th>{table_th0}</th>
       <th>姓名</th>
       <th>接送卡号</th>
       <th>申请号</th>
@@ -7095,7 +7069,7 @@ render: function() {
   </thead>
   <tbody>
     {this.state.list.map(function(event) {
-      return (<Studentbind_EventRow_byRight key={event.uuid} event={event} />);
+      return (<Studentbind_EventRow_byRight type={obj.type} key={event.uuid} event={event} />);
         })}
       </tbody>
     </AMR_Table>
@@ -7111,10 +7085,16 @@ var Studentbind_EventRow_byRight = React.createClass({
 	  var className = event.highlight ? 'am-active' :
 	    event.disabled ? 'am-disabled' : '';
 	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
+	var table_th0=event[6];
+	var table_th3=(<a href="javascript:void(0);"  >{event[3]}</a>);
+	if(this.props.type==1){
+		table_th0=Store.getClassByUuid(event[6]).name;
+		table_th3=(<a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event[0])}  >{event[3]}</a>);
+	}
 	  return (
 	    <tr className={className} >
-		     <td>{Store.getClassByUuid(event[6]).name}</td>
-   <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event[0])}  >{event[3]}</a></td>
+		     <td>{table_th0}</td>
+   <td> {table_th3}</td>
 	      <td>{event[1]}</td>
 	       <td>{event[2]}</td>
 		    <td>{event[4]}</td>

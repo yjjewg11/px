@@ -205,10 +205,16 @@ function login_affter_init(){
 		                         },
 		                         {
 		                   		    "link": "##",
-		                   		    "title": "接送卡查询",
+		                   		    "title": "学生接送卡",
 		                   		    "fn":menu_studentbind_byRight
 		                   		   
-		                   		  }
+		                   		  },
+			                         {
+			                   		    "link": "##",
+			                   		    "title": "老师门禁卡",
+			                   		    "fn":menu_studentbind_teacher_byRight
+			                   		   
+			                   		  }
 		                         ]
 			  };
 		if(G_user_hasRight("KD_class_m")){
@@ -252,7 +258,7 @@ function login_affter_init(){
 	                         },
 	                         {
 	                   		    "link": "##",
-	                   		    "title": "1年费用列表",
+	                   		    "title": "学生缴费记录",
 	                   		    "fn":menu_accounts_listForYear_byRight
 	                   		   
 	                   		  }
@@ -871,7 +877,7 @@ function menu_accounts_listForYear_byRight() {
 		}
 			var groupuuid=grouplist[0].uuid;
 		
-	 	Queue.push(function(){menu_accounts_listForYear_byRight();},"学期费用列表");
+	 	Queue.push(function(){menu_accounts_listForYear_byRight();},"学生缴费记录");
 
 		React.render(React.createElement(Accounts_listForYear_byRight, {
 	 					groupuuid:groupuuid,
@@ -976,6 +982,27 @@ function menu_studentbind_byRight(){
 	React.render(React.createElement(Studentbind_EventsTable_byRight,{
 		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
 		groupuuid:G_mygroup_choose,		
+		type:1,		
 		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
+}
+
+function menu_studentbind_teacher_byRight(){
+	Queue.push(function(){menu_studentbind_teacher_byRight();},"老师门禁卡查询");
+	var  grouplist=Store.getGroupByRight("KD_teacher_m");	
+	if(!G_mygroup_choose){
+		var groupuuid;
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choose=groupuuid;
+	}
+
+	React.render(React.createElement(Studentbind_EventsTable_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:G_mygroup_choose,		
+		type:0
 		}), document.getElementById('div_body'));
 }

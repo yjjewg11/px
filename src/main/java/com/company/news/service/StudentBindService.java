@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
@@ -346,13 +347,13 @@ public class StudentBindService extends AbstractService {
 	 * @param uuid
 	 * @return
 	 */
-	public PageQueryResult query(String classuuid, String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
+	public PageQueryResult queryForStudents(String classuuid, String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime,s1.classuuid ";
 		String sql = "";
 		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
 	//	sql+=" where b2.cardid is not null ";
-		sql+=" where  userid is not null";
+		sql+=" where  b2.userid is not null and   b2.type="+SystemConstants.StudentBind_type_1;
 		if (StringUtils.isNotBlank(groupuuid))
 			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
@@ -379,6 +380,43 @@ public class StudentBindService extends AbstractService {
 		return pageQueryResult;
 	}
 
+	/**
+	 * 查询学生绑定卡号信息.
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @return
+	 */
+	public PageQueryResult queryForTeacher(String groupuuid,String uuid,String cardid,String otherWhere,PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String select_sql="select b2.studentuuid,b2.cardid,b2.userid,b2.name,b2.create_user,b2.createtime,s1.tel ";
+		String sql = "";
+		sql+=" from px_studentbind b2 left join  px_user s1  on  s1.uuid=b2.studentuuid  ";
+		sql+=" where  b2.userid is not null and   b2.type="+SystemConstants.StudentBind_type_0;
+		if (StringUtils.isNotBlank(groupuuid))
+			sql += " and   b2.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		if (StringUtils.isNotBlank(cardid)){
+			if(StringUtils.isNumeric(cardid)){
+				sql += " and  b2.cardid like '%"+cardid+"%'";
+			}else{
+				sql += " and  b2.name like '%"+cardid+"%'";
+			}
+			
+		}
+		
+		if ("cardid_is_null".equals(otherWhere))
+			sql += " and  b2.cardid is null ";
+		else if ("cardid_is_not_null".equals(otherWhere))
+			sql += " and  b2.cardid is not null ";
+		
+		sql += "order by CONVERT( b2.name USING gbk)";
+		PageQueryResult pageQueryResult=this.nSimpleHibernateDao.findByPageForSqlTotal(select_sql,sql, pData);
+		
+		return pageQueryResult;
+	}
 
 	/**
 	 * 查询学生绑定卡号信息.

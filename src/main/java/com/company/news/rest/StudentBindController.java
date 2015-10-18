@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
 import com.company.news.query.PageQueryResult;
@@ -101,8 +102,16 @@ public class StudentBindController extends AbstractRESTController {
 			String studentuuid =request.getParameter("studentuuid");
 			String otherWhere =request.getParameter("otherWhere");
 			String cardid =request.getParameter("cardid");
+			String type =request.getParameter("type");
+			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult list = studentBindService.query(classuuid,groupuuid,studentuuid,cardid,otherWhere,pData);
+			
+			PageQueryResult list=null;
+			if(SystemConstants.StudentBind_type_0.toString().equals(type)){
+				list = studentBindService.queryForTeacher(groupuuid,studentuuid,cardid,otherWhere,pData);
+			}else{
+				list = studentBindService.queryForStudents(classuuid,groupuuid,studentuuid,cardid,otherWhere,pData);
+			}
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
