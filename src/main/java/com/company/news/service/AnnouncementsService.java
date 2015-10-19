@@ -66,24 +66,25 @@ public class AnnouncementsService extends AbstractService {
 				return false;
 			}
 		
-		}
-		
-		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("必须选择一个学校");
-			return false;
-		}
-		//精品文章都可以新加
-		if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
-			
-			String right=RightConstants.KD_announce_m;
-			if(SessionListener.isPXLogin(request)){
-				right=RightConstants.PX_announce_m;
-			}
-			
-			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
-				responseMessage.setMessage(RightConstants.Return_msg);
+		}else{
+			if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
+				responseMessage.setMessage("必须选择一个学校");
 				return false;
 			}
+			//精品文章都可以新加
+			if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
+				
+				String right=RightConstants.KD_announce_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_announce_m;
+				}
+				
+				if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return false;
+				}
+			}
+			
 		}
 		
 		if (StringUtils.isBlank(announcementsJsonform.getTitle())
