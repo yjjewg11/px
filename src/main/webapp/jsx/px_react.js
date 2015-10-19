@@ -3798,6 +3798,7 @@ render: function() {
           <th>上课老师</th>
           <th>学校</th>
           <th>创建时间</th>
+          <th>教学计划</th>
           <th>状态</th>
           <th>结业时间</th>
         </tr> 
@@ -3826,7 +3827,7 @@ render: function() {
 	    	disable=<td>已结业</td>
 	    }else{
 	    	disable=<td><AMUIReact.Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMUIReact.Button></td>
-	    }
+	    };
 	    return (
 	      <tr className={className} >
 	      <td> 
@@ -3837,6 +3838,7 @@ render: function() {
 	        <td>{event.teacher_name}</td>
 	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
 	        <td>{event.create_time}</td>
+	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid)} amStyle="success">管理</AMUIReact.Button></td>
             {disable}
             <td>{event.disable_time}</td>
 	      </tr> 
@@ -3845,7 +3847,7 @@ render: function() {
 	  });  
   
 /*
-* <班级管理>班级添加与编辑模式详情绘制
+* <班级管理>班级添加与编辑模式详情绘制 
 * @ajax_class_save：提交按钮在Kd_service;
 * */	    
   var Class_edit_byRight = React.createClass({ 
@@ -3914,7 +3916,7 @@ render: function() {
 			 class_uuid="";
 		 }
 		
-		 //document.getElementById("selectclass_uuid2").removeAttribute("selected"); 
+		 //document.getElementById("selectclass_uuid2").removeAttribute("selected");
 		 //document.getElementById("selectclass_uuid2").selectedIndex = 0;
 		 
 		 btn_click_class_kuang_byRight(class_uuid);
@@ -3928,15 +3930,26 @@ render: function() {
   	  return (
   	  <div>
   	  <AMR_ButtonToolbar>
-  		    
-  		  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={o.groupuuid}/> 
-  		  <AMUIReact.Selected id="selectclass_uuid2" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={o.uuid}/>    
-  		  <AMR_Button amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
-		    <AMR_Button amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
-		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>编辑</AMR_Button> 
-		    <AMR_Button className="am-hide-sm" amStyle="danger" onClick={this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)} round>删除空班级</AMR_Button> 
-  		  </AMR_ButtonToolbar>
-  		  <hr/>
+  	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  		<AMUIReact.Selected amSize="xs" id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={o.groupuuid}/> 
+  		</div> 
+  	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  	  <AMUIReact.Selected amSize="xs" id="selectclass_uuid2" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={o.uuid}/>    
+     </div>
+  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  	   <AMR_Button amSize="xs" amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
+  	    </div> 
+  	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  	  <AMR_Button amSize="xs" amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
+     </div> 
+  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  	   <AMR_Button amSize="xs" amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} round>编辑</AMR_Button> 
+  		</div>  
+  	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)} round>删除空班级</AMR_Button> 
+  	 </div> 		    
+	  </AMR_ButtonToolbar>
+  		<hr/>
   		  <AMR_Panel>
   			  <AMR_Grid className="doc-g">
   			  <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
@@ -4571,7 +4584,7 @@ render: function() {
 		 var o=$('#editEchartForm').serializeJson();
 		   this.setState(o);
 		 PXECharts_ajax.ajax(o);
-		    //PXECharts.loading();
+		//PXECharts.loading();
 	  },
   render: function() {
 	  var o = this.state;
@@ -5769,10 +5782,11 @@ render: function() {
  		        };
  		 //筛选出不是当前的班级数组       
 		for(var i=0;i<o.classList.length;i++){
-			if(o.classuuid!=classList[i].uuid){
+			if(o.classuuid!=classList[i].value){
 				copybyclassList.push(classList[i]);
 			}
 		   }
+		console.log("copybyclassList",copybyclassList);
      return (
      <div>
      <AMR_ButtonToolbar>
@@ -5796,7 +5810,7 @@ render: function() {
         <div className="am-dropdown-content"> 
 		{copybyclassList.map(function(event) {
 			  return(
-					  <li><a href="javascript:void(0);"  onClick={px_react_copy_buttn.bind(this,o.classuuid,event.uuid)}>{event.name}</a></li>
+					  <li><a href="javascript:void(0);"  onClick={px_react_copy_buttn.bind(this,o.classuuid,event.value)}>{event.label}</a></li>
 			  	  
 			  )})}                
         </div>

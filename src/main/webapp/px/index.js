@@ -158,15 +158,15 @@ function login_affter_init(){
 	
 	
 //————————————教学计划<权限>——————————		
-	t_menu={
-      	   		"link": "##",
-      	   		"fn":menu_teachingplan_list_fn_byRight,
-      	   		"title": "教学计划",
-      	   		"subCols": 2
-		  };
-	if(G_user_hasRight("PX_teachingplan_m")){
-		menu_data.push(t_menu);
-	}
+//	t_menu={
+//      	   		"link": "##",
+//      	   		"fn":menu_teachingplan_list_fn_byRight,
+//      	   		"title": "教学计划",
+//      	   		"subCols": 2
+//		  };
+//	if(G_user_hasRight("PX_teachingplan_m")){
+//		menu_data.push(t_menu);
+//	}
 	
 //————————————园长信箱<权限>——————————		
 	t_menu={
@@ -272,7 +272,14 @@ function login_affter_init(){
 	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		div_menu_data.subMenu.push(t_menu);
 	}		
-		
+	t_menu= {
+            "link": "##",
+            "title": "帮助文档"
+//            "fn":menu_query_list_fn_byRight
+          };
+//		if(G_user_hasRight("PX_student_allquery")){
+			menu_data.push(t_menu);
+//		}
 	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		menu_data.push(div_menu_data);
 	//}
