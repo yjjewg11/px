@@ -183,7 +183,7 @@ public class AbstractStudentService extends AbstractService {
 				.find("from "+hqlTableName+" where student_uuid=? and type=?",
 						student.getUuid(), type);
 		if (list.size() > 0) {
-			return (StudentContactRealation) list.get(0);
+			return (AbstractStudentContactRealation) list.get(0);
 		}
 		return null;
 	}
