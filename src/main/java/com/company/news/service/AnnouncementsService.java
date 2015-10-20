@@ -163,7 +163,7 @@ public class AnnouncementsService extends AbstractService {
 			return false;
 		}
 		
-		
+		boolean isRight=false;
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
 				||SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()){
 			announcementsJsonform.setGroupuuid(SystemConstants.Group_uuid_wjkj);
@@ -172,6 +172,7 @@ public class AnnouncementsService extends AbstractService {
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return false;
 			}
+			isRight=true;
 		
 		}
 		
@@ -199,23 +200,27 @@ public class AnnouncementsService extends AbstractService {
 		Announcements announcements = (Announcements) this.nSimpleHibernateDao
 				.getObjectById(Announcements.class,
 						announcementsJsonform.getUuid());
-				//精品文章都可以新加
-				if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
-					String right=RightConstants.KD_announce_m;
-					if(SessionListener.isPXLogin(request)){
-						right=RightConstants.PX_announce_m;
-					}
-					
-					if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
-						responseMessage.setMessage(RightConstants.Return_msg);
-						return false;
-					}
-				}else{//精品文章作者可以修改.
-					if(!announcements.getCreate_useruuid().equals(announcementsJsonform.getCreate_useruuid())){
-						responseMessage.setMessage("精品文章,不是作者不能修改.");
-						return false;
-					}
+		
+		if(!isRight){
+			//精品文章都可以新加
+			if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
+				String right=RightConstants.KD_announce_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_announce_m;
 				}
+				
+				if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),right,request)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return false;
+				}
+			}else{//精品文章作者可以修改.
+				if(!announcements.getCreate_useruuid().equals(announcementsJsonform.getCreate_useruuid())){
+					responseMessage.setMessage("精品文章,不是作者不能修改.");
+					return false;
+				}
+			}
+		}
+				
 		announcements.setIsimportant(announcementsJsonform.getIsimportant());
 		announcements.setMessage(announcementsJsonform.getMessage());
 		announcements.setTitle(announcementsJsonform.getTitle());
