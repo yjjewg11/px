@@ -60,6 +60,7 @@ public class PxClassService extends AbstractClassService {
 
 		BeanUtils.copyProperties(pxClass, pxclassRegJsonform);
 		pxClass.setCreate_time(TimeUtils.getCurrentTimestamp());
+		pxClass.setIsdisable(SystemConstants.Class_isdisable_0);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxClass);
 
@@ -110,6 +111,10 @@ public class PxClassService extends AbstractClassService {
 		// 班级所在学校切换是,代理云,只能切换到其他学校一次
 		boolean isChangeGroupuuid = false;
 		String oldGroupuuid = obj.getGroupuuid();
+//		if(SystemConstants.Class_isdisable_1.equals(obj.getIsdisable())){
+//			responseMessage.setMessage("结业班级,不允许修改.");
+//			return false;
+//		}
 		if (obj.getGroupuuid() != null
 				&& !obj.getGroupuuid()
 						.equals(pxclassRegJsonform.getGroupuuid())) {
@@ -136,6 +141,10 @@ public class PxClassService extends AbstractClassService {
 		obj.setName(pxclassRegJsonform.getName());
 		obj.setGroupuuid(pxclassRegJsonform.getGroupuuid());
 		obj.setCourseuuid(pxclassRegJsonform.getCourseuuid());
+		
+		if(obj.getIsdisable()==null){
+			obj.setIsdisable(SystemConstants.Class_isdisable_0);
+		}
 		this.nSimpleHibernateDao.save(obj);
 		// 更新学生学校.
 		if (isChangeGroupuuid) {

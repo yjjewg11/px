@@ -374,17 +374,31 @@ public class AnnouncementsService extends AbstractService {
 			return false;
 		}
 		
-		String right=RightConstants.KD_announce_m;
-		if(SessionListener.isPXLogin(request)){
-			right=RightConstants.PX_announce_m;
+		
+		if(SystemConstants.common_type_KDHelp==obj.getType().intValue()
+				||SystemConstants.common_type_KDHelp==obj.getType().intValue()){
+			
+			if(!RightUtils.hasRight(obj.getGroupuuid(),RightConstants.AD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
+			}
+		
+		}else{
+
+			String right=RightConstants.KD_announce_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_announce_m;
+			}
+			if(!RightUtils.hasRight(obj.getGroupuuid(),right,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
+			}
 		}
-		if(!RightUtils.hasRight(obj.getGroupuuid(),right,request)){
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return false;
-		}
+		
 		
 		String desc="uuid="+uuid+"|title="+obj.getTitle();
 		this.addLog("announcements.delete","删除信息", desc, request);
+		
 		 this.nSimpleHibernateDao.delete(obj);
 //		if (uuid.indexOf(",") != -1)// 多ID
 //		{
