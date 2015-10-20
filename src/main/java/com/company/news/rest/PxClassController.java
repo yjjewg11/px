@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
 import com.company.news.entity.User;
-import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.PxClassRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
-import com.company.news.service.ClassService;
 import com.company.news.service.PxClassService;
 import com.company.news.vo.ResponseMessage;
 
@@ -108,6 +107,35 @@ public class PxClassController extends AbstractRESTController {
 			}
 		}
 		List<PxClass> list = pxClassService.query(request.getParameter("groupuuid"));
+
+		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+
+	/**
+	 * 获取班级信息(包含学生统计,教学计划统计)
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listStat", method = RequestMethod.GET)
+	public String listStat(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		
+		String groupuuid=request.getParameter("groupuuid");
+		if(StringUtils.isBlank(groupuuid)){//查询全部班级时,只有管理员可以.
+				responseMessage.setMessage("必须选择一个培训机构");
+				return "";
+		}
+		String isdisable=request.getParameter("isdisable");
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		
+		PageQueryResult list = pxClassService.listStat(groupuuid,isdisable,pData);
 
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

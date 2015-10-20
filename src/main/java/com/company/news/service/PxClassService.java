@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,8 +20,10 @@ import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
-import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.entity.UserForJsCache;
 import com.company.news.jsonform.PxClassRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -227,6 +230,84 @@ public class PxClassService extends AbstractClassService {
 
 		warpVoList(l);
 		return l;
+	}
+	
+	/**
+	 * 获取班级信息(包含学生统计,教学计划统计)
+	 * 
+	 * @return
+	 */
+	public PageQueryResult listStat(String groupuuid,String isdisable,PaginationData pData) {
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan,t0.* from   (select * from px_pxclass ";
+				sql+= " where groupuuid ='"+groupuuid+"'";
+				if(StringUtils.isNotBlank(isdisable)){
+					sql+= " and isdisable ="+isdisable;
+				}
+				sql+= " limit "+pData.getStartIndex()+","+pData.getPageSize();
+				sql+= " )  t0 LEFT JOIN px_pxteachingplan t1 on t0.uuid=t1.classuuid ";
+				sql+= " LEFT JOIN px_pxstudentpxclassrelation t3 on t0.uuid=t3.class_uuid  GROUP BY t0.uuid";
+				Query q = s.createSQLQuery(sql);
+				q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+				
+				PageQueryResult pageQueryResult =new PageQueryResult(pData.getPageSize(), pData.getPageNo(),  q.list(), 99999);
+				
+				List<Map> list=pageQueryResult.getData();
+						
+				 if(pData.getPageNo()==1){//效率优化,只有第一页查询时,返回总数,其他的时候不在查询总数
+				      if (list.size() < pData.getPageSize()) {// 小于当前页,就不用单独计算总数.
+				    	  pageQueryResult.setTotalCount(list.size());
+				      }else{
+				    	  String sql_count = "SELECT count(*) from px_pxclass ";
+				    	  sql_count+= " where groupuuid ='"+groupuuid+"'";
+				    	  if(StringUtils.isBlank(isdisable))		
+				    		  	sql_count+= " and isdisable ="+isdisable;
+				    	  
+				    	  pageQueryResult.setTotalCount(Long.valueOf(s.createSQLQuery(sql_count).uniqueResult()
+				    	            .toString()));
+				      }
+				 }
+				for (Map o : list) {
+					warpMap(o);
+				}
+				
+		return pageQueryResult;
+	}
+	
+	/**
+	 * vo输出转换
+	 * 
+	 * @param list
+	 * @return
+	 */
+	protected Map warpMap(Map o) {
+		try {
+
+			List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao
+					.getHibernateTemplate().find(
+							"from UserClassRelation where classuuid=?",
+							o.get("uuid"));
+
+			String headTeacher_name = "";
+			String teacher_name = "";
+			for (UserClassRelation u : l) {
+				if (u.getType().intValue() == SystemConstants.class_usertype_head) {
+					headTeacher_name += (((UserForJsCache) CommonsCache.get(
+							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+				} else {
+					teacher_name += (((UserForJsCache) CommonsCache.get(
+							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+				}
+			}
+			o.put("headTeacher_name", PxStringUtil.StringDecComma(headTeacher_name));
+			o.put("teacher_name", PxStringUtil.StringDecComma(teacher_name));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return o;
 	}
 
 	/**

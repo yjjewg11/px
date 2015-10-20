@@ -6,8 +6,8 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.AbstractClass;
-import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
+import com.company.news.entity.UserForJsCache;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -33,21 +33,17 @@ public class AbstractClassService extends AbstractService {
 			String headTeacher_name = "";
 			String teacher_name = "";
 			for (UserClassRelation u : l) {
-				User user = (User) CommonsCache
-						.get(u.getUseruuid(), User.class);
-				if (user != null) {
 					if (u.getType().intValue() == SystemConstants.class_usertype_head) {
 
 						headTeacher += (u.getUseruuid() + ",");
-						headTeacher_name += (((User) CommonsCache.get(
-								u.getUseruuid(), User.class)).getName() + ",");
+						headTeacher_name += (((UserForJsCache) CommonsCache.get(
+								u.getUseruuid(), UserForJsCache.class)).getName() + ",");
 
 					} else {
 						teacher += (u.getUseruuid() + ",");
-						teacher_name += (((User) CommonsCache.get(
-								u.getUseruuid(), User.class)).getName() + ",");
+						teacher_name += (((UserForJsCache) CommonsCache.get(
+								u.getUseruuid(), UserForJsCache.class)).getName() + ",");
 					}
-				}
 			}
 			o.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher));
 			o.setTeacher(PxStringUtil.StringDecComma(teacher));
