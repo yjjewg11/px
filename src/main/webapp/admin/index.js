@@ -81,6 +81,11 @@ function login_affter_init(){
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
+    	       {
+                "link": "##",
+                "title": "统计",
+                "fn":menu_statistics_list_admin_byRight
+              },
             {
                 "link": "##",
                 "title": "数据纠正",
@@ -110,6 +115,7 @@ function login_affter_init(){
       	                      }
       	                  ]
                 },
+
             {
                 "link": "##",
                 "title": "我",
@@ -218,7 +224,16 @@ function menu_group_myList_fn() {
 	ajax_group_myList();
 }
 
-
+/*
+ * (标头)统计
+ * */
+function menu_statistics_list_admin_byRight() {
+	Queue.push(function(){menu_statistics_list_admin_byRight();},"统计");
+	React.render(React.createElement(ECharts_Div_admin, {
+		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
+		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_statistics_m"),"uuid","brand_name")
+		}), document.getElementById('div_body'));
+};
 
 function menu_kd_group_reg_fn(){
 	Queue.push(menu_class_list_fn);

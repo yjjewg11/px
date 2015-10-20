@@ -274,8 +274,8 @@ function login_affter_init(){
 	}		
 	t_menu= {
             "link": "##",
-            "title": "帮助文档"
-//            "fn":menu_query_list_fn_byRight
+            "title": "帮助列表",
+           "fn":px_help_list_fn
           };
 //		if(G_user_hasRight("PX_student_allquery")){
 			menu_data.push(t_menu);
@@ -450,12 +450,18 @@ function menu_userinfo_logout_fn(){
 /*
  * (标头)我-帮助
  * 
- */
+ */ 
 function menu_hellp_fn(){
 	Queue.push(menu_hellp_fn,"帮助文档");
 	React.render(React.createElement(Help_txt), document.getElementById('div_body'));
 }
-
+/*
+ * （标头）帮助信息列表
+ */
+function px_help_list_fn(){
+  	Queue.push(px_help_list_fn,"帮助列表");
+  	ajax_px_help_div();
+}
 
 
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
@@ -796,7 +802,6 @@ function menu_query_list_fn_byRight() {
 
 /*
  * (标头)统计
- * @跳转kd_service发服务器请求
  * */
 function menu_statistics_list_fn_byRight() {
 	Queue.push(menu_statistics_list_fn_byRight,"统计");

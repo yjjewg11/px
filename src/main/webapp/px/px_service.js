@@ -2432,16 +2432,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 添加直接就调用Class_edit，不发服务器请求
   * */	 
  function react_ajax_class_edit_get_byRight(formdata,uuid){
- 	if(!uuid){
- 		var userinfo=Store.getUserinfo();
- 		formdata.headTeacher=userinfo.uuid;
- 		formdata.headTeacher_name=userinfo.name;
- 		React.render(React.createElement(Class_edit_byRight,{
- 			formdata:formdata,
- 			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_class_m"),"uuid","brand_name")
- 			}), document.getElementById('div_body'));
- 		return;
- 	}
  	$.AMUI.progress.start();
      var url = hostUrl + "rest/pxclass/"+uuid+".json";
  	$.ajax({
@@ -3653,3 +3643,75 @@ function ajax_class_students_look_info(uuid,title){
  	});
  };
 
+//————————————————————————————帮助列表————————————————————————— 
+
+ /*
+  * <帮助列表>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+  * 基本框 等
+  * */
+ function ajax_px_help_div(){
+ 	React.render(React.createElement(Announcements_px_Div_list), document.getElementById('div_body'));  	
+ };
+ /*
+ *(帮助列表)服务器请求share/articleList
+ * @types- 92
+ * 取出数组服务器请求后
+ * 开始绘制动态数据内容
+ * */
+ function ajax_help_px_list(list_div,pageNo) {
+ 	var re_data=null;
+ 	$.AMUI.progress.start();
+ 	var url = hostUrl + "rest/share/articleList.json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+   		data : {type:92,pageNo:pageNo},
+ 		dataType : "json",
+ 		async: false,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Px_helplist_div, {
+ 					events: data.list,
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById(list_div));
+ 				re_data=data.list;
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 				G_resMsg_filter(data.ResMsg);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ 	return re_data;
+ };
+ /*
+  *<帮助列表>详情服务器请求；
+ * @Announcements_show:详情绘制
+  * 在kd_rect;
+  * */
+ function react_px_help_show(uuid,title){
+ 	Queue.push(function(){react_px_help_show(uuid,title);},"精品文章");
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/announcements/"+uuid+".json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Announcements_helpshow,{
+ 					data:data.data,
+ 					share_url:data.share_url,
+ 					count:data.count
+ 					}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ };

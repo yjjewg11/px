@@ -268,6 +268,12 @@ function login_affter_init(){
 			if(G_user_hasRight("KD_accounts_m")){
 				menu_data.push(t_menu);
 			}
+			t_menu= {
+		            "link": "##",
+		            "title": "帮助列表",
+		           "fn":px_help_list_fn
+		          };
+					menu_data.push(t_menu);
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",
@@ -498,7 +504,13 @@ function menu_queryMyTimely_fn() {
 	ajax_queryMyTimely_myList();
 };
 
-
+/*
+ * （标头）帮助信息列表
+ */
+function px_help_list_fn(){
+  	Queue.push(px_help_list_fn,"帮助列表");
+  	ajax_px_help_div();
+}
 
 
 /*

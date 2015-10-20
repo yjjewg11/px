@@ -5655,8 +5655,7 @@ render: function() {
   			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
   			  </div>		  
   			</div>		   		   
-     );
-     
+     );     
    }
   } 
      );
@@ -7428,4 +7427,131 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	      </tr> 
   	    );
   	  }
-  	}); 
+  	});
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
+  //——————————————————————————帮助列表<绘制>—————————————————————  
+
+  /* 
+   * <帮助列表>绘制舞台
+   * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+   * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+   * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+   * */
+  var Announcements_px_Div_list = React.createClass({ 
+  	load_more_btn_id:"load_more_",
+  	pageNo:1,
+  	classnewsreply_list_div:"am-list-news-bd",
+  	componentWillReceiveProps:function(){
+  		this.load_more_data();
+  	},
+  	componentDidMount:function(){
+  		this.load_more_data();
+  	},
+  	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+  	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+  	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+  	load_more_data:function(){
+  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+  		var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+  		if(!re_data)return;
+  		if(re_data.data.length<re_data.pageSize){
+  			$("#"+this.load_more_btn_id).hide();
+  		}else{
+  			$("#"+this.load_more_btn_id).show();
+  		}
+  		  
+  		  this.pageNo++;
+  	},
+  	refresh_data:function(){
+//  		classnewsreply_list_div 清除；
+//        load_more_data	重新绘制DIV；
+  		this.forceUpdate();
+  		this.pageNo=1;
+  		$("#"+this.classnewsreply_list_div).html("");
+  		this.load_more_data();
+  		
+  	},
+  render: function() {
+  	this.load_more_btn_id="load_more_"+this.props.uuid;
+    return (			
+  		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">  		    
+  		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+  		  </div>
+  		  
+  		  <div className="am-list-news-ft">
+  		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+  		  </div>  		  
+  		</div>   			
+    );
+  }
+  });
+
+    
+  /*
+   *<帮助列表>表格内容绘制
+   * 在kd_react；
+   * */
+  var Px_helplist_div = React.createClass({ 
+  	  render: function() {
+  	    var event = this.props.events;
+  	    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+  	    return (
+  	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+  	    	     <div className="am-list-news-bd">
+  	    	     <ul className="am-list">
+  	    			  {this.props.events.data.map(function(event) {
+  	    			      return (
+  	    			    		<li className="am-g am-list-item-dated">
+  	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_help_show.bind(this,event.uuid,event.title)}>
+  	    			  		  {event.title} 
+  	    			  		  </a>		
+  	    			  		  <div className="am-list-item-text">
+  	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+  	    			  		  </div> 
+  	    			  		    </li>
+  	    			    		  )
+  	    			         })}	
+  	    			  </ul> 
+  	    			  </div> 
+  	    	    </div>  		  
+  	    	  );
+  }
+  }); 
+
+
+
+  /*
+  *公告点赞、评论、加载更多等详情绘制模板；
+  * */
+  var Announcements_helpshow = React.createClass({ 
+  //收藏按钮方法;
+  favorites_push: function(title,type,reluuid,url) {
+  	commons_ajax_favorites_push(title,type,reluuid,url)
+  }, 
+  render: function() {
+  	  var o = this.props.data;
+  return (
+  		  <div>
+  		  <AMUIReact.Article
+  		    title={o.title}
+  		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+  			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+  		     </AMUIReact.Article>
+  		     <AMR_ButtonToolbar>
+  		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
+  		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} round>分享</AMR_Button>
+  		     </AMR_ButtonToolbar>	
+  		    	<footer className="am-comment-footer">
+  		    	<div className="am-comment-actions">
+  		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+  		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+  		    	</div>
+  		    	</footer>
+  		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+  			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+  		   </div>
+  );
+  }
+  }); 
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±     
