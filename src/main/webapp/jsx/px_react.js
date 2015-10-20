@@ -3797,10 +3797,11 @@ render: function() {
           <th>管理员</th>
           <th>上课老师</th>
           <th>学校</th>
-          <th>创建时间</th>
+          <th>相关联课程名</th>
           <th>教学计划</th>
           <th>状态</th>
           <th>结业时间</th>
+          <th>创建时间</th>
         </tr> 
       </thead>
       <tbody>
@@ -3814,7 +3815,7 @@ render: function() {
 }
 });
   /*
-   * <班级管理>列表详细内容绘制;
+   * <班级管理>列表详细内容绘制; course_nmae
    * @react_ajax_class_students_manage:调用在（我的班级）公共方法 编辑与添加
    * */
   var Class_EventRow_byRight = React.createClass({
@@ -3836,62 +3837,75 @@ render: function() {
 	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage_byRight.bind(this, event.uuid)}>{event.name}</a></td>
 	        <td>{event.headTeacher_name}</td>
 	        <td>{event.teacher_name}</td>
-	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
-	        <td>{event.create_time}</td>
+	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>	
+	        <td>{event.course_nmae}</td>
 	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid)} amStyle="success">管理</AMUIReact.Button></td>
             {disable}
             <td>{event.disable_time}</td>
+            <td>{event.create_time}</td>
 	      </tr> 
 	    );
 	   }
 	  });  
   
-/*
+/* 
 * <班级管理>班级添加与编辑模式详情绘制 
 * @ajax_class_save：提交按钮在Kd_service;
-* */	    
-  var Class_edit_byRight = React.createClass({ 
-  	 getInitialState: function() {
-  		    return this.props.formdata;
-  		  },
-  	 handleChange: function(event) {
-  		    this.setState($('#editClassForm').serializeJson());
-  	  },
-  render: function() {
-  	  var o = this.state;
-    return (
-    		<div>
-    		<div className="header">
-    		  <hr />
-    		</div>
-    		<div className="am-g">
-    		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-    		  <form id="editClassForm" method="post" className="am-form">
-    		<input type="hidden" name="uuid"  value={o.uuid}/>
-    		     <input type="hidden" name="type"  value="1"/>
-    		    <div className="am-form-group"> 		    
-    		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
-    		    </div> 		    
-    		      <label htmlFor="name">班级:</label>
-    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
-    		      <br/>   		   
-  		      <label htmlFor="name">管理员:</label>
-  	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
-  			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
-  			      <br/>
-  			      <label htmlFor="name">上课老师:</label>
-  		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
-  				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
-  				      <br/>
-    		      <button type="button"  onClick={ajax_class_save_byRight}  className="am-btn am-btn-primary">提交</button>
-    		    </form>
-
-    	     </div> 
-    	   </div>	    	   
-    	   </div>
-    );
-  }
- }); 
+* */	
+    var Class_edit_byRight = React.createClass({ 
+    	 getInitialState: function() {
+    		    return this.props.formdata;
+    		  },
+    	 handleChange: function(event) {
+    		 
+    		 if(event==G_group_wjd){
+    			 $('#help1_span').show();
+    		 }else{
+    			 $('#help1_span').hide();
+    		 }
+    		    this.setState($('#editClassForm').serializeJson());
+    	  },
+    render: function() {
+    	  var o = this.state;
+  	  var course_list=Store.getCourseList(o.groupuuid);
+  	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+  	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
+      return (
+      		<div>
+      		<div className="header">
+      		  <hr />
+      		</div>
+      		<div className="am-g">
+      		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+      		  <form id="editClassForm" method="post" className="am-form">
+      		<input type="hidden" name="uuid"  value={o.uuid}/>
+      		     <input type="hidden" name="type"  value="1"/>
+      		    <div className="am-form-group"> 		    
+      		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
+      		  <G_help_popo  msg={G_tip.class_edit}/>  
+      		  <br/>
+  		  <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+      		
+      		  </div> 		    
+      		      <label htmlFor="name">班级:</label>
+      		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
+      		      <br/>   		   
+    		      <label htmlFor="name">管理员:</label>
+    	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
+    			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
+    			      <br/>
+    			      <label htmlFor="name">上课老师:</label>
+    		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
+    				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
+    				      <br/>
+      		      <button type="button"  onClick={ajax_class_save_byRight}  className="am-btn am-btn-primary">提交</button>
+      		    </form>
+      	     </div> 
+      	   </div>	    	   
+      	   </div>
+      );
+    }
+   }); 
   /*
    *<班级管理>班级学生头像列表界面绘制 
    * @class_students_manage_onClick 添加学生按钮的方法
@@ -4561,6 +4575,7 @@ render: function() {
   
   
   /*
+   *------------------------------------- 统计绘制-----------------------------------------
   图表加载
    * */
   var ECharts_Div_byRight = React.createClass({ 
@@ -4593,12 +4608,12 @@ render: function() {
     		 <form id="editEchartForm" method="post" className="am-form">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
-	    		 <AMUIReact.Selected inline name="type"  onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 <AMUIReact.Selected inline name="type" value={o.type} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
 	    		 
 	    		 </div>
 				<div className="am-u-lg-3 am-u-md-6">
 							    		 
-						 <AMUIReact.Selected inline name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+						 <AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
 	    		 </div>
 				 <div className="am-u-lg-3 am-u-md-6">
 					    		 
@@ -7319,3 +7334,133 @@ render: function() {
                 }
    });
  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+   
+   
+   
+
+ //——————————————————————————帮助列表<绘制>—————————————————————  
+
+   /* 
+    * <帮助列表>绘制舞台
+    * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+    * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+    * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+    * */
+   var Announcements_px_Div_list = React.createClass({ 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.load_more_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+   		if(!re_data)return;
+   		if(re_data.data.length<re_data.pageSize){
+   			$("#"+this.load_more_btn_id).hide();
+   		}else{
+   			$("#"+this.load_more_btn_id).show();
+   		}
+   		  
+   		  this.pageNo++;
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">  		    
+   		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+   		  </div>
+   		  
+   		  <div className="am-list-news-ft">
+   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+   		  </div>  		  
+   		</div>   			
+     );
+   }
+   });
+
+     
+   /*
+    *<帮助列表>表格内容绘制
+    * 在kd_react；
+    * */
+   var Px_helplist_div = React.createClass({ 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+       event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+   	    	     <div className="am-list-news-bd">
+   	    	     <ul className="am-list">
+   	    			  {this.props.events.data.map(function(event) {
+   	    			      return (
+   	    			    		<li className="am-g am-list-item-dated">
+   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_help_show.bind(this,event.uuid,event.title)}>
+   	    			  		  {event.title} 
+   	    			  		  </a>		
+   	    			  		  <div className="am-list-item-text">
+   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+   	    			  		  </div> 
+   	    			  		    </li>
+   	    			    		  )
+   	    			         })}	
+   	    			  </ul> 
+   	    			  </div> 
+   	    	    </div>  		  
+   	    	  );
+   }
+   }); 
+
+
+
+   /*
+   *公告点赞、评论、加载更多等详情绘制模板；
+   * */
+   var Announcements_helpshow = React.createClass({ 
+   //收藏按钮方法;
+   favorites_push: function(title,type,reluuid,url) {
+   	commons_ajax_favorites_push(title,type,reluuid,url)
+   }, 
+   render: function() {
+   	  var o = this.props.data;
+   return (
+   		  <div>
+   		  <AMUIReact.Article
+   		    title={o.title}
+   		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+   			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+   		     </AMUIReact.Article>
+   		     <AMR_ButtonToolbar>
+   		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
+   		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} round>分享</AMR_Button>
+   		     </AMR_ButtonToolbar>	
+   		    	<footer className="am-comment-footer">
+   		    	<div className="am-comment-actions">
+   		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+   		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+   		    	</div>
+   		    	</footer>
+   		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+   			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+   		   </div>
+   );
+   }
+   }); 
+   //±±±±±±±±±±±±±±±±±±±±±±±±±±±   

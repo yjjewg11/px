@@ -1805,10 +1805,7 @@ var Parent_EventsTable_div = React.createClass({
     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
     		  <form id="editAnnouncementsForm" method="post" className="am-form">
     		<input type="hidden" name="uuid"  value={o.uuid}/>
-    		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
-    		<div className="am-form-group">
-    	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-          </div>   
+    		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		 
     		{type_div}
     		  <label htmlFor="name">标题:</label>
     		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
@@ -1873,4 +1870,68 @@ var Parent_EventsTable_div = React.createClass({
     }); 
 
 
-    //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
+    
+    
+//—————————————————————————统计管理<绘制>—————————————————————      
+/*
+ * 统计管理图片加载
+ * */
+    var ECharts_Div_admin = React.createClass({ 
+    	 getInitialState: function() {
+    		    return this.props;
+    		  },
+    	componentDidMount:function(){
+    		var tmp_fn=function(){
+    			 var o=$('#editEchartForm').serializeJson();
+  		 PXECharts_ajax.ajax(o);
+  	 };
+  	 if(typeof(require)=="undefined"){
+  		 var js="http://echarts.baidu.com/build/dist/echarts.js";
+  		 loadJS(js,tmp_fn)
+  	 }else{
+  		 tmp_fn();
+  	 }
+  	
+    },
+    handleChange: function(event) {
+  		 var o=$('#editEchartForm').serializeJson();
+  		   this.setState(o);
+  		 PXECharts_ajax.ajax(o);
+  		//PXECharts.loading();
+  	  },
+    render: function() {
+  	  var o = this.state;
+      return (
+      		<div>
+      		 <form id="editEchartForm" method="post" className="am-form">
+      		 <div>
+  	    		 <div className="am-u-lg-3 am-u-md-6">
+  	    		 <AMUIReact.Selected inline name="type" value={o.type} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+  	    		 
+  	    		 </div>
+  				<div className="am-u-lg-3 am-u-md-6">
+  							    		 
+  						 <AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+  	    		 </div>
+  				 <div className="am-u-lg-3 am-u-md-6">
+  					    		 
+  				 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+  	    		 </div>
+  				<div className="am-u-lg-3 am-u-md-6">
+  					 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+  	    		 
+  	    		 </div>
+      		 
+      		 </div>
+      		 <div className="am-cf"></div>
+      		 </form>
+      		 
+      		 <div id="main_ECharts" className="ECharts"></div>
+    	    		</div>
+
+    	    );
+    	  }
+    	}); 
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+        
