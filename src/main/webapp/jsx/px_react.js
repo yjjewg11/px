@@ -3705,11 +3705,9 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({
 
 
 
-
-
 //——————————————————————————班级管理<绘制>—————————————————————————— 
 /*
- * <班级管理>一层界面绘制;
+ * <班级管理>建立舞台;
  * @add_class:添加班级；
  * @edit_class:编辑；
  * @graduate_class:毕业；
@@ -3717,7 +3715,42 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({
  * @handleClick:事件处理在kd_service;
  * @uuids:点击框后班级的ID；编辑按钮需要；
  * */
-var Class_EventsTable_byRight = React.createClass({
+var Announcements_Class_div = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");		
+		var that=this;
+		var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+  var re_data=ajax_class_listByGroup_byRight(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),this.pageNo,callback);		  
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
 	handleClick: function(m) {
 		 if(this.props.handleClick){		 
 			 if(m=="add_class"){
@@ -3757,13 +3790,13 @@ var Class_EventsTable_byRight = React.createClass({
 			  var group_uuid=$("input[name='group_uuid']").val();
 			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
 	 },
- handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
- },
- handleChange_selectgroup_uuid:function(val){
-	  ajax_class_listByGroup_byRight(val);
- },
- getDefaultProps: function() {
+	handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	},
+	handleChange_selectgroup_uuid:function(val){
+		  ajax_class_listByGroup_byRight(val);
+	},
+getDefaultProps: function() {
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
@@ -3775,78 +3808,87 @@ var Class_EventsTable_byRight = React.createClass({
 	    };
 	  },
 render: function() {
-  return (
-  <div>
-  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
-	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
-	  </div>
-	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
-	  </div>
-	  </AMR_ButtonToolbar>
-	  <hr/>
-	  <div>{"班级总数:"+this.props.events.length}</div>	
-    <AMR_Table {...this.props}>  
-      <thead> 
-        <tr>
-        	<th>  
-          <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
-          </th>
-          <th>班级</th>
-          <th>管理员</th>
-          <th>上课老师</th>
-          <th>学校</th>
-          <th>相关联课程名</th>
-          <th>教学计划</th>
-          <th>状态</th>
-          <th>结业时间</th>
-          <th>创建时间</th>
-        </tr> 
-      </thead>
-      <tbody>
-        {this.props.events.map(function(event) {
-          return (<Class_EventRow_byRight key={event.id} event={event} />);
-        })}
-      </tbody>
-    </AMR_Table>
-    </div>
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  
+		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.props.groupuuid} />   
+		  </div>
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200" data={this.props.down_list}/>   
+		  </div>
+		  </AMR_ButtonToolbar>	
+		    
+		    <div id={this.classnewsreply_list_div} >
+			  </div>	  
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>		  
+		</div>
+		
+			
   );
 }
 });
-  /*
-   * <班级管理>列表详细内容绘制; course_nmae
-   * @react_ajax_class_students_manage:调用在（我的班级）公共方法 编辑与添加
-   * */
-  var Class_EventRow_byRight = React.createClass({
+
+
+/*
+* 班级管理表单详情内容绘制;
+* */
+var Class_EventsTable_byRight = React.createClass({ 
 	  render: function() {
-		var disable;
-	    var event = this.props.event;
+	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-	    if(event.isdisable==1){
-	    	disable=<td>已结业</td>
-	    }else{
-	    	disable=<td><AMUIReact.Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMUIReact.Button></td>
-	    };
+  event.disabled ? 'am-disabled' : '';
 	    return (
-	      <tr className={className} >
-	      <td> 
-	      <input type="checkbox" value={event.uuid} name="table_checkbox" />
-	      </td>
-	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage_byRight.bind(this, event.uuid)}>{event.name}</a></td>
-	        <td>{event.headTeacher_name}</td>
-	        <td>{event.teacher_name}</td>
-	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>	
-	        <td>{event.course_nmae}</td>
-	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid)} amStyle="success">管理</AMUIReact.Button></td>
-            {disable}
-            <td>{event.disable_time}</td>
-            <td>{event.create_time}</td>
-	      </tr> 
-	    );
-	   }
-	  });  
+	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">
+	    		  <hr/>
+	    		  <div>{"班级总数:"+event.length}</div>
+	    	    <tr>
+	            	<th>  
+	              <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+	              </th>
+	              <th>班级</th>
+	              <th>管理员</th>
+	              <th>上课老师</th>
+	              <th>学校</th>
+	              <th>相关联课程名</th>
+	              <th>教学计划</th>
+	              <th>状态</th>
+	              <th>结业时间</th>
+	              <th>创建时间</th>
+	            </tr> 			 
+	    			  {this.props.events.map(function(event) {
+	    				    if(event.isdisable==1){
+	    				    	disable=<td>已结业</td>
+	    				    }else{
+	    				    	disable=<td><AMUIReact.Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMUIReact.Button></td>
+	    				    };
+	    			      return (
+	    			    	      <tr className={className} >
+	    			    	      <td> 
+	    			    	      <input type="checkbox" value={event.uuid} name="table_checkbox" />
+	    			    	      </td>
+	    			    	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage_byRight.bind(this, event.uuid)}>{event.name}</a></td>
+	    			    	        <td>{event.headTeacher_name}</td>
+	    			    	        <td>{event.teacher_name}</td>
+	    			    	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>	
+	    			    	        <td>{event.course_title}</td>
+	    			    	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid)} amStyle="success">管理</AMUIReact.Button></td>
+	    			                {disable}
+	    			                <td>{event.disable_time}</td>
+	    			                <td>{event.create_time}</td>
+	    			    	      </tr> 
+	    			    		  )
+	    			         })}	
+	    			  </AMR_Table>		  
+	    	  );
+}
+}); 
+
+
   
 /* 
 * <班级管理>班级添加与编辑模式详情绘制 
