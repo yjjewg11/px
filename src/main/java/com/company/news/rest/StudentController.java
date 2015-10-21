@@ -176,33 +176,42 @@ public class StudentController extends AbstractRESTController {
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		
-		
-		String groupuuid=request.getParameter("groupuuid");
-		String classuuid=request.getParameter("classuuid");
-		String name=request.getParameter("name");
-		String right=RightConstants.KD_student_allquery;
-		if(SessionListener.isPXLogin(request)){
-			right=RightConstants.PX_student_allquery;
-		}
-		  
-		if(StringUtils.isBlank(groupuuid)){ 
-			groupuuid=RightUtils.getRightGroups(right, request);
-		}else{
-			String groupUuids=RightUtils.getRightGroups(right, request);
-			if(groupUuids==null||!groupUuids.contains(groupuuid)){
-				responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
-				return "";
+		try {
+			
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			
+			
+			String groupuuid=request.getParameter("groupuuid");
+			String classuuid=request.getParameter("classuuid");
+			String name=request.getParameter("name");
+			String right=RightConstants.KD_student_allquery;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_student_allquery;
 			}
-		}
-		
-		
-		PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,name,pData);
-		model.addAttribute(RestConstants.Return_ResponseMessage_list,
-				pageQueryResult);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			  
+			if(StringUtils.isBlank(groupuuid)){ 
+				groupuuid=RightUtils.getRightGroups(right, request);
+			}else{
+				String groupUuids=RightUtils.getRightGroups(right, request);
+				if(groupUuids==null||!groupUuids.contains(groupuuid)){
+					responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
+					return "";
+				}
+			}
+			
+			
+			PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,name,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list,
+					pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+		} catch (Exception e) {
+			e.printStackTrace();
+				responseMessage
+				.setStatus(RestConstants.Return_ResponseMessage_failed);
+		responseMessage.setMessage("服务器异常:"+e.getMessage());
 		return "";
+		}
 	}
 
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)

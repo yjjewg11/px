@@ -32,6 +32,7 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.service.AnnouncementsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.ResponseMessage;
 
@@ -107,6 +108,9 @@ public class ShareController extends AbstractRESTController {
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";
 		}
+		@Autowired
+	     private AnnouncementsService announcementsService ;
+		 
 		/**
 		 * 获取精品文章列表
 		 * 
@@ -115,7 +119,7 @@ public class ShareController extends AbstractRESTController {
 		 * @return
 		 */
 		@RequestMapping(value = "/articleList", method = RequestMethod.GET)
-		public String list(ModelMap model, HttpServletRequest request) {
+		public String articleList(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
 			PaginationData pData = this.getPaginationDataByRequest(request);
@@ -128,7 +132,8 @@ public class ShareController extends AbstractRESTController {
 			hql += " order by create_time desc";
 			PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 					.findByPaginationToHqlNoTotal(hql, pData);
-
+			
+			announcementsService.warpVoList(pageQueryResult.getData(),null);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";

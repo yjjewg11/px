@@ -1,39 +1,34 @@
 package com.company.news.rest;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.export.util.ExcelUtil;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Student;
-import com.company.news.entity.UserTeacher;
-import com.company.news.jsonform.UserTeacherJsonform;
+import com.company.news.entity.PxTeacher;
+import com.company.news.jsonform.PxTeacherJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightUtils;
-import com.company.news.service.UserTeacherService;
+import com.company.news.service.PxTeacherService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/userteacher")
-public class UserTeacherController extends AbstractRESTController {
+@RequestMapping(value = "/pxteacher")
+public class PxTeacherController extends AbstractRESTController {
 
 	@Autowired
-	private UserTeacherService userTeacherService;
+	private PxTeacherService pxTeacherService;
 
 
 	/**
-	 * 教师注册
+	 * 对外公布授课老师介绍保存
 	 * 
 	 * @param model
 	 * @param request
@@ -46,21 +41,18 @@ public class UserTeacherController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
-		UserTeacherJsonform userTeacherJsonform;
+		PxTeacherJsonform userTeacherJsonform;
 		try {
-			userTeacherJsonform = (UserTeacherJsonform) this.bodyJsonToFormObject(
-					bodyJson, UserTeacherJsonform.class);
+			userTeacherJsonform = (PxTeacherJsonform) this.bodyJsonToFormObject(
+					bodyJson, PxTeacherJsonform.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-		// 默认注册未普通用户类型
-		userTeacherJsonform.setUseruuid(this.getUserInfoBySession(request).getUuid());
-
 		try {
-			boolean flag = userTeacherService
+			boolean flag = pxTeacherService
 					.save(userTeacherJsonform, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";
@@ -76,20 +68,27 @@ public class UserTeacherController extends AbstractRESTController {
 		return "";
 	}
 
-
-	/**
-	 * 获取用户信息
-	 * 
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public String get(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	public String get(@PathVariable String uuid, ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		UserTeacher ut= userTeacherService.get(this.getUserInfoBySession(request).getUuid());
-		model.addAttribute(RestConstants.Return_G_entity, ut);
+		PxTeacher s;
+		try {
+			s = pxTeacherService.get(uuid);
+			if(s==null){
+				responseMessage.setMessage("资料不存在.uuid="+uuid);
+				return "";
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity, s);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
@@ -121,7 +120,7 @@ public class UserTeacherController extends AbstractRESTController {
 				}
 			
 			}
-			PageQueryResult list = userTeacherService.listByPage(groupuuid,name,pData);
+			PageQueryResult list = pxTeacherService.queryByPage(groupuuid,name,pData);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -133,54 +132,29 @@ public class UserTeacherController extends AbstractRESTController {
 		}
 		return "";
 	}
-
-	/**
-	 * 获取机构信息
-	 * 
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/exportExcel", method = RequestMethod.POST)
-	public String exportStudentExcel(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		
-		try {
-		
-		String groupuuid=request.getParameter("groupuuid");
-		//导出的格式
-		String xlsname=request.getParameter("xlsname");
-		  
-		if(StringUtils.isBlank(groupuuid)){ 
-			groupuuid=this.getMyGroupUuidsBySession(request);
-		}else{
-			String groupUuids=this.getMyGroupUuidsBySession(request);
-			if(groupUuids==null||!groupUuids.contains(groupuuid)){
-				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+groupuuid);
-				return "";
-			}
-		}
-		if(StringUtils.isBlank(groupuuid)){ 
-			responseMessage.setMessage("幼儿园必选/The kindergarten required");
-			return "";
-		}
-		List<UserTeacher> list = userTeacherService.queryForOutExcel(
-				groupuuid);
-		if("huaMingCe".equals(xlsname)){
-			ExcelUtil.outXLS_TeacherhuaMingce(response, "教师花名册",list);
-			return null;
-		}else{
-			ExcelUtil.outXLS_yiliaobaoxian(response, "教师基本情况登记表",list);
-			return null;
-		}
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseMessage
-					.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage("服务器异常:"+e.getMessage());
-			return "";
-		}
-	}
+	
+//	
+//	/**
+//	 * 
+//	 * @param model
+//	 * @param request
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+//	public String updateDisable(ModelMap model, HttpServletRequest request) {
+//		// 返回消息体
+//		ResponseMessage responseMessage = RestUtil
+//				.addResponseMessageForModelMap(model);
+//
+//		boolean flag = pxTeacherService.updateStatus(
+//				request.getParameter("disable"), request.getParameter("uuids"),
+//				responseMessage);
+//		if (!flag)// 请求服务返回失败标示
+//			return "";
+//
+//		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+//		responseMessage.setMessage("操作成功");
+//		return "";
+//	}
+	
 }
