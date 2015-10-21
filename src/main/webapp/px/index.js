@@ -780,7 +780,13 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn_byRight() {
-	ajax_class_listByGroup_byRight();
+var  grouplist=Store.getGroupByRight("PX_class_m");
+if(!grouplist||grouplist.length==0){
+	alert("没有班级管理权限不能访问.");
+	return;
+}
+	groupuuid=grouplist[0].uuid;
+	ajax_Class_div_byRight(groupuuid);
 };
 
 

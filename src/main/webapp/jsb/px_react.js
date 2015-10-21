@@ -3705,11 +3705,9 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({display
 
 
 
-
-
 //——————————————————————————班级管理<绘制>—————————————————————————— 
 /*
- * <班级管理>一层界面绘制;
+ * <班级管理>建立舞台;
  * @add_class:添加班级；
  * @edit_class:编辑；
  * @graduate_class:毕业；
@@ -3717,7 +3715,42 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({display
  * @handleClick:事件处理在kd_service;
  * @uuids:点击框后班级的ID；编辑按钮需要；
  * */
-var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTable_byRight",
+var Announcements_Class_div = React.createClass({displayName: "Announcements_Class_div", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");		
+		var that=this;
+		var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+  var re_data=ajax_class_listByGroup_byRight(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),this.pageNo,callback);		  
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
 	handleClick: function(m) {
 		 if(this.props.handleClick){		 
 			 if(m=="add_class"){
@@ -3757,13 +3790,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			  var group_uuid=$("input[name='group_uuid']").val();
 			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
 	 },
- handleChange_checkbox_all:function(){
-	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
- },
- handleChange_selectgroup_uuid:function(val){
-	  ajax_class_listByGroup_byRight(val);
- },
- getDefaultProps: function() {
+	handleChange_checkbox_all:function(){
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+	},
+	handleChange_selectgroup_uuid:function(val){
+		  ajax_class_listByGroup_byRight(val);
+	},
+getDefaultProps: function() {
 	 var data = [
 	            {value: 'one', label: '学生基本表 '},
 	            {value: 'huaMingCe', label: '幼儿花名册'},
@@ -3775,78 +3808,87 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	    };
 	  },
 render: function() {
-  return (
-  React.createElement("div", null, 
-  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
-	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
-	  ), 
-	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-	  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
-	  )
-	  ), 
-	  React.createElement("hr", null), 
-	  React.createElement("div", null, "班级总数:"+this.props.events.length), 	
-    React.createElement(AMR_Table, React.__spread({},  this.props), 
-      React.createElement("thead", null, 
-        React.createElement("tr", null, 
-        	React.createElement("th", null, 
-          React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
-          ), 
-          React.createElement("th", null, "班级"), 
-          React.createElement("th", null, "管理员"), 
-          React.createElement("th", null, "上课老师"), 
-          React.createElement("th", null, "学校"), 
-          React.createElement("th", null, "相关联课程名"), 
-          React.createElement("th", null, "教学计划"), 
-          React.createElement("th", null, "状态"), 
-          React.createElement("th", null, "结业时间"), 
-          React.createElement("th", null, "创建时间")
-        )
-      ), 
-      React.createElement("tbody", null, 
-        this.props.events.map(function(event) {
-          return (React.createElement(Class_EventRow_byRight, {key: event.id, event: event}));
-        })
-      )
-    )
-    )
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		  
+		  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
+		  ), 
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", data: this.props.down_list})
+		  )
+		  ), 	
+		    
+		    React.createElement("div", {id: this.classnewsreply_list_div}
+			  ), 	  
+		  React.createElement("div", {className: "am-list-news-ft"}, 
+		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+		  )		  
+		)
+		
+			
   );
 }
 });
-  /*
-   * <班级管理>列表详细内容绘制; course_nmae
-   * @react_ajax_class_students_manage:调用在（我的班级）公共方法 编辑与添加
-   * */
-  var Class_EventRow_byRight = React.createClass({displayName: "Class_EventRow_byRight",
+
+
+/*
+* 班级管理表单详情内容绘制;
+* */
+var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTable_byRight", 
 	  render: function() {
-		var disable;
-	    var event = this.props.event;
+	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
-	      event.disabled ? 'am-disabled' : '';
-	    if(event.isdisable==1){
-	    	disable=React.createElement("td", null, "已结业")
-	    }else{
-	    	disable=React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid), amStyle: "success"}, "结业"))
-	    };
+  event.disabled ? 'am-disabled' : '';
 	    return (
-	      React.createElement("tr", {className: className}, 
-	      React.createElement("td", null, 
-	      React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
-	      ), 
-	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_class_students_manage_byRight.bind(this, event.uuid)}, event.name)), 
-	        React.createElement("td", null, event.headTeacher_name), 
-	        React.createElement("td", null, event.teacher_name), 
-	        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 	
-	        React.createElement("td", null, event.course_nmae), 
-	        React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid), amStyle: "success"}, "管理")), 
-            disable, 
-            React.createElement("td", null, event.disable_time), 
-            React.createElement("td", null, event.create_time)
-	      ) 
-	    );
-	   }
-	  });  
+	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
+	    		  React.createElement("hr", null), 
+	    		  React.createElement("div", null, "班级总数:"+event.length), 
+	    	    React.createElement("tr", null, 
+	            	React.createElement("th", null, 
+	              React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+	              ), 
+	              React.createElement("th", null, "班级"), 
+	              React.createElement("th", null, "管理员"), 
+	              React.createElement("th", null, "上课老师"), 
+	              React.createElement("th", null, "学校"), 
+	              React.createElement("th", null, "相关联课程名"), 
+	              React.createElement("th", null, "教学计划"), 
+	              React.createElement("th", null, "状态"), 
+	              React.createElement("th", null, "结业时间"), 
+	              React.createElement("th", null, "创建时间")
+	            ), 			 
+	    			  this.props.events.map(function(event) {
+	    				    if(event.isdisable==1){
+	    				    	disable=React.createElement("td", null, "已结业")
+	    				    }else{
+	    				    	disable=React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid), amStyle: "success"}, "结业"))
+	    				    };
+	    			      return (
+	    			    	      React.createElement("tr", {className: className}, 
+	    			    	      React.createElement("td", null, 
+	    			    	      React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+	    			    	      ), 
+	    			    	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_class_students_manage_byRight.bind(this, event.uuid)}, event.name)), 
+	    			    	        React.createElement("td", null, event.headTeacher_name), 
+	    			    	        React.createElement("td", null, event.teacher_name), 
+	    			    	        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 	
+	    			    	        React.createElement("td", null, event.course_title), 
+	    			    	        React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: px_ajax_teachingplan_byRight.bind(this,event.uuid,event.courseuuid), amStyle: "success"}, "管理")), 
+	    			                disable, 
+	    			                React.createElement("td", null, event.disable_time), 
+	    			                React.createElement("td", null, event.create_time)
+	    			    	      ) 
+	    			    		  )
+	    			         })	
+	    			  )		  
+	    	  );
+}
+}); 
+
+
   
 /* 
 * <班级管理>班级添加与编辑模式详情绘制 

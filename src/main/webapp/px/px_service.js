@@ -2342,46 +2342,55 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  }    
 
  
+
  
  
  
- 
- 
-//———————————————————————————————班级管理—————————————————————————     	  	  	  
+//———————————————————————————————班级管理—————————————————————————  
+	
+	
+ /*
+  * <班级管理>建立Div舞台 
+  *
+  * */	
+
+ function ajax_Class_div_byRight(groupuuid){
+	 	Queue.push(function(){ajax_Class_div_byRight(groupuuid);},"班级管理");
+	 var  grouplist=Store.getGroupByRight("PX_class_m");
+	 if(!grouplist||grouplist.length==0){
+	 	alert("没有班级管理权限不能访问.");
+	 	return;
+	 }
+		React.render(React.createElement(Announcements_Class_div,{
+			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+			groupuuid:groupuuid
+		}), document.getElementById('div_body'));  	
+	};	
+	
  /*
   * <班级管理>服务器请求 Store.getGroupByRight("PX_class_m")
   * @请求数据成功后执行Class_EventsTable方法绘制
   * */
- function ajax_class_listByGroup_byRight(groupuuid) {
- 	Queue.push(function(){ajax_class_listByGroup_byRight(groupuuid);},"班级管理");
- 	
- 	var  grouplist=Store.getGroupByRight("PX_class_m");
- 	if(!grouplist||grouplist.length==0){
- 		alert("没有班级管理权限不能访问.");
- 		return;
- 	}
- 	if(!groupuuid){
- 		groupuuid=grouplist[0].uuid;
- 		
- 	}
- 	
- 	$.AMUI.progress.start();
- 	var url = hostUrl + "rest/pxclass/list.json?groupuuid="+groupuuid;
+ function ajax_class_listByGroup_byRight(list_div,groupuuid,pageNo,callback) {
+ 	if(!pageNo)pageNo=1;
+  	$.AMUI.progress.start();
+ 	var url = hostUrl + "rest/pxclass/listStat.json";
  	$.ajax({
  		type : "GET",
  		url : url,
- 		data : "",
+ 		data : {groupuuid:groupuuid,pageNo:pageNo},
  		dataType : "json",
  		success : function(data) {
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success"){
  				React.render(React.createElement(Class_EventsTable_byRight, {
- 					group_uuid:groupuuid,
- 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
- 					events: data.list,
+ 					events: data.list.data,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById('div_body'));				
+ 					}), document.getElementById(list_div));	
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
  			}else{
  				alert(data.ResMsg.message);
  				G_resMsg_filter(data.ResMsg);
