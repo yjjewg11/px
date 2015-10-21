@@ -133,9 +133,11 @@ public class PxClassController extends AbstractRESTController {
 				return "";
 		}
 		String isdisable=request.getParameter("isdisable");
+		
+		String courseuuid=request.getParameter("courseuuid");
 		PaginationData pData = this.getPaginationDataByRequest(request);
 		
-		PageQueryResult list = pxClassService.listStat(groupuuid,isdisable,pData);
+		PageQueryResult list = pxClassService.listStat(groupuuid,isdisable,courseuuid,pData);
 
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

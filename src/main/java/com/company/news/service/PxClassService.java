@@ -237,17 +237,23 @@ public class PxClassService extends AbstractClassService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult listStat(String groupuuid,String isdisable,PaginationData pData) {
+	public PageQueryResult listStat(String groupuuid,String isdisable,String courseuuid,PaginationData pData) {
 		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
-		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan,t0.* from   (select * from px_pxclass ";
+		//学生数量.教学计划数量,课程名,(班级信息)
+		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan,t2.title as course_title,t0.* from   (select * from px_pxclass ";
+				
 				sql+= " where groupuuid ='"+groupuuid+"'";
 				if(StringUtils.isNotBlank(isdisable)){
 					sql+= " and isdisable ="+isdisable;
 				}
+				if(StringUtils.isNotBlank(courseuuid)){
+					sql+= " and courseuuid ="+courseuuid;
+				}
 				sql+= " limit "+pData.getStartIndex()+","+pData.getPageSize();
 				sql+= " )  t0 LEFT JOIN px_pxteachingplan t1 on t0.uuid=t1.classuuid ";
+				sql+= " left join px_pxcourse t2 on t0.courseuuid=t2.uuid  ";
 				sql+= " LEFT JOIN px_pxstudentpxclassrelation t3 on t0.uuid=t3.class_uuid  GROUP BY t0.uuid";
 				Query q = s.createSQLQuery(sql);
 				q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
