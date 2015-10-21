@@ -295,6 +295,9 @@ public class AnnouncementsService extends AbstractService {
 		try {
 			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 			o.setCount(countService.get(o.getUuid(), o.getType()));
+			if(StringUtils.isBlank(o.getUrl())){
+				o.setUrl(PxStringUtil.getArticleByUuid(o.getUuid()));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -305,7 +308,7 @@ public class AnnouncementsService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	private List<Announcements4Q> warpVoList(List<Announcements4Q> list,String cur_user_uuid){
+	public List<Announcements4Q> warpVoList(List<Announcements4Q> list,String cur_user_uuid){
 		for(Announcements4Q o:list){
 			warpVo(o,cur_user_uuid);
 		}
