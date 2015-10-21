@@ -1,38 +1,20 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.ClassNews;
-import com.company.news.entity.ClassNewsDianzan;
-import com.company.news.entity.Cookbook;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.ClassNewsDianzanJsonform;
-import com.company.news.jsonform.ClassNewsJsonform;
-import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.query.PageQueryResult;
-import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.ClassNewsDianzanService;
-import com.company.news.service.ClassNewsService;
-import com.company.news.service.ClassService;
-import com.company.news.service.GroupService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -80,7 +62,7 @@ public class DianzanController extends AbstractRESTController {
 		}
 
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		responseMessage.setMessage("修改成功");
+		responseMessage.setMessage("操作成功");
 		return "";
 	}
 
