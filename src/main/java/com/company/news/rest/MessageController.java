@@ -17,7 +17,7 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.entity.Group;
 import com.company.news.entity.Message;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -64,7 +64,7 @@ public class MessageController extends AbstractRESTController {
 		}
 		
 		//设置当前用户
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		messageJsonform.setSend_user(user.getName());
 		messageJsonform.setSend_useruuid(user.getUuid());
 		messageJsonform.setSend_userimg(user.getImg());
@@ -122,7 +122,7 @@ public class MessageController extends AbstractRESTController {
 //		}
 //		
 //		//设置当前用户
-//		User user=this.getUserInfoBySession(request);
+//		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 //		messageJsonform.setSend_user(user.getName());
 //		messageJsonform.setSend_useruuid(user.getUuid());
 //		
@@ -186,7 +186,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			PageQueryResult pageQueryResult= messageService.query(null,user.getUuid(),pData);
@@ -215,7 +215,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String parent_uuid=request.getParameter("uuid");
 			if(StringUtils.isBlank(parent_uuid)){
 				responseMessage.setMessage("参数必填:uuid");
@@ -249,7 +249,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String parent_uuid=request.getParameter("parent_uuid");
 			if(StringUtils.isBlank(parent_uuid)){
 				responseMessage.setMessage("参数必填:parent_uuid");
@@ -292,7 +292,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 //		String group_uuid=request.getParameter("group_uuid");
 //		if(StringUtils.isBlank(group_uuid)){
@@ -326,7 +326,7 @@ public class MessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 //		String group_uuid=request.getParameter("group_uuid");
 //		if(StringUtils.isBlank(group_uuid)){

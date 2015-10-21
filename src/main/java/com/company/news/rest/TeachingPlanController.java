@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Teachingplan;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.ClassService;
@@ -66,7 +66,7 @@ public class TeachingPlanController extends AbstractRESTController {
 				responseMessage.setMessage("classuuid不能为空！");
 				return "";
 			}
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			if (!classService.isheadteacher(user.getUuid(), teachingPlanJsonform.getClassuuid())) {
 				responseMessage.setMessage("不是当前班级班主任不能修改课程表");
 				return "";

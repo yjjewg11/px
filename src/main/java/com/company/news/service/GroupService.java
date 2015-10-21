@@ -302,6 +302,17 @@ public class GroupService extends AbstractService {
 
 		return listGroupuuids;
 	}
+	
+	/**
+	 * 查询指定用户的机构列表
+	 * @return
+	 */
+	public List getGroupuuidsByUseruuid(String uuid,String grouptype){
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Query q = s.createSQLQuery("select DISTINCT  t0.groupuuid from px_usergrouprelation t0,px_group t1 where  t0.groupuuid=t1.uuid and  t1.type="+grouptype+" and t0.useruuid='"+uuid+"' ");
+		return q.list();
+	}
+
 
 	/**
 	 * 查询指定用户的机构列表

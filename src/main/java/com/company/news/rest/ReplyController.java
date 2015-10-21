@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.commons.util.MyUbbUtils;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsReplyJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -51,7 +51,7 @@ public class ReplyController extends AbstractRESTController {
 		}
 		
 		//设置当前用户
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		classNewsReplyJsonform.setContent(MyUbbUtils.htmlToMyUbb(classNewsReplyJsonform.getContent()));
 		try {
 			boolean flag;
@@ -87,7 +87,7 @@ public class ReplyController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String user_uuid=null;
 			if(user!=null){
 				user_uuid=user.getUuid();

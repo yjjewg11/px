@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.company.news.SystemConstants;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.DoorUserJsonform;
 import com.company.news.jsonform.StudentBindJsonform;
@@ -474,7 +474,7 @@ public class StudentBindService extends AbstractService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public StudentBind update_apply(String studentuuid, ResponseMessage responseMessage,User user) throws Exception {
+	public StudentBind update_apply(String studentuuid, ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		
 		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class, studentuuid);
 		if (student == null){
@@ -514,7 +514,7 @@ public class StudentBindService extends AbstractService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean cancel_apply(String studentuuid,String userid, ResponseMessage responseMessage,User user) throws Exception {
+	public boolean cancel_apply(String studentuuid,String userid, ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		
 		//只允许删除没有绑定卡号的.
 		String hql="delete StudentBind where cardid is  null and studentuuid=? and userid=?";

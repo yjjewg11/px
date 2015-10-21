@@ -1,6 +1,5 @@
 package com.company.news.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import com.company.news.SystemConstants;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.query.PaginationData;
@@ -96,7 +96,7 @@ public class ClassService extends AbstractClassService {
 	 * @return
 	 */
 	public boolean update(ClassRegJsonform classRegJsonform,
-			ResponseMessage responseMessage, User user,
+			ResponseMessage responseMessage, SessionUserInfoInterface user,
 			HttpServletRequest request) throws Exception {
 		if (StringUtils.isBlank(classRegJsonform.getName())
 				|| classRegJsonform.getName().length() > 45) {
@@ -241,7 +241,7 @@ public class ClassService extends AbstractClassService {
 		
 		flag = RightUtils.hasRight(obj.getGroupuuid(),
 				right, request);
-		User user = SessionListener.getUserInfoBySession(request);
+		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
 		
 		if (!flag) {
 			flag = this.isheadteacher(user.getUuid(),

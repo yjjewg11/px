@@ -11,10 +11,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.news.entity.Accounts;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AccountsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -70,7 +69,7 @@ public class AccountsController extends AbstractRESTController {
 				return "";
 			}
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			accountsJsonform.setCreate_user(user.getName());
 			accountsJsonform.setCreate_useruuid(user.getUuid());
 		

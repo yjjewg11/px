@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.Favorites;
-import com.company.news.entity.Parent;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.FavoritesJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -39,7 +38,7 @@ public class FavoritesController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		//设置当前用户
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
@@ -85,7 +84,7 @@ public class FavoritesController extends AbstractRESTController {
 		}
 		
 		//设置当前用户
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		favoritesJsonform.setUser_uuid(user.getUuid());
 		
 		try {
@@ -123,7 +122,7 @@ public class FavoritesController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 			boolean flag = favoritesService.delete(user.getUuid(),request.getParameter("uuid"),request.getParameter("reluuid")
 					,responseMessage);

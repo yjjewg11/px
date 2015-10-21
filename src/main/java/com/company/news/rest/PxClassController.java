@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PxClass;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -59,7 +59,7 @@ public class PxClassController extends AbstractRESTController {
 			responseMessage.setMessage("班主任老师必填.");
 			return "";
 		}
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		//设置当前用户
 		pxClassRegJsonform.setCreate_user(user.getName());
 		pxClassRegJsonform.setCreate_useruuid(user.getUuid());

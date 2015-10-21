@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PClass;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -58,7 +57,7 @@ public class ClassController extends AbstractRESTController {
 			responseMessage.setMessage("班主任老师必填.");
 			return "";
 		}
-		User user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
 		//设置当前用户
 		classRegJsonform.setCreate_user(user.getName());
 		classRegJsonform.setCreate_useruuid(user.getUuid());

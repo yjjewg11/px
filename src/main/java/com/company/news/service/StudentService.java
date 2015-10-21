@@ -21,7 +21,7 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -376,7 +376,7 @@ public class StudentService extends AbstractStudentService {
 	}
 
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_OutExcel(String classuuid,
-			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
@@ -427,7 +427,7 @@ public class StudentService extends AbstractStudentService {
 	}
 	
 	public synchronized List<Object[]>  queryFor_doorrecord_apply_OutExcel(String classuuid,
-			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
@@ -450,7 +450,7 @@ public class StudentService extends AbstractStudentService {
 	}
 	
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_teacher_OutExcel(String classuuid,
-			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,p4.groupuuid,b2.uuid as binduuid ";
@@ -505,7 +505,7 @@ public class StudentService extends AbstractStudentService {
 	}
 	
 	public synchronized List<Object[]>  queryFor_doorrecord_apply_teacher_OutExcel(String classuuid,
-			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,b2.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,b2.groupuuid,b2.uuid as binduuid ";
@@ -529,7 +529,7 @@ public class StudentService extends AbstractStudentService {
 	
 
 	public synchronized List<Map>  queryFor_students_age_OutExcel(String classuuid,
-			String groupuuid,String uuid,String otherWhere,User user) throws Exception {
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select c3.name as class_name,s1.name,s1.sex,s1.birthday ";

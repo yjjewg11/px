@@ -1,7 +1,5 @@
 package com.company.news.rest;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -66,7 +64,7 @@ public class AnnouncementsController extends AbstractRESTController {
 		
 
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			announcementsJsonform.setCreate_user(user.getName());
 			announcementsJsonform.setCreate_useruuid(user.getUuid());
 			
@@ -325,7 +323,7 @@ public class AnnouncementsController extends AbstractRESTController {
 					return "";
 				}
 			}
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
 			model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));

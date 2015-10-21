@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.Logs;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.TimeUtils;
 import com.company.web.listener.SessionListener;
 
@@ -33,7 +33,7 @@ public class LogsIservice {
 				logs.setCreate_time(TimeUtils.getCurrentTimestamp());
 				logs.setModelname(model);
 				logs.setTarget(target);
-				User user = SessionListener.getUserInfoBySession(request);
+				SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
 				if (user != null) {
 					logs.setCreate_user(user.getName());
 					logs.setCreate_useruuid(user.getUuid());

@@ -2,7 +2,7 @@
 
 function ajax_getUserinfo(isInit) {
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=0";
 	$.ajax({
 		type : "GET",
 		url : url,

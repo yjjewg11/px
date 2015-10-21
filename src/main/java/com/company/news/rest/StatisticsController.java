@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StatisticsService;
 import com.company.news.vo.ResponseMessage;
@@ -37,7 +37,7 @@ public class StatisticsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 
 			if (type.toLowerCase().equals("uss"))// 用户性别统计
 			{

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.util.JSONUtils;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -20,7 +19,7 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.User;
-import com.company.news.json.NpmsDateMorpher;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PaginationData;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
@@ -34,27 +33,7 @@ public class AbstractRESTController   {
 		ConvertUtils.register(new SqlTimestampConverter(null), java.sql.Timestamp.class);
 	}
 	protected static final String error_bodyJsonToFormObject="请求协议不匹配";//JSON对象解析失败
-	  /**
-	   * 返回客户端用户信息放入Map
-	   * @param request
-	   * @return
-	   */
-	  protected void putUserInfoReturnToModel( ModelMap model,HttpServletRequest request){
-	    User user = SessionListener.getUserInfoBySession(request);
-	    // 返回用户信息
-	    UserInfoReturn userInfoReturn = new UserInfoReturn();
-	    try {
-	      BeanUtils.copyProperties(userInfoReturn, user);
-	      userInfoReturn.setImg(PxStringUtil.imgUrlByUuid(userInfoReturn.getImg()));
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	    }
-	    model.addAttribute(RestConstants.Return_UserInfo,userInfoReturn);
-	    HttpSession session =SessionListener.getSession(request);
-		model.put(RestConstants.Return_JSESSIONID, session.getId());
-	    // //List<groupuuid,rightname>
-	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
-	  }
+	  
 	  
 	  /**
 	   * 
@@ -75,10 +54,9 @@ public class AbstractRESTController   {
 	   * @param request
 	   * @return
 	   */
-	  protected User getUserInfoBySession(HttpServletRequest request){
-		    User user = SessionListener.getUserInfoBySession(request);
+	  protected SessionUserInfoInterface getUserInfoBySession(HttpServletRequest request){
 		    // 返回用户信息
-		    return user;
+		    return SessionListener.getUserInfoBySession(request);
 		  }
 	  /**
 	   * 获取我的幼儿园列表.

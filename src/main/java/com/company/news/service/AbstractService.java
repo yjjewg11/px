@@ -9,18 +9,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.company.news.SystemConstants;
-import com.company.news.commons.util.MyUbbUtils;
-import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
-import com.company.news.entity.ClassNewsReply;
 import com.company.news.entity.Logs;
-import com.company.news.entity.User;
-import com.company.news.query.PageQueryResult;
-import com.company.news.query.PaginationData;
-import com.company.news.rest.util.DBUtil;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -59,7 +51,7 @@ public abstract class AbstractService {
 			logs.setModelname(model);
 			logs.setTarget(target);
 			logs.setContext(context);
-			User user = SessionListener.getUserInfoBySession(request);
+			SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
 			if (user != null) {
 				logs.setCreate_user(user.getName());
 				logs.setCreate_useruuid(user.getUuid());

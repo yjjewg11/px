@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.entity.StudentBind;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
@@ -178,7 +178,7 @@ public class StudentBindController extends AbstractRESTController {
 				responseMessage.setMessage("请选择学生.");
 				return "";
 			}
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			StudentBind obj = studentBindService.update_apply(studentuuid,responseMessage,user);
 			if(obj==null){
 				
@@ -222,7 +222,7 @@ public class StudentBindController extends AbstractRESTController {
 				responseMessage.setMessage("请选择申请号.");
 				return "";
 			}
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			boolean obj = studentBindService.cancel_apply(studentuuid,userid,responseMessage,user);
 			if(!obj){
 				return "";

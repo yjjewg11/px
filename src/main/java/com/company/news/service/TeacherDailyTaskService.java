@@ -7,15 +7,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.entity.TeacherDailyTask;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -35,7 +33,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List addByAuto(User user,Timestamp date,HttpServletRequest request) throws Exception {
+	public List addByAuto(SessionUserInfoInterface user,Timestamp date,HttpServletRequest request) throws Exception {
 		List resultList=new ArrayList();
 		addByAuto_sub_classNews(resultList,user,date);
 		addByAuto_sub_Teachingplan(resultList,user,date);
@@ -50,7 +48,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List updateTaskStatus(List<TeacherDailyTask> resultList,User user,Timestamp date) throws Exception {
+	public List updateTaskStatus(List<TeacherDailyTask> resultList,SessionUserInfoInterface user,Timestamp date) throws Exception {
 		
 		for(TeacherDailyTask task:resultList){
 			if(task.getStatus()==null)continue;
@@ -98,7 +96,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	 List addByAuto_sub_Teachingplan(List resultList,User user,Timestamp date) throws Exception {
+	 List addByAuto_sub_Teachingplan(List resultList,SessionUserInfoInterface user,Timestamp date) throws Exception {
 		//班主任创建课程表
 		String rhql="from PClass where uuid in (select classuuid from UserClassRelation where type=? and useruuid=?)";
 		List<PClass> classNewsList=(List<PClass>)this.nSimpleHibernateDao.getHibernateTemplate().find(rhql,SystemConstants.class_usertype_head,user.getUuid());
@@ -128,7 +126,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	 List addByAuto_sub_classNews(List resultList,User user,Timestamp date) throws Exception {
+	 List addByAuto_sub_classNews(List resultList,SessionUserInfoInterface user,Timestamp date) throws Exception {
 		//创建班级互动任务
 		List<PClass> classNewsList=(List<PClass>)this.nSimpleHibernateDao.getHibernateTemplate().find("from PClass where uuid in (select classuuid from UserClassRelation where useruuid=?)",user.getUuid());
 		for(PClass obj:classNewsList){
@@ -177,7 +175,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	 List addByAuto_sub_CookbookPlan(List resultList,User user,Timestamp date,HttpServletRequest request) throws Exception {
+	 List addByAuto_sub_CookbookPlan(List resultList,SessionUserInfoInterface user,Timestamp date,HttpServletRequest request) throws Exception {
 		//创建班级互动任务
 		List<Group4Q> classNewsList=(List<Group4Q>)this.nSimpleHibernateDao.getHibernateTemplate().find("from Group4Q where uuid in (select groupuuid from UserGroupRelation where useruuid=?)",user.getUuid());
 		for(Group4Q obj:classNewsList){
@@ -228,7 +226,7 @@ public class TeacherDailyTaskService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List queryByDay(User user,Timestamp date) throws Exception {
+	public List queryByDay(SessionUserInfoInterface user,Timestamp date) throws Exception {
 		
 		String hql="from TeacherDailyTask where  user_uuid=? and create_time>=? and create_time<=?";
 		Date firstdate=TimeUtils.getDate00(date);

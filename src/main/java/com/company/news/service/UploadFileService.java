@@ -27,7 +27,7 @@ import com.company.news.commons.util.upload.DiskIUploadFile;
 import com.company.news.commons.util.upload.IUploadFile;
 import com.company.news.commons.util.upload.OssIUploadFile;
 import com.company.news.entity.UploadFile;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -66,7 +66,7 @@ public class UploadFileService extends AbstractService {
 	 */
 	public UploadFile uploadImg(String base64, Integer type,
 			ResponseMessage responseMessage, HttpServletRequest request,
-			User user) throws Exception {
+			SessionUserInfoInterface user) throws Exception {
 		String contentType = null;
 		if (StringUtils.isEmpty(base64)) {
 			responseMessage.setMessage("上传内容是空的！");
@@ -131,7 +131,7 @@ public class UploadFileService extends AbstractService {
 
 	public UploadFile uploadImg(int type, CommonsMultipartFile file,
 			ResponseMessage responseMessage, HttpServletRequest request,
-			User user) throws Exception {
+			SessionUserInfoInterface user) throws Exception {
 		String contentType = null;
 
 		// 过滤文件大小等
@@ -367,7 +367,7 @@ public class UploadFileService extends AbstractService {
 	 * @param fileExt
 	 * @return
 	 */
-	private static String getSecondPath(int t, User user) {
+	private static String getSecondPath(int t, SessionUserInfoInterface user) {
 		String secondPath = "";
 		if (SystemConstants.UploadFile_type_head.equals(t)) {
 			secondPath += "head/";
