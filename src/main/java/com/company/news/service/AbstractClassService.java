@@ -33,17 +33,19 @@ public class AbstractClassService extends AbstractService {
 			String headTeacher_name = "";
 			String teacher_name = "";
 			for (UserClassRelation u : l) {
+				UserForJsCache user = (UserForJsCache) CommonsCache
+						.get(u.getUseruuid(), UserForJsCache.class);
+				if (user != null) {
 					if (u.getType().intValue() == SystemConstants.class_usertype_head) {
 
 						headTeacher += (u.getUseruuid() + ",");
-						headTeacher_name += (((UserForJsCache) CommonsCache.get(
-								u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+						headTeacher_name += (user.getName() + ",");
 
 					} else {
 						teacher += (u.getUseruuid() + ",");
-						teacher_name += (((UserForJsCache) CommonsCache.get(
-								u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+						teacher_name += (user.getName() + ",");
 					}
+				}
 			}
 			o.setHeadTeacher(PxStringUtil.StringDecComma(headTeacher));
 			o.setTeacher(PxStringUtil.StringDecComma(teacher));

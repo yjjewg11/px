@@ -42,14 +42,15 @@ public class UserTeacherService extends AbstractService {
 			responseMessage.setMessage("Useruuid不能为空！");
 			return false;
 		}
-
 		UserTeacher ut = (UserTeacher) this.nSimpleHibernateDao.getObjectByAttribute(
 				UserTeacher.class, "useruuid",
 				userTeacherJsonform.getUseruuid());
 		
 		if(ut==null)
 			ut = new UserTeacher();
-
+		else{
+			userTeacherJsonform.setUuid(ut.getUuid());
+		}
 		BeanUtils.copyProperties(ut, userTeacherJsonform);
 
 		try {
