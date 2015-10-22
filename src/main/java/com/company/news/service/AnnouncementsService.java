@@ -58,7 +58,7 @@ public class AnnouncementsService extends AbstractService {
 		}
 		
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
-				||SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()){
+				||SystemConstants.common_type_PDHelp==announcementsJsonform.getType().intValue()){
 			announcementsJsonform.setGroupuuid(SystemConstants.Group_uuid_wjkj);
 			
 			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.AD_announce_m,request)){
@@ -165,7 +165,7 @@ public class AnnouncementsService extends AbstractService {
 		
 		boolean isRight=false;
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
-				||SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()){
+				||SystemConstants.common_type_PDHelp==announcementsJsonform.getType().intValue()){
 			announcementsJsonform.setGroupuuid(SystemConstants.Group_uuid_wjkj);
 			
 			if(!RightUtils.hasRight(announcementsJsonform.getGroupuuid(),RightConstants.AD_announce_m,request)){
@@ -384,7 +384,7 @@ public class AnnouncementsService extends AbstractService {
 		
 		
 		if(SystemConstants.common_type_KDHelp==obj.getType().intValue()
-				||SystemConstants.common_type_KDHelp==obj.getType().intValue()){
+				||SystemConstants.common_type_PDHelp==obj.getType().intValue()){
 			
 			if(!RightUtils.hasRight(obj.getGroupuuid(),RightConstants.AD_announce_m,request)){
 				responseMessage.setMessage(RightConstants.Return_msg);

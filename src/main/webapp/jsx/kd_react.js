@@ -977,14 +977,14 @@ var Announcements_mylist_div = React.createClass({
   *setShareContent(title,content,pathurl,httpurl)
   * */
 var Announcements_show = React.createClass({ 
-	//创建精品文章点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
-}, 
 	//收藏按钮方法;
-	favorites_push: function(title,type,reluuid,url) {
-		commons_ajax_favorites_push(title,type,reluuid,url)
-	}, 
+  favorites_push: function(title,type,reluuid,url) {
+	commons_ajax_favorites_push(title,type,reluuid,url)
+  },
+//公告编辑、删除点击按钮事件跳转kd_servise方法;
+ handleClick: function(m,groupuuid,uuid) {
+   btnclick_announce(m,groupuuid,uuid);
+  }, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -1016,6 +1016,65 @@ return (
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
 );
+}
+}); 
+
+/*
+ * (公告)创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
+var Announcements_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+          });
+	  },
+render: function() {
+	 var o = this.state;
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   <div className="am-form-group" id="div_classuuids" >
+		  		<input type="hidden" name="type"  value={o.type}/>
+		  		<label htmlFor="tel">班级通知:</label>
+		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		     </div>;
+	  } else {
+		  type_div =
+		  <input type="hidden" name="type"  value={o.type}/>
+	  }
+  return (
+  		<div>
+  		<div className="header">
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <form id="editAnnouncementsForm" method="post" className="am-form">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+  		<div className="am-form-group">
+  	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+        </div>   
+  		{type_div}
+  		  <label htmlFor="name">标题:</label>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+  		  <br/>
+  		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+ 		{G_get_upload_img_Div()} 
+  		  <button type="button"  onClick={ajax_announce_save}  className="am-btn am-btn-primary">提交</button>
+  		  </form>
+  	     </div>
+  	   </div>	   
+  	  </div>
+  );
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -7507,7 +7566,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	    			  		  {event.title} 
   	    			  		  </a>		
   	    			  		  <div className="am-list-item-text">
-  	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+  	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
   	    			  		  </div> 
   	    			  		    </li>
   	    			    		  )
