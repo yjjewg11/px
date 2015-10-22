@@ -967,14 +967,14 @@ var Announcements_mylist_div = React.createClass({
   *setShareContent(title,content,pathurl,httpurl)
   * */
 var Announcements_show = React.createClass({ 
-	//创建精品文章点击按钮事件跳转kd_servise方法;
+	//公告编辑与删除点击按钮事件跳转kd_servise方法;
   	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
-}, 
+  		btnclick_announce(m,groupuuid,uuid);
+      }, 
 	//收藏按钮方法;
 	favorites_push: function(title,type,reluuid,url) {
 		commons_ajax_favorites_push(title,type,reluuid,url)
-	}, 
+	  }, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -1006,6 +1006,64 @@ return (
 			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
 		   </div>
 );
+}
+}); 
+/*
+ * (公告)创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
+var Announcements_edit = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+          });
+	  },
+render: function() {
+	 var o = this.state;
+	  var type_div;
+	  if (announce_types==2) {
+		  type_div= 
+			   <div className="am-form-group" id="div_classuuids" >
+		  		<input type="hidden" name="type"  value={o.type}/>
+		  		<label htmlFor="tel">班级通知:</label>
+		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+  		     </div>;
+	  } else {
+		  type_div =
+		  <input type="hidden" name="type"  value={o.type}/>
+	  }
+  return (
+  		<div>
+  		<div className="header">
+  		  <hr />
+  		</div>
+  		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <form id="editAnnouncementsForm" method="post" className="am-form">
+  		<input type="hidden" name="uuid"  value={o.uuid}/>
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+  		<div className="am-form-group">
+  	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+        </div>   
+  		{type_div}
+  		  <label htmlFor="name">标题:</label>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+  		  <br/>
+  		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+ 		{G_get_upload_img_Div()} 
+  		  <button type="button"  onClick={ajax_announce_save}  className="am-btn am-btn-primary">提交</button>
+  		  </form>
+  	     </div>
+  	   </div>	   
+  	  </div>
+  );
 }
 }); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
@@ -2248,17 +2306,17 @@ var Announcements_mygoodlist_div = React.createClass({
 
 
 /*
-*公告点赞、评论、加载更多等详情绘制模板；
+*精品文章点赞、评论、加载更多等详情绘制模板；
 * */
 var Announcements_goodshow = React.createClass({ 
-	//创建精品文章点击按钮事件跳转kd_servise方法;
+	//精品文章删除、编辑点击按钮事件跳转kd_servise方法;
   	handleClick: function(m,groupuuid,uuid) {
 		  btnclick_good_announce(m,groupuuid,uuid);
-}, 
-//收藏按钮方法;
-favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-}, 
+  }, 
+    //收藏按钮方法;
+    favorites_push: function(title,type,reluuid,url) {
+	      commons_ajax_favorites_push(title,type,reluuid,url)
+  }, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -3108,7 +3166,6 @@ var Query_teacherDailyTask = React.createClass({
 var Group_EventsTable_byRight = React.createClass({
 	handleClick: function(m) {
 			btn_click_group_byRight(m,{type:G_group_type});
-
 	  },
   render: function() {
     return (
@@ -3432,7 +3489,7 @@ var Announcements_edit_byRight = React.createClass({
 render: function() {
 	 var o = this.state;
 	  var type_div;
-	  if (announce_types==2) {
+	  if (announce_types==2){
 		  type_div= 
 			   <div className="am-form-group" id="div_classuuids" >
 		  		<input type="hidden" name="type"  value={o.type}/>
@@ -7105,7 +7162,6 @@ var Class_EventsTable_byRight = React.createClass({
 		  },
 	render: function() {
 		var thit=this;
-		console.log("formdata",this.props.events);
 		 var addStudent=(<div></div>);
 		 var addText=(<div></div>);
 		 if(this.props.events.length!=0){
@@ -7118,6 +7174,7 @@ var Class_EventsTable_byRight = React.createClass({
 		     )
 		 }
 		 if(this.isAddStudentFlag){
+			 console.log("开关1");
 			 addStudent=(
 					 <Mycalss_student_edit formdata={this.props.formdata} />
 				  );
@@ -7140,7 +7197,8 @@ var Class_EventsTable_byRight = React.createClass({
 		  <button type="button"  onClick={this.addStudent_btn.bind(this)}  className="am-btn am-btn-primary">创建</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
-		  {addText}		 
+		  {addText}	
+	      {addStudent}
 		  </form>      
 		  
 		  
@@ -7458,7 +7516,7 @@ var Class_EventsTable_byRight = React.createClass({
    	    			  		  {event.title} 
    	    			  		  </a>		
    	    			  		  <div className="am-list-item-text">
-   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
    	    			  		  </div> 
    	    			  		    </li>
    	    			    		  )
@@ -7506,3 +7564,408 @@ var Class_EventsTable_byRight = React.createClass({
    }
    }); 
    //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
+   
+   
+ //——————————————————————————优惠活动<绘制>—————————————————————  
+
+   /* 
+    * <优惠活动>绘制舞台
+    * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+    * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+    * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+    * */
+   var Preferential_px_Div_list = React.createClass({ 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.load_more_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+   		if(!re_data)return;
+   		if(re_data.data.length<re_data.pageSize){
+   			$("#"+this.load_more_btn_id).hide();
+   		}else{
+   			$("#"+this.load_more_btn_id).show();
+   		}
+   		  
+   		  this.pageNo++;
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+	//创建精品文章点击按钮事件跳转kd_servise方法;
+  	handleClick: function(m,groupuuid) {
+		  btnclick_good_announce(m,Store.getCurGroup().uuid);
+},
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default"> 
+   		  
+		   <AMR_ButtonToolbar>
+		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} round>创建精品文章</AMR_Button>
+		    </AMR_ButtonToolbar>
+   		  
+   		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+   		  </div>
+   		  
+   		  <div className="am-list-news-ft">
+   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+   		  </div>  		  
+   		</div>   			
+     );
+   }
+   });
+
+     
+   /*
+    *<优惠活动>表格内容绘制
+    * 在kd_react；
+    * */
+   var Px_Preferentiallist_div = React.createClass({ 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+       event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+   	    	     <div className="am-list-news-bd">
+   	    	     <ul className="am-list">
+   	    			  {this.props.events.data.map(function(event) {
+   	    			      return (
+   	    			    		<li className="am-g am-list-item-dated">
+   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_Preferential_show.bind(this,event.uuid,event.title)}>
+   	    			  		  {event.title} 
+   	    			  		  </a>		
+   	    			  		  <div className="am-list-item-text">
+   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
+   	    			  		  </div> 
+   	    			  		    </li>
+   	    			    		  )
+   	    			         })}	
+   	    			  </ul> 
+   	    			  </div> 
+   	    	    </div>  		  
+   	    	  );
+   }
+   }); 
+
+
+
+   /*
+   *优惠活动点赞、评论、加载更多等详情绘制模板；
+   * */
+   var Announcements_Preferentialshow = React.createClass({ 
+   //收藏按钮方法;
+   favorites_push: function(title,type,reluuid,url) {
+   	commons_ajax_favorites_push(title,type,reluuid,url)
+   }, 
+   render: function() {
+   	  var o = this.props.data;
+   return (
+   		  <div>
+   		  <AMUIReact.Article
+   		    title={o.title}
+   		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+   			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+   		     </AMUIReact.Article>
+   		     <AMR_ButtonToolbar>
+   		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
+   		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} round>分享</AMR_Button>
+   		     </AMR_ButtonToolbar>	
+   		    	<footer className="am-comment-footer">
+   		    	<div className="am-comment-actions">
+   		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+   		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+   		    	</div>
+   		    	</footer>
+   		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+   			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+   		   </div>
+   );
+   }
+   }); 
+   //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   /* 
+    * <精品文章>绘制舞台
+    * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+    * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+    * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+    * */
+   var Announcements_good_Div_list = React.createClass({ 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.load_more_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
+   		if(!re_data)return;
+   		if(re_data.data.length<re_data.pageSize){
+   			$("#"+this.load_more_btn_id).hide();
+   		}else{
+   			$("#"+this.load_more_btn_id).show();
+   		}
+   		  
+   		  this.pageNo++;
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+   	//创建精品文章点击按钮事件跳转kd_servise方法;
+     	handleClick: function(m,groupuuid) {
+         btnclick_Preferential_announce(m,Store.getCurGroup().uuid);
+   },
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+
+   		   <AMR_ButtonToolbar>
+   		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} round>创建精品文章</AMR_Button>
+   		    </AMR_ButtonToolbar>
+   		    
+   		    
+   		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+   		  </div>
+   		  
+   		  <div className="am-list-news-ft">
+   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+   		  </div>
+   		  
+   		  
+   		  
+   		</div>
+   		  
+   			
+     );
+   }
+   });
+
+
+
+     
+     
+   /*
+    *<精品文章>表格内容绘制
+    * 在kd_react；
+    * */
+   var Announcements_mygoodlist_div = React.createClass({ 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+       event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+   	    	     <div className="am-list-news-bd">
+   	    	     <ul className="am-list">
+   	    			  {this.props.events.data.map(function(event) {
+   	    			      return (
+   	    			    		<li className="am-g am-list-item-dated">
+   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
+   	    			  		  {event.title} 
+   	    			  		  </a>		
+   	    			  		  <div className="am-list-item-text">
+   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+   	    			  		  </div> 
+   	    			  		    </li>
+   	    			    		  )
+   	    			         })}	
+   	    			  </ul> 
+   	    			  </div> 
+   	    	    </div>  		  
+   	    	  );
+   }
+   }); 
+
+
+
+   /*
+   *公告点赞、评论、加载更多等详情绘制模板；
+   * */
+   var Announcements_goodshow = React.createClass({ 
+   	//创建精品文章点击按钮事件跳转kd_servise方法;
+     	handleClick: function(m,groupuuid,uuid) {
+   		  btnclick_good_announce(m,groupuuid,uuid);
+   }, 
+   //收藏按钮方法;
+   favorites_push: function(title,type,reluuid,url) {
+   	commons_ajax_favorites_push(title,type,reluuid,url)
+   }, 
+   render: function() {
+   	  var o = this.props.data;
+   	  var edit_btn_className="G_Edit_hide";
+   	  if(this.props.canEdit){
+   		  edit_btn_className="G_Edit_show";
+   	  }
+   return (
+   		  <div>
+   		  <AMUIReact.Article
+   		    title={o.title}
+   		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+   			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+   		     </AMUIReact.Article>
+   		     <AMR_ButtonToolbar>
+   		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} round>编辑</AMR_Button>
+   		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} round>删除</AMR_Button> 
+   		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} round>收藏</AMR_Button> 
+   		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} round>分享</AMR_Button>
+   		     </AMR_ButtonToolbar>	
+   		    	<footer className="am-comment-footer">
+   		    	<div className="am-comment-actions">
+   		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+   		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+   		    	</div>
+   		    	</footer>
+   		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+   			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+   		   </div>
+   );
+   }
+   }); 
+
+
+    /*
+    * (精品文章)创建与编辑界面绘制；
+    * @w_img_upload_nocut:上传图片后发的请求刷新;
+    * */    
+   var Announcements_goodedit = React.createClass({ 
+   	 getInitialState: function() {
+   		    return this.props.formdata;
+   		  },
+   	 handleChange: function(event) {
+   		    this.setState($('#editAnnouncementsForm').serializeJson());
+   	  },
+   	  componentDidMount:function(){
+   	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+             w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                   editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+             });
+   	  },
+   render: function() {
+   	 var o = this.state;
+   	  var type_div;
+   	  if (announce_types==2) {
+   		  type_div= 
+   			   <div className="am-form-group" id="div_classuuids" >
+   		  		<input type="hidden" name="type"  value={o.type}/>
+   		  		<label htmlFor="tel">班级通知:</label>
+   		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
+     		     </div>;
+   	  } else {
+   		  type_div =
+   		  <input type="hidden" name="type"  value={o.type}/>
+   	  }
+     return (
+     		<div>
+     		<div className="header">
+     		  <hr />
+     		</div>
+     		<div className="am-g">
+     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+     		  <form id="editAnnouncementsForm" method="post" className="am-form">
+     		<input type="hidden" name="uuid"  value={o.uuid}/>
+     		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+     		<div className="am-form-group">
+     	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+           </div>   
+     		{type_div}
+     		  <label htmlFor="name">标题:</label>
+     		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+     		  <br/>
+     		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+    		{G_get_upload_img_Div()} 
+     		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
+     		  </form>
+     	     </div>
+     	   </div>	   
+     	  </div>
+     );
+   }
+   });    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+ 

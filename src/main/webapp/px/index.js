@@ -1,3 +1,4 @@
+var G_group_type=2;
 //我选我的班级后的全局记录
 var G_myclass_choose=null;
 //我选我的学校后的全局记录
@@ -82,14 +83,38 @@ function login_affter_init(){
 	if(G_user_hasRight("PX_group_m")){
 		menu_data.push(t_menu);
 	}
-	t_menu= {
-            "link": "##",
-            "fn":menu_course_byRight,
-            "title": "发布课程"
-          };
-		if(G_user_hasRight("PX_course_m")){
-			menu_data.push(t_menu);
-		}	
+	
+//————————————对外发布<权限>——————————	
+	t_menu={
+	            "link": "##",
+	            "title": "对外发布",
+	            "subMenu": [
+	                        {
+	                         "fn":menu_group_myList_fn_byRight,
+	                          "link": "##",
+	                          "title": "校园信息"
+	                       },
+	                        {
+	                        	  "fn":menu_course_byRight,
+	                        	  "link": "##",
+	                            "title": "发布课程"
+	                       },
+	                          {
+                              "link": "##",
+                             "fn":px_Preferential_list_fn,
+                             "title": "优惠活动"
+	                       },
+	                          {
+	                              //"fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
+	                              "link": "##",
+	                              "title": "老师资料"
+	                            }
+
+	                        ]                   
+		  };
+	if(G_user_hasRight("PX_course_m")){
+		menu_data.push(t_menu);
+	};		
 //————————————发布消息<权限>——————————	
 	t_menu={
 	            "link": "##",
@@ -463,7 +488,13 @@ function px_help_list_fn(){
   	ajax_px_help_div();
 }
 
-
+/*
+ * （标头）对外发布-优惠活动
+ */
+function px_Preferential_list_fn(){
+  	Queue.push(px_Preferential_list_fn,"优惠活动");
+  	ajax_px_Preferential_div();
+}
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）<班级互动>；
