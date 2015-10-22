@@ -5132,13 +5132,112 @@ render: function() {
   			  ) )
             })
           )
-        )
+        ), 
+
+React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1", id: "account_edit_prompt"}, 
+  React.createElement("div", {className: "am-modal-dialog"}, 
+    React.createElement("div", {className: "am-modal-hd", id: "account_edit_prompt_hd"}), 
+    React.createElement("div", {className: "am-modal-bd", id: "account_edit_prompt_bd"}, 
+      "来来来，吐槽点啥吧"
+    ), 
+    React.createElement("div", {className: "am-modal-footer"}, 
+      React.createElement("span", {className: "am-modal-btn", "data-am-modal-cancel": true}, "取消"), 
+      React.createElement("span", {className: "am-modal-btn", "data-am-modal-confirm": true}, "提交")
+    )
+  )
+)
+	
 
         )
       );
     }
     });
 
+
+ /*
+   * <收支记录>添加按钮详情绘制;
+   * @ajax_accounts_save：保存按钮调用
+   * @ajax_accounts_save：保存继续按钮
+   * 都在kd_service；
+   * */ 
+  var Accounts_edit_prompt = React.createClass({displayName: "Accounts_edit_prompt", 
+  	 getInitialState: function() {
+
+		  var o = this.props.formdata;	  
+  		if(!o.type){			
+  			o.type="3";
+  		};
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
+		}
+		
+			this.canSave=false;
+			 setTimeout(function(){$("#num").focus();},500);
+  		    return o;
+  	 },
+  	componentWillReceiveProps: function(nextProps) {
+		  this.setState(nextProps.formdata);
+		   setTimeout(function(){$("#num").focus();},500);
+		},
+	
+  	handleChange: function(v) {
+		this.canSave=false;
+		 	var formdata=$('#editAccountsForm').serializeJson();
+		    this.setState(formdata);
+	  },
+	
+  	 
+  render: function() {
+
+	 
+  	  var o = this.state;	  
+  		
+		if(!o.accounts_timeStr){
+			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
+		}
+	
+  		var one_classDiv= "am-u-sm-5 am-form-label";
+  		var two_classDiv= "am-u-sm-7";
+   return (
+   		React.createElement("div", null, 
+   		 React.createElement("div", {className: "header"}, 
+   		  React.createElement("hr", null)
+   		   ), 
+   		    React.createElement("form", {id: "editAccountsForm", method: "post", className: "am-form"}, 
+	   React.createElement("input", {type: "hidden", name: "groupuuid", value: o.groupuuid}), 
+	      React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
+	      React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+	    React.createElement("input", {type: "hidden", name: "studentuuid", value: o.studentuuid}), 
+	    React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
+   	         React.createElement("div", {className: "am-form-group"}, 	   
+ 	        
+		    React.createElement("label", {className: one_classDiv}, "收费日期:"), 
+		   React.createElement("div", {className: two_classDiv}, 
+	 	    React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", value: o.accounts_timeStr, onChange: this.handleChange})		   		
+	 		 ), 	
+		    React.createElement("label", {className: one_classDiv}, "内容:"), 
+		   React.createElement("div", {className: two_classDiv}, 
+   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"})
+ 		 ), 	
+		  React.createElement("label", {className: one_classDiv}, "金额:"), 
+	       React.createElement("div", {className: two_classDiv}, 
+	   	    React.createElement(PxInput, {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: ""})
+	 		 ), 	
+	   React.createElement("label", {className: one_classDiv}, "单据号:"), 
+	       React.createElement("div", {className: two_classDiv}, 
+	   	    React.createElement(PxInput, {type: "text", name: "invoice_num", id: "invoice_num", maxLength: "45", value: o.invoice_num, onChange: this.handleChange, placeholder: ""})
+	 		 ), 	
+			React.createElement("label", {className: one_classDiv}, "备注:"), 
+		   React.createElement("div", {className: two_classDiv}, 
+	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"})
+		 )
+		  
+   	       )
+   		    )
+   	         )
+   );
+  }
+  });
 
  var Account_edit_inner = React.createClass({displayName: "Account_edit_inner",
 	 getInitialState: function() {
@@ -5158,42 +5257,47 @@ render: function() {
   },
 	get_prompt_title:function(){
 		var s=this.state.studentname;//学生姓名			
-		s+=","+this.state.title+",请输入(必填):";
+		s+=","+this.state.title;
 		return s;
 	  },
-	 save_account: function() {
-		this.auto_addValue(this.state);
-		var sResult=prompt(this.get_prompt_title(), "");
-		if(!sResult)return;
-		this.state.num=sResult;
+	 save_account: function(callback) {
+		  var that=this;
+		var opt={
+				 formName: "editAccountsForm",
+				 url:hostUrl + "rest/accounts/save.json",
+				 cbFN:function(data){
+					G_msg_pop("保存成功!");
+					that.state.num=$("#num").val();
+					that.setState(that.state);
+					if(callback)callback();
+				 }
+		    };
+			G_ajax_abs_save(opt);
+	  },
 
-		var invoice_num=prompt("请输入单据号(非必填):", "");
-		this.state.invoice_num=invoice_num;
-
-		var formdata=this.state;
+	add_account:function(){
 		var that=this;
-
-		$.AMUI.progress.start();
-		$.ajax({
-				type : "POST",
-				url :hostUrl+"rest/accounts/save.json",
-				processData: false,
-				data:  JSON.stringify(formdata),				
-				dataType : "json",
-				contentType : false, 
-				success : function(data) {
-					$.AMUI.progress.done();
-					// 登陆成功直接进入主页
-					if (data.ResMsg.status == "success") {
-						G_msg_pop(data.ResMsg.message);
-						that.setState(that.state);
-					} else {
-						alert(data.ResMsg.message);
-					}
-				},
-				error : G_ajax_error_fn
-			});
+		this.auto_addValue(this.state);
+		this.state.description="";
+		$("#account_edit_prompt_hd").html(this.get_prompt_title());
+		  React.render(React.createElement(Accounts_edit_prompt,{
+		formdata:this.state
+		}), document.getElementById('account_edit_prompt_bd'));
 	
+		//var callback=function(callback1){	that.save_account(callback1);
+
+			  $('#account_edit_prompt').modal({
+				  relatedTarget: this,
+					  closeOnConfirm:false,
+				  onConfirm: function(e) {
+					  var model1=this;
+					  this.relatedTarget.save_account(function(){model1.close()})
+				//	callback(function(){model1.close()});
+				  },
+				  onCancel: function(e) {
+					
+				  }
+				});
 	  },
 	 render: function() {
 			if(this.state.num){
@@ -5202,7 +5306,7 @@ render: function() {
 				)
 			}
       return (
-			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.save_account.bind(this), round: true}, "添加")
+			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.add_account.bind(this), round: true}, "添加")
 		  )
 	 }
 
