@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PxTeachingplan;
-import com.company.news.entity.Teachingplan;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.PxClassService;
@@ -67,7 +66,7 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		
 		try {
 
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			if (!pxclassService.isheadteacher(user.getUuid(),
 					pxTeachingPlanJsonform.getClassuuid())) {
 				responseMessage.setMessage("不是当前班级班主任不能修改课程表");

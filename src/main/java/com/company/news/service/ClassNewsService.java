@@ -138,7 +138,7 @@ public class ClassNewsService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(User user ,String type,String classuuid, PaginationData pData) {
+	public PageQueryResult query(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
 		String hql = "from ClassNews where status=0";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -162,7 +162,7 @@ public class ClassNewsService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult getClassNewsByMy(User user ,String type,String classuuid, PaginationData pData) {
+	public PageQueryResult getClassNewsByMy(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
 		String hql = "from ClassNews where status=0 ";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -188,7 +188,7 @@ public class ClassNewsService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult getAllClassNews(User user ,String type,String classuuid, PaginationData pData) {
+	public PageQueryResult getAllClassNews(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
 		String hql = "from ClassNews where status=0 ";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -363,7 +363,7 @@ public class ClassNewsService extends AbstractService {
 		return this.model_name;
 	}
 
-	public PageQueryResult listClassNewsByAdmin(String groups,User user,
+	public PageQueryResult listClassNewsByAdmin(String groups,SessionUserInfoInterface user,
 			PaginationData pData) {
 		String hql = "from ClassNews where status=0 ";
 		if (StringUtils.isNotBlank(groups))
@@ -380,7 +380,7 @@ public class ClassNewsService extends AbstractService {
 		return pageQueryResult;
 	}
 
-	public PageQueryResult listClassNewsByMygroup(String groups, User user,
+	public PageQueryResult listClassNewsByMygroup(String groups, SessionUserInfoInterface user,
 			PaginationData pData) {
 		String hql = "from ClassNews where status=0 ";
 		if (StringUtils.isNotBlank(groups))
@@ -397,7 +397,7 @@ public class ClassNewsService extends AbstractService {
 		return pageQueryResult;
 	}
 	
-	public PageQueryResult getAllClassNewsByWJ( User user,
+	public PageQueryResult getAllClassNewsByWJ( SessionUserInfoInterface user,
 			PaginationData pData) {
 		String hql = "from ClassNews where status=0 ";
 		pData.setOrderFiled("create_time");
@@ -413,7 +413,7 @@ public class ClassNewsService extends AbstractService {
 
 	
 	public PieStatisticsVo getMyClassnewStatistics(ResponseMessage responseMessage,
-			User user) {
+			SessionUserInfoInterface user) {
 		PieStatisticsVo pvo=new PieStatisticsVo();
 		List<PieSeriesDataVo> list=new ArrayList();
 		

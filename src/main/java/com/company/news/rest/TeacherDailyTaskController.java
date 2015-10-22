@@ -12,7 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
@@ -39,7 +39,7 @@ public class TeacherDailyTaskController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			String dateStr=request.getParameter("dateStr");
 			Timestamp date=null;
 			if(StringUtils.isBlank(dateStr)){

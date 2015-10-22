@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
-import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.PxCourse;
 import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxCourseJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -36,7 +36,7 @@ public class PxCourseService extends AbstractService {
 	 * @return
 	 */
 	public boolean add(PxCourseJsonform pxCourseJsonform,
-			ResponseMessage responseMessage,User user) throws Exception {
+			ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
 		return false;
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))
@@ -62,7 +62,7 @@ public class PxCourseService extends AbstractService {
 	 * @return
 	 */
 	public boolean update(PxCourseJsonform pxCourseJsonform,
-			ResponseMessage responseMessage,User user) throws Exception {
+			ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
 			return false;
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.company.common.Operate;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.web.listener.SessionListener;
 
 
@@ -44,11 +44,10 @@ public class OperateFilter implements Filter {
 		operate.append("请求模块：" + httpServletRequest.getPathInfo() + "?"
 				+ httpServletRequest.getQueryString()+operate_outline);
 		
-		User user = SessionListener
+		SessionUserInfoInterface user = SessionListener
 				.getUserInfoBySession((HttpServletRequest) request);
 		if (user != null){
 			operate.append("操作人：" + user.getName()+operate_outline);
-			operate.append("手机:" + user.getTel()+operate_outline);
 			operate.append("uuid:" + user.getUuid()+operate_outline);
 		}
 		else

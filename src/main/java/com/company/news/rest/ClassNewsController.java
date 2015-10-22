@@ -63,7 +63,7 @@ public class ClassNewsController extends AbstractRESTController {
 		}
 
 		// 设置当前用户
-		User user = this.getUserInfoBySession(request);
+		SessionUserInfoInterface user = this.getUserInfoBySession(request);
 		//转换特定格式.
 		classNewsJsonform.setContent(MyUbbUtils.htmlToMyUbb(classNewsJsonform.getContent()));
 		classNewsJsonform.setImgs(PxStringUtil.imgUrlToUuid(classNewsJsonform.getImgs()));
@@ -103,7 +103,7 @@ public class ClassNewsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			PageQueryResult pageQueryResult = classNewsService.query(user,null,
 					request.getParameter("classuuid"), pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
@@ -134,7 +134,7 @@ public class ClassNewsController extends AbstractRESTController {
 		String type=request.getParameter("type");
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 			PageQueryResult pageQueryResult = classNewsService.getClassNewsByMy(user,type,
 					request.getParameter("classuuid"), pData);
@@ -171,7 +171,7 @@ public class ClassNewsController extends AbstractRESTController {
 			
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 			String groups=RightUtils.getRightGroups(right, request);
 			if(StringUtils.isBlank(groups)){
@@ -221,7 +221,7 @@ public class ClassNewsController extends AbstractRESTController {
 			}
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 
 			PageQueryResult pageQueryResult = classNewsService.getAllClassNewsByWJ(user, pData);
@@ -254,7 +254,7 @@ public class ClassNewsController extends AbstractRESTController {
 		try {
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			User user = this.getUserInfoBySession(request);
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 			String groups=this.getMyGroupUuidsBySession(request);
 			if(StringUtils.isBlank(groups)){
@@ -355,7 +355,7 @@ public class ClassNewsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 			try {
-				User user = this.getUserInfoBySession(request);
+				SessionUserInfoInterface user = this.getUserInfoBySession(request);
 
 				PieStatisticsVo vo = classNewsService.getMyClassnewStatistics(
 					responseMessage, user);

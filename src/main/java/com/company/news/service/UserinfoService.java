@@ -1,6 +1,5 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
-import com.company.news.jsonform.UserTeacherJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -483,7 +481,7 @@ public class UserinfoService extends AbstractService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public boolean isAdmin(UserLoginForm userLoginForm, User user, ResponseMessage responseMessage) {
+	public boolean isAdmin(UserLoginForm userLoginForm, SessionUserInfoInterface user, ResponseMessage responseMessage) {
 		boolean isAdmin = false;
 		// 后台管理员登录
 		if (SystemConstants.Group_type_0.toString().equals(userLoginForm.getGrouptype())) {
@@ -499,6 +497,31 @@ public class UserinfoService extends AbstractService {
 			isAdmin = true;
 
 		}
+		return isAdmin;
+	}
+	
+
+	/**
+	 * 
+	 * @param userLoginForm
+	 * @param user
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean isAdmin(String uuid) {
+		boolean isAdmin = false;
+		// 后台管理员登录
+			Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
+			List tmpList = s.createSQLQuery("select t1.uuid from px_usergrouprelation t0,px_group t1 where t1.type="
+					+ SystemConstants.Group_type_0 + " and t0.groupuuid=t1.uuid and t0.useruuid='" + uuid
+					+ "'").list();
+			if (tmpList.size() == 0) {
+				
+				return false;
+			}
+
+			isAdmin = true;
+
 		return isAdmin;
 	}
 
@@ -807,7 +830,7 @@ public class UserinfoService extends AbstractService {
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate("delete from RoleUserRelation where groupuuid=? and roleuuid =? ", groupuuid, roleuuid);
 		this.logger.info("delete from RoleUserRelation count=" + tmpCout);
-		User user = SessionListener.getUserInfoBySession(request);
+		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
 		if (StringUtils.isNotBlank(useruuids)) {
 			String[] str = PxStringUtil.StringDecComma(useruuids).split(",");
 			for (String s : str) {
@@ -905,6 +928,16 @@ public class UserinfoService extends AbstractService {
 	 */
 	public User4Q get(String uuid) throws Exception {
 		return (User4Q) this.nSimpleHibernateDao.getObjectById(User4Q.class, uuid);
+
+	}
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 * @throws Exception
+	 */
+	public User getUser(String uuid) throws Exception {
+		return (User) this.nSimpleHibernateDao.getObjectById(User.class, uuid);
 
 	}
 

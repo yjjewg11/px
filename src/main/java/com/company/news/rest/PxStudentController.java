@@ -18,7 +18,7 @@ import com.company.export.util.ExcelUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxStudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -274,7 +274,7 @@ public class PxStudentController extends AbstractRESTController {
 			String student_name=request.getParameter("student_name");
 			String class_uuid=request.getParameter("class_uuid");
 			
-			User user =this.getUserInfoBySession(request);
+			SessionUserInfoInterface user =this.getUserInfoBySession(request);
 			List listClassuuids=null;
 			if(StringUtils.isBlank(class_uuid)){
 				listClassuuids=pxClassService.getTeacherRelClassUuids(user.getUuid());

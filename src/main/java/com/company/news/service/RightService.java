@@ -5,19 +5,13 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
-import com.company.news.ProjectProperties;
-import com.company.news.SystemConstants;
 import com.company.news.entity.Right;
-import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
-import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.RightJsonform;
-import com.company.news.rest.AccountsController;
-import com.company.news.right.RightConstants;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -33,7 +27,7 @@ public class RightService extends AbstractService {
 	 * @param user
 	 * @return
 	 */
-	public List getRightListByUser(User user){
+	public List getRightListByUser(SessionUserInfoInterface user){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession();
 
@@ -60,7 +54,7 @@ public class RightService extends AbstractService {
 	 * @param user
 	 * @return
 	 */
-	public List getRightListByUser(User user,String grouptype){
+	public List getRightListByUser(SessionUserInfoInterface user,String grouptype){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession();
 

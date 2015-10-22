@@ -140,7 +140,7 @@ function menu_group_change_fn(o){
  * */
 function ajax_getUserinfo(isInit) {
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=2";
 	$.ajax({
 		type : "GET",
 		url : url,

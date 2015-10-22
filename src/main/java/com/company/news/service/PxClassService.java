@@ -18,9 +18,9 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
-import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserForJsCache;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -102,7 +102,7 @@ public class PxClassService extends AbstractClassService {
 	 * @return
 	 */
 	public boolean update(PxClassRegJsonform pxclassRegJsonform,
-			ResponseMessage responseMessage, User user,
+			ResponseMessage responseMessage, SessionUserInfoInterface user,
 			HttpServletRequest request) throws Exception {
 		if (this.validateRequireAndLengthByRegJsonform(
 				pxclassRegJsonform.getName(), 45, "班级名", responseMessage)) {

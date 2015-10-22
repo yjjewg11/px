@@ -542,7 +542,7 @@ function store_ajax_class_listByGroup(groupuuid){
 
 function store_ajax_getUserinfo() {
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/userinfo/getUserinfo.json";
+	var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=2";
 	$.ajax({
 		type : "GET",
 		url : url,

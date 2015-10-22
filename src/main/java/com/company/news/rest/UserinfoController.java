@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.form.UserLoginForm;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -36,6 +38,7 @@ import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
+import com.company.web.session.UserOfSession;
 
 @Controller
 @RequestMapping(value = "/userinfo")
@@ -57,7 +60,7 @@ public class UserinfoController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		
 		
-	
+		//登录验证.验证失败则返回.
 		try {
 			User user;
 			try {
@@ -73,7 +76,7 @@ public class UserinfoController extends AbstractRESTController {
 			}
 			
 			
-			
+			//培训机构登录走培训流程.
 			if(SystemConstants.Group_type_2.toString().equals(userLoginForm.getGrouptype())){
 				 pxlogin( user,userLoginForm, model,request);
 				 return "";
@@ -87,14 +90,13 @@ public class UserinfoController extends AbstractRESTController {
 			boolean isCurUser=false;
 			//判断是否是当前登录用户.
 			if (session != null) {
-				User userInfo = (User) session
+				SessionUserInfoInterface userInfo = (SessionUserInfoInterface) session
 						.getAttribute(RestConstants.Session_UserInfo);
 				if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
 					isCurUser=true;
 				}
 			}
-			if(isCurUser){
-				// 当前用户,在线直接返回当前用户.
+			if(isCurUser){	// 当前用户,在线直接返回当前用户.
 					this.logger.info("userInfo is online,loginName=" + userLoginForm.getLoginname());
 					// 返回用户信息
 					UserInfoReturn userInfoReturn = new UserInfoReturn();
@@ -103,43 +105,36 @@ public class UserinfoController extends AbstractRESTController {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				model.put(RestConstants.Return_JSESSIONID, session.getId());
 				model.put(RestConstants.Return_UserInfo, userInfoReturn);	
 			}else{
 
 				session = request.getSession(true);
 				// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 				SessionListener.putSessionByJSESSIONID(session);
-				session.setAttribute(RestConstants.Session_UserInfo, user);
+				
 				// 返回客户端用户信息放入Map
 				// putUserInfoReturnToModel(model, request);
 	
 				//取相关权限
-				model.put(RestConstants.Return_JSESSIONID, session.getId());
+			
 				 //List<groupuuid,rightname>
-				List rightList=rightService.getRightListByUser(user);
+				
 				//String rights_str=StringOperationUtil.specialFormateUsercode(StringUtils.join(rightList, ","));
 				//取相关机构
-				List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid());
-				//老数据兼容,如果没有关联默认学校,则关联.
-				if(listGroupuuids==null||!listGroupuuids.contains(SystemConstants.Group_uuid_wjd)){
-					if(!userinfoService.addDefaultKDGroup(user.getUuid(), responseMessage)){
-						responseMessage.setMessage("绑定云代理失败");
-						return "";
-					}
-					listGroupuuids.add(SystemConstants.Group_uuid_wjd);
-				}
-				session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
-				session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+				
 			}
 			
-			//设置当前用户是否管理员
-			boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
-			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-
-			
+			UserOfSession userOfSession = new UserOfSession();
+			try {
+				BeanUtils.copyProperties(userOfSession, user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//设置session数据
+			this.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			// 返回用户信息
-			this.putUserInfoReturnToModel(model, request);
+			this.putUserInfoReturnToModel(user,model, request);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,6 +146,36 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setMessage("登陆成功");
 		return "";
 	}
+	
+	 /**
+	   * 返回客户端用户信息放入Map
+	   * @param request
+	   * @return
+	 * @throws Exception 
+	   */
+	  protected void putSession(String grouptype, HttpSession session,SessionUserInfoInterface user,HttpServletRequest request) throws Exception{
+		  if(StringUtils.isBlank(grouptype))grouptype=SystemConstants.Group_type_1.toString();
+		  List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid(),grouptype);
+			//老数据兼容,如果没有关联默认学校,则关联.
+			if(listGroupuuids==null||listGroupuuids.isEmpty()){
+				userinfoService.addDefaultKDGroup(user.getUuid(), null);
+				listGroupuuids.add(SystemConstants.Group_uuid_wjd);
+			}
+			//1.session添加-我的关联学校.
+			session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+			//2.session添加-我的权限
+			List rightList=rightService.getRightListByUser(user,grouptype);
+			session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
+			//3.session添加-用户信息
+			session.setAttribute(RestConstants.Session_UserInfo, user);
+			//4.session添加-用户类型.
+			session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
+			//5.session添加-设置当前用户是否管理员
+			if (SystemConstants.Group_type_0.toString().equals(grouptype)) {
+				boolean isAdmin=userinfoService.isAdmin(user.getUuid());
+				session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
+			}
+	  }
 	//培训机构登录
 	public String pxlogin(User user,UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request) {
@@ -179,7 +204,7 @@ public class UserinfoController extends AbstractRESTController {
 			boolean isCurUser=false;
 			//判断是否是当前登录用户.
 			if (session != null) {
-				User userInfo = (User) session
+				SessionUserInfoInterface userInfo = (SessionUserInfoInterface) session
 						.getAttribute(RestConstants.Session_UserInfo);
 				if (userInfo != null && userLoginForm.getLoginname().equals(userInfo.getLoginname())) {
 					isCurUser=true;
@@ -195,14 +220,12 @@ public class UserinfoController extends AbstractRESTController {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				model.put(RestConstants.Return_JSESSIONID, session.getId());
 				model.put(RestConstants.Return_UserInfo, userInfoReturn);	
 			}else{
 
 				session = request.getSession(true);
 				// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 				SessionListener.putSessionByJSESSIONID(session);
-				session.setAttribute(RestConstants.Session_UserInfo, user);
 				// 返回客户端用户信息放入Map
 				// putUserInfoReturnToModel(model, request);
 	
@@ -221,18 +244,23 @@ public class UserinfoController extends AbstractRESTController {
 //					}
 //					listGroupuuids.add(SystemConstants.Group_uuid_wjd);
 //				}
-				session.setAttribute(RestConstants.LOGIN_TYPE, userLoginForm.getGrouptype());
-				session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
-				session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
+				
 			}
-			
+			model.put(RestConstants.Return_JSESSIONID, session.getId());
 			//设置当前用户是否管理员
 //			boolean isAdmin=userinfoService.isAdmin(userLoginForm, this.getUserInfoBySession(request), responseMessage);
 //			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-
+			UserOfSession userOfSession = new UserOfSession();
+			try {
+				BeanUtils.copyProperties(userOfSession, user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//设置session数据
+			this.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			
 			// 返回用户信息
-			this.putUserInfoReturnToModel(model, request);
+			this.putUserInfoReturnToModel(user,model, request);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -332,9 +360,18 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
-
+			User user=this.userinfoService.getUser(this.getUserInfoBySession(request).getUuid());
+			
+			String grouptype = request.getParameter("grouptype");
+			
+			if(StringUtils.isNotBlank(grouptype)){
+				String loginType=SessionListener.getLoginTypeBySession(request);
+				if(!grouptype.equals(loginType)){//不等,表示切换 到其他模块.重新家长session的属性.
+					this.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+				}
+			}
 			// 返回用户信息
-			this.putUserInfoReturnToModel(model, request);
+			this.putUserInfoReturnToModel(user,model, request);
 			
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			responseMessage.setMessage("登陆成功");
@@ -744,7 +781,13 @@ public class UserinfoController extends AbstractRESTController {
 			
 			//更新session中用户信息
 			HttpSession session=SessionListener.getSession(request);
-			session.setAttribute(RestConstants.Session_UserInfo, user);
+			UserOfSession userOfSession = new UserOfSession();
+			try {
+				BeanUtils.copyProperties(userOfSession, user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -757,6 +800,27 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setMessage("修改成功");
 		return "";
 	}
+	
+	/**
+	   * 返回客户端用户信息放入Map
+	   * @param request
+	   * @return
+	   */
+	  protected void putUserInfoReturnToModel( User  user,ModelMap model,HttpServletRequest request){
+	    // 返回用户信息
+	    UserInfoReturn userInfoReturn = new UserInfoReturn();
+	    try {
+	      BeanUtils.copyProperties(userInfoReturn, user);
+	      userInfoReturn.setImg(PxStringUtil.imgUrlByUuid(userInfoReturn.getImg()));
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	    model.addAttribute(RestConstants.Return_UserInfo,userInfoReturn);
+	    HttpSession session =SessionListener.getSession(request);
+		model.put(RestConstants.Return_JSESSIONID, session.getId());
+	    // //List<groupuuid,rightname>
+	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
+	  }
 	
 	/**
 	 * 修改
@@ -924,7 +988,7 @@ public class UserinfoController extends AbstractRESTController {
 				return "";
 			}
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 			boolean noRight=true;
 			String mygroup=this.getMyGroupUuidsBySession(request);

@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.entity.PushMessage;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
-import com.company.news.right.RightUtils;
 import com.company.news.service.PushMessageService;
 import com.company.news.vo.ResponseMessage;
 
@@ -44,7 +43,7 @@ public class PushMessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			PageQueryResult pageQueryResult= pushMessageService.query(request.getParameter("type"),user.getUuid(),pData);
@@ -73,7 +72,7 @@ public class PushMessageController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			//设置当前用户
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String type=request.getParameter("type");
 			String create_timeStr=request.getParameter("create_time");
 			Timestamp create_time=null; 

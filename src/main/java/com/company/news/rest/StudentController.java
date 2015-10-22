@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.export.util.ExcelUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
-import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.StudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -284,42 +284,42 @@ public class StudentController extends AbstractRESTController {
 	
 		//门禁批量制卡用
 		if("doorrecord".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.update_and_queryFor_doorrecord_OutExcel(
 					classuuid,
 					groupuuid,uuid,null,user);
 			ExcelUtil.outXLS_doorrecord(response, "幼儿园接送卡表",list);
 			return null;
 		}else if("doorrecord_apply".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.queryFor_doorrecord_apply_OutExcel(
 					classuuid,
 					groupuuid,uuid,xlsname,user);
 			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
 			return null;
 		}else if("doorrecord_teacher".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.update_and_queryFor_doorrecord_teacher_OutExcel(
 					classuuid,
 					groupuuid,uuid,null,user);
 			ExcelUtil.outXLS_doorrecord(response, "老师门禁卡表",list);
 			return null;
 		}else if("doorrecord_apply_teacher".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.queryFor_doorrecord_apply_teacher_OutExcel(
 					classuuid,
 					groupuuid,uuid,xlsname,user);
 			ExcelUtil.outXLS_doorrecord(response, "老师门禁卡申请表",list);
 			return null;
 		}else if("doorrecord_all".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Object[]> list = studentService.queryFor_doorrecord_apply_OutExcel(
 					classuuid,
 					groupuuid,uuid,xlsname,user);
 			ExcelUtil.outXLS_doorrecord(response, "接送卡申请表",list);
 			return null;
 		}else if("students_age".equals(xlsname)){
-			User user=this.getUserInfoBySession(request);
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			List<Map> list = studentService.queryFor_students_age_OutExcel(
 					classuuid,
 					groupuuid,uuid,xlsname,user);
@@ -372,7 +372,7 @@ public class StudentController extends AbstractRESTController {
 			String student_name=request.getParameter("student_name");
 			String class_uuid=request.getParameter("class_uuid");
 			
-			User user =this.getUserInfoBySession(request);
+			SessionUserInfoInterface user =this.getUserInfoBySession(request);
 			List listClassuuids=null;
 			if(StringUtils.isBlank(class_uuid)){
 				listClassuuids=pxClassService.getTeacherRelClassUuids(user.getUuid());
