@@ -93,6 +93,15 @@ public class StatisticsController extends AbstractRESTController {
 					model.addAttribute(RestConstants.Return_G_entity, vo);
 				else
 					return "";
+			}else if (type.toLowerCase().equals("tjs"))// 教师评价统计
+			{
+				PieStatisticsVo vo = statisticsService.getTjsBygroup(
+						responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
