@@ -27,9 +27,49 @@ public class ParentController extends AbstractRESTController {
 	private ParentService parentService;
 	
 
-	
+
 	/**
 	 * 获取用户信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listByPageWjkj", method = RequestMethod.GET)
+	public String listByPageWjkj(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_parent_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+//			pData.setPageSize(20);
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult list =null;
+			if(StringUtils.isBlank(groupuuid)){
+				list = parentService.listByPage(name,pData); 
+			}else{
+				list = parentService.listByPage(name,groupuuid,pData);
+			}
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	/**
+	 * 获取用户信息(幼儿园权限)
 	 * 
 	 * @param model
 	 * @param request
@@ -41,26 +81,23 @@ public class ParentController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		try {
 			
-			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_parent_m,request)){
+			
+			
+//			pData.setPageSize(20);
+			String groupuuid = request.getParameter("groupuuid");
+			String name = request.getParameter("name");
+			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+					
+				responseMessage.setMessage("请选择学校");
+				return "";
+			}
+			if(!RightUtils.hasRight(groupuuid,RightConstants.KD_student_m,request)){
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return "";
 			}
 			PaginationData pData = this.getPaginationDataByRequest(request);
-//			pData.setPageSize(20);
-//			String groupuuid = request.getParameter("groupuuid");
-			String name = request.getParameter("name");
-//			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
-//				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
-//					groupuuid=this.getMyGroupUuidsBySession(request);
-//					if (StringUtils.isEmpty(groupuuid)){
-//						responseMessage.setMessage("非法用户,没有关联的学校!");
-//						return "";
-//					}
-//				}
-//			
-//			}
-			PageQueryResult list = parentService.listByPage(name,pData);
-
+			PageQueryResult list = parentService.listByPage(name,groupuuid,pData);
+			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

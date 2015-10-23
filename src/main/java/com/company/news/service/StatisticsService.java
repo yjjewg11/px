@@ -43,6 +43,8 @@ public class StatisticsService extends AbstractService {
 	private ClassService classService;
 	@Autowired
 	private ClassNewsService classNewsService;
+	@Autowired
+	private TeachingJudgeService teachingJudgeService;
 
 	/**
 	 * 获取用户性别统计 user sex Statistics
@@ -419,6 +421,109 @@ public class StatisticsService extends AbstractService {
 
 		vo.setSeries_data(plist);
 		logger.debug("end 互动发帖数统计");
+		return vo;
+
+	}
+
+	/**
+	 * 获取教师评价统计
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getTjsBygroup(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		// 验证group合法性
+		if (!validateGroup(group_uuid, responseMessage))
+			return null;
+
+		if (StringUtils.isBlank(begDateStr)) {
+			return null;
+		}
+
+		if (StringUtils.isBlank(endDateStr)) {
+			return null;
+		}
+
+		logger.debug("begain 教师评价统计");
+		// 获取机构的所有用户
+		List<User4Q> userlist = userinfoService.getUserByGroupuuid(group_uuid,
+				null);
+
+		List<Object[]> list = teachingJudgeService
+				.getTeachingJudgeCountByGroup(group_uuid, begDateStr,
+						endDateStr);
+		logger.debug("TeachingJudge.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		vo.setTitle_text(g.getCompany_name() + " 教师评价统计");
+		vo.setTitle_subtext("总计 " + list.size() + " 条");
+		// vo.setLegend_data("['班级互动热门TOP10']");
+		List legend_data = new ArrayList();
+		legend_data.add("非常满意");
+		legend_data.add("满意");
+		legend_data.add("一般");
+		vo.setLegend_data(legend_data);
+
+		String axis_data = "";
+		for (User4Q u : userlist) {
+			axis_data += ("'" + u.getName() + "',");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		if (list != null && list.size() > 0) {
+			Map type1 = new HashMap();
+			Map type2 = new HashMap();
+			Map type3 = new HashMap();
+
+			for (Object[] o : list) {
+				if (o[1] != null) {
+					if (o[1].toString().equals("1"))
+						type1.put(o[0], o[2]);
+					else if (o[1].toString().equals("2"))
+						type2.put(o[0], o[2]);
+					else if (o[1].toString().equals("3"))
+						type3.put(o[0], o[2]);
+				}
+			}
+
+			String ps_1_data = "";
+			String ps_2_data = "";
+			String ps_3_data = "";
+			for (User4Q u : userlist) {
+				ps_1_data += ((type1.get(u.getUuid()) == null ? 0 : type1.get(u
+						.getUuid())) + ",");
+				ps_2_data += ((type2.get(u.getUuid()) == null ? 0 : type2.get(u
+						.getUuid())) + ",");
+				ps_3_data += ((type3.get(u.getUuid()) == null ? 0 : type3.get(u
+						.getUuid())) + ",");
+			}
+
+			PieSeriesDataVo sdvo_1 = new PieSeriesDataVo();
+			sdvo_1.setName("非常满意");
+			sdvo_1.setData("[" + PxStringUtils.StringDecComma(ps_3_data) + "]");
+
+			plist.add(sdvo_1);
+
+			PieSeriesDataVo sdvo_2 = new PieSeriesDataVo();
+			sdvo_2.setName("满意");
+			sdvo_2.setData("[" + PxStringUtils.StringDecComma(ps_2_data) + "]");
+
+			plist.add(sdvo_2);
+
+			PieSeriesDataVo sdvo_3 = new PieSeriesDataVo();
+			sdvo_3.setName("一般");
+			sdvo_3.setData("[" + PxStringUtils.StringDecComma(ps_1_data) + "]");
+
+			plist.add(sdvo_3);
+		}
+
+		vo.setSeries_data(plist);
+		logger.debug("end 教师评价统计");
 		return vo;
 
 	}
