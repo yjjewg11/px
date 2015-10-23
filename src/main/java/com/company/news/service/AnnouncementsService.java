@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,7 +107,17 @@ public class AnnouncementsService extends AbstractService {
 		Announcements announcements = new Announcements();
 
 		BeanUtils.copyProperties(announcements, announcementsJsonform);
+		if(StringUtils.isNotBlank(announcementsJsonform.getStart_timeStr())){
+			announcements.setStart_time(TimeUtils.string2Timestamp(null,
+				announcementsJsonform.getStart_timeStr()));
+		}
+		
+		if(StringUtils.isNotBlank(announcementsJsonform.getEnd_timeStr())){
+			announcements.setEnd_time(TimeUtils.string2Timestamp(null,
+				announcementsJsonform.getEnd_timeStr()));
+		}
 
+		
 		announcements.setCreate_time(TimeUtils.getCurrentTimestamp());
 		announcements.setStatus(SystemConstants.Check_status_fabu);
 		announcements.setIllegal(0l);

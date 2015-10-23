@@ -1565,7 +1565,6 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
-					group_uuid:groupuuid,
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 				}), document.getElementById(list_div));

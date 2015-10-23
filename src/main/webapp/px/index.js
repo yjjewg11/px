@@ -100,12 +100,12 @@ function login_affter_init(){
 	                            "title": "发布课程"
 	                       },
 	                          {
-                              "link": "##",
-                             "fn":px_Preferential_list_fn,
+	                    	   "fn":px_Preferential_list_fn,
+                              "link": "##",                            
                              "title": "优惠活动"
 	                       },
 	                          {
-	                              //"fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
+	                             "fn":menu_teacher_byRight,
 	                              "link": "##",
 	                              "title": "老师资料"
 	                            }
@@ -878,3 +878,12 @@ function menu_course_byRight() {
 // 		G_myClassList=classList;
     	px_ajax_course_byRight();	
 };
+
+/*
+ * (标头)对外发布老师资料
+ * */
+function menu_teacher_byRight() {
+	   ajax_teacher_div_byRight();	
+};
+
+

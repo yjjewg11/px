@@ -1499,7 +1499,6 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teacher_info_tel, {
-					group_uuid:groupuuid,
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 				}), document.getElementById(list_div));
@@ -3075,14 +3074,13 @@ function menu_userteacher_fn(){
  * <教学计划>（获取用户列表服务器请求）；
  * */
 //var g_begDateStr_pageNo_point=0;	
- function px_ajax_teachingplan_byRight(classuuid,courseuuid){ 
+ function px_ajax_teachingplan_byRight(groupuuid,classuuid,courseuuid){ 
 //	var now=new Date();
 //	if(!pageNo)pageNo=0;
 //	g_begDateStr_pageNo_point=pageNo;
 //	  	now=G_week.getDate(now,pageNo*7);
 //	var begDateStr=G_week.getWeek0(now,pageNo);
 //	var endDateStr=G_week.getWeek6(now,pageNo);
-	var groupuuid=Store.getGroupByRight("PX_teachingplan_m")[0].uuid;
 		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"教学计划");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
@@ -3902,7 +3900,7 @@ function ajax_class_students_look_info(uuid,title){
   * 在kd_rect;
   * */
  function react_px_Preferential_show(uuid,title){
- 	Queue.push(function(){react_px_help_show(uuid,title);},"精品文章");
+ 	Queue.push(function(){react_px_Preferential_show(uuid,title);},"优惠活动");
  	$.AMUI.progress.start();
      var url = hostUrl + "rest/announcements/"+uuid+".json";
  	$.ajax({
@@ -3913,151 +3911,9 @@ function ajax_class_students_look_info(uuid,title){
  		success : function(data) {
  			$.AMUI.progress.done();
  			// 登陆成功直接进入主页
+ 			var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Announcements_Preferentialshow,{
- 					data:data.data,
- 					share_url:data.share_url,
- 					count:data.count
- 					}), document.getElementById('div_body'));
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
- 		error :G_ajax_error_fn
- 	});
- };
- 
- 
- /*
-  *(精品文章)添加等按钮绑定事件
-  * @add:创建；
-  * @edit:编辑；
-  * @del:删除；
-  * */  
-  function btnclick_Preferential_announce(m,groupuuid,uuid){
- 	  	if(m=="add"){
- 	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:3},null);
- 	  	}else if(m=="edit"){
- 	  		react_ajax_announce_good_edit(null,uuid);
- 	  	}else if(m=="del"){
- 	  		react_ajax_announce_good_delete(groupuuid,uuid);
- 	  	}
- 	 };  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- /*
-  * <精品文章>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
-  * 基本框 等
-  * */
- function ajax_good_announce_div(){
- 	React.render(React.createElement(Announcements_good_Div_list), document.getElementById('div_body'));  	
- };
- /*
- *(精品文章)服务器请求share/articleList
- * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
- * 取出数组服务器请求后
- * 开始绘制动态数据内容
- * */
- function ajax_announce_Mygoodlist(list_div,pageNo) {
- 	var re_data=null;
- 	$.AMUI.progress.start();
- 	var url = hostUrl + "rest/share/articleList.json";
- 	$.ajax({
- 		type : "GET",
- 		url : url,
-   		data : {type:3,pageNo:pageNo},
- 		dataType : "json",
- 		async: false,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement(Announcements_mygoodlist_div, {
- 					events: data.list,
- 					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById(list_div));
- 				re_data=data.list;
- 			} else {
- 				alert(data.ResMsg.message);
- 				G_resMsg_filter(data.ResMsg);
- 			}
- 		},
- 		error :G_ajax_error_fn
- 	});
- 	return re_data;
- };
- /*
-  *<精品文章>详情服务器请求；
- * @Announcements_show:详情绘制
-  * 在kd_rect;
-  * */
- function react_ajax_announce_good_show(uuid,title){
- 	Queue.push(function(){react_ajax_announce_good_show(uuid,title);},"精品文章");
- 	$.AMUI.progress.start();
-     var url = hostUrl + "rest/announcements/"+uuid+".json";
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		dataType : "json",
- 		 async: true,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			// 登陆成功直接进入主页
- 			if (data.ResMsg.status == "success") {
- 				//如果相等为True不等为false用于判断编辑与删除是否
- 				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
- 				React.render(React.createElement(Announcements_goodshow,{
  					canEdit:canEdit,
  					data:data.data,
  					share_url:data.share_url,
@@ -4070,37 +3926,41 @@ function ajax_class_students_look_info(uuid,title){
  		error :G_ajax_error_fn
  	});
  };
-
+ 
+ 
  /*
-  *(精品文章)添加等按钮绑定事件
+  *(优惠活动)添加等按钮绑定事件
   * @add:创建；
   * @edit:编辑；
   * @del:删除；
   * */  
-  function btnclick_good_announce(m,groupuuid,uuid){
+  function btnclick_Preferential_announce(m,groupuuid,uuid){
  	  	if(m=="add"){
- 	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:3},null);
+ 	  		react_ajax_Preferential_edit({groupuuid:groupuuid,type:85},null);
  	  	}else if(m=="edit"){
- 	  		react_ajax_announce_good_edit(null,uuid);
+ 	  		react_ajax_Preferential_edit(null,uuid);
  	  	}else if(m=="del"){
- 	  		react_ajax_announce_good_delete(groupuuid,uuid);
+ 	  		react_ajax_Preferential_delete(groupuuid,uuid);
  	  	}
- 	 }; 
-   /*
-    *(精品文章)创建与编辑服务请求；
+ 	 };  
+  /*
+    *(优惠活动)创建与编辑服务请求；
     * @if(!uuid):创建；
     * @uuid不是则:编辑；
     * */  	  
-   function react_ajax_announce_good_edit(formdata,uuid){
+   function react_ajax_Preferential_edit(formdata,uuid){
  	  	if(!uuid){
- 			Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"创建文章");
- 	  		React.render(React.createElement(Announcements_goodedit,{
+ 			Queue.push(function(){react_ajax_Preferential_edit(formdata,uuid);},"创建活动");
+ 	 	     var now=new Date();
+ 	  		React.render(React.createElement(Preferential_edit,{
  	  			formdata:formdata,
+ 	  			start_time:G_week.getDateStr(now,0),
+ 	  			end_time:G_week.getDateStr(now,0),
  	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
  	  			}), document.getElementById('div_body'));
  	  		return;
  	  	}
- 		Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"编辑文章");
+ 		Queue.push(function(){react_ajax_Preferential_edit(formdata,uuid);},"编辑活动");
  	  	$.AMUI.progress.start();
  	      var url = hostUrl + "rest/announcements/"+uuid+".json";
  	  	$.ajax({
@@ -4111,8 +3971,10 @@ function ajax_class_students_look_info(uuid,title){
  	  		success : function(data) {
  	  			$.AMUI.progress.done();
  	  			if (data.ResMsg.status == "success") {
- 	  				React.render(React.createElement(Announcements_goodedit,{
+ 	  				React.render(React.createElement(Preferential_edit,{
  	  					formdata:data.data,
+ 	  					start_time:data.data.start_time,
+ 	  					end_time:data.data.end_time,
  	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
  	  					}),document.getElementById('div_body'));
  	  			} else {
@@ -4122,32 +3984,204 @@ function ajax_class_students_look_info(uuid,title){
  			error :G_ajax_error_fn
  	  	});
  	  };
+ /*
+   *(优惠活动)删除按钮服务请求；
+   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+   * */  	  
+  function react_ajax_Preferential_delete(groupuuid,uuid){	 
+  	if(!confirm("确定要删除吗?")){
+  		return;
+  	}
+    	$.AMUI.progress.start();
+        var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
+  	$.ajax({
+  		type : "POST",
+  		url : url,
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				Queue.doBackFN();
+  			} else {
+  				alert(data.ResMsg.message);
+  			}
+  		},
+  		error :G_ajax_error_fn
+  	});
+  };   	  
    /*
-   *(精品文章)创建与编辑提交按钮方法
+   *(优惠活动)创建与编辑提交按钮方法
    *@OPT：我们把内容用Form表单提交到Opt我们封装的
    *一个方法内直接传给服务器，服务器从表单取出需要的参数
    * */    
-   function ajax_good_save(){
+   function ajax_Preferential_save(){
        var opt={
                formName: "editAnnouncementsForm",
-           url:hostUrl + "rest/announcements/save.json",
+               url:hostUrl + "rest/announcements/save.json",
                cbFN:null
                };
    G_ajax_abs_save(opt);
-   }	   
+   }	     
  
+   
+   
+   
+   
+   
+ //——————————————————————————<对外发布>老师资料<管理模块>—————————————————————————— 
+   /*
+	* <对外老师资料>建立Div舞台 
+	*
+	* */	
+   function ajax_teacher_div_byRight(){
+  	 	Queue.push(function(){ajax_teacher_div_byRight();},"老师资料");
+  	   	 var group_list=Store.getGroup();
+         var groupuuid=group_list[0].uuid;
+	React.render(React.createElement(Teacher_div,{
+		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name"),
+		groupuuid:groupuuid
+	}), document.getElementById('div_body'));  	
+};   
+   
+/*
+ * <对外老师资料>服务器请求
+ *
+ * */
+function ajax_teacher_listByGroup_byRight(list_div,groupuuid,pageNo,callback) {
+	if(!pageNo)pageNo=1;
+ 	$.AMUI.progress.start();
+	var url = hostUrl + "rest/pxteacher/listByPage.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {groupuuid:groupuuid,pageNo:pageNo},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success"){
+				React.render(React.createElement(Teacher_EventsTable_byRight, {
+					events: data.list.data,
+					handleClick:btn_click_class_list_byRight,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));	
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
+			}else{
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};	   
+/*  
+ * <对外老师资料>添加与修改
+ * */
+    function px_teacher_onClick_byRight(m,formdata){
+ 	   var name;
+ 	   if(m=="add"){
+ 		   name="新增资料";
+ 	   }else{
+ 		   name="编辑资料";
+ 	   }
+ 	   Queue.push(function(){px_teacher_onClick_byRight(formdata);},name);
+ 		React.render(React.createElement(Px_teacher_edit,{
+ 			groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+  			formdata:formdata,
+  			}), document.getElementById('div_body'));
+
+    };   
+/*(对外老师资料)查看课程详情方法按钮 
+ * */
+    function px_ajax_teacher_look_info(event){
+    	Queue.push(function(){px_ajax_teacher_look_info(event);},"老师详情");
+ 	React.render(React.createElement(Teacher_look_info,{
+ 			formdata:event,
+ 			}), document.getElementById('div_body'));
+    };     
+   
+   
+/*(对外老师资料)
+ * 对外老师资料添加编辑提交按钮服务器请求
+ * 直接把Form表单发送给服务器
+ * */ 
+function ajax_teacher_save_byRight(){
+    var opt={
+            formName: "editTeacherForm",
+            url:hostUrl + "rest/pxteacher/save.json",
+            cbFN:function(data){
+            	Store.clearCourseList();
+					G_msg_pop(data.ResMsg.message);
+					Queue.doBackFN();
+            }
+            };
+G_ajax_abs_save(opt);
+}      
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+//   
+//   
+//   /*
+//    * <发布老师资料>（获取用户列表服务器请求）；
+//    * */	
+//    function px_ajax_teacher_byRight(groupuuid){ 
+//   	 var groupList=Store.getGroup();
+//        if(!groupuuid)groupuuid=groupList[0].uuid;
+//   		Queue.push(function(){px_ajax_teacher_byRight(groupuuid);},"发布课程");
+//   	   	$.AMUI.progress.start();
+//   	       var url = hostUrl + "rest/pxCourse/list.json";
+//   	   	$.ajax({
+//   	   		type : "GET",
+//   	   		url : url,
+//   	   		data : {groupuuid:groupuuid},
+//   	   		dataType : "json",
+//   	   		 async: false,
+//   	   		success : function(data) {
+//   	   			$.AMUI.progress.done();
+//   	   			if (data.ResMsg.status == "success") {	   				
+//   					React.render(React.createElement(px_rect_course_byRight, {
+//   						groupuuid:groupuuid,
+//   						groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+//   						events: data.list.data,
+//   						responsive: true, bordered: true, striped :true,hover:true,striped:true						
+//   					}), document.getElementById('div_body'));
+//   					
+//   	   			} else {
+//   	   				alert("加载数据失败："+data.ResMsg.message);
+//   	   			}
+//   	   		},
+//   			error :G_ajax_error_fn
+//   	   	});
+//   	   };
+
+      
  
- 
- 
- 
- 
- 
- 
-  
- 
- 
- 
- 
- 
- 
- 
+
