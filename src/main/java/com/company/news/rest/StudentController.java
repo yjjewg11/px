@@ -97,9 +97,9 @@ public class StudentController extends AbstractRESTController {
 		try {
 			boolean flag;
 			if (StringUtils.isBlank(studentJsonform.getUuid()))
-				flag = studentService.add(studentJsonform, responseMessage);
+				flag = studentService.add(studentJsonform, responseMessage,request);
 			else
-				flag = studentService.update(studentJsonform, responseMessage);
+				flag = studentService.update(studentJsonform, responseMessage,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {

@@ -242,14 +242,14 @@ public class PxClassService extends AbstractClassService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		//学生数量.教学计划数量,课程名,(班级信息)
-		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan,t2.title as course_title,t0.* from   (select * from px_pxclass ";
+		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan_count,t2.title as course_title,t2.schedule,t0.* from   (select * from px_pxclass ";
 				
 				sql+= " where groupuuid ='"+groupuuid+"'";
 				if(StringUtils.isNotBlank(isdisable)){
 					sql+= " and isdisable ="+isdisable;
 				}
 				if(StringUtils.isNotBlank(courseuuid)){
-					sql+= " and courseuuid ="+courseuuid;
+					sql+= " and courseuuid ='"+courseuuid+"'";
 				}
 				sql+= " limit "+pData.getStartIndex()+","+pData.getPageSize();
 				sql+= " )  t0 LEFT JOIN px_pxteachingplan t1 on t0.uuid=t1.classuuid ";

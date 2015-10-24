@@ -92,7 +92,7 @@ function login_affter_init(){
 	                        {
 	                         "fn":menu_group_myList_fn_byRight,
 	                          "link": "##",
-	                          "title": "校园信息"
+	                          "title": "机构介绍"
 	                       },
 	                        {
 	                        	  "fn":menu_course_byRight,
@@ -139,11 +139,6 @@ function login_affter_init(){
 	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
 	                              "link": "##",
 	                              "title": "精品文章"
-	                            },
-	                          {
-	                        	  "fn":function(){menu_announce_list_fn_byRight(4,"招生计划");},
-	                              "link": "##",
-	                              "title": "招生计划"
 	                            }
 
 	                        ]                   
@@ -167,12 +162,7 @@ function login_affter_init(){
                 		    "title": "老师授权",
                 		    "fn":menu_kd_roleUser_list_fn
                 		   
-                		  },
-                      {
-                          "fn":menu_userTeacher_list_fn_byRight,
-                          "link": "##",
-                          "title": "老师资料管理"
-                        },
+                		  }
                       ]
         };
 
@@ -226,25 +216,25 @@ function login_affter_init(){
 			if(G_user_hasRight("PX_statistics_m")){
 				menu_data.push(t_menu);
 			}	
-	t_menu= {
-	                "link": "##",
-	                "title": "老师评价",
-	                "fn":menu_teachingjudge_list_fn_byRight
-	              };
-			
-				if(G_user_hasRight("PX_teachingjudge_q")){
-					menu_data.push(t_menu);
-				}
-	
-
-		t_menu= {
-                "link": "##",
-                "fn":menu_accounts_list_fn_byRight,
-                "title": "收支记录"
-              };
-			if(G_user_hasRight("PX_accounts_m")){
-				menu_data.push(t_menu);
-			}
+//	t_menu= {
+//	                "link": "##",
+//	                "title": "老师评价",
+//	                "fn":menu_teachingjudge_list_fn_byRight
+//	              };
+//			
+//				if(G_user_hasRight("PX_teachingjudge_q")){
+//					menu_data.push(t_menu);
+//				}
+//	
+//
+//		t_menu= {
+//                "link": "##",
+//                "fn":menu_accounts_list_fn_byRight,
+//                "title": "收支记录"
+//              };
+//			if(G_user_hasRight("PX_accounts_m")){
+//				menu_data.push(t_menu);
+//			}
 			
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
@@ -273,20 +263,7 @@ function login_affter_init(){
 		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 			div_menu_data.subMenu.push(t_menu);
 		}
-		t_menu= {
-	          	 "fn":menu_userteacher_fn,
-	            "link": "##",
-	            "title": "修改教师资料"
-	          };
-					
-			div_menu_data.subMenu.push(t_menu);
-		t_menu= {
-                "link": "##",
-                "fn":menu_hellp_fn,
-                "title": "帮助"
-              };
-				
-			div_menu_data.subMenu.push(t_menu);
+
 			
 	t_menu=  {
             "link": "##",
@@ -373,11 +350,11 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
-			                   	  { 
-			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
-			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
-			                    	    "title": "每日任务"
-			                    	  },
+//			                   	  { 
+//			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
+//			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
+//			                    	    "title": "每日任务"
+//			                    	  },
 		                    	  {
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",

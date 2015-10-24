@@ -4,13 +4,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.company.news.dao.NSimpleHibernateDao;
+import com.company.news.entity.AbstractStudent;
 import com.company.news.entity.Logs;
+import com.company.news.entity.Operate;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -58,6 +61,37 @@ public abstract class AbstractService {
 			}
 
 			this.nSimpleHibernateDao.save(logs);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 重要的操作记录到 日志.
+	 * 
+	 * @param doorRecord
+	 * @throws Exception
+	 */
+	public void addStudentOperate(String groupuuid,String studentuuid,String message, String note, HttpServletRequest request) {
+		try {
+			Operate operate = new Operate();
+			operate.setCreate_time(TimeUtils.getCurrentTimestamp());
+
+			
+			operate.setGroupuuid(groupuuid);
+			operate.setStudentuuid(studentuuid);
+			SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+			if (user != null) {
+				operate.setCreate_user(user.getName());
+				operate.setCreate_useruuid(user.getUuid());
+			}
+			operate.setMessage(message);
+			operate.setNote(note);
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(operate);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

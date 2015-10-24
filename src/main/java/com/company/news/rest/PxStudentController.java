@@ -92,13 +92,12 @@ public class PxStudentController extends AbstractRESTController {
 			responseMessage.setMessage(error_bodyJsonToFormObject);
 			return "";
 		}
-
 		try {
 			boolean flag;
 			if (StringUtils.isBlank(pxStudentJsonform.getUuid()))
-				flag = pxStudentService.add(pxStudentJsonform, responseMessage);
+				flag = pxStudentService.add(pxStudentJsonform, responseMessage,request);
 			else
-				flag = pxStudentService.update(pxStudentJsonform, responseMessage);
+				flag = pxStudentService.update(pxStudentJsonform, responseMessage,request);
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
@@ -374,7 +373,7 @@ public class PxStudentController extends AbstractRESTController {
 				responseMessage.setMessage("student_uuid,class_uuid 必填");
 				return "";
 			}
-			boolean flag=this.pxStudentService.addStudentClassRelation(student_uuid,class_uuid,responseMessage);
+			boolean flag=this.pxStudentService.addStudentClassRelation(student_uuid,class_uuid,responseMessage,request);
 			if(!flag){
 				return "";
 			}
@@ -412,7 +411,7 @@ public class PxStudentController extends AbstractRESTController {
 			
 			
 			boolean flag = pxStudentService.update_deleteStudentClassRelation(student_uuid,class_uuid,
-					responseMessage);
+					responseMessage,request);
 			if (!flag)
 				return "";
 		} catch (Exception e) {

@@ -2492,14 +2492,15 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * <班级管理>服务器请求 Store.getGroupByRight("PX_class_m")
   * @请求数据成功后执行Class_EventsTable方法绘制
   * */
- function ajax_class_listByGroup_byRight(list_div,groupuuid,pageNo,callback) {
+ function ajax_class_listByGroup_byRight(list_div,data,pageNo,callback) {
  	if(!pageNo)pageNo=1;
+ 	data.pageNo=pageNo;
   	$.AMUI.progress.start();
  	var url = hostUrl + "rest/pxclass/listStat.json";
  	$.ajax({
  		type : "GET",
  		url : url,
- 		data : {groupuuid:groupuuid,pageNo:pageNo},
+ 		data : data,
  		dataType : "json",
  		success : function(data) {
  			$.AMUI.progress.done();

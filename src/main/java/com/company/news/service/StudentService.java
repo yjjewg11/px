@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
@@ -49,7 +51,7 @@ public class StudentService extends AbstractStudentService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(StudentJsonform studentJsonform, ResponseMessage responseMessage) throws Exception {
+	public boolean add(StudentJsonform studentJsonform, ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
 
 		// TEL格式验证
 		if (StringUtils.isBlank(studentJsonform.getName())) {
@@ -63,7 +65,7 @@ public class StudentService extends AbstractStudentService {
 			return false;
 		}
 
-		PClass pClass = (PClass) this.nSimpleHibernateDao.getObjectById(PClass.class, studentJsonform.getClassuuid());
+		PClass pClass = (PClass)CommonsCache.get( studentJsonform.getClassuuid(), PClass.class);
 		// 班级不存在
 		if (pClass == null) {
 			responseMessage.setMessage("班级不存在");
@@ -91,6 +93,11 @@ public class StudentService extends AbstractStudentService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 
+		
+		Group4Q group = (Group4Q) CommonsCache.get(pClass.getGroupuuid(), Group4Q.class);
+
+		String msg=student.getName()+"|加入班级|["+ pClass.getName()+"]|爸爸电话:"+student.getBa_tel()+"|妈妈电话:"+student.getMa_tel()+"|"+group.getBrand_name();
+		this.addStudentOperate(pClass.getGroupuuid(), student.getUuid(), msg, null, request);
 		// 添加学生关联联系人表
 		this.updateAllStudentContactRealationByStudent(student);
 		return true;
@@ -104,7 +111,7 @@ public class StudentService extends AbstractStudentService {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(StudentJsonform studentJsonform, ResponseMessage responseMessage) throws Exception {
+	public boolean update(StudentJsonform studentJsonform, ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
 
 		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class, studentJsonform.getUuid());
 
@@ -132,7 +139,13 @@ public class StudentService extends AbstractStudentService {
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().update(student);
 
+			
+			
 			this.updateAllStudentContactRealationByStudent(student);
+			
+			String msg=student.getName()+"|老师修改学生资料|"+"]|爸爸电话:"+student.getBa_tel()+"|妈妈电话:"+student.getMa_tel();
+			this.addStudentOperate(student.getGroupuuid(), student.getUuid(), msg, null, request);
+		
 			return true;
 		} else {
 			responseMessage.setMessage("更新记录不存在");
@@ -333,7 +346,8 @@ public class StudentService extends AbstractStudentService {
 			responseMessage.setMessage("异常数据,该学生不存在!");
 			return false;
 		}
-		PClass cl = (PClass) this.nSimpleHibernateDao.getObjectById(PClass.class, classuuid);
+		PClass cl = (PClass) CommonsCache.get(classuuid, Group4Q.class);
+		Group4Q group = (Group4Q) CommonsCache.get(cl.getGroupuuid(), Group4Q.class);
 
 		if (cl == null) {
 			responseMessage.setMessage("异常数据,转到班级不存在!");
@@ -342,12 +356,14 @@ public class StudentService extends AbstractStudentService {
 		student.setClassuuid(classuuid);
 		student.setGroupuuid(cl.getGroupuuid());
 
-		// 更新家长学生联系吧
-
+	
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		this.relUpdate_studentChangeClass(student);
-		String msg = "姓名:" + student.getName() + ",uuid:" + student.getUuid() + ",转班到:" + cl.getName();
-		this.addLog("updateChangeClass", "学生换班级", msg, request);
+		String msg=student.getName()+"|换班级到|["+ cl.getName()+"]|"+group.getBrand_name();
+		this.addStudentOperate(cl.getGroupuuid(), studentuuid, msg, null, request);
+//		String msg = "姓名:" + student.getName() + ",uuid:" + student.getUuid() + ",转班到:" + cl.getName();
+//		this.addLog("updateChangeClass", "学生换班级", msg, request);
+	
 		return true;
 	}
 

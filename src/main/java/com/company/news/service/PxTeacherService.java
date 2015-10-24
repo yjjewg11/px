@@ -33,8 +33,13 @@ public class PxTeacherService extends AbstractService {
 			responseMessage.setMessage("Useruuid不能为空！");
 			return false;
 		}
+		
+		if (userTeacherJsonform.getUseruuid().indexOf(",")>-1) {
+			responseMessage.setMessage("只能选择一个老师");
+			return false;
+		}
 		PxTeacher ut=null;
-		if(StringUtils.isBlank(userTeacherJsonform.getUuid())){
+		if(StringUtils.isNotBlank(userTeacherJsonform.getUuid())){
 			ut=(PxTeacher) this.nSimpleHibernateDao.getHibernateTemplate().get(PxTeacher.class, userTeacherJsonform.getUuid());
 			if(ut==null){
 				responseMessage.setMessage("更新记录不存在");

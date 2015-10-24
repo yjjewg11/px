@@ -10,12 +10,16 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
+import com.company.news.entity.PxCourseCache;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.PxStudentPXClassRelation;
 import com.company.news.entity.Student;
@@ -41,7 +45,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @throws Exception 
 	 * 
 	 */
-	public boolean addStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage) throws Exception{
+	public boolean addStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage,HttpServletRequest request) throws Exception{
 	
 		PxClass pxClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, class_uuid);
 		if(pxClass==null){
@@ -77,6 +81,15 @@ public class PxStudentService extends AbstractStudentService {
 		pp.setClass_uuid(class_uuid);
 		pp.setStudent_uuid(pxStudent.getUuid());
 		this.nSimpleHibernateDao.save(pp);	
+		
+		
+
+		Group4Q group = (Group4Q) CommonsCache.get(pxClass.getGroupuuid(), Group4Q.class);
+		PxCourseCache pxCourseCache = (PxCourseCache) CommonsCache.get(pxClass.getCourseuuid(),PxCourseCache.class);
+
+		String msg=pxStudent.getName()+"|参加特长班|["+pxClass.getName()+"]|"+pxCourseCache.getTitle()+"|"+group.getBrand_name();
+		this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+	
 		return true;
 	}
 	
@@ -85,8 +98,16 @@ public class PxStudentService extends AbstractStudentService {
 	 * @throws Exception 
 	 * 
 	 */
-	public boolean update_deleteStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage) throws Exception{
+	public boolean update_deleteStudentClassRelation(String student_uuid,String class_uuid,ResponseMessage responseMessage,HttpServletRequest request) throws Exception{
 		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from PxStudentPXClassRelation where student_uuid=? and class_uuid=?", student_uuid,class_uuid);
+		
+		PxStudent pxStudent=(PxStudent)this.nSimpleHibernateDao.getObject(PxStudent.class, student_uuid);
+		PxClass pxClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, class_uuid);
+		Group4Q group = (Group4Q) CommonsCache.get(pxClass.getGroupuuid(), Group4Q.class);
+		
+		String msg=pxStudent.getName()+"|离开特长班|["+pxClass.getName()+"]|"+group.getBrand_name();
+		this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+	
 		return true;
 	}
 	
@@ -98,7 +119,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage) throws Exception {
+	public boolean add(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
 
 		if(this.validateRequireAndLengthByRegJsonform(pxstudentJsonform.getName(), 32, "姓名", responseMessage)
 				//||this.validateRequireByRegJsonform(pxstudentJsonform.getClassuuid(), "班级", responseMessage)
@@ -125,11 +146,20 @@ public class PxStudentService extends AbstractStudentService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxStudent);
 		
+		
+		Group4Q group = (Group4Q) CommonsCache.get(pXClass.getGroupuuid(), Group4Q.class);
+		
+		String msg=pxStudent.getName()+"|老师增加学生资料|爸爸电话:"+pxStudent.getBa_tel()+"|妈妈电话:"+pxStudent.getMa_tel()+"|"+group.getBrand_name();
+		this.addStudentOperate(pXClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+	
 		//保存关联班级
-		this.addStudentClassRelation(pxStudent.getUuid(), pXClass.getUuid(),responseMessage);
+		this.addStudentClassRelation(pxStudent.getUuid(), pXClass.getUuid(),responseMessage,request);
+		
+		
 
         this.updateAllStudentContactRealationByStudent(pxStudent);
 		
+        
 		return true;
 	}
 
@@ -141,7 +171,7 @@ public class PxStudentService extends AbstractStudentService {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage) throws Exception {
+	public boolean update(PxStudentJsonform pxstudentJsonform, ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
 
 		PxStudent pxStudent = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class, pxstudentJsonform.getUuid());
 
@@ -164,6 +194,14 @@ public class PxStudentService extends AbstractStudentService {
 			this.nSimpleHibernateDao.getHibernateTemplate().update(pxStudent);
 
 			this.updateAllStudentContactRealationByStudent(pxStudent);
+			
+			
+//			Group4Q group = (Group4Q) CommonsCache.get(pXClass.getGroupuuid(), Group4Q.class);
+//			
+//			String msg=pxStudent.getName()+"|老师修改学生资料|爸爸电话:"+pxStudent.getBa_tel()+"|妈妈电话:"+pxStudent.getMa_tel()+"|"+group.getBrand_name();
+//			this.addStudentOperate(pXClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+		
+			
 			return true;
 		} else {
 			responseMessage.setMessage("更新记录不存在");
@@ -219,22 +257,40 @@ public class PxStudentService extends AbstractStudentService {
 	 * 
 	 * @param groupuuid
 	 * @param classuuid
-	 * @param name
+	 * @param name,
 	 * @param pData
 	 * @return
 	 */
 	public PageQueryResult queryByPage(String groupuuid, String classuuid, String name, PaginationData pData) {
-		String hql = "from PxStudent where 1=1";
-		if (StringUtils.isNotBlank(groupuuid))
-			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  uuid in (select student_uuid from PxStudentPXClassRelation where class_uuid in("+DBUtil.stringsToWhereInValue(classuuid)+"))";
-		if (StringUtils.isNotBlank(name))
-			hql += " and  name  like '%" + name + "%' ";
-
-		hql += " order by groupuuid,classuuid, convert(name, 'gbk') ";
-
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		
+		
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql_select="select  DISTINCT {t1.*} from px_pxstudent {t1}   left join px_pxstudentpxclassrelation t2 on {t1}.uuid=t2.student_uuid  ";
+		String sql_count="select  count(DISTINCT t1.uuid) from px_pxstudent t1  left join px_pxstudentpxclassrelation t2 on t1.uuid=t2.student_uuid   ";
+		
+		String sql="";
+		if(StringUtils.isBlank(classuuid)){//没班级uuid则不用查询groupuuid
+			sql+=" left join px_pxclass t3 on t2.class_uuid=t3.uuid ";
+		}
+		sql+=" where  1=1";
+		if(StringUtils.isNotBlank(classuuid)){
+			sql+=" and t2.class_uuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		}
+		if(StringUtils.isBlank(classuuid)){//没班级uuid则不用查询groupuuid
+			if(StringUtils.isNotBlank(groupuuid)){
+				sql+=" and t3.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+			}
+			
+		}
+	
+		
+		String sql_ordery= " order by CONVERT( {t1}.name USING gbk)";
+		Query q = s.createSQLQuery(sql_select+sql+sql_ordery).addEntity("t1", PxStudent.class);
+		
+		PageQueryResult pageQueryResult =this.nSimpleHibernateDao.findByPageForQueryTotal(q, sql_count+sql, pData);
+		
 		this.warpVoList(pageQueryResult.getData());
 
 		return pageQueryResult;

@@ -3794,7 +3794,9 @@ var Announcements_Class_div = React.createClass({
 	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
-		this.setState({groupuuid:$("input[name='group_uuid']").val()});
+		
+		var queryForm=$('#queryForm').serializeJson();
+		this.setState(queryForm);
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");		
 		var that=this;
 		var callback=function(re_data){
@@ -3806,7 +3808,7 @@ var Announcements_Class_div = React.createClass({
  			}
  			that.pageNo++;
  		}
-  var re_data=ajax_class_listByGroup_byRight(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),this.pageNo,callback);		  
+  var re_data=ajax_class_listByGroup_byRight(this.classnewsreply_list_div+this.pageNo,queryForm,this.pageNo,callback);		  
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -3817,51 +3819,39 @@ var Announcements_Class_div = React.createClass({
 		this.load_more_data();
 		
 	},
-	 handleClick_download: function(xlsname) {
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				 if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				 }
-				});
-			  if(!uuids){
-				  alert("至少选择一个班级");
-				  return;
-			  }
-			  var group_uuid=$("input[name='group_uuid']").val();
-			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
-	 },
+	
 	handleChange_checkbox_all:function(){
 		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
 	},
 getDefaultProps: function() {
-	 var data = [
-	            {value: 'one', label: '学生基本表 '},
-	            {value: 'huaMingCe', label: '幼儿花名册'},
-	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'}
-	          ];
-
-	    return {
-	      down_list: data
-	    };
+	
 	  },
 render: function() {
+		var o=this.state;
+ course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+	course_list.unshift({value:"",label:"所有"});
+
+	  var pxclass_isdisable_list=G_selected_dataModelArray_byArray(Vo.getTypeList("class_isdisable"),"key","val");
+	pxclass_isdisable_list.unshift({value:"",label:"所有"});
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-		  
+		    <AMUIReact.Form id="queryForm" inline >
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
+		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200" data={this.props.down_list}/>   
+		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+
+		  </div>
+			   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
+
 		  </div>
 		  </AMR_ButtonToolbar>	
-		    
+		     </AMUIReact.Form>
+
 		    <div id={this.classnewsreply_list_div} >
 			  </div>	  
 		  <div className="am-list-news-ft">
@@ -3892,11 +3882,13 @@ var Class_EventsTable_byRight = React.createClass({
 	              <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
 	              </th>
 	              <th>班级</th>
+				 <th>(学生数)</th>
 	              <th>管理员</th>
 	              <th>上课老师</th>
 	              <th>学校</th>
-	              <th>相关联课程名</th>
-	              <th>教学计划</th>
+	              <th>关联课程</th>
+					<th>课程学时</th>
+	              <th>教学计划(次数)</th>
 	              <th>状态</th>
 	              <th>结业时间</th>
 	              <th>创建时间</th>
@@ -3913,11 +3905,13 @@ var Class_EventsTable_byRight = React.createClass({
 	    			    	      <input type="checkbox" value={event.uuid} name="table_checkbox" />
 	    			    	      </td>
 	    			    	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage_byRight.bind(this, event.uuid)}>{event.name}</a></td>
-	    			    	        <td>{event.headTeacher_name}</td>
+	    			    	         <td>{event.student_count}</td>
+	    			    	       <td>{event.headTeacher_name}</td>
 	    			    	        <td>{event.teacher_name}</td>
 	    			    	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>	
 	    			    	        <td>{event.course_title}</td>
-	    			    	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.groupuuid,event.uuid,event.courseuuid)} amStyle="success">管理</AMUIReact.Button></td>
+									 <td>{event.schedule}</td>
+	    			    	        <td><AMUIReact.Button onClick={px_ajax_teachingplan_byRight.bind(this,event.groupuuid,event.uuid,event.courseuuid)} amStyle="success">管理{"("+event.teachingplan_count+")"}</AMUIReact.Button></td>
 	    			                {disable}
 	    			                <td>{event.disable_time}</td>
 	    			                <td>{event.create_time}</td>
@@ -4835,276 +4829,6 @@ var Class_EventsTable_byRight = React.createClass({
 
 
   
-//——————————————————————————老师资料管理——————————————————————————
-  
-  /*
-  * 老师资料管理服务器请求后绘制处理方法；
-  * @</select>下拉多选框;
-  * */
-  var UserTeacher_EventsTable_div = React.createClass({
-  	load_more_btn_id:"load_more_",
-  	pageNo:1,
-  	classnewsreply_list_div:"am-list-news-bd",
-	getInitialState: function() {
-		return {groupuuid:this.props.groupuuid};
-	  },
-  	componentWillReceiveProps:function(){
-  		this.load_more_data();
-  	},
-  	componentDidMount:function(){
-  		this.load_more_data();
-  	},
-  	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
-  	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
-  	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
-  	load_more_data:function(){
-		this.setState({groupuuid:$("input[name='group_uuid']").val()});
-  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-  		var that=this;
-  		var callback=function(re_data){
-  			if(!re_data)return;
-  			if(re_data.data.length<re_data.pageSize){
-  				$("#"+that.load_more_btn_id).hide();
-  			}else{
-  				$("#"+that.load_more_btn_id).show();
-  			}
-  			if(that.pageNo==1){
-  				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
-  			}
-  			that.pageNo++;
-  		}
-  		
-  		ajax_userTeacher_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
-  	},
-  	refresh_data:function(){
-//  		classnewsreply_list_div 清除；
-//        load_more_data	重新绘制DIV；
-  		this.forceUpdate();
-  		this.pageNo=1;
-  		$("#"+this.classnewsreply_list_div).html("");
-  		this.load_more_data();
-  		
-  	},		
-  	 getDefaultProps: function() {
-		 var data = [
-				{value: 'huaMingCe', label: '教师花名册'},
-				{value: 'dengjibiao', label: '教师基本情况登记表'}
-		          ];
-
-		    return {
-		      down_list: data
-		    };
-		  },
-		  handleClick_download: function(xlsname) {
-				 var uuids=null;
-				  var groupuuid=$("input[name='group_uuid']").val();
-				  if(!groupuuid){
-					  G_msg_pop("请选择学校!");
-					  return;
-				  }
-				  var inputs;
-				 	var url = hostUrl + "rest/userteacher/exportExcel.json";
-				 	   inputs+='<input type="hidden" name="groupuuid" value="'+groupuuid+'" />'; 
-				 	 inputs+='<input type="hidden" name="xlsname" value="'+xlsname+'" />'; 
-				        // request发送请求
-				 	$('<form action="'+ url +'" method="post">'+inputs+'</form>')
-				      .appendTo('body').submit().remove();
-		 },
-   render: function() {
-  	 this.load_more_btn_id="load_more_"+this.props.uuid;
-     return (
-  		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
-  	   
-  		   <form id="editGroupForm" method="post" className="am-form">		   
-  		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
-  		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
-  			  </div> 
-  				  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
-  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
-  				  </div>
-  				    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
-  					  </div>
-  					 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  					  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
-  					  </div>
-  					  </AMR_ButtonToolbar>
-  				  </form>
-  				  <div id="div_totalNumber" >总人数:
-  				  </div>	
-  		    <div id={this.classnewsreply_list_div} >
-  			  </div>		   
-  		   		   
-  			  <div className="am-list-news-ft">
-  			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
-  			  </div>		  
-  			</div>		   		   
-     );
-     
-   }
-  } 
-     );
-//1.本科,2.大专,3.中专,4.职高,5.硕士
-
-     var UserTeacher_EventRow = React.createClass({
-  		  render: function() {
-  			    var event = this.props.events;
-  			    var className = event.highlight ? 'am-active' :
-  		  event.disabled ? 'am-disabled' : '';
-  			    return (		  		    
-  			    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap" >
-  				          <tr>
-  				            <th >姓名</th>
-  				            <th>电话</th>
-  				            <th>性别</th>  	
-  				          <th>民族</th>  
-  				            <th>身份证号码</th>
-  				            <th>出生年月</th>
-  				            <th>职务</th>
-  				            <th>学历</th>
-  				            <th>学前教育专业学历</th>
-  				            <th>幼教资格证</th>
-  				            <th>毕业院校及专业</th>
-  				            <th>所教学科</th>
-  				            <th>技术职称</th>
-  				            <th>教师资格证编号</th>
-  				            <th> 工作类型</th>
-  				            <th>家庭住址</th>
-  				            <th>备注</th>
-  				            <th>最后修改时间</th>
-  				          </tr> 			 
-  			    			  {this.props.events.map(function(event) {
-  			    			      return (
-  			    			 <tr className={className}>  			    				   	        
-  			    				   	<td>{event.realname}</td>
-  			    				   	<td>{event.tel}</td>
-  			    				    <td>{Vo.get("sex_"+event.sex)}</td>
-  			    				    <td>{event.nation}</td>
-  			    				  <td>{event.idcard}</td>
-  			    				<td>{event.birthday}</td>
-  			    				<td>{event.zhiwu}</td>  			    				
-  			    				<td>{Vo.get("xueli_"+event.xueli)}</td>
-  			    				 <td>{Vo.get("youOrWu_"+event.youxueqianjiaoyu)}</td>
-  			    				 <td>{Vo.get("youOrWu_"+event.youjiaozige)}</td>
-  			    				<td>{event.graduated}</td>
-  			    				<td>{event.teaching_subject}</td>
-  			    				<td>{event.professional_title}</td>
-  			    				<td>{event.teacher_certificate_number}</td>  			    				   	        
-  			    				<td>{event.work_type}</td>
-  			    				<td>{event.address}</td>
-  			    				<td>{event.note}</td>
-  			    				<td>{event.update_time}</td>
-  			    				   	        </tr> 
-  			    			    		  )
-  			    			         })}	
-  			    			  </AMR_Table>		  
-  			    	  );
-  		}	     
-     	});    
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±  
-
-
-//——————————————————————————修改教师资料——————————————————————————
- /*
-  * <修改教师资料>绘制
-  *  1.本科,2.大专,3.中专,4.职高,5.硕士
-  * */
-     var Div_userteacher_update = React.createClass({ 
-     	 getInitialState: function() {
-     		    return this.props.formdata;
-     		  },
-     	 handleChange: function(event) {
-     		    this.setState($('#commonform').serializeJson());
-     	  },
-     	render: function() {
-     		var o = this.state;
-     	     var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-     	     var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-     	return (
-			 		<div>
-			 	     <div className= "am-form-group">
-			 	      <hr/>    
-					   <form id="commonform" method="post" className="am-form">     		     		
-		    		  <label className={one_classDiv }>电话号码:</label>
-		    		 <div className={two_classDiv }>
-		   		    <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange} maxLength="20"  placeholder="必填，不超过15位"/>
-		    	   </div>
-		            <AMUIReact.FormGroup>
-		      		 <label>性别：</label>
-		      		  <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get( "sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-		      		   <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get( "sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-		      		    </AMUIReact.FormGroup>	    		
-    		           <label className={one_classDiv }>真实姓名:</label>
-    		          <div className={two_classDiv }>
-      		         <PxInput  type="text" name="realname" id="realname" maxLength="20"  value={o.realname} onChange={this.handleChange}/>
-    		        </div>
-     		         <label className={one_classDiv }>身份证号码:</label>
-		              <div className={two_classDiv }>
-   	                   <PxInput type="text" name="idcard" id="idcard" maxLength="20"  value={o.idcard} onChange={this.handleChange}/>
-		                </div>  	      
- 		               <label className={one_classDiv }>职务:</label>
-		              <div className={two_classDiv }>
-   	                 <PxInput  type="text" maxLength="50" name="zhiwu" id="zhiwu"  value={o.zhiwu} onChange={this.handleChange}  placeholder="教师"/>
-		            </div>      		  
-	 		         <label className={one_classDiv }>民族:</label>
-			          <div className={two_classDiv }>
-		   	           <PxInput  type="text" maxLength="50" name="nation" id="nation"  value={o.nation} onChange={this.handleChange}  placeholder="汉"/>
-			            </div>      		    
-     	               <AMUIReact.Selected id ="xueli1" name= "xueli" onChange={this.handleChange} btnWidth="200" data={this.props.userteacherlist} btnStyle="primary" value={o.xueli+""}  />      
-     	    	      <hr/>
-  			           <AMUIReact.FormGroup>		      
-			            <label>是否具有学前教育专业学历：</label>
-				         <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="0" label={Vo.get( "yesOrNo_0")} inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==0?"checked":""}  />
-				          <AMUIReact.Input type="radio" name="youxueqianjiaoyu" value="1" label={Vo.get( "yesOrNo_1")} inline onChange={this.handleChange} checked={o.youxueqianjiaoyu==1?"checked":""}  />
-				           </AMUIReact.FormGroup>	     	        
-     	        		  <AMUIReact.FormGroup>	
-                         <label>是否取得幼教资格证：</label>
- 	                    <AMUIReact.Input type="radio" name="youjiaozige" value="0" label={Vo.get( "yesOrNo_0")} inline onChange={this.handleChange} checked={o.youjiaozige==0?"checked":""}  />
- 	                   <AMUIReact.Input type="radio" name="youjiaozige" value="1" label={Vo.get( "yesOrNo_1")} inline onChange={this.handleChange} checked={o.youjiaozige==1?"checked":""}  />
- 	                  </AMUIReact.FormGroup>	    	             	        
- 		 		       <label className={one_classDiv }>毕业院校及专业:</label>
- 				        <div className={two_classDiv }>
- 	     		         <PxInput  type="text" name="graduated" id="graduated" maxLength="50"  value={o.graduated} onChange={this.handleChange}  placeholder="不超过50个字"/>
- 				          </div>   
-       		 		     <label className={one_classDiv }>所教学科:</label>
- 				        <div className={two_classDiv }>
- 	     			   <PxInput  type="text" name="teaching_subject" id="teaching_subject"  maxLength="50"  value={o.teaching_subject} onChange={this.handleChange}  placeholder="主题活动"/>
- 				      </div>    				      
-   		 		       <label className={one_classDiv }>专业技术职称:</label>
- 				        <div className={two_classDiv }>
- 	     	             <PxInput  type="text" name="professional_title" id="professional_title"  maxLength="50"  value={o.professional_title} onChange={this.handleChange}  placeholder="幼教职称等级"/>
- 				          </div>     					
-    		 		     <label className={one_classDiv }>教师资格证编号:</label>
-     				    <div className={two_classDiv }>
-     	     		   <PxInput  type="text" name="teacher_certificate_number" id="teacher_certificate_number"  maxLength="20"   value={o.teacher_certificate_number} onChange={this.handleChange}  placeholder=""/>
-     				  </div> 				      
-     		 		   <label className={one_classDiv }>工作类型:</label>
-     				    <div className={two_classDiv }>
-     	     			 <PxInput  type="text" name="work_type" id="work_type"  value={o.work_type} onChange={this.handleChange}  maxLength="20"  placeholder="专职或兼职"/>
-     				      </div>							      
-      		 		     <label className={one_classDiv }>家庭住址:</label>
-     				    <div className={two_classDiv }>
-     	     		   <PxInput  type="text" name="address" id="address"  value={o.address} onChange={this.handleChange}  maxLength="100"  placeholder="不超过100个字"/>
-     				  </div> 					            
-                       <AMUIReact.Input type="textarea"
-      	                 label="备注"
-      	                 name="note"
-      	    	         value={o.note}
-      	    	         onChange={this.handleChange}
-                       	 labelClassName="am-u-sm-2"
-                       	 placeholder="小学教师证等"
-                       	 wrapperClassName="am-u-sm-10"
-      	                 amSize="lg" />
-                         <br/>	
-     	        <button type="button" onClick={ajax_userteacher_save} className="am-btn am-btn-primary">提交</button>     	      
-     	       </form>
-     		  </div>
-     	     </div>
-     	);
-     	}
-     }); 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±± 
      
  
      //——————————————————————————班级互动<绘制>——————————————————————————
@@ -6686,7 +6410,7 @@ var Class_EventsTable_byRight = React.createClass({
              <th>课程类型</th>
              <th>具体课程</th>
              <th>上课地点</th>
-             <th>课程时长</th>
+             <th>课程学时</th>
              <th>收费价格</th>
              <th>优惠价格</th>
              <th>更新时间</th>
@@ -6759,7 +6483,7 @@ var Class_EventsTable_byRight = React.createClass({
  			        <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
  			       <AMUIReact.ListItem>具体课程:{o.birthday}</AMUIReact.ListItem>
  			      <AMUIReact.ListItem>上课地点:{o.address}</AMUIReact.ListItem>
- 			     <AMUIReact.ListItem>课程时长:{o.schedule}</AMUIReact.ListItem>
+ 			     <AMUIReact.ListItem>课程学时:{o.schedule}</AMUIReact.ListItem>
  			    <AMUIReact.ListItem>收费价格:{o.fees}</AMUIReact.ListItem>
  			   <AMUIReact.ListItem>优惠价格:{o.discountfees}</AMUIReact.ListItem>
  			  <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
@@ -6842,7 +6566,7 @@ var Class_EventsTable_byRight = React.createClass({
  			        </div>
 
 
- 			    <label className={one_classDiv}>课程时长:</label>
+ 			    <label className={one_classDiv}>课程学时:</label>
  			     <div className={two_classDiv}>
  			       <PxInput  type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
  			        </div>
@@ -7893,6 +7617,7 @@ var Teacher_EventsTable_byRight = React.createClass({
 	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
+		var that=this;
 	    return (
 	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">
 	    		  <hr/>
@@ -7907,7 +7632,7 @@ var Teacher_EventsTable_byRight = React.createClass({
 	    			  {this.props.events.map(function(event) {
 	    			      return (
 	    			    	      <tr className={className} >
-	    			     	  	    <td><a href="javascript:void(0);" onClick={px_ajax_teacher_look_info.bind(this,event)}>{event.name}</a><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
+	    			     	  	    <td><a href="javascript:void(0);" onClick={px_ajax_teacher_look_info.bind(this,event)}>{event.name}</a><AMR_Button amSize="xs" amStyle="secondary" onClick={that.handleChange_button.bind(this,event)} round>修改</AMR_Button></td>
 	    			    	        <td>{event.course_title}</td>
 	    			    	        <td>{event.ct_stars}</td>
 	    			    	        <td>{event.summary}</td>
@@ -7945,7 +7670,7 @@ var Teacher_look_info =React.createClass({
 			      <Common_mg_big_fn  imgsList={imglist} />				  
 				  <br/>	      
 			      
-			          <AMUIReact.ListItem>老师姓名:{o.title}</AMUIReact.ListItem>
+			          <AMUIReact.ListItem>老师姓名:{o.name}</AMUIReact.ListItem>
 			         <AMUIReact.ListItem>教授课程:{o.course_title}</AMUIReact.ListItem>
 			        <AMUIReact.ListItem>星级:{o.ct_stars}</AMUIReact.ListItem>
 			       <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
@@ -8001,7 +7726,6 @@ render: function() {
 return (
 		<form id="editTeacherForm" method="post" className="am-form">
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
-		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
 			<div>
            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
            <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>
@@ -8017,15 +7741,20 @@ return (
 		       <label className={one_classDiv}>老师姓名:</label>
 				 <PxInput type="hidden" name="useruuid" id="useruuid" value={o.useruuid} onChange={this.handleChange}/>
 			     <div className={two_classDiv}>
-				   <PxInput type="text"  id="name" value={o.name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"useruuid","name",o.groupuuid)} placeholder=""/>
+				   <PxInput type="text"  id="name" name="name" value={o.name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"useruuid","name",o.groupuuid)} placeholder=""/>
 			        </div>  
 
-			    <label className={one_classDiv}>星级:</label>
+			    <label className={one_classDiv}>教授课程:</label>
 			     <div className={two_classDiv}>
-			       <PxInput  type="text" name="ct_stars" id="ct_stars" maxLength="20" value={o.ct_stars} onChange={this.handleChange}/>
+			       <PxInput  type="text" name="course_title" id="course_title" maxLength="45" placeholder="45字以内"  value={o.course_title} onChange={this.handleChange}/>
 			        </div>
 			       
- 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
+			    <label className={one_classDiv}>简介:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="summary" id="summary" maxLength="45" placeholder="45字以内"  value={o.summary} onChange={this.handleChange}/>
+			        </div>
+			       
+ 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="详细介绍:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
  					{G_get_upload_img_Div()} 
 	  		  
 				      <button type="button"  onClick={ajax_teacher_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
