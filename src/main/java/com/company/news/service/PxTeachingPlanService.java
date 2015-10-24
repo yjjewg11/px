@@ -93,7 +93,7 @@ public class PxTeachingPlanService extends AbstractService {
 				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
 		return false;
 		
-		Date plandate = TimeUtils.string2Timestamp(null,pxTeachingPlanJsonform.getPlandateStr());
+		Date plandate = TimeUtils.string2Timestamp(TimeUtils.DEFAULTFORMAT,pxTeachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
 			responseMessage.setMessage("Plandate格式不正确");
@@ -103,7 +103,7 @@ public class PxTeachingPlanService extends AbstractService {
 		PxTeachingplan pxTeachingplan=(PxTeachingplan) this.nSimpleHibernateDao.getObject(PxTeachingplan.class, pxTeachingPlanJsonform.getUuid());
 		
 		BeanUtils.copyProperties(pxTeachingplan, pxTeachingPlanJsonform);
-//		pxTeachingplan.setPlandate(plandate);
+		pxTeachingplan.setPlandate(plandate);
 //		pxTeachingplan.setName(pxTeachingPlanJsonform.getName());
 //		pxTeachingplan.setContext(pxTeachingPlanJsonform.getContext());
 //		pxTeachingplan.setDuration(pxTeachingPlanJsonform.getDuration());

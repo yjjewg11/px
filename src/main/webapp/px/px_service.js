@@ -1309,7 +1309,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Class_student_tel,{
-					//type:g_parentContact_listToShow_type,
+					class_uuid:class_uuid,
 					formdata:data.list,
   					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
 					}), document.getElementById('div_body'));
@@ -3082,7 +3082,7 @@ function menu_userteacher_fn(){
 //	  	now=G_week.getDate(now,pageNo*7);
 //	var begDateStr=G_week.getWeek0(now,pageNo);
 //	var endDateStr=G_week.getWeek6(now,pageNo);
-		Queue.push(function(){px_ajax_teachingplan_byRight(classuuid,pageNo);},"教学计划");
+		Queue.push(function(){px_ajax_teachingplan_byRight(groupuuid,classuuid,courseuuid);},"教学计划");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxteachingplan/list.json";
 	   	$.ajax({
@@ -3137,7 +3137,7 @@ function ajax_teachingplan_save_byRight(){
             cbFN:function(data){
             	G_msg_pop(data.ResMsg.message);
  //           	Store.setClassStudentsList(data.uuid,null);
-            	px_ajax_teachingplan_byRight(objectForm.classuuid);
+            	px_ajax_teachingplan_byRight(G_mygroup_choose,objectForm.classuuid,G_course_choose);
             }
             };
 G_ajax_abs_save(opt);
@@ -3159,7 +3159,7 @@ function px_react_ajax_teachingplan_delete(obj){
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {	   				
-	   				px_ajax_teachingplan_byRight(obj.classuuid);
+	   				px_ajax_teachingplan_byRight(G_mygroup_choose,obj.classuuid,G_course_choose);
 	   			} else {
 	   				alert("加载数据失败："+data.ResMsg.message);
 	   			}
@@ -3180,7 +3180,7 @@ function px_react_ajax_teachingplan_delete(obj){
 	   	   		success : function(data) {
 	   	   			$.AMUI.progress.done();
 	   	   			if (data.ResMsg.status == "success") {	   				
-	   	   				px_ajax_teachingplan_byRight(to_classuuid);
+	   	   				px_ajax_teachingplan_byRight(G_mygroup_choose,to_classuuid,G_course_choose);
 	   	   			} else {
 	   	   				alert("加载数据失败："+data.ResMsg.message);
 	   	   			}

@@ -1999,27 +1999,11 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 	  handleChange_class_uuid:function(val){
 		  ajax_parentContactByMyStudent(null,val);
 	  },
+		  
 		render: function() {
 	     var o =this.state;	
 	     var ListItem;
-//	     if(this.props.type==1){
-//	    	 ListItem=(				   
-//
-//	  	     )
-//	     }else{
-//	    	 ListItem=(				   
-//	  	  	       <AMUIReact.List static>
-//	  	  			{this.props.invite.map(function(event) {
-//	  	  		        return (<AMUIReact.ListItem>{event.student_name}的{event.typename}:{event.tel}
-//	  	  		        <AMR_ButtonToolbar>
-//	  	  		        <a href={"tel:"+event.tel}><AMUIReact.Button amStyle="disable">电话</AMUIReact.Button>	</a>
-//	  	  		        <AMUIReact.Button  onClick={ajax_parentContact_tels.bind(this,event.tel)} amStyle="success">邀请家长</AMUIReact.Button>	  		        
-//	  	  		        </AMR_ButtonToolbar>
-//	  	  		        </AMUIReact.ListItem>);
-//	  	  		      })}		      			      
-//	  	  		      </AMUIReact.List>
-//	  	     )  <div className="am-margin-left-sm">
-//	     }  	    		 
+//	      		 
 	   	this.props.class_list.unshift({value:"",label:"所有"});
 		 return (
 		 		React.createElement("div", null, 
@@ -5516,7 +5500,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	 class_nameFlag:true,
 	 form_data:null,
 		 getStateByPropes:function(nextProps){
-		 console.log("nextProps.groupuuid",nextProps.groupuuid);
+	
 		 	var courseList=Store.getCourseList(nextProps.groupuuid);
 			if(!nextProps.courseuuid){
 				if(courseList&&courseList.length>0){
@@ -5591,6 +5575,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	   	  }, 
  render: function() {
 	 var o=this.state;
+
+	 	 G_mygroup_choose=o.groupuuid;
+			G_course_choose=o.courseuuid;
 	 var thit=this;
 	 var classList=o.classList;
 	 var copybyclassList=[];
