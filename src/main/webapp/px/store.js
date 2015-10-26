@@ -19,6 +19,8 @@
  * Store.getRoleList(type);获取角色列表;type:1 幼儿园
  * Store.getCourseList(uuid);//根据学校获取发布课程
  * 
+ * Store.getMyGroupByUuid(uuid);
+ * 
  * Store.clear();
  * 
  */
@@ -399,6 +401,13 @@ var Store={
 					nlist.push(list[i]);
 			}
 			return nlist;
+	},
+	getMyGroupByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			if(uuid==arr[i].uuid)return arr[i];
+		}
+		return {};
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

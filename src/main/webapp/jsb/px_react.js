@@ -6522,14 +6522,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	    * */
    btn_class_group_uploadHeadere :function(){      
        w_uploadImg.open(function (guid){
-            $ ("#img").val(guid);
+            $ ("#logo").val(guid);
              $("#img_head_image").attr("src",G_imgPath+ guid);
              G_img_down404("#img_head_image");
 	         });   
 	   },
  render: function() {
  	  var o = this.state;
-
+	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
 	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
@@ -6543,6 +6543,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		  React.createElement("form", {id: "editCourseForm", method: "post", className: "am-form"}, 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
 		     React.createElement(PxInput, {type: "hidden", name: "groupuuid", value: o.groupuuid}), 
+			       React.createElement(PxInput, {type: "hidden", name: "logo", id: "logo", value: o.logo, onChange: this.handleChange}), 
 			React.createElement("div", null, 
           React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.logo, className: "G_img_header"}), 
           React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-primary"}, "上传LOGO")

@@ -377,7 +377,7 @@ public class UploadFileService extends AbstractService {
 		} else if (SystemConstants.UploadFile_type_xheditorimg.equals(t)) {
 			secondPath += "xheditor/";
 		} else {
-			secondPath += user.getUuid() + "/";
+			secondPath += "user/"+user.getUuid() + "/";
 		}
 		return secondPath;
 	}

@@ -9,8 +9,9 @@ import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourse;
-import com.company.news.entity.User;
+import com.company.news.entity.PxCourse4Q;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxCourseJsonform;
 import com.company.news.query.PageQueryResult;
@@ -45,6 +46,7 @@ public class PxCourseService extends AbstractService {
 		PxCourse pxCourse = new PxCourse();
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
 		pxCourse.setUpdatetime(TimeUtils.getCurrentTimestamp());
+		
 		pxCourse.setUpdate_useruuid(user.getUuid());
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxCourse);
@@ -107,12 +109,37 @@ public class PxCourseService extends AbstractService {
 	public PxCourse get(String uuid) {
 		PxCourse t = (PxCourse) this.nSimpleHibernateDao.getObjectById(
 				PxCourse.class, uuid);
+		warpVo(t);
 		
 		return t;
 
 	}
-
-
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<Object> warpVoList(List<Object> list){
+		for(Object o:list){
+			if(o instanceof PxCourse4Q){
+				warpVo((PxCourse4Q)o);
+			}else if(o instanceof PxCourse){
+				warpVo((PxCourse)o);
+			}
+		}
+		return list;
+	}
+		public PxCourse4Q warpVo(PxCourse4Q o){
+			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setLogo(PxStringUtil.imgSmallUrlByUuid(o.getLogo()));
+			return o;
+		}
+		
+		public PxCourse warpVo(PxCourse o){
+			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+			o.setLogo(PxStringUtil.imgSmallUrlByUuid(o.getLogo()));
+			return o;
+		}
 	/**
 	 * 删除 支持多个，用逗号分隔
 	 * 
@@ -152,11 +179,12 @@ public class PxCourseService extends AbstractService {
 
 
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
-		String hql = "from PxCourse where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		String hql = "from PxCourse4Q where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 
 		hql += " order by groupuuid, convert(title, 'gbk') ";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		warpVoList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	

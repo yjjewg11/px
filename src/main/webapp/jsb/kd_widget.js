@@ -31,8 +31,7 @@ var ChooseClass_EventsTable = React.createClass({displayName: "ChooseClass_Event
       React.createElement(AMUIReact_Table, React.__spread({},  this.props), 
         React.createElement("thead", null, 
           React.createElement("tr", null, 
-            React.createElement("th", null, "班级"), 
-            React.createElement("th", null, "学校")
+            React.createElement("th", null, "班级")
           )
         ), 
         React.createElement("tbody", null, 
@@ -58,8 +57,7 @@ var ChooseClass_EventRow = React.createClass({displayName: "ChooseClass_EventRow
 
     return (
       React.createElement("tr", {className: className, onClick: w_ch_class.handleClick.bind(this,"choose",event.uuid)}, 
-        React.createElement("td", null, event.name), 
-        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid))
+        React.createElement("td", null, event.name)
       ) 
     );
   }

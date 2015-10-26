@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourse;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxCourseJsonform;
@@ -59,6 +60,9 @@ public class PxCourseController extends AbstractRESTController {
 		
 		try {
 
+			
+			pxCourseJsonform.setLogo(PxStringUtil.imgUrlToUuid(pxCourseJsonform.getLogo()));
+			
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			
 

@@ -32,7 +32,6 @@ var ChooseClass_EventsTable = React.createClass({
         <thead> 
           <tr>
             <th>班级</th>
-            <th>学校</th>
           </tr> 
         </thead>
         <tbody>
@@ -59,7 +58,6 @@ var ChooseClass_EventRow = React.createClass({
     return (
       <tr  className={className} onClick={w_ch_class.handleClick.bind(this,"choose",event.uuid)}>
         <td>{event.name}</td>
-        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
       </tr> 
     );
   }

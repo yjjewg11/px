@@ -6,6 +6,7 @@
 	 * 获取幼儿园列表,排除云代理学校.
  * Store.getAllGroup();//获取当前组织列表
 *Store.getGroupNameByUuid(uuid);//
+*Store.getMyGroupByUuid(uuid);
  * Store.getUserinfo();//获取当前用户
  * Store.getUserRights();//获取当前班级
  * Store.getMyClassList();//获取我关联的班级(老师)
@@ -17,6 +18,7 @@
  * Store.getCurGroupByRight(rightname)//获取当前学校当前
  * Store.getGroupByRight(rightname);获取有权限的学校列表;
  * Store.getRoleList(type);获取角色列表;type:1 幼儿园
+ * 
  * 
  * Store.clear();
  * 
@@ -317,6 +319,13 @@ var Store={
 					nlist.push(list[i]);
 			}
 			return nlist;
+	},
+	getMyGroupByUuid:function(uuid){
+		var arr=this.getGroup();
+		for(var i=0;i<arr.length;i++){
+			if(uuid==arr[i].uuid)return arr[i];
+		}
+		return {};
 	},
 	getGroup:function(){
 		 if(this.map["Group"])return this.map["Group"];

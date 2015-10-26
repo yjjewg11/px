@@ -106,9 +106,18 @@ var Div_login = React.createClass({displayName: "Div_login",
 			return false;
 	 }
 	},
-		
+	handleChange_group_type_data:function(v){
+		 window.location.replace(v);
+	},
 render: function() {
 	  var o = this.state;
+	  var group_type_data = [
+  {value: '../kd/index.html', label: '幼儿园登录'},
+  {value: '../px/index.html', label: '培训机构登录'}
+];
+// <AMUIReact.Selected  onChange={this.handleChange_group_type_data} btnWidth="300"  data={group_type_data} btnStyle="primary" value={group_type} />	      
+		
+var  group_type=group_type_data[0].value;
  return (
  		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
@@ -118,6 +127,7 @@ render: function() {
  		), 
  		React.createElement("div", {className: "am-g"}, 
  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
+		
  		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
  	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
  	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 

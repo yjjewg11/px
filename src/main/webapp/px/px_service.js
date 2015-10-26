@@ -3390,17 +3390,39 @@ function px_react_ajax_teachingplan_delete(obj){
 * */
    function px_course_onClick_byRight(m,formdata){
 	   var name;
-	   if(m=="add"){
+	   if(!formdata.uuid){
 		   name="新建课程";
-	   }else{
-		   name="编辑课程";
+		   
+		   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
+			React.render(React.createElement(Px_course_edit,{
+				groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+	 			formdata:formdata,
+	 			}), document.getElementById('div_body'));
+			return;
 	   }
-	   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
-		React.render(React.createElement(Px_course_edit,{
-			groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
- 			formdata:formdata,
- 			}), document.getElementById('div_body'));
-
+		   name="编辑课程";
+		   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
+		
+		$.AMUI.progress.start();
+	    var url = hostUrl + "rest/pxclass/"+formdata.uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			 async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					React.render(React.createElement(Px_course_edit,{
+						groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
+			 			formdata:formdata,
+			 			}), document.getElementById('div_body'));
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				}
+			},
+			error :G_ajax_error_fn
+		});
    };
    
 /*(发布课程)查看课程详情方法按钮 
