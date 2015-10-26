@@ -393,7 +393,7 @@ var Userinfo_EventsTable_div = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();

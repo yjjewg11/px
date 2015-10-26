@@ -879,7 +879,7 @@ var Announcements_Div_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
@@ -889,15 +889,17 @@ var Announcements_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+		     var that=this;
+             var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+        var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);	
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -2069,22 +2071,24 @@ var ParentContactByMyStudent_message_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.classnewsreply_list_div+this.pageNo,this.props.parent_uuid,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+        var that=this;
+        var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+   var re_data=ajax_message_queryByParent(this.classnewsreply_list_div+this.pageNo,this.props.parent_uuid,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -2192,7 +2196,7 @@ var Announcements_good_Div_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
@@ -2202,15 +2206,17 @@ var Announcements_good_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+	var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -2830,7 +2836,7 @@ var Announcements_Teacher_tel_div = React.createClass({
 		return {groupuuid:this.props.groupuuid};
 	  },
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
@@ -2841,14 +2847,18 @@ var Announcements_Teacher_tel_div = React.createClass({
 	load_more_data:function(){
 		this.setState({groupuuid:$("input[name='group_uuid']").val()});
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+		
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+        var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -2947,7 +2957,7 @@ var rect_favorites_Div_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
@@ -2957,15 +2967,17 @@ var rect_favorites_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+       var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -3636,20 +3648,24 @@ load_more_btn_id:"load_more_",
 pageNo:1,
 classnewsreply_list_div:"classnewsreply_list_div",
 componentWillReceiveProps:function(){
-	this.load_more_data();
+	this.refresh_data();
 },
 componentDidMount:function(){
 	this.load_more_data();
 },
 load_more_data:function(){
 	$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-	var re_data=ajax_boss_message_list_byRight(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
-	if(!re_data)return;
-	if(re_data.data.length<re_data.pageSize){
-		$("#"+this.load_more_btn_id).hide();
+	 var that=this;
+	 var callback=function(re_data){
+		if(!re_data)return;
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+that.load_more_btn_id).hide();
+		}else{
+			$("#"+that.load_more_btn_id).show();
+		}
+		that.pageNo++;
 	}
-	  
-	  this.pageNo++;
+	var re_data=ajax_boss_message_list_byRight(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 },
 refresh_data:function(){
 //	classnewsreply_list_div 清除；
@@ -3769,7 +3785,7 @@ var Announcements_Class_div = React.createClass({
 		return {groupuuid:this.props.groupuuid};
 	  },
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	componentDidMount:function(){
 		this.load_more_data();
@@ -6514,66 +6530,77 @@ var Class_EventsTable_byRight = React.createClass({
  render: function() {
  	  var o = this.state;
 
-  	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-  	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
 	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
 	   if(o.type==null&&course_type_list.length>0)o.type=course_type_list[0].value;
 	   if(o.status==null)o.status=1;
  return (
- 		<form id="editCourseForm" method="post" className="am-form">
- 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
- 		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
- 			<div>
-            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
-            <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
-            </div>
-            <hr/>
- 		   <div className="am-form-group">
-	 	  	<AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
-		 	  	<AMUIReact.Selected  id="type" name="type" onChange={this.handleChange} btnWidth="200" data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
-	 	 	  	<AMUIReact.Selected  id="status" name="status" onChange={this.handleChange} btnWidth="200" data={course_status_list} btnStyle="primary" value={o.status+""} />    		     
-   	
+		 <div>
+
+		  <div className=" am-u-md-6 am-u-sm-12">
+		  <form id="editCourseForm" method="post" className="am-form">
+			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
+			<div>
+          <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
+          <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+          </div>
+          <hr/>
+		   <div className="am-form-group">
+
+	 	  	<AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange}  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
+	 	  	<AMUIReact.Selected  id="type" name="type" onChange={this.handleChange}  data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
+	 	  	<AMUIReact.Selected  id="status" name="status" onChange={this.handleChange}  data={course_status_list} btnStyle="primary" value={o.status+""} />    		     
+
 	 	  	<hr/>
- 		       <label className={one_classDiv}>标题:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="title" id="title" maxLength="20" value={o.title} onChange={this.handleChange}/>
- 			        </div>
- 		 	         
- 		  		  
+		       <label className={one_classDiv}>标题:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="title" id="title" maxLength="20" value={o.title} onChange={this.handleChange}/>
+			        </div>
+		 	         
+		  		  
 
- 			    <label className={one_classDiv}>具体课程:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="subtype" id="subtype" maxLength="20" value={o.subtype} onChange={this.handleChange}/>
- 			        </div>  
+			    <label className={one_classDiv}>具体课程:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="subtype" id="subtype" maxLength="20" value={o.subtype} onChange={this.handleChange}/>
+			        </div>  
 
- 			    <label className={one_classDiv}>上课地点:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
- 			        </div>
+			    <label className={one_classDiv}>上课地点:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+			        </div>
 
 
- 			    <label className={one_classDiv}>课程学时:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
- 			        </div>
+			    <label className={one_classDiv}>课程学时:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
+			        </div>
 
- 			    <label className={one_classDiv}>收费价格:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="fees" id="fees" maxLength="20" value={o.fees} onChange={this.handleChange}/>
- 			        </div>
+			    <label className={one_classDiv}>收费价格:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="fees" id="fees" maxLength="20" value={o.fees} onChange={this.handleChange}/>
+			        </div>
 
- 			    <label className={one_classDiv}>优惠价格:</label>
- 			     <div className={two_classDiv}>
- 			       <PxInput  type="text" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
- 			        </div>
- 			       
- 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
- 					{G_get_upload_img_Div()} 
+			    <label className={one_classDiv}>优惠价格:</label>
+			     <div className={two_classDiv}>
+			       <PxInput  type="text" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
+			        </div>
+			       
+			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
+					{G_get_upload_img_Div()} 
 	  		  
- 				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
- 				      </div>  
- 		          </form> 
+				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+				      </div>  
+		          </form> 
+		       </div>	
+
+		   <div  className=" am-u-md-6 am-u-sm-12">
+			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dykecheng.png"} className={"G_img_header2"}/>
+		   </div>
+
+		</div>
  );
  }
  }); 
@@ -7152,7 +7179,7 @@ var Class_EventsTable_byRight = React.createClass({
    	pageNo:1,
    	classnewsreply_list_div:"am-list-news-bd",
    	componentWillReceiveProps:function(){
-   		this.load_more_data();
+   		this.refresh_data();
    	},
    	componentDidMount:function(){
    		this.load_more_data();
@@ -7162,15 +7189,17 @@ var Class_EventsTable_byRight = React.createClass({
    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
    	load_more_data:function(){
    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-   		var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-   		if(!re_data)return;
-   		if(re_data.data.length<re_data.pageSize){
-   			$("#"+this.load_more_btn_id).hide();
-   		}else{
-   			$("#"+this.load_more_btn_id).show();
-   		}
-   		  
-   		  this.pageNo++;
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+		  var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7265,7 +7294,180 @@ var Class_EventsTable_byRight = React.createClass({
    }
    }); 
    //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
+
    
+
+//——————————————————————————对外校务管理<校园列表绘制>—————————————————————   
+/*
+ *(对外校务管理)<校园列表>列表框绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@add:添加分校;
+ *@edit:编辑分校;
+ *@btn_click_group ：在kd_service
+ *@取消校园介绍；增加预览按钮
+ * */
+var Group_EventsTable_byRight_px = React.createClass({
+	handleClick: function(m) {
+			btn_click_group_byRight_px(m,{type:G_group_type});
+	  },
+  render: function() {
+    return (
+    <div>
+    <AMR_ButtonToolbar>
+	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加分校</AMR_Button>
+	  </AMR_ButtonToolbar>
+	  <hr/>
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>品牌名</th>
+            <th>预览</th>
+            <th>机构全称</th>
+            <th>电话</th>
+            <th>学校地址</th>
+            <th>创建时间</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {this.props.events.map(function(event) {
+            return (<Group_EventRow_byRight_px key={event.id} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+
+/*
+ *(对外校务管理)<校园列表>学校内容绘制 ;
+ *@handleClick:绑定的事件根据M来区分点击事件并做处理；
+ *@btn_click_group ：在kd_service；
+ * */
+var Group_EventRow_byRight_px = React.createClass({ 
+  render: function() {
+    var event = this.props.event;
+    var className = event.highlight ? 'am-active' :
+      event.disabled ? 'am-disabled' : '';
+    return (
+      <tr className={className} >
+      <td  ><a href="javascript:void(0);" onClick={btn_click_group_byRight_px.bind(this,"edit", event)}>{event.brand_name}</a></td>
+         <td>
+    	<AMR_Button amStyle="primary" onClick={btn_click_group_byRight_px.bind(this,"show",event)} round>预览</AMR_Button>
+        </td>
+          <td  >{event.company_name}</td>
+        <td > {event.link_tel}</td>
+        <td >{event.address}</td>
+        <td >{event.create_time}</td>
+      </tr> 
+    );
+  }
+}); 
+
+/*
+ *(对外校务管理)<预览按钮>绘制 ;
+ * */
+  var Group_show_byRight_px = React.createClass({ 
+  render: function() {
+  	  var o = this.props.formdata;
+    return (
+  		  <AMUIReact.Article
+  		    title={o.brand_name}
+  		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}>
+  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+  		   </AMUIReact.Article>	
+  		   
+  		   
+    );
+  }
+  }); 
+  
+/*
+ *(对外校务管理)<校园列表>添加分校和编辑详情绘制界面；
+ *@componentDidMount：图片处理方法 
+ *@ajax_group_save:提交按钮详情在kd_service
+ * */    
+var Group_edit_byRight_px = React.createClass({ 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editGroupForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
+			  
+			  
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+          });
+	},
+	   /*
+	    * (对外校务管理)<校园列表>内上传LOGO图片
+	    * */
+    btn_class_group_uploadHeadere :function(){      
+        w_uploadImg.open(function (guid){
+             $ ("#img").val(guid);
+              $("#img_head_image").attr("src",G_imgPath+ guid);
+              G_img_down404("#img_head_image");
+	         });   
+	   },
+  render: function() {
+	  var o = this.state;
+	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
+    return (
+<div>
+
+  <div className=" am-u-md-6 am-u-sm-12">
+      <form id="editGroupForm" method="post" className="am-form">
+  		     <hr />
+    		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
+    	       <PxInput type="hidden" name="type"  value={o.type}/>
+    		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
+              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+             <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-primary">上传LOGO</button>
+            <div className= "am-form-group">
+    		 <label className={one_classDiv }>品牌名:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	        </div>    		
+    	       <label className={one_classDiv }>机构全称:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	    </div>    	      
+    	     <label className={one_classDiv }>学校地址:</label>
+    		  <div className={two_classDiv }>
+    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+     	        </div>    	      
+    	       <label className={one_classDiv }>地址坐标:</label>
+    		  <div className={two_classDiv }>
+    	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
+    	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
+    	   </div>   	      
+    	    <label className={one_classDiv }>学校电话:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+    	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
+  		  	  {G_get_upload_img_Div()}
+  	          <button type="button"  onClick={ajax_group_save_byRight_px}  className="am-btn am-btn-primary">提交</button>
+	    	 </div>
+    		</form>   	   
+       </div>	
+
+   <div  className=" am-u-md-6 am-u-sm-12">
+	<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyjigou.png"} className={"G_img_header2"}/>
+   </div>
+
+</div>
+    		
+    );
+  }
+});
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
    
  //——————————————————————————优惠活动<绘制>—————————————————————  
 
@@ -7280,7 +7482,7 @@ var Class_EventsTable_byRight = React.createClass({
    	pageNo:1,
    	classnewsreply_list_div:"am-list-news-bd",
    	componentWillReceiveProps:function(){
-   		this.load_more_data();
+   		this.refresh_data();
    	},
    	componentDidMount:function(){
    		this.load_more_data();
@@ -7290,15 +7492,18 @@ var Class_EventsTable_byRight = React.createClass({
    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
    	load_more_data:function(){
    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-   		var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-   		if(!re_data)return;
-   		if(re_data.data.length<re_data.pageSize){
-   			$("#"+this.load_more_btn_id).hide();
-   		}else{
-   			$("#"+this.load_more_btn_id).show();
-   		}
-   		  
-   		  this.pageNo++;
+   		
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+		  var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7433,87 +7638,52 @@ var Class_EventsTable_byRight = React.createClass({
    	  },
    render: function() {
    	 var o = this.state;
-   	 console.log("o.type",this.props.begDateStr,this.props.endDateStr);
-   	  var type_div;
-   	  if (announce_types==2) {
-   		  type_div= 
-   			   <div className="am-form-group" id="div_classuuids" >
-	  		<input type="hidden" name="type"  value={o.type}/>
-	  		<label htmlFor="tel">班级通知:</label>
-	  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
- 		     </div>;
-  } else {
-	  type_div =
-	  <input type="hidden" name="type"  value={o.type}/>
-  }
+	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
  return (
- 		<div>
- 		<div className="header">
- 		  <hr />
- 		</div>
- 		<div className="am-g">
- 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
- 		  <form id="editAnnouncementsForm" method="post" className="am-form">
- 		<input type="hidden" name="uuid"  value={o.uuid}/>
- 		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
- 		<div className="am-form-group">
- 	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-      <legend>优惠活动开始时间：</legend> 
-      <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="start_timeStr" id ="start_timeStr" dateTime ={this.state.start_time}    onChange={this.handleChange}/>
-  	  <legend>优惠活动结束时间：</legend> 
-      <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="end_timeStr" id="end_timeStr" dateTime={this.state.end_time}    onChange={this.handleChange}/>
-       </div>   
- 		{type_div}
- 		  <label htmlFor="name">标题:</label>
- 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
- 		  <br/>
- 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
+	 
+        <div>
+
+		  <div className=" am-u-md-6 am-u-sm-12">
+
+		<form id="editAnnouncementsForm" method="post" className="am-form">
+	 	 <input type="hidden" name="uuid"  value={o.uuid}/>
+	 	  <input type="hidden" name="type"  value={o.type}/>
+	 	   <input type="hidden" name="isimportant"  value={o.isimportant}/> 	
+            <hr/>
+	    <div>
+ 		 <div className="am-form-group">
+ 	       <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+           <legend>优惠活动开始时间：</legend> 
+           <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="start_timeStr" id ="start_timeStr" dateTime ={this.state.start_time}    onChange={this.handleChange}/>
+  	       <legend>优惠活动结束时间：</legend> 
+           <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="end_timeStr" id="end_timeStr" dateTime={this.state.end_time}    onChange={this.handleChange}/>
+         </div> 
+	 	  	<hr/>
+		      <label className={one_classDiv}>标题:</label>
+			   <div className={two_classDiv}>
+				<input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+			     </div>  
+
+ 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="优惠活动详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
 		{G_get_upload_img_Div()} 
- 		  <button type="button"  onClick={ajax_Preferential_save}  className="am-btn am-btn-primary">提交</button>
-     		  </form>
-     	     </div>
-     	   </div>	   
-     	  </div>
+ 		  <button type="button"  onClick={ajax_Preferential_save}  className="am-btn am-btn-primary">提交</button>				      					  
+		  </div>  
+	  </form> 	 
+		   </div>	
+
+		   <div  className=" am-u-md-6 am-u-sm-12">
+			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyyouhuihuodong.png"} className={"G_img_header2"}/>
+		   </div>
+
+		</div>
      );
    }
    });       
    //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
    
    
-   
 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    
@@ -7532,7 +7702,7 @@ var Class_EventsTable_byRight = React.createClass({
 		return {groupuuid:this.props.groupuuid};
 	  },
    	componentWillReceiveProps:function(){
-   		this.load_more_data();
+   		this.refresh_data();
    	},
    	componentDidMount:function(){
    		this.load_more_data();
@@ -7612,7 +7782,7 @@ var Teacher_EventsTable_byRight = React.createClass({
 	              <th>姓名</th>
 	              <th>教授课程</th>
 	              <th>星级</th>
-	              <th>摘要</th>
+	              <th>简介</th>
 	              <th>更新时间</th>
 	              <th>发布状态</th>
 	            </tr> 			 
@@ -7660,9 +7830,10 @@ var Teacher_look_info =React.createClass({
 			          <AMUIReact.ListItem>老师姓名:{o.name}</AMUIReact.ListItem>
 			         <AMUIReact.ListItem>教授课程:{o.course_title}</AMUIReact.ListItem>
 			        <AMUIReact.ListItem>星级:{o.ct_stars}</AMUIReact.ListItem>
-			       <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
+			       <AMUIReact.ListItem>简介:{o.summary}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
-			     <AMUIReact.ListItem>老师介绍详细内容:
+			     <AMUIReact.ListItem>更新时间:{o.update_time}</AMUIReact.ListItem>
+			    <AMUIReact.ListItem>老师介绍详细内容:
 	 			<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
 				</AMUIReact.ListItem>		 			       			      
 			 </AMUIReact.List> 		
@@ -7704,14 +7875,17 @@ var Px_teacher_edit = React.createClass({
 render: function() {
 	  var o = this.state;
 
- 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
- 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
 	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
 	   if(o.type==null&&course_type_list.length>0)o.type=course_type_list[0].value;
 	   if(o.status==null)o.status=1;
 return (
-		<form id="editTeacherForm" method="post" className="am-form">
+<div>
+
+	<div className=" am-u-md-6 am-u-sm-12">
+           <form id="editTeacherForm" method="post" className="am-form">
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 			<div>
            <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
@@ -7722,7 +7896,6 @@ return (
 	 	  	<AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
 		 	  	<AMUIReact.Selected  id="type" name="type" onChange={this.handleChange} btnWidth="200" data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
 	 	 	  	<AMUIReact.Selected  id="status" name="status" onChange={this.handleChange} btnWidth="200" data={course_status_list} btnStyle="primary" value={o.status+""} />    		     
-  	
 
 	 	  	<hr/>
 		       <label className={one_classDiv}>老师姓名:</label>
@@ -7747,6 +7920,14 @@ return (
 				      <button type="button"  onClick={ajax_teacher_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
 				      </div>  
 		          </form> 
+     </div>	
+
+		   <div  className=" am-u-md-6 am-u-sm-12">
+		   <AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dylaoshiziliao.png"} className={"G_img_header2"}/>
+		   </div>
+
+</div>
+
 );
 }
 }); 

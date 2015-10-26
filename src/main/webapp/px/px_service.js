@@ -764,8 +764,7 @@ function ajax_announce_div(){
  * <公告>取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
-function ajax_announce_Mylist(list_div,pageNo) {
-	var re_data=null;
+function ajax_announce_Mylist(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/queryMy.json?pageNo="+pageNo;
 	$.ajax({
@@ -781,7 +780,9 @@ function ajax_announce_Mylist(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -789,7 +790,6 @@ function ajax_announce_Mylist(list_div,pageNo) {
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
 /*
  * <公告>二级绑定事件服务器请求；
@@ -1124,8 +1124,7 @@ function ajax_good_announce_div(){
 * 取出数组服务器请求后
 * 开始绘制动态数据内容
 * */
-function ajax_announce_Mygoodlist(list_div,pageNo) {
-	var re_data=null;
+function ajax_announce_Mygoodlist(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/share/articleList.json";
 	$.ajax({
@@ -1141,7 +1140,9 @@ function ajax_announce_Mygoodlist(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1149,7 +1150,6 @@ function ajax_announce_Mygoodlist(list_div,pageNo) {
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
 /*
  *<精品文章>详情服务器请求；
@@ -1335,8 +1335,7 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
  *  @parent_uuid:每个用户的ID；
  *  
  * */
-function ajax_message_queryByParent(list_div,parent_uuid,pageNo){	
-	   var re_data=null;
+function ajax_message_queryByParent(list_div,parent_uuid,pageNo,callback){	
 	   if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/message/queryByParent.json";
@@ -1355,7 +1354,9 @@ function ajax_message_queryByParent(list_div,parent_uuid,pageNo){
 					parent_uuid:parent_uuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
 				
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
@@ -1363,8 +1364,6 @@ function ajax_message_queryByParent(list_div,parent_uuid,pageNo){
 		},
 		error :G_ajax_error_fn
 	});
-	
-	return re_data;
    };
    
 /*（主页）家长通讯录功 服务器请求
@@ -1477,8 +1476,7 @@ function ajax_Teacher_tel_div(groupuuid){
  * @name:搜索功能 按中文名字;
  * @Teacher_info_tel:绘制;
  * */
-function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
-	var re_data=null;
+function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo,callback){
 	var list=Store.getGroupNoGroup_wjd();
 	  if(!name)name="";
 	  if(!pageNo)pageNo=1;
@@ -1502,7 +1500,10 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 				}), document.getElementById(list_div));
-				re_data=data.list;
+
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1510,7 +1511,6 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 }; 
 
 
@@ -1530,8 +1530,7 @@ function ajax_favorites_div(){
 /*
  * <我的收藏>（获取用户收藏列表服务器请求；
  * */
-function ajax_favorites_list(list_div,pageNo) {
-	var re_data=null;
+function ajax_favorites_list(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/favorites/query.json";
 	$.ajax({
@@ -1547,14 +1546,15 @@ function ajax_favorites_list(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 			}
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
  
 
@@ -2389,18 +2389,18 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 //	   };
 //		   
 		   
-	  /* (园长信箱)创建舞台
-	     * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
-	     *@Boss_message_list准备开始绘制舞台  
-	 	* @revice_useruuid:收件人ID；
-	 	* @send_useruuid:发送者ID；
-	 	* @send_user:发送者姓名
-	     * */
-	    function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
-	    	var message_name="园长信箱";
-	    	Queue.push(function(){ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user);},message_name);
-	 		React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
-	 	   };
+/* (园长信箱)创建舞台
+* 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
+*@Boss_message_list准备开始绘制舞台  
+* @revice_useruuid:收件人ID；
+* @send_useruuid:发送者ID；
+* @send_user:发送者姓名
+* */
+function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
+	var message_name="园长信箱";
+	Queue.push(function(){ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user);},message_name);
+	React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+   };
 	 		   
 	   
 	  
@@ -2408,8 +2408,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * @revice_useruuid:收件人ID；
    * @send_useruuid:发送者ID；
    * */
-  function ajax_boss_message_list_byRight(revice_useruuid,send_useruuid,list_div,pageNo){
-	   var re_data=null;
+  function ajax_boss_message_list_byRight(revice_useruuid,send_useruuid,list_div,pageNo,callback){
 	   if(!pageNo)pageNo=1;
   	$.AMUI.progress.start();
       var url = hostUrl + "rest/message/queryByParentAndLeader.json";
@@ -2429,16 +2428,16 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 					revice_useruuid:revice_useruuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
-				
+
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
   			}
   		},
 		error :G_ajax_error_fn
 	   	});
-	   	
-	   	return re_data;
 	      };
  
  /*(园长信箱)(服务器请求)-我要发送信息
@@ -3788,8 +3787,7 @@ function ajax_class_students_look_info(uuid,title){
  * 取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
- function ajax_help_px_list(list_div,pageNo) {
- 	var re_data=null;
+ function ajax_help_px_list(list_div,pageNo,callback) {
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/share/articleList.json";
  	$.ajax({
@@ -3805,7 +3803,10 @@ function ajax_class_students_look_info(uuid,title){
  					events: data.list,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  					}), document.getElementById(list_div));
- 				re_data=data.list;
+
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
  			} else {
  				alert(data.ResMsg.message);
  				G_resMsg_filter(data.ResMsg);
@@ -3813,7 +3814,6 @@ function ajax_class_students_look_info(uuid,title){
  		},
  		error :G_ajax_error_fn
  	});
- 	return re_data;
  };
  /*
   *<帮助列表>详情服务器请求；
@@ -3852,6 +3852,106 @@ function ajax_class_students_look_info(uuid,title){
  
  
  
+ //————————————————————————————对外校务管理<管理模块>—————————————————————————  
+ /*
+  *(对外校务管理)<校园列表>服务器请求 ;
+  *@Group_EventsTable:kd_react开始绘制
+  * */
+ function ajax_group_myList_byRight_px() {
+ 	$.AMUI.progress.start();
+ 	var url = hostUrl + "rest/group/myListByRight.json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		data : "",
+ 		dataType : "json",
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				Store.setGroup(data.list);
+ 				React.render(React.createElement(Group_EventsTable_byRight_px, {
+ 					events: data.list,
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById('div_body'));
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 				G_resMsg_filter(data.ResMsg);
+ 			}
+ 		},
+		error :G_ajax_error_fn
+ 	});
+ };
+ /*
+  *(对外校务管理)<校园列表>return出来的按钮事件方法；
+  *@ajax_group_edit：点击事件后下一步服务器处理公共方法；
+  * */
+ function btn_click_group_byRight_px(m,formdata){
+ 	var Titlename;
+ 	if(m=="add"){
+ 		Titlename="添加分校";
+ 	}else if(m=="show"){
+ 		Titlename="预览分校";
+ 	}else{
+ 		Titlename="编辑分校";
+ 	}
+    	Queue.push(function(){btn_click_group_byRight_px(m,formdata);},Titlename);
+    	ajax_group_edit_byRight_px(m,formdata);
+   };
+
+ /*
+ *(对外校务管理)添加、编辑、预览、公共方法
+ *@add：<校园列表>-添加分校绘制界面；
+ *@Group_edi：<校园列表>kd_react；
+ *@Group_show<校园预览>kd_react；
+ */
+ function ajax_group_edit_byRight_px(m,formdata){
+   if(m=="add"){
+ 	React.render(React.createElement(Group_edit_byRight_px,{formdata:formdata}), document.getElementById('div_body'));
+ 	return;
+    }
+    	$.AMUI.progress.start();
+        var url = hostUrl + "rest/group/"+formdata.uuid+".json";
+    	$.ajax({
+    		type : "GET",
+    		url : url,
+    		dataType : "json",
+    		 async: true,
+    		success : function(data) {
+    			$.AMUI.progress.done();
+    			if (data.ResMsg.status == "success") {
+    				if(m=="edit"){
+    					React.render(React.createElement(Group_edit_byRight_px,{formdata:data.data}), document.getElementById('div_body'));
+    				}else{
+    					React.render(React.createElement(Group_show_byRight_px,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
+    				}
+    			} else {
+    				alert("加载数据失败："+data.ResMsg.message);
+    			}
+    		},
+   		error :G_ajax_error_fn
+    	});
+    }; 	   
+	   
+/*
+ *(对外校务管理)添加与编辑提交按钮方法
+ *@OPT：我们把内容用Form表单提交到Opt我们封装的
+ *一个方法内直接传给服务器，服务器从表单取出需要的参数
+ * */  
+ function ajax_group_save_byRight_px(){	   	
+       var opt={
+               formName: "editGroupForm",
+               url:hostUrl + "rest/group/save.json",
+               cbFN:function(data){
+             	G_msg_pop(data.ResMsg.message);
+ 				Queue.doBackFN();
+ 				Store.setGroup(null);
+             }
+               };
+   G_ajax_abs_save(opt);
+   }	   
+	    
+ 
+ 
  
 //————————————————————————————对外发布-优惠活动————————————————————————— 
 
@@ -3868,8 +3968,7 @@ function ajax_class_students_look_info(uuid,title){
  * 取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
- function ajax_Preferential_px_list(list_div,pageNo) {
- 	var re_data=null;
+ function ajax_Preferential_px_list(list_div,pageNo,callback) {
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/share/articleList.json";
  	$.ajax({
@@ -3885,7 +3984,9 @@ function ajax_class_students_look_info(uuid,title){
  					events: data.list,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  					}), document.getElementById(list_div));
- 				re_data=data.list;
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
  			} else {
  				alert(data.ResMsg.message);
  				G_resMsg_filter(data.ResMsg);
@@ -3893,7 +3994,6 @@ function ajax_class_students_look_info(uuid,title){
  		},
  		error :G_ajax_error_fn
  	});
- 	return re_data;
  };
  /*
   *<优惠活动>详情服务器请求；
@@ -4121,68 +4221,4 @@ function ajax_teacher_save_byRight(){
             };
 G_ajax_abs_save(opt);
 }      
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-//   
-//   
-//   /*
-//    * <发布老师资料>（获取用户列表服务器请求）；
-//    * */	
-//    function px_ajax_teacher_byRight(groupuuid){ 
-//   	 var groupList=Store.getGroup();
-//        if(!groupuuid)groupuuid=groupList[0].uuid;
-//   		Queue.push(function(){px_ajax_teacher_byRight(groupuuid);},"发布课程");
-//   	   	$.AMUI.progress.start();
-//   	       var url = hostUrl + "rest/pxCourse/list.json";
-//   	   	$.ajax({
-//   	   		type : "GET",
-//   	   		url : url,
-//   	   		data : {groupuuid:groupuuid},
-//   	   		dataType : "json",
-//   	   		 async: false,
-//   	   		success : function(data) {
-//   	   			$.AMUI.progress.done();
-//   	   			if (data.ResMsg.status == "success") {	   				
-//   					React.render(React.createElement(px_rect_course_byRight, {
-//   						groupuuid:groupuuid,
-//   						groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
-//   						events: data.list.data,
-//   						responsive: true, bordered: true, striped :true,hover:true,striped:true						
-//   					}), document.getElementById('div_body'));
-//   					
-//   	   			} else {
-//   	   				alert("加载数据失败："+data.ResMsg.message);
-//   	   			}
-//   	   		},
-//   			error :G_ajax_error_fn
-//   	   	});
-//   	   };
-
-      
- 
 
