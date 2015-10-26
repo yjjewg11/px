@@ -281,7 +281,7 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 				React.createElement("hr", null)
 			   ), 	  
 			   React.createElement("form", {id: "regform", method: "post", className: "am-form"}, 
-		         React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
+		         React.createElement(PxInput, {type: "hidden", name: "type", value: "2"}), 
 		          React.createElement("div", {className: "am-form-group"}, 				       		     
 			    React.createElement("label", {className: one_classDiv}, "手机号码:"), 
 				 React.createElement("div", {className: two_classDiv}, 

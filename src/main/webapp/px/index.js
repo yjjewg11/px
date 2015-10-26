@@ -109,7 +109,7 @@ function login_affter_init(){
 	                          {
 	                             "fn":menu_teacher_byRight,
 	                              "link": "##",
-	                              "title": "老师资料"
+	                              "title": "老师介绍"
 	                            }
 
 	                        ]                   

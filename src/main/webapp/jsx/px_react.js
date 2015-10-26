@@ -281,7 +281,7 @@ var Div_userinfo_reg = React.createClass({
 				<hr />
 			   </div>	  
 			   <form id="regform" method="post" className="am-form">
-		         <PxInput type="hidden" name="type"  value="1"/>
+		         <PxInput type="hidden" name="type"  value="2"/>
 		          <div className= "am-form-group">				       		     
 			    <label className={one_classDiv}>手机号码:</label>
 				 <div className={two_classDiv}>
