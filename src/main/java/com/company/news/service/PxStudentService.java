@@ -56,7 +56,8 @@ public class PxStudentService extends AbstractStudentService {
 		Query query2 =this.nSimpleHibernateDao. getSession().createQuery(t_hql);
 		query2.setParameter("student_uuid", student_uuid);
 		query2.setParameter("class_uuid", class_uuid);
-		if(query2.list().size()>0){
+		List list=query2.list();
+		if(list.size()>0){
 			responseMessage.setMessage("该学生已经在该班级了，不用重复添加！");
 			return false;
 		}

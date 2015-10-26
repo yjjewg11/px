@@ -4028,7 +4028,9 @@ var Class_EventsTable_byRight = React.createClass({
   	  <AMUIReact.Selected amSize="xs" id="selectclass_uuid2" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={o.uuid}/>    
      </div>
   	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-  	   <AMR_Button amSize="xs" amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} round>添加学生</AMR_Button>
+	
+
+  	   <AMR_Button amSize="xs" amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this, "add",o.uuid,null,o.groupuuid)} round>管理学生</AMR_Button>
   	    </div> 
   	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   	  <AMR_Button amSize="xs" amStyle="primary" onClick={class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name)} round>查看课程</AMR_Button>
@@ -6840,6 +6842,7 @@ var Class_EventsTable_byRight = React.createClass({
 		  this.ajax_queryByNameOrTel();
 	  },
 	  ajax_queryByNameOrTel:function(){
+		  var classuuid=this.props.formdata.classuuid;
 		//查询学生根据IDpxstudent_queryByNameOrTel_div绘制
 			$.AMUI.progress.start();
 		    var url = hostUrl + "rest/pxstudent/queryByNameOrTel.json";
@@ -6852,7 +6855,8 @@ var Class_EventsTable_byRight = React.createClass({
 				success : function(data) {
 					$.AMUI.progress.done();
 					if (data.ResMsg.status == "success") {						
-						React.render(React.createElement(Query_adminStudent_list_byRight,{							
+						React.render(React.createElement(Query_adminStudent_list_byRight,{	
+							classuuid:classuuid,
 							events:data.list.data
 							}), document.getElementById('pxstudent_queryByNameOrTel_div'));
 
@@ -6879,9 +6883,10 @@ var Class_EventsTable_byRight = React.createClass({
 						$.AMUI.progress.done();
 						if (data.ResMsg.status == "success") {						
 							G_msg_pop(data.ResMsg.message);
-							Store.clearChooseClass();
-							Store.setMyClassList(null);
-							Queue.doBackFN();
+							add_studentsByData({classuuid:class_uuid});
+							//Store.clearChooseClass();
+							//Store.setMyClassList(null);
+							//Queue.doBackFN();
 						} else {
 							alert("加载数据失败："+data.ResMsg.message);
 						}
@@ -6935,7 +6940,7 @@ var Class_EventsTable_byRight = React.createClass({
 			{this.props.events.map(function(event) {
 				  return(
 				  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">				  	
-				  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={thit.ajax_deleteStudentClass.bind(this,event.classuuid,event.uuid)} round>{event.name}</AMR_Button>
+				  	  <AMR_Button  amSize="xs" className="am-hide-sm" amStyle="danger" onClick={thit.ajax_deleteStudentClass.bind(this,thit.props.formdata.classuuid,event.uuid)} round>{event.name}</AMR_Button>
 				  	</div>  			  	  
 				  )})}
 
@@ -6952,7 +6957,9 @@ var Class_EventsTable_byRight = React.createClass({
    * @btn_query_click:名字查找；
    * */
   var Query_adminStudent_list_byRight = React.createClass({
+	
   render: function() {
+	    var classuuid=this.props.classuuid;
       return ( 		  
       <div> 
   	   <div className="am-form-group">
@@ -6972,7 +6979,7 @@ var Class_EventsTable_byRight = React.createClass({
           </thead>
           <tbody>
             {this.props.events.map(function(event) {
-              return (<Query_adminStudent_EventRow_byRight key={event.id} event={event} />);
+              return (<Query_adminStudent_EventRow_byRight classuuid={classuuid} key={event.id} event={event} />);
             })}
           </tbody>
         </AMR_Table>
@@ -6992,13 +6999,14 @@ var Class_EventsTable_byRight = React.createClass({
   		add_StudentClass(classuuid,uuid);
   	},
   	  render: function() {
+		
   	    var event = this.props.event;
 		console.log("event",event);
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      <tr className={className} >
-  	        <td>{event.name} <AMUIReact.Button onClick={this.btn_students_list_click.bind(this,event.classuuid,event.uuid)} amStyle="success">添加</AMUIReact.Button></td> 
+  	        <td>{event.name} <AMUIReact.Button onClick={this.btn_students_list_click.bind(this,this.props.classuuid,event.uuid)} amStyle="success">添加</AMUIReact.Button></td> 
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.ma_tel}</td>

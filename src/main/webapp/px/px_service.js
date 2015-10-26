@@ -2693,9 +2693,12 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
   * @服务器请求:POST rest/pxstudent/{uuid}.json;
   * @ajax_teachingplan_dayShow 直接调用课程表的方法；
   * */
- function class_students_manage_onClick_byRight(m,classuuid,name){
+ function class_students_manage_onClick_byRight(m,classuuid,name,groupuuid){
  if(m=="add"){
  	ajax_class_students_edit_byRight({classuuid:classuuid,sex:0},null);
+ 	
+	Queue.push(function(){class_students_manage_onClick_byRight(m,classuuid,name,groupuuid);},"管理学生");
+	add_studentsByData({classuuid:classuuid,groupuuid:groupuuid,sex:0});
  }else{
  	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:name});
  }
@@ -3649,9 +3652,9 @@ function add_StudentClass(class_uuid,student_uuid){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				Store.clearChooseClass();
-				Store.setMyClassList(null);
-				Queue.doBackFN();
+				//Store.clearChooseClass();
+				//Store.setMyClassList(null);
+				add_studentsByData({classuuid:class_uuid});
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}

@@ -4028,7 +4028,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	  React.createElement(AMUIReact.Selected, {amSize: "xs", id: "selectclass_uuid2", name: "class_uuid", onChange: this.handleChange_selectclass.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
      ), 
   	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid), round: true}, "添加学生")
+	
+
+  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this, "add",o.uuid,null,o.groupuuid), round: true}, "管理学生")
   	    ), 
   	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
   	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "primary", onClick: class_students_manage_onClick_byRight.bind(this,"class",o.uuid,o.name), round: true}, "查看课程")
@@ -6840,6 +6842,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		  this.ajax_queryByNameOrTel();
 	  },
 	  ajax_queryByNameOrTel:function(){
+		  var classuuid=this.props.formdata.classuuid;
 		//查询学生根据IDpxstudent_queryByNameOrTel_div绘制
 			$.AMUI.progress.start();
 		    var url = hostUrl + "rest/pxstudent/queryByNameOrTel.json";
@@ -6852,7 +6855,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 				success : function(data) {
 					$.AMUI.progress.done();
 					if (data.ResMsg.status == "success") {						
-						React.render(React.createElement(Query_adminStudent_list_byRight,{							
+						React.render(React.createElement(Query_adminStudent_list_byRight,{	
+							classuuid:classuuid,
 							events:data.list.data
 							}), document.getElementById('pxstudent_queryByNameOrTel_div'));
 
@@ -6879,9 +6883,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 						$.AMUI.progress.done();
 						if (data.ResMsg.status == "success") {						
 							G_msg_pop(data.ResMsg.message);
-							Store.clearChooseClass();
-							Store.setMyClassList(null);
-							Queue.doBackFN();
+							add_studentsByData({classuuid:class_uuid});
+							//Store.clearChooseClass();
+							//Store.setMyClassList(null);
+							//Queue.doBackFN();
 						} else {
 							alert("加载数据失败："+data.ResMsg.message);
 						}
@@ -6935,7 +6940,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			this.props.events.map(function(event) {
 				  return(
 				  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 				  	
-				  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: thit.ajax_deleteStudentClass.bind(this,event.classuuid,event.uuid), round: true}, event.name)
+				  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: thit.ajax_deleteStudentClass.bind(this,thit.props.formdata.classuuid,event.uuid), round: true}, event.name)
 				  	)  			  	  
 				  )})
 
@@ -6952,7 +6957,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    * @btn_query_click:名字查找；
    * */
   var Query_adminStudent_list_byRight = React.createClass({displayName: "Query_adminStudent_list_byRight",
+	
   render: function() {
+	    var classuuid=this.props.classuuid;
       return ( 		  
       React.createElement("div", null, 
   	   React.createElement("div", {className: "am-form-group"}, 
@@ -6972,7 +6979,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
           ), 
           React.createElement("tbody", null, 
             this.props.events.map(function(event) {
-              return (React.createElement(Query_adminStudent_EventRow_byRight, {key: event.id, event: event}));
+              return (React.createElement(Query_adminStudent_EventRow_byRight, {classuuid: classuuid, key: event.id, event: event}));
             })
           )
         )
@@ -6992,13 +6999,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   		add_StudentClass(classuuid,uuid);
   	},
   	  render: function() {
+		
   	    var event = this.props.event;
 		console.log("event",event);
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      React.createElement("tr", {className: className}, 
-  	        React.createElement("td", null, event.name, " ", React.createElement(AMUIReact.Button, {onClick: this.btn_students_list_click.bind(this,event.classuuid,event.uuid), amStyle: "success"}, "添加")), 
+  	        React.createElement("td", null, event.name, " ", React.createElement(AMUIReact.Button, {onClick: this.btn_students_list_click.bind(this,this.props.classuuid,event.uuid), amStyle: "success"}, "添加")), 
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.ma_tel), 
