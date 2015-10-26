@@ -92,7 +92,7 @@ function login_affter_init(){
 	            "title": "对外发布",
 	            "subMenu": [
 	                        {
-	                         "fn":menu_group_myList_fn_byRight,
+	                         "fn":menu_group_myList_fn_byRight_px,
 	                          "link": "##",
 	                          "title": "机构介绍"
 	                       },
@@ -865,4 +865,11 @@ function menu_teacher_byRight() {
 	   ajax_teacher_div_byRight();	
 };
 
-
+/*
+ * (对外校务管理)
+ * @跳转kd_service发服务器请求
+ * */
+function menu_group_myList_fn_byRight_px() {
+	Queue.push(menu_group_myList_fn_byRight_px,"对外校务管理");
+	ajax_group_myList_byRight_px();
+}
