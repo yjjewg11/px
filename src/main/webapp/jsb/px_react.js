@@ -6600,7 +6600,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		       ), 	
 
 		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dykecheng.png", className: "G_img_header2"})
+			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dykecheng1.png", className: "G_img_header2"})
 		   )
 
 		)
@@ -7466,7 +7466,7 @@ React.createElement("div", null,
        ), 	
 
    React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-	React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dyjigou.png", className: "G_img_header2"})
+	React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dyjigou1.png", className: "G_img_header2"})
    )
 
 )
@@ -7682,7 +7682,7 @@ React.createElement("div", null,
 		   ), 	
 
 		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dyyouhuihuodong.png", className: "G_img_header2"})
+			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dyyouhuihuodong1.png", className: "G_img_header2"})
 		   )
 
 		)
@@ -7932,7 +7932,7 @@ React.createElement("div", null,
      ), 	
 
 		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-		   React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dylaoshiziliao.png", className: "G_img_header2"})
+		   React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dylaoshiziliao1.png", className: "G_img_header2"})
 		   )
 
 )

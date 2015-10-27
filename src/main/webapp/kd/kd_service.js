@@ -2641,8 +2641,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * @revice_useruuid:收件人ID；
    * @send_useruuid:发送者ID；
    * */
-  function ajax_boss_message_list_byRight(revice_useruuid,send_useruuid,list_div,pageNo){
-	   var re_data=null;
+  function ajax_boss_message_list_byRight(revice_useruuid,send_useruuid,list_div,pageNo,callback){
 	   if(!pageNo)pageNo=1;
   	$.AMUI.progress.start();
       var url = hostUrl + "rest/message/queryByParentAndLeader.json";
@@ -2662,7 +2661,11 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 					revice_useruuid:revice_useruuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
+
 				
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
@@ -2670,8 +2673,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   		},
 		error :G_ajax_error_fn
 	   	});
-	   	
-	   	return re_data;
 	      };
  
  /*(园长信箱)(服务器请求)-我要发送信息
@@ -3323,8 +3324,7 @@ function menu_userteacher_fn(){
 * <签到>取出数组服务器请求后
 * 开始绘制动态数据内容
 * */
-   function ajax_announce_ClassCard_info(list_div,studentuuid,pageNo) {
-   	var re_data=null;
+   function ajax_announce_ClassCard_info(list_div,studentuuid,pageNo,callback) {
    	$.AMUI.progress.start();
    	if(!pageNo)pageNo=1;
     var url = hostUrl + "rest/studentSignRecord/queryStudentuuid.json";
@@ -3341,7 +3341,10 @@ $.ajax({
    					events: data.list.data,
    					responsive: true, bordered: true, striped :true,hover:true,striped:true
    					}), document.getElementById(list_div));
-   				re_data=data.list;
+
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
    			} else {
    				alert(data.ResMsg.message);
    				G_resMsg_filter(data.ResMsg);
@@ -3349,7 +3352,6 @@ $.ajax({
    		},
    		error :G_ajax_error_fn
    	});
-   	return re_data;
    };	   
 
 //——————————————————————————学生列表—————————————————————————— 
@@ -3415,8 +3417,7 @@ $.ajax({
  	 * 取出数组服务器请求后
  	 * 开始绘制动态数据内容
  	 * */
- 	 function ajax_help_px_list(list_div,pageNo) {
- 	 	var re_data=null;
+ 	 function ajax_help_px_list(list_div,pageNo,callback) {
  	 	$.AMUI.progress.start();
  	 	var url = hostUrl + "rest/share/articleList.json";
  	 	$.ajax({
@@ -3432,7 +3433,9 @@ $.ajax({
  	 					events: data.list,
  	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
  	 					}), document.getElementById(list_div));
- 	 				re_data=data.list;
+ 	 				if(typeof callback=='function'){
+ 						callback(data.list);
+ 					}
  	 			} else {
  	 				alert(data.ResMsg.message);
  	 				G_resMsg_filter(data.ResMsg);
@@ -3440,7 +3443,6 @@ $.ajax({
  	 		},
  	 		error :G_ajax_error_fn
  	 	});
- 	 	return re_data;
  	 };
  	 /*
  	  *<帮助列表>详情服务器请求；

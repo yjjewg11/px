@@ -2806,15 +2806,17 @@ var rect_favorites_Div_list = React.createClass({
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+      var re_data=ajax_favorites_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -4044,13 +4046,18 @@ componentDidMount:function(){
 },
 load_more_data:function(){
 	$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-	var re_data=ajax_boss_message_list_byRight(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
-	if(!re_data)return;
-	if(re_data.data.length<re_data.pageSize){
-		$("#"+this.load_more_btn_id).hide();
-	}
-	  
-	  this.pageNo++;
+
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+	var re_data=ajax_boss_message_list_byRight(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 },
 refresh_data:function(){
 //	classnewsreply_list_div 清除；
@@ -6955,7 +6962,7 @@ render: function() {
    
    
    /*
-   *老师通讯录绘制舞台再请求数据方法；
+   *签到绘制舞台再请求数据方法；
    * @</select>下拉多选框;
    * */
    var Announcements_Div_ClassCard_info_byRight = React.createClass({ 
@@ -6973,14 +6980,17 @@ render: function() {
    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
    	load_more_data:function(){
    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-   		var re_data=ajax_announce_ClassCard_info(this.classnewsreply_list_div+this.pageNo,this.props.studentuuid,this.pageNo);
-   		if(!re_data)return;
-   		if(re_data.data.length<re_data.pageSize){
-   			$("#"+this.load_more_btn_id).hide();
-   		}else{
-   			$("#"+this.load_more_btn_id).show();
-   		}		  
-   		  this.pageNo++;
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+var re_data=ajax_announce_ClassCard_info(this.classnewsreply_list_div+this.pageNo,this.props.studentuuid,this.pageNo,callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7011,7 +7021,7 @@ render: function() {
    });
 
    /*
-   * 老师通讯录表单详情内容绘制;
+   *签到表单详情内容绘制;
    * 一键拨号
    * */
    var Announcements_ClassCard_info_div = React.createClass({ 
@@ -7636,15 +7646,17 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
   	load_more_data:function(){
   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-  		var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-  		if(!re_data)return;
-  		if(re_data.data.length<re_data.pageSize){
-  			$("#"+this.load_more_btn_id).hide();
-  		}else{
-  			$("#"+this.load_more_btn_id).show();
-  		}
-  		  
-  		  this.pageNo++;
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+		  var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
   	},
   	refresh_data:function(){
 //  		classnewsreply_list_div 清除；
