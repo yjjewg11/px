@@ -839,8 +839,7 @@ function ajax_announce_div(){
  * <公告>取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
-function ajax_announce_Mylist(list_div,pageNo) {
-	var re_data=null;
+function ajax_announce_Mylist(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/announcements/queryMy.json?pageNo="+pageNo;
 	$.ajax({
@@ -856,7 +855,9 @@ function ajax_announce_Mylist(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -864,7 +865,6 @@ function ajax_announce_Mylist(list_div,pageNo) {
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
 /*
  * <公告>二级绑定事件服务器请求；
@@ -1185,8 +1185,7 @@ function ajax_good_announce_div(){
 * 取出数组服务器请求后
 * 开始绘制动态数据内容
 * */
-function ajax_announce_Mygoodlist(list_div,pageNo) {
-	var re_data=null;
+function ajax_announce_Mygoodlist(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/share/articleList.json";
 	$.ajax({
@@ -1202,7 +1201,9 @@ function ajax_announce_Mygoodlist(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1210,7 +1211,6 @@ function ajax_announce_Mygoodlist(list_div,pageNo) {
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
 /*
  *<精品文章>详情服务器请求；
@@ -1401,8 +1401,7 @@ function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
  *  @parent_uuid:每个用户的ID；
  *  
  * */
-function ajax_message_queryByParent(list_div,parent_uuid,pageNo){	
-	   var re_data=null;
+function ajax_message_queryByParent(list_div,parent_uuid,pageNo,callback){	
 	   if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/message/queryByParent.json";
@@ -1421,7 +1420,9 @@ function ajax_message_queryByParent(list_div,parent_uuid,pageNo){
 					parent_uuid:parent_uuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 				
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
@@ -1429,8 +1430,6 @@ function ajax_message_queryByParent(list_div,parent_uuid,pageNo){
 		},
 		error :G_ajax_error_fn
 	});
-	
-	return re_data;
    };
    
 /*（主页）家长通讯录功 服务器请求
@@ -1543,8 +1542,7 @@ function ajax_Teacher_tel_div(groupuuid){
  * @name:搜索功能 按中文名字;
  * @Teacher_info_tel:绘制;
  * */
-function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
-	var re_data=null;
+function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo,callback){
 	var list=Store.getGroupNoGroup_wjd();
 	  if(!name)name="";
 	  if(!pageNo)pageNo=1;
@@ -1568,7 +1566,9 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 					events: data.list.data,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 				}), document.getElementById(list_div));
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 				G_resMsg_filter(data.ResMsg);
@@ -1576,7 +1576,6 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo){
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 }; 
 
 
@@ -1596,8 +1595,7 @@ function ajax_favorites_div(){
 /*
  * <我的收藏>（获取用户收藏列表服务器请求；
  * */
-function ajax_favorites_list(list_div,pageNo) {
-	var re_data=null;
+function ajax_favorites_list(list_div,pageNo,callback) {
 	$.AMUI.progress.start();
 	var url = hostUrl + "rest/favorites/query.json";
 	$.ajax({
@@ -1613,14 +1611,15 @@ function ajax_favorites_list(list_div,pageNo) {
 					events: data.list,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 			}
 		},
 		error :G_ajax_error_fn
 	});
-	return re_data;
 };
  
 
