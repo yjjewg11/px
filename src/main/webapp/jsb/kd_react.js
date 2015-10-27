@@ -909,15 +909,17 @@ var Announcements_Div_list = React.createClass({displayName: "Announcements_Div_
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+      var re_data=ajax_announce_Mylist(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -1857,15 +1859,18 @@ var ParentContactByMyStudent_message_list = React.createClass({displayName: "Par
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_message_queryByParent(this.classnewsreply_list_div+this.pageNo,this.props.parent_uuid,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+		var re_data=ajax_message_queryByParent(this.classnewsreply_list_div+this.pageNo,this.props.parent_uuid,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -1983,15 +1988,17 @@ var Announcements_good_Div_list = React.createClass({displayName: "Announcements
 	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}
-		  
-		  this.pageNo++;
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+	var re_data=ajax_announce_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
@@ -2675,14 +2682,18 @@ var Announcements_Teacher_tel_div = React.createClass({displayName: "Announcemen
 	load_more_data:function(){ 
 		this.setState({groupuuid:$("input[name='group_uuid']").val()});
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo);
-		if(!re_data)return;
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+		var re_data=ajax_Teacher_tel_list(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
 	},
 		 getInitialState: function() {
 		return {groupuuid:this.props.groupuuid};
