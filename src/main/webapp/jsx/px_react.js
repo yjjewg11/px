@@ -6600,7 +6600,7 @@ var Class_EventsTable_byRight = React.createClass({
 		       </div>	
 
 		   <div  className=" am-u-md-6 am-u-sm-12">
-			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dykecheng1.png"} className={"G_img_header2"}/>
+			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dykecheng.png"} className={"G_img_header2"}/>
 		   </div>
 
 		</div>
@@ -7466,7 +7466,7 @@ var Group_edit_byRight_px = React.createClass({
        </div>	
 
    <div  className=" am-u-md-6 am-u-sm-12">
-	<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyjigou1.png"} className={"G_img_header2"}/>
+	<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyjigou.png"} className={"G_img_header2"}/>
    </div>
 
 </div>
@@ -7682,7 +7682,7 @@ var Group_edit_byRight_px = React.createClass({
 		   </div>	
 
 		   <div  className=" am-u-md-6 am-u-sm-12">
-			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyyouhuihuodong1.png"} className={"G_img_header2"}/>
+			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyyouhuihuodong.png"} className={"G_img_header2"}/>
 		   </div>
 
 		</div>
@@ -7932,7 +7932,7 @@ return (
      </div>	
 
 		   <div  className=" am-u-md-6 am-u-sm-12">
-		   <AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dylaoshiziliao1.png"} className={"G_img_header2"}/>
+		   <AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dylaoshiziliao.png"} className={"G_img_header2"}/>
 		   </div>
 
 </div>
