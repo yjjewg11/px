@@ -4617,11 +4617,12 @@ render: function() {
 	  componentDidMount: function() {
 		this.ajax_list(); 
 	  },
-		ajax_callback:function(list){
+		ajax_callback:function(list,sum_num){
     		 if (list== null ) this.state.list=[];
 			 else
     		  this.state.list=list.data;
-			
+			this.state.sum_num=sum_num;
+			if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
     		  this.setState(this.state);
     	  },
 		ajax_list:function(){
@@ -4640,7 +4641,7 @@ render: function() {
     			success : function(data) {
     				$.AMUI.progress.done();
     				if (data.ResMsg.status == "success") {
-    				    that.ajax_callback( data.list );     
+    				    that.ajax_callback( data.list,data.sum_num );     
     				} else {
     					alert(data.ResMsg.message);
     					G_resMsg_filter(data.ResMsg);
@@ -4692,7 +4693,8 @@ render: function() {
      },
     render: function() {
 			var queryForm=this.state.queryForm;
-			   
+			 if(!this.state.totalCount)this.state.totalCount=0;
+			 if(!this.state.sum_num)this.state.sum_num=0;
       return (
       <div>
  
@@ -4703,6 +4705,7 @@ render: function() {
     	  <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
       </AMR_ButtonToolbar>
          	  <hr/>
+				
 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
     	
@@ -4717,7 +4720,7 @@ render: function() {
 			 <AMR_Button amStyle="primary" onClick={this.handleClick_query.bind(this)} round>查询</AMR_Button>
     	
 		  </AMUIReact.Form>
-    	
+    	 <h6>{"总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount}</h6>
         <Accounts_EventsTable2_byRight{...this.props} events={this.state.list} />
         </div>
       );

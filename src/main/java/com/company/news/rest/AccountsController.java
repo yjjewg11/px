@@ -211,7 +211,7 @@ public class AccountsController extends AbstractRESTController {
 //			String type=request.getParameter("type");
 //			String classuuid=request.getParameter("classuuid");
 			
-			PageQueryResult pageQueryResult = accountsService.listByPage(pData,begDateStr,endDateStr, accountsJsonform);
+			PageQueryResult pageQueryResult = accountsService.listByPage(pData,begDateStr,endDateStr, accountsJsonform,model);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

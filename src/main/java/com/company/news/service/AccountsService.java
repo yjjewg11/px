@@ -13,12 +13,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import com.company.news.entity.Accounts;
 import com.company.news.entity.Student;
 import com.company.news.jsonform.AccountsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -199,7 +201,7 @@ public class AccountsService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult listByPage(PaginationData pData,String begDateStr, String endDateStr,AccountsJsonform accountsJsonform) {
+	public PageQueryResult listByPage(PaginationData pData,String begDateStr, String endDateStr,AccountsJsonform accountsJsonform,ModelMap model) {
 		StringBuffer hql=new StringBuffer("from Accounts where groupuuid='"+accountsJsonform.getGroupuuid()+"'");
 		
 		if(StringUtils.isNotBlank(begDateStr))
@@ -224,8 +226,9 @@ public class AccountsService extends AbstractService {
 			
 
 		hql.append(" order by create_time desc");
-	
-
+		
+		Object sum=this.nSimpleHibernateDao.getSession().createQuery("select sum(num) "+hql).uniqueResult();
+		model.addAttribute("sum_num", sum);
 		return  this.nSimpleHibernateDao.findByPaginationToHql(hql.toString(), pData);
 	}
 

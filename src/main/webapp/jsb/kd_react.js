@@ -4617,11 +4617,12 @@ render: function() {
 	  componentDidMount: function() {
 		this.ajax_list(); 
 	  },
-		ajax_callback:function(list){
+		ajax_callback:function(list,sum_num){
     		 if (list== null ) this.state.list=[];
 			 else
     		  this.state.list=list.data;
-			
+			this.state.sum_num=sum_num;
+			if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
     		  this.setState(this.state);
     	  },
 		ajax_list:function(){
@@ -4640,7 +4641,7 @@ render: function() {
     			success : function(data) {
     				$.AMUI.progress.done();
     				if (data.ResMsg.status == "success") {
-    				    that.ajax_callback( data.list );     
+    				    that.ajax_callback( data.list,data.sum_num );     
     				} else {
     					alert(data.ResMsg.message);
     					G_resMsg_filter(data.ResMsg);
@@ -4692,7 +4693,8 @@ render: function() {
      },
     render: function() {
 			var queryForm=this.state.queryForm;
-			   
+			 if(!this.state.totalCount)this.state.totalCount=0;
+			 if(!this.state.sum_num)this.state.sum_num=0;
       return (
       React.createElement("div", null, 
  
@@ -4703,6 +4705,7 @@ render: function() {
     	  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
       ), 
          	  React.createElement("hr", null), 
+				
 		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
 			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 	  
     	
@@ -4717,7 +4720,7 @@ render: function() {
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this), round: true}, "查询")
     	
 		  ), 
-    	
+    	 React.createElement("h6", null, "总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount), 
         React.createElement(Accounts_EventsTable2_byRight, React.__spread({}, this.props, {events: this.state.list}))
         )
       );
