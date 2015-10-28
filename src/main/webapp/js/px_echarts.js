@@ -58,7 +58,7 @@ var PXECharts_ajax={
 		data.push( {value: 'uls', label: '教师活跃度统计（按机构）'});
 		data.push( {value: 'sss', label: '学生性别统计（按机构）'});
 		data.push( {value: 'tjs', label: '教师评价统计（按机构）'});
-		data.push( {value: 'cnts', label: '班级互动TOP10（按机构）'});
+		//data.push( {value: 'cnts', label: '班级互动TOP10（按机构）'});
 		data.push( {value: 'css', label: '人数统计（按班级）'});
 		//data.push( {value: 'cps', label: '人数统计（按班级家长）'});		
 		data.push( {value: 'cns', label: '发帖互动统计（按班级）'});
@@ -89,11 +89,15 @@ var PXECharts_ajax={
 	},
 	/**
 	 * 请求返回数据->图标显示.默认调用PXECharts_ajax.ajax_uss(data);
+	 *班级互动TOP10（按机构）
 	 * @param data
 	 */
 	ajax_cnts:function(data){
 		PXECharts_ajax.ajax_cnts(data);
 	},
+	/**
+	 *  'css', label: '人数统计（按班级）'
+	 */
 	ajax_css:function(data){
 		PXECharts_ajax.ajax_css(data);
 	},	
@@ -132,7 +136,11 @@ var PXECharts_ajax={
 		
 		 PXECharts.loadData(option);
 		
-	},ajax_css:function(data){
+	},
+	/**
+	 *  'css', label: '人数统计（按班级）'
+	 */
+	ajax_css:function(data){
 		option = {
 			    title : {
 			        text: data.title_text,
@@ -144,16 +152,7 @@ var PXECharts_ajax={
 			    legend: {
 			        data:data.legend_data
 			    },
-			    toolbox: {
-			        show : true,
-			        feature : {
-			            mark : {show: true},
-			            dataView : {show: true, readOnly: false},
-			            magicType: {show: true, type: ['line', 'bar']},
-			            restore : {show: true},
-			            saveAsImage : {show: true}
-			        }
-			    },
+			   
 			    calculable : true,
 			    xAxis : [
 			        {
