@@ -294,6 +294,8 @@ var  Queue={
 			 this.isBack=false;
 			 if(this.arr.length>50){
 				 this.arr=this.arr.slice(40);//防止内存异常,最多保留50个.
+			 }else if(this.arr.length==0){//解决0的情况下,点击后,再次回退可以,退到首页.
+				 if(typeof menu_dohome=='function')  this.arr.push(menu_dohome);
 			 }
 			 //same operation ,no add
 			 // if(this.arr.length==0||this.arr[this.arr.length-1].name!=o.name)
