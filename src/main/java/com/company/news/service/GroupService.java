@@ -153,6 +153,23 @@ public class GroupService extends AbstractService {
 			return false;
 		}
 		
+		if(StringUtils.isNotBlank(groupRegJsonform.getCity())){
+			String tmp=StringUtils.trim(groupRegJsonform.getCity());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setCity(tmp);
+		}
+		
+
+		if(StringUtils.isNotBlank(groupRegJsonform.getProv())){
+			String tmp=StringUtils.trim(groupRegJsonform.getProv());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setProv(tmp);
+		}
+		
 		// 机构名是否存在
 //		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
 //			responseMessage.setMessage("机构名已被注册！");
@@ -221,6 +238,23 @@ public class GroupService extends AbstractService {
 			return false;
 		}
 		
+		if(StringUtils.isNotBlank(groupRegJsonform.getCity())){
+			String tmp=StringUtils.trim(groupRegJsonform.getCity());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setCity(tmp);
+		}
+		
+
+		if(StringUtils.isNotBlank(groupRegJsonform.getProv())){
+			String tmp=StringUtils.trim(groupRegJsonform.getProv());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setProv(tmp);
+		}
+		
 		// 机构名是否存在
 //		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),groupRegJsonform.getUuid())) {
 //			responseMessage.setMessage("机构名已被注册！");
@@ -233,7 +267,9 @@ public class GroupService extends AbstractService {
 			group.setAddress(groupRegJsonform.getAddress());
 			group.setDescription(groupRegJsonform.getDescription());
 			group.setLink_tel(groupRegJsonform.getLink_tel());
-			group.setMap_point(groupRegJsonform.getMap_point());
+			group.setMap_point(groupRegJsonform.getMap_point());;
+			group.setCity(groupRegJsonform.getCity());
+			group.setProv(groupRegJsonform.getProv());
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(group);
 		}else{

@@ -50,6 +50,7 @@ public class UserinfoController extends AbstractRESTController {
 	private GroupService groupService;
 	@Autowired
 	private RightService rightService;
+	
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
@@ -131,7 +132,7 @@ public class UserinfoController extends AbstractRESTController {
 				e.printStackTrace();
 			}
 			//设置session数据
-			this.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
+			userinfoService.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			// 返回用户信息
 			this.putUserInfoReturnToModel(user,model, request);
 			
@@ -147,35 +148,6 @@ public class UserinfoController extends AbstractRESTController {
 		return "";
 	}
 	
-	 /**
-	   * 返回客户端用户信息放入Map
-	   * @param request
-	   * @return
-	 * @throws Exception 
-	   */
-	  protected void putSession(String grouptype, HttpSession session,SessionUserInfoInterface user,HttpServletRequest request) throws Exception{
-		  if(StringUtils.isBlank(grouptype))grouptype=SystemConstants.Group_type_1.toString();
-		  List listGroupuuids=groupService.getGroupuuidsByUseruuid(user.getUuid(),grouptype);
-			//老数据兼容,如果没有关联默认学校,则关联.
-			if(listGroupuuids==null||listGroupuuids.isEmpty()){
-				userinfoService.addDefaultKDGroup(user.getUuid(), null);
-				listGroupuuids.add(SystemConstants.Group_uuid_wjd);
-			}
-			//1.session添加-我的关联学校.
-			session.setAttribute(RestConstants.Session_MygroupUuids, StringUtils.join(listGroupuuids, ","));
-			//2.session添加-我的权限
-			List rightList=rightService.getRightListByUser(user,grouptype);
-			session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
-			//3.session添加-用户信息
-			session.setAttribute(RestConstants.Session_UserInfo, user);
-			//4.session添加-用户类型.
-			session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
-			//5.session添加-设置当前用户是否管理员
-			if (SystemConstants.Group_type_0.toString().equals(grouptype)) {
-				boolean isAdmin=userinfoService.isAdmin(user.getUuid());
-				session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
-			}
-	  }
 	//培训机构登录
 	public String pxlogin(User user,UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request) {
@@ -257,7 +229,7 @@ public class UserinfoController extends AbstractRESTController {
 				e.printStackTrace();
 			}
 			//设置session数据
-			this.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
+			userinfoService.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			
 			// 返回用户信息
 			this.putUserInfoReturnToModel(user,model, request);
@@ -367,7 +339,7 @@ public class UserinfoController extends AbstractRESTController {
 			if(StringUtils.isNotBlank(grouptype)){
 				String loginType=SessionListener.getLoginTypeBySession(request);
 				if(!grouptype.equals(loginType)){//不等,表示切换 到其他模块.重新家长session的属性.
-					this.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+					userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
 				}
 			}
 			// 返回用户信息

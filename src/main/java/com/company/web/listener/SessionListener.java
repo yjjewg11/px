@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.company.news.SystemConstants;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.RestConstants;
+import com.company.web.filter.UserInfoFilter;
 
 public class SessionListener implements HttpSessionListener {
    
@@ -44,7 +45,11 @@ public class SessionListener implements HttpSessionListener {
   public static HttpSession   getSession(HttpServletRequest request){
     String token=request.getParameter(RestConstants.Return_access_token);
     String JSESSIONID=request.getParameter(RestConstants.Return_JSESSIONID);
-    HttpSession session=null;
+    //1.优先根据默认关系取
+    HttpSession session=request.getSession(false);;
+    if(session!=null)return session;
+    
+    //2.根据JSESSIONID 参数获取
     if(StringUtils.isNotBlank(JSESSIONID)){//使用JSESSIONID
       session=(HttpSession)sessionMapBySessionid.get(JSESSIONID);
       if(session!=null)return session;
@@ -60,14 +65,18 @@ public class SessionListener implements HttpSessionListener {
    }
     //"http://120.25.127.141/runman-rest/rest/userinfo/modify.json?JSESSIONID=s6a3I+MMHVwIIq1-KAX4S0Iz.undefined";
     //sessionid 包含+号的情况
-    if(StringUtils.isNotBlank(JSESSIONID)){//使用JSESSIONID
-      session=(HttpSession)sessionMapBySessionid.get(JSESSIONID);
-      if(session!=null)return session;
-   }
+    // //3.根据token 参数获取
     if(StringUtils.isNotBlank(token)){//使用token
        return SessionListener.getSessionByToken(token);
     }
-      return request.getSession(false);
+    
+    //根据客户端cookie获取.解决session同步.根据数据库表user
+	JSESSIONID=UserInfoFilter.getJSESSIONIDCookies(request);
+	if(StringUtils.isNotBlank(JSESSIONID)){
+		return (HttpSession)SessionListener.getSessionByToken(JSESSIONID);
+	}
+    
+    return session;
   }
   
   /**

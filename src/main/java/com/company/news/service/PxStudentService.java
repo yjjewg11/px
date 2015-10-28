@@ -311,7 +311,7 @@ public class PxStudentService extends AbstractStudentService {
 		
 		if (StringUtils.isBlank(name))
 			return new PageQueryResult();
-		
+		//去掉多余用户
 		String hql = "from PxStudent where ";
 		if (StringUtils.isNumeric(name))
 			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"')";
@@ -322,7 +322,7 @@ public class PxStudentService extends AbstractStudentService {
 		
 		//如果没找到对应的,就到幼儿园的数据表里面进行抓取.
 		if(pageQueryResult.getData()==null||pageQueryResult.getData().size()==0){
-			 hql = "from Student where ";
+			 hql = "from  Student where ";
 			if (StringUtils.isNumeric(name))
 				hql += "  uuid in (select student_uuid from StudentContactRealation where tel ='"+name+"')";
 			else

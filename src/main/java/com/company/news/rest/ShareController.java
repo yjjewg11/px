@@ -27,6 +27,7 @@ import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
+import com.company.news.entity.PxCourse;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -460,5 +461,48 @@ public class ShareController extends AbstractRESTController {
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
+	}
+	
+	
+	/**
+	 * 获取培训发布课程流程
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getPxCourse", method = RequestMethod.GET)
+	public String getPxCourse(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		PxCourse a=null;
+		try {
+			
+			 a = (PxCourse) this.nSimpleHibernateDao.getObjectById(
+					PxCourse.class, uuid);
+		
+			
+			if(a==null){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+			
+			
+			if(SystemConstants.PxCourse_status_weifabu.equals(a.getStatus())){
+				return "/404";
+			}
+			//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_pxcourse));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "/404";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getPxCourse";
 	}
 }

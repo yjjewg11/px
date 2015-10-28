@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
-import com.company.news.aop.operate.OperateMeta;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -34,6 +35,7 @@ import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -43,6 +45,7 @@ import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
 import com.company.plugin.security.LoginLimit;
 import com.company.web.listener.SessionListener;
+import com.company.web.session.UserOfSession;
 
 /**
  * 
@@ -76,7 +79,8 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean addDefaultKDGroup(String user_uuid, ResponseMessage responseMessage) throws Exception {
+	public boolean addDefaultKDGroup(String user_uuid,
+			ResponseMessage responseMessage) throws Exception {
 		// 保存用户机构关联表
 		UserGroupRelation userGroupRelation = new UserGroupRelation();
 		userGroupRelation.setUseruuid(user_uuid);
@@ -95,7 +99,8 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean reg(UserRegJsonform userRegJsonform, ResponseMessage responseMessage) throws Exception {
+	public boolean reg(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
 
 		// TEL格式验证
 		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
@@ -104,7 +109,8 @@ public class UserinfoService extends AbstractService {
 		}
 
 		// name昵称验证
-		if (StringUtils.isBlank(userRegJsonform.getName()) || userRegJsonform.getName().length() > 15) {
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
 			return false;
 		}
@@ -120,7 +126,8 @@ public class UserinfoService extends AbstractService {
 		// return false;
 		// }
 
-		if (!smsService.VerifySmsCode(responseMessage, userRegJsonform.getTel(), userRegJsonform.getSmscode())) {
+		if (!smsService.VerifySmsCode(responseMessage,
+				userRegJsonform.getTel(), userRegJsonform.getSmscode())) {
 			return false;
 		}
 
@@ -148,7 +155,8 @@ public class UserinfoService extends AbstractService {
 			userGroupRelation.setUseruuid(user.getUuid());
 			userGroupRelation.setGroupuuid(groupStrArr[i]);
 			// 有事务管理，统一在Controller调用时处理异常
-			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+			this.nSimpleHibernateDao.getHibernateTemplate().save(
+					userGroupRelation);
 		}
 
 		// 注册机构情况下,当前用户设置为管理员角色
@@ -160,7 +168,7 @@ public class UserinfoService extends AbstractService {
 				r.setUseruuid(user.getUuid());
 				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 
-			}else if (SystemConstants.Group_type_2.equals(group.getType())) {
+			} else if (SystemConstants.Group_type_2.equals(group.getType())) {
 				RoleUserRelation r = new RoleUserRelation();
 				r.setRoleuuid(RightConstants.Role_PX_admini);
 				r.setUseruuid(user.getUuid());
@@ -179,8 +187,8 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(UserRegJsonform userRegJsonform, ResponseMessage responseMessage, String mygroup)
-			throws Exception {
+	public boolean add(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage, String mygroup) throws Exception {
 		// name昵称验证
 		if (StringUtils.isBlank(mygroup)) {
 			responseMessage.setMessage("当前用户没有关联学校,无权限操作");
@@ -193,7 +201,8 @@ public class UserinfoService extends AbstractService {
 		}
 
 		// name昵称验证
-		if (StringUtils.isBlank(userRegJsonform.getName()) || userRegJsonform.getName().length() > 15) {
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
 			return false;
 		}
@@ -209,7 +218,8 @@ public class UserinfoService extends AbstractService {
 			return false;
 		}
 		String attribute = "";
-		User user = (User) nSimpleHibernateDao.getObjectByAttribute(User.class, "loginname", userRegJsonform.getTel());
+		User user = (User) nSimpleHibernateDao.getObjectByAttribute(User.class,
+				"loginname", userRegJsonform.getTel());
 
 		if (user == null) {// 不存在,则新加用户并绑定关心.
 			user = new User();
@@ -228,7 +238,8 @@ public class UserinfoService extends AbstractService {
 			// 只能删除我关联学校的用户的关联关心
 			int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 					.bulkUpdate(
-							"delete from UserGroupRelation where  groupuuid in(" + DBUtil.stringsToWhereInValue(mygroup)
+							"delete from UserGroupRelation where  groupuuid in("
+									+ DBUtil.stringsToWhereInValue(mygroup)
 									+ ") and  useruuid =? and groupuuid!=?",
 							user.getUuid(), SystemConstants.Group_uuid_wjd);
 			this.logger.info("delete from UserGroupRelation count=" + tmpCout);
@@ -241,7 +252,8 @@ public class UserinfoService extends AbstractService {
 			userGroupRelation.setUseruuid(user.getUuid());
 			userGroupRelation.setGroupuuid(groupStrArr[i]);
 			// 有事务管理，统一在Controller调用时处理异常
-			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+			this.nSimpleHibernateDao.getHibernateTemplate().save(
+					userGroupRelation);
 		}
 
 		return true;
@@ -255,15 +267,18 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public User update(UserRegJsonform userRegJsonform, ResponseMessage responseMessage) throws Exception {
+	public User update(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
 
 		// name昵称验证
-		if (StringUtils.isBlank(userRegJsonform.getName()) || userRegJsonform.getName().length() > 15) {
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
 			return null;
 		}
 
-		User user = (User) this.nSimpleHibernateDao.getObject(User.class, userRegJsonform.getUuid());
+		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
+				userRegJsonform.getUuid());
 		if (user == null) {
 			responseMessage.setMessage("user不存在！");
 			return null;
@@ -271,7 +286,8 @@ public class UserinfoService extends AbstractService {
 
 		boolean needUpdateCreateImg = false;
 		// 头像有变化,更新相应的表.
-		if (userRegJsonform.getImg() != null && !userRegJsonform.getImg().equals(user.getImg())) {
+		if (userRegJsonform.getImg() != null
+				&& !userRegJsonform.getImg().equals(user.getImg())) {
 			needUpdateCreateImg = true;
 		}
 		// 名字有变化更新相应的表.
@@ -302,13 +318,16 @@ public class UserinfoService extends AbstractService {
 	 * @param name
 	 * @param img
 	 */
-	public void relUpdate_updateSessionUserInfoInterface(SessionUserInfoInterface user) {
+	public void relUpdate_updateSessionUserInfoInterface(
+			SessionUserInfoInterface user) {
 
 		int count = 0;
 
-		count = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update ClassNewsReply set create_user=?,create_img=? where create_useruuid =?", user.getName(),
-				user.getImg(), user.getUuid());
+		count = this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.bulkUpdate(
+						"update ClassNewsReply set create_user=?,create_img=? where create_useruuid =?",
+						user.getName(), user.getImg(), user.getUuid());
 
 		this.logger.info("update ClassNewsReply count=" + count);
 
@@ -319,12 +338,15 @@ public class UserinfoService extends AbstractService {
 		// user.getName(),user.getImg(), user.getUuid());
 		// this.logger.info("update ClassNews count="+count);
 
-		count = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"update Message set send_user=?,send_userimg=? where send_useruuid =?", user.getName(), user.getImg(),
-				user.getUuid());
+		count = this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.bulkUpdate(
+						"update Message set send_user=?,send_userimg=? where send_useruuid =?",
+						user.getName(), user.getImg(), user.getUuid());
 		this.logger.info("update Message count=" + count);
 
-		count = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update Message set revice_user=? where revice_useruuid =?",
+		count = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update Message set revice_user=? where revice_useruuid =?",
 				user.getName(), user.getUuid());
 		this.logger.info("update Message count=" + count);
 
@@ -338,8 +360,8 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public User updateByAdmin(UserRegJsonform userRegJsonform, ResponseMessage responseMessage, String mygroup)
-			throws Exception {
+	public User updateByAdmin(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage, String mygroup) throws Exception {
 
 		// name昵称验证
 		if (StringUtils.isBlank(mygroup)) {
@@ -347,11 +369,13 @@ public class UserinfoService extends AbstractService {
 			return null;
 		}
 		// name昵称验证
-		if (StringUtils.isBlank(userRegJsonform.getName()) || userRegJsonform.getName().length() > 15) {
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
 			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
 			return null;
 		}
-		User user = (User) this.nSimpleHibernateDao.getObject(User.class, userRegJsonform.getUuid());
+		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
+				userRegJsonform.getUuid());
 		if (user == null) {
 			responseMessage.setMessage("user不存在！");
 			return null;
@@ -368,7 +392,8 @@ public class UserinfoService extends AbstractService {
 		// 只能删除我关联学校的用户的关联关心
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate(
-						"delete from UserGroupRelation where  groupuuid in(" + DBUtil.stringsToWhereInValue(mygroup)
+						"delete from UserGroupRelation where  groupuuid in("
+								+ DBUtil.stringsToWhereInValue(mygroup)
 								+ ") and  useruuid =? and groupuuid!=?",
 						user.getUuid(), SystemConstants.Group_uuid_wjd);
 		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
@@ -380,7 +405,8 @@ public class UserinfoService extends AbstractService {
 			userGroupRelation.setUseruuid(user.getUuid());
 			userGroupRelation.setGroupuuid(groupStrArr[i]);
 			// 有事务管理，统一在Controller调用时处理异常
-			this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
+			this.nSimpleHibernateDao.getHibernateTemplate().save(
+					userGroupRelation);
 		}
 
 		// 有事务管理，统一在Controller调用时处理异常
@@ -396,9 +422,9 @@ public class UserinfoService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	@OperateMeta(description = "用户登陆")
-	public User login(UserLoginForm userLoginForm, ModelMap model, HttpServletRequest request,
-			ResponseMessage responseMessage) throws Exception {
+	public User login(UserLoginForm userLoginForm, ModelMap model,
+			HttpServletRequest request, ResponseMessage responseMessage)
+			throws Exception {
 		String loginname = userLoginForm.getLoginname();
 		String password = userLoginForm.getPassword();
 
@@ -413,13 +439,16 @@ public class UserinfoService extends AbstractService {
 
 		String attribute = "loginname";
 
-		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, loginname);
+		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
+				User.class, attribute, loginname);
 
 		if (user == null) {
 			responseMessage.setMessage("用户名:" + loginname + ",不存在!");
 			return null;
 		}
-		if (user.getDisable() != null && SystemConstants.USER_disable_true == user.getDisable().intValue()) {
+		if (user.getDisable() != null
+				&& SystemConstants.USER_disable_true == user.getDisable()
+						.intValue()) {
 			responseMessage.setMessage("帐号被禁用,请联系互动家园");
 			return null;
 		}
@@ -435,9 +464,11 @@ public class UserinfoService extends AbstractService {
 			}
 
 			// 在限定次数内
-			String project_loginLimit = ProjectProperties.getProperty("project.LoginLimit", "true");
+			String project_loginLimit = ProjectProperties.getProperty(
+					"project.LoginLimit", "true");
 			if ("true".equals(project_loginLimit)) {
-				if (!LoginLimit.verifyCount(loginname, pwdIsTrue, responseMessage)) {// 密码错误次数验证
+				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
+						responseMessage)) {// 密码错误次数验证
 					return null;
 				}
 				if (!pwdIsTrue) {
@@ -453,11 +484,15 @@ public class UserinfoService extends AbstractService {
 			}
 
 		}
+
+		HttpSession session = request.getSession(true);
 		// 更新登陆日期,最近一次登陆日期
-		String sql = "update px_user set count=count+1,last_login_time=login_time,login_time=now() where uuid='"
-				+ user.getUuid() + "'";
-		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql)
-				.executeUpdate();
+		String sql = "update px_user set count=count+1,last_login_time=login_time,login_time=now(),login_type="
+				+ userLoginForm.getGrouptype()
+				+ ",sessionid='"
+				+ session.getId() + "' where uuid='" + user.getUuid() + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 		// this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 		// "update User set login_time=?,last_login_time=? where uuid=?",
 		// count,TimeUtils.getCurrentTimestamp(), user.getLogin_time(),
@@ -481,14 +516,21 @@ public class UserinfoService extends AbstractService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public boolean isAdmin(UserLoginForm userLoginForm, SessionUserInfoInterface user, ResponseMessage responseMessage) {
+	public boolean isAdmin(UserLoginForm userLoginForm,
+			SessionUserInfoInterface user, ResponseMessage responseMessage) {
 		boolean isAdmin = false;
 		// 后台管理员登录
-		if (SystemConstants.Group_type_0.toString().equals(userLoginForm.getGrouptype())) {
-			Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
-			List tmpList = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type="
-					+ SystemConstants.Group_type_0 + " and t0.groupuuid={t1}.uuid and t0.useruuid='" + user.getUuid()
-					+ "'").addEntity("t1", Group.class).list();
+		if (SystemConstants.Group_type_0.toString().equals(
+				userLoginForm.getGrouptype())) {
+			Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+					.getSessionFactory().getCurrentSession();
+			List tmpList = s
+					.createSQLQuery(
+							"select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type="
+									+ SystemConstants.Group_type_0
+									+ " and t0.groupuuid={t1}.uuid and t0.useruuid='"
+									+ user.getUuid() + "'")
+					.addEntity("t1", Group.class).list();
 			if (tmpList.size() == 0) {
 				responseMessage.setMessage("不是合法用户,不能登录云平台管理");
 				return false;
@@ -499,7 +541,6 @@ public class UserinfoService extends AbstractService {
 		}
 		return isAdmin;
 	}
-	
 
 	/**
 	 * 
@@ -511,16 +552,19 @@ public class UserinfoService extends AbstractService {
 	public boolean isAdmin(String uuid) {
 		boolean isAdmin = false;
 		// 后台管理员登录
-			Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession();
-			List tmpList = s.createSQLQuery("select t1.uuid from px_usergrouprelation t0,px_group t1 where t1.type="
-					+ SystemConstants.Group_type_0 + " and t0.groupuuid=t1.uuid and t0.useruuid='" + uuid
-					+ "'").list();
-			if (tmpList.size() == 0) {
-				
-				return false;
-			}
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession();
+		List tmpList = s.createSQLQuery(
+				"select t1.uuid from px_usergrouprelation t0,px_group t1 where t1.type="
+						+ SystemConstants.Group_type_0
+						+ " and t0.groupuuid=t1.uuid and t0.useruuid='" + uuid
+						+ "'").list();
+		if (tmpList.size() == 0) {
 
-			isAdmin = true;
+			return false;
+		}
+
+		isAdmin = true;
 
 		return isAdmin;
 	}
@@ -533,7 +577,8 @@ public class UserinfoService extends AbstractService {
 	 */
 	public boolean isExitSameUserByLoginName(String loginname) {
 		String attribute = "loginname";
-		Object user = nSimpleHibernateDao.getObjectByAttribute(User.class, attribute, loginname);
+		Object user = nSimpleHibernateDao.getObjectByAttribute(User.class,
+				attribute, loginname);
 
 		if (user != null) // 已被占用
 			return true;
@@ -550,7 +595,21 @@ public class UserinfoService extends AbstractService {
 	 */
 	public User4Q getUserBytel(String loginname) {
 		String attribute = "loginname";
-		return (User4Q) nSimpleHibernateDao.getObjectByAttribute(User4Q.class, attribute, loginname);
+		return (User4Q) nSimpleHibernateDao.getObjectByAttribute(User4Q.class,
+				attribute, loginname);
+	}
+
+	/**
+	 * 根据手机号码获取
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public User getUserBySessionid(String sessionid) {
+		String attribute = "sessionid";
+		return (User) nSimpleHibernateDao.getObjectByAttribute(User.class,
+				attribute, sessionid);
+
 	}
 
 	@Override
@@ -565,7 +624,8 @@ public class UserinfoService extends AbstractService {
 	 * @return
 	 */
 	public List<User4Q> query() {
-		return (List<User4Q>) this.nSimpleHibernateDao.getHibernateTemplate().find("from User", null);
+		return (List<User4Q>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from User", null);
 	}
 
 	/**
@@ -575,11 +635,13 @@ public class UserinfoService extends AbstractService {
 	 */
 	@Deprecated
 	public List<User4Q> getUserTelsByGroupuuid(String group_uuid, String name) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 		sql += " and t0.groupuuid !='" + SystemConstants.Group_uuid_wjd + "'";
 		if (StringUtils.isNotBlank(group_uuid)) {
-			sql += " and t0.groupuuid in(" + DBUtil.stringsToWhereInValue(group_uuid) + ")";
+			sql += " and t0.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 		}
 		if (StringUtils.isNotBlank(name)) {
 			sql += " and {t1}.name like '%" + name + "%'";
@@ -596,12 +658,15 @@ public class UserinfoService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult getUserTelsByGroupuuidByPage(String group_uuid, String name, PaginationData pData) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+	public PageQueryResult getUserTelsByGroupuuidByPage(String group_uuid,
+			String name, PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 		sql += " and t0.groupuuid !='" + SystemConstants.Group_uuid_wjd + "'";
 		if (StringUtils.isNotBlank(group_uuid)) {
-			sql += " and t0.groupuuid in(" + DBUtil.stringsToWhereInValue(group_uuid) + ")";
+			sql += " and t0.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 		}
 		if (StringUtils.isNotBlank(name)) {
 			sql += " and {t1}.name like '%" + name + "%'";
@@ -620,10 +685,12 @@ public class UserinfoService extends AbstractService {
 	 */
 	@Deprecated
 	public List<User4Q> getUserByGroupuuid(String group_uuid, String name) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid";
 		if (StringUtils.isNotBlank(group_uuid)) {
-			sql += " and t0.groupuuid in(" + DBUtil.stringsToWhereInValue(group_uuid) + ")";
+			sql += " and t0.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 		}
 		if (StringUtils.isNotBlank(name)) {
 			if (StringUtils.isNumeric(name)) {
@@ -645,14 +712,17 @@ public class UserinfoService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult getUserByGroupuuidByPage(String group_uuid, String name, PaginationData pData) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+	public PageQueryResult getUserByGroupuuidByPage(String group_uuid,
+			String name, PaginationData pData) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
 
 		PageQueryResult res = null;
 		{
 			String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid";
 			if (StringUtils.isNotBlank(group_uuid)) {
-				sql += " and t0.groupuuid in(" + DBUtil.stringsToWhereInValue(group_uuid) + ")";
+				sql += " and t0.groupuuid in("
+						+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 			}
 			if (StringUtils.isNotBlank(name)) {
 				if (StringUtils.isNumeric(name)) {
@@ -671,7 +741,8 @@ public class UserinfoService extends AbstractService {
 		{
 			String sql = "select count(*) from px_usergrouprelation t0 where ";
 			if (StringUtils.isNotBlank(group_uuid)) {
-				sql += "  t0.groupuuid in(" + DBUtil.stringsToWhereInValue(group_uuid) + ")";
+				sql += "  t0.groupuuid in("
+						+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 			}
 			Object count = s.createSQLQuery(sql).uniqueResult();
 
@@ -690,8 +761,9 @@ public class UserinfoService extends AbstractService {
 	 */
 	public List<PClass> getClassByGroup(String groupuuid) {
 
-		List<PClass> list = (List<PClass>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from PClass where groupuuid=?)", groupuuid);
+		List<PClass> list = (List<PClass>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find("from PClass where groupuuid=?)",
+						groupuuid);
 
 		return list;
 	}
@@ -701,7 +773,8 @@ public class UserinfoService extends AbstractService {
 	 * @param disable
 	 * @param useruuid
 	 */
-	public boolean updateDisable(String disable, String useruuids, ResponseMessage responseMessage) {
+	public boolean updateDisable(String disable, String useruuids,
+			ResponseMessage responseMessage) {
 		// 更新用户状态
 		// Group_uuid昵称验证
 		if (StringUtils.isBlank(useruuids)) {
@@ -723,8 +796,9 @@ public class UserinfoService extends AbstractService {
 			e.printStackTrace();
 		}
 
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set disable=? where uuid in(?)",
-				disable_i, PxStringUtil.StringDecComma(useruuids));
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update User set disable=? where uuid in(?)", disable_i,
+				PxStringUtil.StringDecComma(useruuids));
 		return true;
 	}
 
@@ -737,8 +811,10 @@ public class UserinfoService extends AbstractService {
 		if (StringUtils.isBlank(groupuuid) || StringUtils.isBlank(useruuid))
 			return null;
 
-		return (List<RoleUserRelation>) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from RoleUserRelation where groupuuid=? and useruuid=?", groupuuid, useruuid);
+		return (List<RoleUserRelation>) this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.find("from RoleUserRelation where groupuuid=? and useruuid=?",
+						groupuuid, useruuid);
 
 	}
 
@@ -747,8 +823,8 @@ public class UserinfoService extends AbstractService {
 	 * @param roleuuid
 	 * @param rightuuids
 	 */
-	public boolean updateRoleRightRelation(String roleuuids, String useruuid, String groupuuid, String type,
-			ResponseMessage responseMessage) {
+	public boolean updateRoleRightRelation(String roleuuids, String useruuid,
+			String groupuuid, String type, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(useruuid)) {
 			responseMessage.setMessage("用户不能为空");
 			return false;
@@ -760,11 +836,14 @@ public class UserinfoService extends AbstractService {
 		String whereType = "";
 		if (!StringUtils.isBlank(type)) {
 
-			whereType = " and roleuuid in (select uuid from Role where type=" + type + " ) ";
+			whereType = " and roleuuid in (select uuid from Role where type="
+					+ type + " ) ";
 		}
 		// 删除原有角色权限
-		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-				"delete from RoleUserRelation where groupuuid=? and useruuid =? " + whereType, groupuuid, useruuid);
+		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from RoleUserRelation where groupuuid=? and useruuid =? "
+								+ whereType, groupuuid, useruuid);
 		this.logger.info("delete from RoleUserRelation count=" + tmpCout);
 		if (StringUtils.isNotBlank(roleuuids)) {
 			String[] str = PxStringUtil.StringDecComma(roleuuids).split(",");
@@ -791,8 +870,9 @@ public class UserinfoService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean updateRoleByUsers(String roleuuid, String useruuids, String groupuuid,
-			ResponseMessage responseMessage, HttpServletRequest request) {
+	public boolean updateRoleByUsers(String roleuuid, String useruuids,
+			String groupuuid, ResponseMessage responseMessage,
+			HttpServletRequest request) {
 
 		if (StringUtils.isBlank(roleuuid)) {
 			responseMessage.setMessage("权限角色不能为空");
@@ -813,24 +893,30 @@ public class UserinfoService extends AbstractService {
 			}
 		}
 
-		Role role = (Role) this.nSimpleHibernateDao.getObject(Role.class, roleuuid);
+		Role role = (Role) this.nSimpleHibernateDao.getObject(Role.class,
+				roleuuid);
 		if (role == null) {
 			responseMessage.setMessage("没有该角色,roleuuid=" + roleuuid);
 			return false;
 		}
 
 		if (RightConstants.Role_Type_AD.equals(role.getType())) {
-			if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)) {
+			if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,
+					RightConstants.AD_role_m, request)) {
 				responseMessage.setMessage("非法授权,平台管理员才可设置.");
 				return false;
 			}
 		}
 
 		// 删除原有角色权限
-		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
-				.bulkUpdate("delete from RoleUserRelation where groupuuid=? and roleuuid =? ", groupuuid, roleuuid);
+		int tmpCout = this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from RoleUserRelation where groupuuid=? and roleuuid =? ",
+						groupuuid, roleuuid);
 		this.logger.info("delete from RoleUserRelation count=" + tmpCout);
-		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+		SessionUserInfoInterface user = SessionListener
+				.getUserInfoBySession(request);
 		if (StringUtils.isNotBlank(useruuids)) {
 			String[] str = PxStringUtil.StringDecComma(useruuids).split(",");
 			for (String s : str) {
@@ -853,7 +939,8 @@ public class UserinfoService extends AbstractService {
 	 * @param disable
 	 * @param useruuid
 	 */
-	public boolean updatePassword(UserRegJsonform userRegJsonform, ResponseMessage responseMessage) {
+	public boolean updatePassword(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) {
 		// 更新用户状态
 		// Group_uuid昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getUuid())) {
@@ -871,7 +958,8 @@ public class UserinfoService extends AbstractService {
 			return false;
 		}
 
-		User user = (User) this.nSimpleHibernateDao.getObject(User.class, userRegJsonform.getUuid());
+		User user = (User) this.nSimpleHibernateDao.getObject(User.class,
+				userRegJsonform.getUuid());
 		if (user == null) {
 			responseMessage.setMessage("用户不存在！");
 			return false;
@@ -882,7 +970,8 @@ public class UserinfoService extends AbstractService {
 			return false;
 		}
 
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set password=? where uuid =?",
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update User set password=? where uuid =?",
 				userRegJsonform.getPassword(), userRegJsonform.getUuid());
 		return true;
 	}
@@ -892,7 +981,8 @@ public class UserinfoService extends AbstractService {
 	 * @param disable
 	 * @param useruuid
 	 */
-	public boolean updatePasswordBySms(UserRegJsonform userRegJsonform, ResponseMessage responseMessage) {
+	public boolean updatePasswordBySms(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage) {
 		// 更新用户状态
 		// Group_uuid昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getTel())) {
@@ -910,11 +1000,13 @@ public class UserinfoService extends AbstractService {
 			return false;
 		}
 
-		if (!smsService.VerifySmsCode(responseMessage, userRegJsonform.getTel(), userRegJsonform.getSmscode())) {
+		if (!smsService.VerifySmsCode(responseMessage,
+				userRegJsonform.getTel(), userRegJsonform.getSmscode())) {
 			return false;
 		}
 
-		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update User set password=? where loginname =?",
+		this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+				"update User set password=? where loginname =?",
 				userRegJsonform.getPassword(), userRegJsonform.getTel());
 		return true;
 
@@ -927,9 +1019,11 @@ public class UserinfoService extends AbstractService {
 	 * @throws Exception
 	 */
 	public User4Q get(String uuid) throws Exception {
-		return (User4Q) this.nSimpleHibernateDao.getObjectById(User4Q.class, uuid);
+		return (User4Q) this.nSimpleHibernateDao.getObjectById(User4Q.class,
+				uuid);
 
 	}
+
 	/**
 	 * 
 	 * @param uuid
@@ -950,7 +1044,8 @@ public class UserinfoService extends AbstractService {
 	public List getAllTeacherPhoneListByUseruuid(String uuid) {
 		String hql = "from User where uuid in (select useruuid from UserClassRelation where groupuuid in (select groupuuid from UserClassRelation where useruuid='"
 				+ uuid + "'))";
-		List<User> userList = (List<User>) this.nSimpleHibernateDao.getHibernateTemplate().find(hql, null);
+		List<User> userList = (List<User>) this.nSimpleHibernateDao
+				.getHibernateTemplate().find(hql, null);
 		List list = new ArrayList();
 		for (User user : userList) {
 			TeacherPhone teacherPhone = new TeacherPhone();
@@ -963,24 +1058,29 @@ public class UserinfoService extends AbstractService {
 		return list;
 	}
 
-	public boolean delete(String uuid, ResponseMessage responseMessage, HttpServletRequest request) {
+	public boolean delete(String uuid, ResponseMessage responseMessage,
+			HttpServletRequest request) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
-		User4Q obj = (User4Q) this.nSimpleHibernateDao.getObject(User4Q.class, uuid);
+		User4Q obj = (User4Q) this.nSimpleHibernateDao.getObject(User4Q.class,
+				uuid);
 		if (obj == null) {
 			responseMessage.setMessage("没有该数据!");
 			return false;
 		}
-		if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_user_del, request)) {
+		if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,
+				RightConstants.AD_user_del, request)) {
 			responseMessage.setMessage(RightConstants.Return_msg);
 			return false;
 		}
 
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
-				.bulkUpdate("delete from UserGroupRelation where  useruuid =? ", obj.getUuid());
+				.bulkUpdate(
+						"delete from UserGroupRelation where  useruuid =? ",
+						obj.getUuid());
 		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
 
 		String desc = JSONUtils.getJsonString(obj);
@@ -991,20 +1091,22 @@ public class UserinfoService extends AbstractService {
 		// {
 		// this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
 		// "delete from Announcements where uuid in(?)", uuid);
-		//// this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-		//// "delete from AnnouncementsTo where announcementsuuid in(?)", uuid);
+		// // this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+		// // "delete from AnnouncementsTo where announcementsuuid in(?)",
+		// uuid);
 		// } else {
 		// this.nSimpleHibernateDao
 		// .deleteObjectById(Announcements.class, uuid);
-		//// this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-		//// "delete from AnnouncementsTo where announcementsuuid =?", uuid);
+		// // this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+		// // "delete from AnnouncementsTo where announcementsuuid =?", uuid);
 		// }
 
 		return true;
 	}
 
 	public UserForJsCache getUserForJsCache(String uuid) {
-		return (UserForJsCache) this.nSimpleHibernateDao.getObjectById(UserForJsCache.class, uuid);
+		return (UserForJsCache) this.nSimpleHibernateDao.getObjectById(
+				UserForJsCache.class, uuid);
 	}
 
 	/**
@@ -1013,7 +1115,8 @@ public class UserinfoService extends AbstractService {
 	 * @return
 	 */
 	public List<UserForJsCache> listJsCache(String group_uuid, String name) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
 		String sql = "select DISTINCT {t1.*} from px_usergrouprelation t0,px_user {t1} where t0.useruuid={t1}.uuid ";
 
 		if (StringUtils.isNotBlank(group_uuid)) {
@@ -1045,14 +1148,106 @@ public class UserinfoService extends AbstractService {
 	 * @throws Exception
 	 */
 	private UserTeacher updateUserTeacher(User user) throws Exception {
-		UserTeacher entity = (UserTeacher) this.nSimpleHibernateDao.getObjectByAttribute(UserTeacher.class, "useruuid",
-				user.getUuid());
+		UserTeacher entity = (UserTeacher) this.nSimpleHibernateDao
+				.getObjectByAttribute(UserTeacher.class, "useruuid",
+						user.getUuid());
 		if (entity != null) {
 			entity.setTel(user.getTel());
 			entity.setSex(user.getSex());
 			this.nSimpleHibernateDao.save(entity);
 		}
 		return entity;
+	}
+
+	@Autowired
+	private GroupService groupService;
+	@Autowired
+	private RightService rightService;
+
+	public boolean updateAndloginForJessionid(String jessionid,
+			HttpServletRequest request) {
+
+		// 登录验证.验证失败则返回.
+		try {
+			User user = null;
+			HttpSession session = null;
+			synchronized (this) {
+				session=SessionListener.getSession(request);
+				// 同步加锁情况下,再次判断,防止多次创建session
+				if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
+					return true;
+				}
+				user = getUserBySessionid(jessionid);
+				if (user == null)// 请求服务返回失败标示
+					return false;
+				session = request.getSession(true);
+				SessionListener.putSessionByToken(jessionid, session);
+			}
+
+			UserOfSession userOfSession = new UserOfSession();
+			try {
+				BeanUtils.copyProperties(userOfSession, user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String logintype = user.getLogin_type() == null ? "1" : user
+					.getLogin_type().toString();
+			// 设置session数据
+			this.putSession(logintype, session, userOfSession, request);
+
+			// 更新登陆日期,最近一次登陆日期
+			String sql = "update px_user set login_type=" + logintype
+					+ ",sessionid='" + session.getId() + "' where uuid='"
+					+ user.getUuid() + "'";
+			Session session1=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+			Transaction transaction=session1.beginTransaction();
+			//transaction.begin();
+			session1.createSQLQuery(sql).executeUpdate();
+			transaction.commit();
+			return true;
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	/**
+	 * 返回客户端用户信息放入Map
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public void putSession(String grouptype, HttpSession session,
+			SessionUserInfoInterface user, HttpServletRequest request)
+			throws Exception {
+		if (StringUtils.isBlank(grouptype))
+			grouptype = SystemConstants.Group_type_1.toString();
+		List listGroupuuids = groupService.getGroupuuidsByUseruuid(
+				user.getUuid(), grouptype);
+		// 老数据兼容,如果没有关联默认学校,则关联.
+		if (listGroupuuids == null || listGroupuuids.isEmpty()) {
+			addDefaultKDGroup(user.getUuid(), null);
+			listGroupuuids.add(SystemConstants.Group_uuid_wjd);
+		}
+		// 1.session添加-我的关联学校.
+		session.setAttribute(RestConstants.Session_MygroupUuids,
+				StringUtils.join(listGroupuuids, ","));
+		// 2.session添加-我的权限
+		List rightList = rightService.getRightListByUser(user, grouptype);
+		session.setAttribute(RestConstants.Session_UserInfo_rights, rightList);
+		// 3.session添加-用户信息
+		session.setAttribute(RestConstants.Session_UserInfo, user);
+		// 4.session添加-用户类型.
+		session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
+		// 5.session添加-设置当前用户是否管理员
+		if (SystemConstants.Group_type_0.toString().equals(grouptype)) {
+			boolean isAdmin = isAdmin(user.getUuid());
+			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
+		}
 	}
 
 }
