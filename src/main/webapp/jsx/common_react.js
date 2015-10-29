@@ -773,7 +773,7 @@ var Div_userinfo_update = React.createClass({
 		    <label htmlFor="nickname">头像:</label>
  		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
  		
- 		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-primary">上传头像</button>
+ 		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-secondary">上传头像</button>
  		   <br/>
 		      <label htmlFor="name">姓名:</label>
 		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>

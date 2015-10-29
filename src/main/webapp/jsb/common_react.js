@@ -773,7 +773,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		    React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
  		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
  		
- 		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-primary"}, "上传头像"), 
+ 		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-secondary"}, "上传头像"), 
  		   React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
