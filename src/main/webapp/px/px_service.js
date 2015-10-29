@@ -2466,9 +2466,7 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
  
  
  
-//———————————————————————————————班级管理—————————————————————————  
-	
-	
+//———————————————————————————————班级管理—————————————————————————  	
  /*
   * <班级管理>建立Div舞台 
   *
@@ -2644,7 +2642,7 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
  		},
 		error :G_ajax_error_fn
  	});
- 	var students=null;
+ 	//var students=null;
  	url=hostUrl + "rest/pxstudent/getStudentByClassuuid.json?classuuid="+uuid;
  	$.ajax({
  		type : "GET",
@@ -2663,16 +2661,17 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
 		error :G_ajax_error_fn
  	});
  	Queue.push(function(){react_ajax_class_students_manage_byRight(uuid);},"班级详情");
- 	if(students){
- 		for(var i=0;i<students.length;i++){
- 			var tmp=students[i];
- 			tmp.img=G_def_headImgPath;
- 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
- 			tmp.title=tmp.name;
- 			tmp.link= "javascript:ajax_class_students_edit_byRight(null,'"+tmp.uuid+"')";
- 		}
- 	}	
+// 	if(students){
+// 		for(var i=0;i<students.length;i++){
+// 			var tmp=students[i];
+// 			tmp.img=G_def_headImgPath;
+// 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+// 			tmp.title=tmp.name;
+// 			tmp.link= "javascript:ajax_class_students_edit_byRight(null,'"+tmp.uuid+"')";
+// 		}
+// 	}	
  	React.render(React.createElement(Class_students_manage_byRight,{
+ 		students:students,
  		formdata:formdata,
  		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_class_m"),"uuid","brand_name"),
 		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),
@@ -3483,8 +3482,7 @@ function react_ajax_class_students_manage(uuid){
 		},
 		error : G_ajax_error_fn
 	});
-	var students=null;
-	var 
+//	var students=null; 
 	url=hostUrl + "rest/pxstudent/getStudentByClassuuid.json?classuuid="+uuid;
 	$.ajax({
 		type : "GET",
@@ -3503,16 +3501,17 @@ function react_ajax_class_students_manage(uuid){
 		error :G_ajax_error_fn
 	});
 	Queue.push(function(){react_ajax_class_students_manage(uuid);},"我的班级");
-	if(students){
-		for(var i=0;i<students.length;i++){
-			var tmp=students[i];
-			tmp.img=G_def_headImgPath;
-			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
-			tmp.title=tmp.name;
-			tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"','"+tmp.title+"')";
-		}
-	}
+//	if(students){
+//		for(var i=0;i<students.length;i++){
+//			var tmp=students[i];
+//			tmp.img=G_def_headImgPath;
+//			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+//			tmp.title=tmp.name;
+//			tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"','"+tmp.title+"')";
+//		}
+//	}
 	React.render(React.createElement(Class_students_show,{
+		students:students,
 		formdata:formdata,
 		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
 		classuuid:uuid,
@@ -3749,8 +3748,8 @@ G_ajax_abs_save(opt);
  * uuid:用户ID;
  * @根据数据在 Kd_react做绘制处理 
  * */
-function ajax_class_students_look_info(uuid,title){
-	Queue.push(function(){ajax_class_students_look_info(uuid,title);},"学生详情");
+function ajax_class_students_look_info(uuid){
+	Queue.push(function(){ajax_class_students_look_info(uuid);},"学生详情");
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
 	$.ajax({

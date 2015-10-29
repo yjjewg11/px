@@ -235,7 +235,7 @@ render: function() {
   return (
   React.createElement("div", null, 
   React.createElement(AMUIReact.ButtonToolbar, null, 
-	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_role"), round: true}, "添加")
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_role")}, "添加")
 	 ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -409,12 +409,12 @@ render: function() {
 //    <hr />
 //    </div>
 //    <AMR_ButtonToolbar>
-//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
-//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} round>启用</AMR_Button>
-//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} round>禁用</AMR_Button>
-//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} round>分配权限</AMR_Button>
-//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
-//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} round>删除</AMR_Button>
+//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
+//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "enable")} >启用</AMR_Button>
+//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "disable")} >禁用</AMR_Button>
+//	    <AMR_Button amStyle="success" onClick={this.handleClick.bind(this, "getRole")} >分配权限</AMR_Button>
+//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
+//	    <AMR_Button amStyle="danger" onClick={this.handleClick.bind(this, "del")} >删除</AMR_Button>
 //	    </AMR_ButtonToolbar>
 //	      <form id="editGroupForm" method="post" className="am-form">
 //	      <input type="text" name="sutdent_name" id="sutdent_name" size="1"    placeholder="教师姓名"/>	  
@@ -569,19 +569,19 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 		   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.group_list, btnStyle: "primary", value: this.props.groupuuid})
 		    ), 		  
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+		  React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add")}, "添加")
 		 ), 		    
 		  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		   React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable"), round: true}, "启用")
+		   React.createElement(AMR_Button, {amStyle: "success", onClick: this.handleClick.bind(this, "enable")}, "启用")
 		    ), 		    
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable"), round: true}, "禁用")
+		  React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "disable")}, "禁用")
 		 ), 
 		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		   React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
+		   React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit")}, "修改")
 		  ), 		    
 		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del"), round: true}, "删除")
+		    React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del")}, "删除")
 		     ), 
 			   
 			React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
@@ -696,7 +696,7 @@ React.createElement("div", {className: "am-g"},
 React.createElement("hr", null)
 ), 
 React.createElement(AMUIReact.ButtonToolbar, null, 
-	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_basedatatype"), round: true}, "添加")
+	    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add_basedatatype")}, "添加")
 	 ), 
 	  React.createElement("hr", null), 
 	  
@@ -919,7 +919,7 @@ React.createElement("div", {className: "header"},
 	  React.createElement("hr", null)
 	), 
 React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+	    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add")}, "添加")
 	  ), 
 	  React.createElement("hr", null), 
 	  React.createElement("div", {className: "am-form-group"}, 
@@ -1225,7 +1225,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
       return (			
     		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
     		  React.createElement(AMUIReact.ButtonToolbar, null, 
-    		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this), round: true}, "刷新"), 
+    		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新"), 
     		    React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
     		    ), 
     		    React.createElement(Div_MyClassnewStatistics_byRight, null), 
@@ -1715,10 +1715,10 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
       return (
       React.createElement("div", null, 
     React.createElement(AMR_ButtonToolbar, null, 
-    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre"), round: true}, "上一页"), 
-    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next"), round: true}, "下一页"), 	
+    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre")}, "上一页"), 
+    	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next")}, "下一页"), 	
     	React.createElement("span", null, "第", obj.pageNo, "页"), 
-    	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add"), round: true}, "创建")
+    	React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this,"add")}, "创建")
 
       ), 
     React.createElement("hr", null), 
@@ -1849,9 +1849,9 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     		React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
     	      ), 		     
     	     React.createElement(AMR_ButtonToolbar, null, 
-    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid), round: true}, "编辑"), 
-    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid), round: true}, "删除"), 
-    	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid), round: true}, "收藏"), 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
+    	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
     	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
     	     )
     	     

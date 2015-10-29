@@ -87,8 +87,8 @@ var ChooseRight_EventsTable = React.createClass({
     <div>
     <AMUIReact.Sticky>
     <AMUIReact.ButtonToolbar>
-    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact.Button>
-    <AMUIReact.Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact.Button>
+    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} >确认</AMUIReact.Button>
+    <AMUIReact.Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} >取消</AMUIReact.Button>
   </AMUIReact.ButtonToolbar>
   </AMUIReact.Sticky>
   <div className="header">
