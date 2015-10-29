@@ -335,7 +335,20 @@ public class PxStudentService extends AbstractStudentService {
 		return pageQueryResult;
 	}
 
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List<PxStudent> getStudentByGroup(String groupuuid) {
 
+		List<PxStudent> list = (List<PxStudent>) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("from PxStudent  where groupuuid=?)", groupuuid);
+
+		return list;
+	}
 
 
 	/**
@@ -438,6 +451,21 @@ public class PxStudentService extends AbstractStudentService {
 
 		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
 		warpStudentContactRealationVoList(list);
+		return list;
+	}
+	
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getStudentCountByGroup(String groupuuid) {
+
+		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
+				.find("select count(uuid),classuuid from PxStudent  where groupuuid=? group by classuuid)", groupuuid);
+
 		return list;
 	}
 
