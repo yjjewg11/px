@@ -109,7 +109,7 @@ function login_affter_init(){
 	                          {
 	                             "fn":menu_teacher_byRight,
 	                              "link": "##",
-	                              "title": "老师介绍"
+	                              "title": "发布老师信息"
 	                            }
 
 	                        ]                   
@@ -497,14 +497,17 @@ function menu_announce_mylist_fn() {
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
 var G_myCurClassuuid=null;
-function menu_teachingplan_dayShow_fn() {
+function menu_teachingplan_dayShow_fn(classuuid) {
+	
 //培训机构课程表模块，列表代码	
-		var classList=Store.getMyClassList();
- 		var class_uuid =null;
+	var classList=Store.getMyClassList();
+    var class_uuid =null;
+ 		G_myClassList=classList;
+	if(!classuuid){
  		if(classList&&classList.length>0){
  			classuuid=classList[0].uuid;
  		}
- 		G_myClassList=classList;
+	} 
 	px_ajax_teachingplan_fn(classuuid);
 	return;
 //---------------------------------------------------------------------------------	

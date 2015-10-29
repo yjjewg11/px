@@ -16,7 +16,7 @@ var G_check_disable_div_byRight = React.createClass({
 	  render: function() {
 		  if(G_user_hasRight("KD_announce_m")){
 			  return (
-					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger am-round" onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
+					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
 			    );
 		  }else{
 			  return (
@@ -34,7 +34,7 @@ var G_check_disable_div_byRight = React.createClass({
 var G_get_upload_img_Div=function(){
 	var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" />
 	if(G_CallPhoneFN.isPhoneApp()){
-		G_upload_img_Div=<AMR_Button  amStyle="primary"  id="file_img_upload" round>上传图片</AMR_Button>
+		G_upload_img_Div=<AMR_Button  amStyle="primary"  id="file_img_upload" >上传图片</AMR_Button>
 	}
 	return G_upload_img_Div;
 }
@@ -134,17 +134,21 @@ render: function() {
   return (
   <div>
   
-  <div className="am-cf am-margin-top-sm">
+  <AMR_ButtonToolbar>
+  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   <AMUIReact.Selected  className="am-fl" id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />    
+  </div>
+  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   <G_help_popo   msg={G_tip.role_grant_users} />
   </div>
-    <AMUIReact.Table {...this.props}>  
+  </AMR_ButtonToolbar>
+    <AMUIReact.Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
       <thead> 
         <tr>
-          <th>角色</th>
-          <th>操作</th>
+          <th>权限名称</th>
+          <th>权限操作</th>
           <th>授权用户</th>
-          <th>角色描述</th>
+          <th>权限描述</th>
         </tr> 
       </thead>
       <tbody>
@@ -243,7 +247,7 @@ render: function() {
     return (
       <tr className={className} >
         <td>{event.name}</td>
-        <td><AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids)} round>授权</AMUIReact.Button></td>
+        <td><AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids)} >授权</AMUIReact.Button></td>
         <td>{users}</td>
         <td>{event.description} </td>
       </tr> 
@@ -310,10 +314,10 @@ render: function() {
 //    
 //    <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 // 	 <div className="am-fl">
-//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
 //	    </div> 
 //	    <div className="am-fl am-margin-left-xs">
-//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
+//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
 //	    </div> 
 //		  <div className="am-fl am-margin-left-xs">
 //		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
@@ -490,10 +494,10 @@ var Userinfo_EventsTable_div = React.createClass({
 			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
 			  </div> 
 			  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
 			    </div> 
 			    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
+			    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
 			    </div> 
 				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
@@ -769,7 +773,7 @@ var Div_userinfo_update = React.createClass({
 		    <label htmlFor="nickname">头像:</label>
  		    <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
  		
- 		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-primary">上传头像</button>
+ 		   <button type="button"  onClick={this.handle_uploadHeader}  className="am-btn am-btn-secondary">上传头像</button>
  		   <br/>
 		      <label htmlFor="name">姓名:</label>
 		      <PxInput icon="user" type="text" name="name" id="name"  value={o.name} onChange={this.handleChange}  placeholder="必填，不超过15位"/>
@@ -984,9 +988,9 @@ var Upload_headImg = React.createClass({
    	</div>
 	<div className="action">
 	    <input type="file" id="upload_imgfile" accept="image/*" />
-	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} round>剪切</AMUIReact_Button>
-	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} round>放大</AMUIReact_Button>
-	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} round>缩小</AMUIReact_Button>
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} >剪切</AMUIReact_Button>
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} >放大</AMUIReact_Button>
+	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} >缩小</AMUIReact_Button>
 
 	</div>
 		<div className="cropped" id="upload_file_imageBox_cropped">
@@ -994,8 +998,8 @@ var Upload_headImg = React.createClass({
 	</div>
 
 <AMUIReact_ButtonToolbar>
-<AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
-<AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+<AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} >确认</AMUIReact_Button>
+<AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} >取消</AMUIReact_Button>
 </AMUIReact_ButtonToolbar>
          </div>
        );

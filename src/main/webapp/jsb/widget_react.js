@@ -54,8 +54,8 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
     return (
     React.createElement("div", null, 
     React.createElement(AMUIReact_ButtonToolbar, null, 
-    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+    React.createElement(AMUIReact_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "ok")}, "确认"), 
+    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel")}, "取消")
   ), 
   React.createElement("div", {className: "header"}, 
   React.createElement("div", {className: "am-g"}, 
@@ -75,7 +75,7 @@ var ChooseUser_EventsTable = React.createClass({displayName: "ChooseUser_EventsT
 	   React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	 
 		), 
 		 React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-primary"}, "搜索")		  		  
+		  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-secondary"}, "搜索")		  		  
 		 )
 		)
 	   ), 	 
@@ -180,8 +180,8 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
     		
 	 React.createElement("div", null, 
 	    React.createElement(AMUIReact_ButtonToolbar, null, 
-	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+	    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok")}, "确认"), 
+	    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel")}, "取消")
 	  ), 
     		
 	 React.createElement(AMUIReact.Tabs, {defaultActiveKey: "1", justify: true}, 
@@ -365,9 +365,9 @@ var Upload_cookImg = React.createClass({displayName: "Upload_cookImg",
 	   	), 
    	React.createElement("div", {className: "action"}, 
    	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick}, "剪切"), 
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick}, "放大"), 
+   	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick}, "缩小")
    	), 
    		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
    	   	)
@@ -378,8 +378,8 @@ var Upload_cookImg = React.createClass({displayName: "Upload_cookImg",
      React.createElement("input", {type: "text", name: "cook_name", id: "cook_name", placeholder: ""}), 
      React.createElement("br", null), 
     React.createElement(AMUIReact_ButtonToolbar, null, 
-    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+    React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok")}, "确认"), 
+    React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel")}, "取消")
   )
              )
            );

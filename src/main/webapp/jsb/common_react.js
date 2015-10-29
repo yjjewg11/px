@@ -16,7 +16,7 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 	  render: function() {
 		  if(G_user_hasRight("KD_announce_m")){
 			  return (
-					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger am-round", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
+					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger ", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
 			    );
 		  }else{
 			  return (
@@ -34,7 +34,7 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 var G_get_upload_img_Div=function(){
 	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera"})
 	if(G_CallPhoneFN.isPhoneApp()){
-		G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload", round: true}, "上传图片")
+		G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload"}, "上传图片")
 	}
 	return G_upload_img_Div;
 }
@@ -134,17 +134,21 @@ render: function() {
   return (
   React.createElement("div", null, 
   
-  React.createElement("div", {className: "am-cf am-margin-top-sm"}, 
-  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid}), 
-  React.createElement(G_help_popo, {msg: G_tip.role_grant_users})
+  React.createElement(AMR_ButtonToolbar, null, 
+  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
   ), 
-    React.createElement(AMUIReact.Table, React.__spread({},  this.props), 
+  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+  React.createElement(G_help_popo, {msg: G_tip.role_grant_users})
+  )
+  ), 
+    React.createElement(AMUIReact.Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
       React.createElement("thead", null, 
         React.createElement("tr", null, 
-          React.createElement("th", null, "角色"), 
-          React.createElement("th", null, "操作"), 
+          React.createElement("th", null, "权限名称"), 
+          React.createElement("th", null, "权限操作"), 
           React.createElement("th", null, "授权用户"), 
-          React.createElement("th", null, "角色描述")
+          React.createElement("th", null, "权限描述")
         )
       ), 
       React.createElement("tbody", null, 
@@ -243,7 +247,7 @@ render: function() {
     return (
       React.createElement("tr", {className: className}, 
         React.createElement("td", null, event.name), 
-        React.createElement("td", null, React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids), round: true}, "授权")), 
+        React.createElement("td", null, React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids)}, "授权")), 
         React.createElement("td", null, users), 
         React.createElement("td", null, event.description, " ")
       ) 
@@ -310,10 +314,10 @@ render: function() {
 //    
 //    <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 // 	 <div className="am-fl">
-//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} round>添加</AMR_Button>
+//	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
 //	    </div> 
 //	    <div className="am-fl am-margin-left-xs">
-//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} round>修改</AMR_Button>
+//	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
 //	    </div> 
 //		  <div className="am-fl am-margin-left-xs">
 //		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
@@ -490,10 +494,10 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 			  ), 
 			  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "add"), round: true}, "添加")
+			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
 			    ), 
 			    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit"), round: true}, "修改")
+			    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit")}, "修改")
 			    ), 
 				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
@@ -769,7 +773,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		    React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
  		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
  		
- 		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-primary"}, "上传头像"), 
+ 		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-secondary"}, "上传头像"), 
  		   React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
 		      React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "必填，不超过15位"}), 
@@ -984,9 +988,9 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
    	), 
 	React.createElement("div", {className: "action"}, 
 	    React.createElement("input", {type: "file", id: "upload_imgfile", accept: "image/*"}), 
-	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick, round: true}, "剪切"), 
-	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick, round: true}, "放大"), 
-	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick, round: true}, "缩小")
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnCrop_onClick}, "剪切"), 
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomIn_onClick}, "放大"), 
+	 React.createElement(AMUIReact_Button, {amStyle: "warning", onClick: this.btnZoomOut_onClick}, "缩小")
 
 	), 
 		React.createElement("div", {className: "cropped", id: "upload_file_imageBox_cropped"}
@@ -994,8 +998,8 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
 	), 
 
 React.createElement(AMUIReact_ButtonToolbar, null, 
-React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+React.createElement(AMUIReact_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok")}, "确认"), 
+React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel")}, "取消")
 )
          )
        );

@@ -10,10 +10,10 @@ body{
 }
 
 button{
-	border-radius: 1000px;
+
 }
 input[type="button"]{
-	border-radius: 1000px;
+
 }
 .am-btn {
   display: inline-block;
@@ -28,7 +28,7 @@ input[type="button"]{
   background-image: none;
   border: 1px solid transparent;
   /** Ä¬ÈÏÎªÔ²½Ç**/
-  border-radius: 1000px;
+
   cursor: pointer;
   outline: 0;
   -webkit-appearance: none;
@@ -38,6 +38,13 @@ input[type="button"]{
           user-select: none;
   -webkit-transition: background-color 300ms ease-out, border-color 300ms ease-out;
           transition: background-color 300ms ease-out, border-color 300ms ease-out;
+}
+
+
+.am-btn-aaa {
+    background-color: #ba59bb;
+    border-color: #ba59bb;
+    color: #fff;
 }
 
 .G_div_loading{

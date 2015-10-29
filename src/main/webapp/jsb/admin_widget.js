@@ -87,8 +87,8 @@ var ChooseRight_EventsTable = React.createClass({displayName: "ChooseRight_Event
     React.createElement("div", null, 
     React.createElement(AMUIReact.Sticky, null, 
     React.createElement(AMUIReact.ButtonToolbar, null, 
-    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok"), round: true}, "确认"), 
-    React.createElement(AMUIReact.Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel"), round: true}, "取消")
+    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "ok")}, "确认"), 
+    React.createElement(AMUIReact.Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "cancel")}, "取消")
   )
   ), 
   React.createElement("div", {className: "header"}, 

@@ -105,8 +105,8 @@ var ChooseCook_Widget = React.createClass({
     		
 	 <div>
 	    <AMUIReact_ButtonToolbar>
-	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
-	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+	    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} >确认</AMUIReact_Button>
+	    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} >取消</AMUIReact_Button>
 	  </AMUIReact_ButtonToolbar>
     		
 	 <AMUIReact.Tabs defaultActiveKey="1" justify>
@@ -290,9 +290,9 @@ var Upload_cookImg = React.createClass({
 	   	</div>
    	<div className="action">
    	    <input type="file" id="upload_imgfile" accept="image/*" />
-   	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} round>剪切</AMUIReact_Button>
-   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} round>放大</AMUIReact_Button>
-   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} round>缩小</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnCrop_onClick} >剪切</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomIn_onClick} >放大</AMUIReact_Button>
+   	 <AMUIReact_Button amStyle="warning"onClick={this.btnZoomOut_onClick} >缩小</AMUIReact_Button>
    	</div>
    		<div className="cropped" id="upload_file_imageBox_cropped">
    	   	</div>
@@ -303,8 +303,8 @@ var Upload_cookImg = React.createClass({
      <input type="text" name="cook_name" id="cook_name" placeholder=""/>
      <br/>
     <AMUIReact_ButtonToolbar>
-    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} round>确认</AMUIReact_Button>
-    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} round>取消</AMUIReact_Button>
+    <AMUIReact_Button amStyle="primary" onClick={this.handleClick.bind(this, "ok")} >确认</AMUIReact_Button>
+    <AMUIReact_Button amStyle="danger" onClick={this.handleClick.bind(this, "cancel")} >取消</AMUIReact_Button>
   </AMUIReact_ButtonToolbar>
              </div>
            );
