@@ -150,7 +150,7 @@ public class BaseDataListController extends AbstractRESTController {
     	ResponseMessage responseMessage =RestUtil.addResponseMessageForModelMap(model);
     	
         try {
-			List<BaseDataListCacheVO> list=baseDataListService.getBaseDataAllList();
+			List list=baseDataListService.getBaseDataAllList();
 			String md5Db=MD5Until.getMD5String(JSONUtils.getJsonString(list));
 			if(md5Db.equals(md5)){//一样,表示没变化,不反馈,节省流量
 				list=null;
