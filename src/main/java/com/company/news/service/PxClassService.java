@@ -290,25 +290,48 @@ public class PxClassService extends AbstractClassService {
 	 */
 	protected Map warpMap(Map o) {
 		try {
-
-			List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao
-					.getHibernateTemplate().find(
-							"from UserClassRelation where classuuid=?",
-							o.get("uuid"));
-
-			String headTeacher_name = "";
-			String teacher_name = "";
-			for (UserClassRelation u : l) {
-				if (u.getType().intValue() == SystemConstants.class_usertype_head) {
-					headTeacher_name += (((UserForJsCache) CommonsCache.get(
-							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
-				} else {
-					teacher_name += (((UserForJsCache) CommonsCache.get(
-							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+			Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+					.getSessionFactory().openSession();
+			String sql="select t2.type  ,group_concat( t1.name) as user_names,group_concat( t1.uuid) as user_uuids from px_user  t1 ";
+			sql+=" LEFT JOIN  px_userclassrelation t2 on t2.useruuid=t1.uuid  ";
+			sql+=" where t2.type is not null and t2.classuuid='"+o.get("uuid")+"'";
+			sql+=" GROUP BY t2.type  ";
+			
+			Query q = s.createSQLQuery(sql);
+			q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			List<Map> list=q.list();
+			
+			for(Map map:list){
+				if(String.valueOf(SystemConstants.class_usertype_head).equals(map.get("type")+"")){
+					o.put("headTeacher_name", map.get("user_names"));
+				}else {
+					o.put("teacher_name", map.get("user_names"));
 				}
 			}
-			o.put("headTeacher_name", PxStringUtil.StringDecComma(headTeacher_name));
-			o.put("teacher_name", PxStringUtil.StringDecComma(teacher_name));
+			
+			//老代码,效率低
+//			List<UserClassRelation> l = (List<UserClassRelation>) this.nSimpleHibernateDao
+//					.getHibernateTemplate().find(
+//							"from UserClassRelation where classuuid=?",
+//							o.get("uuid"));
+//
+//			String headTeacher_name = "";
+//			String teacher_name = "";
+//			for (UserClassRelation u : l) {
+//				if (u.getType().intValue() == SystemConstants.class_usertype_head) {
+//					headTeacher_name += (((UserForJsCache) CommonsCache.get(
+//							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+//				} else {
+//					teacher_name += (((UserForJsCache) CommonsCache.get(
+//							u.getUseruuid(), UserForJsCache.class)).getName() + ",");
+//				}
+//			}
+//			o.put("headTeacher_name", PxStringUtil.StringDecComma(headTeacher_name));
+//			o.put("teacher_name", PxStringUtil.StringDecComma(teacher_name));
+//			
+			
+			
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

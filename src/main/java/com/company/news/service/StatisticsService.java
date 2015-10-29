@@ -242,12 +242,7 @@ public class StatisticsService extends AbstractService {
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
-		vo.setTitle_text(g.getCompany_name() + " 班级学生人数统计");
-		vo.setTitle_subtext("总计 " + list.size() + " 班");
-		List legend_data = new ArrayList();
-		legend_data.add("学生人数");
-		legend_data.add("家长人数");
-		vo.setLegend_data(legend_data);
+		
 		String axis_data = "";
 		for (PClass p : list) {
 			axis_data += ("'" + p.getName() + "',");
@@ -260,16 +255,22 @@ public class StatisticsService extends AbstractService {
 		// 根据机构ID获取家长人数
 		List<Object[]> plist = parentService.getParentCountByGroup(group_uuid);
 		List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
+		
+		
+		int parentCount=0;
+		int studentCount=0;
 		if (slist != null && slist.size() > 0) {
 			// 学生人数
 			Map m = new HashMap<String, Integer>();
 			for (Object[] o : slist) {
 				m.put(o[1], o[0]);
+				studentCount+=Integer.valueOf(o[0].toString());
 			}
 			// 家长人数
 			Map pm = new HashMap<String, Integer>();
 			for (Object[] o : plist) {
 				pm.put(o[1], o[0]);
+				parentCount+=Integer.valueOf(o[0].toString());
 			}
 
 			String ps_p_data = "";
@@ -294,7 +295,14 @@ public class StatisticsService extends AbstractService {
 			psdvlist.add(sdvo_p);
 
 		}
+		vo.setTitle_text(g.getCompany_name() + " 班级学生人数统计");
+		vo.setTitle_subtext("总计 " + list.size() + " 班,总学生数"+studentCount+"人,总家长数"+parentCount+"人");
+		List legend_data = new ArrayList();
+		legend_data.add("学生人数("+studentCount+")");
+		legend_data.add("家长人数("+parentCount+")");
 
+		vo.setLegend_data(legend_data);
+		
 		vo.setSeries_data(psdvlist);
 		logger.debug("end 用户性别统计");
 		return vo;
@@ -330,12 +338,7 @@ public class StatisticsService extends AbstractService {
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
 		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
-		vo.setTitle_text(g.getCompany_name() + " 班级互动发帖数统计");
-		vo.setTitle_subtext("总计 " + list.size() + " 班");
-		// vo.setLegend_data("['互动发帖数']");
-		List legend_data = new ArrayList();
-		legend_data.add("互动发帖数");
-		vo.setLegend_data(legend_data);
+	
 		String axis_data = "";
 		for (PClass p : list) {
 			axis_data += ("'" + p.getName() + "',");
@@ -347,9 +350,11 @@ public class StatisticsService extends AbstractService {
 				group_uuid, begDateStr, endDateStr);
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		Map m = new HashMap<String, Integer>();
+		int parentCount=0;
 		if (slist != null && slist.size() > 0) {
 			for (Object[] o : slist) {
 				m.put(o[1], o[0]);
+				parentCount+=Integer.valueOf(o[0].toString());
 			}
 		}
 
@@ -358,6 +363,15 @@ public class StatisticsService extends AbstractService {
 			ps_data += ("'"
 					+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "',");
 		}
+		
+		vo.setTitle_text(g.getCompany_name() + " 班级互动发帖数统计");
+		vo.setTitle_subtext("总计 " + list.size() + " 班,总数量"+parentCount);
+		// vo.setLegend_data("['互动发帖数']");
+		List legend_data = new ArrayList();
+		legend_data.add("互动发帖数("+parentCount+")");
+		vo.setLegend_data(legend_data);
+		
+		
 		PieSeriesDataVo sdvo = new PieSeriesDataVo();
 		sdvo.setName("互动发帖数");
 		sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");

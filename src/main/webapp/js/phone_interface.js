@@ -10,7 +10,7 @@
  * G_jsCallBack.userinfo_logout();注销用户
  * G_jsCallBack.user_info_update()修改资料；
  * G_jsCallBack.user_info_updatepassword()；修改密码
- * G_jsCallBack.QueuedoBackFN()；修改密码
+ * G_jsCallBack.QueuedoBackFN();//回退
  * G_jsCallBack.QueueTeacher();老师通讯录
  * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
  * G_jsCallBack.selectHeadPic_callback_imgUrl(imgUrl,uuid); 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
