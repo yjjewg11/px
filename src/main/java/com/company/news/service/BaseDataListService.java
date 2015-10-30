@@ -2,9 +2,13 @@ package com.company.news.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.BaseDataList;
@@ -152,10 +156,24 @@ public class BaseDataListService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<BaseDataListCacheVO> getBaseDataAllList() {
-		return (List<BaseDataListCacheVO>) this.nSimpleHibernateDao
-				.getHibernateTemplate().find(
-						"from BaseDataListCacheVO  order by datakey asc");
+	public List getBaseDataAllList() {
+		
+Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		
+		//1.获取学校有门禁卡的所有用户.
+		//startDatestr="2015-09-17 00:00:00";
+		
+		String sql = "select typeuuid,datavalue,datakey, description from px_basedatalist  where enable=1 order by datakey asc" ;
+		
+		//student_uuid,cardid,userid,student_name
+		Query q = s.createSQLQuery(sql);
+		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		return q.list();
+		
+//		return (List<BaseDataListCacheVO>) this.nSimpleHibernateDao
+//				.getHibernateTemplate().find(
+//						"from BaseDataListCacheVO where enable=1 order by datakey asc");
 
 	}
 
