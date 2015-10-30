@@ -452,16 +452,16 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 	var  fn;
 	if(this.type==1){
-	fn=<AMUIReact.Button amStyle="warning" onClick={this.handleClick.bind(this,"oth",2)} >其他班级</AMUIReact.Button>
+	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",2)} >其他班级</AMUIReact.Button>
 	}else{
-	fn=<AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"oth",1)} >我的班级</AMUIReact.Button>
+	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",1)} >我的班级</AMUIReact.Button>
 	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMUIReact.ButtonToolbar>
-		    <AMUIReact.Button amStyle="primary" onClick={this.handleClick.bind(this,"add")} >发布互动</AMUIReact.Button>
+		    <AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"add")} >发布互动</AMUIReact.Button>
 		    {fn}
-		    <AMUIReact.Button amStyle="primary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
+		    <AMUIReact.Button amStyle="secondary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
 		    <Div_MyClassnewStatistics />
@@ -1086,7 +1086,7 @@ render: function() {
 		{this.props.classlist.map(function(event) {
 			  return(
 			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={px_ajax_teachingplan_fn.bind(this,event.uuid,o.pageNo)} >{event.name}</AMR_Button>
+			  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="secondary" onClick={px_ajax_teachingplan_fn.bind(this,event.uuid,o.pageNo)} >{event.name}</AMR_Button>
 			  	</div>  			  	  
 			  )})}
 		 </AMR_ButtonToolbar>
@@ -2019,7 +2019,7 @@ var Class_student_tel =React.createClass({
 			    	  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入孩子姓名"/>
 			    	  </div>  
 			    	  <div className="am-fl am-margin-left-xs">
-			    	  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-primary">搜索</button>
+			    	  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-secondary">搜索</button>
 			    	  </div>			    	  
 			    	 		  
 				      </AMR_ButtonToolbar>
@@ -2032,7 +2032,7 @@ var Class_student_tel =React.createClass({
 	  	  				var showName=event.student_name+"的"+event.typename;
 	  	  				if(event.isreg==1){
 	  	  				ListItem=(
-	  	  				<AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,showName)} amStyle="success">发信件</AMUIReact.Button>	
+	  	  				<AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.parent_uuid,showName)} amStyle="secondary">发信件</AMUIReact.Button>	
 	  	  					);
 	  	  				}else if(event.isreg==0){
 	  	  					//<AMR_Button amStyle="success" onClick={ajax_parentContact_tels.bind(this,event.tel)} >邀请家长</AMR_Button>	
@@ -2131,7 +2131,7 @@ render: function() {
 		   <form id="editForm" method="post" className="am-form">
 			<input type="hidden" name="revice_useruuid"  value={this.props.uuid}/>			
 			  <AMR_Input id="classnews_content_replay" type="textarea" rows="4" label="信息发送" placeholder="填写内容" name="message" />
-		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>		      
+		      <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-secondary">发送</button>		      
 		    </form>	   
   );
 }
@@ -2237,7 +2237,7 @@ render: function() {
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 
 		   <AMR_ButtonToolbar>
-		    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} >创建精品文章</AMR_Button>
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} >创建精品文章</AMR_Button>
 		    </AMR_ButtonToolbar>
 		    
 		    
@@ -2883,7 +2883,7 @@ render: function() {
 		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>		  		  
+		  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
 		  </form>     
@@ -3059,7 +3059,7 @@ var My_student_tel =React.createClass({
 		            		<AMUIReact.ListItem>
 		            <span className="am-comment-author">{event.send_user} </span>家长来信{event.count}条,最后来信时间:{event.last_time}
 		            <AMR_ButtonToolbar>		            
-		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"我的信箱")} amStyle="success">@信息</AMUIReact.Button>
+		            <AMUIReact.Button  onClick={ajax_parentContactByMyStudent_message_list.bind(this,event.send_useruuid,"我的信箱")} amStyle="secondary">@回复</AMUIReact.Button>
 		            </AMR_ButtonToolbar>	        
 		            </AMUIReact.ListItem>);
 		          })}		      			      
@@ -6950,9 +6950,7 @@ var Class_EventsTable_byRight = React.createClass({
  
 //——————————————————————————我的班级<绘制>—————————————————————————— 
  /*
- * 我的班级 show绘制2级界面班级选择绘制；
- * @show老师查看状态进入查看学生详情;
- * @Class_students_show（kd_service中服务器请求时调用）;
+ * 我的班级-按钮、列表绘制
  * */
  var Class_students_show= React.createClass({
  	 componentDidMount:function(){
@@ -6963,10 +6961,6 @@ var Class_EventsTable_byRight = React.createClass({
  	  },
  	  handleClick:function(m,groupuuid,uuid){
  		  btn_click_class_list(m,groupuuid,uuid); 			
- 	  },
- 	  showTeachingplanClick:function(classuuid){
- 		  G_myCurClassuuid=classuuid;
- 		  menu_teachingplan_dayShow_fn();
  	  },
  	render: function() {
  		var o=this.props.formdata;
@@ -6983,19 +6977,19 @@ var Class_EventsTable_byRight = React.createClass({
  		  	  </div>  
 
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
- 		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} >查看课程</AMR_Button>
+ 		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={menu_teachingplan_dayShow_fn.bind(this,o.uuid)} >查看课程</AMR_Button>
  		  	  </div>
 
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
- 		  	   <AMR_Button amSize="xs"  amStyle="warning" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >管理学生</AMR_Button>
+ 		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >管理学生</AMR_Button>
  		  	  </div>
 
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
- 		  	   <AMR_Button amSize="xs"  onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} >添加班级</AMR_Button>
+ 		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} >添加班级</AMR_Button>
  		  	  </div> 
 
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
- 		  	   <AMR_Button amSize="xs" amStyle="primary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} >班级编辑</AMR_Button>
+ 		  	   <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} >班级编辑</AMR_Button>
  		      </div>  
 
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -7045,9 +7039,6 @@ var Class_EventsTable_byRight = React.createClass({
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
    * */
   var Query_Students_EventRow_byRight = React.createClass({ 
-  	btn_students_list_click:function(classuuid,uuid){
-  		add_StudentClass(classuuid,uuid);
-  	},
   	  render: function() {
   	    var event = this.props.event;
 		var G_def_headImgPath=event.headimg
@@ -7067,68 +7058,9 @@ var Class_EventsTable_byRight = React.createClass({
   	  }
   	}); 	
 
- /*
- * <我的班级>班级添加详情绘制
- * @ajax_class_save：提交按钮在Kd_service;
- * */	
- var AMR_Grid=AMUIReact.Grid;
- var AMR_Col=AMUIReact.Col;
-   var Class_edit = React.createClass({ 
-   	 getInitialState: function() {
-   		    return this.props.formdata;
-   		  },
-   	 handleChange: function(event) {
-   		 
-   		 if(event==G_group_wjd){
-   			 $('#help1_span').show();
-   		 }else{
-   			 $('#help1_span').hide();
-   		 }
-   		    this.setState($('#editClassForm').serializeJson());
-   	  },
-   render: function() {
-   	  var o = this.state;
- 	  var course_list=Store.getCourseList(o.groupuuid);
- 	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
- 	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
-     return (
-     		<div>
-     		<div className="header">
-     		  <hr />
-     		</div>
-     		<div className="am-g">
-     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-     		  <form id="editClassForm" method="post" className="am-form">
-     		<input type="hidden" name="uuid"  value={o.uuid}/>
-     		     <input type="hidden" name="type"  value="1"/>
-     		    <div className="am-form-group"> 		    
-     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
-     		  <G_help_popo  msg={G_tip.class_edit}/>  
-     		  <br/>
- 		  <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
-     		
-     		  </div> 		    
-     		      <label htmlFor="name">班级:</label>
-     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
-     		      <br/>   		   
-   		      <label htmlFor="name">管理员:</label>
-   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
-   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
-   			      <br/>
-   			      <label htmlFor="name">上课老师:</label>
-   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
-   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
-   				      <br/>
-     		      <button type="button"  onClick={ajax_class_save}  className="am-btn am-btn-primary">提交</button>
-     		    </form>
-     	     </div> 
-     	   </div>	    	   
-     	   </div>
-     );
-   }
-  }); 
 
- /*我的班级中查看学生信息
+//*********************我的班级模块-列表学生名字按钮详情绘制相关代码********************* 
+ /*我的班级模块-列表学生名字-详细信息
   * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
   * <Common_mg_big_fn  imgsList={o.imgsList} />
@@ -7140,14 +7072,6 @@ var Class_EventsTable_byRight = React.createClass({
  	 handleChange: function(event) {
  		    this.setState($('#editClassStudentForm').serializeJson());
  	  },
-// 	  componentDidMount:function(){
-// 		  var imgGuid=this.state.headimg;
-// 		 if(imgGuid){
-// 			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-// 			 G_img_down404("#img_head_image");
-// 		 }
- //
-// 	  },
  	  componentDidMount:function(){
 
  		},
@@ -7159,9 +7083,8 @@ var Class_EventsTable_byRight = React.createClass({
  		 		<div>
  		 		
  		 		 <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="primary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
- 		 	 <G_help_popo   msg={G_tip.studentbind_app} />
- 		 	  </AMR_ButtonToolbar>
+ 		 	    <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
+ 		 	    </AMR_ButtonToolbar>
  			    <AMUIReact.List static border striped>
  			      <Common_mg_big_fn  imgsList={imglist} />				  
  				  <br/>
@@ -7191,7 +7114,7 @@ var Class_EventsTable_byRight = React.createClass({
  	        }
  		 });
 
- //一键拨号公用是否显示组件
+ //我的班级模块-列表学生名字-详细信息一键拨号公用是否显示组件
  var Class_student_Tel_ListItem =React.createClass({
  	 getDefaultProps: function() {
  		    return {
@@ -7206,14 +7129,147 @@ var Class_EventsTable_byRight = React.createClass({
  		     );
  	        }
  		 });
- 
- 
- 
- 
- 
+
+
+ /*
+  * <我的班级>管理学生-创建学生/学生列表名字详情-修改学生（均在用此段代码块）
+  * */
+   var Mycalss_student_edit = React.createClass({ 
+   	 getInitialState: function() {
+   		    return this.props.formdata;
+   		  },
+   	 handleChange: function(event) {
+   		    this.setState($('#editClassStudentForm').serializeJson());
+   	  },
+   	  componentDidMount:function(){
+   		  var imgGuid=this.state.headimg;
+   		  
+   		  
+   		 if(imgGuid){
+   			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
+   			 G_img_down404("#img_head_image");
+   		 }
+   	  },
+   	/*
+   	 * （标头）<我的班级>图片上传功能
+   	 * */
+   	 btn_class_student_uploadHeadere:function(){
+   		w_uploadImg.open(function(guid){
+   			$("#headimg").val(guid);
+   			 $("#img_head_image").attr("src",G_imgPath+guid); 
+   			 G_img_down404("#img_head_image");
+   		});	
+   	},
+   render: function() {
+   	  var o = this.state;
+   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+    return (
+ 		   <form id="editClassStudentForm" method="post" className="am-form">
+ 		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
+ 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+ 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+ 		   <div className="am-form-group">
+ 			
+ 		    <hr />
+   		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+   		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-secondary">上传头像</button>	      
+  	         <AMUIReact.FormGroup>
+  	        <label>单选：</label>
+  	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+  	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+  	     </AMUIReact.FormGroup>     		    
+  	       <label className={one_classDiv}>姓名</label>
+    		     <div className={two_classDiv}>
+ 		       <PxInput icon="user" type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+ 		        </div>
+ 		       <label className={one_classDiv}>昵称</label>
+ 	   		  <div className={two_classDiv}>  
+    		     <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
+    		    </div>
+    		     <label className={one_classDiv}>出生日期</label>
+   		      <div className={two_classDiv}>
+   		       <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
+ 		        </div>
+ 		       <label className={one_classDiv}>身份证</label>
+ 			  <div className={two_classDiv}>  
+ 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
+ 		    </div>  		     
+ 		    <fieldset>
+ 		    <legend>爸爸妈妈信息</legend> 
+ 	        <label className={one_classDiv}>妈妈姓名</label>
+ 	         <div className={two_classDiv}>
+ 	          <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange}/>
+ 	           </div>
+ 	          <label className={one_classDiv}>妈妈电话</label>
+ 		     <div className={two_classDiv}>  
+ 		    <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
+ 	       </div>
+ 	        <label className={one_classDiv}>妈妈工作</label>
+ 	         <div className={two_classDiv}>
+ 		      <PxInput type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange}/>
+ 	           </div>
+ 	          <label className={one_classDiv}>爸爸姓名</label>
+ 		     <div className={two_classDiv}>  
+ 		    <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange}/>
+ 	       </div>
+ 	        <label className={one_classDiv}>爸爸电话</label>
+ 	         <div className={two_classDiv}>
+ 		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
+ 	           </div>
+ 	          <label className={one_classDiv}>爸爸工作</label>
+ 		     <div className={two_classDiv}>  
+ 		    <PxInput type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
+ 	       </div>
+ 	        <label className={one_classDiv}>家庭住址</label>
+ 	         <div className={two_classDiv}>
+ 		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
+ 	           </div>		    
+ 		      </fieldset>  		    		      
+ 		      <fieldset>
+ 		      <legend>其他信息</legend>
+ 		        <label className={one_classDiv}>奶奶电话</label>
+ 		         <div className={two_classDiv}>
+ 			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
+ 		           </div>
+ 		          <label className={one_classDiv}>爷爷电话</label>
+ 			     <div className={two_classDiv}>  
+ 			    <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
+ 		       </div>
+ 		        <label className={one_classDiv}>外婆电话</label>
+ 		         <div className={two_classDiv}>
+ 			      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
+ 		           </div>
+ 		          <label className={one_classDiv}>外公电话</label>
+ 			     <div className={two_classDiv}>  
+ 			    <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
+ 		       </div>
+ 		        <label className={one_classDiv}>其他电话</label>
+ 		         <div className={two_classDiv}>
+ 			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
+ 		           </div>
+ 		 		   <AMUIReact.Input type="textarea"
+ 			 	 	      label="说明"
+ 			 	 	    	 name="note"
+ 			 	 	      labelClassName="am-u-sm-2"
+ 			 	 	      placeholder="备注"
+ 			 	 	      wrapperClassName="am-u-sm-10"
+ 			 	 	      amSize="lg" />
+ 		 		      <br/>
+ 		 		      </fieldset>
+ 				      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>		      
+    		           </div>  
+    		          </form> 	   		          
+                );
+                }
+   });
+
+//****************************************************************
 
 
 
+
+//*********************我的班级模块-管理学生详情绘制相关代码********************* 
 /*
  * 我的班级-管理学生
  * */
@@ -7310,10 +7366,10 @@ var Class_EventsTable_byRight = React.createClass({
 		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入搜索姓名或号码"/>
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <button type="button"  onClick={this.Sousuo_btn.bind(this)}  className="am-btn am-btn-primary">搜索2</button>		  		  
+		  <button type="button"  onClick={this.Sousuo_btn.bind(this)}  className="am-btn am-btn-secondary">搜索</button>		  		  
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <button type="button"  onClick={this.addStudent_btn.bind(this)}  className="am-btn am-btn-primary">创建2</button>		  		  
+		  <button type="button"  onClick={this.addStudent_btn.bind(this)}  className="am-btn am-btn-secondary">创建</button>		  		  
 		  </div>
 		  </AMR_ButtonToolbar>
 		  {addText}	
@@ -7335,11 +7391,7 @@ var Class_EventsTable_byRight = React.createClass({
 	});
  
  /*
-   *我的班级-管理学生- 学生列表服务器请求后绘制处理方法；
-   * @</select>下拉多选框;
-   * @handleChange_stutent_Selected:学校查询；
-   * @handleChange_class_Selected::班级查询；
-   * @btn_query_click:名字查找；
+   *我的班级-管理学生- 搜索功能出来的学生列表服务器请求后绘制处理方法；
    * */
   var Query_adminStudent_list_byRight = React.createClass({
 	
@@ -7374,7 +7426,7 @@ var Class_EventsTable_byRight = React.createClass({
   });
       
   /*  	
-   * 我的班级-管理学生-学生列表在表单上绘制详细内容;
+   * 我的班级-管理学生-学生列表绘制详细内容;
    * @点击后直接调用学生详情方法
    * 调用ajax_class_students_look_info
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
@@ -7391,7 +7443,7 @@ var Class_EventsTable_byRight = React.createClass({
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      <tr className={className} >
-  	        <td>{event.name} <AMUIReact.Button onClick={this.btn_students_list_click.bind(this,this.props.classuuid,event.uuid)} amStyle="success">添加</AMUIReact.Button></td> 
+  	        <td>{event.name} <AMUIReact.Button onClick={this.btn_students_list_click.bind(this,this.props.classuuid,event.uuid)} amStyle="secondary">添加</AMUIReact.Button></td> 
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.ma_tel}</td>
@@ -7400,161 +7452,76 @@ var Class_EventsTable_byRight = React.createClass({
   	      </tr> 
   	    );
   	  }
-  	}); 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+  	}); 
+//****************************************************************
+
  /*
-  * <我的班级>添加学生详情界面
-  * */
-   var Mycalss_student_edit = React.createClass({ 
+ * <我的班级>班级添加与编辑详情绘制
+ * @ajax_class_save：提交按钮在Kd_service;
+ * */	
+ var AMR_Grid=AMUIReact.Grid;
+ var AMR_Col=AMUIReact.Col;
+   var Class_edit = React.createClass({ 
    	 getInitialState: function() {
    		    return this.props.formdata;
    		  },
    	 handleChange: function(event) {
-   		    this.setState($('#editClassStudentForm').serializeJson());
-   	  },
-   	  componentDidMount:function(){
-   		  var imgGuid=this.state.headimg;
-   		  
-   		  
-   		 if(imgGuid){
-   			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-   			 G_img_down404("#img_head_image");
+   		 
+   		 if(event==G_group_wjd){
+   			 $('#help1_span').show();
+   		 }else{
+   			 $('#help1_span').hide();
    		 }
+   		    this.setState($('#editClassForm').serializeJson());
    	  },
-   	/*
-   	 * （标头）<我的班级>图片上传功能
-   	 * */
-   	 btn_class_student_uploadHeadere:function(){
-   		w_uploadImg.open(function(guid){
-   			$("#headimg").val(guid);
-   			 $("#img_head_image").attr("src",G_imgPath+guid); 
-   			 G_img_down404("#img_head_image");
-   		});	
-   	},
    render: function() {
    	  var o = this.state;
-   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-    return (
- 		   <form id="editClassStudentForm" method="post" className="am-form">
- 		   <G_help_popo  msg={G_tip.Stutent_edit} />
- 		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
- 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
- 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
- 		   <div className="am-form-group">
- 			
- 		    <hr />
-   		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-   		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-primary">上传头像</button>	      
-  	         <AMUIReact.FormGroup>
-  	        <label>单选：</label>
-  	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-  	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-  	     </AMUIReact.FormGroup>     		    
-  	       <label className={one_classDiv}>姓名</label>
-    		     <div className={two_classDiv}>
- 		       <PxInput icon="user" type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
- 		        </div>
- 		       <label className={one_classDiv}>昵称</label>
- 	   		  <div className={two_classDiv}>  
-    		     <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
-    		    </div>
-    		     <label className={one_classDiv}>出生日期</label>
-   		      <div className={two_classDiv}>
-   		       <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
- 		        </div>
- 		       <label className={one_classDiv}>身份证</label>
- 			  <div className={two_classDiv}>  
- 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
- 		    </div>  		     
- 		    <fieldset>
- 		    <legend>爸爸妈妈信息</legend> 
- 	        <label className={one_classDiv}>妈妈姓名</label>
- 	         <div className={two_classDiv}>
- 	          <PxInput icon="user" type="text"  name="ma_name" id="ma_name" size="10" maxLength="45" value={o.ma_name} onChange={this.handleChange}/>
- 	           </div>
- 	          <label className={one_classDiv}>妈妈电话</label>
- 		     <div className={two_classDiv}>  
- 		    <PxInput  icon="mobile" type="text" name="ma_tel" id="ma_tel" value={o.ma_tel} onChange={this.handleChange}/>
- 	       </div>
- 	        <label className={one_classDiv}>妈妈工作</label>
- 	         <div className={two_classDiv}>
- 		      <PxInput type="text" name="ma_work" id="ma_work" value={o.ma_work} onChange={this.handleChange}/>
- 	           </div>
- 	          <label className={one_classDiv}>爸爸姓名</label>
- 		     <div className={two_classDiv}>  
- 		    <PxInput icon="user" type="text" name="ba_name" id="ba_name" size="10" maxLength="45"  value={o.ba_name} onChange={this.handleChange}/>
- 	       </div>
- 	        <label className={one_classDiv}>爸爸电话</label>
- 	         <div className={two_classDiv}>
- 		      <PxInput icon="mobile" type="text" name="ba_tel" id="ba_tel" value={o.ba_tel} onChange={this.handleChange} placeholder=""/>
- 	           </div>
- 	          <label className={one_classDiv}>爸爸工作</label>
- 		     <div className={two_classDiv}>  
- 		    <PxInput type="text" name="ba_work" id="ba_work" value={o.ba_work} onChange={this.handleChange} placeholder=""/>
- 	       </div>
- 	        <label className={one_classDiv}>家庭住址</label>
- 	         <div className={two_classDiv}>
- 		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
- 	           </div>		    
- 		      </fieldset>  		    		      
- 		      <fieldset>
- 		      <legend>其他信息</legend>
- 		        <label className={one_classDiv}>奶奶电话</label>
- 		         <div className={two_classDiv}>
- 			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
- 		           </div>
- 		          <label className={one_classDiv}>爷爷电话</label>
- 			     <div className={two_classDiv}>  
- 			    <PxInput icon="mobile" type="text" name="ye_tel" id="ye_tel" value={o.ye_tel} onChange={this.handleChange} placeholder=""/>
- 		       </div>
- 		        <label className={one_classDiv}>外婆电话</label>
- 		         <div className={two_classDiv}>
- 			      <PxInput icon="mobile" type="text" name="waipo_tel" id="waipo_tel" value={o.waipo_tel} onChange={this.handleChange} placeholder=""/>
- 		           </div>
- 		          <label className={one_classDiv}>外公电话</label>
- 			     <div className={two_classDiv}>  
- 			    <PxInput icon="mobile" type="text" name="waigong_tel" id="waigong_tel" value={o.waigong_tel} onChange={this.handleChange} placeholder=""/>
- 		       </div>
- 		        <label className={one_classDiv}>其他电话</label>
- 		         <div className={two_classDiv}>
- 			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
- 		           </div>
- 		 		   <AMUIReact.Input type="textarea"
- 			 	 	      label="说明"
- 			 	 	    	 name="note"
- 			 	 	      labelClassName="am-u-sm-2"
- 			 	 	      placeholder="备注"
- 			 	 	      wrapperClassName="am-u-sm-10"
- 			 	 	      amSize="lg" />
- 		 		      <br/>
- 		 		      </fieldset>
- 				      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>		      
-    		           </div>  
-    		          </form> 	   		          
-                );
-                }
-   });
+ 	  var course_list=Store.getCourseList(o.groupuuid);
+ 	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+ 	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
+     return (
+     		<div>
+     		<div className="header">
+     		  <hr />
+     		</div>
+     		<div className="am-g">
+     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+     		  <form id="editClassForm" method="post" className="am-form">
+     		<input type="hidden" name="uuid"  value={o.uuid}/>
+     		     <input type="hidden" name="type"  value="1"/>
+     		    <div className="am-form-group"> 
+		      <AMR_ButtonToolbar>
+		      <div className="am-fl  am-margin-left-xs">
+     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
+ 		      </div>
+	          <div className="am-fl  am-margin-left-xs">
+	          <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+     		  </div>
+			  <G_help_popo  msg={G_tip.class_edit}/> 
+	          </AMR_ButtonToolbar>
+     		  </div> 		    
+     		      <label htmlFor="name">班级:</label>
+     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
+     		      <br/>   		   
+   		      <label htmlFor="name">管理员:</label>
+   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
+   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
+   			      <br/>
+   			      <label htmlFor="name">上课老师:</label>
+   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
+   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
+   				      <br/>
+     		      <button type="button"  onClick={ajax_class_save}  className="am-btn am-btn-primary">提交</button>
+     		    </form>
+     	     </div> 
+     	   </div>	    	   
+     	   </div>
+     );
+   }
+  }); 
+
+
+
  //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
    
    

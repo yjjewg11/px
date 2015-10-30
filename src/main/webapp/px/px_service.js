@@ -3544,12 +3544,7 @@ G_ajax_abs_save(opt);
 //———————————————————————————————我的班级—————————————————————————     	  	  	  
 
 /*
-* <我的班级> show服务器请求
-* @show老师查看状态进入查看学生详情;
-* @Class_students_show:绘制班级方法；
-* @绘制3级界面学生列表页面；
-* @3级界面绘制完成后绑定事件点击ajax_class_students_look_info
-*   跳转学生详情绘制界面；
+* <我的班级> 服务器请求
 * */
 function react_ajax_class_students_manage(uuid){
 	$.AMUI.progress.start();	
@@ -3609,7 +3604,7 @@ function react_ajax_class_students_manage(uuid){
 };
 
 /*
- * <我的班级>添加班级和管理生按钮处理事件
+ * <我的班级>管理学生、添加与修改班级、删除班级按钮入口方法处理；
  * */	  
 function btn_click_class_list(m,groupuuid,classuuid){
 	if(m=="addstudent"){
@@ -3624,19 +3619,11 @@ function btn_click_class_list(m,groupuuid,classuuid){
 			G_msg_pop("请先创建班级!");
 			return;
 		}
-		if(classuuid.indexOf(",")>-1){
-			alert("只能选择一个班级进行编辑！");
-			return;
-		}
 		Queue.push(function(){btn_click_class_list(m,groupuuid,classuuid);},"编辑班级");
 		react_ajax_class_edit_get({groupuuid:groupuuid},classuuid);
 	}else if(m=="delete"){
 		if(!classuuid){
 			G_msg_pop("请先创建班级!");
-			return;
-		}
-		if(classuuid.indexOf(",")>-1){
-			alert("只能选择一个班级进行删除！");
 			return;
 		}
 		ajax_class_delete_byRight(classuuid);
@@ -3656,183 +3643,18 @@ function btn_click_class_list(m,groupuuid,classuuid){
 	}		
 };
 
-/*
- *删除空班级.(管理员和普通老师共用)
- * */  	  
-function ajax_class_delete_byRight(uuid){	  	
-	
-	
-	if(!confirm("确定要删除吗?")){
-		return;
-	}
-  	$.AMUI.progress.start();
-      var url = hostUrl + "rest/pxclass/delete.json?uuid="+uuid;
-	$.ajax({
-		type : "POST",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Store.clearChooseClass();
-				Store.setMyClassList(null);
-				Store.clearClassCourseList();
-				Store.setClassCourseList(null);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error :G_ajax_error_fn
-	});
-};  
-/*
-* <我的班级>管理学生详情绘制入口
-* */
-var G_formdata=null;
-function add_studentsByData(formdata){
-	G_formdata=formdata;
-	//初始取出学生列表
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/pxstudent/getStudentByClassuuid.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data:{classuuid:formdata.classuuid},
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(My_adminStudent,{
-					formdata:formdata,
-					events:data.list
-					}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error :G_ajax_error_fn
-	});	
-		
-//	React.render(React.createElement(Mycalss_student_edit,{formdata:formdata}), document.getElementById('div_body'));
-//	return;
-};
 
 
-/*
-* <我的班级>添加学生与班级关系
-* */
-function add_StudentClass(class_uuid,student_uuid){
-	//初始取出学生列表
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/pxstudent/addStudentClass.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		data:{class_uuid:class_uuid,student_uuid:student_uuid},
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				add_studentsByData({classuuid:class_uuid});
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error :G_ajax_error_fn
-	});	
-};
-/*
- * <我的班级>添加学生 提交按钮 服务器请求
- * */
-function btn_ajax_myclass_student_save(){
-	var objectForm = $('#editClassStudentForm').serializeJson();
-	
-	objectForm.birthday=G_Check.formateDate(objectForm.birthday);
-	if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
-		G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
-		$("input[name='birthday']").focus()
-		return;
-	}
-	
-	$("input[name='birthday']").val(objectForm.birthday);
-    var opt={
-            formName: "editClassStudentForm",
-            url:hostUrl + "rest/pxstudent/save.json",
-            cbFN:function(data){
-            	G_msg_pop(data.ResMsg.message);
-            	Store.setClassStudentsList(data.uuid,null);
-            	react_ajax_class_students_manage(objectForm.classuuid);
-            }
-            };
-G_ajax_abs_save(opt);
-}
 
 
+
+
+
+
+//*********************我的班级模块-列表学生名字按钮相关代码********************* 
 /*
- * <我的班级>添加班级按钮详情绘制入口
- * */	 
-function react_ajax_class_edit_get(formdata,uuid){	
-	if(!uuid){
-		var userinfo=Store.getUserinfo();
-		formdata.headTeacher=userinfo.uuid;
-		formdata.headTeacher_name=userinfo.name;
-		React.render(React.createElement(Class_edit,{
-			formdata:formdata,
-			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-			}), document.getElementById('div_body'));
-		return;
-	}
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/pxclass/"+uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Class_edit,{
-					formdata:data.data,
-					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-					}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error :G_ajax_error_fn
-	});
-};
-/*
- * <我的班级>添加班级提交保存按钮服务请求
- * 直接把Form表单发给服务器，服务器自己取参数;
- * */
-function ajax_class_save(){
-    var opt={
-            formName: "editClassForm",
-            url:hostUrl + "rest/pxclass/save.json",
-            cbFN:function(data){
-            	G_msg_pop(data.ResMsg.message);
-				Store.setMyClassList(null);
-				Store.clearChooseClass(null);
-				Store.clearClassCourseList(null);
-				Store.setClassCourseList(null);
-				menu_class_students_fn();
-            }
-            };
-G_ajax_abs_save(opt);
-}	
-/*
- * （主页）我的班级学生详情服务器请求
+ * （主页）我的班级-学生列表名字按钮详情服务器请求
  * @服务器请求:POST rest/pxstudent/{uuid}.json;
- * uuid:用户ID;
- * @根据数据在 Kd_react做绘制处理 
  * */
 function ajax_class_students_look_info(uuid){
 	Queue.push(function(){ajax_class_students_look_info(uuid);},"学生详情");
@@ -3856,7 +3678,7 @@ function ajax_class_students_look_info(uuid){
 };
 
 /*
- * 我的班级修改学生详情按钮服务器请求
+ * 我的班级-学生列表名字-修改学生按钮详情按钮服务器请求
  * */
  function ajax_myclass_students_edit(uuid){
  	Queue.push(function(){ajax_myclass_students_edit(uuid);},"编辑学生");
@@ -3881,6 +3703,195 @@ function ajax_class_students_look_info(uuid){
  		error :G_ajax_error_fn
  	});
  };
+ /*
+  * <我的班级>-管理学生-创建学生/学生列表名字-修改学生（提交学生按钮服务器请求）
+  * */
+ function btn_ajax_myclass_student_save(){
+ 	var objectForm = $('#editClassStudentForm').serializeJson();
+ 	
+ 	objectForm.birthday=G_Check.formateDate(objectForm.birthday);
+ 	if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
+ 		G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
+ 		$("input[name='birthday']").focus()
+ 		return;
+ 	}
+ 	
+ 	$("input[name='birthday']").val(objectForm.birthday);
+     var opt={
+             formName: "editClassStudentForm",
+             url:hostUrl + "rest/pxstudent/save.json",
+             cbFN:function(data){
+             	G_msg_pop(data.ResMsg.message);
+             	Store.setClassStudentsList(data.uuid,null);
+             	react_ajax_class_students_manage(objectForm.classuuid);
+             }
+             };
+ G_ajax_abs_save(opt);
+ }
+//****************************************************************
+
+ 
+ 
+//*********************我的班级模块-管理学生按钮相关代码********************* 
+ /*
+ * 我的班级-管理学生服务器请求
+ * */
+ var G_formdata=null;
+ function add_studentsByData(formdata){
+ 	G_formdata=formdata;
+ 	//初始取出学生列表
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/pxstudent/getStudentByClassuuid.json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		data:{classuuid:formdata.classuuid},
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(My_adminStudent,{
+ 					formdata:formdata,
+ 					events:data.list
+ 					}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});	
+ };
+ /*
+ * <我的班级>添加学生与班级关系
+ * */
+ function add_StudentClass(class_uuid,student_uuid){
+ 	//初始取出学生列表
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/pxstudent/addStudentClass.json";
+ 	$.ajax({
+ 		type : "POST",
+ 		url : url,
+ 		data:{class_uuid:class_uuid,student_uuid:student_uuid},
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				add_studentsByData({classuuid:class_uuid});
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});	
+ };
+
+
+//****************************************************************
+
+
+//*************我的班级模块-添加、编辑、删除班级3个按钮相关代码********************* 
+ /*
+  * <我的班级>添加班级按钮详情绘制入口
+  * */	 
+ function react_ajax_class_edit_get(formdata,uuid){	
+ 	if(!uuid){
+ 		var userinfo=Store.getUserinfo();
+ 		formdata.headTeacher=userinfo.uuid;
+ 		formdata.headTeacher_name=userinfo.name;
+ 		React.render(React.createElement(Class_edit,{
+ 			formdata:formdata,
+ 			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+ 			}), document.getElementById('div_body'));
+ 		return;
+ 	}
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/pxclass/"+uuid+".json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Class_edit,{
+ 					formdata:data.data,
+ 					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+ 					}), document.getElementById('div_body'));
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ };
+ /*
+  * <我的班级>添加班级提交保存按钮服务请求
+  * 直接把Form表单发给服务器，服务器自己取参数;
+  * */
+ function ajax_class_save(){
+     var opt={
+             formName: "editClassForm",
+             url:hostUrl + "rest/pxclass/save.json",
+             cbFN:function(data){
+             	G_msg_pop(data.ResMsg.message);
+ 				Store.setMyClassList(null);
+ 				Store.clearChooseClass(null);
+ 				Store.clearClassCourseList(null);
+ 				Store.setClassCourseList(null);
+ 				menu_class_students_fn();
+             }
+             };
+ G_ajax_abs_save(opt);
+ }	
+
+ /*
+  *删除空班级.(管理员和普通老师共用)
+  * */  	  
+ function ajax_class_delete_byRight(uuid){	  	
+ 	
+ 	
+ 	if(!confirm("确定要删除吗?")){
+ 		return;
+ 	}
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/pxclass/delete.json?uuid="+uuid;
+ 	$.ajax({
+ 		type : "POST",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") {
+ 				G_msg_pop(data.ResMsg.message);
+ 				Store.clearChooseClass();
+ 				Store.setMyClassList(null);
+ 				Store.clearClassCourseList();
+ 				Store.setClassCourseList(null);
+ 				Queue.doBackFN();
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ }; 
+
+
+
+
+//****************************************************************
+
+
+
+
+
+
+
 
 //————————————————————————————帮助列表————————————————————————— 
 
