@@ -808,7 +808,7 @@ function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
  * @跳转widget发服务器请求
  * */
 var G_myCurClassuuid=null;
-function menu_teachingplan_list_fn_byRight() {
+function menu_teachingplan_list_fn_byRight(classuuid) {
 	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
 	var groupList=Store.getGroupByRight("KD_teachingplan_m");
 	
@@ -818,6 +818,7 @@ function menu_teachingplan_list_fn_byRight() {
 	}	
 	var groupuuid=groupList[0].uuid;
 	React.render(React.createElement(Teachingplan_show7Day_byRight, {
+		    classuuid:classuuid,
 		    groupuuid:groupuuid,
 		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
 			}), document.getElementById('div_body'));

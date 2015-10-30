@@ -497,13 +497,13 @@ var Userinfo_EventsTable_div = React.createClass({
 			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
 			    </div> 
 			    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
+			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
 			    </div> 
 				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
 				  </div>
 				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-primary">搜索</button>
+					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
 					  </div>
 					
 				  </AMR_ButtonToolbar>

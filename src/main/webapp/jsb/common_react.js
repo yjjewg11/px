@@ -497,13 +497,13 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
 			    ), 
 			    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "revise", onClick: this.handleClick.bind(this, "edit")}, "修改")
+			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "edit")}, "修改")
 			    ), 
 				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
 				  ), 
 				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-primary"}, "搜索")
+					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")
 					  )
 					
 				  )

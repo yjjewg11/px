@@ -421,7 +421,7 @@ function react_ajax_class_students_manage(uuid){
 		},
 		error : G_ajax_error_fn
 	});
-	var students=null;
+	//var students=null;
 	var 
 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
 	$.ajax({
@@ -441,16 +441,17 @@ function react_ajax_class_students_manage(uuid){
 		error :G_ajax_error_fn
 	});
 	Queue.push(function(){react_ajax_class_students_manage(uuid);},"我的班级");
-	if(students){
-		for(var i=0;i<students.length;i++){
-			var tmp=students[i];
-			tmp.img=G_def_headImgPath;
-			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
-			tmp.title=tmp.name;
-			tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"','"+tmp.title+"')";
-		}
-	}
+//	if(students){
+//		for(var i=0;i<students.length;i++){
+//			var tmp=students[i];
+//			tmp.img=G_def_headImgPath;
+//			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+//			tmp.title=tmp.name;
+//			tmp.link= "javascript:ajax_class_students_look_info('"+tmp.uuid+"','"+tmp.title+"')";
+//		}
+//	}
 	React.render(React.createElement(Class_students_show,{
+		students:students,
 		formdata:formdata,
 		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
 		classuuid:uuid,
@@ -2879,7 +2880,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		},
 		error :G_ajax_error_fn
  	});
- 	var students=null;
+ 	//var students=null;
  	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
  	$.ajax({
  		type : "GET",
@@ -2898,16 +2899,17 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 		error :G_ajax_error_fn
  	});
  	Queue.push(function(){react_ajax_class_students_manage_byRight(uuid);},"班级详情");
- 	if(students){
- 		for(var i=0;i<students.length;i++){
- 			var tmp=students[i];
- 			tmp.img=G_def_headImgPath;
- 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
- 			tmp.title=tmp.name;
- 			tmp.link= "javascript:ajax_class_students_edit_byRight(null,'"+tmp.uuid+"')";
- 		}
- 	}	
+// 	if(students){
+// 		for(var i=0;i<students.length;i++){
+// 			var tmp=students[i];
+// 			tmp.img=G_def_headImgPath;
+// 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
+// 			tmp.title=tmp.name;
+// 			tmp.link= "javascript:ajax_class_students_edit_byRight(null,'"+tmp.uuid+"')";
+// 		}
+// 	}	
  	React.render(React.createElement(Class_students_manage_byRight,{
+ 		students:students,
  		formdata:formdata,
  		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
 		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),

@@ -1045,7 +1045,6 @@ function ajax_teachingplan_dayShow(num,myclazz) {
  * 班级详情内添加编辑课程等按钮方法判断;
  * */ 
 function btn_click_teachingplan(m,uuid,classuuid,ch_day){
-	console.log("m,uuid,classuuid,ch_day",m,uuid,classuuid,ch_day);
 	if(m=="add"){
 		react_ajax_teachingplan_edit({classuuid:classuuid,plandate:ch_day},null,"新增课程");
 	}
@@ -2220,9 +2219,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
          			error : function( obj, textStatus, errorThrown ){
          				$.AMUI.progress.done();
          				alert(url+",error:"+textStatus);
-         				 console.log(url+',error：', obj);
-         				 console.log(url+',error：', textStatus);
-         				 console.log(url+',error：', errorThrown);
          			}
          		};
      	$.ajax(opt);
