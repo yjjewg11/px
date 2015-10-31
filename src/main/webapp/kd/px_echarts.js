@@ -1,7 +1,5 @@
 
 /**
- * 
- * 弃用
  * 外部ajax[请求数据完成]
  * ->loadData(option)[传入数据]
  * ->initDiv[初始化div]

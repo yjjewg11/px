@@ -824,9 +824,21 @@ function menu_query_list_fn_byRight() {
  * */
 function menu_statistics_list_fn_byRight() {
 	Queue.push(menu_statistics_list_fn_byRight,"统计");
+	
+	var  grouplist=Store.getGroupByRight("PX_statistics_m");			
+	var groupuuid;
+
+	if(!grouplist||grouplist.length==0){
+		groupuuid=null;
+	}else{
+		groupuuid=grouplist[0].uuid;
+	}
+
+	
 	React.render(React.createElement(ECharts_Div_byRight, {
+		groupuuid:groupuuid,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
-		group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("PX_statistics_m"),"uuid","brand_name")
+		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
 		}), document.getElementById('div_body'));
 };
 

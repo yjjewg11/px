@@ -292,6 +292,7 @@ public class GroupService extends AbstractService {
 			group.setMap_point(groupRegJsonform.getMap_point());;
 			group.setCity(groupRegJsonform.getCity());
 			group.setProv(groupRegJsonform.getProv());
+			group.setSummary(groupRegJsonform.getSummary());
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(group);
 		}else{
