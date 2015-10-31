@@ -1331,7 +1331,6 @@ render: function() {
 //		 * 根据日期生成课程表,如何返回数据中没有,则创建空的.
 //		 */
 //		getOneDayData:function(d1,list){
-//			console.log("list",list);
 //			for(var i=0;i<list.length;i++){
 //				var tmp=list[i];
 //				if(tmp.plandate.indexOf(d1)>-1){
@@ -1402,7 +1401,6 @@ render: function() {
 //	  render: function() {
 //		  var o=this.state.data;
 //		  var edit_btn_className="G_Edit_hide";
-//		  console.log("this.state",this.state);
 //		  if(this.state.isEdit){
 //			  return (<Px_Teachingplan_edit formdata={o} callback={this.save_callback.bind(this)} />);
 //		  }
@@ -1468,7 +1466,6 @@ render: function() {
 //	  },
 //render: function() {
 //	  var o = this.state;
-//	  console.log("o.classuuid",o);
 // 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 // 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 //return (
@@ -2424,7 +2421,6 @@ render: function() {
 //	  },
 //	render: function() {
 //		var o=this.props.formdata;
-//		console.log("o",o);
 //		if(!o)o="";
 //		var stutent_num=this.props.stutent_num;
 //		if(!this.props.students)this.props.students=[];
@@ -3285,11 +3281,24 @@ var Group_edit_byRight = React.createClass({
     		 <label className={one_classDiv }>品牌名:</label>
     		  <div className={two_classDiv }>
     	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	        </div>    		
-    	       <label className={one_classDiv }>机构全称:</label>
+    	        </div>
+		    	       <label className={one_classDiv }>机构全称:</label>
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	    </div>    	      
+    	    </div>  
+		    <label className={one_classDiv }>省:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput  type="text" name="prov" id="prov" value={o.prov} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+		    <label className={one_classDiv }>市:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput  type="text" name="city" id="city" value={o.city} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+		   <label className={one_classDiv }>摘要:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput type="text" name="summary" id="summary" value={o.summary} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+  	      
     	     <label className={one_classDiv }>学校地址:</label>
     		  <div className={two_classDiv }>
     	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
@@ -3359,7 +3368,6 @@ var Announcements_EventsTable_byRight = React.createClass({
 		$.AMUI.progress.start();
 		var that=this;
 		g_message_groupuuid=obj.groupuuid;
-		console.log("测试announce_types",obj,announce_types);
 		var url = hostUrl + "rest/announcements/list.json";
 		$.ajax({
 			type : "GET",
@@ -4414,7 +4422,6 @@ var Class_EventsTable_byRight = React.createClass({
   	  render: function() {
 		
   	    var event = this.props.event;
-		console.log("event",event);
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
@@ -5942,7 +5949,6 @@ var Class_EventsTable_byRight = React.createClass({
 				copybyclassList.push(classList[i]);
 			}
 		   }
-		console.log("copybyclassList",copybyclassList);
      return (
      <div>
      <AMR_ButtonToolbar>
@@ -6742,7 +6748,6 @@ var Class_EventsTable_byRight = React.createClass({
              <th>标题</th>
 		     <th>修改课程</th>
              <th>课程类型</th>
-             <th>具体课程</th>
              <th>上课地点</th>
              <th>课程学时</th>
              <th>收费价格</th>
@@ -6779,7 +6784,6 @@ var Class_EventsTable_byRight = React.createClass({
  	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event)}>{event.title}</a></td>
  	  	    <td><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event)} >修改</AMR_Button></td>
 		    <td>{Vo.get("course_type_"+event.type)}</td>
- 	  	    <td>{event.subtype}</td>
  	  	    <td>{event.address}</td>
  	  	    <td>{event.schedule}</td>
  	  	    <td>{event.fees}</td>
@@ -6816,7 +6820,6 @@ var Class_EventsTable_byRight = React.createClass({
  			      
  			         <AMUIReact.ListItem>标题:{o.title}</AMUIReact.ListItem>
  			        <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
- 			       <AMUIReact.ListItem>具体课程:{o.birthday}</AMUIReact.ListItem>
  			      <AMUIReact.ListItem>上课地点:{o.address}</AMUIReact.ListItem>
  			     <AMUIReact.ListItem>课程学时:{o.schedule}</AMUIReact.ListItem>
  			    <AMUIReact.ListItem>收费价格:{o.fees}</AMUIReact.ListItem>
@@ -6852,13 +6855,13 @@ var Class_EventsTable_byRight = React.createClass({
 	   /*
 	    * (发布课程)内上传LOGO图片
 	    * */
-   btn_class_group_uploadHeadere :function(){      
-       w_uploadImg.open(function (guid){
-            $ ("#logo").val(guid);
-             $("#img_head_image").attr("src",G_imgPath+ guid);
-             G_img_down404("#img_head_image");
-	         });   
-	   },
+//   btn_class_group_uploadHeadere :function(){      
+//       w_uploadImg.open(function (guid){
+//            $ ("#logo").val(guid);
+//             $("#img_head_image").attr("src",G_imgPath+ guid);
+//             G_img_down404("#img_head_image");
+//	         });   
+//	   },
  render: function() {
  	  var o = this.state;
 	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
@@ -6877,8 +6880,8 @@ var Class_EventsTable_byRight = React.createClass({
 		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
 			       <PxInput type="hidden" name="logo" id="logo" value={o.logo} onChange={this.handleChange}/>
 			<div>
-          <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
-          <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary">上传LOGO</button>
+			  {G_get_upload_img_Div()}
+
           </div>
           <hr/>
 		   <div className="am-form-group">
@@ -6897,11 +6900,6 @@ var Class_EventsTable_byRight = React.createClass({
 			        </div>
 		 	         
 		  		  
-
-			    <label className={one_classDiv}>具体课程:</label>
-			     <div className={two_classDiv}>
-			       <PxInput  type="text" name="subtype" id="subtype" maxLength="20" value={o.subtype} onChange={this.handleChange}/>
-			        </div>  
 
 			    <label className={one_classDiv}>上课地点:</label>
 			     <div className={two_classDiv}>
@@ -7438,7 +7436,6 @@ var Class_EventsTable_byRight = React.createClass({
   	  render: function() {
 		
   	    var event = this.props.event;
-		console.log("event",event);
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
@@ -7796,7 +7793,19 @@ var Group_edit_byRight_px = React.createClass({
     	       <label className={one_classDiv }>机构全称:</label>
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	    </div>    	      
+    	    </div>   
+	  		    <label className={one_classDiv }>省:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput  type="text" name="prov" id="prov" value={o.prov} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+		    <label className={one_classDiv }>市:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput  type="text" name="city" id="city" value={o.city} onChange={this.handleChange} placeholder=""/>
+    	       </div> 		
+		   <label className={one_classDiv }>摘要:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput type="text" name="summary" id="summary" value={o.summary} onChange={this.handleChange} placeholder=""/>
+    	       </div> 	
     	     <label className={one_classDiv }>学校地址:</label>
     		  <div className={two_classDiv }>
     	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
@@ -8108,7 +8117,7 @@ var Group_edit_byRight_px = React.createClass({
    		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} data={this.props.grouplist} btnStyle="primary" value={this.state.groupuuid} />   
    		  </div>
    		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-          <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,this.props.groupuuid)} >新增资料</AMR_Button>
+          <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,$("input[name='group_uuid']").val())} >新增资料</AMR_Button>
 		  </div>
    		  </AMR_ButtonToolbar>	
    		    
@@ -8237,13 +8246,16 @@ var Px_teacher_edit = React.createClass({
 	   },
 render: function() {
 	  var o = this.state;
-
-	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
-	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
+	   var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+	   var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
 	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
 	   if(o.type==null&&course_type_list.length>0)o.type=course_type_list[0].value;
 	   if(o.status==null)o.status=1;
+
+	   var course_list=Store.getCourseList(o.groupuuid);
+ 	       course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+ 	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
 return (
 <div>
 
@@ -8256,25 +8268,26 @@ return (
            </div>
            <hr/>
 		   <div className="am-form-group">
+		<AMR_ButtonToolbar>
 		    <div className="am-fl am-margin-bottom-sm">
 	 	  	 <AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
-	          </div>	 	  	
-	         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">	
+	          </div>	
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">	
 	        <AMUIReact.Selected  id="type" name="type" onChange={this.handleChange} btnWidth="200" data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
-	       </div>	 	
+	        </div>
+		      <div className="am-fl am-margin-bottom-sm">
+	        <AMUIReact.Selected  id="courseuuid" name="courseuuid" multiple= {true} onChange={this.handleChange} btnWidth="200" data={course_list} btnStyle="primary" value={o.courseuuid} />    		     
+	      </div>
+	       <div className="am-fl am-margin-bottom-sm am-margin-left-xs">		 	
 	       <AMUIReact.Selected  id="status" name="status" onChange={this.handleChange} btnWidth="200" data={course_status_list} btnStyle="primary" value={o.status+""} />    		     
-
-	 	  	<hr/>
+            </div>
+	 	  	</AMR_ButtonToolbar>
+	         <hr/>
 		       <label className={one_classDiv}>老师姓名:</label>
 				 <PxInput type="hidden" name="useruuid" id="useruuid" value={o.useruuid} onChange={this.handleChange}/>
 			     <div className={two_classDiv}>
 				   <PxInput type="text"  id="name" name="name" value={o.name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"useruuid","name",o.groupuuid)} placeholder=""/>
 			        </div>  
-
-			    <label className={one_classDiv}>教授课程:</label>
-			     <div className={two_classDiv}>
-			       <PxInput  type="text" name="course_title" id="course_title" maxLength="45" placeholder="45字以内"  value={o.course_title} onChange={this.handleChange}/>
-			        </div>
 			       
 			    <label className={one_classDiv}>简介:</label>
 			     <div className={two_classDiv}>
