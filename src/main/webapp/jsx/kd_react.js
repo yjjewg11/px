@@ -7256,7 +7256,7 @@ render: function() {
     <tr>
 		    <th>{table_th0}</th>
       <th>姓名</th>
-      <th>接送卡号</th>
+      <th>卡号</th>
       <th>申请号</th>
 		<th>申请人</th>
       <th>申请时间</th>
@@ -7754,3 +7754,402 @@ var Teachingplan_EventRow_byRight = React.createClass({
   }
   }); 
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±     
+
+
+  //
+  
+
+  
+//——————————————————————————考勤,(签到统计)——————————————————————————
+
+ /*
+  * 月考勤表,老师
+  **/
+    var Attendance_listStatMonthByTeacher = React.createClass({	
+		 add_day:31,
+		add_dayArr:[],
+		getStateByPropes:function(nextProps){			
+			var yyyy_mm= new Date().format("yyyy-MM"); 
+			
+			
+			var queryForm={
+				yyyy_mm:yyyy_mm,
+				groupuuid:nextProps.groupuuid
+			};			
+
+				//08:00-17:00
+			var workTime=Store_ajax_groupHabits_getByKey(nextProps.groupuuid,"WorkTime");
+			if(workTime){
+				workTime=workTime.split("-");
+				if(workTime.length==2){
+					queryForm.morning=workTime[0];
+					queryForm.afternoon=workTime[1];
+				}
+				
+			}
+			 var obj= {
+				queryForm:queryForm,
+				list: []
+			};
+			return obj;
+		},
+		getInitialState: function() {
+			 this.add_dayArr=[];
+			 for(var i=1;i<=this.add_day;i++){
+				this.add_dayArr.push(i);
+			 }
+    	    return this.getStateByPropes(this.props);
+    	  },
+		 componentWillReceiveProps: function(nextProps) {	
+		   this.setState(this.getStateByPropes(nextProps));
+		},
+
+		handleChange: function(v) {
+		 	var queryForm=$('#queryForm').serializeJson();
+			this.state.queryForm=queryForm;
+		    this.setState(this.state);
+			 //this.ajax_list();
+	  },
+	
+		ajax_callback:function(list){
+    		 if (list== null ) this.state.list=[];
+			 else
+    		  this.state.list=list;
+			
+    		  this.setState(this.state);
+    	  },
+	
+		ajax_list:function(){
+			var queryForm=this.state.queryForm;			
+			if(queryForm.yyyy_mm.length!=7||queryForm.yyyy_mm.split("-").length!=2){				
+					return;
+			}
+    		$.AMUI.progress.start();
+    		var that=this;
+    		var url = hostUrl + "rest/studentSignRecord/listStatMonthByTeacher.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data :queryForm,
+    			dataType : "json",
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    				    that.ajax_callback( data.list );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		
+    	},
+    	
+		handleClick_query: function(m) {
+			if(!this.validate()){
+				return;
+			}
+			 this.ajax_list();
+    	  },
+		handle_onKeyDown: function(e){
+          if(G_isKeyDown_enter(e)){
+               this.handleClick_query();
+               return false;
+		 }
+     },
+	handleChange_selectgroup: function(val){
+		this.state.queryForm.groupuuid=val;		
+		this.ajax_list();
+		this.setState(this.state); 
+	},
+	pageClick: function(m) {
+		 var yyyy_mm=this.state.queryForm.yyyy_mm;
+		 var num=1;
+		 if(m=="pre"){
+			num=-1;
+		 }
+		if(!this.validate()){
+			return;
+		}
+		 this.state.queryForm.yyyy_mm=G_addMonth(yyyy_mm,num); 
+		this.setState(this.state); 
+		this.ajax_list();
+
+	},
+	validate:function(){
+		var queryForm=this.state.queryForm;
+			if(queryForm.yyyy_mm.length!=7||queryForm.yyyy_mm.split("-").length!=2){
+				G_msg_pop("年月格式不正确.正确格式:2015-01");
+					return false;
+			}
+			return true;
+	},
+    render: function() {
+			var queryForm=this.state.queryForm;
+			if(!queryForm.morning)queryForm.morning='08:00';
+			if(!queryForm.afternoon)queryForm.afternoon='17:15';
+		var that=this;
+
+		 if (this.state.list== null ) this.state.list=[];
+      return (
+      <div>
+ 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		
+			  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上月</AMR_Button>	  
+			 <PxInput icon="calendar" type="text"  maxLength="7" size="7" placeholder="YYYY" name="yyyy_mm"  value={queryForm.yyyy_mm} onChange={this.handleChange}/> 		   		
+	 		  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下月</AMR_Button>	  
+
+			 <AMR_Button amStyle="primary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
+				 上班时间
+			<PxInput  type="text"  maxLength="5" size="5" placeholder="08:00" name="morning"  value={queryForm.morning} onChange={this.handleChange}/> 		   		
+			 <PxInput  type="text"  maxLength="5" size="5" placeholder="17:15" name="afternoon"  value={queryForm.afternoon} onChange={this.handleChange}/> 		   		
+	 		  
+    	<G_help_popo  msg={G_tip.attendance_listStatMonth}/> 
+		  </AMUIReact.Form>
+
+		 <h6>{"持卡人数:"+this.state.list.length}</h6>
+    	<Attendance_listStatMonth_table yyyy_mm={queryForm.yyyy_mm}  list={this.state.list} morning={queryForm.morning} afternoon={queryForm.afternoon} />
+      
+
+        </div>
+      );
+    }
+    });
+  /*
+  * 月考勤表,学生
+  **/
+    var Attendance_listStatMonthByStudent = React.createClass({	
+		 add_day:31,
+		add_dayArr:[],
+		getStateByPropes:function(nextProps){			
+			var yyyy_mm= new Date().format("yyyy-MM"); 
+			var classlist=Store.getChooseClass(nextProps.groupuuid);
+			var classuuid =null;
+			if(classlist&&classlist.length>0){
+				classuuid=classlist[0].uuid;
+			}
+			var queryForm={
+				yyyy_mm:yyyy_mm,
+				classuuid:classuuid,
+				groupuuid:nextProps.groupuuid
+			};			
+			 var obj= {
+				queryForm:queryForm,		
+					classlist:G_selected_dataModelArray_byArray(classlist,"uuid","name"),
+				list: []
+			};
+			return obj;
+		},
+		getInitialState: function() {
+			 this.add_dayArr=[];
+			 for(var i=1;i<=this.add_day;i++){
+				this.add_dayArr.push(i);
+			 }
+    	    return this.getStateByPropes(this.props);
+    	  },
+		 componentWillReceiveProps: function(nextProps) {	
+		   this.setState(this.getStateByPropes(nextProps));
+		},
+
+		handleChange: function(v) {
+		 	var queryForm=$('#queryForm').serializeJson();
+			this.state.queryForm=queryForm;
+		    this.setState(this.state);
+			 this.ajax_list();
+	  },
+	
+		ajax_callback:function(list){
+    		 if (list== null ) this.state.list=[];
+			 else
+    		  this.state.list=list;
+			
+    		  this.setState(this.state);
+    	  },
+	
+		ajax_list:function(){
+			var queryForm=this.state.queryForm;			
+			if(queryForm.yyyy_mm.length!=7||queryForm.yyyy_mm.split("-").length!=2){				
+					return;
+			}
+    		$.AMUI.progress.start();
+    		var that=this;
+    		var url = hostUrl + "rest/studentSignRecord/listStatMonthByStudent.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data :queryForm,
+    			dataType : "json",
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    				    that.ajax_callback( data.list );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		
+    	},
+    	
+		handleClick_query: function(m) {
+			if(!this.validate()){
+				return;
+			}
+			 this.ajax_list();
+    	  },
+		handle_onKeyDown: function(e){
+          if(G_isKeyDown_enter(e)){
+               this.handleClick_query();
+               return false;
+		 }
+     },
+	handleChange_selectgroup: function(val){
+		this.state.queryForm.groupuuid=val;
+		var classlist=Store.getChooseClass(val);
+		var classuuid =null;
+		if(classlist&&classlist.length>0){
+			classuuid=classlist[0].uuid;
+		}
+		this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+		this.state.queryForm.classuuid=classuuid;
+		this.ajax_list();
+		this.setState(this.state); 
+	},
+	pageClick: function(m) {
+		 var yyyy_mm=this.state.queryForm.yyyy_mm;
+		 var num=1;
+		 if(m=="pre"){
+			num=-1;
+		 }
+		if(!this.validate()){
+			return;
+		}
+		 this.state.queryForm.yyyy_mm=G_addMonth(yyyy_mm,num); 
+		this.setState(this.state); 
+		this.ajax_list();
+
+	},
+	validate:function(){
+		var queryForm=this.state.queryForm;
+			if(queryForm.yyyy_mm.length!=7||queryForm.yyyy_mm.split("-").length!=2){
+				G_msg_pop("年月格式不正确.正确格式:2015-01");
+					return false;
+			}
+			return true;
+	},
+    render: function() {
+			var queryForm=this.state.queryForm;
+		var that=this;
+
+		 if (this.state.list== null ) this.state.list=[];
+      return (
+      <div>
+ 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		
+			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
+ 	 
+			  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上月</AMR_Button>	  
+			 <PxInput icon="calendar" type="text"  maxLength="7" size="7" placeholder="YYYY" name="yyyy_mm"  value={queryForm.yyyy_mm} onChange={this.handleChange}/> 		   		
+	 		  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下月</AMR_Button>	  
+
+			 <AMR_Button amStyle="primary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
+    	
+		  </AMUIReact.Form>
+		 <h6>{"持卡人数:"+this.state.list.length}</h6>
+    	<Attendance_listStatMonth_table yyyy_mm={queryForm.yyyy_mm}  list={this.state.list}/>
+      
+
+        </div>
+      );
+    }
+    });
+
+/**
+老师学生考勤列表模块共用.
+*/
+var Attendance_listStatMonth_table = React.createClass({	
+		 add_day:31,
+		add_dayArr:null,
+    render: function() {
+	   if(! this.add_dayArr){
+		   this.add_dayArr=[];
+			 for(var i=1;i<=this.add_day;i++){
+				this.add_dayArr.push(i);
+			 }
+		}
+		var t=this.props.yyyy_mm.split("-");
+		var xingqi67Arr=[];
+		if(t.length>1){
+			xingqi67Arr=G_getMonthXinqi67(t[0],t[1]);
+		}
+		
+		var class_xinqi67="am-warning";
+		var that=this;
+      return (
+      <div>	
+    	
+        <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">  
+          <thead> 
+              <tr>
+              <th>姓名</th>
+			  {this.add_dayArr.map(function(event_add,index) {
+					 return (  <th className={$.inArray(event_add, xingqi67Arr)>-1?class_xinqi67:""}>{event_add}</th> )
+				
+			 })}
+            
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.list.map(function(event) {
+				var jsonObj={};
+				if(event.jsonstr){
+					jsonObj=eval("("+event.jsonstr+")");
+				}
+				 
+			    return ( 
+				  <tr  key={"_"+event.useruuid} >
+  				 <td  >{event.username}</td>
+				   {that.add_dayArr.map(function(event_add,index) {
+					//jsonObj["d_01"]
+						var str=null;
+							if(event_add<10){
+								str=jsonObj["d_0"+event_add];
+							}else{
+								str=jsonObj["d_"+event_add];
+							}
+							
+							if(that.props.morning&&str){
+								
+								var className_morning_later="";
+								className_afternoon_later="";
+								var strA=str.split('-');
+								if(that.props.morning<strA[0])className_morning_later="am-text-danger";
+								if(that.props.afternoon>strA[1])className_afternoon_later="am-text-danger";
+
+								str=(
+									<div>
+									<font className={className_morning_later}>{strA[0]} </font>
+									-
+									<font className={className_afternoon_later}>{strA[1]} </font>
+									</div>
+									)
+							}
+	
+
+						 return (  <th className={$.inArray(event_add, xingqi67Arr)>-1?class_xinqi67:""}>{str}</th> )
+				 })}
+  			  </tr> )
+            })}
+          </tbody>
+        </AMR_Table>
+
+
+        </div>
+      );
+    }
+    });

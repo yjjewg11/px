@@ -21,6 +21,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.CountService;
 import com.company.news.service.GroupService;
+import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -29,7 +30,8 @@ import com.company.web.listener.SessionListener;
 public class GroupController extends AbstractRESTController {
 	 @Autowired
      private CountService countService ;
-
+		@Autowired
+		private UserinfoService userinfoService;
 	@Autowired
 	private GroupService groupService;
 
@@ -111,9 +113,13 @@ public class GroupController extends AbstractRESTController {
 
 		try {
 			boolean flag;
-			if (StringUtils.isEmpty(groupRegJsonform.getUuid()))
+			if (StringUtils.isEmpty(groupRegJsonform.getUuid())){
 				flag = groupService.add(groupRegJsonform, responseMessage, this
 						.getUserInfoBySession(request).getUuid());
+				String grouptype=groupRegJsonform.getType()+"";
+				if(StringUtils.isBlank(grouptype))grouptype="1";
+				userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+			}
 
 			else
 

@@ -206,6 +206,55 @@ var G_week={
 	}
 };
 
+/**
+ * 加减月份
+
+ */
+function G_addMonth(yyyy_MM, num) {
+	var yyyy_mmArr= yyyy_MM.split("-");
+	if(yyyy_mmArr.length!=2){		
+		return yyyy_MM;
+	}
+	var sYear =parseInt(yyyy_mmArr[0]);
+	var sMonth = parseInt(yyyy_mmArr[1]);
+
+	 
+	var eYear = sYear;
+	var eMonth = sMonth + num;
+	
+	while (eMonth > 12) {
+	eYear++;
+	eMonth -= 12;
+	}
+	while (eMonth <= 0) {
+		eYear--;
+		eMonth += 12;
+		}
+	 
+	 if(eMonth<10)eMonth="0"+eMonth;
+	return eYear+"-"+eMonth;
+}
+
+/**
+ * 传入年份和月份参数， 根据参数，获取到 该月 哪些天是周六，哪些天是周日。
+ * @param y
+ * @param m
+ */
+function G_getMonthXinqi67(y,m){
+    var tempTime = new Date(y,m,0);
+    var time = new Date();
+    var xinqi67 = [];
+    for(var i=1;i<=tempTime.getDate();i++){
+        time.setFullYear(y,m-1,i);
+        var day = time.getDay();
+        if(day == 6){
+        	xinqi67.push(i);
+        }else if(day == 0){
+        	xinqi67.push(i);
+        }
+    }
+    return xinqi67;
+}
 function    G_textToHTML(str)  
 {  
       var    s    =    "<p>";  

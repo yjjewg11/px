@@ -231,7 +231,27 @@ function login_affter_init(){
 		t_menu= {
                 "link": "##",
                 "title": "统计",
-                "fn":menu_statistics_list_fn_byRight
+                "subMenu": [
+	                         {
+	                        
+	                           "link": "##",
+	                           "title": "报表",
+	                        		 "fn":menu_statistics_list_fn_byRight
+	                         },
+	                         {
+	                   		    "link": "##",
+	                   		    "title": "学生月签到",
+	                   		    "fn":menu_Attendance_listStatMonthByStudent_byRight
+	                   		   
+	                   		  },
+		                         {
+		                   		    "link": "##",
+		                   		    "title": "老师月考勤",
+		                   		    "fn":menu_Attendance_listStatMonthByTeacher_byRight
+		                   		   
+		                   		  }
+	                         ]
+               
               };
 			if(G_user_hasRight("KD_statistics_m")){
 				menu_data.push(t_menu);
@@ -1030,3 +1050,54 @@ function menu_studentbind_teacher_byRight(){
 		type:0
 		}), document.getElementById('div_body'));
 }
+
+
+function menu_Attendance_listStatMonthByTeacher_byRight() {
+	var grouplist= Store.getGroupByRight("KD_statistics_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+		if(!G_mygroup_choose){
+			var groupuuid;
+			if(!grouplist||grouplist.length==0){
+				groupuuid=null;
+			}else{
+				groupuuid=grouplist[0].uuid;
+			}
+			G_mygroup_choose=groupuuid;
+		}
+	 	Queue.push(function(){menu_Attendance_listStatMonthByTeacher_byRight();},"统计-老师月考勤");
+
+		React.render(React.createElement(Attendance_listStatMonthByTeacher, {
+	 					groupuuid:G_mygroup_choose,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};
+
+function menu_Attendance_listStatMonthByStudent_byRight() {
+	var grouplist= Store.getGroupByRight("KD_statistics_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+		if(!G_mygroup_choose){
+			var groupuuid;
+			if(!grouplist||grouplist.length==0){
+				groupuuid=null;
+			}else{
+				groupuuid=grouplist[0].uuid;
+			}
+			G_mygroup_choose=groupuuid;
+		}
+	 	Queue.push(function(){menu_Attendance_listStatMonthByStudent_byRight();},"统计-学生月签到");
+
+		React.render(React.createElement(Attendance_listStatMonthByStudent, {
+	 					groupuuid:G_mygroup_choose,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};

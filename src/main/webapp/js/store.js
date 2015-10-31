@@ -620,3 +620,28 @@ function Store_ajax_group_allList_toStroe() {
 		error : G_ajax_error_fn
 	});
 };
+
+
+function Store_ajax_groupHabits_getByKey(groupuuid,key) {
+	var val=null;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/groupHabits/getByKey.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {groupuuid:groupuuid,key:key},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				val=data.data.v;
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+	return val;
+};

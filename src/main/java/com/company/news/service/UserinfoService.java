@@ -157,25 +157,29 @@ public class UserinfoService extends AbstractService {
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().save(
 					userGroupRelation);
-		}
+			
+			// 注册机构情况下,当前用户设置为管理员角色
+			if (userRegJsonform instanceof GroupRegJsonform) {
+				GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
+				if (SystemConstants.Group_type_1.equals(group.getType())) {
+					RoleUserRelation r = new RoleUserRelation();
+					r.setRoleuuid(RightConstants.Role_KD_admini);
+					r.setUseruuid(user.getUuid());
+					r.setGroupuuid(groupStrArr[i]);
+					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 
-		// 注册机构情况下,当前用户设置为管理员角色
-		if (userRegJsonform instanceof GroupRegJsonform) {
-			GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
-			if (SystemConstants.Group_type_1.equals(group.getType())) {
-				RoleUserRelation r = new RoleUserRelation();
-				r.setRoleuuid(RightConstants.Role_KD_admini);
-				r.setUseruuid(user.getUuid());
-				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+				} else if (SystemConstants.Group_type_2.equals(group.getType())) {
+					RoleUserRelation r = new RoleUserRelation();
+					r.setRoleuuid(RightConstants.Role_PX_admini);
+					r.setUseruuid(user.getUuid());
+					r.setGroupuuid(groupStrArr[i]);
+					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
 
-			} else if (SystemConstants.Group_type_2.equals(group.getType())) {
-				RoleUserRelation r = new RoleUserRelation();
-				r.setRoleuuid(RightConstants.Role_PX_admini);
-				r.setUseruuid(user.getUuid());
-				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
-
+				}
 			}
 		}
+
+		
 		return true;
 	}
 

@@ -346,13 +346,15 @@ public class StudentService extends AbstractStudentService {
 			responseMessage.setMessage("异常数据,该学生不存在!");
 			return false;
 		}
-		PClass cl = (PClass) CommonsCache.get(classuuid, Group4Q.class);
-		Group4Q group = (Group4Q) CommonsCache.get(cl.getGroupuuid(), Group4Q.class);
-
+		
+		PClass cl = (PClass) CommonsCache.get(classuuid, PClass.class);
+		
 		if (cl == null) {
 			responseMessage.setMessage("异常数据,转到班级不存在!");
 			return false;
 		}
+		Group4Q group = (Group4Q) CommonsCache.get(cl.getGroupuuid(), Group4Q.class);
+
 		student.setClassuuid(classuuid);
 		student.setGroupuuid(cl.getGroupuuid());
 

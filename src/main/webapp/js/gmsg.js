@@ -19,7 +19,7 @@ var G_tip={
 		teachingplan_afternoon:"[户外活动]\n集体：\n分散：\n[游戏活动]\n活动名称：\n重点指导：",
 		editClassStudent_right:"亲,可以将学生换到其他班级,离校的学生换到临时班级.",
 		studentbind_app:"申请接送卡后,没绑定卡号前可以取消.",
-		
+		attendance_listStatMonth:"粉色背景表示星期日,红色字体表示迟到或早退.",
 		help:"帮助"
 };
 

@@ -1810,6 +1810,7 @@ function react_ajax_favorites_show(type,reluuid){
               	G_msg_pop(data.ResMsg.message);
   				Queue.doBackFN();
   				Store.setGroup(null);
+  				ajax_getUserinfo();//重新加载权限
               }
                 };
     G_ajax_abs_save(opt);

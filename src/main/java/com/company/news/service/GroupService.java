@@ -15,11 +15,13 @@ import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
+import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -194,6 +196,24 @@ public class GroupService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(userGroupRelation);
 		
+		
+		
+		if (SystemConstants.Group_type_1.equals(group.getType())) {
+			RoleUserRelation r = new RoleUserRelation();
+			r.setRoleuuid(RightConstants.Role_KD_admini);
+			r.setUseruuid(useruuid);
+			
+			r.setGroupuuid(group.getUuid());
+			this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+
+		} else if (SystemConstants.Group_type_2.equals(group.getType())) {
+			RoleUserRelation r = new RoleUserRelation();
+			r.setRoleuuid(RightConstants.Role_PX_admini);
+			r.setUseruuid(useruuid);
+			r.setGroupuuid(group.getUuid());
+			this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+
+		}
 		return true;
 	}
 	
@@ -263,6 +283,8 @@ public class GroupService extends AbstractService {
 			
 		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
 		if (group != null) {
+			group.setBrand_name(groupRegJsonform.getBrand_name());
+			group.setCompany_name(groupRegJsonform.getCompany_name());
 			group.setImg(PxStringUtil.imgUrlToUuid(groupRegJsonform.getImg()));
 			group.setAddress(groupRegJsonform.getAddress());
 			group.setDescription(groupRegJsonform.getDescription());

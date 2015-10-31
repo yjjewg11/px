@@ -1,5 +1,8 @@
 package com.company.news.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -101,7 +103,7 @@ public class StudentSignRecordService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean updateStatMonthByTeacher(String yyyy_mm, String groupuuid,ResponseMessage responseMessage) throws Exception {
+	public List updateStatMonthByTeacher(String yyyy_mm, String groupuuid,ResponseMessage responseMessage) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		
@@ -109,7 +111,7 @@ public class StudentSignRecordService extends AbstractService {
 		//startDatestr="2015-09-17 00:00:00";
 		
 		String sql = "select DISTINCT s1.uuid,s1.name ";
-		sql+=" from px_user s1 inner join px_studentbind b2 on  b2.userid=s1.uuid   " ;
+		sql+=" from px_user s1 inner join px_studentbind b2 on  b2.studentuuid=s1.uuid   " ;
 		sql+=" where b2.cardid is not null and b2.groupuuid='"+groupuuid+"'";
 		sql+="order by CONVERT( s1.name USING gbk)";
 		
@@ -155,14 +157,22 @@ public class StudentSignRecordService extends AbstractService {
 		
 		
 		////3.2如果刷卡记录还未清除,则清空这月报表数据重新生成否则不重新生成.
+		
+		//不是当月则,生成数据保存到数据库.
+		boolean isSaveStatMonth=isSaveStatMonth(groupuuid,yyyy_mm);
+				
 		if(list.size()==0){
 			responseMessage.setMessage(yyyy_mm+"月没有刷卡记录.");
-			return false;
-		}else{
+			return null;
+		}
+		else if(!isSaveStatMonth){
 			 sql = "delete from px_stat_month_attendance where type="+SystemConstants.StatMonthAttendance_type_1;
 			sql+=" and groupuuid='"+groupuuid+"' and yyyy_mm='"+yyyy_mm+"'" ;
 			s.createSQLQuery(sql).executeUpdate();
 		}
+		
+		
+		List resultList=new ArrayList();
 		
 		//3.3 保存一个用户的一月数据
 		for(Map userMap:userlist){
@@ -180,23 +190,28 @@ public class StudentSignRecordService extends AbstractService {
 			statData.setUsername(name);
 			statData.setYyyy_mm(yyyy_mm);
 			statData.setJsonstr(jsonstr);
-			
-			this.nSimpleHibernateDao.save(statData);
+			resultList.add(statData);
+			if(isSaveStatMonth){
+				this.nSimpleHibernateDao.save(statData);
+			}
 		}
 		
 		
-		return true;
+		return resultList;
 	}
 	
 	/**
 	 * 
+	 * 
+	 * 月报表生成,如果是当月则不存数据库,直接返回前台显示.(下次天数会变)
+	 * 以前月份则存数据库保存.
 	 * @param yyyy_mm
 	 * @param classuuid
 	 * @param responseMessage
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean updateStatMonthByStudent(String yyyy_mm, String classuuid,
+	public List updateStatMonthByStudent(String yyyy_mm, String classuuid,
 			ResponseMessage responseMessage) throws Exception {
 Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
@@ -205,14 +220,18 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		//startDatestr="2015-09-17 00:00:00";
 		
 		String sql = "select DISTINCT s1.uuid,s1.name ";
-		sql+=" from px_pxstudent s1    " ;
+		sql+=" from px_student s1    " ;
 		sql+=" where classuuid='"+classuuid+"'";
-		
+		sql+=" order by CONVERT( s1.name USING gbk)";
 		//student_uuid,cardid,userid,student_name
 		Query q = s.createSQLQuery(sql);
 		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		List<Map> userlist=q.list();
 		
+		if(userlist.size()==0){
+			 responseMessage.setMessage("选择班级没有学生!");
+				return null;
+		}
 		
 		//1.1 验证班级是否存在
 		 sql = "SELECT groupuuid from px_class" ;
@@ -221,9 +240,9 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 			String groupuuid=null;
 			 if(group_list.size()==0){
 				 responseMessage.setMessage("选择班级不存在!");
-					return false;
+				 return null;
 			 }
-			 groupuuid=(group_list.get(0)[0])+"";
+			 groupuuid=group_list.get(0)+"";
 			 
 		//2.获取 一个学校,一个月的,每天最小打卡时间,最大打卡时间.
 		
@@ -233,9 +252,6 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		sql+=" from  px_studentsignrecord t1 LEFT JOIN px_student t2 on t1.studentuuid=t2.uuid where t1.studentuuid is not null";
 		sql+=" and t2.classuuid='"+classuuid+"' and DATE_FORMAT(t1.sign_time,'%Y-%m')='"+yyyy_mm+"'";
 		sql+="GROUP BY  studentuuid, DATE_FORMAT(sign_time,'%Y-%m-%d')  ORDER BY studentuuid ";
-		
-		
-	
 		
 		//student_uuid,cardid,userid,student_name
 		 q = s.createSQLQuery(sql);
@@ -258,13 +274,16 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 			json.put("d_"+dd, signrecordMap.get("sign_time2"));
 		}
 		
-		
+		//不是当月则,生成数据保存到数据库.
+				boolean isSaveStatMonth=isSaveStatMonth(groupuuid,yyyy_mm);
+				
 		
 		////3.2如果刷卡记录还未清除,则清空这月报表数据重新生成否则不重新生成.
 		if(list.size()==0){
 			responseMessage.setMessage(yyyy_mm+"月没有刷卡记录.");
-			return false;
-		}else{
+			return null;
+		}
+		else if(isSaveStatMonth){
 			 sql = "delete from px_stat_month_attendance where type="+SystemConstants.StatMonthAttendance_type_0;
 			sql+=" and classuuid='"+classuuid+"' and yyyy_mm='"+yyyy_mm+"'" ;
 			s.createSQLQuery(sql).executeUpdate();
@@ -272,6 +291,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		
 		
 		
+		List resultList=new ArrayList();
 		
 		//3.3 保存一个用户的一月数据
 		for(Map userMap:userlist){
@@ -285,15 +305,19 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 			StatMonthAttendance statData=new StatMonthAttendance();
 			statData.setType(SystemConstants.StatMonthAttendance_type_0);
 			statData.setGroupuuid(groupuuid);
-			statData.setClassuuid("classuuid");
+			statData.setClassuuid(classuuid);
 			statData.setUseruuid(studentuuid);
 			statData.setUsername(name);
 			statData.setYyyy_mm(yyyy_mm);
 			statData.setJsonstr(jsonstr);
 			
-			this.nSimpleHibernateDao.save(statData);
+			
+			resultList.add(statData);
+			if(isSaveStatMonth){
+				this.nSimpleHibernateDao.save(statData);
+			}
 		}
-		return true;
+		return resultList;
 	}
 	/**
 	 * 查询(老师考勤)月度报表,没有则创建
@@ -321,4 +345,40 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 				.find("from StatMonthAttendance where type=0 and  classuuid='"+classuuid+"' and yyyy_mm='"+yyyy_mm+"'" );
 		return  list;
 	}
+	
+	/**
+	 * 是否生成报表保存到数据库
+	 * @param groupuuid
+	 * @param yyyy_mm
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean isSaveStatMonth(String groupuuid,String yyyy_mm) {
+		
+		//当月不生成报表.
+		boolean isCurrentMonth=TimeUtils.getCurrentTime("yyyy-MM").equals(yyyy_mm);
+		//if(isCurrentMonth)return false;
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="select updatetime from px_group_heartbeat where group_uuid='"+groupuuid+"'";
+		List list=s.createSQLQuery(sql).list();
+		//没有门禁同步心跳,不生成报表.
+		if(list.size()==0){
+			return false;
+		}
+		
+		
+		try {
+			Date hearbeatDate=(Date)list.get(0);
+			SimpleDateFormat sdf = new SimpleDateFormat(TimeUtils.YYYY_MM_DD_FORMAT);
+			//同步心跳大于yyyy_mm,才生成报表.
+			return TimeUtils.getFirstDayOfMonth(hearbeatDate).after(sdf.parse(yyyy_mm+"-02"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 }

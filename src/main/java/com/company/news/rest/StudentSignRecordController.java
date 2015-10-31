@@ -1,5 +1,6 @@
 package com.company.news.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,12 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.rest.util.TimeUtils;
+import com.company.news.service.GroupHabitsService;
 import com.company.news.service.StudentSignRecordService;
 import com.company.news.vo.ResponseMessage;
 
@@ -122,9 +126,9 @@ public class StudentSignRecordController extends AbstractRESTController {
 				responseMessage.setMessage("学校必填");
 				return "";
 			}
-			boolean flag = studentSignRecordService.updateStatMonthByTeacher(
+			List list = studentSignRecordService.updateStatMonthByTeacher(
 					yyyy_mm, groupuuid, responseMessage);
-			if (!flag) {
+			if (list==null) {
 				responseMessage
 						.setStatus(RestConstants.Return_ResponseMessage_failed);
 				return "";
@@ -141,7 +145,10 @@ public class StudentSignRecordController extends AbstractRESTController {
 		return "";
 	}
 	
-	
+
+	@Autowired
+	private GroupHabitsService groupHabitsService;
+
 
 	/**
 	 * 查询(老师考勤)月度报表,没有则创建
@@ -158,6 +165,8 @@ public class StudentSignRecordController extends AbstractRESTController {
 			
 			String yyyy_mm = request.getParameter("yyyy_mm");// 2015-09
 			String groupuuid = request.getParameter("groupuuid");// 2015-09
+			String morning = request.getParameter("morning");// 08:00
+			String afternoon = request.getParameter("afternoon");// 17:00
 			if (StringUtils.isBlank(yyyy_mm)||yyyy_mm.length()!=7) {
 				responseMessage
 						.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -170,17 +179,29 @@ public class StudentSignRecordController extends AbstractRESTController {
 				responseMessage.setMessage("学校必填");
 				return "";
 			}
-			List list= studentSignRecordService.listStatMonthByTeacher(
-					yyyy_mm, groupuuid, responseMessage);
+			List list=null;
 			
-			//如果没有,则自动生成这个月报表.
-			if(list.size()==0){
-				boolean flag=studentSignRecordService.updateStatMonthByTeacher(yyyy_mm, groupuuid, responseMessage);
-				if(flag){
-					list= studentSignRecordService.listStatMonthByTeacher(
+			//记录上下班
+			if(StringUtils.isNotBlank(morning)){
+				groupHabitsService.save(groupuuid, SystemConstants.GroupHabits_key_WorkTime, morning+"-"+afternoon);
+				
+			}
+			
+			//不是当月则,生成数据保存到数据库.
+			boolean isCurrentMonth=TimeUtils.getCurrentTime("yyyy-MM").equals(yyyy_mm);
+			if(isCurrentMonth){
+				 list= studentSignRecordService.updateStatMonthByTeacher(
 							yyyy_mm, groupuuid, responseMessage);
+			}else{
+				list= studentSignRecordService.listStatMonthByTeacher(
+						yyyy_mm, groupuuid, responseMessage);
+				if(list.size()==0){// 如果上月没生成报表,则生成
+					 list= studentSignRecordService.updateStatMonthByTeacher(
+								yyyy_mm, groupuuid, responseMessage);
+					if(list==null)list=new ArrayList();
 				}
 			}
+			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
@@ -219,9 +240,9 @@ public class StudentSignRecordController extends AbstractRESTController {
 				responseMessage.setMessage("班级必填");
 				return "";
 			}
-			boolean flag = studentSignRecordService.updateStatMonthByStudent(
+			List list = studentSignRecordService.updateStatMonthByStudent(
 					yyyy_mm, classuuid, responseMessage);
-			if (!flag) {
+			if (list==null) {
 				responseMessage
 						.setStatus(RestConstants.Return_ResponseMessage_failed);
 				return "";
@@ -251,30 +272,35 @@ public class StudentSignRecordController extends AbstractRESTController {
 		try {
 			
 			String yyyy_mm = request.getParameter("yyyy_mm");// 2015-09
-			String groupuuid = request.getParameter("groupuuid");// 2015-09
+			String classuuid = request.getParameter("classuuid");// 2015-09
 			if (StringUtils.isBlank(yyyy_mm)||yyyy_mm.length()!=7) {
 				responseMessage
 						.setStatus(RestConstants.Return_ResponseMessage_success);
 				responseMessage.setMessage("年月格式错误.格式:2015-09");
 				return "";
 			}
-			if (StringUtils.isBlank(groupuuid)) {
+			if (StringUtils.isBlank(classuuid)) {
 				responseMessage
 						.setStatus(RestConstants.Return_ResponseMessage_success);
-				responseMessage.setMessage("学校必填");
+				responseMessage.setMessage("班级必填");
 				return "";
 			}
-			List list= studentSignRecordService.listStatMonthByTeacher(
-					yyyy_mm, groupuuid, responseMessage);
+			List list=null;
 			
-			//如果没有,则自动生成这个月报表.
-			if(list.size()==0){
-				boolean flag=studentSignRecordService.updateStatMonthByStudent(yyyy_mm, groupuuid, responseMessage);
-				if(flag){
-					list= studentSignRecordService.listStatMonthByTeacher(
-							yyyy_mm, groupuuid, responseMessage);
+			//不是当月则,生成数据保存到数据库.
+			boolean isCurrentMonth=TimeUtils.getCurrentTime("yyyy-MM").equals(yyyy_mm);
+			if(isCurrentMonth){
+				 list=studentSignRecordService.updateStatMonthByStudent(yyyy_mm, classuuid, responseMessage);
+			}else{
+				list= studentSignRecordService.listStatMonthByStudent(
+						yyyy_mm, classuuid, responseMessage);
+				if(list.size()==0){// 如果上月没生成报表,则生成
+					list=studentSignRecordService.updateStatMonthByStudent(yyyy_mm, classuuid, responseMessage);
+					if(list==null)list=new ArrayList();
 				}
 			}
+			//如果没有,则自动生成这个月报表.
+			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
