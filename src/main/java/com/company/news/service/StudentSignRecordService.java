@@ -357,7 +357,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		
 		//当月不生成报表.
 		boolean isCurrentMonth=TimeUtils.getCurrentTime("yyyy-MM").equals(yyyy_mm);
-		//if(isCurrentMonth)return false;
+		if(isCurrentMonth)return false;
 		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="select updatetime from px_group_heartbeat where group_uuid='"+groupuuid+"'";
