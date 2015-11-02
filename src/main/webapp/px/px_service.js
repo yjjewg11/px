@@ -3475,7 +3475,7 @@ function px_react_ajax_teachingplan_delete(obj){
 /*  
 * <发布课程>添加与修改
 * */
-   function px_course_onClick_byRight(m,formdata){
+   function px_course_onClick_byRight(formdata){
 	   var name;
 	   if(!formdata.uuid){
 		   name="新建课程";

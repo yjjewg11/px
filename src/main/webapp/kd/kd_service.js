@@ -3357,53 +3357,53 @@ $.ajax({
    	});
    };	   
 
-//——————————————————————————学生列表—————————————————————————— 
- /*
-  * <学生列表>（获取用户列表服务器请求）；
-  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
-  * */
- var g_mystudent_query_point=1;
- function ajax_mystudents_query(classuuid,name,pageNo) {
- 	Queue.push(function(){ajax_mystudents_query(classuuid,name,pageNo);},"学生列表");
- 	  
- 	  if(!classuuid){
-		  var myclasslist=Store.getMyClassList();
-		if(!myclasslist||myclasslist.length==0){
-			G_msg_pop("请先创建班级!");
-				return ;
-		}
-		 classuuid=myclasslist[0].uuid;
-	  }
-	 
- 	 if(!name)name="";
- 	  if(!pageNo)pageNo=1;
- 	 g_mystudent_query_point=pageNo;
- 		$.AMUI.progress.start();
- 		var url = hostUrl + "rest/student/querybyTeacher.json?classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
- 		$.ajax({          
- 			type : "GET",  
- 			url : url,
- 			dataType : "json",
- 			success : function(data) {
- 				$.AMUI.progress.done();
- 				if (data.ResMsg.status == "success") {
- 	  				React.render(React.createElement(Query_mystutent_list, {
- 	  				class_uuid:classuuid,
- 	  					name:name,
- 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
- 	  					data:data,
- 	  					events: data.list.data,
- 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 	  					
- 	  				}), document.getElementById('div_body'));
- 					
- 				} else {
- 					alert(data.ResMsg.message);
- 				}
- 			},
- 			error :G_ajax_error_fn
- 		});
- 	};
+////——————————————————————————学生列表—————————————————————————— 
+// /*
+//  * <学生列表>（获取用户列表服务器请求）；
+//  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
+//  * */
+// var g_mystudent_query_point=1;
+// function ajax_mystudents_query(classuuid,name,pageNo) {
+// 	Queue.push(function(){ajax_mystudents_query(classuuid,name,pageNo);},"学生列表");
+// 	  
+// 	  if(!classuuid){
+//		  var myclasslist=Store.getMyClassList();
+//		if(!myclasslist||myclasslist.length==0){
+//			G_msg_pop("请先创建班级!");
+//				return ;
+//		}
+//		 classuuid=myclasslist[0].uuid;
+//	  }
+//	 
+// 	 if(!name)name="";
+// 	  if(!pageNo)pageNo=1;
+// 	 g_mystudent_query_point=pageNo;
+// 		$.AMUI.progress.start();
+// 		var url = hostUrl + "rest/student/querybyTeacher.json?classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+// 		$.ajax({          
+// 			type : "GET",  
+// 			url : url,
+// 			dataType : "json",
+// 			success : function(data) {
+// 				$.AMUI.progress.done();
+// 				if (data.ResMsg.status == "success") {
+// 	  				React.render(React.createElement(Query_mystutent_list, {
+// 	  				class_uuid:classuuid,
+// 	  					name:name,
+// 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+// 	  					data:data,
+// 	  					events: data.list.data,
+// 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+// 	  					
+// 	  				}), document.getElementById('div_body'));
+// 					
+// 				} else {
+// 					alert(data.ResMsg.message);
+// 				}
+// 			},
+// 			error :G_ajax_error_fn
+// 		});
+// 	};
 	   
  	//————————————————————————————帮助列表————————————————————————— 
 

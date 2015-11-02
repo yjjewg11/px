@@ -3619,7 +3619,7 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
 	      	     ), 
 	      	   React.createElement("span", {className: "am-comment-author"}, event.send_user, " "), "家长来信", event.count, "条,最后来信时间:", event.last_time, 
 	           React.createElement(AMR_ButtonToolbar, null, 		            
-	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@回复")
+	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@查看信息")
 	        )
 	       ));})		      			      
 		 )
@@ -3934,12 +3934,25 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
   var Class_students_manage_byRight = React.createClass({displayName: "Class_students_manage_byRight",
+	getDefaultProps: function() {
+	 var data = [
+	            {value: 'edit_class', label: '课程编辑 '},
+	            {value: 'delete', label: '删除空班级'}
+	          ];
+	    return {
+	      down_list: data
+	    };
+	  },
   	 componentDidMount:function(){
   			 G_img_down404();
   	  },
   	handleClick: function(m,groupuuid,uuid) {		 
   		btn_click_class_list_byRight(m,groupuuid,uuid);
 	 },
+     handleClick_download: function(groupuuid,uuid,val) {
+		 //更多操作
+         btn_click_class_list_byRight(val,groupuuid,uuid);
+      },
 	 handleChange_selectgroup: function(val) {
 		 var class_uuid;
 		 if(Store.getChooseClass(val).length>0){
@@ -3966,20 +3979,16 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
   	  React.createElement(AMUIReact.Selected, {amSize: "xs", id: "selectclass_uuid2", name: "class_uuid", onChange: this.handleChange_selectclass.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
      ), 
-  	  
+  	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+     	React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_download.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
+     	), 
   
 	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
   	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"students",o.groupuuid,o.uuid)}, "管理学生")
   	    ), 
   	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
        React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: menu_teachingplan_dayShow_fn.bind(this,o.uuid)}, "查看课程")
-     ), 
-  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)}, "编辑班级")
-  		), 
-  	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-  	  React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)}, "删除空班级")
-  	 )		    
+     )		    
 	  )
 		  )
 		     ), 
@@ -5022,14 +5031,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	    		 ), 
 				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 							    		 
-						 React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+				React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
 	    		 ), 
 				 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 					    		 
 				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
 	    		 ), 
 				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-					 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+			    React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
 	    		 
 	    		 )
     		 
@@ -6746,6 +6755,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
          React.createElement("thead", null, 
            React.createElement("tr", null, 
              React.createElement("th", null, "标题"), 
+		     React.createElement("th", null, "复制课程"), 
 		     React.createElement("th", null, "修改课程"), 
              React.createElement("th", null, "课程类型"), 
              React.createElement("th", null, "上课地点"), 
@@ -6771,8 +6781,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   * <发布课程>在表单上绘制详细内容;
   * */
  var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 
-	 handleChange_button: function(event) {
-		 px_course_onClick_byRight("eit",event);
+	 handleChange_button: function(m,event) {
+		 if(m=="addclass"){
+		   event.uuid=null;
+          px_course_onClick_byRight(event);
+		   }else if(m=="eitclass"){
+		    px_course_onClick_byRight(event);
+		   }
 	 	  },
  	  render: function() {
  	    var event = this.props.event;
@@ -6782,7 +6797,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	  	return (
  	  	  React.createElement("tr", {className: className}, 
  	  	    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: px_ajax_class_course_look_info.bind(this,event)}, event.title)), 
- 	  	    React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event)}, "修改")), 
+			React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"addclass",event)}, "复制课程")), 
+ 	  	    React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"eitclass",event)}, "修改")), 
 		    React.createElement("td", null, Vo.get("course_type_"+event.type)), 
  	  	    React.createElement("td", null, event.address), 
  	  	    React.createElement("td", null, event.schedule), 
@@ -6855,13 +6871,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	   /*
 	    * (发布课程)内上传LOGO图片
 	    * */
-//   btn_class_group_uploadHeadere :function(){      
-//       w_uploadImg.open(function (guid){
-//            $ ("#logo").val(guid);
-//             $("#img_head_image").attr("src",G_imgPath+ guid);
-//             G_img_down404("#img_head_image");
-//	         });   
-//	   },
+   btn_class_group_uploadHeadere :function(){      
+       w_uploadImg.open(function (guid){
+            $ ("#logo").val(guid);
+            $("#img_head_image").attr("src",G_imgPath+ guid);
+            G_img_down404("#img_head_image");
+	         });   
+	   },
  render: function() {
  	  var o = this.state;
 	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
@@ -6880,7 +6896,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		     React.createElement(PxInput, {type: "hidden", name: "groupuuid", value: o.groupuuid}), 
 			       React.createElement(PxInput, {type: "hidden", name: "logo", id: "logo", value: o.logo, onChange: this.handleChange}), 
 			React.createElement("div", null, 
-			  G_get_upload_img_Div()
+		      React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.logo, className: "G_img_header"}), 
+               React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传LOGO")
+  
 
           ), 
           React.createElement("hr", null), 
@@ -6903,7 +6921,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 
 			    React.createElement("label", {className: one_classDiv}, "上课地点:"), 
 			     React.createElement("div", {className: two_classDiv}, 
-			       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
+			       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "50", value: o.address, onChange: this.handleChange})
 			        ), 
 
 
@@ -6951,6 +6969,16 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  * 我的班级-按钮、列表绘制
  * */
  var Class_students_show= React.createClass({displayName: "Class_students_show",
+	 	 getDefaultProps: function() {
+	 var data = [
+	            {value: 'addclass', label: '添加班级 '},
+	            {value: 'edit_class', label: '班级编辑'},
+	            {value: 'delete', label: '删除空班级'}
+	          ];
+	    return {
+	      down_list: data
+	    };
+	  },
  	 componentDidMount:function(){
  			 G_img_down404();
  	  },
@@ -6960,6 +6988,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	  handleClick:function(m,groupuuid,uuid){
  		  btn_click_class_list(m,groupuuid,uuid); 			
  	  },
+      handleClick_down:function(groupuuid,uuid,val){
+		  //更多操作按钮处理方法
+		  btn_click_class_list(val,groupuuid,uuid);
+	  },
  	render: function() {
  		var o=this.props.formdata;
  		if(!o)o="";
@@ -6973,26 +7005,17 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
  		  	   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
  		  	  ), 
-
+		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_down.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
+		  	  ), 
  		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
  		  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: menu_teachingplan_dayShow_fn.bind(this,o.uuid)}, "查看课程")
  		  	  ), 
 
  		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
  		  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)}, "管理学生")
- 		  	  ), 
-
- 		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
- 		  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)}, "添加班级")
- 		  	  ), 
-
- 		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
- 		  	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)}, "班级编辑")
- 		      ), 
-
- 		  	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
- 		  	   React.createElement(AMR_Button, {amSize: "xs", className: "am-hide-sm", amStyle: "danger", onClick: this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)}, "删除空班级")
- 		  	  )		  	  
+ 		  	  )
+ 		  	  
  		  	 )
 		    )
  		   ), 
