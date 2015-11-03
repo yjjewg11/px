@@ -2284,13 +2284,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
          					alert(data.ResMsg.message);
          				}
          			},
-         			error : function( obj, textStatus, errorThrown ){
-         				$.AMUI.progress.done();
-         				alert(url+",error:"+textStatus);
-         				 console.log(url+',error：', obj);
-         				 console.log(url+',error：', textStatus);
-         				 console.log(url+',error：', errorThrown);
-         			}
+         			error :G_ajax_error_fn
          		};
      	$.ajax(opt);
      }
@@ -2874,7 +2868,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
  				formdata=data.data;
- 				console.log("formdata",formdata);
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}

@@ -861,25 +861,16 @@ function menu_teachingjudge_list_fn_byRight () {
 //var G_myCurClassuuid=null;
 //var G_myClassList=null;
 function menu_course_byRight() {
-//	console.log("Store.getCurGroup()",Store.getCurGroup());
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
-//	if(!groupList||groupList.length==0){
-//		alert("没有权限。");
-//		return;
-//	}
-//		var classList=Store.getChooseClass(groupList[0].uuid);
-// 		var class_uuid =null;
-// 		if(classList&&classList.length>0){
-// 			classuuid=classList[0].uuid;
-// 		}
-// 		G_myClassList=classList;
-    	px_ajax_course_byRight();	
+   px_ajax_course_byRight();	
 };
 
 /*
  * (标头)对外发布老师资料
  * */
 function menu_teacher_byRight() {
+	   	 var group_list=Store.getGroup();
+         var groupuuid=group_list[0].uuid;
+         G_mygroup_choose=groupuuid;
 	   ajax_teacher_div_byRight();	
 };
 

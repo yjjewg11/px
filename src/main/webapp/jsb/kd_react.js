@@ -3512,12 +3512,29 @@ var CookbookPlan_EventRow_byRight = React.createClass({displayName: "CookbookPla
 		}  
 		return rs;
 	},
-		handleChange_button:function(event){
-		   event.uuid=null;
-           event.plandate=null;
-          btn_click_cookbookPlan_byRight("add",event);
+	handleChange_button:function(uuid){
+
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+				  data.data.uuid=null;
+	              data.data.plandate=null;
+				 btn_click_cookbookPlan_byRight("add",data.data);
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			}
+		});	
+
 	},
-render: function() {
+render: function() { 
 var event = this.props.event;
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
@@ -3525,7 +3542,7 @@ var className = event.highlight ? 'am-active' :
 return (
   React.createElement("tr", {className: className}, 
     React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: btn_click_cookbookPlan_byRight.bind( this, 'edit',event)}, G_week.getWeekStr(event.plandate))), 
-	React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event)}, "复制食谱")), 
+	React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,event.uuid)}, "复制食谱")), 
     React.createElement("td", null, this.parseTimes(event.list_time_1)), 
     React.createElement("td", null, this.parseTimes(event.list_time_2)), 
     React.createElement("td", null, this.parseTimes(event.list_time_3)), 

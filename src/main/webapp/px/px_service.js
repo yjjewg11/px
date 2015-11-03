@@ -1799,6 +1799,7 @@ $.ajax({
 		$.AMUI.progress.done();
 		if (data.ResMsg.status == "success") {
 			React.render(React.createElement(Announcements_show_byRight,{
+				share_url:data.share_url,
 				data:data.data,
 				count:data.count,
 				}), document.getElementById('div_body'));
@@ -3436,7 +3437,7 @@ function px_react_ajax_teachingplan_delete(obj){
  * <发布课程>（获取用户列表服务器请求）；
  * */
 //var g_begDateStr_pageNo_point=0;	
- function px_ajax_course_byRight(groupuuid){ 
+ function px_ajax_course_byRight(groupuuid){
 //	var now=new Date();
 //	if(!pageNo)pageNo=0;
 //	g_begDateStr_pageNo_point=pageNo;
@@ -4256,11 +4257,9 @@ function ajax_class_students_look_info(uuid){
 	* */	
    function ajax_teacher_div_byRight(){
   	 	Queue.push(function(){ajax_teacher_div_byRight();},"老师资料");
-  	   	 var group_list=Store.getGroup();
-         var groupuuid=group_list[0].uuid;
+	   	 var group_list=Store.getGroup();
 	React.render(React.createElement(Teacher_div,{
 		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name"),
-		groupuuid:groupuuid
 	}), document.getElementById('div_body'));  	
 };   
    
@@ -4268,14 +4267,14 @@ function ajax_class_students_look_info(uuid){
  * <对外老师资料>服务器请求
  *
  * */
-function ajax_teacher_listByGroup_byRight(list_div,groupuuid,pageNo,callback) {
+function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
 	if(!pageNo)pageNo=1;
  	$.AMUI.progress.start();
 	var url = hostUrl + "rest/pxteacher/listByPage.json";
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {groupuuid:groupuuid,pageNo:pageNo},
+		data : {groupuuid:G_mygroup_choose,pageNo:pageNo},
 		dataType : "json",
 		success : function(data) {
 			$.AMUI.progress.done();
