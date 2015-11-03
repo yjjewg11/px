@@ -441,11 +441,11 @@ function menu_dohome(){
 	                                  "link": "javascript:menu_class_sign_today_fn()",
 	                                  "title": "今日签到"
 	                                },
-	                                {
-	    	                    	    "img": hostUrlCDN+"i/banji.png",
-	    	                    	    "link": "javascript:menu_mystudents_list_fn()",
-	    	                    	    "title": "学生列表"
-	    	                    	  },
+//	                                {
+//	    	                    	    "img": hostUrlCDN+"i/banji.png",
+//	    	                    	    "link": "javascript:menu_mystudents_list_fn()",
+//	    	                    	    "title": "学生列表"
+//	    	                    	  },
 	                    	   {
 		                    	    "img": hostUrlCDN+"i/laoshitongxunlu.png",
 		                    	    "link": "javascript:menu_Teacher_tel_fn()",
@@ -889,13 +889,13 @@ function menu_query_list_fn_byRight() {
 	ajax_student_query_byRight();
 };
 
-/*
- * (标头)学生列表(我的学生列表）
- * @跳转kd_service发服务器请求
- * */
-function menu_mystudents_list_fn() {
-	ajax_mystudents_query();
-};
+///*
+// * (标头)学生列表(我的学生列表）
+// * @跳转kd_service发服务器请求
+// * */
+//function menu_mystudents_list_fn() {
+//	ajax_mystudents_query();
+//};
 
 
 
@@ -908,7 +908,9 @@ function menu_statistics_list_fn_byRight() {
 	
 	var  grouplist=Store.getGroupByRight("KD_statistics_m");			
 	var groupuuid;
-
+	var now=new Date();	
+	var begDateStr=G_week.getDateStr(now,-7);
+	
 	if(!grouplist||grouplist.length==0){
 		groupuuid=null;
 	}else{
@@ -917,6 +919,7 @@ function menu_statistics_list_fn_byRight() {
 
 	
 	React.render(React.createElement(ECharts_Div_byRight, {
+		begDateStr:begDateStr,
 		groupuuid:groupuuid,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")

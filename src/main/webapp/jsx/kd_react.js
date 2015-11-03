@@ -1400,7 +1400,7 @@ var CookbookPlan_showByOneDay = React.createClass({
 		  <AMR_ButtonToolbar>
 
 		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	          <AMR_Button amStyle="default" onClick={this.handleClick.bind(this, "pre",this.props.groupuuid)} >昨一天</AMR_Button>
+	          <AMR_Button amStyle="default" onClick={this.handleClick.bind(this, "pre",this.props.groupuuid)} >昨天</AMR_Button>
 		   </div>
 
 		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -1408,7 +1408,7 @@ var CookbookPlan_showByOneDay = React.createClass({
 		   </div>
 
 		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	          <AMR_Button amStyle="default" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)} >明一天</AMR_Button>	
+	          <AMR_Button amStyle="default" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)} >明天</AMR_Button>	
 		   </div>
 
 		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -1922,6 +1922,18 @@ render: function() {
 * @Class_students_show（kd_service中服务器请求时调用）;
 * */
 var Class_students_show= React.createClass({
+	 getDefaultProps: function() {
+	 var data = [
+	            {value: 'addclass', label: '添加班级 '},
+	            {value: 'edit_class', label: '班级编辑'},
+	            {value: 'delete', label: '删除空班级'}
+	          ];
+	 var data2=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
+	    return {
+	      down_list: data,
+           down_list2: data2
+	    };
+	  },
 	 componentDidMount:function(){
 			 G_img_down404();
 	  },
@@ -1931,6 +1943,14 @@ var Class_students_show= React.createClass({
 	  handleClick:function(m,groupuuid,uuid){
 		  btn_click_class_list(m,groupuuid,uuid); 			
 	  },
+      handleClick_down:function(groupuuid,uuid,val){
+		  //更多操作按钮处理方法
+		  btn_click_class_list(val,groupuuid,uuid);
+	  },
+      handleClick_download: function(xlsname) {
+		  var class_uuid=$("input[name='class_uuid']").val();
+		  ajax_flowername_download_byRight("",class_uuid,xlsname);
+      },
 	  showTeachingplanClick:function(classuuid){
 		  G_myCurClassuuid=classuuid;
 		  menu_teachingplan_dayShow_fn();
@@ -1947,6 +1967,12 @@ var Class_students_show= React.createClass({
 		  	  <AMR_ButtonToolbar>
 		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
+		  	</div>
+		    <div className="am-fl am-hide-sm am-margin-bottom-sm am-margin-left-xs">
+     	     <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list2}/>   
+     	    </div>
+		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	  <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_down.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
 		  	</div>  
 		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} >查看课程</AMR_Button>
@@ -1954,15 +1980,6 @@ var Class_students_show= React.createClass({
 		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >添加学生</AMR_Button>
 		  	</div>
-		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addclass",o.groupuuid,o.uuid)} >添加班级</AMR_Button>
-		  	</div> 
-		  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} >班级编辑</AMR_Button>
-		  	</div>  
-		  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMR_Button amSize="xs" className="am-hide-sm" amStyle="danger" onClick={this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)} >删除空班级</AMR_Button>
-		  	</div>  
 		  	  
 		  	  </AMR_ButtonToolbar>
 	  		    
@@ -3219,25 +3236,8 @@ var CookbookPlan_EventsTable_byRight = React.createClass({
 			btn_click_cookbookPlan_byRight(m,{groupuuid:this.props.group_uuid});
 			 return;
 		 }if(m=="edit"){
-			
-			 var uuids=null;
-			 $($("input[name='table_checkbox']")).each(function(){
-				
-				 if(this.checked){
-					 if(uuids==null)uuids=this.value;
-					 else
-					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-				 }
-				});
-			  if(!uuids){
-				  G_msg_pop("请勾选复选框！");
-				  return;
-			  }
-			  if(!uuids&&uuids.indexOf(",")>-1){
-					alert("只能选择一个进行编辑！");
-					return;
-				}
 			  btn_click_cookbookPlan_byRight(m,{uuid:uuids});
+			  return;
 		 } else if(m=="pre"){
 			 menu_cookbookPlan_list_fn_byRight(this.props.group_uuid,--g_cookbookPlan_week_point)
 			 return;
@@ -3270,6 +3270,7 @@ var CookbookPlan_EventsTable_byRight = React.createClass({
 	    <thead> 
 	      <tr>
 	        <th>一周</th>
+		    <th>复制食谱</th>
 	        <th>早餐</th>
 	        <th>早上加餐</th>
 	        <th>午餐</th>
@@ -3306,7 +3307,29 @@ var CookbookPlan_EventRow_byRight = React.createClass({
 		}  
 		return rs;
 	},
-render: function() {
+	handleChange_button:function(uuid){
+
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/cookbookplan/"+uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+				  data.data.uuid=null;
+	              data.data.plandate=null;
+				 btn_click_cookbookPlan_byRight("add",data.data);
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			}
+		});	
+
+	},
+render: function() { 
 var event = this.props.event;
 var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
@@ -3314,6 +3337,7 @@ var className = event.highlight ? 'am-active' :
 return (
   <tr className={className} >
     <td><a href="javascript:void(0);" onClick={btn_click_cookbookPlan_byRight.bind( this, 'edit',event)}>{G_week.getWeekStr(event.plandate)}</a></td>
+	<td><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,event.uuid)} >复制食谱</AMR_Button></td>
     <td>{this.parseTimes(event.list_time_1)}</td>
     <td>{this.parseTimes(event.list_time_2)}</td>
     <td>{this.parseTimes(event.list_time_3)}</td>
@@ -3858,7 +3882,7 @@ var Boss_student_tel_byRight =React.createClass({
 	      	     </a>
 	      	   <span className="am-comment-author">{event.send_user} </span>家长来信{event.count}条,最后来信时间:{event.last_time}
 	           <AMR_ButtonToolbar>		            
-	         <AMUIReact.Button  onClick={ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@回复</AMUIReact.Button>
+	         <AMUIReact.Button  onClick={ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@查看信息</AMUIReact.Button>
 	        </AMR_ButtonToolbar>
 	       </li>);})}		      			      
 		 </ul>
@@ -4212,6 +4236,15 @@ render: function() {
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
   var Class_students_manage_byRight = React.createClass({
+	   getDefaultProps: function() {
+	 var data = [
+	            {value: 'edit_class', label: '课程编辑 '},
+	            {value: 'delete', label: '删除空班级'}
+	          ];
+	    return {
+	      down_list: data
+	    };
+	  },
   	 componentDidMount:function(){
   			 G_img_down404();
   	  },
@@ -4225,12 +4258,10 @@ render: function() {
 		 }else{
 			 class_uuid="";
 		 }
-		
-		 //document.getElementById("selectclass_uuid2").removeAttribute("selected"); 
-		 //document.getElementById("selectclass_uuid2").selectedIndex = 0;
-		 
-		 btn_click_class_kuang_byRight(class_uuid);
-	 },
+		},		 
+      handleClick_download: function(groupuuid,uuid,val) {
+         btn_click_class_list_byRight(val,groupuuid,uuid);
+      },
 	 handleChange_selectclass: function(val) {		 
 		 btn_click_class_kuang_byRight(val)
 	 },	 
@@ -4246,10 +4277,11 @@ render: function() {
 	      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <AMUIReact.Selected id="selectclass_uuid2" name= "class_uuid" onChange={this.handleChange_selectclass.bind(this)} btnWidth= "200" data={this.props.classList} btnStyle="primary" value={o.uuid}/>    
   		  </div>
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+     	  <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_download.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
+     	  </div>
 	      <AMR_Button amStyle="secondary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} >添加学生</AMR_Button>
 		    <AMR_Button amStyle="secondary" onClick={menu_teachingplan_list_fn_byRight.bind(this,o.uuid)} >查看课程</AMR_Button>
-		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this,"edit_class",o.groupuuid,o.uuid)} >编辑</AMR_Button> 
-		    <AMR_Button  amStyle="danger" onClick={this.handleClick.bind(this,"delete",o.groupuuid,o.uuid)} >删除空班级</AMR_Button> 
   		  </AMR_ButtonToolbar>
   		  <hr/>
   		  <AMR_Panel>
@@ -7405,6 +7437,8 @@ var Teachingplan_EventRow_byRight = React.createClass({
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
+
+
 //——————————————————————————学生列表<绘制>——————————————————————————  
   /*
    * 学生列表服务器请求后绘制处理方法；
@@ -7413,6 +7447,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
    * @handleChange_class_Selected::班级查询；
    * @btn_query_click:名字查找；
    * */
+   /*
   var Query_mystutent_list = React.createClass({
 
 	  	getDefaultProps: function() {
@@ -7498,7 +7533,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
 
   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   	   <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="class_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"   placeholder="所有"  multiple= {false} data={classList} btnStyle="primary" value={this.state.class_uuid} />      
-  	  </div>  
+  	    </div>  
 	
   	      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
      	  <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
@@ -7507,7 +7542,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	    <input type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>	  
   	     </div>  
   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  	   <button type="button"   onClick={this.btn_query_click}  className="am-btn am-btn-secondary">搜索</button>
+  	   <button type="button"   onClick={this.btn_query_click}  className="am-btn am-btn-secondary">搜索2</button>
   	  </div>  
 			   </AMR_ButtonToolbar>
   	 </form>
@@ -7531,7 +7566,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
         </div>
       );
     }
-  });
+  });*/
       
   /*  	
    * 学生列表在表单上绘制详细内容;
@@ -7539,6 +7574,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
    * 调用ajax_class_students_look_info
    * 进入前btn_students_list_click按钮事件内添加Queue.push保证回退正常;
    * */
+   /* 
   var EventRow_Query_mystutent_list = React.createClass({ 
   	btn_students_list_click:function(uuid,nmae){
   		ajax_class_students_look_info_byRight(uuid,nmae)
@@ -7561,6 +7597,10 @@ var Teachingplan_EventRow_byRight = React.createClass({
   	  }
   	});
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
+  */
+
+
+
   //——————————————————————————帮助列表<绘制>—————————————————————  
 
   /* 

@@ -133,7 +133,7 @@ render: function() {
 	var that=this;
   return (
   <div>
-  
+  <AMR_Panel>
   <AMR_ButtonToolbar>
   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   <AMUIReact.Selected  className="am-fl" id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />    
@@ -142,6 +142,7 @@ render: function() {
   <G_help_popo   msg={G_tip.role_grant_users} />
   </div>
   </AMR_ButtonToolbar>
+  </AMR_Panel>
     <AMUIReact.Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
       <thead> 
         <tr>
@@ -422,21 +423,10 @@ var Userinfo_EventsTable_div = React.createClass({
 		}
 			this.setState({groupuuid:$("input[name='group_uuid']").val()});
 		ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
-	//	g_uesrinfo_groupuuid=$("input[name='group_uuid']").val();
-//		if(!re_data)return;
-//		if(re_data.data.length<re_data.pageSize){
-//			$("#"+this.load_more_btn_id).hide();
-//		}else{
-//			$("#"+this.load_more_btn_id).show();
-//		}		  
-//		  this.pageNo++;
 	},
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-
-	
-		//this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
@@ -489,6 +479,7 @@ var Userinfo_EventsTable_div = React.createClass({
 		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
 	   
 		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
+		   <AMR_Panel>
 		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
@@ -505,8 +496,9 @@ var Userinfo_EventsTable_div = React.createClass({
 				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
 					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
 					  </div>
-					
+					  
 				  </AMR_ButtonToolbar>
+				  </AMR_Panel>
 				  </form>
 				  <div id="div_totalNumber" >总人数:0
 				  </div>	
