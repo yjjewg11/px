@@ -290,7 +290,7 @@ function login_affter_init(){
 
 	$("#div_menu").html("");
 	
-	title_info_init("教育机构-首页");
+	title_info_init("首页");
 	
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
@@ -336,7 +336,7 @@ function menu_dohome(){
 	$("#div_body").show();
 	$("#div_widget_chooseUser").html("");
 	$("#div_widget_chooseCook").html("");
-	Queue.push(menu_dohome,"主页");
+	Queue.push(menu_dohome,"教育机构-主页");
 	var myhead_img=hostUrlCDN+"i/header.png";
 	var myhead_imgUuid=Store.getUserinfo().img;
 	if(myhead_imgUuid)myhead_img=G_imgPath+myhead_imgUuid;
@@ -420,13 +420,6 @@ function menu_dohome(){
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
 }
 
-
-function menu_kd_group_reg_fn(){
-	Queue.push(menu_kd_group_reg_fn);
-	React.render(React.createElement(Div_kd_group_reg,null)
-			, document.getElementById('div_login'));
-	$("#div_seesion_body").hide();
-};
 
 //±±±±±±±±±±±±±±±±±±±±标头±±±±±±±±±±±±±±±±±±±±
 //@Queue.push()方法Push  
@@ -626,23 +619,7 @@ function menu_teacherDailyTask_fn() {
 	Queue.push(menu_teacherDailyTask_fn,"每日任务");
 	ajax_teacherDailyTask();
 };
-//老师注册
-function menu_userinfo_reg_fn(){	
-	React.render(React.createElement(Div_userinfo_reg,null)
-			, document.getElementById('div_login'));
-	$("#div_seesion_body").hide();
-}
 
-function menu_userinfo_login_fn(){
-	Queue.push(menu_userinfo_login_fn);
-	var loginname = getCookie("bs_loginname");
-	var password = getCookie("bs_password");
-	var pw_checked = getCookie("pw_checked");
-	
-	React.render(React.createElement(Div_login,{loginname:loginname,password:password,pw_checked:pw_checked})
-			, document.getElementById('div_login'));
-	$("#div_seesion_body").hide();
-}
 
 function menu_body_fn (){	
 	$("#div_seesion_body").show();
@@ -651,23 +628,6 @@ function menu_body_fn (){
 	login_affter_init();
 	menu_dohome();
 }
-//登录操作
-function index_init(){
-	G_CallPhoneFN.hideLoadingDialog();
-	  if ($.AMUI.fullscreen.enabled) {
-		    $.AMUI.fullscreen.request();
-		}
-	  ajax_getUserinfo(true);
-	  
-		MessageTimer.start();
-}
-
-//登录操作
-window.onload=function(){ 
-	index_init();
-}; 
-
-
 
 
 
@@ -887,93 +847,4 @@ function menu_teacher_byRight() {
 function menu_group_myList_fn_byRight_px() {
 	Queue.push(menu_group_myList_fn_byRight_px,"对外校务管理");
 	ajax_group_myList_byRight_px();
-}
-
-//用户登陆
-function ajax_userinfo_login() {
-	
-	 var $btn = $("#btn_login");
-	  $btn.button('loading');
-	$.AMUI.progress.start();
-
-	var loginname = $("#loginname").val();
-	var password = $("#password").val();
-	if(password.length!=32){
-		 password=$.md5(password); 
-	}
-	
-	
-	var url = hostUrl + "rest/userinfo/login.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		data :{loginname:loginname,password:password,grouptype:2},
-		dataType : "json",
-		success : function(data) {
-			 $btn.button('reset');
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				Store.clear();
-				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
-				setCookie("bs_loginname", loginname);
-				if($("#pw_checked")[0].checked){
-					setCookie("bs_password", password);
-					setCookie("pw_checked", "checked");
-				} else {
-					setCookie("bs_password", ""); 
-					setCookie("pw_checked", "");
-				}
-				Store.setUserinfo(data.userinfo);
-				Store.setGroup(data.list);
-				PxRight.setUserRights(data.S_User_rights);
-				
-				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
-				
-				menu_body_fn();
-				
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			 $btn.button('reset');
-			$.AMUI.progress.done();
-			if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
-				alert("没连接上互联网.");
-			}else{
-				alert(obj.status+","+textStatus+"="+errorThrown);
-			}
-		}
-	});
-}
-
-function ajax_getUserinfo(isInit) {
-	$.AMUI.progress.start();
-
-	var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=2";
-	$.ajax({
-		type : "GET",
-		url : url,
-		async: false,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				if(data.userinfo)Store.setUserinfo(data.userinfo);
-				if(data.list)Store.setGroup(data.list);
-				PxRight.setUserRights(data.S_User_rights);
-				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
-				
-				//PxLazyM.loadJS_for( getCookie("bs_grouptype"));
-				menu_body_fn();
-			} else {
-				if(!isInit)alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-			
-		},
-		error : G_ajax_error_fn
-	});
 }

@@ -68,9 +68,13 @@ Date.prototype.format = function(format) {
  */
 function G_user_hasRight(s){
 	console.log("权限判断参数S",s);
-	//return true;
-	//list<[groupuuid,rightname]>
-	var list=Store.getUserRights();
+
+	var list=null;
+	if(PxRight&&PxRight.getUserRights){
+		list=PxRight.getUserRights();
+	}else{
+		list=Store.getUserRights();
+	}
 	if(!list)return false;
 	for(var i=0;i<list.length;i++){
 		if(list[i][1]==s)return true;
@@ -84,7 +88,12 @@ function G_user_hasRight(s){
  */
 function G_user_hasRightByGroupuuid(s,groupuuid){
 	//list<[groupuuid,rightname]>
-	var list=Store.getUserRights();
+	var list=null;
+	if(PxRight&&PxRight.getUserRights){
+		list=PxRight.getUserRights();
+	}else{
+		list=Store.getUserRights();
+	}
 	if(!list)return false;
 	for(var i=0;i<list.length;i++){
 		if(groupuuid==list[i][0]&&list[i][1]==s)return true;
@@ -270,25 +279,66 @@ function    G_textToHTML(str)
       return    s;  
 }  
 
+/**
+ * 异步加载js
+ * @param url
+ * @param callback
+ * @param charset
+ */
 function loadJS(url,callback,charset)
 {
 	var script = document.createElement('script');
 	if (script.readyState){ //IE 
 		script.onreadystatechange = function(){ 
 		if (script.readyState == "loaded" || 
-		script.readyState == "complete"){ 
-		script.onreadystatechange = null; 
-		callback(); 
+			script.readyState == "complete"){ 
+			
+			script.onreadystatechange = null; 
+			
+			if(typeof callback  =='function')callback(); 
+			
 		} 
 		}; 
 	} else { //Others: Firefox, Safari, Chrome, and Opera 
 		script.onload = function(){ 
-			callback(); 
+			if(typeof callback  =='function')callback(); 
 		}; 
 	} 
 	script.charset=charset || document.charset || document.characterSet;
 	script.src = url;
 	try {document.getElementsByTagName("head")[0].appendChild(script);} catch (e) {}
+}
+/**
+ * 同步加载js,不允许跨域
+ * @param url
+ * @param callback
+ * @param charset
+ */
+function loadJSAsy(url,callback,charset)
+{
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "text",
+		contentType : false, 
+		async:false,
+		success : function(data) {
+			var script = document.createElement('script');
+			script.language = "javascript";
+
+			script.type = "text/javascript";
+
+			script.id = url;
+
+			script.defer = true;
+			script.charset=charset || document.charset || document.characterSet;
+			script.text = data; 
+			try {document.getElementsByTagName("head")[0].appendChild(script);} catch (e) {}
+		},
+		error : G_ajax_error_fn
+	});
+	
+	if(typeof callback  =='function')callback(); 
 }
 
 /**

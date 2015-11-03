@@ -874,51 +874,6 @@ return (
 
 
 
-//Div_userinfo_updatePasswordBySms
-var Div_userinfo_updatePasswordBySms = React.createClass({ 
-	
-	render: function() {
-	return (
-		<div>
-		<div className="header">
-		  <div className="am-g">
-		    <h1>重置密码</h1>
-		  </div>
-		  <hr />
-		</div>
-		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-		    <form id="commonform" method="post" className="am-form" action="javascript:void(0);">
-
-		    <label htmlFor="tel">手机号码:</label>
-		      <input type="text" name="tel" id="tel"  placeholder=""/>
-		      <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",2)} className="am-btn am-btn-primary">发送验证码</button>
-		      <br/>
-		      <label htmlFor="smscode">验证码:</label>
-		      <input type="text" name="smscode" id="smscode"  placeholder="验证码"/>
-		    
-		      <br/>
-		      <label htmlFor="password">密码:</label>
-		      <input type="password" name="password"   />
-		      <br/>
-		      
-		      <label htmlFor="password1">重复密码:</label>
-		      <input type="password" name="password1"  />
-		      <br/>
-		      <button type="button" onClick={ajax_userinfo_updatePasswordBySms} className="am-btn am-btn-primary">提交</button>
-		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>
-		    </form>
-		    <hr/>
-		  
-		  </div>
-		</div>
-		</div>
-	);
-	}
-}); 
-
-
-
 //upload headImg
 var Upload_headImg_options =
 {

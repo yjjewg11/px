@@ -102,21 +102,7 @@ function G_ajax_shouc_save(opt){
 		});
 	}
 
-/*
- * 将幼儿园列表转换成select要求的数据模型
- * @arrlist  数组
- * @id {Array} 需要转换数组中哪一个属性名
- * @name       需要转换数组中哪一个属性名
- */
-function G_selected_dataModelArray_byArray(arrlist,id,name){
-	var arr=[];
-	if(!arrlist)return arr;
-	for(var i=0;i<arrlist.length;i++){
-		var tmp=arrlist[i];
-		arr.push( {value: tmp[id]+"", label:tmp[name]});
-	}
-	return arr;
-}
+
 
 
 /**
@@ -437,87 +423,6 @@ function ajax_userteacher_save() {
 			 };
 	G_ajax_abs_save(opt);
 	
-}
-
-
-function menu_userinfo_updatePasswordBySms_fn(){
-	Queue.push(menu_userinfo_updatePasswordBySms_fn);
-	
-	React.render(React.createElement(Div_userinfo_updatePasswordBySms,null)
-			, document.getElementById('div_login'));
-}
-/**
- * 发送验证码
- * @param inputid.去获取值的inputid
- * @param type.1:注册,2:找回密码
- */
-function ajax_sms_sendCode(inputid,type){
-	  var url = hostUrl + "rest/sms/sendCode.json";
-		$.ajax({
-			type : "GET",
-			url : url,
-			dataType : "json",
-			data:{tel:$(inputid).val(),type:type},
-			 async: true,
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					 G_msg_pop(data.ResMsg.message);
-				} else {
-					alert("验证码发送失败："+data.ResMsg.message);
-				}
-			},
-			error : G_ajax_error_fn
-		});
-}
-
-
-
-//用户登陆
-function ajax_userinfo_updatePasswordBySms() {
-	$.AMUI.progress.start();
-	
-	// var data = $("#form1").serializeArray(); //自动将form表单封装成json
-//alert(JSON.stringify(data));
-	  var objectForm = $('#commonform').serializeJson();
-	  if(!objectForm.tel){
-		  alert("请输入手机号码!");
-		  return;
-	  }
-	  if(!objectForm.smscode){
-		  alert("请输入短信验证码!");
-		  return;
-	  }
-	  if(objectForm.password!=objectForm.password1){
-		  alert("2次输入密码不匹配!");
-		  return;
-	  }
-	  
-	  delete objectForm.password1;
-	  objectForm.password=$.md5(objectForm.password); 
-var jsonString=JSON.stringify(objectForm);
-var url = hostUrl + "rest/userinfo/updatePasswordBySms.json";
-			
-	$.ajax({
-		type : "POST",
-		url : url,
-		processData: false, 
-		data : jsonString,
-		dataType : "json",
-		contentType : false,  
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				G_msg_pop(data.ResMsg.message);
-				Queue.doBackFN();
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : G_ajax_error_fn
-	});
 }
 
 //获取班级信息公用模板方法 return 出去做

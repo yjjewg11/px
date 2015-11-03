@@ -76,7 +76,8 @@ public class PxTeacherService extends AbstractService {
 					for (String s : courseArr) {
 						UserPxCourseRelation u = new UserPxCourseRelation();
 						u.setGroupuuid(userTeacherJsonform.getGroupuuid());
-						u.setCourseuuid(userTeacherJsonform.getCourseuuid());
+						u.setCourseuuid(s);
+						u.setUseruuid(userTeacherJsonform.getUuid());
 						this.nSimpleHibernateDao.getHibernateTemplate().save(u);
 						
 						PxCourseCache courseDB = (PxCourseCache) CommonsCache

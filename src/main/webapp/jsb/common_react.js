@@ -874,51 +874,6 @@ React.createElement("div", null,
 
 
 
-//Div_userinfo_updatePasswordBySms
-var Div_userinfo_updatePasswordBySms = React.createClass({displayName: "Div_userinfo_updatePasswordBySms", 
-	
-	render: function() {
-	return (
-		React.createElement("div", null, 
-		React.createElement("div", {className: "header"}, 
-		  React.createElement("div", {className: "am-g"}, 
-		    React.createElement("h1", null, "重置密码")
-		  ), 
-		  React.createElement("hr", null)
-		), 
-		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
-		    React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-
-		    React.createElement("label", {htmlFor: "tel"}, "手机号码:"), 
-		      React.createElement("input", {type: "text", name: "tel", id: "tel", placeholder: ""}), 
-		      React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",2), className: "am-btn am-btn-primary"}, "发送验证码"), 
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "smscode"}, "验证码:"), 
-		      React.createElement("input", {type: "text", name: "smscode", id: "smscode", placeholder: "验证码"}), 
-		    
-		      React.createElement("br", null), 
-		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
-		      React.createElement("input", {type: "password", name: "password"}), 
-		      React.createElement("br", null), 
-		      
-		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
-		      React.createElement("input", {type: "password", name: "password1"}), 
-		      React.createElement("br", null), 
-		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatePasswordBySms, className: "am-btn am-btn-primary"}, "提交"), 
-		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")
-		    ), 
-		    React.createElement("hr", null)
-		  
-		  )
-		)
-		)
-	);
-	}
-}); 
-
-
-
 //upload headImg
 var Upload_headImg_options =
 {

@@ -352,7 +352,7 @@ function login_affter_init(){
 	
 	$("#div_menu").html("");
 	
-	title_info_init("首页");
+	title_info_init("幼儿园-首页");
 	
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
@@ -1102,3 +1102,94 @@ function menu_Attendance_listStatMonthByStudent_byRight() {
 	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	 					}), document.getElementById('div_body'));
 	};
+
+	//用户登陆
+	function ajax_userinfo_login() {
+		
+		 var $btn = $("#btn_login");
+		  $btn.button('loading');
+		$.AMUI.progress.start();
+
+		var loginname = $("#loginname").val();
+		var password = $("#password").val();
+		if(password.length!=32){
+			 password=$.md5(password); 
+		}
+		
+		
+		var url = hostUrl + "rest/userinfo/login.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data :{loginname:loginname,password:password,grouptype:1},
+			dataType : "json",
+			success : function(data) {
+				 $btn.button('reset');
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					Store.clear();
+					//判断是否保存密码，如果保存则放入cookie，否则清除cookie
+					setCookie("bs_loginname", loginname);
+					if($("#pw_checked")[0].checked){
+						setCookie("bs_password", password);
+						setCookie("pw_checked", "checked");
+					} else {
+						setCookie("bs_password", ""); 
+						setCookie("pw_checked", "");
+					}
+					Store.setUserinfo(data.userinfo);
+					Store.setGroup(data.list);
+					PxRight.setUserRights(data.S_User_rights);
+					
+					G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
+					
+					menu_body_fn();
+					
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : function( obj, textStatus, errorThrown ){
+				 $btn.button('reset');
+				$.AMUI.progress.done();
+				if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
+					alert("没连接上互联网.");
+				}else{
+					alert(obj.status+","+textStatus+"="+errorThrown);
+				}
+			}
+		});
+	}
+	
+	
+
+	function ajax_getUserinfo(isInit) {
+		$.AMUI.progress.start();
+
+		var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=2";
+		$.ajax({
+			type : "GET",
+			url : url,
+			async: false,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					if(data.userinfo)Store.setUserinfo(data.userinfo);
+					if(data.list)Store.setGroup(data.list);
+					PxRight.setUserRights(data.S_User_rights);
+					G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
+					
+					//PxLazyM.loadJS_for( getCookie("bs_grouptype"));
+					menu_body_fn();
+				} else {
+					if(!isInit)alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+				
+			},
+			error : G_ajax_error_fn
+		});
+	}

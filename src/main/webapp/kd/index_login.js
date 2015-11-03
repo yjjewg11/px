@@ -1,10 +1,22 @@
-var G_group_type=2;
+requirejs.config({
+  baseUrl: '.',
+  paths: {
+    
+  }
+});
+alert(12);
+
+require([],function() {
+	  alert(11);
+	});
+
+
 //我选我的班级后的全局记录
 var G_myclass_choose=null;
 //我选我的学校后的全局记录
 var G_mygroup_choose=null;
-//选择课程
-var G_course_choose=null;
+//用于切换机构类型
+var G_group_type=1;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -82,41 +94,10 @@ function login_affter_init(){
 		    "fn":menu_group_myList_fn_byRight
                                             
 		  };
-	if(G_user_hasRight("PX_group_m")){
+	if(G_user_hasRight("KD_group_m")){
 		menu_data.push(t_menu);
 	}
-	
-//————————————对外发布<权限>——————————	
-	t_menu={
-	            "link": "##",
-	            "title": "对外发布",
-	            "subMenu": [
-	                        {
-	                         "fn":menu_group_myList_fn_byRight_px,
-	                          "link": "##",
-	                          "title": "机构介绍"
-	                       },
-	                        {
-	                        	  "fn":menu_course_byRight,
-	                        	  "link": "##",
-	                            "title": "发布课程"
-	                       },
-	                          {
-	                    	   "fn":px_Preferential_list_fn,
-                              "link": "##",                            
-                             "title": "优惠活动"
-	                       },
-	                          {
-	                             "fn":menu_teacher_byRight,
-	                              "link": "##",
-	                              "title": "发布老师信息"
-	                            }
 
-	                        ]                   
-		  };
-	if(G_user_hasRight("PX_course_m")){
-		menu_data.push(t_menu);
-	};		
 //————————————发布消息<权限>——————————	
 	t_menu={
 	            "link": "##",
@@ -141,11 +122,16 @@ function login_affter_init(){
 	                              "fn":function(){menu_announce_list_fn_byRight(3,"精品文章");},
 	                              "link": "##",
 	                              "title": "精品文章"
+	                            },
+	                          {
+	                        	  "fn":function(){menu_announce_list_fn_byRight(4,"招生计划");},
+	                              "link": "##",
+	                              "title": "招生计划"
 	                            }
 
 	                        ]                   
 		  };
-	if(G_user_hasRight("PX_announce_m")){
+	if(G_user_hasRight("KD_announce_m")){
 		menu_data.push(t_menu);
 	};
 	
@@ -164,26 +150,44 @@ function login_affter_init(){
                 		    "title": "老师授权",
                 		    "fn":menu_kd_roleUser_list_fn
                 		   
-                		  }
+                		  },
+                      {
+                          "fn":menu_userTeacher_list_fn_byRight,
+                          "link": "##",
+                          "title": "老师资料管理"
+                        },
                       ]
         };
 
-	if(G_user_hasRight("PX_teacher_m")){
+	if(G_user_hasRight("KD_teacher_m")){
 		menu_data.push(t_menu);
 	}
 	
 	
 	
-//————————————教学计划<权限>——————————		
-//	t_menu={
-//      	   		"link": "##",
-//      	   		"fn":menu_teachingplan_list_fn_byRight,
-//      	   		"title": "教学计划",
-//      	   		"subCols": 2
-//		  };
-//	if(G_user_hasRight("PX_teachingplan_m")){
-//		menu_data.push(t_menu);
-//	}
+//————————————食谱管理<权限>——————————	
+	t_menu={
+                "link": "##",
+                "title": "食谱管理",
+                "fn":menu_cookbookPlan_list_fn_byRight,
+                "subCols": 2
+		  };
+	
+	if(G_user_hasRight("KD_cookbookplan_m")){
+		menu_data.push(t_menu);
+	}
+	
+	
+//————————————课程安排<权限>——————————		
+	t_menu={
+      	   		"link": "##",
+      	   		"fn":menu_teachingplan_list_fn_byRight,
+      	   		"title": "课程安排",
+      	   		"subCols": 2
+		  };
+	if(G_user_hasRight("KD_teachingplan_m")){
+		menu_data.push(t_menu);
+	}
 	
 //————————————园长信箱<权限>——————————		
 	t_menu={
@@ -191,7 +195,7 @@ function login_affter_init(){
         "fn":menu_queryLeaderMsgByParents_message_fn_byRight,
         "title": "园长信箱"
       };
-	if(G_user_hasRight("PX_Leader_Msg_m")){
+	if(G_user_hasRight("KD_Leader_Msg_m")){
 		menu_data.push(t_menu);
 	}
 	t_menu= {
@@ -199,7 +203,34 @@ function login_affter_init(){
             "fn":menu_class_list_fn_byRight,
             "title": "班级管理"
           };
-		if(G_user_hasRight("PX_class_m")){
+		if(G_user_hasRight("KD_class_m")){
+			menu_data.push(t_menu);
+		}
+		//————————————签到查询<权限>——————————		
+		t_menu={
+	      	   		"link": "##",
+	      	   		"title": "接送卡",
+		      	   	 "subMenu": [
+		                         {
+		                           "fn":menu_class_sign_today_fn_byRight,
+		                           "link": "##",
+		                           "title": "今天签到"
+		                         },
+		                         {
+		                   		    "link": "##",
+		                   		    "title": "学生接送卡",
+		                   		    "fn":menu_studentbind_byRight
+		                   		   
+		                   		  },
+			                         {
+			                   		    "link": "##",
+			                   		    "title": "老师门禁卡",
+			                   		    "fn":menu_studentbind_teacher_byRight
+			                   		   
+			                   		  }
+		                         ]
+			  };
+		if(G_user_hasRight("KD_class_m")){
 			menu_data.push(t_menu);
 		}
 	t_menu= {
@@ -207,37 +238,75 @@ function login_affter_init(){
             "title": "学生列表",
             "fn":menu_query_list_fn_byRight
           };
-		if(G_user_hasRight("PX_student_allquery")){
+		if(G_user_hasRight("KD_student_allquery")){
 			menu_data.push(t_menu);
 		}	
 		t_menu= {
                 "link": "##",
                 "title": "统计",
-                "fn":menu_statistics_list_fn_byRight
+                "subMenu": [
+	                         {
+	                        
+	                           "link": "##",
+	                           "title": "报表",
+	                        		 "fn":menu_statistics_list_fn_byRight
+	                         },
+	                         {
+	                   		    "link": "##",
+	                   		    "title": "学生月签到",
+	                   		    "fn":menu_Attendance_listStatMonthByStudent_byRight
+	                   		   
+	                   		  },
+		                         {
+		                   		    "link": "##",
+		                   		    "title": "老师月考勤",
+		                   		    "fn":menu_Attendance_listStatMonthByTeacher_byRight
+		                   		   
+		                   		  }
+	                         ]
+               
               };
-			if(G_user_hasRight("PX_statistics_m")){
+			if(G_user_hasRight("KD_statistics_m")){
 				menu_data.push(t_menu);
 			}	
-//	t_menu= {
-//	                "link": "##",
-//	                "title": "老师评价",
-//	                "fn":menu_teachingjudge_list_fn_byRight
-//	              };
-//			
-//				if(G_user_hasRight("PX_teachingjudge_q")){
-//					menu_data.push(t_menu);
-//				}
-//	
-//
-//		t_menu= {
-//                "link": "##",
-//                "fn":menu_accounts_list_fn_byRight,
-//                "title": "收支记录"
-//              };
-//			if(G_user_hasRight("PX_accounts_m")){
-//				menu_data.push(t_menu);
-//			}
+	t_menu= {
+	                "link": "##",
+	                "title": "老师评价",
+	                "fn":menu_teachingjudge_list_fn_byRight
+	              };
 			
+				if(G_user_hasRight("KD_teachingjudge_q")){
+					menu_data.push(t_menu);
+				}
+	
+
+		t_menu= {
+                "link": "##",
+                "title": "收费记录",
+                "subMenu": [
+	                         {
+	                           "fn":menu_accounts_list_fn_byRight,
+	                           "link": "##",
+	                           "title": "收费记录列表"
+	                         },
+	                         {
+	                   		    "link": "##",
+	                   		    "title": "学生缴费记录",
+	                   		    "fn":menu_accounts_listForYear_byRight
+	                   		   
+	                   		  }
+	                         ]
+             
+              };
+			if(G_user_hasRight("KD_accounts_m")){
+				menu_data.push(t_menu);
+			}
+			t_menu= {
+		            "link": "##",
+		            "title": "帮助列表",
+		           "fn":px_help_list_fn
+		          };
+					menu_data.push(t_menu);
 //±±±±±±±±±±±±±±±±±±±±±±±±±±标头按钮±±±±±±±±±±±±±±±±±±±±±±±±±±
 	var div_menu_data= {
 	                  "link": "##",
@@ -265,32 +334,38 @@ function login_affter_init(){
 		if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 			div_menu_data.subMenu.push(t_menu);
 		}
-
+		t_menu= {
+	          	 "fn":menu_userteacher_fn,
+	            "link": "##",
+	            "title": "修改教师资料"
+	          };
+					
+			div_menu_data.subMenu.push(t_menu);
+		t_menu= {
+                "link": "##",
+                "fn":menu_hellp_fn,
+                "title": "帮助"
+              };
+				
+			div_menu_data.subMenu.push(t_menu);
 			
 	t_menu=  {
             "link": "##",
             "fn":menu_userinfo_logout_fn,
             "title": "注销"
           };
- 	
+			
 	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		div_menu_data.subMenu.push(t_menu);
 	}		
-	t_menu= {
-            "link": "##",
-            "title": "帮助列表",
-           "fn":px_help_list_fn
-          };
-//		if(G_user_hasRight("PX_student_allquery")){
-			menu_data.push(t_menu);
-//		}
+		
 	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		menu_data.push(div_menu_data);
 	//}
-
+	
 	$("#div_menu").html("");
 	
-	title_info_init("教育机构-首页");
+	title_info_init("首页");
 	
 	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
@@ -352,11 +427,11 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
-//			                   	  { 
-//			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
-//			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
-//			                    	    "title": "每日任务"
-//			                    	  },
+			                   	  { 
+			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
+			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
+			                    	    "title": "每日任务"
+			                    	  },
 		                    	  {
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
@@ -374,6 +449,16 @@ function menu_dohome(){
 		                    	    "link": "javascript:parentContactByMyStudent()",
 		                    	    "title": "家长通讯录"
 		                    	  }, 
+		                    	  {
+		                    		  "img": hostUrlCDN+"i/qiandao.png",
+	                                  "link": "javascript:menu_class_sign_today_fn()",
+	                                  "title": "今日签到"
+	                                },
+	                                {
+	    	                    	    "img": hostUrlCDN+"i/banji.png",
+	    	                    	    "link": "javascript:menu_mystudents_list_fn()",
+	    	                    	    "title": "学生列表"
+	    	                    	  },
 	                    	   {
 		                    	    "img": hostUrlCDN+"i/laoshitongxunlu.png",
 		                    	    "link": "javascript:menu_Teacher_tel_fn()",
@@ -385,7 +470,18 @@ function menu_dohome(){
 			                    	    "title": "公告"
 			                    },
 			                 
-
+		                    	  {
+			                    	    "img": hostUrlCDN+"i/meirisipu.png",
+			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
+			                    	    "title": "今日食谱"
+			                    	  },
+		                    	 
+		                    	
+//		                    	  {
+//	                    	    "img": hostUrlCDN+"i/qiandao.png",
+//	                    	    "link": "###",
+//	                    	    "title": "签到(未)"
+//	                    	  },
 	                    	
 		                    	  {
 		                    		  "img": hostUrlCDN+"i/jpwz.png",
@@ -399,6 +495,7 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
 		                    	  }
+		                    	  
 	                    	  ];
 	/**
 	 * 禁用用户
@@ -440,7 +537,13 @@ function menu_queryMyTimely_fn() {
 	ajax_queryMyTimely_myList();
 };
 
-
+/*
+ * （标头）帮助信息列表
+ */
+function px_help_list_fn(){
+  	Queue.push(px_help_list_fn,"帮助列表");
+  	ajax_px_help_div();
+}
 
 
 /*
@@ -454,34 +557,31 @@ function menu_userinfo_logout_fn(){
 /*
  * (标头)我-帮助
  * 
- */ 
+ */
 function menu_hellp_fn(){
 	Queue.push(menu_hellp_fn,"帮助文档");
 	React.render(React.createElement(Help_txt), document.getElementById('div_body'));
 }
-/*
- * （标头）帮助信息列表
- */
-function px_help_list_fn(){
-  	Queue.push(px_help_list_fn,"帮助列表");
-  	ajax_px_help_div();
-}
 
-/*
- * （标头）对外发布-优惠活动
- */
-function px_Preferential_list_fn(){
-  	Queue.push(px_Preferential_list_fn,"优惠活动");
-  	ajax_px_Preferential_div();
-}
+
+
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
  * （首页）<班级互动>；
+ * @g_classnews_class_list（我的班级列表取成全局变量);
  * @ajax_classnews_list:我的班级服务请求
  * 在kd_service;
  * */
 function menu_classnewsbyMy_list_fn() {
-	ajax_classnews_list_div(1);
+	var myclasslist=Store.getMyClassList();
+	var type=1;
+	//默认查询我的班级,如果没有则查询其他班级的.
+	if(!myclasslist||myclasslist.length==0){
+		type=2;
+	}
+	
+	
+	ajax_classnews_list_div(type);
 	
 };
 /*
@@ -497,66 +597,41 @@ function menu_announce_mylist_fn() {
  * 调用ajax_teachingplan_dayShow：在kd_service
  * */
 var G_myCurClassuuid=null;
-function menu_teachingplan_dayShow_fn(classuuid) {
-	
-//培训机构课程表模块，列表代码	
-	var classList=Store.getMyClassList();
-    var class_uuid =null;
- 		G_myClassList=classList;
-	if(!classuuid){
- 		if(classList&&classList.length>0){
- 			classuuid=classList[0].uuid;
- 		}
-	} 
-	px_ajax_teachingplan_fn(classuuid);
+function menu_teachingplan_dayShow_fn() {
+	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
+	var myclasslist=Store.getMyClassList();
+	if(!myclasslist||myclasslist.length==0){
+		G_msg_pop("请先创建班级!");
+		return ;
+	}
+	if(!G_myCurClassuuid){
+		G_myCurClassuuid=myclasslist[0].uuid;
+	}
+	React.render(React.createElement(Teachingplan_show7Day, {
+			classuuid:G_myCurClassuuid,
+			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
+			}), document.getElementById('div_body'));
 	return;
-//---------------------------------------------------------------------------------	
-////培训机构课程表	
-//	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
-//	var myclasslist=Store.getMyClassList();
-//	if(!myclasslist||myclasslist.length==0){
-//		G_msg_pop("请先创建班级!");
-//		return ;
-//	}
-//	if(!G_myCurClassuuid){
-//		G_myCurClassuuid=myclasslist[0].uuid;
-//	}
-//	React.render(React.createElement(Px_Teachingplan_show7Day, {
-//			classuuid:G_myCurClassuuid,
-//			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
-//			}), document.getElementById('div_body'));
-//	return;
-//---------------------------------------------------------------------------------	
-////幼儿园新版课程表	
-//	Queue.push(menu_teachingplan_dayShow_fn,"课程表");
-//	var myclasslist=Store.getMyClassList();
-//	if(!myclasslist||myclasslist.length==0){
-//		G_msg_pop("请先创建班级!");
-//		return ;
-//	}
-//	if(!G_myCurClassuuid){
-//		G_myCurClassuuid=myclasslist[0].uuid;
-//	}
-//	React.render(React.createElement(Teachingplan_show7Day, {
-//			classuuid:G_myCurClassuuid,
-//			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
-//			}), document.getElementById('div_body'));
-//	return;
-//---------------------------------------------------------------------------------	
-////幼儿园老版课程表	
-//	var classList=Store.getMyClassList();
-//	var classuuid;
-//	var classname;
-//	if(!classList||classList.length==0){
-//		classuuid=null;
-//		classname="";
-//	}else{
-//		classuuid=classList[0].uuid;
-//		classname=classList[0].name;
-//	}
-//	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
+//---------------------------------------------------------------------------------		
+	var classList=Store.getMyClassList();
+	var classuuid;
+	var classname;
+	if(!classList||classList.length==0){
+		classuuid=null;
+		classname="";
+	}else{
+		classuuid=classList[0].uuid;
+		classname=classList[0].name;
+	}
+	ajax_teachingplan_dayShow(null,{uuid:classuuid,name:classname});
 };
-
+/*
+ * （首页）每日食谱
+ * 调用ajax_cookbookPlan_dayShow：每天食谱计划
+ * */
+function menu_cookbookPlan_dayShow_fn() {
+	ajax_cookbookPlan_dayShow(null);
+};
 /* （首页）家长通讯录功能方法
  * @跳转kd_service发服务器请求
  * */
@@ -624,6 +699,7 @@ function menu_queryCountMsgByParents_message_fn() {
  * */
 function menu_teacherDailyTask_fn() {
 	Queue.push(menu_teacherDailyTask_fn,"每日任务");
+//	   Queue.push(function(){ajax_queryCountMsgByParents_message();},"我的信箱");
 	ajax_teacherDailyTask();
 };
 //老师注册
@@ -669,6 +745,32 @@ window.onload=function(){
 
 
 
+/*
+ * （首页）刷卡记录；
+ * @跳转kd_service发服务器请求
+ * */
+
+function menu_class_sign_today_fn() {
+	Queue.push(function(){menu_class_sign_today_fn();},"今日签到");
+	var classList=Store.getMyClassList();
+	if(!G_myclass_choose){
+	
+		var classuuid;
+		if(!classList||classList.length==0){
+			classuuid=null;
+		}else{
+			classuuid=classList[0].uuid;
+		}
+		G_myclass_choose=classuuid;
+	}
+	React.render(React.createElement(Teacher_class_sign_today,{
+	//	events:formdata,
+		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
+};
+
+
 
 
 
@@ -706,7 +808,7 @@ function menu_announce_list_fn_byRight(types,name) {
 var g_uesrinfo_groupuuid="";
 function menu_userinfo_list_fn_byRight() {
 	Queue.push(function(){menu_userinfo_list_fn_byRight();},"老师管理");
-	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("PX_teacher_m").uuid;
+	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("KD_teacher_m").uuid;
 	ajax_uesrinfo_listByGroup_div(g_uesrinfo_groupuuid);
 };
 /*
@@ -724,58 +826,51 @@ function menu_userTeacher_list_fn_byRight() {
 };
 
 /*
- * (标头)教学计划功能
+ * (标头)食谱管理功能
+ * @跳转kd_service发服务器请求
+ * */
+function menu_cookbookPlan_list_fn_byRight(groupuuid,weeknum){
+	var cookbook_Group_uuid="";
+	if(!groupuuid)cookbook_Group_uuid=Store.getCurGroupByRight("KD_cookbookplan_m").uuid;
+	else cookbook_Group_uuid=groupuuid;
+	ajax_cookbookPlan_listByGroup_byRight(cookbook_Group_uuid,weeknum);
+}
+
+/*
+ * (标头)课程安排功能
  * @跳转widget发服务器请求
  * */
 var G_myCurClassuuid=null;
-var G_myClassList=null;
-function menu_teachingplan_list_fn_byRight() {
-//培训机构教学计划管理模块，列表代码	
-	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
+function menu_teachingplan_list_fn_byRight(classuuid) {
+	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+	
+	if(!groupList||groupList.length==0){
+		alert("没有权限。");
+		return;
+	}	
+	var groupuuid=groupList[0].uuid;
+	React.render(React.createElement(Teachingplan_show7Day_byRight, {
+		    classuuid:classuuid,
+		    groupuuid:groupuuid,
+		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+			}), document.getElementById('div_body'));
+	return;
+//---------------------------------------------------------------------------------	
+	var groupList=Store.getGroupByRight("KD_teachingplan_m");
+	
 	if(!groupList||groupList.length==0){
 		alert("没有权限。");
 		return;
 	}
-		var classList=Store.getChooseClass(groupList[0].uuid);
- 		var class_uuid =null;
- 		if(classList&&classList.length>0){
- 			classuuid=classList[0].uuid;
- 		}
- 		G_myClassList=classList;
-	px_ajax_teachingplan_byRight(classuuid);	
-	return;
-//---------------------------------------------------------------------------------
-//幼儿园教学计划管理模块，新版代码		
-//	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
-//	
-//	if(!groupList||groupList.length==0){
-//		alert("没有权限。");
-//		return;
-//	}	
-//	var groupuuid=groupList[0].uuid;	
-//
-//	React.render(React.createElement(Teachingplan_show7Day_byRight, {
-//		    groupuuid:groupuuid,
-//		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
-//			}), document.getElementById('div_body'));
-//	return;
-//---------------------------------------------------------------------------------	
-//幼儿园教学计划管理模块，老版代码	
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
-//	
-//	if(!groupList||groupList.length==0){
-//		alert("没有权限。");
-//		return;
-//	}
-//	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
-//	var groupuuid=groupList[0].uuid;
-//	
-//	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
-//		groupuuid:groupuuid,
-//		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
-//		responsive: true, bordered: true, striped :true,hover:true,striped:true
-//		}), document.getElementById('div_body'));
+	Queue.push(menu_teachingplan_list_fn_byRight,"课程安排");
+	groupuuid=groupList[0].uuid;
+	
+	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
+		groupuuid:groupuuid,
+		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
 };
 /*
  * (标头)<园长信箱>
@@ -793,13 +888,7 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn_byRight() {
-var  grouplist=Store.getGroupByRight("PX_class_m");
-if(!grouplist||grouplist.length==0){
-	alert("没有班级管理权限不能访问.");
-	return;
-}
-	groupuuid=grouplist[0].uuid;
-	ajax_Class_div_byRight(groupuuid);
+	ajax_class_listByGroup_byRight();
 };
 
 
@@ -809,8 +898,41 @@ if(!grouplist||grouplist.length==0){
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn_byRight() {
-	ajax_accounts_listByGroup_byRight();
+var grouplist= Store.getGroupByRight("KD_accounts_m");
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限!");
+		return "";
+	}
+
+		var groupuuid=grouplist[0].uuid;
+	
+ 	Queue.push(function(){menu_accounts_list_fn_byRight();},"收费记录列表");
+
+	React.render(React.createElement(Accounts_EventsTable_byRight, {
+ 					groupuuid:groupuuid,
+ 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+ 					
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById('div_body'));
 };
+function menu_accounts_listForYear_byRight() {
+	var grouplist= Store.getGroupByRight("KD_accounts_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+			var groupuuid=grouplist[0].uuid;
+		
+	 	Queue.push(function(){menu_accounts_listForYear_byRight();},"学生缴费记录");
+
+		React.render(React.createElement(Accounts_listForYear_byRight, {
+	 					groupuuid:groupuuid,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};
+
 /*
  * (标头)学生列表
  * @跳转kd_service发服务器请求
@@ -820,12 +942,23 @@ function menu_query_list_fn_byRight() {
 };
 
 /*
+ * (标头)学生列表(我的学生列表）
+ * @跳转kd_service发服务器请求
+ * */
+function menu_mystudents_list_fn() {
+	ajax_mystudents_query();
+};
+
+
+
+/*
  * (标头)统计
+ * @跳转kd_service发服务器请求
  * */
 function menu_statistics_list_fn_byRight() {
 	Queue.push(menu_statistics_list_fn_byRight,"统计");
 	
-	var  grouplist=Store.getGroupByRight("PX_statistics_m");			
+	var  grouplist=Store.getGroupByRight("KD_statistics_m");			
 	var groupuuid;
 
 	if(!grouplist||grouplist.length==0){
@@ -850,130 +983,135 @@ function menu_teachingjudge_list_fn_byRight () {
 	ajax_teachingjudge_query_byRight();
 };
 
-
-
 /*
- * (标头)发布对外课程功能
- * */
-//var G_myCurClassuuid=null;
-//var G_myClassList=null;
-function menu_course_byRight() {
-//	console.log("Store.getCurGroup()",Store.getCurGroup());
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
-//	if(!groupList||groupList.length==0){
-//		alert("没有权限。");
-//		return;
-//	}
-//		var classList=Store.getChooseClass(groupList[0].uuid);
-// 		var class_uuid =null;
-// 		if(classList&&classList.length>0){
-// 			classuuid=classList[0].uuid;
-// 		}
-// 		G_myClassList=classList;
-    	px_ajax_course_byRight();	
-};
-
-/*
- * (标头)对外发布老师资料
- * */
-function menu_teacher_byRight() {
-	   ajax_teacher_div_byRight();	
-};
-
-/*
- * (对外校务管理)
+ * （标头）签到查询；
  * @跳转kd_service发服务器请求
  * */
-function menu_group_myList_fn_byRight_px() {
-	Queue.push(menu_group_myList_fn_byRight_px,"对外校务管理");
-	ajax_group_myList_byRight_px();
-}
 
-//用户登陆
-function ajax_userinfo_login() {
-	
-	 var $btn = $("#btn_login");
-	  $btn.button('loading');
-	$.AMUI.progress.start();
+function menu_class_sign_today_fn_byRight() {
+	Queue.push(function(){menu_class_sign_today_fn_byRight();},"签到查询");
+	var  grouplist=Store.getGroupByRight("KD_class_m");			
+		var groupuuid;
 
-	var loginname = $("#loginname").val();
-	var password = $("#password").val();
-	if(password.length!=32){
-		 password=$.md5(password); 
-	}
-	
-	
-	var url = hostUrl + "rest/userinfo/login.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		data :{loginname:loginname,password:password,grouptype:2},
-		dataType : "json",
-		success : function(data) {
-			 $btn.button('reset');
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				Store.clear();
-				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
-				setCookie("bs_loginname", loginname);
-				if($("#pw_checked")[0].checked){
-					setCookie("bs_password", password);
-					setCookie("pw_checked", "checked");
-				} else {
-					setCookie("bs_password", ""); 
-					setCookie("pw_checked", "");
-				}
-				Store.setUserinfo(data.userinfo);
-				Store.setGroup(data.list);
-				PxRight.setUserRights(data.S_User_rights);
-				
-				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
-				
-				menu_body_fn();
-				
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : function( obj, textStatus, errorThrown ){
-			 $btn.button('reset');
-			$.AMUI.progress.done();
-			if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
-				alert("没连接上互联网.");
-			}else{
-				alert(obj.status+","+textStatus+"="+errorThrown);
-			}
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
 		}
-	});
+
+
+	var classList=Store.getChooseClass(grouplist[0].uuid);
+	if(!G_myclass_choose){
+	
+		var classuuid;
+
+		if(!classList||classList.length==0){
+			classuuid=null;
+		}else{
+			classuuid=classList[0].uuid;
+		}
+		G_myclass_choose=classuuid;
+	}
+	React.render(React.createElement(Teacher_class_sign_today_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:groupuuid,
+		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
+};
+
+/**
+ * 
+ */
+G_studentbind_otherWhere=null;
+function menu_studentbind_byRight(){
+	Queue.push(function(){menu_studentbind_byRight();},"接送卡查询");
+	var  grouplist=Store.getGroupByRight("KD_class_m");	
+	if(!G_mygroup_choose){
+		var groupuuid;
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choose=groupuuid;
+	}
+
+	React.render(React.createElement(Studentbind_EventsTable_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:G_mygroup_choose,		
+		type:1,		
+		classuuid:G_myclass_choose
+		}), document.getElementById('div_body'));
 }
 
-function ajax_getUserinfo(isInit) {
-	$.AMUI.progress.start();
+function menu_studentbind_teacher_byRight(){
+	Queue.push(function(){menu_studentbind_teacher_byRight();},"老师门禁卡查询");
+	var  grouplist=Store.getGroupByRight("KD_teacher_m");	
+	if(!G_mygroup_choose){
+		var groupuuid;
+		if(!grouplist||grouplist.length==0){
+			groupuuid=null;
+		}else{
+			groupuuid=grouplist[0].uuid;
+		}
+		G_mygroup_choose=groupuuid;
+	}
 
-	var url = hostUrl + "rest/userinfo/getUserinfo.json?grouptype=2";
-	$.ajax({
-		type : "GET",
-		url : url,
-		async: false,
-		dataType : "json",
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				if(data.userinfo)Store.setUserinfo(data.userinfo);
-				if(data.list)Store.setGroup(data.list);
-				PxRight.setUserRights(data.S_User_rights);
-				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
-				
-				//PxLazyM.loadJS_for( getCookie("bs_grouptype"));
-				menu_body_fn();
-			} else {
-				if(!isInit)alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+	React.render(React.createElement(Studentbind_EventsTable_byRight,{
+		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
+		groupuuid:G_mygroup_choose,		
+		type:0
+		}), document.getElementById('div_body'));
+}
+
+
+function menu_Attendance_listStatMonthByTeacher_byRight() {
+	var grouplist= Store.getGroupByRight("KD_statistics_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+		if(!G_mygroup_choose){
+			var groupuuid;
+			if(!grouplist||grouplist.length==0){
+				groupuuid=null;
+			}else{
+				groupuuid=grouplist[0].uuid;
 			}
-			
-		},
-		error : G_ajax_error_fn
-	});
-}
+			G_mygroup_choose=groupuuid;
+		}
+	 	Queue.push(function(){menu_Attendance_listStatMonthByTeacher_byRight();},"统计-老师月考勤");
+
+		React.render(React.createElement(Attendance_listStatMonthByTeacher, {
+	 					groupuuid:G_mygroup_choose,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};
+
+function menu_Attendance_listStatMonthByStudent_byRight() {
+	var grouplist= Store.getGroupByRight("KD_statistics_m");
+		if(!grouplist||grouplist.length==0){
+			alert("没有权限!");
+			return "";
+		}
+		if(!G_mygroup_choose){
+			var groupuuid;
+			if(!grouplist||grouplist.length==0){
+				groupuuid=null;
+			}else{
+				groupuuid=grouplist[0].uuid;
+			}
+			G_mygroup_choose=groupuuid;
+		}
+	 	Queue.push(function(){menu_Attendance_listStatMonthByStudent_byRight();},"统计-学生月签到");
+
+		React.render(React.createElement(Attendance_listStatMonthByStudent, {
+	 					groupuuid:G_mygroup_choose,
+	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+	 					
+	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	 					}), document.getElementById('div_body'));
+	};
