@@ -25,6 +25,7 @@ import com.company.news.entity.Role;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
+import com.company.news.entity.User4QBaseInfo;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.entity.UserTeacher;
@@ -1111,6 +1112,21 @@ public class UserinfoService extends AbstractService {
 	public UserForJsCache getUserForJsCache(String uuid) {
 		return (UserForJsCache) this.nSimpleHibernateDao.getObjectById(
 				UserForJsCache.class, uuid);
+	}
+	
+	
+	/**
+	 * 获取用户基本信息,用于其他用户查看.
+	 * @param uuid
+	 * @return
+	 */
+	public User4QBaseInfo getUser4QBaseInfo(String uuid) {
+		User4QBaseInfo a= (User4QBaseInfo) this.nSimpleHibernateDao.getObjectById(
+				User4QBaseInfo.class, uuid);
+		
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(a);
+		a.setImg(PxStringUtil.imgUrlByUuid(a.getImg()));
+		return  a;
 	}
 
 	/**

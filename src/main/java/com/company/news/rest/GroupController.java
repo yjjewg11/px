@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.news.SystemConstants;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
@@ -218,6 +219,31 @@ public class GroupController extends AbstractRESTController {
 
 		
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	
+
+	@RequestMapping(value = "/getBaseInfo", method = RequestMethod.GET)
+	public String getBaseInfo(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		Group4QBaseInfo c;
+		try {
+			String uuid=request.getParameter("uuid");
+			c = groupService.getGroup4QBaseInfo(uuid);
+			
+			
+			model.put(RestConstants.Return_ResponseMessage_count, countService.get(uuid, SystemConstants.common_type_Kindergarten_introduction));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,c);
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}

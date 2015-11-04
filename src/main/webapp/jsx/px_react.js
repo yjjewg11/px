@@ -2137,7 +2137,7 @@ render: function() {
 return (
 		  <div>
 
-            <iframe width="100%" height="100%" src={this.props.share_url}></iframe>
+            <iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%"  src={this.props.share_url}></iframe>
 
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
@@ -3391,7 +3391,7 @@ render: function() {
 	  var o = this.props.data;
       var iframe=(<div></div>);
 	     if(o.type==3){
-	       iframe=(<iframe width="100%" height="100%" src={this.props.share_url}></iframe>)	   
+	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%" src={this.props.share_url}></iframe>)	   
 	        }else{
 	     iframe=(       
 			<AMUIReact.Article
@@ -3682,6 +3682,12 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+			  <ol className="am-breadcrumb am-text-warning">
+	   <li>提示</li>
+		  <li>1.创建班级</li>
+	   <li>2.添加教学计划</li>
+		 <li>3.添加学生</li>
+		</ol>
 		    <AMUIReact.Form id="queryForm" inline >
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
@@ -7565,7 +7571,7 @@ var Group_edit_byRight_px = React.createClass({
    	  }
    return (
    		  <div>
-         <iframe width="100%" height="100%" src={this.props.share_url}></iframe>
+         <iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%" src={this.props.share_url}></iframe>
 
 
    		     <AMR_ButtonToolbar>

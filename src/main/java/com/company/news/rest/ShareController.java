@@ -196,6 +196,7 @@ public class ShareController extends AbstractRESTController {
 					return "/404";
 				}
 				model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+				model.put("show_time", TimeUtils.getDateString(a.getCreate_time()));
 				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getArticleByUuid(uuid));
 				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
 			} catch (Exception e) {
@@ -232,7 +233,9 @@ public class ShareController extends AbstractRESTController {
 				return "/404";
 			}
 			model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
-
+			
+			model.put("show_time", TimeUtils.getDateString(a.getCreate_time()));
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
