@@ -22,6 +22,7 @@ import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
+import com.company.news.entity.User4QBaseInfo;
 import com.company.news.entity.UserForJsCache;
 import com.company.news.form.UserLoginForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -1073,6 +1074,33 @@ public class UserinfoController extends AbstractRESTController {
 		UserForJsCache a=null;
 		try {
 			a = userinfoService.getUserForJsCache(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 获取用户基本信息,用于其他用户查看.
+	 * @param uuid
+	 * @return
+	 */
+	@RequestMapping(value = "/getBaseInfo", method = RequestMethod.GET)
+	public String getBaseInfo(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String uuid=request.getParameter("uuid");
+		User4QBaseInfo a=null;
+		try {
+		
+			a = userinfoService.getUser4QBaseInfo(uuid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

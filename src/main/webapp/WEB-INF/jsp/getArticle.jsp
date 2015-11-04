@@ -13,7 +13,7 @@
  
  <h2  class="art_title">${data.title}</h2>
  <div class="art_meta">
-  <p>作者:${data.create_user},发布时间:${data.create_time}, 浏览${count}次</p>
+  <p>作者:${data.create_user},发布日期:${show_time}, 浏览${count}次</p>
   </div>
   <div>${data.message}</div>
   

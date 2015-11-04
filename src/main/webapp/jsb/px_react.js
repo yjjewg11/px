@@ -2137,7 +2137,7 @@ render: function() {
 return (
 		  React.createElement("div", null, 
 
-            React.createElement("iframe", {width: "100%", height: "100%", src: this.props.share_url}), 
+            React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}), 
 
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
@@ -3391,7 +3391,7 @@ render: function() {
 	  var o = this.props.data;
       var iframe=(React.createElement("div", null));
 	     if(o.type==3){
-	       iframe=(React.createElement("iframe", {width: "100%", height: "100%", src: this.props.share_url}))	   
+	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}))	   
 	        }else{
 	     iframe=(       
 			React.createElement(AMUIReact.Article, {
@@ -3680,6 +3680,12 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+			  React.createElement("ol", {className: "am-breadcrumb am-text-warning"}, 
+	   React.createElement("li", null, "提示"), 
+		  React.createElement("li", null, "1.创建班级"), 
+	   React.createElement("li", null, "2.添加教学计划"), 
+		 React.createElement("li", null, "3.添加学生")
+		), 
 		    React.createElement(AMUIReact.Form, {id: "queryForm", inline: true}, 
 	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
@@ -7649,7 +7655,7 @@ React.createElement("div", null,
    	  }
    return (
    		  React.createElement("div", null, 
-         React.createElement("iframe", {width: "100%", height: "100%", src: this.props.share_url}), 
+         React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}), 
 
 
    		     React.createElement(AMR_ButtonToolbar, null, 

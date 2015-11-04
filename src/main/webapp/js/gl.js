@@ -534,4 +534,18 @@ var GTimeShow={
 	 }
 	 return false;
 	}
+ 
+ function G_iFrameHeight(t_iframe) {   
+	 var ifm= document.getElementById(t_iframe);   
+
+	 var subWeb = document.frames ? document.frames[t_iframe].document : ifm.contentDocument;   
+
+	 if(ifm != null && subWeb != null) {
+
+	    ifm.height = subWeb.body.scrollHeight+10;
+	  //  ifm.width = subWeb.body.scrollWidth;
+
+	 }   
+
+	 }   
 GTimeShow.init();

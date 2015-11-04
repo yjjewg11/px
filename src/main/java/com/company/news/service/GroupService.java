@@ -14,9 +14,8 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
-import com.company.news.entity.PClass;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.RoleUserRelation;
-import com.company.news.entity.User;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.DBUtil;
@@ -332,6 +331,18 @@ public class GroupService extends AbstractService {
 	public Group get(String uuid){
 		Group group= (Group)this.nSimpleHibernateDao.getObjectById(Group.class, uuid);
 		 return warpVo(group);
+	}
+
+	
+	/**
+	 * 查询所有机构列表
+	 * @return
+	 */
+	public Group4QBaseInfo getGroup4QBaseInfo(String uuid){
+		Group4QBaseInfo group= (Group4QBaseInfo)this.nSimpleHibernateDao.getObjectById(Group4QBaseInfo.class, uuid);
+		this.nSimpleHibernateDao.getHibernateTemplate().evict(group);
+		group.setImg(PxStringUtil.imgSmallUrlByUuid(group.getImg()));
+		return group;
 	}
 
 	
