@@ -14,7 +14,7 @@ var G_course_choose=null;
 			        "link": "javascript:menu_queryMyTimely_fn()",
 			        "customIcon":hostUrlCDN+"i/icon-msg-wu.png",
 			        "title": "消息"
-			      }];
+			      }]; 
 		}
 		var div_header_title_info = {
 				  "title":type,

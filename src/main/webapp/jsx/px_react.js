@@ -3669,10 +3669,12 @@ var Announcements_Class_div = React.createClass({
 		this.load_more_data();
 		
 	},
-	
+	 handleClick: function(m,groupuuid,uuid) {		 
+  		btn_click_class_list_byRight(m,groupuuid,uuid);
+	 },
 render: function() {
 		var o=this.state;
- course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
+    course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
 	course_list.unshift({value:"",label:"所有"});
 
 	  var pxclass_isdisable_list=G_selected_dataModelArray_byArray(Vo.getTypeList("class_isdisable"),"key","val");
@@ -3688,12 +3690,11 @@ render: function() {
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
-
 		  </div>
-			   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
-
 		  </div>
+	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"add_class",this.state.groupuuid)} >创建班级</AMR_Button>
 		  </AMR_ButtonToolbar>	
 		   </AMR_Panel> 
 		    </AMUIReact.Form>
@@ -3776,7 +3777,7 @@ var Class_EventsTable_byRight = React.createClass({
   var Class_students_manage_byRight = React.createClass({
 	getDefaultProps: function() {
 	 var data = [
-	            {value: 'edit_class', label: '班级编辑 '},
+	            {value: 'edit_class', label: '编辑班级'},
 	            {value: 'delete', label: '删除空班级'}
 	          ];
 	    return {
@@ -4078,13 +4079,14 @@ var Class_EventsTable_byRight = React.createClass({
       		  <form id="editClassForm" method="post" className="am-form">
       		<input type="hidden" name="uuid"  value={o.uuid}/>
       		     <input type="hidden" name="type"  value="1"/>
-      		 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">	    
+		  <AMR_ButtonToolbar>
+      		 <div className="am-fl">	    
       		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
 				</div> 
-				<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+				<div className="am-fl  am-margin-left-xs">
   		      <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
        		  </div> 
-		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">	
+		  </AMR_ButtonToolbar>
 		  <hr/>
       		      <label htmlFor="name">班级:</label>
       		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
@@ -4098,7 +4100,6 @@ var Class_EventsTable_byRight = React.createClass({
     				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
     				      <br/>
       		      <button type="button"  onClick={ajax_class_save_byRight}  className="am-btn am-btn-primary">提交</button>
-		  </div> 
       		    </form>
       	     </div> 
       	   </div>	    	   
@@ -6633,16 +6634,6 @@ var Class_EventsTable_byRight = React.createClass({
  * 我的班级-按钮、列表绘制
  * */
  var Class_students_show= React.createClass({
-	 	 getDefaultProps: function() {
-	 var data = [
-	            {value: 'addclass', label: '添加班级 '},
-	            {value: 'edit_class', label: '班级编辑'},
-	            {value: 'delete', label: '删除空班级'}
-	          ];
-	    return {
-	      down_list: data
-	    };
-	  },
  	 componentDidMount:function(){
  			 G_img_down404();
  	  },
@@ -6652,10 +6643,6 @@ var Class_EventsTable_byRight = React.createClass({
  	  handleClick:function(m,groupuuid,uuid){
  		  btn_click_class_list(m,groupuuid,uuid); 			
  	  },
-      handleClick_down:function(groupuuid,uuid,val){
-		  //更多操作按钮处理方法
-		  btn_click_class_list(val,groupuuid,uuid);
-	  },
  	render: function() {
  		var o=this.props.formdata;
  		if(!o)o="";
@@ -6669,13 +6656,9 @@ var Class_EventsTable_byRight = React.createClass({
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
  		  	   <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
  		  	  </div>  
-		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_down.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
-		  	  </div>  
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
  		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={menu_teachingplan_dayShow_fn.bind(this,o.uuid)} >查看课程</AMR_Button>
  		  	  </div>
-
  		  	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
  		  	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >管理学生</AMR_Button>
  		  	  </div>
@@ -7121,6 +7104,7 @@ var Class_EventsTable_byRight = React.createClass({
   	},
   	  render: function() {
 		
+
   	    var event = this.props.event;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
@@ -7138,74 +7122,6 @@ var Class_EventsTable_byRight = React.createClass({
   	}); 
 //****************************************************************
 
- /*
- * <我的班级>班级添加与编辑详情绘制
- * @ajax_class_save：提交按钮在Kd_service;
- * */	
- var AMR_Grid=AMUIReact.Grid;
- var AMR_Col=AMUIReact.Col;
-   var Class_edit = React.createClass({ 
-   	 getInitialState: function() {
-   		    return this.props.formdata;
-   		  },
-   	 handleChange: function(event) {
-   		 
-   		 if(event==G_group_wjd){
-   			 $('#help1_span').show();
-   		 }else{
-   			 $('#help1_span').hide();
-   		 }
-   		    this.setState($('#editClassForm').serializeJson());
-   	  },
-   render: function() {
-   	  var o = this.state;
- 	  var course_list=Store.getCourseList(o.groupuuid);
- 	 course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
- 	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
-     return (
-     		<div>
-     		<div className="header">
-     		  <hr />
-     		</div>
-     		<div className="am-g">
-     		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-     		  <form id="editClassForm" method="post" className="am-form">
-     		<input type="hidden" name="uuid"  value={o.uuid}/>
-     		     <input type="hidden" name="type"  value="1"/>
-     		    <div className="am-form-group"> 
-		      <AMR_ButtonToolbar>
-		      <div className="am-fl  am-margin-left-xs">
-     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
- 		      </div>
-	          <div className="am-fl  am-margin-left-xs">
-	          <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
-     		  </div>
-			  <G_help_popo  msg={G_tip.class_edit}/> 
-	          </AMR_ButtonToolbar>
-     		  </div> 		    
-     		      <label htmlFor="name">班级:</label>
-     		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
-     		      <br/>   		   
-   		      <label htmlFor="name">管理员:</label>
-   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
-   			      <input type="text"  id="headTeacher_name" value={o.headTeacher_name} onChange={this.handleChange} onClick={w_ch_user.open.bind(this,"headTeacher","headTeacher_name",o.groupuuid)} placeholder=""/>
-   			      <br/>
-   			      <label htmlFor="name">上课老师:</label>
-   		  		    <input type="hidden" name="teacher" id="teacher" value={o.teacher} onChange={this.handleChange}/>
-   				      <input type="text"  id="teacher_name" value={o.teacher_name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"teacher","teacher_name",o.groupuuid)} placeholder=""/>
-   				      <br/>
-     		      <button type="button"  onClick={ajax_class_save}  className="am-btn am-btn-primary">提交</button>
-     		    </form>
-     	     </div> 
-     	   </div>	    	   
-     	   </div>
-     );
-   }
-  }); 
-
-
-
- //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
    
    
    
