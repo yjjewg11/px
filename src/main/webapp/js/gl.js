@@ -9,6 +9,7 @@
  * 
  * 编辑器公共配置
  * xhEditor_
+ * 不能压缩,导致全局变量被压缩
  */
 
 (function($){
@@ -21,21 +22,21 @@ $(this.serializeArray()).each(function(){
 return serializeObj;
 };
 })(jQuery);
-var G_group_wjd="group_wjd";
-var hostUrl='/px-rest/';
+window.G_group_wjd="group_wjd";
+window.hostUrl='/px-rest/';
 var hostUrlCDN='/px-rest/';
 hostUrlCDN='http://img.wenjienet.com/';
-var G_logo=hostUrlCDN+"i/logo.png";
-var G_def_headImgPath=hostUrlCDN+"i/header.png";
-var G_def_noImgPath=hostUrlCDN+"i/header.png";
+window.G_logo=hostUrlCDN+"i/logo.png";
+window.G_def_headImgPath=hostUrlCDN+"i/header.png";
+window.G_def_noImgPath=hostUrlCDN+"i/header.png";
 //取消G_imgPath
-var G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
+window.G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
 G_imgPath="";
 
 /**
  * 获取头像,没有则取默认
  */
-var G_getHeadImg=function(s){
+window.G_getHeadImg=function(s){
 	if(s)return s;
 	return G_def_headImgPath;
 }
@@ -345,7 +346,7 @@ function loadJSAsy(url,callback,charset)
  * Queue.doBackFN();
  * Queue.push(fn);
  */
-var  Queue={
+window.Queue={
 		isBack:false,
 		/**
 		 * 如果是点击显示原图模式,回退时,操作是关闭原图
@@ -408,7 +409,7 @@ var  Queue={
 		}	
 }
 
-var xhEditor_upImgOption_mfull={
+window.xhEditor_upImgOption_mfull={
 	    upMultiple:false,
 		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 		onUpload:xhEditor_insertUpload,
@@ -417,7 +418,7 @@ var xhEditor_upImgOption_mfull={
 		tools:'mfull',
 		urlType:'abs'
 	};
-var xhEditor_upImgOption={
+window.xhEditor_upImgOption={
     upMultiple:false,
 	upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 	onUpload:xhEditor_insertUpload,
@@ -425,7 +426,7 @@ var xhEditor_upImgOption={
 	tools:'simple',
 	urlType:'abs'
 };
-var xhEditor_upImgOption_emot={
+window.xhEditor_upImgOption_emot={
 	    //upMultiple:false,
 		//upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 		//onUpload:xhEditor_insertUpload,
@@ -458,7 +459,7 @@ function G_clear_pureview(){
 	$(".am-pureview").remove();
 }
 
-var G_Check={
+window.G_Check={
 	formateDate:function(d1){
 		if(!d1)return d1;
 		d1=d1.replace(/\//ig,'-'); 
@@ -481,7 +482,7 @@ var G_Check={
  * JS转换时间戳为“刚刚”、“1分钟前”、“2小时前”“1天前”等格式
  * GTimeShow.showByTime(s);
  */
-var GTimeShow={
+window.GTimeShow={
 	minute:1000 * 60,
 	hour :null,
 	day :  null,

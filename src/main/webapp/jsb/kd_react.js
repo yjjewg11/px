@@ -32,7 +32,7 @@ return (
     React.createElement("td", null, event.afternoon)
   ) 
 );
-}
+} 
 }); 
 
 

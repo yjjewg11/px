@@ -20,6 +20,7 @@ var PxLazyM=(function(){
 		window.__loadJS_count--;
 		//alert("loadJS_count="+__loadJS_count);
 		if(window.__loadJS_count==0){
+			$.AMUI.progress.done();
 			menu_body_fn();
 		}
 	}
@@ -29,45 +30,16 @@ var PxLazyM=(function(){
 		var callback=loadJS_for_kd_callback;
 		var jsArr=null;
 		if(type==2){
-			jsArr=[
-			       "../js/common_service.js",
-		           	"../jsb/common_react.js",
-		           	"../jsb/px_widget.js",
-		           	"../jsb/px_react.js",
-		        	"../jsb/widget_react.js",
-		        	
-		        	
-		        	"../js/widget.js",
-		        	
-		        	"../px/px_echarts.js",
-		        	"../px/store.js",
-		        	"../px/widget.js",
-		        	"../px/px_service.js",
-		        	"../px/px_index.js"
-		           ];
+			jsArr=PxConfig.group_type_2;
 		}else{
-			jsArr=[
-							"../js/store.js",
-							"../js/widget.js",
-							"../js/common_service.js",
-
-		           	"../jsb/common_react.js",		           
-		           	"../jsb/kd_react.js",
-		        	"../jsb/widget_react.js",
-		        	"../jsb/kd_widget.js",
-		        	
-		        	
-		        	"px_echarts.js",
-		        	"widget.js",
-		        	"kd_service.js",
-		        	"kd_index.js"
-		           ];
+			jsArr=PxConfig.group_type_1;
 		}
 		
 		
 
 		//所有加载完成才执行回调.
 		window.__loadJS_count=jsArr.length;
+		$.AMUI.progress.start();
 		for(var i=0;i<jsArr.length;i++){
 			loadJS(jsArr[i]+"?1031",callback);
 		}
