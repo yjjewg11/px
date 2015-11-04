@@ -1,9 +1,9 @@
 //我选我的班级后的全局记录
-var G_myclass_choose=null;
+window.G_myclass_choose=null;
 //我选我的学校后的全局记录
-var G_mygroup_choose=null;
+window.G_mygroup_choose=null;
 //用于切换机构类型
-var G_group_type=1;
+window.G_group_type=1;
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；
@@ -142,7 +142,7 @@ function login_affter_init(){
                           "fn":menu_userTeacher_list_fn_byRight,
                           "link": "##",
                           "title": "老师资料管理"
-                        },
+                        }
                       ]
         };
 
@@ -801,7 +801,7 @@ function menu_teachingplan_list_fn_byRight(classuuid) {
 	React.render(React.createElement(Teachingplan_show7Day_byRight, {
 		    classuuid:classuuid,
 		    groupuuid:groupuuid,
-		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name")
 			}), document.getElementById('div_body'));
 	return;
 //---------------------------------------------------------------------------------	

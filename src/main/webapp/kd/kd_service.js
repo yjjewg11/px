@@ -1217,7 +1217,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 				React.render(React.createElement(Class_student_tel,{
 					//type:g_parentContact_listToShow_type,
 					formdata:data.list,
-  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
+  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name")
 					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
@@ -1233,7 +1233,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
 	Queue.push(function(){ajax_parentContactByMyStudent_message_list(parent_uuid,name);},name);
 		React.render(React.createElement(ParentContactByMyStudent_message_list,{
-			parent_uuid:parent_uuid,
+			parent_uuid:parent_uuid
 			}), document.getElementById('div_body'));
 	   	
    };
@@ -1706,7 +1706,7 @@ $.ajax({
 		if (data.ResMsg.status == "success") {
 			React.render(React.createElement(Announcements_show_byRight,{
 				data:data.data,
-				count:data.count,
+				count:data.count
 				}), document.getElementById('div_body'));
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);

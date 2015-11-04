@@ -102,7 +102,7 @@ function G_ajax_shouc_save(opt){
 		});
 	}
 
-
+ 
 
 
 /**
@@ -403,7 +403,7 @@ function ajax_userinfo_update() {
 				 G_msg_pop(data.ResMsg.message);
 				 store_ajax_getUserinfo();
 				 menu_body_fn();
-			 },
+			 }
 			 };
 	G_ajax_abs_save(opt);
 	
@@ -419,7 +419,7 @@ function ajax_userteacher_save() {
 				 G_msg_pop(data.ResMsg.message);
 				 store_ajax_getUserinfo();
 				 menu_body_fn();
-			 },
+			 }
 			 };
 	G_ajax_abs_save(opt);
 	
@@ -557,7 +557,7 @@ function commons_ajax_favorites_push(title,type,reluuid,url){
 			// formObject:formObject,
 			 jsonString:jsonString,
 			 url:hostUrl + "rest/favorites/save.json",
-			 cbFN:null,
+			 cbFN:null
 			 };
 			 G_ajax_shouc_save(opt);
 	

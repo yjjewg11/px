@@ -1152,7 +1152,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 				React.render(React.createElement(Class_student_tel,{
 					class_uuid:class_uuid,
 					formdata:data.list,
-  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name"),
+  					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name")
 					}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
@@ -1168,7 +1168,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
 	Queue.push(function(){ajax_parentContactByMyStudent_message_list(parent_uuid,name);},name);
 		React.render(React.createElement(ParentContactByMyStudent_message_list,{
-			parent_uuid:parent_uuid,
+			parent_uuid:parent_uuid
 			}), document.getElementById('div_body'));
 	   	
    };
@@ -1643,7 +1643,7 @@ $.ajax({
 			React.render(React.createElement(Announcements_show_byRight,{
 				share_url:data.share_url,
 				data:data.data,
-				count:data.count,
+				count:data.count
 				}), document.getElementById('div_body'));
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
@@ -3063,7 +3063,7 @@ function menu_userteacher_fn(){
 	   }
 	   Queue.push(function(){teachingplan_edit_onClick_byRight(formdata);},name);
 		React.render(React.createElement(Px_Teachingplan_edit,{
- 			formdata:formdata,
+ 			formdata:formdata
  			}), document.getElementById('div_body'));
 
    };
@@ -3339,7 +3339,7 @@ function px_react_ajax_teachingplan_delete(obj){
 		   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
 			React.render(React.createElement(Px_course_edit,{
 				groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-	 			formdata:formdata,
+	 			formdata:formdata
 	 			}), document.getElementById('div_body'));
 			return;
 	   }
@@ -3358,11 +3358,11 @@ function px_react_ajax_teachingplan_delete(obj){
 				if (data.ResMsg.status == "success") {
 					React.render(React.createElement(Px_course_edit,{
 						groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-			 			formdata:formdata,
+			 			formdata:formdata
 			 			}), document.getElementById('div_body'));
 				} else {
 					alert("加载数据失败："+data.ResMsg.message);
-				}
+				} 
 			},
 			error :G_ajax_error_fn
 		});
@@ -3373,7 +3373,7 @@ function px_react_ajax_teachingplan_delete(obj){
    function px_ajax_class_course_look_info(event){
    	Queue.push(function(){px_ajax_class_course_look_info(event);},"发布详情");
 	React.render(React.createElement(Class_course_look_info,{
-			formdata:event,
+			formdata:event
 			}), document.getElementById('div_body'));
    };   
  /*(发布课程)
@@ -3991,7 +3991,7 @@ function ajax_class_students_look_info(uuid){
   	 	Queue.push(function(){ajax_teacher_div_byRight();},"老师资料");
 	   	 var group_list=Store.getGroup();
 	React.render(React.createElement(Teacher_div,{
-		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name"),
+		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name")
 	}), document.getElementById('div_body'));  	
 };   
    
@@ -4040,7 +4040,7 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
  	   Queue.push(function(){px_teacher_onClick_byRight(formdata);},name);
  		React.render(React.createElement(Px_teacher_edit,{
  			groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
-  			formdata:formdata,
+  			formdata:formdata
   			}), document.getElementById('div_body'));
 
     };   
@@ -4049,7 +4049,7 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
     function px_ajax_teacher_look_info(event){
     	Queue.push(function(){px_ajax_teacher_look_info(event);},"老师详情");
  	React.render(React.createElement(Teacher_look_info,{
- 			formdata:event,
+ 			formdata:event
  			}), document.getElementById('div_body'));
     };     
    

@@ -1,3 +1,6 @@
+
+
+///废弃,使用px_index.js替代.
 var G_group_type=2;
 //我选我的班级后的全局记录
 var G_myclass_choose=null;
