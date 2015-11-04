@@ -221,12 +221,12 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
 			this.ajax_chooseCook_list(tmptype);
 			var lists=Store.getChooseCook(tmptype);
 			this.setState({
-	            items: lists,
+	            items:lists,
 	        });
     	},
     	 getInitialState: function() {
     		    return {
-    	            items: [],
+    	            items:[],
     	        };
     		  },
     	componentDidMount: function() {
@@ -240,7 +240,7 @@ var ChooseCook_Widget = React.createClass({displayName: "ChooseCook_Widget",
     		}
     		
     	       this.setState({
-    	            items: lists,
+    	            items:lists,
     	        });
     	  },
     	  ajax_chooseCook_list:function(type){

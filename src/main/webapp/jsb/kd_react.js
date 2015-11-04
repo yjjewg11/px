@@ -32,7 +32,7 @@ return (
     React.createElement("td", null, event.afternoon)
   ) 
 );
-} 
+}
 }); 
 
 
@@ -199,12 +199,14 @@ render: function() {
 	}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"add")}, "发布互动"), 
 		    fn, 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.refresh_data.bind(this)}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
-		    ), 
+		    )
+            ), 
 		    React.createElement(Div_MyClassnewStatistics, null), 
 		  React.createElement("hr", null), 	  
 		    
@@ -1034,6 +1036,7 @@ var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7D
 	  return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "am-g"}, 
+		  React.createElement(AMR_Panel, null, 
 		 React.createElement(AMR_ButtonToolbar, null, 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre")}, "上周"), 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next")}, "下周"), 	
@@ -1041,6 +1044,7 @@ var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7D
 		React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "group_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid})
 		)
 	    )
+		)
 	    ), 
 		React.createElement("hr", null), 
 		React.createElement("div", {className: "am-g", id: "div_detail"}, 
@@ -1396,7 +1400,8 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 		  )
 	  }	
 	  return (
-		React.createElement("div", null, 	
+		React.createElement("div", null, 
+		  React.createElement(AMR_Panel, null, 
 		  React.createElement(AMR_ButtonToolbar, null, 
 
 		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
@@ -1415,8 +1420,8 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
         	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid})
            )
 
+          )
           ), 
-
 		dataShowDiv
 	   )
 	  );
@@ -1522,8 +1527,8 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 		 return (
 		 		React.createElement("div", null, 
 			      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-			     
-	  			  	  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+			          React.createElement(AMR_Panel, null, 
+	  			  	  React.createElement(AMR_ButtonToolbar, null, 
 	  			  	 React.createElement("div", {className: "am-fl"}, 
 			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.state.class_uuid})
 			    	  ), 
@@ -1535,7 +1540,7 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			    	  )			    	  
 			    	 		  
 				      )
-
+                      )
  
 				  ), 		        
 	  	  	       React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
@@ -1925,12 +1930,12 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 	 getDefaultProps: function() {
 	 var data = [
 	            {value: 'addclass', label: '添加班级 '},
-	            {value: 'edit_class', label: '班级编辑'},
+	            {value: 'edit_class', label: '编辑班级'},
 	            {value: 'delete', label: '删除空班级'}
 	          ];
 	 var data2=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
 	    return {
-	      down_list: data,
+	       down_list: data,
            down_list2: data2
 	    };
 	  },
@@ -1972,7 +1977,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
      	     React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list2})
      	    ), 
 		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-		  	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_down.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
+	  	    React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_down.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
 		  	), 
 		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name)}, "查看课程")
@@ -2503,7 +2508,8 @@ render: function() {
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-	      React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+          React.createElement(AMR_Panel, null, 
+	      React.createElement(AMR_ButtonToolbar, null, 
 	      React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
 		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 		  ), 
@@ -2514,6 +2520,7 @@ render: function() {
 		  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")		  		  
 		  )
 		  )
+          )
 		  ), 
 		    
 		    React.createElement("div", {id: this.classnewsreply_list_div}
@@ -3046,14 +3053,14 @@ render: function() {
 	if(!this.state.list)this.state.list=[];
   return (
   React.createElement("div", null, 
-React.createElement(AMR_ButtonToolbar, null, 
+     React.createElement(AMR_Panel, null, 
+    React.createElement(AMR_ButtonToolbar, null, 
 	React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页"), 
 	  React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", obj.pageNo, "页"), 
 	React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页"), 	
 	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"add")}, "创建")
-
-  ), 
-React.createElement("hr", null), 
+  )
+   ), 
 React.createElement("div", {className: "am-form-group"}, 
 React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: obj.groupuuid})
   ), 	  
@@ -3252,20 +3259,21 @@ var CookbookPlan_EventsTable_byRight = React.createClass({displayName: "Cookbook
 	render: function() {
 	return (
 	React.createElement("div", null, 
+    React.createElement(AMR_Panel, null, 
 	React.createElement(AMR_ButtonToolbar, null, 
+    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
+	), 		
 	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "pre")}, "上周"), 
 	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "next")}, "下周"), 	
 	React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add",null,this.props.group_uuid)}, "添加")
-	), 
+	)
+    ), 
 	React.createElement("div", {className: "header"}, 
-	React.createElement("div", {className: "am-g"}, 
 	  React.createElement("h1", null, "[", this.props.begDateStr, " 到 ", this.props.endDateStr, "]")
 	), 
-	React.createElement("hr", null)
-	), 
-		  React.createElement("div", {className: "am-form-group"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
-	), 		  
+	React.createElement("hr", null), 
+  
 	  React.createElement(AMR_Table, React.__spread({},  this.props), 
 	    React.createElement("thead", null, 
 	      React.createElement("tr", null, 
@@ -3611,6 +3619,7 @@ var Teachingplan_show7Day_byRight = React.createClass({displayName: "Teachingpla
 	  return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "am-g"}, 
+         React.createElement(AMR_Panel, null, 
 		 React.createElement(AMR_ButtonToolbar, null, 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre")}, "上周"), 
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next")}, "下周"), 	
@@ -3620,6 +3629,7 @@ var Teachingplan_show7Day_byRight = React.createClass({displayName: "Teachingpla
 	     React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
 	     React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid})
 		 )
+	    )
 	    )
 	    ), 
 		React.createElement("hr", null), 
@@ -4055,6 +4065,9 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({display
  * @uuids:点击框后班级的ID；编辑按钮需要；
  * */
 var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTable_byRight",
+	 addClass_handleClick: function(m,groupuuid,uuid) {		 
+  		btn_click_class_list_byRight(m,groupuuid,uuid);
+	 },
 	handleClick: function(m) {
 		 if(this.props.handleClick){		 
 			 if(m=="add_class"){
@@ -4123,15 +4136,17 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 render: function() {
   return (
   React.createElement("div", null, 
-  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+  React.createElement(AMR_Panel, null, 
+  React.createElement(AMR_ButtonToolbar, null, 
 	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
 	  ), 
 	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 	  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
+	  ), 
+	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addClass_handleClick.bind(this,"add_class",this.props.group_uuid)}, "创建班级")
 	  )
 	  ), 
-	  React.createElement("hr", null), 
 	  React.createElement("div", null, "班级总数:"+this.props.events.length), 	
     React.createElement(AMR_Table, React.__spread({},  this.props), 
       React.createElement("thead", null, 
@@ -4238,7 +4253,7 @@ render: function() {
   var Class_students_manage_byRight = React.createClass({displayName: "Class_students_manage_byRight",
 	   getDefaultProps: function() {
 	 var data = [
-	            {value: 'edit_class', label: '课程编辑 '},
+	            {value: 'edit_class', label: '编辑班级'},
 	            {value: 'delete', label: '删除空班级'}
 	          ];
 	    return {
@@ -4270,6 +4285,7 @@ render: function() {
   		if(!this.props.students)this.props.students=[];
   	  return (
   	  React.createElement("div", null, 
+       React.createElement(AMR_Panel, null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
   		    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: o.groupuuid})
@@ -4282,8 +4298,8 @@ render: function() {
      	  ), 
 	      React.createElement(AMR_Button, {amStyle: "secondary", onClick: class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)}, "添加学生"), 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: menu_teachingplan_list_fn_byRight.bind(this,o.uuid)}, "查看课程")
-  		  ), 
-  		  React.createElement("hr", null), 
+  		  )
+  		 ), 
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
   			  React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
@@ -4648,14 +4664,14 @@ render: function() {
 			 if(!this.state.sum_num)this.state.sum_num=0;
       return (
       React.createElement("div", null, 
- 
+             React.createElement(AMR_Panel, null, 
 		     React.createElement(AMR_ButtonToolbar, null, 
     	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页"), 
           React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", this.state.pageNo, "页"), 
     	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页"), 
     	  React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
-			), 
-         	  React.createElement("hr", null), 
+			)
+         	  ), 
 				
 		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
 			  React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
@@ -5052,6 +5068,8 @@ render: function() {
       return (
       React.createElement("div", null, 
  		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
+		  React.createElement(AMR_Panel, null, 
+		  React.createElement(AMR_ButtonToolbar, null, 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})	  
 		    ), 	
@@ -5064,7 +5082,8 @@ render: function() {
 			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange}), 		   		
 	 		
 			 React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.ajax_list.bind(this)}, "查询")
-    	
+    	     )
+             )
 		  ), 
     	
         React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
@@ -5369,11 +5388,9 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   	var next_disabled=g_student_query_point>=this.maxPageNo;
       return (
   		  
-      React.createElement("div", null, 
-  	   React.createElement("div", {className: "am-form-group"}, 
-  	    React.createElement("hr", null)	 
-  	     ), 
+        React.createElement("div", null, 
   	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+          React.createElement(AMR_Panel, null, 
          React.createElement(AMR_ButtonToolbar, null, 
         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
        React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)}, "« 上一页"), 
@@ -5394,6 +5411,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   	  )	
   	
   	)
+    )
   	 ), 
         React.createElement(AMR_Table, React.__spread({},  this.props), 
           React.createElement("thead", null, 
@@ -5694,7 +5712,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   	pageNo:1,
   	classnewsreply_list_div:"am-list-news-bd",
   	componentWillReceiveProps:function(){
-  		this.load_more_data();
+  		this.refresh_data();
   	},
   	componentDidMount:function(){
   		this.load_more_data();
@@ -5764,8 +5782,9 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      return (
   		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
   	   
-  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
-  		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
+  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 	
+		   React.createElement(AMR_Panel, null, 	   
+  		   React.createElement(AMR_ButtonToolbar, null, 
   		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
   			  ), 
@@ -5779,6 +5798,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   					  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
   					  )
   					  )
+			       )
   				  ), 
   				  React.createElement("div", {id: "div_totalNumber"}, "总人数:"
   				  ), 	
@@ -5806,7 +5826,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   				            React.createElement("th", null, "姓名"), 
   				            React.createElement("th", null, "电话"), 
   				            React.createElement("th", null, "性别"), 	
-  				          React.createElement("th", null, "民族"), 
+  				            React.createElement("th", null, "民族"), 
   				            React.createElement("th", null, "身份证号码"), 
   				            React.createElement("th", null, "出生年月"), 
   				            React.createElement("th", null, "职务"), 
@@ -6125,10 +6145,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
     	 }
      return (
      React.createElement("div", null, 
-       React.createElement("div", {className: "am-form-group"}, 
-       React.createElement("hr", null)
-         ), 
            React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+		   React.createElement(AMR_Panel, null, 
            React.createElement(AMR_ButtonToolbar, null, 
            React.createElement("div", {className: "am-fl am-margin-bottom-sm  am-margin-left-xs"}, 
      	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.classList, btnStyle: "primary", value: obj.classuuid})
@@ -6138,7 +6156,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      	  )
     	 
      	  )
-     	  ), 
+     	  )
+		  ), 
 	   	      
        React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
          React.createElement("thead", null, 
@@ -6244,11 +6263,13 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      	this.load_more_btn_id="load_more_"+this.props.uuid;
        return (			
      		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-     		  React.createElement(AMUIReact.ButtonToolbar, null, 
+		        React.createElement(AMR_Panel, null, 
+     		    React.createElement(AMUIReact.ButtonToolbar, null, 
      		    React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新"), 
      		    React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
+     		    )
      		    ), 
-     		    React.createElement(Div_MyClassnewStatistics_byRight, null), 
+	            React.createElement(Div_MyClassnewStatistics_byRight, null), 
      			React.createElement("hr", null), 	 
      		    
      		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
@@ -6820,20 +6841,19 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      React.createElement("hr", null)
        ), 
          React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-         React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-         React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
-	     React.createElement(AMR_ButtonToolbar, null, 
+         React.createElement(AMR_Panel, null, 
+         React.createElement(AMR_ButtonToolbar, null, 
+
 	     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
       	 React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid, btnWidth: "200", multiple: false, data: this.props.grouplist, btnStyle: "primary", value: this.state.groupuuid})
     	 ), 
          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
          React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "class_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", multiple: false, data: this.state.classList, btnStyle: "primary", value: this.state.classuuid})
          )
-         )	  
-   )
    	
   	 
    	  )
+	  )
    	  ), 
    	      
      React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
@@ -7179,6 +7199,7 @@ render: function() {
 	
   return (
   React.createElement("div", null, 
+	  React.createElement(AMR_Panel, null, 
 React.createElement(AMR_ButtonToolbar, null, 
 	  React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
 	React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
@@ -7192,7 +7213,8 @@ React.createElement(AMR_ButtonToolbar, null,
       React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
 	   React.createElement(AMUIReact.Input, {name: "cardid", placeholder: "姓名或卡号", btnAfter: btnSearch}	 )
 	  )
-  ), 
+  )
+	  ), 
 React.createElement("hr", null), 
 
 React.createElement(AMR_ButtonToolbar, null, 
@@ -7870,18 +7892,37 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
       return (
       React.createElement("div", null, 
  		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
-			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 	  
-		
-			  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月"), 	  
-			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange}), 		   		
-	 		  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月"), 	  
-
-			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this)}, "查询"), 
-				 "上班时间", 
-			React.createElement(PxInput, {type: "text", maxLength: "5", size: "5", placeholder: "08:00", name: "morning", value: queryForm.morning, onChange: this.handleChange}), 		   		
-			 React.createElement(PxInput, {type: "text", maxLength: "5", size: "5", placeholder: "17:15", name: "afternoon", value: queryForm.afternoon, onChange: this.handleChange}), 		   		
-	 		  
-    	React.createElement(G_help_popo, {msg: G_tip.attendance_listStatMonth})
+		    React.createElement(AMR_Panel, null, 
+		    React.createElement(AMR_ButtonToolbar, null, 
+            React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})	  
+		     ), 
+	          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月")	  
+			  ), 
+		       React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	          React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})	
+		      ), 
+		      React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	 		  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月")	  
+              ), 
+		      React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this)}, "查询")
+		      ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		     React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "上班时间:")
+			 ), 	  
+		    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement(PxInput, {type: "text", maxLength: "5", size: "5", placeholder: "08:00", name: "morning", value: queryForm.morning, onChange: this.handleChange})
+		    ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			 React.createElement(PxInput, {type: "text", maxLength: "5", size: "5", placeholder: "17:15", name: "afternoon", value: queryForm.afternoon, onChange: this.handleChange})
+		    ), 
+		    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+    	    React.createElement(G_help_popo, {msg: G_tip.attendance_listStatMonth})
+			 )
+			 )
+		     )
 		  ), 
 
 		 React.createElement("h6", null, "持卡人数:"+this.state.list.length), 
@@ -8024,16 +8065,28 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
       return (
       React.createElement("div", null, 
  		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
-			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"}), 	  
-		
-			React.createElement(AMUIReact.Selected, {name: "classuuid", value: queryForm.classuuid, onChange: this.handleChange, btnWidth: "200", data:  this.state.classlist, btnStyle: "primary"}), 
- 	 
-			  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月"), 	  
-			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange}), 		   		
-	 		  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月"), 	  
-
+		  React.createElement(AMR_Panel, null, 
+		  React.createElement(AMR_ButtonToolbar, null, 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})	  
+		     ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement(AMUIReact.Selected, {name: "classuuid", value: queryForm.classuuid, onChange: this.handleChange, btnWidth: "200", data:  this.state.classlist, btnStyle: "primary"})
+ 	        ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			 React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月")	  
+			 ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	         React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})		   		
+	 		 ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月")	  
+             ), 
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this)}, "查询")
-    	
+		     )
+        	)
+		    )
 		  ), 
 		 React.createElement("h6", null, "持卡人数:"+this.state.list.length), 
     	React.createElement(Attendance_listStatMonth_table, {yyyy_mm: queryForm.yyyy_mm, list: this.state.list})
