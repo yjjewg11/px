@@ -653,10 +653,9 @@ var Userinfo_edit = React.createClass({
 		        
 		        <label className={one_classDiv}>单选:</label>
 		        <div className={two_classDiv}>
-		       <AMUIReact.FormGroup>
+		        <AMUIReact.FormGroup>
 			     <PxInput type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
 				 <PxInput type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-
 		        </AMUIReact.FormGroup>
 		        </div> 
 		    <label className={one_classDiv}>Email:</label>
