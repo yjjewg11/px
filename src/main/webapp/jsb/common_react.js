@@ -650,11 +650,15 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		      React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"})
 		        ), 
+		        
+		        React.createElement("label", {className: one_classDiv}, "单选:"), 
+		        React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(AMUIReact.FormGroup, null, 
-		      React.createElement("label", null, "单选："), 
-		     React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-		    React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-		   ), 
+			     React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+				 React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+
+		        )
+		        ), 
 		    React.createElement("label", {className: one_classDiv}, "Email:"), 
 		     React.createElement("div", {className: two_classDiv}, 
 		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""})
@@ -1170,4 +1174,20 @@ render: function() {
 }
 }); 
 
-
+//新版帮助公共方法
+var G_px_help_List = React.createClass({displayName: "G_px_help_List", 
+	  render: function() {
+//		  var title=G_tip.help;
+//		  var msg="帮助内容";
+//		  if(this.props.msg)msg=this.props.msg;
+//		  if(this.props.title)title=this.props.title;
+	    return (
+	    		  React.createElement("ol", {className: "am-breadcrumb am-text-warning"}, 
+		    		this.props.data.map(function(event) {
+			  			  return(
+			  			  	React.createElement("li", null, event.val)		  	  
+			  			  )})
+	    		  )
+	    );
+	  }
+	  }); 
