@@ -11,7 +11,21 @@ var PxInput=AMUIReact.Input;
 var AMR_Span=AMUIReact.span;
 //幼儿园注册
 var Div_kd_group_reg = React.createClass({ 	
+	  componentDidMount:function(){
+		  this.setProvCity();
+},
+setProvCity:function(){  
+	   var thit=this;
+	   var url="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js";
+	 loadJS(url,function(){
+		 if(remote_ip_info){
+			 $("input[name='prov']").val(remote_ip_info.province);
+			 $("input[name='city']").val(remote_ip_info.city);
+		 }
+	 });
+},
 	render: function() {
+		var o=this.state;
 		var one_classDiv= "am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
 	return (			
@@ -31,6 +45,14 @@ var Div_kd_group_reg = React.createClass({
 				 <div className={two_classDiv}>
 			      <PxInput type="text" name="company_name" id="company_name"  placeholder="必填，不超过45位"/>
 				   </div>	
+			  		    <label className={one_classDiv }>省:</label>
+		    		 <div className={two_classDiv }>
+		    	      <PxInput  type="text" name="prov" id="prov"  placeholder=""/>
+		    	       </div> 		
+				    <label className={one_classDiv }>市:</label>
+		    		 <div className={two_classDiv }>
+		    	      <PxInput  type="text" name="city" id="city"   placeholder=""/>
+		    	       </div> 	
 			      <label className={one_classDiv}>学校地址:</label>
 			     <div className={two_classDiv}>
 			    <PxInput type="text" name="address" id="address"  placeholder="必填，不超过64位"/>

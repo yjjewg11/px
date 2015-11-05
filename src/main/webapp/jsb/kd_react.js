@@ -2287,13 +2287,10 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 		   React.createElement("div", {className: "am-form-group"}, 
 			
 		    React.createElement("hr", null), 
+             React.createElement("div", null, 
   		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像"), 	      
- 	         React.createElement(AMUIReact.FormGroup, null, 
- 	        React.createElement("label", null, "单选："), 
- 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
- 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
- 	     ), 		    
+  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像")	      
+   		     ), 
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
@@ -2302,6 +2299,13 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 	   		  React.createElement("div", {className: two_classDiv}, 
    		     React.createElement(PxInput, {icon: "user-secret", type: "text", maxLength: "20", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
    		    ), 
+                React.createElement("label", {className: one_classDiv}, "单选:"), 
+		        React.createElement("div", {className: two_classDiv}, 
+		        React.createElement(AMUIReact.FormGroup, null, 
+ 	            React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	            React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		        )
+		        ), 
    		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
   		      React.createElement("div", {className: two_classDiv}, 
   		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
@@ -2890,7 +2894,9 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
 			  
-			  
+			  if(!this.state.uuid){
+			  this.setProvCity();
+			  }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
@@ -2904,6 +2910,17 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
               $("#img_head_image").attr("src",G_imgPath+ guid);
               G_img_down404("#img_head_image");
 	         });   
+	   },
+setProvCity:function(){  
+		   var thit=this;
+		   var url="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js";
+		 loadJS(url,function(){
+			 if(remote_ip_info){
+					thit.state.prov=remote_ip_info.province;
+                    thit.state.city=remote_ip_info.city;
+					  thit.setState(thit.state);
+			 }
+		 });
 	   },
   render: function() {
 	  var o = this.state;
@@ -2925,7 +2942,18 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
     	       React.createElement("label", {className: one_classDiv }, "机构全称:"), 
     		  React.createElement("div", {className: two_classDiv }, 
     	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"})
-    	    ), 	      
+    	    ), 
+			 React.createElement("div", null, 
+		    React.createElement("button", {type: "button", onClick: this.setProvCity.bind(this), className: "am-btn am-btn-primary"}, "获取当前省市")
+		     ), 
+	  		    React.createElement("label", {className: one_classDiv }, "省:"), 
+    		 React.createElement("div", {className: two_classDiv }, 
+    	      React.createElement(PxInput, {type: "text", name: "prov", id: "prov", value: o.prov, onChange: this.handleChange, placeholder: ""})
+    	       ), 		
+		    React.createElement("label", {className: one_classDiv }, "市:"), 
+    		 React.createElement("div", {className: two_classDiv }, 
+    	      React.createElement(PxInput, {type: "text", name: "city", id: "city", value: o.city, onChange: this.handleChange, placeholder: ""})
+    	       ), 	
     	     React.createElement("label", {className: one_classDiv }, "学校地址:"), 
     		  React.createElement("div", {className: two_classDiv }, 
     	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"})
@@ -4412,13 +4440,10 @@ render: function() {
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
 		    React.createElement("hr", null), 
+			   React.createElement("div", null, 
   		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 		      
-  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像"), 		      		      
- 	         React.createElement(AMUIReact.FormGroup, null, 
- 	        React.createElement("label", null, "单选："), 
- 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
- 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
- 	     ), 		    
+  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像")		      		      
+    		  ), 
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange})
@@ -4427,6 +4452,13 @@ render: function() {
 	   		  React.createElement("div", {className: two_classDiv}, 
    		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
    		    ), 
+			   React.createElement("label", {className: one_classDiv}, "单选"), 
+		        React.createElement("div", {className: two_classDiv}, 
+		        React.createElement(AMUIReact.FormGroup, null, 
+ 				React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 				React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		        )
+		        ), 
    		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
  		      React.createElement("div", {className: two_classDiv}, 
  		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
@@ -5898,11 +5930,14 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 		    		 React.createElement("div", {className: two_classDiv }, 
 		   		    React.createElement(PxInput, {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, maxLength: "20", placeholder: "必填，不超过15位"})
 		    	   ), 
+						
+					React.createElement("label", {className: one_classDiv}, "性别："), 
+		            React.createElement("div", {className: two_classDiv}, 
 		            React.createElement(AMUIReact.FormGroup, null, 
-		      		 React.createElement("label", null, "性别："), 
-		      		  React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-		      		   React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-		      		    ), 	    		
+		      		React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+		      		React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		            )
+		            ), 
     		           React.createElement("label", {className: one_classDiv }, "真实姓名:"), 
     		          React.createElement("div", {className: two_classDiv }, 
       		         React.createElement(PxInput, {type: "text", name: "realname", id: "realname", maxLength: "20", value: o.realname, onChange: this.handleChange})
@@ -5921,16 +5956,24 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 			            ), 		    
      	               React.createElement(AMUIReact.Selected, {id: "xueli1", name: "xueli", onChange: this.handleChange, btnWidth: "200", data: this.props.userteacherlist, btnStyle: "primary", value: o.xueli+""}), 
      	    	      React.createElement("hr", null), 
-  			           React.createElement(AMUIReact.FormGroup, null, 		      
-			            React.createElement("label", null, "是否具有学前教育专业学历："), 
-				         React.createElement(AMUIReact.Input, {type: "radio", name: "youxueqianjiaoyu", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==0?"checked":""}), 
-				          React.createElement(AMUIReact.Input, {type: "radio", name: "youxueqianjiaoyu", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==1?"checked":""})
-				           ), 	     	        
-     	        		  React.createElement(AMUIReact.FormGroup, null, 	
-                         React.createElement("label", null, "是否取得幼教资格证："), 
- 	                    React.createElement(AMUIReact.Input, {type: "radio", name: "youjiaozige", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==0?"checked":""}), 
- 	                   React.createElement(AMUIReact.Input, {type: "radio", name: "youjiaozige", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==1?"checked":""})
- 	                  ), 	    	             	        
+
+					React.createElement("label", {className: one_classDiv}, "学前教育专业学历："), 
+		            React.createElement("div", {className: two_classDiv}, 
+		            React.createElement(AMUIReact.FormGroup, null, 
+				    React.createElement(PxInput, {type: "radio", name: "youxueqianjiaoyu", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==0?"checked":""}), 
+				    React.createElement(PxInput, {type: "radio", name: "youxueqianjiaoyu", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youxueqianjiaoyu==1?"checked":""})
+		            )
+		            ), 
+
+					React.createElement("label", {className: one_classDiv}, "取得幼教资格证："), 
+		            React.createElement("div", {className: two_classDiv}, 
+		            React.createElement(AMUIReact.FormGroup, null, 
+ 	                React.createElement(PxInput, {type: "radio", name: "youjiaozige", value: "0", label: Vo.get( "yesOrNo_0"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==0?"checked":""}), 
+ 	                React.createElement(PxInput, {type: "radio", name: "youjiaozige", value: "1", label: Vo.get( "yesOrNo_1"), inline: true, onChange: this.handleChange, checked: o.youjiaozige==1?"checked":""})
+		            )
+		            ), 
+ 
+							 
  		 		       React.createElement("label", {className: one_classDiv }, "毕业院校及专业:"), 
  				        React.createElement("div", {className: two_classDiv }, 
  	     		         React.createElement(PxInput, {type: "text", name: "graduated", id: "graduated", maxLength: "50", value: o.graduated, onChange: this.handleChange, placeholder: "不超过50个字"})

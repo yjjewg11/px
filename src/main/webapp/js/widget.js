@@ -270,7 +270,8 @@ var w_ch_user={
 		w_ch_user.show();
 		
 	},	
-	open:function(bind_inputid_uuid,bind_inputid_name,groupuuid){
+	open:function(bind_inputid_uuid,bind_inputid_name,groupuuid,callback){
+		w_ch_user.callback=callback;
 		w_ch_user.bind_inputid_uuid=bind_inputid_uuid;
 		w_ch_user.bind_inputid_name=bind_inputid_name;
 		if(w_ch_user.bind_inputid_uuid)

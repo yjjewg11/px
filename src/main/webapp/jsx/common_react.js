@@ -650,11 +650,15 @@ var Userinfo_edit = React.createClass({
 		      <div className={two_classDiv}>
 		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
 		        </div> 
+		        
+		        <label className={one_classDiv}>单选:</label>
+		        <div className={two_classDiv}>
 		       <AMUIReact.FormGroup>
-		      <label>单选：</label>
-		     <AMUIReact.Input type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-		    <AMUIReact.Input type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-		   </AMUIReact.FormGroup>
+			     <PxInput type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+				 <PxInput type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+
+		        </AMUIReact.FormGroup>
+		        </div> 
 		    <label className={one_classDiv}>Email:</label>
 		     <div className={two_classDiv}>
 		      <PxInput icon="envelope" type="email" name="email" id="email" value={o.email} onChange={this.handleChange} placeholder="输入邮箱" placeholder=""/>
@@ -1170,4 +1174,20 @@ render: function() {
 }
 }); 
 
-
+//新版帮助公共方法
+var G_px_help_List = React.createClass({ 
+	  render: function() {
+//		  var title=G_tip.help;
+//		  var msg="帮助内容";
+//		  if(this.props.msg)msg=this.props.msg;
+//		  if(this.props.title)title=this.props.title;
+	    return (
+	    		  <ol className="am-breadcrumb am-text-warning">
+		    		{this.props.data.map(function(event) {
+			  			  return(
+			  			  	<li>{event.val}</li>		  	  
+			  			  )})}
+	    		  </ol>
+	    );
+	  }
+	  }); 

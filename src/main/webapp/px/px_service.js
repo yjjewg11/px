@@ -1550,6 +1550,7 @@ function react_ajax_favorites_show(type,reluuid){
   	React.render(React.createElement(Group_edit_byRight,{formdata:formdata}), document.getElementById('div_body'));
   	return;
      }
+    http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js
      	$.AMUI.progress.start();
          var url = hostUrl + "rest/group/"+formdata.uuid+".json";
      	$.ajax({
@@ -3333,11 +3334,31 @@ function px_react_ajax_teachingplan_delete(obj){
 * */
    function px_course_onClick_byRight(formdata){
 	   var name;
+	   var img;
 	   if(!formdata.uuid){
 		   name="新建课程";
-		   
+			$.AMUI.progress.start();
+			var url = hostUrl + "rest/group/getBaseInfo.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data : {uuid:formdata.groupuuid},
+				dataType : "json",
+				async: false,
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {						
+						 img=data.data.img;					
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : G_ajax_error_fn
+			});
 		   Queue.push(function(){px_course_onClick_byRight(formdata);},name);
 			React.render(React.createElement(Px_course_edit,{
+				logo:img,
 				groupList:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name"),
 	 			formdata:formdata
 	 			}), document.getElementById('div_body'));
@@ -3990,7 +4011,7 @@ function ajax_class_students_look_info(uuid){
    function ajax_teacher_div_byRight(){
   	 	Queue.push(function(){ajax_teacher_div_byRight();},"老师资料");
 	   	 var group_list=Store.getGroup();
-	React.render(React.createElement(Teacher_div,{
+	    React.render(React.createElement(Teacher_div,{
 		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name")
 	}), document.getElementById('div_body'));  	
 };   

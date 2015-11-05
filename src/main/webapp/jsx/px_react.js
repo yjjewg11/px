@@ -3082,6 +3082,11 @@ var Group_edit_byRight = React.createClass({
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
+
+		if(!this.state.uuid){
+			this.setProvCity();
+		}
+
 	},
 	   /*
 	    * (校务管理)<校园列表>内上传LOGO图片
@@ -3092,6 +3097,17 @@ var Group_edit_byRight = React.createClass({
               $("#img_head_image").attr("src",G_imgPath+ guid);
               G_img_down404("#img_head_image");
 	         });   
+	   },
+		  setProvCity:function(){  
+		   var thit=this;
+		   var url="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js";
+		 loadJS(url,function(){
+			 if(remote_ip_info){
+					thit.state.prov=remote_ip_info.province;
+                    thit.state.city=remote_ip_info.city;
+					  thit.setState(thit.state);
+			 }
+		 });
 	   },
   render: function() {
 	  var o = this.state;
@@ -3114,6 +3130,9 @@ var Group_edit_byRight = React.createClass({
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
     	    </div>  
+		    <div> 
+		    <button type="button"  onClick={this.setProvCity.bind(this)}  className="am-btn am-btn-primary">获取当前省市</button>
+		     </div> 
 		    <label className={one_classDiv }>省:</label>
     		 <div className={two_classDiv }>
     	      <PxInput  type="text" name="prov" id="prov" value={o.prov} onChange={this.handleChange} placeholder=""/>
@@ -3121,7 +3140,7 @@ var Group_edit_byRight = React.createClass({
 		    <label className={one_classDiv }>市:</label>
     		 <div className={two_classDiv }>
     	      <PxInput  type="text" name="city" id="city" value={o.city} onChange={this.handleChange} placeholder=""/>
-    	       </div> 		
+    	       </div> 	
 		   <label className={one_classDiv }>摘要:</label>
     		 <div className={two_classDiv }>
     	      <PxInput type="text" name="summary" id="summary" value={o.summary} onChange={this.handleChange} placeholder=""/>
@@ -3135,7 +3154,7 @@ var Group_edit_byRight = React.createClass({
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="map_point" id="map_point" value={o.map_point} onChange={this.handleChange} placeholder="拾取坐标后，复制到这里。格式：1.1,1.1"/> 
     	    <a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">坐标拾取</a>
-    	   </div>   	      
+    	      </div>   	      
     	    <label className={one_classDiv }>学校电话:</label>
     		 <div className={two_classDiv }>
     	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
@@ -3631,6 +3650,17 @@ var Announcements_Class_div = React.createClass({
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
+     getDefaultProps: function() {
+     var data = [
+                 {val: '提示'},
+                 {val: '1.创建班级'},
+	        	 {val: '2.添加教学计划'},
+		         {val: '3.添加学生'}
+               ];
+         return {
+           data_list: data
+         };
+       },
     getInitialState: function() {
 		return {groupuuid:this.props.groupuuid};
 	  },
@@ -3680,14 +3710,10 @@ render: function() {
 	  var pxclass_isdisable_list=G_selected_dataModelArray_byArray(Vo.getTypeList("class_isdisable"),"key","val");
 	pxclass_isdisable_list.unshift({value:"",label:"所有"});
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-  return (			
+  return (	
+	 
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-			  <ol className="am-breadcrumb am-text-warning">
-	   <li>提示</li>
-		  <li>1.创建班级</li>
-	   <li>2.添加教学计划</li>
-		 <li>3.添加学生</li>
-		</ol>
+             <G_px_help_List data={this.props.data_list}/>
 		    <AMUIReact.Form id="queryForm" inline >
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
@@ -5938,7 +5964,7 @@ var Class_EventsTable_byRight = React.createClass({
  		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  >上周</AMR_Button>
  		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} >下周</AMR_Button>	
  	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.props.groupuuid}/> 
- 		<AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
+ 		<AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
  		</div>
  		<hr/>
  		<div className="am-g" id="div_detail">
@@ -6527,6 +6553,8 @@ var Class_EventsTable_byRight = React.createClass({
 //发布课程添加与编辑绘制
  var Px_course_edit = React.createClass({ 
 	 getInitialState: function() {
+
+		 this.props.formdata.logo=this.props.logo;
 		 this.props.formdata.groupList=this.props.groupList;
 		    return this.props.formdata;
 		  },
@@ -6549,6 +6577,34 @@ var Class_EventsTable_byRight = React.createClass({
             G_img_down404("#img_head_image");
 	         });   
 	   },
+	 handleChange_Selected: function(event) {
+		   //根据选择学校刷新LOGO 如果有的话
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/group/getBaseInfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {uuid:event},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				var img=data.data.img;
+		  if(img){
+            $ ("#logo").val(img);
+            $("#img_head_image").attr("src",G_imgPath+ img);
+            G_img_down404("#img_head_image");
+				}			
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+		    this.setState($('#editCourseForm').serializeJson());
+	  },
  render: function() {
  	  var o = this.state;
 	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
@@ -6575,7 +6631,7 @@ var Class_EventsTable_byRight = React.createClass({
           <hr/>
 		   <div className="am-form-group">
              <div className="am-fl am-margin-bottom-sm ">
-	 	  	  <AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange}  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
+	 	  	  <AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange_Selected}  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
 	 	       </div>
 		      <div className="am-fl am-margin-bottom-sm am-margin-left-xs"> 
 		     <AMUIReact.Selected  id="type" name="type" onChange={this.handleChange}  data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
@@ -7363,7 +7419,9 @@ var Group_edit_byRight_px = React.createClass({
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
 			  
-			  
+			  if(!this.state.uuid){
+			  this.setProvCity();
+		       }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
@@ -7377,6 +7435,17 @@ var Group_edit_byRight_px = React.createClass({
               $("#img_head_image").attr("src",G_imgPath+ guid);
               G_img_down404("#img_head_image");
 	         });   
+	   },
+setProvCity:function(){  
+		   var thit=this;
+		   var url="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js";
+		 loadJS(url,function(){
+			 if(remote_ip_info){
+					thit.state.prov=remote_ip_info.province;
+                    thit.state.city=remote_ip_info.city;
+					  thit.setState(thit.state);
+			 }
+		 });
 	   },
   render: function() {
 	  var o = this.state;
@@ -7401,7 +7470,10 @@ var Group_edit_byRight_px = React.createClass({
     	       <label className={one_classDiv }>机构全称:</label>
     		  <div className={two_classDiv }>
     	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
-    	    </div>   
+    	    </div>  
+	  		    <div> 
+		    <button type="button"  onClick={this.setProvCity.bind(this)}  className="am-btn am-btn-primary">获取当前省市</button>
+		     </div> 
 	  		    <label className={one_classDiv }>省:</label>
     		 <div className={two_classDiv }>
     	      <PxInput  type="text" name="prov" id="prov" value={o.prov} onChange={this.handleChange} placeholder=""/>
@@ -7870,6 +7942,40 @@ var Px_teacher_edit = React.createClass({
             G_img_down404("#img_head_image");
 	         });   
 	   },
+  w_ch_user_open_callback :function(useruuids,usernames,groupuuid){
+		 //寻找对象中的符号;
+		var uuid_indexof=useruuids.indexOf(",");
+		if(uuid_indexof>=0){
+			G_msg_pop("只能选择一名老师，请重新选择");
+			return;
+		}
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/userinfo/getBaseInfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data : {uuid:useruuids},
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				var img=data.data.img;
+		  if(img){
+			$ ("#img").val(img);
+			$("#img_head_image").attr("src",G_imgPath+ img);
+			G_img_down404("#img_head_image");
+				}
+			
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+
+	   },
 render: function() {
 	  var o = this.state;
 	   var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
@@ -7888,10 +7994,6 @@ return (
 	<div className=" am-u-md-6 am-u-sm-12">
            <form id="editTeacherForm" method="post" className="am-form">
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
-			<div>
-           <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
-           <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary ">上传头像</button>
-           </div>
            <hr/>
 		   <div className="am-form-group">
 		<AMR_ButtonToolbar>
@@ -7909,10 +8011,14 @@ return (
             </div>
 	 	  	</AMR_ButtonToolbar>
 	         <hr/>
+			<div>
+           <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+           <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary ">上传头像</button>
+           </div>
 		       <label className={one_classDiv}>老师姓名:</label>
 				 <PxInput type="hidden" name="useruuid" id="useruuid" value={o.useruuid} onChange={this.handleChange}/>
 			     <div className={two_classDiv}>
-				   <PxInput type="text"  id="name" name="name" value={o.name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"useruuid","name",o.groupuuid)} placeholder=""/>
+				   <PxInput type="text"  id="name" name="name" value={o.name} onChange={this.handleChange}  onClick={w_ch_user.open.bind(this,"useruuid","name",o.groupuuid,this.w_ch_user_open_callback)} placeholder=""/>
 			        </div>  
 			       
 			    <label className={one_classDiv}>简介:</label>
