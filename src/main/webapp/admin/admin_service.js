@@ -149,7 +149,7 @@ function ajax_Parent_listByAllGroup_admin(list_div,name,pageNo,callback) {
 	  if(!name)name="";
   	 if(!pageNo)pageNo=1;
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/parent/listByPage.json";
+	var url = hostUrl + "rest/parent/listByPageWjkj.json";
 	$.ajax({
 		type : "GET",
 		url : url,

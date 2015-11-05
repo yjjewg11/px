@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.RoleUserRelation;
+import com.company.news.entity.User4Q;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.DBUtil;
@@ -34,16 +36,10 @@ public class GroupService extends AbstractService {
 	@Autowired
 	private UserinfoService userinfoService;
 
-	/**
-	 * 用户注册
-	 * 
-	 * @param entityStr
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	public boolean reg(GroupRegJsonform groupRegJsonform,
-			ResponseMessage responseMessage) throws Exception {
+	
+	
+	public boolean validateGroupRegJsonform(GroupRegJsonform groupRegJsonform,
+			ResponseMessage responseMessage){
 		if (StringUtils.isBlank(groupRegJsonform.getBrand_name())||groupRegJsonform.getBrand_name().length()>45) {
 			responseMessage.setMessage("品牌名不能为空！，且长度不能超过45位！");
 			return false;
@@ -55,9 +51,16 @@ public class GroupService extends AbstractService {
 		}
 		
 		if (StringUtils.isBlank(groupRegJsonform.getMap_point())) {
-			responseMessage.setMessage("位置信息不能为空！");
+			responseMessage.setMessage("地址坐标不能为空！");
 			return false;
 		}
+		
+		double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
+		if(lngLatArr==null){
+			responseMessage.setMessage("地址坐标格式不正确,正确的为:1.1123,1.123");
+			return false;
+		}
+		
 		
 		if (StringUtils.isBlank(groupRegJsonform.getAddress())||groupRegJsonform.getAddress().length()>64) {
 			responseMessage.setMessage("联系地址不能为空！，且长度不能超过64位！");
@@ -74,10 +77,44 @@ public class GroupService extends AbstractService {
 			return false;
 		}
 		
-		if (userinfoService.isExitSameUserByLoginName(groupRegJsonform.getTel())) {
-			responseMessage.setMessage("电话号码已被注册！");
+		
+		
+		if(StringUtils.isNotBlank(groupRegJsonform.getCity())){
+			String tmp=StringUtils.trim(groupRegJsonform.getCity());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setCity(tmp);
+		}
+		
+
+		if(StringUtils.isNotBlank(groupRegJsonform.getProv())){
+			String tmp=StringUtils.trim(groupRegJsonform.getProv());
+			if(tmp!=null&&tmp.endsWith("市")){
+				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
+			}
+			groupRegJsonform.setProv(tmp);
+		}
+		
+		
+		return true;
+	}
+	/**
+	 * 用户注册
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean reg(GroupRegJsonform groupRegJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if(!this.validateGroupRegJsonform(groupRegJsonform, responseMessage)){
 			return false;
 		}
+		
+		
+		
 		
 		// 机构名是否存在
 //		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
@@ -91,15 +128,33 @@ public class GroupService extends AbstractService {
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 		group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
+		
+		
+		double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
+		if(lngLatArr==null){
+			responseMessage.setMessage("地址坐标格式不正确,正确的为:1.1123,1.123");
+			return false;
+		}
+		if(lngLatArr!=null){
+			group.setLng(lngLatArr[0]);
+			group.setLat(lngLatArr[1]);
+		}
+		
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
 		
 		//设置保存后的机构UUID
 		groupRegJsonform.setGroup_uuid(group.getUuid());
-		//注册对应的管理员用户
-		groupRegJsonform.setType(userinfoService.USER_type_group);
+		//注册对应的管理员用户.屏蔽与用于type重复
+	//	groupRegJsonform.setType(userinfoService.USER_type_group);
 		
-		if(!userinfoService.reg(groupRegJsonform, responseMessage))
+		
+		if (userinfoService.isExitSameUserByLoginName(groupRegJsonform.getTel())) {
+			User4Q user=userinfoService.getUserBytel(groupRegJsonform.getTel());
+			boolean f= userinfoService.addAdminRight(groupRegJsonform.getGroup_uuid(), user.getUuid(), groupRegJsonform.getType(),responseMessage);
+			if(!f)throw new RuntimeException(responseMessage.getMessage());
+			
+		}else if(!userinfoService.reg(groupRegJsonform, responseMessage))
 		{
           //关联管理员账号注册失败，回滚之前操作
 			throw new RuntimeException(responseMessage.getMessage());
@@ -119,57 +174,10 @@ public class GroupService extends AbstractService {
 	 */
 	public boolean add(GroupRegJsonform groupRegJsonform,
 			ResponseMessage responseMessage,String useruuid) throws Exception {
-		if (StringUtils.isBlank(groupRegJsonform.getBrand_name())||groupRegJsonform.getBrand_name().length()>45) {
-			responseMessage.setMessage("品牌名不能为空！，且长度不能超过45位！");
+		if(!this.validateGroupRegJsonform(groupRegJsonform, responseMessage)){
 			return false;
 		}
 		
-		if (StringUtils.isBlank(groupRegJsonform.getCompany_name())||groupRegJsonform.getCompany_name().length()>45) {
-			responseMessage.setMessage("机构名不能为空！，且长度不能超过45位！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getMap_point())) {
-			responseMessage.setMessage("位置信息不能为空！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getAddress())||groupRegJsonform.getAddress().length()>64) {
-			responseMessage.setMessage("联系地址不能为空！，且长度不能超过64位！");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(groupRegJsonform.getLink_tel())) {
-			responseMessage.setMessage("联系方式不能为空！");
-			return false;
-		}
-		
-		if (groupRegJsonform.getType()==null) {
-			groupRegJsonform.setType(SystemConstants.Group_type_1);//默认幼儿园
-//			responseMessage.setMessage("机构类型不能为空！");
-//			return false;
-		}
-		if(SystemConstants.Group_type_0.equals(groupRegJsonform.getType())){
-			responseMessage.setMessage("非法数据,异常注册");
-			return false;
-		}
-		
-		if(StringUtils.isNotBlank(groupRegJsonform.getCity())){
-			String tmp=StringUtils.trim(groupRegJsonform.getCity());
-			if(tmp!=null&&tmp.endsWith("市")){
-				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
-			}
-			groupRegJsonform.setCity(tmp);
-		}
-		
-
-		if(StringUtils.isNotBlank(groupRegJsonform.getProv())){
-			String tmp=StringUtils.trim(groupRegJsonform.getProv());
-			if(tmp!=null&&tmp.endsWith("市")){
-				tmp=StringUtils.substring(tmp, 0, tmp.length()-1);
-			}
-			groupRegJsonform.setProv(tmp);
-		}
 		
 		// 机构名是否存在
 //		if (isExitSameUserByCompany_name(groupRegJsonform.getCompany_name(),null)) {
@@ -183,6 +191,21 @@ public class GroupService extends AbstractService {
 		group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
+		
+		
+
+		double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
+		if(lngLatArr==null){
+			responseMessage.setMessage("地址坐标格式不正确,正确的为:1.1123,1.123");
+			return false;
+		}
+		if(lngLatArr!=null){
+			group.setLng(lngLatArr[0]);
+			group.setLat(lngLatArr[1]);
+		}
+		
+		
+		
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(group);
 		
@@ -292,6 +315,18 @@ public class GroupService extends AbstractService {
 			group.setCity(groupRegJsonform.getCity());
 			group.setProv(groupRegJsonform.getProv());
 			group.setSummary(groupRegJsonform.getSummary());
+			
+
+			double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
+			if(lngLatArr==null){
+				responseMessage.setMessage("地址坐标格式不正确,正确的为:1.1123,1.123");
+				return false;
+			}
+			if(lngLatArr!=null){
+				group.setLng(lngLatArr[0]);
+				group.setLat(lngLatArr[1]);
+			}
+			
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(group);
 		}else{

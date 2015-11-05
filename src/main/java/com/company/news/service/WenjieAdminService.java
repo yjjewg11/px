@@ -2,16 +2,18 @@ package com.company.news.service;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.Group;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
-import com.company.news.jsonform.StudentJsonform;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -30,6 +32,39 @@ public class WenjieAdminService extends AbstractService {
 	
 	@Autowired
 	private StudentService studentService;
+	
+	/**
+	 * 刷新学生与家长关系表
+	 * @param responseMessage
+	 * @throws Exception
+	 */
+	public void updateDataRefresh_Group(ResponseMessage responseMessage) throws Exception {
+		
+
+		List<Group> listStudent=(List<Group>)this.nSimpleHibernateDao.getHibernateTemplate().find(
+				"from Group ");
+		for(Group obj:listStudent){
+			boolean isUpdate=false;
+			if(obj.getLng()==null){
+				double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(obj.getMap_point());
+				if(lngLatArr!=null){
+					obj.setLng(lngLatArr[0]);
+					obj.setLat(lngLatArr[1]);
+					isUpdate=true;
+				}
+			}
+			if(StringUtils.isBlank(obj.getCity())){
+				obj.setProv("四川");
+				obj.setCity("成都");
+				isUpdate=true;
+			}
+				if(isUpdate){nSimpleHibernateDao.save(obj);
+			}
+			
+		}
+		
+	}
+	
 	/**
 	 * 刷新学生与家长关系表
 	 * @param responseMessage
