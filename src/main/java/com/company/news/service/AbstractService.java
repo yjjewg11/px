@@ -108,7 +108,7 @@ public abstract class AbstractService {
 	 */
 	protected boolean validateRequireAndLengthByRegJsonform(String s,int length,String columnname,ResponseMessage responseMessage){
 		if (StringUtils.isBlank(s) || s.length() > length) {
-			responseMessage.setMessage(columnname+"不能为空！，且长度不能超过"+length+"位！");
+			responseMessage.setMessage(columnname+"不能为空！且长度不能超过"+length+"位！");
 			return true;
 		}
 		return false;

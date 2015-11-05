@@ -1,29 +1,15 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Right;
-import com.company.news.entity.Student;
 import com.company.news.entity.User;
-import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserGroupRelation;
-import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -45,7 +31,7 @@ public class CookbookService extends AbstractService {
 	public boolean add(CookbookJsonform cookbook,
 			ResponseMessage responseMessage) throws Exception {
 		if (StringUtils.isBlank(cookbook.getName()) || cookbook.getName().length() > 45) {
-			responseMessage.setMessage("班级名不能为空！，且长度不能超过45位！");
+			responseMessage.setMessage("食谱名不能为空！，且长度不能超过45位！");
 			return false;
 		}
 		
@@ -77,7 +63,7 @@ public class CookbookService extends AbstractService {
 	}
 
 	/**
-	 * 查询所有班级
+	 * 查询.根据名称排序.
 	 * 
 	 * @return
 	 */
@@ -88,7 +74,7 @@ public class CookbookService extends AbstractService {
 		if(StringUtils.isNotBlank(groupuuid))
 			hql+=" and (groupuuid='"+groupuuid+"' or groupuuid='')";
 		List<Cookbook> list= (List<Cookbook>) this.nSimpleHibernateDao
-					.getHibernateTemplate().find("from Cookbook where type=?"+hql+" order by name",
+					.getHibernateTemplate().find("from Cookbook where type=?"+hql+" order by convert(name, 'gbk')",
 							type);
 		warpVoList(list);
 		

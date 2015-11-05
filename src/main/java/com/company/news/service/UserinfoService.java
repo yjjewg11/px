@@ -145,43 +145,93 @@ public class UserinfoService extends AbstractService {
 		user.setSex(SystemConstants.User_sex_female);// 默认女
 		user.setOffice("老师");
 		user.setCount(0l);
+		user.setType(USER_type_teacher);
 
+
+		if (userRegJsonform instanceof GroupRegJsonform) {
+			user.setType(USER_type_group);
+
+		}
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(user);
 
-		String[] groupStrArr = userRegJsonform.getGroup_uuid().split(",");
-		for (int i = 0; i < groupStrArr.length; i++) {
-			// 保存用户机构关联表
-			UserGroupRelation userGroupRelation = new UserGroupRelation();
-			userGroupRelation.setUseruuid(user.getUuid());
-			userGroupRelation.setGroupuuid(groupStrArr[i]);
-			// 有事务管理，统一在Controller调用时处理异常
-			this.nSimpleHibernateDao.getHibernateTemplate().save(
-					userGroupRelation);
-			
-			// 注册机构情况下,当前用户设置为管理员角色
-			if (userRegJsonform instanceof GroupRegJsonform) {
-				GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
-				if (SystemConstants.Group_type_1.equals(group.getType())) {
-					RoleUserRelation r = new RoleUserRelation();
-					r.setRoleuuid(RightConstants.Role_KD_admini);
-					r.setUseruuid(user.getUuid());
-					r.setGroupuuid(groupStrArr[i]);
-					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
-
-				} else if (SystemConstants.Group_type_2.equals(group.getType())) {
-					RoleUserRelation r = new RoleUserRelation();
-					r.setRoleuuid(RightConstants.Role_PX_admini);
-					r.setUseruuid(user.getUuid());
-					r.setGroupuuid(groupStrArr[i]);
-					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
-
-				}
-			}
+		if (userRegJsonform instanceof GroupRegJsonform) {
+			return this.addAdminRight(userRegJsonform.getGroup_uuid(), user.getUuid(), userRegJsonform.getType(),responseMessage);
 		}
+//		String[] groupStrArr = userRegJsonform.getGroup_uuid().split(",");
+//		for (int i = 0; i < groupStrArr.length; i++) {
+//			// 保存用户机构关联表
+//			UserGroupRelation userGroupRelation = new UserGroupRelation();
+//			userGroupRelation.setUseruuid(user.getUuid());
+//			userGroupRelation.setGroupuuid(groupStrArr[i]);
+//			// 有事务管理，统一在Controller调用时处理异常
+//			this.nSimpleHibernateDao.getHibernateTemplate().save(
+//					userGroupRelation);
+//			
+//			// 注册机构情况下,当前用户设置为管理员角色
+//			if (userRegJsonform instanceof GroupRegJsonform) {
+//				GroupRegJsonform group = (GroupRegJsonform) userRegJsonform;
+//				if (SystemConstants.Group_type_1.equals(group.getType())) {
+//					RoleUserRelation r = new RoleUserRelation();
+//					r.setRoleuuid(RightConstants.Role_KD_admini);
+//					r.setUseruuid(user.getUuid());
+//					r.setGroupuuid(groupStrArr[i]);
+//					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+//
+//				} else if (SystemConstants.Group_type_2.equals(group.getType())) {
+//					RoleUserRelation r = new RoleUserRelation();
+//					r.setRoleuuid(RightConstants.Role_PX_admini);
+//					r.setUseruuid(user.getUuid());
+//					r.setGroupuuid(groupStrArr[i]);
+//					this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+//
+//				}
+//			}
+//		}
 
 		
 		return true;
+	}
+	
+	
+	public boolean  addAdminRight(String groupuuids,String useruuid,Integer type,ResponseMessage responseMessage){
+			if(StringUtils.isBlank(groupuuids)||StringUtils.isBlank(useruuid)){
+				responseMessage.setMessage("授权失败:机构不能为空,关联用户 不能为空");
+				return false;
+			}
+			if(type==null
+					||(type<1&&type>2)){
+				responseMessage.setMessage("授权失败:type不是有效值.type="+type);
+				return false;
+			}
+			String[] groupStrArr = groupuuids.split(",");
+			for (int i = 0; i < groupStrArr.length; i++) {
+				// 保存用户机构关联表
+				UserGroupRelation userGroupRelation = new UserGroupRelation();
+				userGroupRelation.setUseruuid(useruuid);
+				userGroupRelation.setGroupuuid(groupStrArr[i]);
+				// 有事务管理，统一在Controller调用时处理异常
+				this.nSimpleHibernateDao.getHibernateTemplate().save(
+						userGroupRelation);
+				
+				// 注册机构情况下,当前用户设置为管理员角色
+			if (SystemConstants.Group_type_1.equals(type)) {
+				RoleUserRelation r = new RoleUserRelation();
+				r.setRoleuuid(RightConstants.Role_KD_admini);
+				r.setUseruuid(useruuid);
+				r.setGroupuuid(groupStrArr[i]);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+	
+			} else if (SystemConstants.Group_type_2.equals(type)) {
+				RoleUserRelation r = new RoleUserRelation();
+				r.setRoleuuid(RightConstants.Role_PX_admini);
+				r.setUseruuid(useruuid);
+				r.setGroupuuid(groupStrArr[i]);
+				this.nSimpleHibernateDao.getHibernateTemplate().save(r);
+	
+			}
+		}
+			return true;
 	}
 
 	/**

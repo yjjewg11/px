@@ -22,6 +22,8 @@ import com.company.news.jsonform.CookbookJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.ClassService;
 import com.company.news.service.CookbookService;
 import com.company.news.service.GroupService;
@@ -112,7 +114,12 @@ public class CookbookController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
+		
+		
+		if(!RightUtils.hasRightAnyGroup(RightConstants.AD_basedata_del,request)){
+            responseMessage.setMessage( RightConstants.Return_msg );
+            return "";
+		}
 		try {
 			boolean flag = cookbookService.delete(request.getParameter("uuid"),
 					responseMessage);

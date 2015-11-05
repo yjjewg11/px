@@ -6,9 +6,11 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourse;
 import com.company.news.entity.PxCourse4Q;
@@ -36,12 +38,12 @@ public class PxCourseService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean add(PxCourseJsonform pxCourseJsonform,
+	public PxCourse add(PxCourseJsonform pxCourseJsonform,
 			ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
-		return false;
+		return null;
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))
-			return false;
+			return null;
 
 		PxCourse pxCourse = new PxCourse();
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
@@ -51,7 +53,7 @@ public class PxCourseService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxCourse);
 
-		return true;
+		return pxCourse;
 	}
 	
 	
@@ -63,12 +65,12 @@ public class PxCourseService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public boolean update(PxCourseJsonform pxCourseJsonform,
+	public PxCourse update(PxCourseJsonform pxCourseJsonform,
 			ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
-			return false;
+			return null;
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getGroupuuid(),"培训机构", responseMessage))
-			return false;
+			return null;
 	
 		
 		PxCourse pxCourse=(PxCourse) this.nSimpleHibernateDao.getObject(PxCourse.class, pxCourseJsonform.getUuid());
@@ -78,7 +80,7 @@ public class PxCourseService extends AbstractService {
 		pxCourse.setUpdatetime(TimeUtils.getCurrentTimestamp());
 		pxCourse.setUpdate_useruuid(user.getUuid());
 		this.nSimpleHibernateDao.getHibernateTemplate().update(pxCourse);
-		return true;
+		return pxCourse;
 	}
 
 
@@ -179,6 +181,25 @@ public class PxCourseService extends AbstractService {
 
 
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
+		
+		
+//		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+//				.getSessionFactory().openSession();
+//		String sql=" SELECT t1.uuid,t1.logo,t2.img as group_img,t1.title,t1.ct_stars,t1.ct_study_students,t1.updatetime,t2.brand_name as group_name,t2.map_point,t2.address";
+//		sql+=" FROM px_pxcourse t1 ";
+//		sql+=" LEFT JOIN  px_group t2 on t1.groupuuid=t2.uuid ";
+//		sql+=" where  t1.status="+SystemConstants.PxCourse_status_fabu;
+//		
+//		if(StringUtils.isNotBlank(groupuuid)){
+//			sql+=" and t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+//		}
+//		if(StringUtils.isNotBlank(type)){
+//			sql+=" and t1.type="+type;
+//		}
+//		if(StringUtils.isNotBlank(teacheruuid)){
+//			sql+=" and t1.uuid in ( select courseuuid  from px_userpxcourserelation where useruuid ='" + teacheruuid + "')";
+//		}
+		
 		String hql = "from PxCourse4Q where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 
 		hql += " order by groupuuid, convert(title, 'gbk') ";

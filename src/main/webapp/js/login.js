@@ -317,6 +317,7 @@ function ajax_userinfo_login() {
 				
 				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
 				PxLazyM.loadJS_for( getCookie("bs_grouptype"));
+				G_msg_pop(data.ResMsg.message);
 				//menu_body_fn();
 				
 				

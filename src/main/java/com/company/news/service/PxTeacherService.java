@@ -87,10 +87,9 @@ public class PxTeacherService extends AbstractService {
 						}
 						
 					}
-					if(course_title.length()>45){
-						course_title=course_title.substring(0, 42)+"...";
-					}
-					ut.setCourse_title(course_title);
+					course_title=PxStringUtil.StringDecComma(course_title);
+					
+					ut.setCourse_title(PxStringUtil.getSubString(course_title, 45));
 				}
 				
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(ut);
