@@ -2190,6 +2190,7 @@ render: function() {
 		  type_div =
 		  <input type="hidden" name="type"  value={o.type}/>
 	  }
+
   return (
   		<div>
   		<div className="header">
@@ -2214,6 +2215,7 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
+          <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-secondary">预览</button>
   		  </form>
   	     </div>
   	   </div>	   
@@ -2994,6 +2996,7 @@ var Group_EventsTable_byRight = React.createClass({
   render: function() {
     return (
     <div>
+	<G_px_help_List data={G_help_msg.Group_help_list}/>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
@@ -3349,6 +3352,8 @@ var Announcements_edit_byRight = React.createClass({
 render: function() {
 	 var o = this.state;
 	  var type_div;
+	  var url=(<div></div>);
+	  var ylBtn=(<div></div>);
 	  if (announce_types==2){
 		  type_div= 
 			   <div className="am-form-group" id="div_classuuids" >
@@ -3356,7 +3361,18 @@ render: function() {
 		  		<label htmlFor="tel">班级通知:</label>
 		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
 		     </div>;
-	  } else {
+	  }else if(announce_types==3){
+	   url=(
+		<div>
+		  <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
+		  <label htmlFor="name">Url外部内容链接:</label>
+		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
+		</div>
+		)
+	  ylBtn=(<div>
+	   <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-secondary">预览</button>
+	   </div>)
+	  }else {
 		  type_div =
 		  <input type="hidden" name="type"  value={o.type}/>
 	  }
@@ -3377,12 +3393,12 @@ return (
 		  <label htmlFor="name">标题:</label>
 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
 		  <br/>
-		  <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
-		  <label htmlFor="name">Url外部内容链接:</label>
-		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
+		  {url}
+
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
 		{G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
+          {ylBtn}
 		  </form>
 	     </div>
 	   </div>	   
@@ -3650,17 +3666,6 @@ var Announcements_Class_div = React.createClass({
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
-     getDefaultProps: function() {
-     var data = [
-                 {val: '提示'},
-                 {val: '1.创建班级'},
-	        	 {val: '2.添加教学计划'},
-		         {val: '3.添加学生'}
-               ];
-         return {
-           data_list: data
-         };
-       },
     getInitialState: function() {
 		return {groupuuid:this.props.groupuuid};
 	  },
@@ -3713,7 +3718,7 @@ render: function() {
   return (	
 	 
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-             <G_px_help_List data={this.props.data_list}/>
+             <G_px_help_List data={G_help_msg.Class_help_list}/>
 		    <AMUIReact.Form id="queryForm" inline >
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
@@ -3981,13 +3986,10 @@ var Class_EventsTable_byRight = React.createClass({
 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
 		   <div className="am-form-group">
 		    <hr />
+			   <div>
   		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>  		      
-  		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-secondary">上传头像</button> 		      		      
- 	         <AMUIReact.FormGroup>
- 	        <label>单选：</label>
- 	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get( "sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
- 	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get( "sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
- 	     </AMUIReact.FormGroup>     		    
+  		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-secondary">上传头像</button> 	
+			   </div>
  	       <label className={one_classDiv}>姓名</label>
    		     <div className={two_classDiv}>
 		       <PxInput icon="user" type="text" name="name" id="name" value={o.name} onChange={this.handleChange}/>
@@ -3996,6 +3998,14 @@ var Class_EventsTable_byRight = React.createClass({
 	   		  <div className={two_classDiv}>  
    		     <PxInput icon="user-secret" type="text" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
    		    </div>
+                <label className={one_classDiv}>单选:</label>
+		        <div className={two_classDiv}>
+		        <AMUIReact.FormGroup>
+ 	            <PxInput type="radio" name="sex" value="0" label={Vo.get( "sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+ 	            <PxInput type="radio" name="sex" value="1" label={Vo.get( "sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		        </AMUIReact.FormGroup>
+		        </div>
+
    		     <label className={one_classDiv}>出生日期</label>
  		      <div className={two_classDiv}>
  		       <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
@@ -4360,22 +4370,26 @@ var Class_EventsTable_byRight = React.createClass({
  		   <div className="am-form-group">
  			
  		    <hr />
-   		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
+   		      <div>
+			  <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
    		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-secondary">上传头像</button>	      
-  	         <AMUIReact.FormGroup>
-  	        <label>单选：</label>
-  	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-  	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-  	     </AMUIReact.FormGroup>     		    
+              </div>   		    
   	       <label className={one_classDiv}>姓名</label>
     		     <div className={two_classDiv}>
  		       <PxInput icon="user" type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
  		        </div>
  		       <label className={one_classDiv}>昵称</label>
- 	   		  <div className={two_classDiv}>  
-    		     <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
-    		    </div>
-    		     <label className={one_classDiv}>出生日期</label>
+ 	   		   <div className={two_classDiv}>  
+    		    <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
+    		   </div>
+				  <label className={one_classDiv}>单选:</label>
+		          <div className={two_classDiv}>
+		          <AMUIReact.FormGroup>
+  	              <PxInput type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+  	              <PxInput type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		          </AMUIReact.FormGroup>
+		          </div>
+    		  <label className={one_classDiv}>出生日期</label>
    		      <div className={two_classDiv}>
    		       <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
  		        </div>
@@ -6670,7 +6684,8 @@ var Class_EventsTable_byRight = React.createClass({
 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
 					{G_get_upload_img_Div()} 
 	  		  
-				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>
+					  <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-secondary">预览</button>	
 				      </div>  
 		          </form> 
 		       </div>	
@@ -6902,13 +6917,10 @@ var Class_EventsTable_byRight = React.createClass({
  		   <div className="am-form-group">
  			
  		    <hr />
+              <div>
    		     <AMUIReact.Image id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
    		      <button type="button"  onClick={this.btn_class_student_uploadHeadere}  className="am-btn am-btn-secondary">上传头像</button>	      
-  	         <AMUIReact.FormGroup>
-  	        <label>单选：</label>
-  	       <AMUIReact.Input type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
-  	      <AMUIReact.Input type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-  	     </AMUIReact.FormGroup>     		    
+              </div>    		    
   	       <label className={one_classDiv}>姓名</label>
     		     <div className={two_classDiv}>
  		       <PxInput icon="user" type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
@@ -6917,6 +6929,13 @@ var Class_EventsTable_byRight = React.createClass({
  	   		  <div className={two_classDiv}>  
     		     <PxInput icon="user-secret" type="text" maxLength="20" name="nickname" id="nickname" value={o.nickname} onChange={this.handleChange}/>
     		    </div>
+				<label className={one_classDiv}>单选:</label>
+		        <div className={two_classDiv}>
+		        <AMUIReact.FormGroup>
+				  <PxInput type="radio" name="sex" value="0" label={Vo.get("sex_0")} inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
+				  <PxInput type="radio" name="sex" value="1" label={Vo.get("sex_1")} inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
+		        </AMUIReact.FormGroup>
+		        </div>
     		     <label className={one_classDiv}>出生日期</label>
    		      <div className={two_classDiv}>
    		       <PxInput icon="birthday-cake" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="birthday" id="birthday" value={o.birthday} onChange={this.handleChange}/>
@@ -7318,6 +7337,98 @@ var Class_EventsTable_byRight = React.createClass({
    //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
 
    
+ //——————————————————————————咨询记录<绘制>—————————————————————  
+
+   /* 
+    * <咨询记录>绘制舞台
+    * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+    * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+    * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+    * */
+   var zixun_px_Div_list = React.createClass({ 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+   	componentWillReceiveProps:function(){
+   		this.refresh_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.props.groupuuid,this.pageNo,callback);
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	},
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">  		    
+   		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+   		  </div>
+   		  
+   		  <div className="am-list-news-ft">
+   		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+   		  </div>  		  
+   		</div>   			
+     );
+   }
+   });
+
+     
+   /*
+    *<咨询记录>表格内容绘制
+    * */
+   var Px_zixunlist_div = React.createClass({ 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+       event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
+   	    	     <div className="am-list-news-bd">
+   	    	     <ul className="am-list">
+   	    			  {this.props.events.data.map(function(event) {
+   	    			      return (
+   	    			    		<li className="am-g am-list-item-dated">
+   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_help_show.bind(this,event.uuid,event.title)}>
+   	    			  		  {event.title} 
+   	    			  		  </a>		
+   	    			  		  <div className="am-list-item-text">
+   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
+   	    			  		  </div> 
+   	    			  		    </li>
+   	    			    		  )
+   	    			         })}	
+   	    			  </ul> 
+   	    			  </div> 
+   	    	    </div>  		  
+   	    	  );
+   }
+   }); 
+   //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+   
 
 //——————————————————————————对外校务管理<校园列表绘制>—————————————————————   
 /*
@@ -7637,18 +7748,14 @@ setProvCity:function(){
 }, 
    render: function() {
    	  var o = this.props.data;
-   	  var edit_btn_className="G_Edit_hide";
-   	  if(this.props.canEdit){
-   		  edit_btn_className="G_Edit_show";
-   	  }
    return (
    		  <div>
          <iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%" src={this.props.share_url}></iframe>
 
 
    		     <AMR_ButtonToolbar>
-   		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
-   		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
+   		     <AMR_Button  amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
+   		     <AMR_Button  amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
    		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
    		     <AMR_Button className={G_CallPhoneFN.isAndorid()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)} >分享</AMR_Button>
    		     </AMR_ButtonToolbar>	
@@ -7700,26 +7807,26 @@ setProvCity:function(){
 	 	   <input type="hidden" name="isimportant"  value={o.isimportant}/> 	
             <hr/>
 	    <div>
+
  		 <div className="am-form-group">
  	       <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-           <legend>优惠活动开始时间：</legend> 
+           <legend>开始时间：</legend> 
            <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="start_timeStr" id ="start_timeStr" dateTime ={this.state.start_time}    onChange={this.handleChange}/>
-  	       <legend>优惠活动结束时间：</legend> 
+  	       <legend>结束时间：</legend> 
            <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="end_timeStr" id="end_timeStr" dateTime={this.state.end_time}    onChange={this.handleChange}/>
          </div> 
-	 	  	<hr/>
-		      <label className={one_classDiv}>标题:</label>
+			 <hr/>
+			 <label className={one_classDiv}>标题:</label>
 			   <div className={two_classDiv}>
 				<input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
 			     </div>  
-            <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
-		      <label className={one_classDiv}>Url外部内容链接:</label>
+	 	   <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
+		 	<label className={one_classDiv}>Url外部内容链接:</label>
 			   <div className={two_classDiv}>
 				<input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
-			     </div>  
- 		  
-		 <AMR_Input id="announce_message" type="textarea" rows="10" label="优惠活动详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
-		{G_get_upload_img_Div()} 
+			     </div>
+
+			 <AMR_Input id="announce_message" type="textarea" rows="10" label="优惠活动详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		  <button type="button"  onClick={ajax_Preferential_save}  className="am-btn am-btn-primary">提交</button>				      					  
 		  </div>  
 	  </form> 	 
@@ -7904,7 +8011,7 @@ var Teacher_look_info =React.createClass({
 			      <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
 			     <AMUIReact.ListItem>更新时间:{o.update_time}</AMUIReact.ListItem>
 			    <AMUIReact.ListItem>老师介绍详细内容:
-	 			<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
+	 			<div dangerouslySetInnerHTML={{__html:o.content}}></div> 
 				</AMUIReact.ListItem>		 			       			      
 			 </AMUIReact.List> 		
 		    </div> 
@@ -8026,7 +8133,7 @@ return (
 			       <PxInput  type="text" name="summary" id="summary" maxLength="45" placeholder="45字以内"  value={o.summary} onChange={this.handleChange}/>
 			        </div>
 			       
- 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="详细介绍:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
+ 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="详细介绍:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
  					{G_get_upload_img_Div()} 
 	  		  
 				      <button type="button"  onClick={ajax_teacher_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      

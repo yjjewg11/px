@@ -133,6 +133,7 @@ render: function() {
 	var that=this;
   return (
   React.createElement("div", null, 
+  React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list7}), 
   React.createElement(AMR_Panel, null, 
   React.createElement(AMR_ButtonToolbar, null, 
   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -477,7 +478,7 @@ var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsT
 	 this.load_more_btn_id="load_more_"+this.props.uuid;
    return (
 		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
-	   
+		   React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list6}), 
 		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
 		   React.createElement(AMR_Panel, null, 
 		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
@@ -1176,15 +1177,11 @@ render: function() {
 //新版帮助公共方法
 var G_px_help_List = React.createClass({displayName: "G_px_help_List", 
 	  render: function() {
-//		  var title=G_tip.help;
-//		  var msg="帮助内容";
-//		  if(this.props.msg)msg=this.props.msg;
-//		  if(this.props.title)title=this.props.title;
 	    return (
 	    		  React.createElement("ol", {className: "am-breadcrumb am-text-warning"}, 
 		    		this.props.data.map(function(event) {
 			  			  return(
-			  			  	React.createElement("li", null, event.val)		  	  
+			  			  	React.createElement("li", null, event)		  	  
 			  			  )})
 	    		  )
 	    );

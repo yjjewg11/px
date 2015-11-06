@@ -1833,11 +1833,8 @@ render: function() {
 	  }
 return (
 		  <div>
-		  <AMUIReact.Article
-		    title={o.title}
-		    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-		     </AMUIReact.Article>
+            <iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%"  src={this.props.share_url}></iframe>
+
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
@@ -1906,6 +1903,9 @@ render: function() {
   		  <label htmlFor="name">标题:</label>
   		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		  <br/>
+			    <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
+  		  <label htmlFor="name">Url外部内容链接:</label>
+  		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
@@ -1967,6 +1967,7 @@ var Class_students_show= React.createClass({
 		if(!this.props.students)this.props.students=[];
 	  return (
 	  <div>	 
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list24}/>
 		  <AMR_Panel>
 			  <AMR_Grid className="doc-g">
 		  	  <AMR_ButtonToolbar>
@@ -2810,6 +2811,7 @@ var Group_EventsTable_byRight = React.createClass({
   render: function() {
     return (
     <div>
+    <G_px_help_List data={G_kd_help_msg.Group_help_list}/>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
@@ -3078,9 +3080,21 @@ handleChange_selectgroup_uuid:function(val){
 
 render: function() {
 	var obj=this.state;
+	var help=(<div></div>)
 	if(!this.state.list)this.state.list=[];
+	if(announce_types==0){
+	 help=(<G_px_help_List data={G_kd_help_msg.msg_help_list1}/>); 
+	  }else if(announce_types==1){
+	  help=(<G_px_help_List data={G_kd_help_msg.msg_help_list2}/>); 
+	  }else if(announce_types==3){
+	  help=(<G_px_help_List data={G_kd_help_msg.msg_help_list3}/>); 
+	  }else if(announce_types==4){
+	  help=(<G_px_help_List data={G_kd_help_msg.msg_help_list4}/>); 
+	  }
   return (
   <div>
+	{help}
+	 
      <AMR_Panel>
     <AMR_ButtonToolbar>
 	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
@@ -3153,6 +3167,8 @@ var Announcements_edit_byRight = React.createClass({
 render: function() {
 	 var o = this.state;
 	  var type_div;
+	   var url=(<div></div>);
+	  var ylBtn=(<div></div>);
 	  if (announce_types==2) {
 		  type_div= 
 			   <div className="am-form-group" id="div_classuuids" >
@@ -3160,6 +3176,17 @@ render: function() {
 		  		<label htmlFor="tel">班级通知:</label>
 		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
 		     </div>;
+	  }else if(announce_types==3){
+	   url=(
+		<div>
+		  <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
+		  <label htmlFor="name">Url外部内容链接:</label>
+		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
+		</div>
+		)
+	  ylBtn=(<div>
+	   <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-secondary">预览</button>
+	   </div>)
 	  } else {
 		  type_div =
 		  <input type="hidden" name="type"  value={o.type}/>
@@ -3181,6 +3208,7 @@ return (
 		  <label htmlFor="name">标题:</label>
 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
 		  <br/>
+            {url}
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
 		{G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
@@ -3209,16 +3237,23 @@ var Announcements_show_byRight = React.createClass({
 	},
 render: function() {
 	  var o = this.props.data;
-
+      var iframe=(<div></div>);
+	     if(o.type==3){
+	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%" src={this.props.share_url}></iframe>)	   
+	        }else{
+	     iframe=(       
+			<AMUIReact.Article
+			title={o.title}
+			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+			</AMUIReact.Article>)
+	     }
 return (
 	  <div>
        <div className="am-margin-left-sm">
 	 
-       <AMUIReact.Article
-	    title={o.title}
-	    meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-		<div dangerouslySetInnerHTML={{__html: o.message}}></div>
-	      </AMUIReact.Article>		     
+         {iframe}
+	     
 	     <AMR_ButtonToolbar>
 	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
 	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
@@ -3287,6 +3322,7 @@ var CookbookPlan_EventsTable_byRight = React.createClass({
 	render: function() {
 	return (
 	<div>
+    <G_px_help_List data={G_kd_help_msg.msg_help_list9}/>
     <AMR_Panel>
 	<AMR_ButtonToolbar>    
     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -3646,6 +3682,7 @@ var Teachingplan_show7Day_byRight = React.createClass({
 	  	now=G_week.getDate(now,o.pageNo*7);
 	  return (
 		<div>
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list10}/>
 		<div className="am-g" >
          <AMR_Panel>
 		 <AMR_ButtonToolbar>
@@ -3911,6 +3948,7 @@ var Boss_student_tel_byRight =React.createClass({
      var o =this.state;	
 	 return (
 	 	<div>
+		 	  <G_px_help_List data={G_kd_help_msg.msg_help_list11}/>
 	 	    <ul className="am-list am-list-static am-list-border">
 	    	     {this.props.formdata.map(function(event) {
 	              return (
@@ -4164,6 +4202,7 @@ var Class_EventsTable_byRight = React.createClass({
 render: function() {
   return (
   <div>
+  <G_px_help_List data={G_kd_help_msg.msg_help_list12}/>
   <AMR_Panel>
   <AMR_ButtonToolbar>
 	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -4696,6 +4735,7 @@ render: function() {
 			 if(!this.state.sum_num)this.state.sum_num=0;
       return (
       <div>
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list22}/>
              <AMR_Panel>
 		     <AMR_ButtonToolbar>
     	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
@@ -5099,6 +5139,7 @@ render: function() {
 		var that=this;
       return (
       <div>
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list23}/>
  		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 		  <AMR_Panel>
 		  <AMR_ButtonToolbar>
@@ -5421,6 +5462,7 @@ render: function() {
       return (
   		  
         <div> 
+          <G_px_help_List data={G_kd_help_msg.msg_help_list16}/>
   	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
           <AMR_Panel>
          <AMR_ButtonToolbar>
@@ -5586,6 +5628,7 @@ render: function() {
 	  var o = this.state;
     return (
     		<div>
+             <G_px_help_List data={G_kd_help_msg.msg_help_list18}/>
     		 <form id="editEchartForm" method="post" className="am-form" action="javascript:void(0);">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
@@ -5659,6 +5702,7 @@ render: function() {
   render: function() { 
       return (
       <div>
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list21}/>
   	  <hr/>	  
   	  <div className="am-form-group">
   		<form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
@@ -5813,7 +5857,7 @@ render: function() {
   	 this.load_more_btn_id="load_more_"+this.props.uuid;
      return (
   		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
-  	   
+  	       <G_px_help_List data={G_kd_help_msg.msg_help_list8}/>
   		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">	
 		   <AMR_Panel>	   
   		   <AMR_ButtonToolbar>
@@ -6188,6 +6232,7 @@ render: function() {
     	 }
      return (
      <div>   
+		 
            <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
 		   <AMR_Panel>
            <AMR_ButtonToolbar>
@@ -6306,6 +6351,7 @@ render: function() {
      	this.load_more_btn_id="load_more_"+this.props.uuid;
        return (			
      		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		   <G_px_help_List data={G_kd_help_msg.msg_help_list5}/>
 		        <AMR_Panel>
      		    <AMUIReact.ButtonToolbar>
      		    <AMUIReact.Button amStyle="primary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
@@ -6879,7 +6925,8 @@ render: function() {
   	 }
 	
    return (
-   <div>   
+   <div>
+	   <G_px_help_List data={G_kd_help_msg.msg_help_list13}/>
      <div className="am-form-group">
      <hr/>
        </div>
@@ -7230,7 +7277,8 @@ handleChange_selectclass_uuid:function(val){
 		
 render: function() {
 			
-	var obj=this.state;	 
+	var obj=this.state;
+	var help=(<div></div>)
 	if(!this.state.list)this.state.list=[];
 	var btnSearch = (<AMUIReact.Button  onClick={this.refresh_data.bind(this)}><AMUIReact.Icon icon="search" /></AMUIReact.Button>);
 	var btnSearch_classuuid = null;
@@ -7239,9 +7287,14 @@ render: function() {
 		btnSearch_classuuid = (<AMUIReact.Selected id="selectgroup_uuid" name="classuuid" onChange={this.handleChange_selectclass_uuid} btnWidth="200"  multiple= {false} data={this.state.classList} btnStyle="primary" value={this.state.classuuid} /> );
 		table_th0="班级";
 	}
-	
+	if(obj.type==1){
+	help=(<G_px_help_List data={G_kd_help_msg.msg_help_list14}/>);
+	  }else{
+    help=(<G_px_help_List data={G_kd_help_msg.msg_help_list15}/>);
+	}
   return (
   <div>
+	{help}
 	  <AMR_Panel>
 <AMR_ButtonToolbar>
 	  <div className="am-fl  am-margin-left-xs">
@@ -7934,6 +7987,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		 if (this.state.list== null ) this.state.list=[];
       return (
       <div>
+		 <G_px_help_List data={G_kd_help_msg.msg_help_list20}/>
  		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 		    <AMR_Panel>
 		    <AMR_ButtonToolbar>
@@ -8107,6 +8161,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		 if (this.state.list== null ) this.state.list=[];
       return (
       <div>
+		  <G_px_help_List data={G_kd_help_msg.msg_help_list19}/>
  		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 		  <AMR_Panel>
 		  <AMR_ButtonToolbar>

@@ -1705,6 +1705,7 @@ $.ajax({
 		$.AMUI.progress.done();
 		if (data.ResMsg.status == "success") {
 			React.render(React.createElement(Announcements_show_byRight,{
+				share_url:data.share_url,
 				data:data.data,
 				count:data.count
 				}), document.getElementById('div_body'));
