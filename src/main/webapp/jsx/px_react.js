@@ -2996,12 +2996,12 @@ var Group_EventsTable_byRight = React.createClass({
   render: function() {
     return (
     <div>
-	<G_px_help_List data={G_help_msg.Group_help_list}/>
+	<G_px_help_List data={G_px_help_msg.msg_px_help_list1}/>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
 	  <hr/>
-      <AMR_Table {...this.props}>  
+      <AMR_Table {...this.props}>   
         <thead> 
           <tr>
             <th>品牌名</th>
@@ -3274,8 +3274,18 @@ handleChange_selectgroup_uuid:function(val){
 render: function() {
 	var obj=this.state;
 	if(!this.state.list)this.state.list=[];
+		var help=(<div></div>)
+	if(!this.state.list)this.state.list=[];
+	if(announce_types==0){
+	 help=(<G_px_help_List data={G_px_help_msg.msg_px_help_list6}/>); 
+	  }else if(announce_types==1){
+	  help=(<G_px_help_List data={G_px_help_msg.msg_px_help_list7}/>); 
+	  }else if(announce_types==3){
+	  help=(<G_px_help_List data={G_px_help_msg.msg_px_help_list9}/>); 
+	  }
   return (
   <div>
+	  {help}
 	     <AMR_Panel>
 		 <AMR_ButtonToolbar>
 	      <div className="am-fl  am-margin-left-xs">
@@ -3484,6 +3494,7 @@ var Boss_student_tel_byRight =React.createClass({
      var o =this.state;	
 	 return (
 	 	<div>
+		 <G_px_help_List data={G_px_help_msg.msg_px_help_list12}/>
 	 	    <ul className="am-list am-list-static am-list-border">
 	    	     {this.props.formdata.map(function(event) {
 	              return (
@@ -3510,6 +3521,7 @@ var Boss_student_tel2_byRight =React.createClass({
 	render: function() {
 	 return (
 			 <div className="am-g">
+		 		 <G_px_help_List data={G_px_help_msg.msg_px_help_list12}/>
 			  <h1>园长信箱暂无信件！</h1>
 			  </div>
 	     );
@@ -3718,7 +3730,7 @@ render: function() {
   return (	
 	 
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-             <G_px_help_List data={G_help_msg.Class_help_list}/>
+			  <G_px_help_List data={G_px_help_msg.msg_px_help_list13}/>
 		    <AMUIReact.Form id="queryForm" inline >
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
@@ -4742,6 +4754,7 @@ var Class_EventsTable_byRight = React.createClass({
       return (
   		  
       <div> 
+       <G_px_help_List data={G_px_help_msg.msg_px_help_list14}/>
   	   <div className="am-form-group">
   	    <hr/>	 
   	     </div>
@@ -4910,6 +4923,7 @@ var Class_EventsTable_byRight = React.createClass({
 	  var o = this.state;
     return (
     		<div>
+		<G_px_help_List data={G_px_help_msg.msg_px_help_list15}/>
     		 <form id="editEchartForm" method="post" className="am-form">
     		 <div>
 	    		 <div className="am-u-lg-3 am-u-md-6">
@@ -5122,12 +5136,11 @@ var Class_EventsTable_byRight = React.createClass({
      	this.load_more_btn_id="load_more_"+this.props.uuid;
        return (			
      		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-		         <AMR_Panel>
+		         <G_px_help_List data={G_px_help_msg.msg_px_help_list8}/>
      		     <AMUIReact.ButtonToolbar>
      		     <AMUIReact.Button amStyle="primary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
-     		     <G_help_popo  msg={G_tip.Classnews_admin}/> 
      		     </AMUIReact.ButtonToolbar>
-		         </AMR_Panel>
+		        <hr/>
      		    <Div_MyClassnewStatistics_byRight />
      			<hr/>	 
      		    
@@ -6420,6 +6433,7 @@ var Class_EventsTable_byRight = React.createClass({
 	 var o=this.props;
      return (
      <div>
+		 <G_px_help_List data={G_px_help_msg.msg_px_help_list3}/>
 		 <AMR_Panel>
          <AMR_ButtonToolbar>
 			 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -7349,6 +7363,9 @@ var Class_EventsTable_byRight = React.createClass({
    	load_more_btn_id:"load_more_",
    	pageNo:1,
    	classnewsreply_list_div:"am-list-news-bd",
+     getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
    	componentWillReceiveProps:function(){
    		this.refresh_data();
    	},
@@ -7359,6 +7376,7 @@ var Class_EventsTable_byRight = React.createClass({
    	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
    	load_more_data:function(){
+		this.setState({groupuuid:$("input[name='group_uuid']").val()});
    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		 var that=this;
 		 var callback=function(re_data){
@@ -7370,7 +7388,8 @@ var Class_EventsTable_byRight = React.createClass({
  			}
  			that.pageNo++;
  		}
-		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.props.groupuuid,this.pageNo,callback);
+		G_mygroup_choose=$("input[name='group_uuid']").val();
+		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7380,11 +7399,18 @@ var Class_EventsTable_byRight = React.createClass({
    		$("#"+this.classnewsreply_list_div).html("");
    		this.load_more_data();
    		
-   	},
+   	}, 
    render: function() {
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
-   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">  		    
+   		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">  	
+		 <AMR_ButtonToolbar>
+   		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} data={this.props.grouplist} btnStyle="primary" value={G_mygroup_choose} />   
+   		    </AMR_ButtonToolbar>
+
+
+
+
    		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
    		  </div>
    		  
@@ -7412,11 +7438,9 @@ var Class_EventsTable_byRight = React.createClass({
    	    			  {this.props.events.data.map(function(event) {
    	    			      return (
    	    			    		<li className="am-g am-list-item-dated">
-   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_help_show.bind(this,event.uuid,event.title)}>
-   	    			  		  {event.title} 
-   	    			  		  </a>		
+   	    			  		  {event.ext_context} 	
    	    			  		  <div className="am-list-item-text">
-   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_time}
+   	    			  		  {Store.getGroupNameByUuid(event.group_uuid)}|{event.tel_name}|{event.tel}|{event.create_time}
    	    			  		  </div> 
    	    			  		    </li>
    	    			    		  )
@@ -7446,6 +7470,7 @@ var Group_EventsTable_byRight_px = React.createClass({
   render: function() {
     return (
     <div>
+     <G_px_help_List data={G_px_help_msg.msg_px_help_list2}/>
     <AMR_ButtonToolbar>
 	    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加分校</AMR_Button>
 	  </AMR_ButtonToolbar>
@@ -7683,7 +7708,7 @@ setProvCity:function(){
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  <div data-am-widget="list_news" className="am-list-news am-list-news-default"> 
-   		  
+   		  <G_px_help_List data={G_px_help_msg.msg_px_help_list4}/>
 		   <AMR_ButtonToolbar>
 		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} >创建优惠活动</AMR_Button>
 		    </AMR_ButtonToolbar>
@@ -7902,6 +7927,7 @@ setProvCity:function(){
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		 <G_px_help_List data={G_px_help_msg.msg_px_help_list5}/>
    		  <AMR_Panel>
    		  <AMR_ButtonToolbar>
    		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">

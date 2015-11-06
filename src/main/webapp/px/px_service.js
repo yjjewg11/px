@@ -1906,7 +1906,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * */
  function ajax_uesrinfo_listByGroup_div(groupuuid){
  	var list=Store.getGroupByRight('PX_teacher_m');
- 	React.render(React.createElement(Userinfo_EventsTable_div,{
+ 	React.render(React.createElement(Userinfo_EventsTable_div1,{
  		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 	    handleClick:btn_click_userinfo,
  		groupuuid:groupuuid
@@ -2970,7 +2970,7 @@ function menu_kd_roleUser_list_fn() {
 			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 			role_list:Store.getRoleList(2)
 		};
-	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+	React.render(React.createElement(G_Role_User_EventsTable2,opt), document.getElementById('div_body'));
 };
 
 //（我）<修改教师资料资料>
@@ -3722,30 +3722,30 @@ function ajax_class_students_look_info(uuid){
  
  
  
-//————————————————————————————资讯记录————————————————————————— 
+//————————————————————————————咨询记录————————————————————————— 
 
  /*
-  * <资讯记录>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+  * <咨询记录>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
   * 基本框 等
   * */
- function ajax_zixun_div(groupuuid){
+ function ajax_zixun_div(){
  	React.render(React.createElement(zixun_px_Div_list,{
- 		groupuuid:groupuuid		
+ 		grouplist:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
  	}), document.getElementById('div_body'));  	
  };
  /*
- *(资讯记录)服务器请求share/articleList
+ *(咨询记录)服务器请求share/articleList
  * @types- 92
  * 取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
- function ajax_zixun_px_list(list_div,groupuuid,pageNo,callback) {
+ function ajax_zixun_px_list(list_div,pageNo,callback) {
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/pxTelConsultation/queryByPage.json";
  	$.ajax({
  		type : "GET",
  		url : url,
-   		data : {groupuuid:groupuuid,pageNo:pageNo},
+   		data : {groupuuid:G_mygroup_choose,pageNo:pageNo},
  		dataType : "json",
  		async: false,
  		success : function(data) {

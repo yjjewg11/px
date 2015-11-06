@@ -466,13 +466,13 @@ function px_help_list_fn(){
   	ajax_px_help_div();
 }
 /*
- * （标头）资讯记录
+ * （标头）咨询记录
  */
 function px_zixun_fn(){
-  	Queue.push(px_zixun_fn,"帮助列表");
+  	Queue.push(px_zixun_fn,"咨询记录");
  	 var group_list=Store.getGroup();
-     var groupuuid=group_list[0].uuid;
-  	ajax_zixun_div(groupuuid);
+ 	G_mygroup_choose=group_list[0].uuid
+  	ajax_zixun_div();
 }
 /*
  * （标头）对外发布-优惠活动

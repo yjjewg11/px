@@ -3975,6 +3975,7 @@ var Boss_student_tel2_byRight =React.createClass({displayName: "Boss_student_tel
 	render: function() {
 	 return (
 			 React.createElement("div", {className: "am-g"}, 
+		      React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list11}), 
 			  React.createElement("h1", null, "园长信箱暂无信件！")
 			  )
 	     );

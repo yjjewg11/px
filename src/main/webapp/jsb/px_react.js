@@ -2996,7 +2996,7 @@ var Group_EventsTable_byRight = React.createClass({displayName: "Group_EventsTab
   render: function() {
     return (
     React.createElement("div", null, 
-	React.createElement(G_px_help_List, {data: G_help_msg.Group_help_list}), 
+	React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list1}), 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加分校")
 	  ), 
@@ -3274,8 +3274,18 @@ handleChange_selectgroup_uuid:function(val){
 render: function() {
 	var obj=this.state;
 	if(!this.state.list)this.state.list=[];
+		var help=(React.createElement("div", null))
+	if(!this.state.list)this.state.list=[];
+	if(announce_types==0){
+	 help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list6})); 
+	  }else if(announce_types==1){
+	  help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list7})); 
+	  }else if(announce_types==3){
+	  help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list9})); 
+	  }
   return (
   React.createElement("div", null, 
+	  help, 
 	     React.createElement(AMR_Panel, null, 
 		 React.createElement(AMR_ButtonToolbar, null, 
 	      React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
@@ -3484,6 +3494,7 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
      var o =this.state;	
 	 return (
 	 	React.createElement("div", null, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list12}), 
 	 	    React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	    	     this.props.formdata.map(function(event) {
 	              return (
@@ -3510,6 +3521,7 @@ var Boss_student_tel2_byRight =React.createClass({displayName: "Boss_student_tel
 	render: function() {
 	 return (
 			 React.createElement("div", {className: "am-g"}, 
+		 		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list12}), 
 			  React.createElement("h1", null, "园长信箱暂无信件！")
 			  )
 	     );
@@ -3718,7 +3730,7 @@ render: function() {
   return (	
 	 
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-             React.createElement(G_px_help_List, {data: G_help_msg.Class_help_list}), 
+			  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list13}), 
 		    React.createElement(AMUIReact.Form, {id: "queryForm", inline: true}, 
 	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
@@ -4742,6 +4754,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       return (
   		  
       React.createElement("div", null, 
+       React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list14}), 
   	   React.createElement("div", {className: "am-form-group"}, 
   	    React.createElement("hr", null)	 
   	     ), 
@@ -4910,6 +4923,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	  var o = this.state;
     return (
     		React.createElement("div", null, 
+		React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list15}), 
     		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
     		 React.createElement("div", null, 
 	    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
@@ -5122,12 +5136,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      	this.load_more_btn_id="load_more_"+this.props.uuid;
        return (			
      		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		         React.createElement(AMR_Panel, null, 
+		         React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list8}), 
      		     React.createElement(AMUIReact.ButtonToolbar, null, 
-     		     React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新"), 
-     		     React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
-     		     )
-		         ), 
+     		     React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新")
+     		     ), 
+		        React.createElement("hr", null), 
      		    React.createElement(Div_MyClassnewStatistics_byRight, null), 
      			React.createElement("hr", null), 	 
      		    
@@ -6420,6 +6433,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	 var o=this.props;
      return (
      React.createElement("div", null, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list3}), 
 		 React.createElement(AMR_Panel, null, 
          React.createElement(AMR_ButtonToolbar, null, 
 			 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -7349,6 +7363,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    	load_more_btn_id:"load_more_",
    	pageNo:1,
    	classnewsreply_list_div:"am-list-news-bd",
+     getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
    	componentWillReceiveProps:function(){
    		this.refresh_data();
    	},
@@ -7359,6 +7376,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
    	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
    	load_more_data:function(){
+		this.setState({groupuuid:$("input[name='group_uuid']").val()});
    		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
 		 var that=this;
 		 var callback=function(re_data){
@@ -7370,7 +7388,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  			}
  			that.pageNo++;
  		}
-		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.props.groupuuid,this.pageNo,callback);
+		G_mygroup_choose=$("input[name='group_uuid']").val();
+		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7380,11 +7399,18 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    		$("#"+this.classnewsreply_list_div).html("");
    		this.load_more_data();
    		
-   	},
+   	}, 
    render: function() {
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
-   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		    
+   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 	
+		 React.createElement(AMR_ButtonToolbar, null, 
+   		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.grouplist, btnStyle: "primary", value: G_mygroup_choose})
+   		    ), 
+
+
+
+
    		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
    		  ), 
    		  
@@ -7412,11 +7438,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    	    			  this.props.events.data.map(function(event) {
    	    			      return (
    	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
-   	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_px_help_show.bind(this,event.uuid,event.title)}, 
-   	    			  		  event.title
-   	    			  		  ), 		
+   	    			  		  event.ext_context, 	
    	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
-   	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_time
+   	    			  		  Store.getGroupNameByUuid(event.group_uuid), "|", event.tel_name, "|", event.tel, "|", event.create_time
    	    			  		  )
    	    			  		    )
    	    			    		  )
@@ -7446,6 +7470,7 @@ var Group_EventsTable_byRight_px = React.createClass({displayName: "Group_Events
   render: function() {
     return (
     React.createElement("div", null, 
+     React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list2}), 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加分校")
 	  ), 
@@ -7683,7 +7708,7 @@ React.createElement("div", null,
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-   		  
+   		  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list4}), 
 		   React.createElement(AMR_ButtonToolbar, null, 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add",this.props.groupuuid)}, "创建优惠活动")
 		    ), 
@@ -7902,6 +7927,7 @@ React.createElement("div", null,
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list5}), 
    		  React.createElement(AMR_Panel, null, 
    		  React.createElement(AMR_ButtonToolbar, null, 
    		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
