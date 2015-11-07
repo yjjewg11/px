@@ -2223,8 +2223,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
-          React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-secondary"}, "预览")
+  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
   		  )
   	     )
   	   )	   
@@ -3370,29 +3369,14 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
 	  var url=(React.createElement("div", null));
-	  var ylBtn=(React.createElement("div", null));
-	  if (announce_types==2){
-		  type_div= 
-			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
-		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
-		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
-		     );
-	  }else if(announce_types==3){
+	 if(announce_types==3){
 	   url=(
 		React.createElement("div", null, 
 		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
 		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
 		)
 		)
-	  ylBtn=(React.createElement("div", null, 
-	   React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-secondary"}, "预览")
-	   ))
-	  }else {
-		  type_div =
-		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
 	  }
 return (
 		React.createElement("div", null, 		
@@ -3404,6 +3388,7 @@ return (
 		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+		 React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
 		React.createElement("div", {className: "am-form-group"}, 
 	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
       ), 
@@ -6707,9 +6692,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "课程详细内容:", placeholder: "填写内容", name: "context", value: o.context, onChange: this.handleChange}), 
 					G_get_upload_img_Div(), 
 	  		  
-				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
-					  React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-secondary"}, "预览")	
-				      )
+				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+					   )
 		          )
 		       ), 	
 

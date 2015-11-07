@@ -2224,7 +2224,6 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
-          <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-secondary">预览</button>
   		  </form>
   	     </div>
   	   </div>	   
@@ -3370,29 +3369,14 @@ var Announcements_edit_byRight = React.createClass({
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
 	  var url=(<div></div>);
-	  var ylBtn=(<div></div>);
-	  if (announce_types==2){
-		  type_div= 
-			   <div className="am-form-group" id="div_classuuids" >
-		  		<input type="hidden" name="type"  value={o.type}/>
-		  		<label htmlFor="tel">班级通知:</label>
-		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-		     </div>;
-	  }else if(announce_types==3){
+	 if(announce_types==3){
 	   url=(
 		<div>
 		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
 		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
 		</div>
 		)
-	  ylBtn=(<div>
-	   <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-secondary">预览</button>
-	   </div>)
-	  }else {
-		  type_div =
-		  <input type="hidden" name="type"  value={o.type}/>
 	  }
 return (
 		<div> 		
@@ -3404,6 +3388,7 @@ return (
 		  <form id="editAnnouncementsForm" method="post" className="am-form">
 		<input type="hidden" name="uuid"  value={o.uuid}/>
 		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+		 <input type="hidden" name="type"  value={o.type}/>
 		<div className="am-form-group">
 	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
       </div>   
@@ -6708,8 +6693,7 @@ var Class_EventsTable_byRight = React.createClass({
 					{G_get_upload_img_Div()} 
 	  		  
 				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>
-					  <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-secondary">预览</button>	
-				      </div>  
+					   </div>  
 		          </form> 
 		       </div>	
 

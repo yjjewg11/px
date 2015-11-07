@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sound.midi.SysexMessage;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
-import com.company.news.entity.PClass;
 import com.company.news.entity.PxCourse;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -497,7 +495,7 @@ public class ShareController extends AbstractRESTController {
 			if(SystemConstants.PxCourse_status_weifabu.equals(a.getStatus())){
 				return "/404";
 			}
-			//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+			model.put("group",CommonsCache.get(a.getGroupuuid(), Group4Q.class));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_pxcourse));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

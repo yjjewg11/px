@@ -13,7 +13,7 @@
  
  <h2  class="art_title">${data.title}</h2>
  <div class="art_meta">
-  <p>发布时间:${data.create_time}, 浏览${count}次</p>
+  <p> ${group.brand_name}|${group.link_tel}|${group.address}|浏览${count}次</p>
   </div>
   <div>${data.context}</div>
   

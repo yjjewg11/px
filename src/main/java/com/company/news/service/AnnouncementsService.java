@@ -232,6 +232,8 @@ public class AnnouncementsService extends AbstractService {
 				}
 			}
 		}
+		
+	
 				
 		announcements.setIsimportant(announcementsJsonform.getIsimportant());
 		announcements.setMessage(announcementsJsonform.getMessage());
@@ -240,6 +242,13 @@ public class AnnouncementsService extends AbstractService {
 		announcements.setGroupuuid(announcementsJsonform.getGroupuuid());
 		announcements.setUrl(announcementsJsonform.getUrl());
 
+		Timestamp start_time = TimeUtils.string2Timestamp(null,
+				announcementsJsonform.getStart_timeStr());
+		Timestamp end_time = TimeUtils.string2Timestamp(null,
+				announcementsJsonform.getEnd_timeStr());
+
+		announcements.setStart_time(start_time);
+		announcements.setEnd_time(end_time);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
 

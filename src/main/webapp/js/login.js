@@ -35,13 +35,13 @@ var PxLazyM=(function(){
 			jsArr=PxConfig.group_type_1;
 		}
 		
-		
-
+		var ver=PxConfig.ver;
+		if(!ver)ver="1107";
 		//所有加载完成才执行回调.
 		window.__loadJS_count=jsArr.length;
 		$.AMUI.progress.start();
 		for(var i=0;i<jsArr.length;i++){
-			loadJS(jsArr[i]+PxConfig.ver,callback);
+			loadJS(jsArr[i]+"?"+ver,callback);
 		}
 		
 	};
