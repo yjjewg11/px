@@ -2134,11 +2134,21 @@ render: function() {
 	  if(this.props.canEdit){
 		  edit_btn_className="G_Edit_show";
 	  }
+	    var iframe=null;
+	     if(o.url){
+	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
+	        }else{
+	     iframe=(       
+			React.createElement(AMUIReact.Article, {
+			title: o.title, 
+			meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+			))
+	     }
 return (
 		  React.createElement("div", null, 
 
-            React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}), 
-
+           iframe, 
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
@@ -2209,8 +2219,7 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
 
-            React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
-  		  React.createElement("label", {htmlFor: "name"}, "Url外部内容链接:"), 
+  		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
@@ -3374,8 +3383,7 @@ render: function() {
 	  }else if(announce_types==3){
 	   url=(
 		React.createElement("div", null, 
-		  React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
-		  React.createElement("label", {htmlFor: "name"}, "Url外部内容链接:"), 
+		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
 		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
 		)
 		)
@@ -3434,9 +3442,10 @@ var Announcements_show_byRight = React.createClass({displayName: "Announcements_
 	},
 render: function() {
 	  var o = this.props.data;
-      var iframe=(React.createElement("div", null));
-	     if(o.type==3){
-	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}))	   
+
+	  var iframe=null;
+	     if(o.url){
+	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
 	        }else{
 	     iframe=(       
 			React.createElement(AMUIReact.Article, {
@@ -7431,23 +7440,39 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    	    var event = this.props.events;
    	    var className = event.highlight ? 'am-active' :
        event.disabled ? 'am-disabled' : '';
+		var totalCount_div=null;
+		if( this.props.events.pageNo=="1"){
+				totalCount_div=( React.createElement("h6", null, "总条数:"+this.props.events.totalCount));	
+		}
    	    return (
-   	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-   	    	     React.createElement("div", {className: "am-list-news-bd"}, 
-   	    	     React.createElement("ul", {className: "am-list"}, 
-   	    			  this.props.events.data.map(function(event) {
-   	    			      return (
-   	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
-   	    			  		  event.ext_context, 	
-   	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
-   	    			  		  Store.getGroupNameByUuid(event.group_uuid), "|", event.tel_name, "|", event.tel, "|", event.create_time
-   	    			  		  )
-   	    			  		    )
-   	    			    		  )
-   	    			         })	
-   	    			  )
-   	    			  )
-   	    	    )  		  
+			React.createElement("div", null, 
+			totalCount_div, 
+			 React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+			  React.createElement("th", null, "咨询对象"), 
+              React.createElement("th", null, "姓名"), 
+              React.createElement("th", null, "电话"), 
+              React.createElement("th", null, "咨询时间")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.data.map(function(event) {
+              return (
+				  React.createElement("tr", null, 
+					React.createElement("td", null, event.ext_context, " "), 
+					React.createElement("td", null, " ", event.tel_name), 			
+					React.createElement("td", null, "  ", React.createElement("a", {href: "tel:"+event.tel}, event.tel, " "), " "), 
+					React.createElement("td", null, event.create_time)
+					
+				  ) 
+			  );
+            })
+          )
+        )
+)
+
+   	    	     		  
    	    	  );
    }
    }); 
@@ -7773,11 +7798,21 @@ React.createElement("div", null,
 }, 
    render: function() {
    	  var o = this.props.data;
+
+	  var iframe=null;
+	     if(o.url){
+	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
+	        }else{
+	     iframe=(       
+			React.createElement(AMUIReact.Article, {
+			title: o.title, 
+			meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+			))
+	     }
    return (
    		  React.createElement("div", null, 
-         React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}), 
-
-
+			iframe, 
    		     React.createElement(AMR_ButtonToolbar, null, 
    		     React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
    		     React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
@@ -7845,8 +7880,8 @@ React.createElement("div", null,
 			   React.createElement("div", {className: two_classDiv}, 
 				React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
 			     ), 
-	 	   React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
-		 	React.createElement("label", {className: one_classDiv}, "Url外部内容链接:"), 
+	
+		 	React.createElement("label", {className: one_classDiv}, "分享链接(链接和内容选填一个):"), 
 			   React.createElement("div", {className: two_classDiv}, 
 				React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"})
 			     ), 

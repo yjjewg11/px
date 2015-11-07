@@ -1831,10 +1831,21 @@ render: function() {
 	  if(this.props.canEdit){
 		  edit_btn_className="G_Edit_show";
 	  }
+      var iframe=null;
+	     if(o.url){
+	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
+	        }else{
+	     iframe=(       
+			<AMUIReact.Article
+			title={o.title}
+			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+			</AMUIReact.Article>)
+	     }
+
 return (
 		  <div>
-            <iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%"  src={this.props.share_url}></iframe>
-
+            {iframe}
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
@@ -1903,8 +1914,7 @@ render: function() {
   		  <label htmlFor="name">标题:</label>
   		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		  <br/>
-			    <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
-  		  <label htmlFor="name">Url外部内容链接:</label>
+  		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
@@ -3179,8 +3189,7 @@ render: function() {
 	  }else if(announce_types==3){
 	   url=(
 		<div>
-		  <legend>Url和详细内容选填一个-两项都填系统默认Url</legend> 
-		  <label htmlFor="name">Url外部内容链接:</label>
+		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
 		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
 		</div>
 		)
@@ -3238,8 +3247,8 @@ var Announcements_show_byRight = React.createClass({
 render: function() {
 	  var o = this.props.data;
       var iframe=(<div></div>);
-	     if(o.type==3){
-	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="no" marginheight="0" marginwidth="0"  width="100%" height="100%" src={this.props.share_url}></iframe>)	   
+	     if(o.url){
+	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
 	        }else{
 	     iframe=(       
 			<AMUIReact.Article

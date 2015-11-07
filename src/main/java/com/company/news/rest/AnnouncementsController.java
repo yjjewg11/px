@@ -323,8 +323,18 @@ public class AnnouncementsController extends AbstractRESTController {
 					return "";
 				}
 			}
+			String share_url=null;
+			if(StringUtils.isBlank(a.getUrl())){
+//				a.setUrl(PxStringUtil.getArticleByUuid(uuid));
+				share_url=PxStringUtil.getArticleByUuid(uuid);
+			}else{
+				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
+				share_url=a.getUrl();
+			}
+			model.put(RestConstants.Return_ResponseMessage_share_url,share_url);
+			
 			SessionUserInfoInterface user=this.getUserInfoBySession(request);
-			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
+//			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
 			model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));
 		} catch (Exception e) {

@@ -94,8 +94,9 @@ public class AnnouncementsService extends AbstractService {
 			return false;
 		}
 
-		if (StringUtils.isBlank(announcementsJsonform.getMessage())) {
-			responseMessage.setMessage("Message不能为空！");
+		if (StringUtils.isBlank(announcementsJsonform.getMessage())
+				&&StringUtils.isBlank(announcementsJsonform.getUrl())) {
+			responseMessage.setMessage("内容或分享地址需要填写一个");
 			return false;
 		}
 

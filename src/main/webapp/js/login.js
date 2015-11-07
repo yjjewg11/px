@@ -41,7 +41,7 @@ var PxLazyM=(function(){
 		window.__loadJS_count=jsArr.length;
 		$.AMUI.progress.start();
 		for(var i=0;i<jsArr.length;i++){
-			loadJS(jsArr[i]+"?1031",callback);
+			loadJS(jsArr[i]+PxConfig.ver,callback);
 		}
 		
 	};

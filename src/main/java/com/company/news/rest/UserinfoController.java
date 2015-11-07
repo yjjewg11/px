@@ -1119,7 +1119,7 @@ public class UserinfoController extends AbstractRESTController {
 	
 
 	/**
-	 * 用于客户端缓存(管理员有可能管理学校的uuid不够,
+	 * 添加用户时,调用接口判断是否已经创建了该电话,并且返回关联学校
 	 * @param model
 	 * @param request
 	 * @return
@@ -1136,8 +1136,13 @@ public class UserinfoController extends AbstractRESTController {
 			a = userinfoService.getUserBytel(tel);
 			if(a!=null){
 				List<Group4Q> list = new ArrayList();
-				
-				list = groupService.getGroupByUseruuid(a.getUuid());
+				if(SessionListener.isPXLogin(request)){
+					list = groupService.getPXGroupByUseruuid(a.getUuid());
+
+				}else{
+					list = groupService.getGroupByUseruuid(a.getUuid());
+					
+				}
 				for(Group4Q o:list){
 					mygroup_uuids+=o.getUuid()+",";
 				}
