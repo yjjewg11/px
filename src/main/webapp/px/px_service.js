@@ -1906,7 +1906,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * */
  function ajax_uesrinfo_listByGroup_div(groupuuid){
  	var list=Store.getGroupByRight('PX_teacher_m');
- 	React.render(React.createElement(Userinfo_EventsTable_div,{
+ 	React.render(React.createElement(Userinfo_EventsTable_div1,{
  		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 	    handleClick:btn_click_userinfo,
  		groupuuid:groupuuid
@@ -2970,7 +2970,7 @@ function menu_kd_roleUser_list_fn() {
 			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 			role_list:Store.getRoleList(2)
 		};
-	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+	React.render(React.createElement(G_Role_User_EventsTable2,opt), document.getElementById('div_body'));
 };
 
 //（我）<修改教师资料资料>
@@ -3722,7 +3722,51 @@ function ajax_class_students_look_info(uuid){
  
  
  
- 
+//————————————————————————————咨询记录————————————————————————— 
+
+ /*
+  * <咨询记录>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+  * 基本框 等
+  * */
+ function ajax_zixun_div(){
+ 	React.render(React.createElement(zixun_px_Div_list,{
+ 		grouplist:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+ 	}), document.getElementById('div_body'));  	
+ };
+ /*
+ *(咨询记录)服务器请求share/articleList
+ * @types- 92
+ * 取出数组服务器请求后
+ * 开始绘制动态数据内容
+ * */
+ function ajax_zixun_px_list(list_div,pageNo,callback) {
+ 	$.AMUI.progress.start();
+ 	var url = hostUrl + "rest/pxTelConsultation/queryByPage.json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+   		data : {groupuuid:G_mygroup_choose,pageNo:pageNo},
+ 		dataType : "json",
+ 		async: false,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				React.render(React.createElement(Px_zixunlist_div, {
+ 					events: data.list,
+ 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+ 					}), document.getElementById(list_div));
+
+  				if(typeof callback=='function'){
+					callback(data.list);
+				}
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 				G_resMsg_filter(data.ResMsg);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ };
  
  //————————————————————————————对外校务管理<管理模块>—————————————————————————  
  /*
@@ -3883,11 +3927,8 @@ function ajax_class_students_look_info(uuid){
  		 async: true,
  		success : function(data) {
  			$.AMUI.progress.done();
- 			// 登陆成功直接进入主页
- 			var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Announcements_Preferentialshow,{
- 					canEdit:canEdit,
  					data:data.data,
  					share_url:data.share_url,
  					count:data.count

@@ -217,7 +217,13 @@ function login_affter_init(){
               };
 			if(G_user_hasRight("PX_statistics_m")){
 				menu_data.push(t_menu);
-			}	
+			}
+			t_menu= {
+		            "link": "##",
+		            "title": "咨询记录",
+		            "fn":px_zixun_fn
+		          };
+			menu_data.push(t_menu);	
 //	t_menu= {
 //	                "link": "##",
 //	                "title": "老师评价",
@@ -459,7 +465,15 @@ function px_help_list_fn(){
   	Queue.push(px_help_list_fn,"帮助列表");
   	ajax_px_help_div();
 }
-
+/*
+ * （标头）咨询记录
+ */
+function px_zixun_fn(){
+  	Queue.push(px_zixun_fn,"咨询记录");
+ 	 var group_list=Store.getGroup();
+ 	G_mygroup_choose=group_list[0].uuid
+  	ajax_zixun_div();
+}
 /*
  * （标头）对外发布-优惠活动
  */

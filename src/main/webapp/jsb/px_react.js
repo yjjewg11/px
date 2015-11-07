@@ -2190,6 +2190,7 @@ render: function() {
 		  type_div =
 		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
 	  }
+
   return (
   		React.createElement("div", null, 
   		React.createElement("div", {className: "header"}, 
@@ -2213,7 +2214,8 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
+          React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-secondary"}, "预览")
   		  )
   	     )
   	   )	   
@@ -2994,6 +2996,7 @@ var Group_EventsTable_byRight = React.createClass({displayName: "Group_EventsTab
   render: function() {
     return (
     React.createElement("div", null, 
+	React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list1}), 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加分校")
 	  ), 
@@ -3271,8 +3274,18 @@ handleChange_selectgroup_uuid:function(val){
 render: function() {
 	var obj=this.state;
 	if(!this.state.list)this.state.list=[];
+		var help=(React.createElement("div", null))
+	if(!this.state.list)this.state.list=[];
+	if(announce_types==0){
+	 help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list6})); 
+	  }else if(announce_types==1){
+	  help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list7})); 
+	  }else if(announce_types==3){
+	  help=(React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list9})); 
+	  }
   return (
   React.createElement("div", null, 
+	  help, 
 	     React.createElement(AMR_Panel, null, 
 		 React.createElement(AMR_ButtonToolbar, null, 
 	      React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
@@ -3349,6 +3362,8 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 render: function() {
 	 var o = this.state;
 	  var type_div;
+	  var url=(React.createElement("div", null));
+	  var ylBtn=(React.createElement("div", null));
 	  if (announce_types==2){
 		  type_div= 
 			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
@@ -3356,7 +3371,18 @@ render: function() {
 		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
 		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
 		     );
-	  } else {
+	  }else if(announce_types==3){
+	   url=(
+		React.createElement("div", null, 
+		  React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
+		  React.createElement("label", {htmlFor: "name"}, "Url外部内容链接:"), 
+		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
+		)
+		)
+	  ylBtn=(React.createElement("div", null, 
+	   React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-secondary"}, "预览")
+	   ))
+	  }else {
 		  type_div =
 		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
 	  }
@@ -3377,12 +3403,12 @@ return (
 		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
 		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
 		  React.createElement("br", null), 
-		  React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
-		  React.createElement("label", {htmlFor: "name"}, "Url外部内容链接:"), 
-		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
+		  url, 
+
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
 		G_get_upload_img_Div(), 
-		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+          ylBtn
 		  )
 	     )
 	   )	   
@@ -3468,6 +3494,7 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
      var o =this.state;	
 	 return (
 	 	React.createElement("div", null, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list12}), 
 	 	    React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	    	     this.props.formdata.map(function(event) {
 	              return (
@@ -3494,6 +3521,7 @@ var Boss_student_tel2_byRight =React.createClass({displayName: "Boss_student_tel
 	render: function() {
 	 return (
 			 React.createElement("div", {className: "am-g"}, 
+		 		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list12}), 
 			  React.createElement("h1", null, "园长信箱暂无信件！")
 			  )
 	     );
@@ -3650,17 +3678,6 @@ var Announcements_Class_div = React.createClass({displayName: "Announcements_Cla
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
-     getDefaultProps: function() {
-     var data = [
-                 {val: '提示'},
-                 {val: '1.创建班级'},
-	        	 {val: '2.添加教学计划'},
-		         {val: '3.添加学生'}
-               ];
-         return {
-           data_list: data
-         };
-       },
     getInitialState: function() {
 		return {groupuuid:this.props.groupuuid};
 	  },
@@ -3713,7 +3730,7 @@ render: function() {
   return (	
 	 
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-             React.createElement(G_px_help_List, {data: this.props.data_list}), 
+			  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list13}), 
 		    React.createElement(AMUIReact.Form, {id: "queryForm", inline: true}, 
 	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
@@ -3981,13 +3998,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		     React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		   React.createElement("div", {className: "am-form-group"}, 
 		    React.createElement("hr", null), 
+			   React.createElement("div", null, 
   		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 		      
-  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像"), 		      		      
- 	         React.createElement(AMUIReact.FormGroup, null, 
- 	        React.createElement("label", null, "单选："), 
- 	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
- 	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
- 	     ), 		    
+  		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像")	
+			   ), 
  	       React.createElement("label", {className: one_classDiv}, "姓名"), 
    		     React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange})
@@ -3996,6 +4010,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	   		  React.createElement("div", {className: two_classDiv}, 
    		     React.createElement(PxInput, {icon: "user-secret", type: "text", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
    		    ), 
+                React.createElement("label", {className: one_classDiv}, "单选:"), 
+		        React.createElement("div", {className: two_classDiv}, 
+		        React.createElement(AMUIReact.FormGroup, null, 
+ 	            React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get( "sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+ 	            React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get( "sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		        )
+		        ), 
+
    		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
  		      React.createElement("div", {className: two_classDiv}, 
  		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
@@ -4360,22 +4382,26 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		   React.createElement("div", {className: "am-form-group"}, 
  			
  		    React.createElement("hr", null), 
-   		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像"), 	      
-  	         React.createElement(AMUIReact.FormGroup, null, 
-  	        React.createElement("label", null, "单选："), 
-  	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-  	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-  	     ), 		    
+   		      React.createElement("div", null, 
+			  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
+   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像")	      
+              ), 		    
   	       React.createElement("label", {className: one_classDiv}, "姓名"), 
     		     React.createElement("div", {className: two_classDiv}, 
  		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
  		        ), 
  		       React.createElement("label", {className: one_classDiv}, "昵称"), 
- 	   		  React.createElement("div", {className: two_classDiv}, 
-    		     React.createElement(PxInput, {icon: "user-secret", type: "text", maxLength: "20", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
-    		    ), 
-    		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
+ 	   		   React.createElement("div", {className: two_classDiv}, 
+    		    React.createElement(PxInput, {icon: "user-secret", type: "text", maxLength: "20", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
+    		   ), 
+				  React.createElement("label", {className: one_classDiv}, "单选:"), 
+		          React.createElement("div", {className: two_classDiv}, 
+		          React.createElement(AMUIReact.FormGroup, null, 
+  	              React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+  	              React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		          )
+		          ), 
+    		  React.createElement("label", {className: one_classDiv}, "出生日期"), 
    		      React.createElement("div", {className: two_classDiv}, 
    		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
  		        ), 
@@ -4728,6 +4754,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       return (
   		  
       React.createElement("div", null, 
+       React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list14}), 
   	   React.createElement("div", {className: "am-form-group"}, 
   	    React.createElement("hr", null)	 
   	     ), 
@@ -4896,6 +4923,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	  var o = this.state;
     return (
     		React.createElement("div", null, 
+		React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list15}), 
     		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form"}, 
     		 React.createElement("div", null, 
 	    		 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
@@ -5108,12 +5136,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      	this.load_more_btn_id="load_more_"+this.props.uuid;
        return (			
      		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		         React.createElement(AMR_Panel, null, 
+		         React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list8}), 
      		     React.createElement(AMUIReact.ButtonToolbar, null, 
-     		     React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新"), 
-     		     React.createElement(G_help_popo, {msg: G_tip.Classnews_admin})
-     		     )
-		         ), 
+     		     React.createElement(AMUIReact.Button, {amStyle: "primary", onClick: this.refresh_data.bind(this)}, "刷新")
+     		     ), 
+		        React.createElement("hr", null), 
      		    React.createElement(Div_MyClassnewStatistics_byRight, null), 
      			React.createElement("hr", null), 	 
      		    
@@ -6406,6 +6433,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	 var o=this.props;
      return (
      React.createElement("div", null, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list3}), 
 		 React.createElement(AMR_Panel, null, 
          React.createElement(AMR_ButtonToolbar, null, 
 			 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -6670,7 +6698,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "课程详细内容:", placeholder: "填写内容", name: "context", value: o.context, onChange: this.handleChange}), 
 					G_get_upload_img_Div(), 
 	  		  
-				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
+				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+					  React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-secondary"}, "预览")	
 				      )
 		          )
 		       ), 	
@@ -6902,13 +6931,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		   React.createElement("div", {className: "am-form-group"}, 
  			
  		    React.createElement("hr", null), 
+              React.createElement("div", null, 
    		     React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
-   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像"), 	      
-  	         React.createElement(AMUIReact.FormGroup, null, 
-  	        React.createElement("label", null, "单选："), 
-  	       React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
-  	      React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
-  	     ), 		    
+   		      React.createElement("button", {type: "button", onClick: this.btn_class_student_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传头像")	      
+              ), 		    
   	       React.createElement("label", {className: one_classDiv}, "姓名"), 
     		     React.createElement("div", {className: two_classDiv}, 
  		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
@@ -6917,6 +6943,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	   		  React.createElement("div", {className: two_classDiv}, 
     		     React.createElement(PxInput, {icon: "user-secret", type: "text", maxLength: "20", name: "nickname", id: "nickname", value: o.nickname, onChange: this.handleChange})
     		    ), 
+				React.createElement("label", {className: one_classDiv}, "单选:"), 
+		        React.createElement("div", {className: two_classDiv}, 
+		        React.createElement(AMUIReact.FormGroup, null, 
+				  React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: Vo.get("sex_0"), inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+				  React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: Vo.get("sex_1"), inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		        )
+		        ), 
     		     React.createElement("label", {className: one_classDiv}, "出生日期"), 
    		      React.createElement("div", {className: two_classDiv}, 
    		       React.createElement(PxInput, {icon: "birthday-cake", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "birthday", id: "birthday", value: o.birthday, onChange: this.handleChange})
@@ -7318,6 +7351,108 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    //±±±±±±±±±±±±±±±±±±±±±±±±±±±   
 
    
+ //——————————————————————————咨询记录<绘制>—————————————————————  
+
+   /* 
+    * <咨询记录>绘制舞台
+    * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+    * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+    * @btn_click_announce:点击按钮事件跳转kd_servise方法;
+    * */
+   var zixun_px_Div_list = React.createClass({displayName: "zixun_px_Div_list", 
+   	load_more_btn_id:"load_more_",
+   	pageNo:1,
+   	classnewsreply_list_div:"am-list-news-bd",
+     getInitialState: function() {
+		return {groupuuid:this.props.groupuuid};
+	  },
+   	componentWillReceiveProps:function(){
+   		this.refresh_data();
+   	},
+   	componentDidMount:function(){
+   		this.load_more_data();
+   	},
+   	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+   	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+   	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+   	load_more_data:function(){
+		this.setState({groupuuid:$("input[name='group_uuid']").val()});
+   		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		 var that=this;
+		 var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+		G_mygroup_choose=$("input[name='group_uuid']").val();
+		  var re_data=ajax_zixun_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+   	},
+   	refresh_data:function(){
+//   		classnewsreply_list_div 清除；
+//         load_more_data	重新绘制DIV；
+   		this.forceUpdate();
+   		this.pageNo=1;
+   		$("#"+this.classnewsreply_list_div).html("");
+   		this.load_more_data();
+   		
+   	}, 
+   render: function() {
+   	this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (			
+   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 	
+		 React.createElement(AMR_ButtonToolbar, null, 
+   		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.grouplist, btnStyle: "primary", value: G_mygroup_choose})
+   		    ), 
+
+
+
+
+   		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
+   		  ), 
+   		  
+   		  React.createElement("div", {className: "am-list-news-ft"}, 
+   		    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
+   		  )		  
+   		)   			
+     );
+   }
+   });
+
+     
+   /*
+    *<咨询记录>表格内容绘制
+    * */
+   var Px_zixunlist_div = React.createClass({displayName: "Px_zixunlist_div", 
+   	  render: function() {
+   	    var event = this.props.events;
+   	    var className = event.highlight ? 'am-active' :
+       event.disabled ? 'am-disabled' : '';
+   	    return (
+   	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+   	    	     React.createElement("div", {className: "am-list-news-bd"}, 
+   	    	     React.createElement("ul", {className: "am-list"}, 
+   	    			  this.props.events.data.map(function(event) {
+   	    			      return (
+   	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
+   	    			  		  event.ext_context, 	
+   	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
+   	    			  		  Store.getGroupNameByUuid(event.group_uuid), "|", event.tel_name, "|", event.tel, "|", event.create_time
+   	    			  		  )
+   	    			  		    )
+   	    			    		  )
+   	    			         })	
+   	    			  )
+   	    			  )
+   	    	    )  		  
+   	    	  );
+   }
+   }); 
+   //±±±±±±±±±±±±±±±±±±±±±±±±±±± 
+   
 
 //——————————————————————————对外校务管理<校园列表绘制>—————————————————————   
 /*
@@ -7335,6 +7470,7 @@ var Group_EventsTable_byRight_px = React.createClass({displayName: "Group_Events
   render: function() {
     return (
     React.createElement("div", null, 
+     React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list2}), 
     React.createElement(AMR_ButtonToolbar, null, 
 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加分校")
 	  ), 
@@ -7572,7 +7708,7 @@ React.createElement("div", null,
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-   		  
+   		  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list4}), 
 		   React.createElement(AMR_ButtonToolbar, null, 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add",this.props.groupuuid)}, "创建优惠活动")
 		    ), 
@@ -7637,18 +7773,14 @@ React.createElement("div", null,
 }, 
    render: function() {
    	  var o = this.props.data;
-   	  var edit_btn_className="G_Edit_hide";
-   	  if(this.props.canEdit){
-   		  edit_btn_className="G_Edit_show";
-   	  }
    return (
    		  React.createElement("div", null, 
          React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "no", marginheight: "0", marginwidth: "0", width: "100%", height: "100%", src: this.props.share_url}), 
 
 
    		     React.createElement(AMR_ButtonToolbar, null, 
-   		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
-   		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
+   		     React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
+   		     React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
    		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
    		     React.createElement(AMR_Button, {className: G_CallPhoneFN.isAndorid()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.message,null,this.props.share_url)}, "分享")
    		     ), 	
@@ -7700,26 +7832,26 @@ React.createElement("div", null,
 	 	   React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
             React.createElement("hr", null), 
 	    React.createElement("div", null, 
+
  		 React.createElement("div", {className: "am-form-group"}, 
  	       React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid}), 		          
-           React.createElement("legend", null, "优惠活动开始时间："), 
+           React.createElement("legend", null, "开始时间："), 
            React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "start_timeStr", id: "start_timeStr", dateTime: this.state.start_time, onChange: this.handleChange}), 
-  	       React.createElement("legend", null, "优惠活动结束时间："), 
+  	       React.createElement("legend", null, "结束时间："), 
            React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "end_timeStr", id: "end_timeStr", dateTime: this.state.end_time, onChange: this.handleChange})
          ), 
-	 	  	React.createElement("hr", null), 
-		      React.createElement("label", {className: one_classDiv}, "标题:"), 
+			 React.createElement("hr", null), 
+			 React.createElement("label", {className: one_classDiv}, "标题:"), 
 			   React.createElement("div", {className: two_classDiv}, 
 				React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
 			     ), 
-            React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
-		      React.createElement("label", {className: one_classDiv}, "Url外部内容链接:"), 
+	 	   React.createElement("legend", null, "Url和详细内容选填一个-两项都填系统默认Url"), 
+		 	React.createElement("label", {className: one_classDiv}, "Url外部内容链接:"), 
 			   React.createElement("div", {className: two_classDiv}, 
 				React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"})
 			     ), 
- 		  
-		 React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "优惠活动详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
-		G_get_upload_img_Div(), 
+
+			 React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "优惠活动详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		  React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交")				      					  
 		  )
 	  )	 
@@ -7795,6 +7927,7 @@ React.createElement("div", null,
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list5}), 
    		  React.createElement(AMR_Panel, null, 
    		  React.createElement(AMR_ButtonToolbar, null, 
    		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
@@ -7904,7 +8037,7 @@ var Teacher_look_info =React.createClass({displayName: "Teacher_look_info",
 			      React.createElement(AMUIReact.ListItem, null, "发布状态:", Vo.get("course_status_"+o.status)), 			      
 			     React.createElement(AMUIReact.ListItem, null, "更新时间:", o.update_time), 
 			    React.createElement(AMUIReact.ListItem, null, "老师介绍详细内容:", 
-	 			React.createElement("div", {dangerouslySetInnerHTML: {__html:o.context}})
+	 			React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
 				)		 			       			      
 			 )		
 		    ) 
@@ -8026,7 +8159,7 @@ React.createElement("div", null,
 			       React.createElement(PxInput, {type: "text", name: "summary", id: "summary", maxLength: "45", placeholder: "45字以内", value: o.summary, onChange: this.handleChange})
 			        ), 
 			       
- 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细介绍:", placeholder: "填写内容", name: "context", value: o.context, onChange: this.handleChange}), 
+ 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细介绍:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
  					G_get_upload_img_Div(), 
 	  		  
 				      React.createElement("button", {type: "button", onClick: ajax_teacher_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      

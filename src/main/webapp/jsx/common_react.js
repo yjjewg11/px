@@ -83,6 +83,7 @@ var opt={
 			role_list:Store.getRoleList(0)
 		};
  */
+//幼儿园老师授权
 var G_Role_User_EventsTable = React.createClass({
 	getInitialState: function() {
 		return this.load_role_bind_user(this.props.groupuuid);
@@ -133,6 +134,7 @@ render: function() {
 	var that=this;
   return (
   <div>
+  <G_px_help_List data={G_kd_help_msg.msg_help_list7}/>
   <AMR_Panel>
   <AMR_ButtonToolbar>
   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -140,6 +142,87 @@ render: function() {
   </div>
   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   <G_help_popo   msg={G_tip.role_grant_users} />
+  </div>
+  </AMR_ButtonToolbar>
+  </AMR_Panel>
+    <AMUIReact.Table bordered className="am-table-striped am-table-hover am-text-nowrap">  
+      <thead> 
+        <tr>
+          <th>权限名称</th>
+          <th>权限操作</th>
+          <th>授权用户</th>
+          <th>权限描述</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {this.state.role_list.map(function(event) {
+          return (<G_Role_User_EventsTable_EventRow event={event} groupuuid={that.state.groupuuid} userList={that.state.list} />);
+        })}
+      </tbody>
+    </AMUIReact.Table>
+    </div>
+  );
+}
+});
+  
+//培训机构老师授权  
+var G_Role_User_EventsTable2 = React.createClass({
+	getInitialState: function() {
+		return this.load_role_bind_user(this.props.groupuuid);
+	  },
+	  componentWillReceiveProps: function(nextProps) {
+		  var tmp=this.load_role_bind_user(nextProps.groupuuid);
+			tmp.role_list=nextProps.role_list;
+		  this.setState(tmp);
+		},
+	handleChange_selectgroup_uuid:function(groupuuid){
+		  this.setState(this.load_role_bind_user(groupuuid));
+	},
+	  componentDidMount:function(){
+		  this.setState(this.load_role_bind_user(this.props.groupuuid));
+
+	  },
+	load_role_bind_user:function(groupuuid){
+		if(!groupuuid)return;
+		var that=this;
+		var tmpState={};
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/role/getRoleUserBy.json?groupuuid="+groupuuid;
+		$.ajax({
+			type : "GET",
+			url : url,
+			async: false,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					tmpState={
+						 groupuuid:groupuuid,
+				          list: data.list
+				        };
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+		tmpState.role_list=this.props.role_list;
+		return tmpState;
+	},
+render: function() {
+	if(!this.props.group_list||this.props.group_list.length==0){
+		return (<G_NoData_div />)
+	}
+	var that=this;
+  return (
+  <div>
+  <G_px_help_List data={G_px_help_msg.msg_px_help_list11}/>
+  <AMR_Panel>
+  <AMR_ButtonToolbar>
+  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  <AMUIReact.Selected  className="am-fl" id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />    
+  </div>
+  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
   </div>
   </AMR_ButtonToolbar>
   </AMR_Panel>
@@ -385,15 +468,142 @@ render: function() {
 //    	  }
 //    	}); 
  
-  
-/*
+  /*（幼儿园老师管理）
+  * 老师管理服务器请求后绘制处理方法；
+  * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
+  * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
+  * @调用LIS.events.map方法循环绘制老师数组； 
+  * @</select>下拉多选框;
+  * */
+  var Userinfo_EventsTable_div = React.createClass({
+  	load_more_btn_id:"load_more_",
+  	pageNo:1,
+  	classnewsreply_list_div:"am-list-news-bd",
+  	componentWillReceiveProps:function(){
+  		this.refresh_data();
+  	},
+  	componentDidMount:function(){
+  		this.load_more_data();
+  	},
+  	//逻辑：首先创建一个“<div>” 然后把div和 pageNo   list_div,groupuuid,name,pageNo
+  	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+  	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+  	load_more_data:function(){
+  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+  		var that=this;
+  		var callback=function(re_data){
+  			if(!re_data)return;
+  			if(re_data.data.length<re_data.pageSize){
+  				$("#"+that.load_more_btn_id).hide();
+  			}else{
+  				$("#"+that.load_more_btn_id).show();
+  			}
+  			if(that.pageNo==1){
+  				$("#div_totalNumber").html("总人数:"+re_data.totalCount);
+  			}
+  			that.pageNo++;
+  		}
+  			this.setState({groupuuid:$("input[name='group_uuid']").val()});
+  		ajax_uesrinfo_listByGroup(this.classnewsreply_list_div+this.pageNo,$("input[name='group_uuid']").val(),$('#sutdent_name').val(),this.pageNo,callback);
+  	},
+  	refresh_data:function(){
+//  		classnewsreply_list_div 清除；
+//        load_more_data	重新绘制DIV；
+  		this.pageNo=1;
+  		$("#"+this.classnewsreply_list_div).html("");
+  		this.load_more_data();
+  		
+  	},	
+  	 getInitialState: function() {
+  		return {groupuuid:this.props.groupuuid};
+  	  },
+  	handleClick: function(m) {		
+  		 if(m=="add"){
+  			 btn_click_userinfo(m,{group_uuid:$("input[name='group_uuid']").val(),office:"老师"});
+  			 return;
+  		 }
+  		 var uuids=null;
+  		 var usernames=null;
+  		 $($("input[name='table_checkbox']")).each(function(){
+  			 	if(this.checked){
+  				 if(uuids==null){
+  					 uuids=this.value;
+  					 usernames=this.alt;
+  				 }
+  				 else{
+  					 uuids+=','+this.value ;  
+  					 usernames+=','+this.alt;
+  				 };
+  			 	}
+  			});
+  		  if(!uuids){
+  			  G_msg_pop("请勾选复选框！");
+  			  return;
+  		  }
+  		  btn_click_userinfo(m,uuids,usernames);
+  	  },
+  	  handleChange_checkbox_all:function(){
+  		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+  	  },
+  	  handleChange_selectgroup_uuid:function(val){
+  		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
+  	  },
+  	  handleChange_selectgroup_sou_uuid:function(){
+  		  ajax_uesrinfo_listByGroup(this.props.group_uuid,$('#sutdent_name').val());
+  	  },
+  		 handleClick_download: function(xlsname) {
+  			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
+  	 },
+  	 
+   render: function() {
+  	 this.load_more_btn_id="load_more_"+this.props.uuid;
+     return (
+  		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
+  		   <G_px_help_List data={G_kd_help_msg.msg_help_list6}/>
+  		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
+  		   <AMR_Panel>
+  		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
+  		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+  			  </div> 
+  			  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
+  			    </div> 
+  			    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
+  			    </div> 
+  				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+  				  </div>
+  				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
+  					  </div>
+  					  
+  				  </AMR_ButtonToolbar>
+  				  </AMR_Panel>
+  				  </form>
+  				  <div id="div_totalNumber" >总人数:0
+  				  </div>	
+  		    <div id={this.classnewsreply_list_div} >
+  			  </div>		   
+  		   		   
+  			  <div className="am-list-news-ft">
+  			    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+  			  </div>		  
+  			</div>		   		   
+     );
+     
+   }
+  } 
+     );  
+/*（培训机构老师管理）
 * 老师管理服务器请求后绘制处理方法；
 * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
 * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
 * @调用LIS.events.map方法循环绘制老师数组； 
 * @</select>下拉多选框;
 * */
-var Userinfo_EventsTable_div = React.createClass({
+var Userinfo_EventsTable_div1 = React.createClass({
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
@@ -477,7 +687,7 @@ var Userinfo_EventsTable_div = React.createClass({
 	 this.load_more_btn_id="load_more_"+this.props.uuid;
    return (
 		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
-	   
+		   <G_px_help_List data={G_px_help_msg.msg_px_help_list10}/>
 		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
 		   <AMR_Panel>
 		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
@@ -653,10 +863,9 @@ var Userinfo_edit = React.createClass({
 		        
 		        <label className={one_classDiv}>单选:</label>
 		        <div className={two_classDiv}>
-		       <AMUIReact.FormGroup>
+		        <AMUIReact.FormGroup>
 			     <PxInput type="radio" name="sex" value="0" label="男" inline onChange={this.handleChange} checked={o.sex==0?"checked":""}  />
 				 <PxInput type="radio" name="sex" value="1" label="女" inline onChange={this.handleChange} checked={o.sex==1?"checked":""}  />
-
 		        </AMUIReact.FormGroup>
 		        </div> 
 		    <label className={one_classDiv}>Email:</label>
@@ -1177,15 +1386,11 @@ render: function() {
 //新版帮助公共方法
 var G_px_help_List = React.createClass({ 
 	  render: function() {
-//		  var title=G_tip.help;
-//		  var msg="帮助内容";
-//		  if(this.props.msg)msg=this.props.msg;
-//		  if(this.props.title)title=this.props.title;
 	    return (
 	    		  <ol className="am-breadcrumb am-text-warning">
 		    		{this.props.data.map(function(event) {
 			  			  return(
-			  			  	<li>{event.val}</li>		  	  
+			  			  	<li>{event}</li>		  	  
 			  			  )})}
 	    		  </ol>
 	    );
