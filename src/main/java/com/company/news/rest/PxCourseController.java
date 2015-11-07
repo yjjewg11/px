@@ -66,7 +66,7 @@ public class PxCourseController extends AbstractRESTController {
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			
 
-			PxCourse flag;
+			Object flag;
 			if (StringUtils.isEmpty(pxCourseJsonform.getUuid()))
 				flag = pxCourseService.add(pxCourseJsonform,
 						responseMessage,user);
@@ -75,8 +75,6 @@ public class PxCourseController extends AbstractRESTController {
 						responseMessage,user);
 			if (flag==null)// 请求服务返回失败标示
 				return "";
-//			model.put(RestConstants.Return_G_entity_id,flag.getUuid());
-//			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getPxCourseByUuid(flag.getUuid()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

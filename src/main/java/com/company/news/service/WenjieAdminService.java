@@ -58,9 +58,24 @@ public class WenjieAdminService extends AbstractService {
 				obj.setCity("成都");
 				isUpdate=true;
 			}
-				if(isUpdate){nSimpleHibernateDao.save(obj);
+			
+			if(obj.getCt_stars()==null){
+				obj.setCt_stars(SystemConstants.Ct_stars_init);
+				obj.setCt_stars_count(0l);
+				isUpdate=true;
 			}
 			
+			if(obj.getCt_study_students()==null){
+				obj.setCt_study_students(0l);
+				isUpdate=true;
+			}
+			
+			if(isUpdate){nSimpleHibernateDao.save(obj);
+			}
+			
+				
+				
+				
 		}
 		
 	}

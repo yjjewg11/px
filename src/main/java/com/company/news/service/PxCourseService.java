@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourse;
 import com.company.news.entity.PxCourse4Q;
+import com.company.news.entity.PxCourseForUpdate;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxCourseJsonform;
 import com.company.news.query.PageQueryResult;
@@ -50,6 +50,9 @@ public class PxCourseService extends AbstractService {
 		pxCourse.setUpdatetime(TimeUtils.getCurrentTimestamp());
 		
 		pxCourse.setUpdate_useruuid(user.getUuid());
+		pxCourse.setCt_stars(SystemConstants.Ct_stars_init);
+		pxCourse.setCt_stars_count(0l);
+		pxCourse.setCt_study_students(0l);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxCourse);
 
@@ -65,7 +68,7 @@ public class PxCourseService extends AbstractService {
 	 * @param request
 	 * @return
 	 */
-	public PxCourse update(PxCourseJsonform pxCourseJsonform,
+	public PxCourseForUpdate update(PxCourseJsonform pxCourseJsonform,
 			ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
 		if(this.validateRequireByRegJsonform(pxCourseJsonform.getTitle(),"课程标题", responseMessage))
 			return null;
@@ -73,7 +76,7 @@ public class PxCourseService extends AbstractService {
 			return null;
 	
 		
-		PxCourse pxCourse=(PxCourse) this.nSimpleHibernateDao.getObject(PxCourse.class, pxCourseJsonform.getUuid());
+		PxCourseForUpdate pxCourse=(PxCourseForUpdate) this.nSimpleHibernateDao.getObject(PxCourseForUpdate.class, pxCourseJsonform.getUuid());
 		
 		
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
@@ -216,6 +219,16 @@ public class PxCourseService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		return query.list();
+	}
+	
+	/**
+	 * 增加培训课程计算
+	 * @param courseuuid
+	 */
+	public void addPxcourseStudentCount(String courseuuid) {
+		String sql = "update px_pxcourse set ct_study_students=ct_study_students+1 where uuid='" + courseuuid + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
 
 }

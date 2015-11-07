@@ -34,6 +34,7 @@ import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.AnnouncementsService;
+import com.company.news.service.ClassNewsService;
 import com.company.news.service.CountService;
 import com.company.news.vo.ResponseMessage;
 
@@ -249,9 +250,10 @@ public class ShareController extends AbstractRESTController {
 		return "/getAnn";
 	}
 	
-
+	@Autowired
+	private ClassNewsService classNewsService;
 	/**
-	 * 全校公告
+	 * 
 	 * @param model
 	 * @param request
 	 * @return
@@ -269,12 +271,12 @@ public class ShareController extends AbstractRESTController {
 				responseMessage.setMessage("数据不存在.");
 				return "/404";
 			}
-			
-			PClass pClass=(PClass)CommonsCache.get(a.getClassuuid(), PClass.class);
-			model.put("group",CommonsCache.get(pClass.getGroupuuid(), Group.class));
-			model.put("pclass",CommonsCache.get(a.getClassuuid(), PClass.class));
+			classNewsService.warpVo(a, null);
+//			PClass pClass=(PClass)CommonsCache.get(a.getClassuuid(), PClass.class);
+//			model.put("group",CommonsCache.get(pClass.getGroupuuid(), Group.class));
+//			model.put("pclass",CommonsCache.get(a.getClassuuid(), PClass.class));
 
-			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_hudong));
+//			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_hudong));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

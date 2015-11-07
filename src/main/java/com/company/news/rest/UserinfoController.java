@@ -890,6 +890,10 @@ public class UserinfoController extends AbstractRESTController {
 		User4Q a=null;
 		try {
 			a = userinfoService.get(uuid);
+			if(a==null){
+				responseMessage.setMessage("数据不存在!");
+				return "";
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

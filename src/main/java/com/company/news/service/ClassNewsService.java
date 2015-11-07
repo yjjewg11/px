@@ -301,7 +301,7 @@ public class ClassNewsService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	private ClassNews warpVo(ClassNews o,String cur_user_uuid){
+	public ClassNews warpVo(ClassNews o,String cur_user_uuid){
 		try {
 			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 			//网页版本需要转为html显示.

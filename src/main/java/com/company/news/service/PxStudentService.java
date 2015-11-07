@@ -38,8 +38,12 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class PxStudentService extends AbstractStudentService {
 	private static final String model_name = "培训结构学生模块";
+
 	@Autowired
-	private UserinfoService userinfoService;
+	private GroupService groupService;
+	
+	@Autowired
+	private PxCourseService pxCourseService;
 
 	/**
 	 * @throws Exception 
@@ -91,6 +95,9 @@ public class PxStudentService extends AbstractStudentService {
 		String msg=pxStudent.getName()+"|参加特长班|["+pxClass.getName()+"]|"+pxCourseCache.getTitle()+"|"+group.getBrand_name();
 		this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
 	
+		//增加课程已学人数.
+		pxCourseService.addPxcourseStudentCount(pxClass.getCourseuuid());
+		groupService.addGroupStudentCount(pxClass.getGroupuuid());
 		return true;
 	}
 	

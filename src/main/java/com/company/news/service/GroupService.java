@@ -16,6 +16,7 @@ import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.Group4QBaseInfo;
+import com.company.news.entity.GroupOfUpdate;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserGroupRelation;
@@ -129,6 +130,9 @@ public class GroupService extends AbstractService {
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 		group.setImg(PxStringUtil.imgUrlToUuid(group.getImg()));
 		
+		group.setCt_stars(SystemConstants.Ct_stars_init);
+		group.setCt_stars_count(0l);
+		group.setCt_study_students(0l);
 		
 		double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
 		if(lngLatArr==null){
@@ -192,6 +196,9 @@ public class GroupService extends AbstractService {
 		group.setCreate_time(TimeUtils.getCurrentTimestamp());
 		group.setPrivate_key(RandomNumberGenerator.getRandomInt(4));//机构随机码
 		
+		group.setCt_stars(SystemConstants.Ct_stars_init);
+		group.setCt_stars_count(0l);
+		group.setCt_study_students(0l);
 		
 
 		double[] lngLatArr=DistanceUtil.getLongitudeAndLatitude(groupRegJsonform.getMap_point());
@@ -303,7 +310,7 @@ public class GroupService extends AbstractService {
 //			return false;
 //		}
 			
-		Group group = (Group) this.nSimpleHibernateDao.getObject(Group.class, groupRegJsonform.getUuid());
+		GroupOfUpdate group = (GroupOfUpdate) this.nSimpleHibernateDao.getObject(GroupOfUpdate.class, groupRegJsonform.getUuid());
 		if (group != null) {
 			group.setBrand_name(groupRegJsonform.getBrand_name());
 			group.setCompany_name(groupRegJsonform.getCompany_name());
@@ -569,5 +576,16 @@ public class GroupService extends AbstractService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
+	
+	/**
+	 * 增加培训课程计算
+	 * @param courseuuid
+	 */
+	public void addGroupStudentCount(String groupuuid) {
+		String sql = "update px_group set ct_study_students=ct_study_students+1 where uuid='" + groupuuid + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+	}
+
 
 }
