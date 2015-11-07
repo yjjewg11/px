@@ -258,7 +258,7 @@ public class UserinfoService extends AbstractService {
 		// name昵称验证
 		if (StringUtils.isBlank(userRegJsonform.getName())
 				|| userRegJsonform.getName().length() > 15) {
-			responseMessage.setMessage("昵称不能为空，且长度不能超过15位！");
+			responseMessage.setMessage("姓名不能为空，且长度不能超过15位！");
 			return false;
 		}
 
@@ -622,6 +622,23 @@ public class UserinfoService extends AbstractService {
 		isAdmin = true;
 
 		return isAdmin;
+	}
+	
+
+	/**
+	 * 
+	 * @param user
+	 * @return 1,2
+	 */
+	public String getGroupTypes(String uuid) {
+		// 后台管理员登录
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession();
+		String sql="select DISTINCT t1.type from px_group t1 LEFT JOIN px_usergrouprelation t2 ON t1.uuid=t2.groupuuid";
+		sql+=" where t1.uuid !='group_wjd' and t2.useruuid='"+uuid+"'";
+		List tmpList = s.createSQLQuery(sql).list();
+		String str=StringUtils.join(tmpList, ",");
+		return str;
 	}
 
 	/**
@@ -1298,11 +1315,9 @@ public class UserinfoService extends AbstractService {
 			grouptype = SystemConstants.Group_type_1.toString();
 		List listGroupuuids = groupService.getGroupuuidsByUseruuid(
 				user.getUuid(), grouptype);
-		// 老数据兼容,如果没有关联默认学校,则关联.
-		if (listGroupuuids == null || listGroupuuids.isEmpty()) {
-			addDefaultKDGroup(user.getUuid(), null);
-			listGroupuuids.add(SystemConstants.Group_uuid_wjd);
-		}
+		
+		
+	
 		// 1.session添加-我的关联学校.
 		session.setAttribute(RestConstants.Session_MygroupUuids,
 				StringUtils.join(listGroupuuids, ","));

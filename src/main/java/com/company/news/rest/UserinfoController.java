@@ -70,12 +70,45 @@ public class UserinfoController extends AbstractRESTController {
 						responseMessage);
 				if (user==null)// 请求服务返回失败标示
 					return "";
+				
+				
+				String str=userinfoService.getGroupTypes(user.getUuid());
+				//c1.如果用户有关联的机构类型,这根据类型判断.
+				if(StringUtils.isNotBlank(str)){
+					//c1.1 如果选择登录的类型不在 关联的机构类型,则自动登录为关联类型的机构.
+					if(!str.contains(userLoginForm.getGrouptype())){
+						////如果是选择的是教育机构登录,则判断有幼儿园类型则设置为1.否则还是培训机构登录..
+						if(SystemConstants.Group_type_2.toString().equals(userLoginForm.getGrouptype())){
+							if(str.contains(SystemConstants.Group_type_1.toString())){
+								userLoginForm.setGrouptype(SystemConstants.Group_type_1.toString());
+							}
+						}
+					////如果是选择的是幼儿园登录,则判断有教育机构类型则设置为2.否则还是幼儿园登录..
+						else if(SystemConstants.Group_type_1.toString().equals(userLoginForm.getGrouptype())){
+							if(str.contains(SystemConstants.Group_type_2.toString())){
+								userLoginForm.setGrouptype(SystemConstants.Group_type_2.toString());
+							}
+						}
+					}
+				}else{
+					//没有幼儿园,则增加代理云.
+					if(SystemConstants.Group_type_1.toString().equals(userLoginForm.getGrouptype())){
+							
+						List listGroupuuids = groupService.getGroupuuidsByUseruuid(
+								user.getUuid(), userLoginForm.getGrouptype());
+						if(listGroupuuids.size()==0)
+							userinfoService.addDefaultKDGroup(user.getUuid(), null);
+					}
+				}
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				responseMessage.setMessage("服务器异常:"+e.getMessage());
 				return "";
 			}
+			
+			
 			
 			
 			//培训机构登录走培训流程.
@@ -132,6 +165,9 @@ public class UserinfoController extends AbstractRESTController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			
+			
 			//设置session数据
 			userinfoService.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			// 返回用户信息
@@ -793,6 +829,9 @@ public class UserinfoController extends AbstractRESTController {
 		model.put(RestConstants.Return_JSESSIONID, session.getId());
 	    // //List<groupuuid,rightname>
 	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
+	    //返回真正的登录类型.
+	    model.addAttribute(RestConstants.LOGIN_TYPE,session.getAttribute(RestConstants.LOGIN_TYPE));
+		   
 	  }
 	
 	/**

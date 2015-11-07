@@ -112,6 +112,7 @@ function ajax_getUserinfo(isInit) {
 				if(data.list)Store.setGroup(data.list);
 				PxRight.setUserRights(data.S_User_rights);
 				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
+				setCookie("bs_grouptype", data.S_type);
 				
 				PxLazyM.loadJS_for( getCookie("bs_grouptype"));
 				//menu_body_fn();
@@ -316,6 +317,8 @@ function ajax_userinfo_login() {
 				PxRight.setUserRights(data.S_User_rights);
 				
 				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
+				
+				setCookie("bs_grouptype", data.S_type);
 				PxLazyM.loadJS_for( getCookie("bs_grouptype"));
 				G_msg_pop(data.ResMsg.message);
 				//menu_body_fn();
