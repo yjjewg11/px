@@ -1885,18 +1885,7 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
-	  if (announce_types==2) {
-		  type_div= 
-			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
-		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
-		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
-  		     );
-	  } else {
-		  type_div =
-		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
-	  }
+	
   return (
   		React.createElement("div", null, 
   		React.createElement("div", {className: "header"}, 
@@ -1906,11 +1895,12 @@ render: function() {
   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
+	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
   		React.createElement("div", {className: "am-form-group"}, 
   	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
         ), 
-  		type_div, 
+  
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
@@ -3179,27 +3169,14 @@ render: function() {
 	  var type_div;
 	   var url=(React.createElement("div", null));
 	  var ylBtn=(React.createElement("div", null));
-	  if (announce_types==2) {
-		  type_div= 
-			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
-		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
-		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
-		     );
-	  }else if(announce_types==3){
+	   if(announce_types==3){
 	   url=(
 		React.createElement("div", null, 
 		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
 		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
 		)
 		)
-	  ylBtn=(React.createElement("div", null, 
-	   React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-secondary"}, "预览")
-	   ))
-	  } else {
-		  type_div =
-		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
-	  }
+	  } 
 return (
 		React.createElement("div", null, 		
 		React.createElement("div", {className: "header"}, 
@@ -3209,11 +3186,12 @@ return (
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
 		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
+	React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
 		React.createElement("div", {className: "am-form-group"}, 
 	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
       ), 
-		type_div, 
+		
 		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
 		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
 		  React.createElement("br", null), 

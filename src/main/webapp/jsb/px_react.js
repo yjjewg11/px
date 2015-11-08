@@ -2188,19 +2188,7 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
-	  if (announce_types==2) {
-		  type_div= 
-			   React.createElement("div", {className: "am-form-group", id: "div_classuuids"}, 
-		  		React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-		  		React.createElement("label", {htmlFor: "tel"}, "班级通知:"), 
-		  		React.createElement("input", {type: "text", name: "classuuids", id: "classuuids", value: o.classuuids, onChange: this.handleChange, placeholder: "班级通知，才填写"})
-  		     );
-	  } else {
-		  type_div =
-		  React.createElement("input", {type: "hidden", name: "type", value: o.type})
-	  }
-
+	
   return (
   		React.createElement("div", null, 
   		React.createElement("div", {className: "header"}, 
@@ -2210,11 +2198,11 @@ render: function() {
   		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
+  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
+	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
   		React.createElement("div", {className: "am-form-group"}, 
   	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
         ), 
-  		type_div, 
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
   		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
   		  React.createElement("br", null), 
@@ -3392,7 +3380,6 @@ return (
 		React.createElement("div", {className: "am-form-group"}, 
 	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
       ), 
-		type_div, 
 		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
 		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
 		  React.createElement("br", null), 
@@ -3400,8 +3387,8 @@ return (
 
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
 		G_get_upload_img_Div(), 
-		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
-          ylBtn
+		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+         
 		  )
 	     )
 	   )	   
@@ -7850,16 +7837,21 @@ React.createElement("div", null,
 	 	  React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
 	 	   React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
             React.createElement("hr", null), 
-	    React.createElement("div", null, 
+	   
+ 		 React.createElement("div", {className: "am-form-group am-u-sm-12"}, 
+ 	       React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
+            ), 
 
- 		 React.createElement("div", {className: "am-form-group"}, 
- 	       React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid}), 		          
-           React.createElement("legend", null, "开始时间："), 
-           React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "start_timeStr", id: "start_timeStr", dateTime: this.state.start_time, onChange: this.handleChange}), 
-  	       React.createElement("legend", null, "结束时间："), 
-           React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "end_timeStr", id: "end_timeStr", dateTime: this.state.end_time, onChange: this.handleChange})
-         ), 
-			 React.createElement("hr", null), 
+		  React.createElement("label", {className: one_classDiv}, "开始时间："), 
+			   React.createElement("div", {className: two_classDiv}, 
+				 React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", inline: true, name: "start_timeStr", id: "start_timeStr", dateTime: this.state.start_time, onChange: this.handleChange})
+  	       ), 
+
+			React.createElement("label", {className: one_classDiv}, "结束时间："), 
+			   React.createElement("div", {className: two_classDiv}, 
+				  React.createElement(AMUIReact.DateTimeInput, {format: "YYYY-MM-DD", inline: true, name: "end_timeStr", id: "end_timeStr", dateTime: this.state.end_time, onChange: this.handleChange})
+  			    ), 
+		
 			 React.createElement("label", {className: one_classDiv}, "标题:"), 
 			   React.createElement("div", {className: two_classDiv}, 
 				React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
@@ -7872,7 +7864,7 @@ React.createElement("div", null,
 
 			 React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "优惠活动详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		  React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交")				      					  
-		  )
+		
 	  )	 
 		   ), 	
 

@@ -2188,19 +2188,7 @@ var Announcements_goodedit = React.createClass({
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
-	  if (announce_types==2) {
-		  type_div= 
-			   <div className="am-form-group" id="div_classuuids" >
-		  		<input type="hidden" name="type"  value={o.type}/>
-		  		<label htmlFor="tel">班级通知:</label>
-		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-  		     </div>;
-	  } else {
-		  type_div =
-		  <input type="hidden" name="type"  value={o.type}/>
-	  }
-
+	
   return (
   		<div>
   		<div className="header">
@@ -2210,11 +2198,11 @@ render: function() {
   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
   		  <form id="editAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
-  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 	
+	    <input type="hidden" name="type"  value={o.type}/>
   		<div className="am-form-group">
   	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
         </div>   
-  		{type_div}
   		  <label htmlFor="name">标题:</label>
   		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		  <br/>
@@ -3392,7 +3380,6 @@ return (
 		<div className="am-form-group">
 	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
       </div>   
-		{type_div}
 		  <label htmlFor="name">标题:</label>
 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
 		  <br/>
@@ -3401,7 +3388,7 @@ return (
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
 		{G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
-          {ylBtn}
+         
 		  </form>
 	     </div>
 	   </div>	   
@@ -7850,16 +7837,21 @@ setProvCity:function(){
 	 	  <input type="hidden" name="type"  value={o.type}/>
 	 	   <input type="hidden" name="isimportant"  value={o.isimportant}/> 	
             <hr/>
-	    <div>
+	   
+ 		 <div className="am-form-group am-u-sm-12">
+ 	       <AMUIReact.Selected  id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
+            </div> 
 
- 		 <div className="am-form-group">
- 	       <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-           <legend>开始时间：</legend> 
-           <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="start_timeStr" id ="start_timeStr" dateTime ={this.state.start_time}    onChange={this.handleChange}/>
-  	       <legend>结束时间：</legend> 
-           <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="end_timeStr" id="end_timeStr" dateTime={this.state.end_time}    onChange={this.handleChange}/>
-         </div> 
-			 <hr/>
+		  <label className={one_classDiv}>开始时间：</label>
+			   <div className={two_classDiv}>
+				 <AMUIReact.DateTimeInput  format="YYYY-MM-DD" inline name="start_timeStr" id ="start_timeStr" dateTime ={this.state.start_time}    onChange={this.handleChange}/>
+  	       </div> 
+
+			<label className={one_classDiv}>结束时间：</label>
+			   <div className={two_classDiv}>
+				  <AMUIReact.DateTimeInput  format="YYYY-MM-DD" inline name="end_timeStr" id="end_timeStr" dateTime={this.state.end_time}    onChange={this.handleChange}/>
+  			    </div> 
+		
 			 <label className={one_classDiv}>标题:</label>
 			   <div className={two_classDiv}>
 				<input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
@@ -7872,7 +7864,7 @@ setProvCity:function(){
 
 			 <AMR_Input id="announce_message" type="textarea" rows="10" label="优惠活动详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		  <button type="button"  onClick={ajax_Preferential_save}  className="am-btn am-btn-primary">提交</button>				      					  
-		  </div>  
+		
 	  </form> 	 
 		   </div>	
 

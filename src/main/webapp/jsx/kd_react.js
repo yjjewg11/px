@@ -1885,18 +1885,7 @@ var Announcements_goodedit = React.createClass({
 	  },
 render: function() {
 	 var o = this.state;
-	  var type_div;
-	  if (announce_types==2) {
-		  type_div= 
-			   <div className="am-form-group" id="div_classuuids" >
-		  		<input type="hidden" name="type"  value={o.type}/>
-		  		<label htmlFor="tel">班级通知:</label>
-		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-  		     </div>;
-	  } else {
-		  type_div =
-		  <input type="hidden" name="type"  value={o.type}/>
-	  }
+	
   return (
   		<div>
   		<div className="header">
@@ -1906,11 +1895,12 @@ render: function() {
   		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
   		  <form id="editAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
-  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 
+	    <input type="hidden" name="type"  value={o.type}/>
   		<div className="am-form-group">
   	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
         </div>   
-  		{type_div}
+  
   		  <label htmlFor="name">标题:</label>
   		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		  <br/>
@@ -3179,27 +3169,14 @@ render: function() {
 	  var type_div;
 	   var url=(<div></div>);
 	  var ylBtn=(<div></div>);
-	  if (announce_types==2) {
-		  type_div= 
-			   <div className="am-form-group" id="div_classuuids" >
-		  		<input type="hidden" name="type"  value={o.type}/>
-		  		<label htmlFor="tel">班级通知:</label>
-		  		<input type="text" name="classuuids" id="classuuids" value={o.classuuids} onChange={this.handleChange} placeholder="班级通知，才填写"/>
-		     </div>;
-	  }else if(announce_types==3){
+	   if(announce_types==3){
 	   url=(
 		<div>
 		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
 		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
 		</div>
 		)
-	  ylBtn=(<div>
-	   <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-secondary">预览</button>
-	   </div>)
-	  } else {
-		  type_div =
-		  <input type="hidden" name="type"  value={o.type}/>
-	  }
+	  } 
 return (
 		<div> 		
 		<div className="header">
@@ -3209,11 +3186,12 @@ return (
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
 		  <form id="editAnnouncementsForm" method="post" className="am-form">
 		<input type="hidden" name="uuid"  value={o.uuid}/>
-		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
+		<input type="hidden" name="isimportant"  value={o.isimportant}/> 	
+	<input type="hidden" name="type"  value={o.type}/>
 		<div className="am-form-group">
 	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
       </div>   
-		{type_div}
+		
 		  <label htmlFor="name">标题:</label>
 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
 		  <br/>
