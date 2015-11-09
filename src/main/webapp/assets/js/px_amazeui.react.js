@@ -186,9 +186,16 @@ if (typeof define !== 'undefined' && define.amd) {
 		} else if (!dateObj) {
 			dateObj = new Date();
 		}
-		if (isNaN(dateObj)) {
-			throw new SyntaxError('invalid date');
+		
+		//modify lmq 
+//		if (isNaN(dateObj)) {
+//			throw new SyntaxError('invalid date');
+//		}
+		if(typeof dateObj!='Date'){
+			dateObj = new Date();
 		}
+		
+		//end modify lmq
 
 		mask = fecha.masks[mask] || mask || fecha.masks['default'];
 
@@ -261,7 +268,9 @@ if (typeof define !== 'undefined' && define.amd) {
 		}
 
 		if (!isValid) {
-			return false;
+			//modify lmq .修复控件输入非日期格式数据,导致报错.影响后续操作
+			return new Date();
+			//return false;
 		}
 
 		var today = new Date(), date;

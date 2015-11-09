@@ -324,8 +324,7 @@ public class AnnouncementsController extends AbstractRESTController {
 				}
 			}
 			String share_url=null;
-			if(StringUtils.isBlank(a.getUrl())){
-//				a.setUrl(PxStringUtil.getArticleByUuid(uuid));
+			if(!PxStringUtil.isUrl(a.getUrl())){
 				share_url=PxStringUtil.getArticleByUuid(uuid);
 			}else{
 				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));

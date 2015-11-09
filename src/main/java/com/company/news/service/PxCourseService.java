@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
@@ -186,12 +187,16 @@ public class PxCourseService extends AbstractService {
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
 		
 		
-//		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-//				.getSessionFactory().openSession();
-//		String sql=" SELECT t1.uuid,t1.logo,t2.img as group_img,t1.title,t1.ct_stars,t1.ct_study_students,t1.updatetime,t2.brand_name as group_name,t2.map_point,t2.address";
-//		sql+=" FROM px_pxcourse t1 ";
-//		sql+=" LEFT JOIN  px_group t2 on t1.groupuuid=t2.uuid ";
-//		sql+=" where  t1.status="+SystemConstants.PxCourse_status_fabu;
+		String sql=" SELECT t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students,t2.count";
+		sql+=" FROM px_pxcourse t1 ";
+		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+		sql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql += " order by CONVERT( t1.title USING gbk) ";
+		
+		
+		
+		String countsql="SELECT count(*) from px_pxcourse t1";
+		countsql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 //		
 //		if(StringUtils.isNotBlank(groupuuid)){
 //			sql+=" and t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
@@ -203,12 +208,16 @@ public class PxCourseService extends AbstractService {
 //			sql+=" and t1.uuid in ( select courseuuid  from px_userpxcourserelation where useruuid ='" + teacheruuid + "')";
 //		}
 		
-		String hql = "from PxCourse4Q where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+//		String hql = "from PxCourse4Q where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+//
+//		hql += " order by CONVERT( title USING gbk) ";
 
-		hql += " order by groupuuid, convert(title, 'gbk') ";
-
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
-		warpVoList(pageQueryResult.getData());
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		Query  query =this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
+//		warpVoList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	
