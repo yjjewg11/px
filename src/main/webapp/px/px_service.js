@@ -3131,6 +3131,33 @@ function px_react_ajax_teachingplan_delete(obj){
 	   			error :G_ajax_error_fn
 	   	   	});
 	   	   };   
+/*  
+* <教学计划>批量修改
+* */
+   function teachingplan_addClass_byRight(classuuid){
+	   var formdata={classuuid:classuuid,uuid:null}
+	   Queue.push(function(){teachingplan_edit_onClick_byRight(classuuid);},"批量修改");
+		React.render(React.createElement(Px_Teachingplan_addClass,{
+ 			formdata:formdata
+ 			}), document.getElementById('div_body'));
+
+   };   	   
+ /*(教学计划)
+* 班级详情内添加编辑提交按钮服务器请求
+* 直接把Form表单发送给服务器
+* */ 
+   function addteachingplan_save_byRight(){
+   	var objectForm = $('#addtTeachingplanForm').serializeJson();
+   var opt={
+           formName: "addtTeachingplanForm",
+           url:hostUrl + "rest/pxteachingplan/save.json",
+           cbFN:function(data){
+           	G_msg_pop(data.ResMsg.message);
+               	px_ajax_teachingplan_byRight(G_mygroup_choose,objectForm.classuuid,G_course_choose);
+               }
+               };
+   G_ajax_abs_save(opt);
+   }	   	   
 //objectForm.birthday=G_Check.formateDate(objectForm.birthday);
 //if(objectForm.birthday&&!G_Check.date1(objectForm.birthday)){
 //	G_msg_pop("出生日期格式不正确,格式为:YYYY-MM-DD");
