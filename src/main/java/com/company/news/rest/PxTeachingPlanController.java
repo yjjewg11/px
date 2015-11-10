@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.entity.PxClass;
 import com.company.news.entity.PxTeachingplan;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.PxClassService;
 import com.company.news.service.PxTeachingPlanService;
 import com.company.news.vo.ResponseMessage;
@@ -42,13 +45,6 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 
-		//
-		// if (!RightUtils.hasRight(RightConstants. KD_teachingplan_m
-		// ,request)){
-		// responseMessage.setMessage( RightConstants.Return_msg );
-		// return "";
-		//
-		// }
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		PxTeachingPlanJsonform pxTeachingPlanJsonform;
@@ -67,19 +63,38 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		try {
 
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
-			if (!pxclassService.isheadteacher(user.getUuid(),
-					pxTeachingPlanJsonform.getClassuuid())) {
-				responseMessage.setMessage("不是当前班级班主任不能修改课程表");
+			
+			
+			PxClass pxClass=pxclassService.get(pxTeachingPlanJsonform.getClassuuid());
+			if(pxClass==null){
+				responseMessage.setMessage("班级不存在.");
 				return "";
 			}
+			if (!RightUtils.hasRight(pxClass.getGroupuuid(), RightConstants.PX_class_m,
+					request)) {
+				if (!pxclassService.isheadteacher(user.getUuid(),
+						pxTeachingPlanJsonform.getClassuuid())) {
+					responseMessage.setMessage("不是当前班级管理员或者没有班级管理权限,不能修改教学计划");
+					return "";
+				}
+				
+			}
+		
 			
 			//设置当前用户
 			pxTeachingPlanJsonform.setCreate_useruuid(user.getUuid());
 
 			boolean flag;
 			if (StringUtils.isEmpty(pxTeachingPlanJsonform.getUuid()))
-				flag = pxTeachingPlanService.add(pxTeachingPlanJsonform,
-						responseMessage);
+				
+				if(StringUtils.isNotBlank(pxTeachingPlanJsonform.getPer_start_date())){//增加教学计划,根据周期行时间.
+					flag = pxTeachingPlanService.addByPre(pxTeachingPlanJsonform,
+							responseMessage);
+				}else{
+					flag = pxTeachingPlanService.add(pxTeachingPlanJsonform,
+							responseMessage);
+				}
+				
 			else
 				flag = pxTeachingPlanService.update(pxTeachingPlanJsonform,
 						responseMessage);

@@ -2314,7 +2314,6 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
   * */	
 
  function ajax_Class_div_byRight(groupuuid){
-	 	Queue.push(function(){ajax_Class_div_byRight(groupuuid);},"班级管理");
 	 var  grouplist=Store.getGroupByRight("PX_class_m");
 	 if(!grouplist||grouplist.length==0){
 	 	alert("没有班级管理权限不能访问.");
@@ -3329,7 +3328,9 @@ function px_react_ajax_teachingplan_delete(obj){
 //	var endDateStr=G_week.getWeek6(now,pageNo);
 
 	 var groupList=Store.getGroup();
-     if(!groupuuid)groupuuid=groupList[0].uuid;
+		if(!G_mygroup_choose)G_mygroup_choose=groupList[0].uuid
+     if(!groupuuid)groupuuid=G_mygroup_choose;
+     else G_mygroup_choose=groupuuid;
 		Queue.push(function(){px_ajax_course_byRight(groupuuid);},"发布课程");
 	   	$.AMUI.progress.start();
 	       var url = hostUrl + "rest/pxCourse/list.json";

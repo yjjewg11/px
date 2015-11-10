@@ -191,7 +191,7 @@ if (typeof define !== 'undefined' && define.amd) {
 //		if (isNaN(dateObj)) {
 //			throw new SyntaxError('invalid date');
 //		}
-		if(typeof dateObj!='Date'){
+		if(!dateObj|| typeof dateObj.getTime!='function'){
 			dateObj = new Date();
 		}
 		

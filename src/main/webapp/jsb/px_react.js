@@ -1444,7 +1444,7 @@ return (
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "classuuid", value: o.classuuid}), 
 		 React.createElement("label", {htmlFor: "name"}, "日期:"), 
-		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange}), 
+		 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", showTimePicker: false, name: "plandateStr", id: "plandateStr", dateTime: o.plandate, onChange: this.handleChange}), 
 		      React.createElement("br", null), 
 	    React.createElement(AMR_Input, {id: "morning", name: "morning", type: "textarea", rows: "2", label: "早上:", placeholder: "填写内容", value: o.morning, onChange: this.handleChange}), 
 		React.createElement(AMR_Input, {id: "afternoon", name: "afternoon", type: "textarea", rows: "2", label: "下午:", placeholder: "填写内容", value: o.afternoon, onChange: this.handleChange}), 
@@ -3660,7 +3660,10 @@ var Announcements_Class_div = React.createClass({displayName: "Announcements_Cla
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
     getInitialState: function() {
-		return {groupuuid:this.props.groupuuid};
+		var obj= {groupuuid:this.props.groupuuid};
+			if(!obj.groupuuid)obj.groupuuid=G_mygroup_choose;
+				if(!obj.courseuuid)obj.courseuuid=G_course_choose;
+		return obj;
 	  },
 	componentWillReceiveProps:function(){
 		this.refresh_data();
@@ -3694,6 +3697,7 @@ var Announcements_Class_div = React.createClass({displayName: "Announcements_Cla
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
+		G_mygroup_choose=$("input[name='groupuuid']").val();
 		G_course_choose=$("input[name='courseuuid']").val();
 		this.load_more_data();
 		
@@ -3720,7 +3724,7 @@ render: function() {
 		  React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.refresh_data.bind(this), data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMUIReact.Selected, {name: "courseuuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: G_course_choose})
+		  React.createElement(AMUIReact.Selected, {name: "courseuuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: o.courseuuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 		  React.createElement(AMUIReact.Selected, {i: true, name: "isdisable", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: pxclass_isdisable_list, btnStyle: "primary", value: o.isdisable})
@@ -4089,11 +4093,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 * */	
     var Class_edit_byRight = React.createClass({displayName: "Class_edit_byRight", 
     	 getInitialState: function() {
-    		    return this.props.formdata;
+    		    var obj= this.props.formdata;
+				if(!obj.groupuuid)obj.groupuuid=G_mygroup_choose;
+				if(!obj.courseuuid)obj.courseuuid=G_course_choose;
+				 return obj;
     		  },
     	 handleChange: function(event) {
-    		 
-			G_course_choose=$('courseuuid').val()
+    		 	G_mygroup_choose=$("input[name='groupuuid']").val();
+				G_course_choose=$("input[name='courseuuid']").val();
     		 if(event==G_group_wjd){
     			 $('#help1_span').show();
     		 }else{
@@ -4121,7 +4128,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})
 				), 
 				React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
-  		      React.createElement(AMUIReact.Selected, {id: "courseuuid", name: "courseuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: G_course_choose})
+  		      React.createElement(AMUIReact.Selected, {id: "courseuuid", name: "courseuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: o.courseuuid})
        		  )
 		  ), 
 		  React.createElement("hr", null), 
@@ -4923,10 +4930,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	    		 ), 
 				 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
 					    		 
-				 React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
+				 React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
 	    		 ), 
 				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
-			    React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+			    React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
 	    		 
 	    		 )
     		 
@@ -4998,8 +5005,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
   	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
   	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
-  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
-  			  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
+  			  React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
+  			  React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
   			React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
   			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-primary"}, "查询")	  				
   	  	)
@@ -5651,6 +5658,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	  )
 	 )
      ), 
+		   React.createElement(AMR_ButtonToolbar, null, 
+
+		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})}, "增加单条课程"), 	
+
+       React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.add_classbtn.bind(this)}, "批量添加课程")	  	  
+	
+		), 
 	  class_name, 	 
       addStudent, 
      
@@ -5703,15 +5717,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       )
 			  )})
    
-    ), 
+    )
       
-        React.createElement(AMR_ButtonToolbar, null, 
-
-		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})}, "增加单条课程"), 	
-
-       React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.add_classbtn.bind(this)}, "批量添加课程")	  	  
-	
-		)
+      
        )
      );
    }
@@ -5783,10 +5791,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
 		        ), 
  			 	
-		       React.createElement("label", {className: one_classDiv}, "日期："), 
+		       React.createElement("label", {className: one_classDiv}, "上课时间："), 
   		      React.createElement("div", {className: two_classDiv}, 
-  		     React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "25", placeholder: "YYYY-MM-DD", name: "plandateStr", value: o.plandate, onChange: this.handleChange})
-		    ), 	 
+			React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD HH:mm", inline: true, name: "plandateStr", dateTime: o.plandate, onChange: this.handleChange})
+
+  		    		    ), 	 
  				 
 	       React.createElement("label", {className: one_classDiv}, "课时长："), 
 		     React.createElement("div", {className: two_classDiv}, 
@@ -5842,62 +5851,64 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		    React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
 
  		   React.createElement("div", {className: "am-form-group"}, 
-
-
-
 		       React.createElement("label", {className: one_classDiv}, "开课日期："), 
   		      React.createElement("div", {className: two_classDiv}, 
-  		     React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "25", placeholder: "YYYY-MM-DD", name: "xxxxx", value: o.xxxxx, onChange: this.handleChange})
+				 React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "per_start_date", dateTime: o.per_start_date, onChange: this.handleChange})
+
 		    ), 	 
  				 
+				React.createElement(AMUIReact.FormGroup, null, 
+				  React.createElement("label", null, "上课周期："), 
+				  React.createElement(PxInput, {type: "radio", value: "1", name: "per_week", label: "周一", inline: true}), 
+				  React.createElement(PxInput, {type: "radio", value: "2", name: "per_week", label: "周二", inline: true}), 
+				  React.createElement(PxInput, {type: "radio", value: "3", name: "per_week", label: "周三", inline: true}), 
+				  React.createElement(PxInput, {type: "radio", value: "4", name: "per_week", label: "周四", inline: true}), 
+				  React.createElement(PxInput, {type: "radio", value: "5", name: "per_week", label: "周五", inline: true}), 
+					  React.createElement(PxInput, {type: "radio", value: "6", name: "per_week", label: "周六", inline: true}), 
+					  React.createElement(PxInput, {type: "radio", value: "7", name: "per_week", label: "周日", inline: true})
+				), 
 
-	       React.createElement("label", {className: one_classDiv}, "有效次数："), 
+	       React.createElement("label", {className: one_classDiv}, "上课次数："), 
 		     React.createElement("div", {className: two_classDiv}, 
-		       React.createElement(PxInput, {type: "text", name: "xxxxx", id: "xxxx", maxLength: "20", value: o.xxxxx, onChange: this.handleChange})
+		       React.createElement(PxInput, {type: "number", name: "per_num", maxLength: "5", value: o.per_num, placeholder: "必填,范围:[0-99]", onChange: this.handleChange})
 		        ), 
-			   	      
+			React.createElement("label", {className: one_classDiv}, "上课时间："), 
+  		      React.createElement("div", {className: two_classDiv}, 
+			     React.createElement(AMUIReact.DateTimeInput, {icon: "clock-o", maxLength: "5", name: "per_time", value: o.per_time, showDatePicker: false, format: "HH:mm", placeholder: "24H:mm", onChange: this.handleChange})
+  		  
+		    ), 	
 
 	       React.createElement("label", {className: one_classDiv}, "课时长："), 
 		     React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {type: "text", name: "duration", id: "duration", maxLength: "20", value: o.duration, onChange: this.handleChange})
 		        ), 
 
-				React.createElement(AMUIReact.FormGroup, null, 
-				  React.createElement("label", null, "上课周期："), 
-				  React.createElement(PxInput, {type: "checkbox", val: "1", name: "day", label: "周一", inline: true}), 
-				  React.createElement(PxInput, {type: "checkbox", val: "2", name: "day", label: "周二", inline: true}), 
-				  React.createElement(PxInput, {type: "checkbox", val: "3", name: "day", label: "周三", inline: true}), 
-				  React.createElement(PxInput, {type: "checkbox", val: "4", name: "day", label: "周四", inline: true}), 
-				  React.createElement(PxInput, {type: "checkbox", val: "5", name: "day", label: "周五", inline: true})
-				), 
+				
 
 
-		       React.createElement("label", {className: one_classDiv}, "上课时间："), 
-  		      React.createElement("div", {className: two_classDiv}, 
-  		     React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "25", placeholder: "YYYY-MM-DD", name: "plandateStr", value: o.plandate, onChange: this.handleChange})
-		    ), 	
+		       
 
 			 React.createElement("label", {className: one_classDiv}, "课程名:"), 
 		      React.createElement("div", {className: two_classDiv}, 
-		       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, onChange: this.handleChange})
+		       React.createElement(PxInput, {type: "text", name: "name", id: "name", maxLength: "20", value: o.name, placeholder: "课程名必填", onChange: this.handleChange})
 		        ), 
 
 	         React.createElement("label", {className: one_classDiv}, "上课地点："), 
 			  React.createElement("div", {className: two_classDiv}, 
-			 React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", value: o.address, onChange: this.handleChange})
+			 React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "20", placeholder: "选填", value: o.address, onChange: this.handleChange})
 			), 
 
 
   		     React.createElement("label", {className: one_classDiv}, "准备工具:"), 
 		      React.createElement("div", {className: two_classDiv}, 
-		       React.createElement(PxInput, {type: "text", placeholder: "默认为无需准备工具", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
+		       React.createElement(PxInput, {type: "text", placeholder: "选填", name: "readyfor", id: "readyfor", maxLength: "20", value: o.readyfor, onChange: this.handleChange})
 		        ), 
  			       
 
 
 			   React.createElement("label", {className: one_classDiv}, "课程详细："), 
 			  React.createElement("div", {className: two_classDiv}, 
-			 React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", value: o.context, onChange: this.handleChange})
+			 React.createElement(PxInput, {type: "text", name: "context", id: "context", maxLength: "20", placeholder: "选填", value: o.context, onChange: this.handleChange})
 			), 
  				      
 			   

@@ -1444,7 +1444,7 @@ return (
 		<input type="hidden" name="uuid"  value={o.uuid}/>
 		<input type="hidden" name="classuuid"  value={o.classuuid}/>
 		 <label htmlFor="name">日期:</label>
-		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
+		 <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD"  showTimePicker={false} name="plandateStr" id="plandateStr" dateTime={o.plandate}  onChange={this.handleChange}/>
 		      <br/>
 	    <AMR_Input id="morning"  name="morning" type="textarea" rows="2" label="早上:" placeholder="填写内容" value={o.morning} onChange={this.handleChange}/>
 		<AMR_Input id="afternoon"  name="afternoon" type="textarea" rows="2" label="下午:" placeholder="填写内容" value={o.afternoon} onChange={this.handleChange}/>
@@ -3660,7 +3660,10 @@ var Announcements_Class_div = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
     getInitialState: function() {
-		return {groupuuid:this.props.groupuuid};
+		var obj= {groupuuid:this.props.groupuuid};
+			if(!obj.groupuuid)obj.groupuuid=G_mygroup_choose;
+				if(!obj.courseuuid)obj.courseuuid=G_course_choose;
+		return obj;
 	  },
 	componentWillReceiveProps:function(){
 		this.refresh_data();
@@ -3694,6 +3697,7 @@ var Announcements_Class_div = React.createClass({
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
+		G_mygroup_choose=$("input[name='groupuuid']").val();
 		G_course_choose=$("input[name='courseuuid']").val();
 		this.load_more_data();
 		
@@ -3720,7 +3724,7 @@ render: function() {
 		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={G_course_choose} />          
+		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
@@ -4089,11 +4093,14 @@ var Class_EventsTable_byRight = React.createClass({
 * */	
     var Class_edit_byRight = React.createClass({ 
     	 getInitialState: function() {
-    		    return this.props.formdata;
+    		    var obj= this.props.formdata;
+				if(!obj.groupuuid)obj.groupuuid=G_mygroup_choose;
+				if(!obj.courseuuid)obj.courseuuid=G_course_choose;
+				 return obj;
     		  },
     	 handleChange: function(event) {
-    		 
-			G_course_choose=$('courseuuid').val()
+    		 	G_mygroup_choose=$("input[name='groupuuid']").val();
+				G_course_choose=$("input[name='courseuuid']").val();
     		 if(event==G_group_wjd){
     			 $('#help1_span').show();
     		 }else{
@@ -4121,7 +4128,7 @@ var Class_EventsTable_byRight = React.createClass({
       		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
 				</div> 
 				<div className="am-fl  am-margin-left-xs">
-  		      <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={G_course_choose} />          
+  		      <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
        		  </div> 
 		  </AMR_ButtonToolbar>
 		  <hr/>
@@ -4923,10 +4930,10 @@ var Class_EventsTable_byRight = React.createClass({
 	    		 </div>
 				 <div className="am-u-lg-3 am-u-md-6">
 					    		 
-				 <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+				 <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
 	    		 </div>
 				<div className="am-u-lg-3 am-u-md-6">
-			    <AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+			    <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
 	    		 
 	    		 </div>
     		 
@@ -4998,8 +5005,8 @@ var Class_EventsTable_byRight = React.createClass({
   	  <div className="am-form-group am-margin-top-xs">
   	  	<div className="am-u-lg-3 am-u-sm-6">
   	  		<PxInput type="text"  name="sutdent_name" id="sutdent_name"     placeholder="学生姓名"/>      
-  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
-  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
+  			  <AMUIReact.DateTimeInput showTimePicker={false} icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
+  			  <AMUIReact.DateTimeInput showTimePicker={false} icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
   			<div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
   			  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-primary">查询</button>	  				
   	  	</div>
@@ -5651,6 +5658,13 @@ var Class_EventsTable_byRight = React.createClass({
   	  </div>  
 	 </AMR_ButtonToolbar>
      </AMR_Panel>
+		   <AMR_ButtonToolbar>
+
+		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} >增加单条课程</AMR_Button>	
+
+       <AMR_Button amSize="xs" amStyle="secondary" onClick={this.add_classbtn.bind(this)}>批量添加课程</AMR_Button>	  	  
+	
+		</AMR_ButtonToolbar>
 	  {class_name}	 
       {addStudent} 
      
@@ -5705,13 +5719,7 @@ var Class_EventsTable_byRight = React.createClass({
    
     </div>
       
-        <AMR_ButtonToolbar>
-
-		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} >增加单条课程</AMR_Button>	
-
-       <AMR_Button amSize="xs" amStyle="secondary" onClick={this.add_classbtn.bind(this)}>批量添加课程</AMR_Button>	  	  
-	
-		</AMR_ButtonToolbar>
+      
        </div>
      );
    }
@@ -5783,10 +5791,11 @@ var Class_EventsTable_byRight = React.createClass({
 		       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
 		        </div>
  			 	
-		       <label className={one_classDiv}>日期：</label>
+		       <label className={one_classDiv}>上课时间：</label>
   		      <div className={two_classDiv}>
-  		     <PxInput icon="calendar" type="text" maxLength="25"  placeholder="YYYY-MM-DD" name="plandateStr"  value={o.plandate} onChange={this.handleChange}/>
-		    </div>	 
+			<AMUIReact.DateTimeInput  icon="calendar" format="YYYY-MM-DD HH:mm" inline name="plandateStr" dateTime={o.plandate}    onChange={this.handleChange}/>
+
+  		    		    </div>	 
  				 
 	       <label className={one_classDiv}>课时长：</label>
 		     <div className={two_classDiv}>
@@ -5842,62 +5851,64 @@ var Class_EventsTable_byRight = React.createClass({
  		    <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
 
  		   <div className="am-form-group">
-
-
-
 		       <label className={one_classDiv}>开课日期：</label>
   		      <div className={two_classDiv}>
-  		     <PxInput icon="calendar" type="text" maxLength="25"  placeholder="YYYY-MM-DD" name="xxxxx"  value={o.xxxxx} onChange={this.handleChange}/>
+				 <AMUIReact.DateTimeInput showTimePicker={false} icon="calendar" format="YYYY-MM-DD" inline name="per_start_date" dateTime={o.per_start_date}    onChange={this.handleChange}/>
+
 		    </div>	 
  				 
+				<AMUIReact.FormGroup>
+				  <label>上课周期：</label>
+				  <PxInput type="radio" value="1" name="per_week" label="周一" inline />
+				  <PxInput type="radio" value="2" name="per_week" label="周二" inline />
+				  <PxInput type="radio" value="3" name="per_week" label="周三" inline />
+				  <PxInput type="radio" value="4" name="per_week" label="周四" inline />
+				  <PxInput type="radio" value="5" name="per_week" label="周五" inline />
+					  <PxInput type="radio" value="6" name="per_week" label="周六" inline />
+					  <PxInput type="radio" value="7" name="per_week" label="周日" inline />
+				</AMUIReact.FormGroup>
 
-	       <label className={one_classDiv}>有效次数：</label>
+	       <label className={one_classDiv}>上课次数：</label>
 		     <div className={two_classDiv}>
-		       <PxInput  type="text" name="xxxxx" id="xxxx" maxLength="20" value={o.xxxxx} onChange={this.handleChange}/>
+		       <PxInput  type="number" name="per_num"  maxLength="5" value={o.per_num} placeholder="必填,范围:[0-99]" onChange={this.handleChange}/>
 		        </div>
-			   	      
+			<label className={one_classDiv}>上课时间：</label>
+  		      <div className={two_classDiv}>
+			     <AMUIReact.DateTimeInput icon="clock-o"  maxLength="5"  name="per_time"  value={o.per_time}    showDatePicker={false} format="HH:mm"  placeholder="24H:mm" onChange={this.handleChange}/>
+  		  
+		    </div>	
 
 	       <label className={one_classDiv}>课时长：</label>
 		     <div className={two_classDiv}>
 		       <PxInput  type="text" name="duration" id="duration" maxLength="20" value={o.duration} onChange={this.handleChange}/>
 		        </div>
 
-				<AMUIReact.FormGroup>
-				  <label>上课周期：</label>
-				  <PxInput type="checkbox" val="1" name="day" label="周一" inline />
-				  <PxInput type="checkbox" val="2" name="day" label="周二" inline />
-				  <PxInput type="checkbox" val="3" name="day" label="周三" inline />
-				  <PxInput type="checkbox" val="4" name="day" label="周四" inline />
-				  <PxInput type="checkbox" val="5" name="day" label="周五" inline />
-				</AMUIReact.FormGroup>
+				
 
 
-		       <label className={one_classDiv}>上课时间：</label>
-  		      <div className={two_classDiv}>
-  		     <PxInput icon="calendar" type="text" maxLength="25"  placeholder="YYYY-MM-DD" name="plandateStr"  value={o.plandate} onChange={this.handleChange}/>
-		    </div>	
+		       
 
 			 <label className={one_classDiv}>课程名:</label>
 		      <div className={two_classDiv}>
-		       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} onChange={this.handleChange}/>
+		       <PxInput  type="text" name="name" id="name" maxLength="20" value={o.name} placeholder="课程名必填" onChange={this.handleChange}/>
 		        </div>
 
 	         <label className={one_classDiv}>上课地点：</label>
 			  <div className={two_classDiv}>
-			 <PxInput  type="text" name="address" id="address" maxLength="20" value={o.address} onChange={this.handleChange}/>
+			 <PxInput  type="text" name="address" id="address" maxLength="20"  placeholder="选填"  value={o.address} onChange={this.handleChange}/>
 			</div>
 
 
   		     <label className={one_classDiv}>准备工具:</label>
 		      <div className={two_classDiv}>
-		       <PxInput  type="text" placeholder="默认为无需准备工具" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
+		       <PxInput  type="text"placeholder="选填" name="readyfor" id="readyfor" maxLength="20" value={o.readyfor} onChange={this.handleChange}/>
 		        </div>
  			       
 
 
 			   <label className={one_classDiv}>课程详细：</label>
 			  <div className={two_classDiv}>
-			 <PxInput  type="text" name="context" id="context" maxLength="20" value={o.context} onChange={this.handleChange}/>
+			 <PxInput  type="text" name="context" id="context" maxLength="20" placeholder="选填" value={o.context} onChange={this.handleChange}/>
 			</div>
  				      
 			   

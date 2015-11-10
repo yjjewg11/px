@@ -1,41 +1,17 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Cookbook;
-import com.company.news.entity.CookbookPlan;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.PxClass;
 import com.company.news.entity.PxTeachingplan;
-import com.company.news.entity.Right;
-import com.company.news.entity.Teachingplan;
 import com.company.news.entity.User;
-import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserGroupRelation;
-import com.company.news.jsonform.ClassRegJsonform;
-import com.company.news.jsonform.CookbookPlanJsonform;
-import com.company.news.jsonform.GroupRegJsonform;
-import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
-import com.company.news.jsonform.TeachingPlanJsonform;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.right.RightConstants;
-import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -56,15 +32,15 @@ public class PxTeachingPlanService extends AbstractService {
 	 */
 	public boolean add(PxTeachingPlanJsonform pxTeachingPlanJsonform,
 			ResponseMessage responseMessage) throws Exception {
-		if(this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPlandateStr(), "教学时间", responseMessage)
+		if(this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPlandateStr(), "上课时间", responseMessage)
 				||this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getClassuuid(), "班级", responseMessage)||
 				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
 		return false;
 		
-		Date plandate = TimeUtils.string2Timestamp(TimeUtils.DEFAULTFORMAT,pxTeachingPlanJsonform.getPlandateStr());
+		Date plandate = TimeUtils.string2Timestamp(TimeUtils.YYYY_MM_DD_HH_mm_FORMAT,pxTeachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
-			responseMessage.setMessage("上课时间格式不正确，格式：2015-10-07 14:20:00");
+			responseMessage.setMessage("上课时间格式不正确，格式：2015-10-07 14:20");
 			return false;
 		}
 
@@ -75,6 +51,100 @@ public class PxTeachingPlanService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
 
+		return true;
+	}
+	
+	/**
+	 * 增加教学计划,根据周期行时间.
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean addByPre(PxTeachingPlanJsonform pxTeachingPlanJsonform,
+			ResponseMessage responseMessage) throws Exception {
+		if(this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPer_start_date(), "开课日期", responseMessage)
+				||this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getPer_num(),2, "上课次数", responseMessage)
+				||this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPer_week(), "上课周期", responseMessage)
+				||this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getPer_time(), "上课时间", responseMessage)
+				
+				||this.validateRequireByRegJsonform(pxTeachingPlanJsonform.getClassuuid(), "班级", responseMessage)
+				||this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
+		return false;
+		
+		Date start_date = TimeUtils.string2Timestamp(TimeUtils.YYYY_MM_DD_FORMAT,pxTeachingPlanJsonform.getPer_start_date());
+
+		if (start_date == null) {
+			responseMessage.setMessage("开课日期，格式：2015-10-07");
+			return false;
+		}
+		//上课次数
+		if(!StringUtils.isNumeric(pxTeachingPlanJsonform.getPer_num())){
+			responseMessage.setMessage("上课次数取值范围:[0-99]");
+			return false;
+		}
+		
+		int per_num=0;
+		try {
+			per_num=Integer.valueOf(pxTeachingPlanJsonform.getPer_num());
+		} catch (Exception e) {
+			responseMessage.setMessage("上课次数取值范围:[0-99]");
+			return false;
+		}
+		if(per_num==0){
+			responseMessage.setMessage("上课次数取值范围:[0-99]");
+			return false;
+		}
+		
+		//
+		String[] per_timeArr=pxTeachingPlanJsonform.getPer_time().split(":");
+		if(per_timeArr.length<2){
+			responseMessage.setMessage("上课时间有效范围:[00:00-23:59]");
+			return false;
+		}
+		//周
+		String[] weeksArr=pxTeachingPlanJsonform.getPer_week().split(",");
+		int step=weeksArr.length;
+		
+		Calendar aCalendar = Calendar.getInstance();
+		//设置开始日期
+        aCalendar.setTime(start_date);
+        try {
+			aCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(per_timeArr[0]));
+			aCalendar.set(Calendar.MINUTE, Integer.valueOf(per_timeArr[1]));
+		} catch (Exception e) {
+			responseMessage.setMessage("上课时间有效范围:[00:00-23:59]");
+			return false;
+		}
+//        aCalendar.setFirstDayOfWeek(Calendar.DAY_OF_WEEK);
+        //举例,week=3
+        int week = aCalendar.get(Calendar.DAY_OF_WEEK)-1;
+        
+		for(int i=0;i<per_num;i++){
+			
+			for(int k=0;k<step;k++){
+				if(i>=per_num)break;
+				//tmp_week=4
+				//tmp_week=2
+				int  tmp_week=Integer.valueOf(weeksArr[k]);
+				//4-3=1
+				//2-3=-1
+				int diff_week=tmp_week-week;
+				//if(2-3=-1)   diff_week=7-1=6
+				if(diff_week<=0)diff_week=7+diff_week;
+				aCalendar.add(Calendar.DAY_OF_MONTH, diff_week);
+				//日期变了,需要重新获取
+				week = aCalendar.get(Calendar.DAY_OF_WEEK)-1;
+				  
+				PxTeachingplan pxTeachingplan = new PxTeachingplan();
+				BeanUtils.copyProperties(pxTeachingplan, pxTeachingPlanJsonform);
+				Date plandate =	aCalendar.getTime();
+				pxTeachingplan.setPlandate(plandate);
+				// 有事务管理，统一在Controller调用时处理异常
+				this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
+			}
+		}
 		return true;
 	}
 	
@@ -93,10 +163,10 @@ public class PxTeachingPlanService extends AbstractService {
 				this.validateRequireAndLengthByRegJsonform(pxTeachingPlanJsonform.getName(), 45, "教学课程名称", responseMessage))
 		return false;
 		
-		Date plandate = TimeUtils.string2Timestamp(TimeUtils.DEFAULTFORMAT,pxTeachingPlanJsonform.getPlandateStr());
+		Date plandate = TimeUtils.string2Timestamp(TimeUtils.YYYY_MM_DD_HH_mm_FORMAT,pxTeachingPlanJsonform.getPlandateStr());
 
 		if (plandate == null) {
-			responseMessage.setMessage("Plandate格式不正确");
+			responseMessage.setMessage("上课时间格式不正确，格式：2015-10-07 14:20");
 			return false;
 		}
 		

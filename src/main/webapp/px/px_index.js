@@ -471,7 +471,7 @@ function px_help_list_fn(){
 function px_zixun_fn(){
   	Queue.push(px_zixun_fn,"咨询记录");
  	 var group_list=Store.getGroup();
- 	G_mygroup_choose=group_list[0].uuid
+ 	if(!G_mygroup_choose)G_mygroup_choose=group_list[0].uuid
   	ajax_zixun_div();
 }
 /*
@@ -680,8 +680,16 @@ function menu_announce_list_fn_byRight(types,name) {
 var g_uesrinfo_groupuuid="";
 function menu_userinfo_list_fn_byRight() {
 	Queue.push(function(){menu_userinfo_list_fn_byRight();},"老师管理");
-	if(!g_uesrinfo_groupuuid)g_uesrinfo_groupuuid=Store.getCurGroupByRight("PX_teacher_m").uuid;
-	ajax_uesrinfo_listByGroup_div(g_uesrinfo_groupuuid);
+	
+	var grouplist=Store.getGroupByRight("PX_teacher_m");	
+	if(!grouplist||grouplist.length==0){
+		alert("没有权限。");
+		return;
+	}
+	if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
+		
+	
+	ajax_uesrinfo_listByGroup_div(G_mygroup_choose);
 };
 /*
  * (标头)老师资料管理功能
@@ -705,12 +713,14 @@ var G_myCurClassuuid=null;
 var G_myClassList=null;
 function menu_teachingplan_list_fn_byRight() {
 //培训机构教学计划管理模块，列表代码	
-	var groupList=Store.getGroupByRight("PX_teachingplan_m");	
-	if(!groupList||groupList.length==0){
+	var grouplist=Store.getGroupByRight("PX_teachingplan_m");	
+	if(!grouplist||grouplist.length==0){
 		alert("没有权限。");
 		return;
 	}
-		var classList=Store.getChooseClass(groupList[0].uuid);
+	if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
+		
+		var classList=Store.getChooseClass(G_mygroup_choose);
  		var class_uuid =null;
  		if(classList&&classList.length>0){
  			classuuid=classList[0].uuid;
@@ -721,33 +731,33 @@ function menu_teachingplan_list_fn_byRight() {
 //---------------------------------------------------------------------------------
 //幼儿园教学计划管理模块，新版代码		
 //	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
+//	var grouplist=Store.getGroupByRight("PX_teachingplan_m");
 //	
-//	if(!groupList||groupList.length==0){
+//	if(!grouplist||grouplist.length==0){
 //		alert("没有权限。");
 //		return;
 //	}	
-//	var groupuuid=groupList[0].uuid;	
+//	var groupuuid=grouplist[0].uuid;	
 //
 //	React.render(React.createElement(Teachingplan_show7Day_byRight, {
 //		    groupuuid:groupuuid,
-//		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+//		    grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 //			}), document.getElementById('div_body'));
 //	return;
 //---------------------------------------------------------------------------------	
 //幼儿园教学计划管理模块，老版代码	
-//	var groupList=Store.getGroupByRight("PX_teachingplan_m");
+//	var grouplist=Store.getGroupByRight("PX_teachingplan_m");
 //	
-//	if(!groupList||groupList.length==0){
+//	if(!grouplist||grouplist.length==0){
 //		alert("没有权限。");
 //		return;
 //	}
 //	Queue.push(menu_teachingplan_list_fn_byRight,"教学计划");
-//	var groupuuid=groupList[0].uuid;
+//	var groupuuid=grouplist[0].uuid;
 //	
 //	React.render(React.createElement(Teachingplan_EventsTable_byRight, {
 //		groupuuid:groupuuid,
-//		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
+//		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 //		responsive: true, bordered: true, striped :true,hover:true,striped:true
 //		}), document.getElementById('div_body'));
 };
@@ -767,13 +777,14 @@ function menu_queryLeaderMsgByParents_message_fn_byRight() {
  * @edit老师编辑状态进入可以编辑模式;
  * */
 function menu_class_list_fn_byRight() {
+	Queue.push(function(){menu_class_list_fn_byRight();},"班级管理");
 var  grouplist=Store.getGroupByRight("PX_class_m");
 if(!grouplist||grouplist.length==0){
 	alert("没有班级管理权限不能访问.");
 	return;
 }
-	groupuuid=grouplist[0].uuid;
-	ajax_Class_div_byRight(groupuuid);
+	if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
+	ajax_Class_div_byRight(G_mygroup_choose);
 };
 
 
@@ -800,17 +811,14 @@ function menu_statistics_list_fn_byRight() {
 	Queue.push(menu_statistics_list_fn_byRight,"统计");
 	
 	var  grouplist=Store.getGroupByRight("PX_statistics_m");			
-	var groupuuid;
-
 	if(!grouplist||grouplist.length==0){
-		groupuuid=null;
-	}else{
-		groupuuid=grouplist[0].uuid;
+		alert("没有班级管理权限不能访问.");
+		return;
 	}
-
+		if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
 	
 	React.render(React.createElement(ECharts_Div_byRight, {
-		groupuuid:groupuuid,
+		groupuuid:G_mygroup_choose,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
 		}), document.getElementById('div_body'));
@@ -839,9 +847,6 @@ function menu_course_byRight() {
  * (标头)对外发布老师资料
  * */
 function menu_teacher_byRight() {
-  	 var group_list=Store.getGroup();
-     var groupuuid=group_list[0].uuid;
-     G_mygroup_choose=groupuuid;
 	   ajax_teacher_div_byRight();	
 };
 
