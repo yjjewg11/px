@@ -8,18 +8,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.common.PxStringUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
-import com.company.news.entity.Student;
-import com.company.news.entity.User;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.User4Q;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
@@ -66,14 +60,7 @@ public class AbstractStatisticsService extends AbstractService {
 
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
-		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
-		vo.setTitle_text(g.getCompany_name() + " 教师统计（按性别）");
-		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		List legend_data = new ArrayList();
-		legend_data.add("男");
-		legend_data.add("女");
-		vo.setLegend_data(legend_data);
+		
 		// vo.setLegend_data("['男','女']");
 		int sex_male = 0;
 		int sex_female = 0;
@@ -98,6 +85,16 @@ public class AbstractStatisticsService extends AbstractService {
 		plist.add(male_sdvo);
 		plist.add(female_sdvo);
 		vo.setSeries_data(plist);
+		
+		
+		// 需要获取机构名
+				Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+				vo.setTitle_text(g.getCompany_name() + " 教师统计（按性别）");
+				vo.setTitle_subtext("总计 " + list.size() + " 人");
+				List legend_data = new ArrayList();
+				legend_data.add("男("+sex_male+")");
+				legend_data.add("女("+sex_female+")");
+				vo.setLegend_data(legend_data);
 		logger.debug("end 用户性别统计");
 		return vo;
 
@@ -131,7 +128,7 @@ public class AbstractStatisticsService extends AbstractService {
 		int lessOneWeek = (map.get("lessOneWeek") * 100) / count;
 		int greaterOneWeek = (map.get("greaterOneWeek") * 100) / count;
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师统计（按登陆时间）");
 		vo.setTitle_subtext("总计 " + count + " 人");
 		List legend_data = new ArrayList();
@@ -182,7 +179,7 @@ public class AbstractStatisticsService extends AbstractService {
 			return false;
 		}
 
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 
 		// TEL格式验证
 		if (g == null) {

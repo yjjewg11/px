@@ -1,25 +1,21 @@
 package com.company.news.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.common.PxStringUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
-import com.company.news.entity.Group;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
-import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
@@ -64,16 +60,12 @@ public class StatisticsService extends AbstractStatisticsService {
 		List<Student> list = studentService.getStudentByGroup(group_uuid);
 		logger.debug("getUserByGroupuuid 查询结束");
 
+//		
+//		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
+//				.find("select count(uuid),classuuid from Student  where groupuuid=? group by classuuid)", groupuuid);
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
-		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
-		vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
-		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		List legend_data = new ArrayList();
-		legend_data.add("男");
-		legend_data.add("女");
-		vo.setLegend_data(legend_data);
+		
 		int sex_male = 0;
 		int sex_female = 0;
 
@@ -97,6 +89,16 @@ public class StatisticsService extends AbstractStatisticsService {
 		plist.add(male_sdvo);
 		plist.add(female_sdvo);
 		vo.setSeries_data(plist);
+		
+		
+		// 需要获取机构名
+				Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+				vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
+				vo.setTitle_subtext("总计 " + list.size() + " 人");
+				List legend_data = new ArrayList();
+				legend_data.add("男("+sex_male+")");
+				legend_data.add("女("+sex_female+")");
+				vo.setLegend_data(legend_data);
 		logger.debug("end 用户性别统计");
 		return vo;
 
@@ -122,11 +124,11 @@ public class StatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		
 		String axis_data = "";
 		for (PClass p : list) {
-			axis_data += ("'" + p.getName() + "',");
+			axis_data += ("\"" + p.getName() + "\",");
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
@@ -218,11 +220,11 @@ public class StatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 	
 		String axis_data = "";
 		for (PClass p : list) {
-			axis_data += ("'" + p.getName() + "',");
+			axis_data += ("\"" + p.getName() + "\",");
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
@@ -241,13 +243,13 @@ public class StatisticsService extends AbstractStatisticsService {
 
 		String ps_data = "";
 		for (PClass p : list) {
-			ps_data += ("'"
-					+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "',");
+			ps_data += ("\""
+					+ (m.get(p.getUuid()) == null ? 0 : m.get(p.getUuid())) + "\",");
 		}
 		
 		vo.setTitle_text(g.getCompany_name() + " 班级互动发帖数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班,总数量"+parentCount);
-		// vo.setLegend_data("['互动发帖数']");
+		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
 		legend_data.add("互动发帖数("+parentCount+")");
 		vo.setLegend_data(legend_data);
@@ -294,10 +296,10 @@ public class StatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		vo.setTitle_text(g.getCompany_name() + " 班级互动热门TOP10");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
-		// vo.setLegend_data("['班级互动热门TOP10']");
+		// vo.setLegend_data("[\"班级互动热门TOP10\"]");
 		List legend_data = new ArrayList();
 		legend_data.add("班级互动热门TOP10");
 		vo.setLegend_data(legend_data);
@@ -353,10 +355,10 @@ public class StatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		vo.setTitle_text(g.getCompany_name() + " 教师评价统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
-		// vo.setLegend_data("['班级互动热门TOP10']");
+		// vo.setLegend_data("[\"班级互动热门TOP10\"]");
 		List legend_data = new ArrayList();
 		legend_data.add("非常满意");
 		legend_data.add("满意");
@@ -365,7 +367,7 @@ public class StatisticsService extends AbstractStatisticsService {
 
 		String axis_data = "";
 		for (User4Q u : userlist) {
-			axis_data += ("'" + u.getName() + "',");
+			axis_data += ("\"" + u.getName() + "\",");
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 

@@ -26,6 +26,24 @@ var G_jsCallBack={
 		
 	},
 	/**
+	 * 
+	 *1. G_jsCallBack.setIosApp_canShareURL();
+	 * 设置允许javascript调用ios提供的分享接口.
+	 * 
+	 * 2.js调用接口.
+	 */
+	setIosApp_canShareURL:function(){
+		G_CallIosFN.canShareUrl=true;
+		return true;
+		
+	},
+	/**
+	 * 获取json字符串.
+	 */
+	getShareObject:function(){
+		return G_CallIosFN.shareobject;
+	},
+	/**
 	 * 老师通讯录
 	 * @param base64
 	 */
@@ -184,6 +202,25 @@ var G_CallPhoneFN={
 			return false;
 		},
 		
+		/**
+         *调用新开webview访问地址.并右上角添加分享功能.
+         *JavaScriptCall.openNewWindowUrl(title,title,pathurl,httpurl);	
+         *参数说明: titll为标题  content为分享内容，pathurl为分享图片地址，httpurl为链接地址
+         *tml有问题暂时用title代替后续优化 
+		 */
+		openNewWindowUrl:function(title,content,pathurl,httpurl){
+			try{
+				if(window.JavaScriptCall){
+					if(!pathurl)pathurl=G_logo;
+					JavaScriptCall.openNewWindowUrl(title,title,pathurl,httpurl) ;					
+					return true;
+				}
+			}catch(e){
+				  console.log('Exception:JavaScriptCall.finishProject()=', e.message);
+			}
+			console.log('window.finishProject==false');
+			return false;
+		},
 		
 		/**
 		 * 回退方法finishProject()

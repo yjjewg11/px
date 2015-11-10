@@ -586,6 +586,21 @@ public class GroupService extends AbstractService {
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
+	/**
+	 * 查询当前用户 有的权限控制的机构uuid范围内,选中用户有的机构权限
+	 * @param uuid
+	 * @param myRightGroup
+	 * @return
+	 */
+	public List getGroupuuidsByUseruuidAndCurUserRight(String uuid,
+			String myRightGroup) {
+		
+		String  sql="select DISTINCT  t0.groupuuid from px_usergrouprelation t0 where   t0.useruuid='"+uuid+"' ";
+		sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(myRightGroup)+")";
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Query q = s.createSQLQuery(sql);
+		return q.list();
+	}
 
 
 }

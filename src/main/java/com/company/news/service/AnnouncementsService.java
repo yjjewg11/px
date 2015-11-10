@@ -252,16 +252,16 @@ public class AnnouncementsService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().update(announcements);
 
-		
-		if(SystemConstants.Check_status_fabu.equals(announcements.getStatus())){
-			
-			if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
-				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-				pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
-				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			}
-		}
+		//修改通告时,不在发送推送消息,防止多次修改,多次推送消息.用户体验不好.
+//		if(SystemConstants.Check_status_fabu.equals(announcements.getStatus())){
+//			
+//			if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
+//				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+//				pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+//			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
+//				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
+//			}
+//		}
 
 		return true;
 	}

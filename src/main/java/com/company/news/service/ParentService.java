@@ -80,6 +80,30 @@ public class ParentService extends AbstractService {
 		return list;
 	}
 	
+	
+	/**
+	 * 根据机构UUID,获取培训机构绑定该学生的家长统计
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getPxParentCountByGroup(String groupuuid) {
+
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "SELECT count(t3.parent_uuid),t1.uuid from  px_pxclass  t1 left join px_pxstudentpxclassrelation t2 on t1.uuid=t2.class_uuid";
+		sql+= " left join px_pxstudentcontactrealation t3 on t3.student_uuid=t2.student_uuid";
+		sql+= " where t1.groupuuid ='"+groupuuid+"'";
+		sql+=" group by t1.uuid";
+		
+		
+		Query q = s.createSQLQuery(sql);
+		List list =q.list();
+		return list;
+	}
+	
 	@Override
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub

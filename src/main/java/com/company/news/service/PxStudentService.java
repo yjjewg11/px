@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -470,8 +471,20 @@ public class PxStudentService extends AbstractStudentService {
 	 */
 	public List getStudentCountByGroup(String groupuuid) {
 
-		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("select count(uuid),classuuid from PxStudent  where groupuuid=? group by classuuid)", groupuuid);
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		//学生数量.教学计划数量,课程名,(班级信息)
+		String sql = "SELECT count(t2.student_uuid),t1.uuid from  px_pxclass  t1 left join px_pxstudentpxclassrelation t2 on t1.uuid=t2.class_uuid";
+				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+=" group by t1.uuid";
+				
+				
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
+//						
+//		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
+//				.find("select count(uuid),classuuid from PxStudent  where groupuuid=? group by classuuid)", groupuuid);
 
 		return list;
 	}

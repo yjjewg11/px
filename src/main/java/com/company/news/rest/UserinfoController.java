@@ -942,15 +942,11 @@ public class UserinfoController extends AbstractRESTController {
 		}
 		model.addAttribute(RestConstants.Return_G_entity,a);
 		
-		
-		List<Group4Q> list = new ArrayList();
 		String mygroup_uuids="";
 		try {
-			list = groupService.getGroupByUseruuid(a.getUuid());
-			for(Group4Q o:list){
-				mygroup_uuids+=o.getUuid()+",";
-			}
-			mygroup_uuids=StringOperationUtil.trimSeparatorChars(mygroup_uuids);
+			String myRightGroup=this.getMyGroupUuidsBySession(request);
+			List list = groupService.getGroupuuidsByUseruuidAndCurUserRight(a.getUuid(),myRightGroup);
+			mygroup_uuids=StringUtils.join(list, ",");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -999,15 +995,15 @@ public class UserinfoController extends AbstractRESTController {
 				return "";
 			}
 			
-			if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
-				responseMessage.setMessage("关联机构不能为空！");
-				return "";
-			}
+//			if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+//				responseMessage.setMessage("关联机构不能为空！");
+//				return "";
+//			}
 			//设置当前用户
 			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			
 			boolean noRight=true;
-			String mygroup=this.getMyGroupUuidsBySession(request);
+			String myRightgroup=null;
 			
 			//平台管理员所有都可以修改.
 			if(noRight){
@@ -1020,9 +1016,9 @@ public class UserinfoController extends AbstractRESTController {
 				if(SessionListener.isPXLogin(request)){
 					right=RightConstants.PX_teacher_m;
 				}
-				mygroup=RightUtils.getRightGroups(right, request);
+				myRightgroup=RightUtils.getRightGroups(right, request);
 				
-				if(StringUtils.isBlank(mygroup)){
+				if(StringUtils.isBlank(myRightgroup)){
 		            responseMessage.setMessage( RightConstants.Return_msg );
 		            return "";
 				}
@@ -1039,12 +1035,12 @@ public class UserinfoController extends AbstractRESTController {
 			
 			if(StringUtils.isEmpty(userRegJsonform.getUuid())){
 				boolean flag = userinfoService
-						.add(userRegJsonform, responseMessage,mygroup);
+						.add(userRegJsonform, responseMessage,myRightgroup);
 				if (!flag)// 请求服务返回失败标示
 					return "";
 			}
 			else{
-				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage,mygroup);
+				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage,myRightgroup,request);
 				if (user1==null)// 请求服务返回失败标示
 					return "";
 				responseMessage.setMessage("修改成功");
@@ -1174,18 +1170,8 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			a = userinfoService.getUserBytel(tel);
 			if(a!=null){
-				List<Group4Q> list = new ArrayList();
-				if(SessionListener.isPXLogin(request)){
-					list = groupService.getPXGroupByUseruuid(a.getUuid());
-
-				}else{
-					list = groupService.getGroupByUseruuid(a.getUuid());
-					
-				}
-				for(Group4Q o:list){
-					mygroup_uuids+=o.getUuid()+",";
-				}
-				mygroup_uuids=StringOperationUtil.trimSeparatorChars(mygroup_uuids);
+				List list = groupService.getGroupuuidsByUseruuid(a.getUuid(),SessionListener.getLoginTypeBySession(request));
+				mygroup_uuids=StringUtils.join(list, ",");
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

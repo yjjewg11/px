@@ -32,6 +32,9 @@ window.JavaScriptCall={
 var G_CallIosFN={
 	iosIfr:null,
 	isIos:false,
+	canShareUrl:false,
+	
+	shareobject:null,
 	init:function(){
 		G_CallIosFN.isIos=true;
 		console.log('G_CallIosFN.isIos==true');
@@ -106,6 +109,25 @@ var G_CallIosFN={
 	selectHeadPic:function(){
 		try{
 			G_CallIosFN.iosIfr.src = "ios/selectHeadPic";    
+			return true;
+		}catch(e){
+			  console.log('Exception:ios/selectHeadPic', e.message);
+		}
+		console.log('ios/selectHeadPic==false');
+		return false;
+	},
+	
+	/**
+	 * 调用分享接口.title,content,pathurl,httpurl
+	 * G_CallIosFN.setShareContent(title,content,pathurl,httpurl)
+	 * G_CallIosFN.iosIfr.src = "ios/setShareContent";
+	 * @returns {Boolean}
+	 */
+	setShareContent:function(title,content,pathurl,httpurl){
+		try{
+			
+			G_CallIosFN.shareobject=JSON.stringify({title:title,content:content,pathurl:pathurl,httpurl:httpurl});
+			G_CallIosFN.iosIfr.src = "ios/setShareContent";    
 			return true;
 		}catch(e){
 			  console.log('Exception:ios/selectHeadPic', e.message);

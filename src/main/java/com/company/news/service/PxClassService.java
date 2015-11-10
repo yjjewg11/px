@@ -268,9 +268,11 @@ public class PxClassService extends AbstractClassService {
 				      }else{
 				    	  String sql_count = "SELECT count(*) from px_pxclass ";
 				    	  sql_count+= " where groupuuid ='"+groupuuid+"'";
-				    	  if(StringUtils.isBlank(isdisable))		
+				    	  if(StringUtils.isNotBlank(isdisable))		
 				    		  	sql_count+= " and isdisable ="+isdisable;
-				    	  
+				    	  if(StringUtils.isNotBlank(courseuuid)){
+								sql+= " and courseuuid ='"+courseuuid+"'";
+							}
 				    	  pageQueryResult.setTotalCount(Long.valueOf(s.createSQLQuery(sql_count).uniqueResult()
 				    	            .toString()));
 				      }

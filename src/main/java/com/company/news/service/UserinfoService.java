@@ -262,7 +262,7 @@ public class UserinfoService extends AbstractService {
 			return false;
 		}
 
-		// Group_uuid昵称验证
+		// Group_uuid昵称验证.初始添加用户,必须添加个机构.
 		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
 			responseMessage.setMessage("关联机构不能为空！");
 			return false;
@@ -416,7 +416,7 @@ public class UserinfoService extends AbstractService {
 	 * @return
 	 */
 	public User updateByAdmin(UserRegJsonform userRegJsonform,
-			ResponseMessage responseMessage, String mygroup) throws Exception {
+			ResponseMessage responseMessage, String mygroup,HttpServletRequest request) throws Exception {
 
 		// name昵称验证
 		if (StringUtils.isBlank(mygroup)) {
@@ -440,10 +440,18 @@ public class UserinfoService extends AbstractService {
 		// user.setSex(userRegJsonform.getSex());
 		user.setEmail(userRegJsonform.getEmail());
 		user.setOffice(userRegJsonform.getOffice());
-		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
-			responseMessage.setMessage("关联机构不能为空！");
-			return null;
-		}
+//		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+//			responseMessage.setMessage("关联机构不能为空！");
+//			return null;
+//		}
+		
+		
+		String loginType=SessionListener.getLoginTypeBySession(request);
+		//删除 当前用户 有的权限控制的机构uuid
+//		String  delsql="delete t0 from px_usergrouprelation t0 where   t0.useruuid='"+user.getUuid()+"' ";
+//		delsql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(mygroup)+")";
+//		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+//		int tmpCout=s.createSQLQuery(delsql).executeUpdate();
 		// 只能删除我关联学校的用户的关联关心
 		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
 				.bulkUpdate(
@@ -452,16 +460,20 @@ public class UserinfoService extends AbstractService {
 								+ ") and  useruuid =? and groupuuid!=?",
 						user.getUuid(), SystemConstants.Group_uuid_wjd);
 		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
-
-		String[] groupStrArr = userRegJsonform.getGroup_uuid().split(",");
-		for (int i = 0; i < groupStrArr.length; i++) {
-			// 保存用户机构关联表
-			UserGroupRelation userGroupRelation = new UserGroupRelation();
-			userGroupRelation.setUseruuid(user.getUuid());
-			userGroupRelation.setGroupuuid(groupStrArr[i]);
-			// 有事务管理，统一在Controller调用时处理异常
-			this.nSimpleHibernateDao.getHibernateTemplate().save(
-					userGroupRelation);
+		
+		
+		if(StringUtils.isNotBlank( userRegJsonform.getGroup_uuid())){
+			
+			String[] groupStrArr = userRegJsonform.getGroup_uuid().split(",");
+			for (int i = 0; i < groupStrArr.length; i++) {
+				// 保存用户机构关联表
+				UserGroupRelation userGroupRelation = new UserGroupRelation();
+				userGroupRelation.setUseruuid(user.getUuid());
+				userGroupRelation.setGroupuuid(groupStrArr[i]);
+				// 有事务管理，统一在Controller调用时处理异常
+				this.nSimpleHibernateDao.getHibernateTemplate().save(
+						userGroupRelation);
+			}
 		}
 
 		// 有事务管理，统一在Controller调用时处理异常
@@ -1313,6 +1325,7 @@ public class UserinfoService extends AbstractService {
 			throws Exception {
 		if (StringUtils.isBlank(grouptype))
 			grouptype = SystemConstants.Group_type_1.toString();
+		
 		List listGroupuuids = groupService.getGroupuuidsByUseruuid(
 				user.getUuid(), grouptype);
 		

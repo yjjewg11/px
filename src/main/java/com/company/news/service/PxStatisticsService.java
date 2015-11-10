@@ -1,28 +1,20 @@
 package com.company.news.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.common.PxStringUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
-import com.company.news.entity.Group;
-import com.company.news.entity.PClass;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.PxClass;
 import com.company.news.entity.PxStudent;
-import com.company.news.entity.Student;
-import com.company.news.entity.User;
-import com.company.news.entity.User4Q;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
 import com.company.news.vo.statistics.PieStatisticsVo;
@@ -64,13 +56,10 @@ public class PxStatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
 		vo.setTitle_subtext("总计 " + list.size() + " 人");
-		List legend_data = new ArrayList();
-		legend_data.add("男");
-		legend_data.add("女");
-		vo.setLegend_data(legend_data);
+		
 		int sex_male = 0;
 		int sex_female = 0;
 
@@ -94,6 +83,13 @@ public class PxStatisticsService extends AbstractStatisticsService {
 		plist.add(male_sdvo);
 		plist.add(female_sdvo);
 		vo.setSeries_data(plist);
+		
+		
+		List legend_data = new ArrayList();
+		legend_data.add("男("+sex_male+")");
+		legend_data.add("女("+sex_female+")");
+		vo.setLegend_data(legend_data);
+		
 		logger.debug("end 用户性别统计");
 		return vo;
 
@@ -119,11 +115,11 @@ public class PxStatisticsService extends AbstractStatisticsService {
 		// 返回
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
-		Group g = (Group) CommonsCache.get(group_uuid, Group.class);
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 		
 		String axis_data = "";
 		for (PxClass p : list) {
-			axis_data += ("'" + p.getName() + "',");
+			axis_data += ("\"" + p.getName() + "\",");
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
@@ -131,7 +127,7 @@ public class PxStatisticsService extends AbstractStatisticsService {
 		List<Object[]> slist = pxStudentService
 				.getStudentCountByGroup(group_uuid);
 		// 根据机构ID获取家长人数
-		List<Object[]> plist = parentService.getParentCountByGroup(group_uuid);
+		List<Object[]> plist = parentService.getPxParentCountByGroup(group_uuid);
 		List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
 		
 		
