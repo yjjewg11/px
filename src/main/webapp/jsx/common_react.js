@@ -1396,3 +1396,31 @@ var G_px_help_List = React.createClass({
 	    );
 	  }
 	  }); 
+
+
+
+
+//绘制星星
+var G_rect_stars = React.createClass({ 
+	  render: function() {
+		  var ct_stars=this.props.ct_stars;
+		  var stars_list=[];
+		   if(!ct_stars){
+			   ct_stars=0;
+			   stars_list.push({val:ct_stars});
+		   }else if(ct_stars){
+			   stars_list.push({val:ct_stars/10});
+		    }
+	    return (
+	    		  <div>
+		    		{stars_list.map(function(event) {
+			  			  return(
+			          <td>{event.val}</td>					  
+			  		)})}
+	    		  </div>
+	    );
+	  }
+	  }); 
+
+
+

@@ -184,7 +184,7 @@ public class StudentBindController extends AbstractRESTController {
 				
 				return "";
 			}
-			responseMessage.setMessage("申请成功!声请号为:"+obj.getUserid());
+			responseMessage.setMessage("申请成功!申请为:"+obj.getUserid());
 			model.addAttribute(RestConstants.Return_G_entity, obj);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
