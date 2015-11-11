@@ -3230,7 +3230,7 @@ var Announcements_EventsTable_byRight = React.createClass({
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+			data : {type:announce_types,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
 			dataType : "json",
 			//async: false,//必须同步执行
 			success : function(data) {
@@ -3339,9 +3339,9 @@ var Announcements_EventRow_byRight = React.createClass({
 	    event.disabled ? 'am-disabled' : '';
         var txtclasssName;
 		 if(event.status==0){
-           txtclasssName="am-success";
+           txtclasssName="am-text-success";
 		  }else{
-           txtclasssName="am-danger";
+           txtclasssName="am-text-danger";
 		   }
 	  return (
 	    <tr className={className} >
@@ -6568,15 +6568,15 @@ var Class_EventsTable_byRight = React.createClass({
        <AMR_Table {...this.props}>  
          <thead> 
            <tr>
-             <th>标题</th>
-		     <th>复制课程</th>
-		     <th>修改与删除课程</th>
+             <th>标题</th>		     
+		     <th>操作</th>
 		     <th>发布状态</th>
              <th>课程类型</th>
              <th>上课地点</th>
              <th>课程学时</th>
              <th>收费价格</th>
              <th>优惠价格</th>
+		     <th>班级数</th>
 		     <th>星级</th>
 		     <th>浏览次数</th>
              <th>更新时间</th>
@@ -6643,17 +6643,17 @@ var Class_EventsTable_byRight = React.createClass({
  	  	  event.disabled ? 'am-disabled' : '';
         var txtclasssName;
 		 if(event.status==0){
-           txtclasssName="am-success";
+           txtclasssName="am-text-success";
 		  }else{
-           txtclasssName="am-danger";
+           txtclasssName="am-text-danger";
 		   }
  	  	return (
  	  	  <tr className={className} >
  	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event.uuid)}>{event.title}</a></td>
-			<td><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"addclass",event.uuid)} >复制课程</AMR_Button></td>
- 	  	     <td>
+			  <td>
 			<AMR_ButtonToolbar>
 			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"eitclass",event.uuid)} >修改</AMR_Button>
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"addclass",event.uuid)} >复制课程</AMR_Button>
 			<AMR_Button amSize="xs" amStyle="danger" onClick={this.handleChange_button.bind(this,"delete",event.uuid)} >删除</AMR_Button>
 			</AMR_ButtonToolbar>
 			 </td>
@@ -6663,6 +6663,7 @@ var Class_EventsTable_byRight = React.createClass({
  	  	    <td>{event.schedule}</td>
  	  	    <td>{event.fees}</td>
  	  	    <td>{event.discountfees}</td>
+			 <td>{event.class_count}</td>
             <G_rect_stars ct_stars={event.ct_stars}/>
 			<td>{event.count==null?0:event.count}</td>
 
@@ -6705,9 +6706,10 @@ var Class_EventsTable_byRight = React.createClass({
  			  <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
  			 <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
  			 <AMUIReact.ListItem>课程详细内容:
- 	 			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.context)}}></div> 
+ 	 			
  				</AMUIReact.ListItem>		 			       			      
- 			 </AMUIReact.List> 		
+ 			 </AMUIReact.List> 	
+					<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
  		    </div> 
  		     );
  	        }
@@ -8164,9 +8166,9 @@ var Teacher_EventsTable_byRight = React.createClass({
 	    			  {this.props.events.map(function(event) {        
 			                var txtclasssName;
 						if(event.status==0){
-						     txtclasssName="am-success";
+						     txtclasssName="am-text-success";
 						  }else{
-						     txtclasssName="am-danger";
+						     txtclasssName="am-text-danger";
 						   }
 	    			      return (
 	    			    	      <tr className={className} >
@@ -8216,7 +8218,7 @@ var Teacher_look_info =React.createClass({
 			      <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
 			     <AMUIReact.ListItem>更新时间:{o.update_time}</AMUIReact.ListItem>
 			    <AMUIReact.ListItem>老师介绍详细内容:
-	 			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.content)}}></div> 
+	 			<div dangerouslySetInnerHTML={{__html:o.content}}></div> 
 				</AMUIReact.ListItem>		 			       			      
 			 </AMUIReact.List> 		
 		    </div> 

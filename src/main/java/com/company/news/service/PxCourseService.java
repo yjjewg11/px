@@ -1,7 +1,9 @@
 package com.company.news.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -160,13 +162,21 @@ public class PxCourseService extends AbstractService {
 
 		if (uuid.indexOf(",") != -1)// 多ID
 		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from PxCourse where uuid in(?)", uuid);
-
-		} else {
-			this.nSimpleHibernateDao.deleteObjectById(PxCourse.class, uuid);
+			
+			responseMessage.setMessage("只能删除一条课程");
+			return false;
+//			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+//					"delete from PxCourse where uuid in(?)", uuid);
 
 		}
+		
+		String hql="select count(*) from PxClass where courseuuid='"+uuid+"'";
+		String total= this.nSimpleHibernateDao.getHibernateTemplate().find(hql).get(0).toString();
+		if(!"0".equals(total)){
+			responseMessage.setMessage("有关联班级,不能删除.关联班级共"+total);
+			return false;
+		}
+		this.nSimpleHibernateDao.deleteObjectById(PxCourse.class, uuid);
 
 		return true;
 	}
@@ -186,7 +196,7 @@ public class PxCourseService extends AbstractService {
 
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
 		
-		
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql=" SELECT t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students,t2.count";
 		sql+=" FROM px_pxcourse t1 ";
 		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
@@ -197,26 +207,28 @@ public class PxCourseService extends AbstractService {
 		
 		String countsql="SELECT count(*) from px_pxcourse t1";
 		countsql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-//		
-//		if(StringUtils.isNotBlank(groupuuid)){
-//			sql+=" and t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-//		}
-//		if(StringUtils.isNotBlank(type)){
-//			sql+=" and t1.type="+type;
-//		}
-//		if(StringUtils.isNotBlank(teacheruuid)){
-//			sql+=" and t1.uuid in ( select courseuuid  from px_userpxcourserelation where useruuid ='" + teacheruuid + "')";
-//		}
-		
-//		String hql = "from PxCourse4Q where   groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
-//
-//		hql += " order by CONVERT( title USING gbk) ";
 
-//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
-		Query  query =this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql);
+		Query  query =session.createSQLQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
+		
+		
+		sql="select courseuuid,count(uuid) from px_pxclass where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql+=" group by courseuuid";
+		List<Object[]> listCount=session.createSQLQuery(sql).list();
+		Map tmpMap=new HashMap();
+		for(Object[] obj:listCount ){
+			tmpMap.put(obj[0], obj[1]);
+		}
+		List<Map> resultList=pageQueryResult.getData();
+		for(Map map:resultList ){
+			String uuid=(String)map.get("uuid");
+			Object class_count=tmpMap.get(uuid);
+			if(class_count==null)class_count="0";
+			map.put("class_count", class_count);
+		}
+		
 //		warpVoList(pageQueryResult.getData());
 		return pageQueryResult;
 	}

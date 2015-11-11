@@ -3041,7 +3041,7 @@ var Announcements_EventsTable_byRight = React.createClass({
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+			data : {type:announce_types,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
 			dataType : "json",
 			//async: false,//必须同步执行
 			success : function(data) {
@@ -3148,9 +3148,9 @@ var Announcements_EventRow_byRight = React.createClass({
 	    event.disabled ? 'am-disabled' : '';
         var txtclasssName;
 		 if(event.status==0){
-           txtclasssName="am-success";
+           txtclasssName="am-text-success";
 		  }else{
-           txtclasssName="am-danger";
+           txtclasssName="am-text-danger";
 		   }
 	  return (
 	    <tr className={className} >

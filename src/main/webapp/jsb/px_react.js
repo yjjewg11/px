@@ -3230,7 +3230,7 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {type:obj.type,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
+			data : {type:announce_types,groupuuid:obj.groupuuid,pageNo:obj.pageNo},
 			dataType : "json",
 			//async: false,//必须同步执行
 			success : function(data) {
@@ -3339,9 +3339,9 @@ var Announcements_EventRow_byRight = React.createClass({displayName: "Announceme
 	    event.disabled ? 'am-disabled' : '';
         var txtclasssName;
 		 if(event.status==0){
-           txtclasssName="am-success";
+           txtclasssName="am-text-success";
 		  }else{
-           txtclasssName="am-danger";
+           txtclasssName="am-text-danger";
 		   }
 	  return (
 	    React.createElement("tr", {className: className}, 
@@ -6568,15 +6568,15 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
        React.createElement(AMR_Table, React.__spread({},  this.props), 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
-             React.createElement("th", null, "标题"), 
-		     React.createElement("th", null, "复制课程"), 
-		     React.createElement("th", null, "修改与删除课程"), 
+             React.createElement("th", null, "标题"), 		     
+		     React.createElement("th", null, "操作"), 
 		     React.createElement("th", null, "发布状态"), 
              React.createElement("th", null, "课程类型"), 
              React.createElement("th", null, "上课地点"), 
              React.createElement("th", null, "课程学时"), 
              React.createElement("th", null, "收费价格"), 
              React.createElement("th", null, "优惠价格"), 
+		     React.createElement("th", null, "班级数"), 
 		     React.createElement("th", null, "星级"), 
 		     React.createElement("th", null, "浏览次数"), 
              React.createElement("th", null, "更新时间")
@@ -6643,17 +6643,17 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	  	  event.disabled ? 'am-disabled' : '';
         var txtclasssName;
 		 if(event.status==0){
-           txtclasssName="am-success";
+           txtclasssName="am-text-success";
 		  }else{
-           txtclasssName="am-danger";
+           txtclasssName="am-text-danger";
 		   }
  	  	return (
  	  	  React.createElement("tr", {className: className}, 
  	  	    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: px_ajax_class_course_look_info.bind(this,event.uuid)}, event.title)), 
-			React.createElement("td", null, React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"addclass",event.uuid)}, "复制课程")), 
- 	  	     React.createElement("td", null, 
+			  React.createElement("td", null, 
 			React.createElement(AMR_ButtonToolbar, null, 
 			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"eitclass",event.uuid)}, "修改"), 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"addclass",event.uuid)}, "复制课程"), 
 			React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.handleChange_button.bind(this,"delete",event.uuid)}, "删除")
 			)
 			 ), 
@@ -6663,6 +6663,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	  	    React.createElement("td", null, event.schedule), 
  	  	    React.createElement("td", null, event.fees), 
  	  	    React.createElement("td", null, event.discountfees), 
+			 React.createElement("td", null, event.class_count), 
             React.createElement(G_rect_stars, {ct_stars: event.ct_stars}), 
 			React.createElement("td", null, event.count==null?0:event.count), 
 
@@ -6704,10 +6705,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  			   React.createElement(AMUIReact.ListItem, null, "优惠价格:", o.discountfees), 
  			  React.createElement(AMUIReact.ListItem, null, "更新时间:", o.updatetime), 
  			 React.createElement(AMUIReact.ListItem, null, "发布状态:", Vo.get("course_status_"+o.status)), 			      
- 			 React.createElement(AMUIReact.ListItem, null, "课程详细内容:", 
- 	 			React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.context)}})
+ 			 React.createElement(AMUIReact.ListItem, null, "课程详细内容:"
+ 	 			
  				)		 			       			      
- 			 )		
+ 			 ), 	
+					React.createElement("div", {dangerouslySetInnerHTML: {__html:o.context}})
  		    ) 
  		     );
  	        }
@@ -8164,9 +8166,9 @@ var Teacher_EventsTable_byRight = React.createClass({displayName: "Teacher_Event
 	    			  this.props.events.map(function(event) {        
 			                var txtclasssName;
 						if(event.status==0){
-						     txtclasssName="am-success";
+						     txtclasssName="am-text-success";
 						  }else{
-						     txtclasssName="am-danger";
+						     txtclasssName="am-text-danger";
 						   }
 	    			      return (
 	    			    	      React.createElement("tr", {className: className}, 
@@ -8216,7 +8218,7 @@ var Teacher_look_info =React.createClass({displayName: "Teacher_look_info",
 			      React.createElement(AMUIReact.ListItem, null, "发布状态:", Vo.get("course_status_"+o.status)), 			      
 			     React.createElement(AMUIReact.ListItem, null, "更新时间:", o.update_time), 
 			    React.createElement(AMUIReact.ListItem, null, "老师介绍详细内容:", 
-	 			React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML(o.content)}})
+	 			React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}})
 				)		 			       			      
 			 )		
 		    ) 
