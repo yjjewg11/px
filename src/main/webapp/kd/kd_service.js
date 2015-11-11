@@ -792,7 +792,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
@@ -1143,7 +1143,7 @@ function react_ajax_announce_good_show(uuid,title){
 			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 
@@ -1783,7 +1783,7 @@ $.ajax({
 		if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 			React.render(React.createElement(Announcements_show_byRight,{
@@ -3382,7 +3382,7 @@ $.ajax({
  	 			if (data.ResMsg.status == "success") {
 					var o=data.data;
 					  if(o.url){
-							var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+							var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 							if(flag)return;
 					  }
  	 				React.render(React.createElement(Announcements_helpshow,{

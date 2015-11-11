@@ -231,6 +231,16 @@ public class PxCourseService extends AbstractService {
 	}
 	
 	/**
+	 * 减少培训课程计算
+	 * @param courseuuid
+	 */
+	public void update_minusPxcourseStudentCount(String courseuuid) {
+		String sql = "update px_pxcourse set ct_study_students=ct_study_students-1 where uuid='" + courseuuid + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+	}
+	
+	/**
 	 * 增加培训课程计算
 	 * @param courseuuid
 	 */

@@ -93,8 +93,13 @@ public class PxStudentService extends AbstractStudentService {
 		Group4Q group = (Group4Q) CommonsCache.get(pxClass.getGroupuuid(), Group4Q.class);
 		PxCourseCache pxCourseCache = (PxCourseCache) CommonsCache.get(pxClass.getCourseuuid(),PxCourseCache.class);
 
-		String msg=pxStudent.getName()+"|参加特长班|["+pxClass.getName()+"]|"+pxCourseCache.getTitle()+"|"+group.getBrand_name();
-		this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+		try {
+			String msg=pxStudent.getName()+"|参加特长班|["+pxClass.getName()+"]|"+pxCourseCache.getTitle()+"|"+group.getBrand_name();
+			this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		//增加课程已学人数.
 		pxCourseService.addPxcourseStudentCount(pxClass.getCourseuuid());
@@ -114,9 +119,23 @@ public class PxStudentService extends AbstractStudentService {
 		PxClass pxClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, class_uuid);
 		Group4Q group = (Group4Q) CommonsCache.get(pxClass.getGroupuuid(), Group4Q.class);
 		
-		String msg=pxStudent.getName()+"|离开特长班|["+pxClass.getName()+"]|"+group.getBrand_name();
-		this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+		
+		
+		//减少课程已学人数.
+				pxCourseService.update_minusPxcourseStudentCount(pxClass.getCourseuuid());
+				groupService.update_minusGroupStudentCount(pxClass.getGroupuuid());
+				
+		try {
+			String msg=pxStudent.getName()+"|离开特长班|["+pxClass.getName()+"]|"+group.getBrand_name();
+			this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
+		
+		
+		
 		return true;
 	}
 	

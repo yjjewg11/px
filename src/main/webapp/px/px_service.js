@@ -654,7 +654,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 
@@ -1019,7 +1019,7 @@ function react_ajax_announce_good_show(uuid,title){
 			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 				//如果相等为True不等为false用于判断编辑与删除是否
@@ -1655,7 +1655,7 @@ $.ajax({
 		if (data.ResMsg.status == "success") {
 			var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
 			React.render(React.createElement(Announcements_show_byRight,{
@@ -1713,7 +1713,7 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
   			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
   				React.render(React.createElement(Announcements_edit_byRight,{
@@ -3757,7 +3757,7 @@ function ajax_class_students_look_info(uuid){
  			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
  				React.render(React.createElement(Announcements_helpshow,{
@@ -3985,7 +3985,7 @@ function ajax_class_students_look_info(uuid){
  			if (data.ResMsg.status == "success") {
 				var o=data.data;
 				  if(o.url){
-						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
  				React.render(React.createElement(Announcements_Preferentialshow,{

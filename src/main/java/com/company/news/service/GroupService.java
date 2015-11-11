@@ -578,11 +578,21 @@ public class GroupService extends AbstractService {
 	}
 	
 	/**
-	 * 增加培训课程计算
+	 * 增加培训人数计算
 	 * @param courseuuid
 	 */
 	public void addGroupStudentCount(String groupuuid) {
 		String sql = "update px_group set ct_study_students=ct_study_students+1 where uuid='" + groupuuid + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+	}
+	
+	/**
+	 * 减少培训人数计算
+	 * @param courseuuid
+	 */
+	public void update_minusGroupStudentCount(String groupuuid) {
+		String sql = "update px_group set ct_study_students=ct_study_students-1 where uuid='" + groupuuid + "'";
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}

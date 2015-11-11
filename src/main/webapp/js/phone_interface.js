@@ -221,7 +221,7 @@ var G_CallPhoneFN={
 				}
 				
 				if(window.JavaScriptCall){					
-					JavaScriptCall.setShareContent(title,title,pathurl,httpurl) ;					
+					JavaScriptCall.setShareContent(title,content,pathurl,httpurl) ;					
 					return true;
 				}
 			}catch(e){
@@ -246,7 +246,7 @@ var G_CallPhoneFN={
 				
 				if(window.JavaScriptCall){
 					if(!pathurl)pathurl=G_logo;
-					JavaScriptCall.openNewWindowUrl(title,title,pathurl,httpurl) ;					
+					JavaScriptCall.openNewWindowUrl(title,content,pathurl,httpurl) ;					
 					return true;
 				}
 			}catch(e){
