@@ -292,4 +292,18 @@ public class PxTeachingPlanService extends AbstractService {
 		return true;
 	}
 
+	public boolean  update_deleteAll(String classuuid, ResponseMessage responseMessage) {
+		if (StringUtils.isBlank(classuuid)) {
+
+			responseMessage.setMessage("ID不能为空！");
+			return false;
+		}
+
+			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
+					"delete from PxTeachingplan where classuuid ='"+classuuid+"'");
+
+		
+		return true;
+	}
+
 }

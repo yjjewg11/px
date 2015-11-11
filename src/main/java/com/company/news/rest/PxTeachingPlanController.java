@@ -63,21 +63,21 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		try {
 
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
-			
-			
-			PxClass pxClass=pxclassService.get(pxTeachingPlanJsonform.getClassuuid());
-			if(pxClass==null){
+
+			PxClass pxClass = pxclassService.get(pxTeachingPlanJsonform
+					.getClassuuid());
+			if (pxClass == null) {
 				responseMessage.setMessage("班级不存在.");
 				return "";
 			}
-			if (!RightUtils.hasRight(pxClass.getGroupuuid(), RightConstants.PX_class_m,
-					request)) {
+			if (!RightUtils.hasRight(pxClass.getGroupuuid(),
+					RightConstants.PX_class_m, request)) {
 				if (!pxclassService.isheadteacher(user.getUuid(),
 						pxTeachingPlanJsonform.getClassuuid())) {
 					responseMessage.setMessage("不是当前班级管理员或者没有班级管理权限,不能修改教学计划");
 					return "";
 				}
-				
+
 			}
 		
 			
@@ -225,5 +225,66 @@ public class PxTeachingPlanController extends AbstractRESTController {
 		responseMessage.setMessage("复制成功");
 		return "";
 	}
+
+	/**
+	 * 班级删除
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/update_deleteAll", method = RequestMethod.POST)
+	public String update_deleteAll(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String classuuid=request.getParameter("classuuid");
+			
+			if (StringUtils.isBlank(classuuid)) {
+				responseMessage.setMessage("classuuid 不能为空！");
+				return "";
+			}
+			
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			PxClass pxClass = pxclassService.get(classuuid);
+			if (pxClass == null) {
+				responseMessage.setMessage("班级不存在.");
+				return "";
+			}
+			if (!RightUtils.hasRight(pxClass.getGroupuuid(),
+					RightConstants.PX_class_m, request)) {
+				if (!pxclassService.isheadteacher(user.getUuid(),
+						classuuid)) {
+					responseMessage.setMessage("不是当前班级管理员或者没有班级管理权限,不能修改教学计划");
+					return "";
+				}
+
+			}
+			
+			
+			boolean flag = pxTeachingPlanService.update_deleteAll(
+					classuuid,responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("删除成功");
+		return "";
+	}
+
+	
+	
 	
 }

@@ -2709,6 +2709,7 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
   		success : function(data) {
   			$.AMUI.progress.done();
   			if (data.ResMsg.status == "success") {
+  				G_msg_pop(data.ResMsg.message);
   				add_studentsByData_byRight({classuuid:class_uuid});
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
@@ -3106,8 +3107,33 @@ function ajax_teachingplan_save_byRight(){
             };
 G_ajax_abs_save(opt);
 }
-
-//删除课程按钮
+/*
+*(教学计划)删除所有课程；
+*@：删除成功后调用发布消息方法刷新;
+* */  	  
+ function react_all_teachingplan_delete(classuuid,courseuuid){
+   	if(!confirm("确定要删除所有课程吗?")){
+	return;
+}
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/pxteachingplan/update_deleteAll.json?classuuid="+classuuid;
+$.ajax({
+	type : "POST",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+			px_ajax_teachingplan_byRight(G_mygroup_choose,classuuid,courseuuid);
+   			 } else {
+   				alert(data.ResMsg.message);
+   			}
+   		},
+   		error :G_ajax_error_fn
+   	});
+   }; 
+//(教学计划)删除单独课程按钮
 function px_react_ajax_teachingplan_delete(obj){ 
 	if(!confirm("确定要删除吗?")){
 		return;
@@ -3438,15 +3464,64 @@ function px_react_ajax_teachingplan_delete(obj){
 			error :G_ajax_error_fn
 		});
    };
-   
+/*
+*(发布课程)删除按钮服务请求；
+*@：删除成功后调用发布消息方法刷新;
+* */  	  
+   function react_ajax_class_course_delete(groupuuid,uuid){	
+   	if(!confirm("确定要删除该课程吗?")){
+	return;
+}
+ 	$.AMUI.progress.start();
+     var url = hostUrl + "rest/pxCourse/delete.json?uuid="+uuid;
+$.ajax({
+	type : "POST",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		// 登陆成功直接进入主页
+		if (data.ResMsg.status == "success") {
+			px_ajax_course_byRight(groupuuid);
+   			} else {
+   				alert(data.ResMsg.message);
+   			}
+   		},
+   		error :G_ajax_error_fn
+   	});
+   };  
+ 
 /*(发布课程)查看课程详情方法按钮 
 * */
-   function px_ajax_class_course_look_info(event){
-   	Queue.push(function(){px_ajax_class_course_look_info(event);},"发布详情");
-	React.render(React.createElement(Class_course_look_info,{
-			formdata:event
-			}), document.getElementById('div_body'));
-   };   
+   function px_ajax_class_course_look_info(uuid){
+	  	Queue.push(function(){px_ajax_class_course_look_info(uuid);},"发布详情");
+	   $.AMUI.progress.start();
+		var url = hostUrl + "rest/pxCourse/"+uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			 async: false,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					React.render(React.createElement(Class_course_look_info,{
+			 			formdata:data.data
+			 			}), document.getElementById('div_body'));
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				} 
+			},
+			error :G_ajax_error_fn
+		});	
+		
+   };  
+   
+   
+   
+   
+
  /*(发布课程)
  * 班级详情内添加编辑提交按钮服务器请求
  * 直接把Form表单发送给服务器
@@ -3674,6 +3749,7 @@ function ajax_class_students_look_info(uuid){
  		success : function(data) {
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
+				G_msg_pop(data.ResMsg.message);
  				add_studentsByData({classuuid:class_uuid});
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
@@ -4103,7 +4179,6 @@ function ajax_class_students_look_info(uuid){
    
    
    
-   
  //——————————————————————————<对外发布>老师资料<管理模块>—————————————————————————— 
    /*
 	* <对外老师资料>建立Div舞台 
@@ -4112,6 +4187,7 @@ function ajax_class_students_look_info(uuid){
    function ajax_teacher_div_byRight(){
   	 	Queue.push(function(){ajax_teacher_div_byRight();},"老师资料");
 	   	 var group_list=Store.getGroup();
+			if(!G_mygroup_choose)G_mygroup_choose=group_list[0].uuid
 	    React.render(React.createElement(Teacher_div,{
 		grouplist:G_selected_dataModelArray_byArray(group_list,"uuid","brand_name")
 	}), document.getElementById('div_body'));  	
@@ -4165,17 +4241,33 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
   			formdata:formdata
   			}), document.getElementById('div_body'));
 
-    };   
-/*(对外老师资料)查看课程详情方法按钮 
- * */
-    function px_ajax_teacher_look_info(event){
-    	Queue.push(function(){px_ajax_teacher_look_info(event);},"老师详情");
- 	React.render(React.createElement(Teacher_look_info,{
- 			formdata:event
- 			}), document.getElementById('div_body'));
-    };     
+    };       
    
-   
+/*(对外老师资料)查看详情方法按钮 
+* */
+   function px_ajax_teacher_look_info(uuid){
+	  	Queue.push(function(){px_ajax_teacher_look_info(uuid);},"老师详情");
+	   $.AMUI.progress.start();
+		var url = hostUrl + "rest/pxteacher/"+uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			 async: false,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					React.render(React.createElement(Teacher_look_info,{
+			 			formdata:data.data
+			 			}), document.getElementById('div_body'));
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				} 
+			},
+			error :G_ajax_error_fn
+		});	
+		
+   };   
 /*(对外老师资料)
  * 对外老师资料添加编辑提交按钮服务器请求
  * 直接把Form表单发送给服务器
