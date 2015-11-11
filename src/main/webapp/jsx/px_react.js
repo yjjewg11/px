@@ -2088,19 +2088,31 @@ render: function() {
  * */
 var Announcements_mygoodlist_div = React.createClass({ 
 	  render: function() {
-	    var event = this.props.events;
-	    var className = event.highlight ? 'am-active' :
-    event.disabled ? 'am-disabled' : '';
+	    var events = this.props.events;
+	    var className = events.highlight ? 'am-active' :
+    events.disabled ? 'am-disabled' : '';
+				//如果相等为True不等为false用于判断编辑与删除是否
+				for(var i=0;i<events.data.length;i++){
+					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+						events.data[i].canEdit=true;
+					}else{
+                      events.data[i].canEdit=false;
+					}
+				} 
 	    return (
 	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
 	    	     <div className="am-list-news-bd">
 	    	     <ul className="am-list">
-	    			  {this.props.events.data.map(function(event) {
+	    			  {events.data.map(function(event) {
 	    			      return (
 	    			    		<li className="am-g am-list-item-dated">
 	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
 	    			  		  </a>		
+                              <AMR_ButtonToolbar>
+		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="primary" onClick={btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
+		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="danger" onClick={btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+                   		      </AMR_ButtonToolbar>	
 	    			  		  <div className="am-list-item-text">
 	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
 	    			  		  </div> 
@@ -3296,6 +3308,7 @@ render: function() {
    <thead> 
     <tr>
       <th>标题</th>
+      <th>编辑与删除操作</th>
       <th>状态</th>
       <th>浏览次数</th>
       <th>创建时间</th>
@@ -3324,11 +3337,20 @@ var Announcements_EventRow_byRight = React.createClass({
 	  var event = this.props.event;
 	  var className = event.highlight ? 'am-active' :
 	    event.disabled ? 'am-disabled' : '';
-
+        var txtclasssName;
+		 if(event.status==0){
+           txtclasssName="am-success";
+		  }else{
+           txtclasssName="am-danger";
+		   }
 	  return (
 	    <tr className={className} >
 	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
-	      <th>{Vo.get("announce_status_"+event.status)}</th>
+          <th> <AMR_ButtonToolbar>
+	         <AMR_Button className="G_Edit_show" amStyle="secondary" onClick={btn_click_announce_byRight.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>     
+			 <AMR_Button className="G_Edit_show" amStyle="danger" onClick={btn_click_announce_byRight.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+	     </AMR_ButtonToolbar></th>
+	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
 	      <td>{event.count}</td>
 	      <td>{event.create_time}</td>
 	      <td>{event.create_user}</td>
@@ -5599,11 +5621,11 @@ var Class_EventsTable_byRight = React.createClass({
  	 			var classuuid =null;
  	 			if(classList&&classList.length>0){
  	 				classuuid=classList[0].uuid;
-						px_ajax_teachingplan_byRight(groupuuid,classuuid,courseuuid);
+						px_ajax_teachingplan_byRight(G_mygroup_choose,classuuid,courseuuid);
  	 			}else{
 					this.state.classList=[];
 					this.setState(this.state);
-					px_ajax_teachingplan_byRight(groupuuid,classuuid,courseuuid);
+					px_ajax_teachingplan_byRight(G_mygroup_choose,classuuid,courseuuid);
 				}
             
 	   	  }, 
@@ -5611,11 +5633,16 @@ var Class_EventsTable_byRight = React.createClass({
 	handleChange_stutent_Selected: function() {
 	   		var courseuuid=$("input[name='courseuuid']").val();
 	 	  	var classuuid=$("input[name='classuuid']").val();
-	 	px_ajax_teachingplan_byRight(groupuuid,classuuid,courseuuid);
+	 	px_ajax_teachingplan_byRight(G_mygroup_choose,classuuid,courseuuid);
 	   	  }, 
 	add_classbtn: function() {
 	 	    var classuuid=$("input[name='classuuid']").val();
               teachingplan_addClass_byRight(classuuid);
+	   	  },
+	Alldeletes_btn: function() {
+	 	    var classuuid=$("input[name='classuuid']").val();
+			var courseuuid=$("input[name='courseuuid']").val();
+              react_all_teachingplan_delete(classuuid,courseuuid);
 	   	  },
  render: function() {
 	 var o=this.state;
@@ -5659,12 +5686,10 @@ var Class_EventsTable_byRight = React.createClass({
 	 </AMR_ButtonToolbar>
      </AMR_Panel>
 		   <AMR_ButtonToolbar>
-
-		<AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} >增加单条课程</AMR_Button>	
-
-       <AMR_Button amSize="xs" amStyle="secondary" onClick={this.add_classbtn.bind(this)}>批量添加课程</AMR_Button>	  	  
-	
-		</AMR_ButtonToolbar>
+		   <AMR_Button amSize="xs" amStyle="secondary" onClick={this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})} >增加单条课程</AMR_Button>	
+           <AMR_Button amSize="xs" amStyle="secondary" onClick={this.add_classbtn.bind(this)}>批量添加课程</AMR_Button>	  	  
+		   <AMR_Button amSize="xs" amStyle="danger" onClick={this.Alldeletes_btn.bind(this)}>删除所有课程</AMR_Button>
+	       </AMR_ButtonToolbar>
 	  {class_name}	 
       {addStudent} 
      
@@ -6545,7 +6570,8 @@ var Class_EventsTable_byRight = React.createClass({
            <tr>
              <th>标题</th>
 		     <th>复制课程</th>
-		     <th>修改课程</th>
+		     <th>修改与删除课程</th>
+		     <th>发布状态</th>
              <th>课程类型</th>
              <th>上课地点</th>
              <th>课程学时</th>
@@ -6554,12 +6580,11 @@ var Class_EventsTable_byRight = React.createClass({
 		     <th>星级</th>
 		     <th>浏览次数</th>
              <th>更新时间</th>
-             <th>发布状态</th>
            </tr> 
          </thead>
          <tbody>
            {this.props.events.map(function(event) {
-             return (<Query_course_byRight key={event.id} event={event} />);
+             return (<Query_course_byRight key={event.id} event={event} groupuuid={o.groupuuid}/>);
            })}
          </tbody>
        </AMR_Table>
@@ -6567,7 +6592,6 @@ var Class_EventsTable_byRight = React.createClass({
      );
    }
  });
-     
  /*  	
   * <发布课程>在表单上绘制详细内容;
   * */
@@ -6609,18 +6633,31 @@ var Class_EventsTable_byRight = React.createClass({
  				}
  			});	
 		   
-		   }
+		   }else if(m=="delete"){
+		     react_ajax_class_course_delete(this.props.groupuuid,uuid)
+		     }
 	 	  },
  	  render: function() {
  	    var event = this.props.event;
  	 	var className = event.highlight ? 'am-active' :
  	  	  event.disabled ? 'am-disabled' : '';
-
+        var txtclasssName;
+		 if(event.status==0){
+           txtclasssName="am-success";
+		  }else{
+           txtclasssName="am-danger";
+		   }
  	  	return (
  	  	  <tr className={className} >
- 	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event)}>{event.title}</a></td>
+ 	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event.uuid)}>{event.title}</a></td>
 			<td><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"addclass",event.uuid)} >复制课程</AMR_Button></td>
- 	  	    <td><AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"eitclass",event.uuid)} >修改</AMR_Button></td>
+ 	  	     <td>
+			<AMR_ButtonToolbar>
+			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"eitclass",event.uuid)} >修改</AMR_Button>
+			<AMR_Button amSize="xs" amStyle="danger" onClick={this.handleChange_button.bind(this,"delete",event.uuid)} >删除</AMR_Button>
+			</AMR_ButtonToolbar>
+			 </td>
+			<td className={txtclasssName}>{Vo.get("course_status_"+event.status)}</td>
 		    <td>{Vo.get("course_type_"+event.type)}</td>
  	  	    <td>{event.address}</td>
  	  	    <td>{event.schedule}</td>
@@ -6631,7 +6668,6 @@ var Class_EventsTable_byRight = React.createClass({
 
 
             <td>{event.updatetime}</td>
-            <td>{Vo.get("course_status_"+event.status)}</td>
  	  	  </tr> 
  	    );
  	  }
@@ -6669,7 +6705,7 @@ var Class_EventsTable_byRight = React.createClass({
  			  <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
  			 <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
  			 <AMUIReact.ListItem>课程详细内容:
- 	 			<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
+ 	 			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.context)}}></div> 
  				</AMUIReact.ListItem>		 			       			      
  			 </AMUIReact.List> 		
  		    </div> 
@@ -7861,7 +7897,11 @@ setProvCity:function(){
    	    			    		<li className="am-g am-list-item-dated">
    	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_Preferential_show.bind(this,event.uuid,event.title)}>
    	    			  		  {event.title} 
-   	    			  		  </a>		
+   	    			  		  </a>	
+                               	 <AMR_ButtonToolbar>
+   		                         <AMR_Button  amStyle="primary" onClick={btnclick_Preferential_announce.bind(this,"edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
+   		                         <AMR_Button  amStyle="danger" onClick={btnclick_Preferential_announce.bind(this,"del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+   		                         </AMR_ButtonToolbar>
    	    			  		  <div className="am-list-item-text">
    	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|(活动时间：{event.start_time}至{event.end_time})
    	    			  		  </div> 
@@ -8114,23 +8154,29 @@ var Teacher_EventsTable_byRight = React.createClass({
 	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">
 		    	 <tr> 
 	              <th>姓名</th>
+				  <th>发布状态</th>
 			      <th>修改资料</th>
 	              <th>教授课程</th>
 	              <th>星级</th>
 	              <th>简介</th>
 	              <th>更新时间</th>
-	              <th>发布状态</th>
 	            </tr> 			 
-	    			  {this.props.events.map(function(event) {
+	    			  {this.props.events.map(function(event) {        
+			                var txtclasssName;
+						if(event.status==0){
+						     txtclasssName="am-success";
+						  }else{
+						     txtclasssName="am-danger";
+						   }
 	    			      return (
 	    			    	      <tr className={className} >
-	    			     	  	    <td><a href="javascript:void(0);" onClick={px_ajax_teacher_look_info.bind(this,event)}>{event.name}</a></td>
+	    			     	  	    <td><a href="javascript:void(0);" onClick={px_ajax_teacher_look_info.bind(this,event.uuid)}>{event.name}</a></td>
+							  	    <td className={txtclasssName}>{Vo.get("course_status_"+event.status)}</td>
 								    <td><AMR_Button amStyle="secondary" onClick={that.handleChange_button.bind(this,event.uuid)} >修改</AMR_Button></td>	        
 									<td>{event.course_title}</td>
 	    			    	        <td>{event.ct_stars}</td>
 	    			    	        <td>{event.summary}</td>
 	    			                <td>{event.update_time}</td>
-	    			                <td>{Vo.get("course_status_"+event.status)}</td>
 	    			    	      </tr> 
 	    			    		  )
 	    			         })}	
@@ -8170,7 +8216,7 @@ var Teacher_look_info =React.createClass({
 			      <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
 			     <AMUIReact.ListItem>更新时间:{o.update_time}</AMUIReact.ListItem>
 			    <AMUIReact.ListItem>老师介绍详细内容:
-	 			<div dangerouslySetInnerHTML={{__html:o.content}}></div> 
+	 			<div dangerouslySetInnerHTML={{__html:G_textToHTML(o.content)}}></div> 
 				</AMUIReact.ListItem>		 			       			      
 			 </AMUIReact.List> 		
 		    </div> 

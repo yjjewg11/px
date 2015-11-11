@@ -2098,9 +2098,9 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
    * */  
   function btn_click_userinfo(m,obj,usernames,sex){
   	if(m=="add"){
-  	Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"新增老师");
+  	Queue.push(function(){btn_click_userinfo(m,obj,usernames,sex);},"新增老师");
   		obj.sex=1;
-  		ajax_userinfo_edit(obj,"add",sex);
+  		ajax_userinfo_edit(obj,"add");
   	}else if(m=="disable"){
   		ajax_userinfo_updateDisable(obj,1);		
   	}else if(m=="enable"){
@@ -2109,8 +2109,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   		//Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师权限-"+usernames);
   		//ajax_userinfo_getRole(obj,usernames, Store.getRoleList(),sex);
   	}else if(m=="edit"){
-  		  Queue.push(function(){btn_click_userinfo(m,obj,usernames);},"老师修改");
-  		ajax_userinfo_edit({uuid:obj},"edit",sex);
+  		  Queue.push(function(){btn_click_userinfo(m,obj,usernames,sex);},"老师修改");
+  		ajax_userinfo_edit({uuid:obj,sex:sex},"edit");
   	   	};
   	   };
      /*
@@ -2120,13 +2120,12 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
       * @逻辑：如果是"add"添加功能则直接执行Userinfo_edit方法，
       * 不是则继续执行服务器请求修改功能取得数据后执行Userinfo_edit；
       * */
-     function ajax_userinfo_edit(formdata,m,sex){
+     function ajax_userinfo_edit(formdata,m){
      	if(m=="add"){
 
      		React.render(React.createElement(Userinfo_edit,{
      			formdata:formdata,
-     			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
-     			sex:formdata.sex
+     			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name")
      			}), document.getElementById('div_body'));
      		return;
      	
@@ -2144,8 +2143,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      				React.render(React.createElement(Userinfo_edit,{
      					mygroup_uuids:data.mygroup_uuids,
      					formdata:data.data,
-     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
-     					sex:data.data.sex
+     					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name")
      					}), document.getElementById('div_body'));
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);

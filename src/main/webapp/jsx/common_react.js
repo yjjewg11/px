@@ -818,7 +818,7 @@ var Userinfo_edit = React.createClass({
 	  },	  
   render: function() {
 	  var o = this.state;
-	 // console.log("this.state",this.state);
+	 console.log("this.state",this.state);
 	  var passwordDiv=null;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
@@ -827,7 +827,6 @@ var Userinfo_edit = React.createClass({
 		  show_btn_UserBytel=(
 				  <button type="button"  onClick={this.handle_getUserBytel.bind(this,$('#tel').val(),o.group_uuid)}  className="am-btn am-btn-primary">检查是否注册</button>
 				  );
-		  o.sex=1;
 		  o.password="123456";
 		  o.password1="123456";
 		  passwordDiv=(

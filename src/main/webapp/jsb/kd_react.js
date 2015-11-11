@@ -1785,9 +1785,17 @@ render: function() {
  * */
 var Announcements_mygoodlist_div = React.createClass({displayName: "Announcements_mygoodlist_div", 
 	  render: function() {
-	    var event = this.props.events;
-	    var className = event.highlight ? 'am-active' :
-    event.disabled ? 'am-disabled' : '';
+	    var events = this.props.events;
+	    var className = events.highlight ? 'am-active' :
+    events.disabled ? 'am-disabled' : '';
+				//如果相等为True不等为false用于判断编辑与删除是否
+				for(var i=0;i<events.data.length;i++){
+					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+						events.data[i].canEdit=true;
+					}else{
+                      events.data[i].canEdit=false;
+					}
+				} 
 	    return (
 	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 	    	     React.createElement("div", {className: "am-list-news-bd"}, 
@@ -1797,7 +1805,11 @@ var Announcements_mygoodlist_div = React.createClass({displayName: "Announcement
 	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
 	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
 	    			  		  event.title
-	    			  		  ), 		
+	    			  		  ), 	
+							  React.createElement(AMR_ButtonToolbar, null, 
+							  React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "primary", onClick: btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)}, "编辑"), 
+		                      React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "danger", onClick: btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)}, "删除")
+           		              ), 	  
 	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
 	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_user, "|", event.create_time
 	    			  		  )
@@ -3110,6 +3122,7 @@ React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uu
    React.createElement("thead", null, 
     React.createElement("tr", null, 
       React.createElement("th", null, "标题"), 
+	  React.createElement("th", null, "编辑与删除操作"), 
       React.createElement("th", null, "状态"), 
       React.createElement("th", null, "浏览次数"), 
       React.createElement("th", null, "创建时间"), 
@@ -3133,11 +3146,21 @@ var Announcements_EventRow_byRight = React.createClass({displayName: "Announceme
 	  var event = this.props.event;
 	  var className = event.highlight ? 'am-active' :
 	    event.disabled ? 'am-disabled' : '';
-
+        var txtclasssName;
+		 if(event.status==0){
+           txtclasssName="am-success";
+		  }else{
+           txtclasssName="am-danger";
+		   }
 	  return (
 	    React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}, event.title)), 
-	      React.createElement("th", null, Vo.get("announce_status_"+event.status)), 
+          React.createElement("th", null, " ", React.createElement(AMR_ButtonToolbar, null, 
+	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: btn_click_announce_byRight.bind(this, "edit",event.groupuuid,event.uuid)}, "编辑"), 
+	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: btn_click_announce_byRight.bind(this, "del",event.groupuuid,event.uuid)}, "删除")
+	     )), 
+
+	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
 	      React.createElement("td", null, event.count), 
 	      React.createElement("td", null, event.create_time), 
 	      React.createElement("td", null, event.create_user)

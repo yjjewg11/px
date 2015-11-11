@@ -1785,9 +1785,17 @@ render: function() {
  * */
 var Announcements_mygoodlist_div = React.createClass({ 
 	  render: function() {
-	    var event = this.props.events;
-	    var className = event.highlight ? 'am-active' :
-    event.disabled ? 'am-disabled' : '';
+	    var events = this.props.events;
+	    var className = events.highlight ? 'am-active' :
+    events.disabled ? 'am-disabled' : '';
+				//如果相等为True不等为false用于判断编辑与删除是否
+				for(var i=0;i<events.data.length;i++){
+					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+						events.data[i].canEdit=true;
+					}else{
+                      events.data[i].canEdit=false;
+					}
+				} 
 	    return (
 	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
 	    	     <div className="am-list-news-bd">
@@ -1797,7 +1805,11 @@ var Announcements_mygoodlist_div = React.createClass({
 	    			    		<li className="am-g am-list-item-dated">
 	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
-	    			  		  </a>		
+	    			  		  </a>	
+							  <AMR_ButtonToolbar>
+							  <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="primary" onClick={btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
+		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="danger" onClick={btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+           		              </AMR_ButtonToolbar>	  
 	    			  		  <div className="am-list-item-text">
 	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
 	    			  		  </div> 
@@ -3110,6 +3122,7 @@ render: function() {
    <thead> 
     <tr>
       <th>标题</th>
+	  <th>编辑与删除操作</th>
       <th>状态</th>
       <th>浏览次数</th>
       <th>创建时间</th>
@@ -3133,11 +3146,21 @@ var Announcements_EventRow_byRight = React.createClass({
 	  var event = this.props.event;
 	  var className = event.highlight ? 'am-active' :
 	    event.disabled ? 'am-disabled' : '';
-
+        var txtclasssName;
+		 if(event.status==0){
+           txtclasssName="am-success";
+		  }else{
+           txtclasssName="am-danger";
+		   }
 	  return (
 	    <tr className={className} >
 	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
-	      <th>{Vo.get("announce_status_"+event.status)}</th>
+          <th> <AMR_ButtonToolbar>
+	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={btn_click_announce_byRight.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
+	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={btn_click_announce_byRight.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+	     </AMR_ButtonToolbar></th>
+
+	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
 	      <td>{event.count}</td>
 	      <td>{event.create_time}</td>
 	      <td>{event.create_user}</td>
