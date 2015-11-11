@@ -1,7 +1,20 @@
 /**
- * 第1步,启用ios模式.
- * G_jsCallBack.setIosApp();//设置为ios调用模式,给ios使用.
  * 
+ * 第1步,启用ios模式.ios 等待webview加载完成后,调用:
+ * G_jsCallBack.setIosApp();//设置为ios调用模式,给ios使用.
+ * G_jsCallBack.setIosApp_canShareURL();//设置为提供分享功能.
+ * 
+ * 第2步,webview内部网页,调用分享和新开webview显示url.
+ *  调用:ios/setShareContent
+ *  回调:G_jsCallBack.getShareObject();
+ *  回调返回数据json字符串.格式为:{title:title,content:content,pathurl:pathurl,httpurl:httpurl}
+ *  说明:参数说明: title为标题,content为分享内容，pathurl为分享图片地址，httpurl为链接地址
+ *  
+ *  第3步,webview内部网页,新开webview显示url.
+ *  调用:ios/openNewWindowUrl 
+ *  回调:G_jsCallBack.getShareObject();
+ *  回调返回数据json字符串.格式为:{title:title,content:content,pathurl:pathurl,httpurl:httpurl}
+ *  说明:参数说明: title为标题,content为分享内容，pathurl为分享图片地址，httpurl为链接地址
  * 
  * 调用手机方法
  * 1.调用选择头像图片.剪切图片为198*198,并可以调整方向
@@ -130,7 +143,25 @@ var G_CallIosFN={
 			G_CallIosFN.iosIfr.src = "ios/setShareContent";    
 			return true;
 		}catch(e){
-			  console.log('Exception:ios/selectHeadPic', e.message);
+			  console.log('Exception:ios/setShareContent', e.message);
+		}
+		console.log('ios/selectHeadPic==false');
+		return false;
+	},
+	/**
+	 * 调用分享接口.title,content,pathurl,httpurl
+	 * G_CallIosFN.setShareContent(title,content,pathurl,httpurl)
+	 * G_CallIosFN.iosIfr.src = "ios/setShareContent";
+	 * @returns {Boolean}
+	 */
+	openNewWindowUrl:function(title,content,pathurl,httpurl){
+		try{
+			
+			G_CallIosFN.shareobject=JSON.stringify({title:title,content:content,pathurl:pathurl,httpurl:httpurl});
+			G_CallIosFN.iosIfr.src = "ios/openNewWindowUrl";    
+			return true;
+		}catch(e){
+			  console.log('Exception:ios/openNewWindowUrl', e.message);
 		}
 		console.log('ios/selectHeadPic==false');
 		return false;

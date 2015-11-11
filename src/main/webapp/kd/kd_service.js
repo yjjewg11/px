@@ -790,6 +790,11 @@ function react_ajax_announce_show(uuid,Titlenmae){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						if(flag)return;
+				  }
 				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
 				React.render(React.createElement(Announcements_show,{
 					data:data.data,
@@ -1136,6 +1141,12 @@ function react_ajax_announce_good_show(uuid,title){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						if(flag)return;
+				  }
+
 				//如果相等为True不等为false用于判断编辑与删除是否
 				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
 				React.render(React.createElement(Announcements_goodshow,{
@@ -1770,7 +1781,11 @@ $.ajax({
 	success : function(data) {
 		$.AMUI.progress.done();
 		if (data.ResMsg.status == "success") {
-
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+						if(flag)return;
+				  }
 			React.render(React.createElement(Announcements_show_byRight,{
 				share_url:data.share_url,
 				data:data.data,
@@ -3365,6 +3380,11 @@ $.ajax({
  	 			$.AMUI.progress.done();
  	 			// 登陆成功直接进入主页
  	 			if (data.ResMsg.status == "success") {
+					var o=data.data;
+					  if(o.url){
+							var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.message,null,data.share_url);
+							if(flag)return;
+					  }
  	 				React.render(React.createElement(Announcements_helpshow,{
  	 					data:data.data,
  	 					share_url:data.share_url,

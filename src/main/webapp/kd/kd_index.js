@@ -4,6 +4,12 @@ window.G_myclass_choose=null;
 window.G_mygroup_choose=null;
 //用于切换机构类型
 window.G_group_type=1;
+window.JavaScriptCall={
+		openNewWindowUrl:function(title,content,pathurl,httpurl){
+			alert(title+"-"+httpurl);
+		}
+		
+};
 	//统一换标头方法
 	function title_info_init(type){
 		//主页顶部按钮；

@@ -15,6 +15,11 @@
  * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
  * G_jsCallBack.selectHeadPic_callback_imgUrl(imgUrl,uuid); 调用选择头像图片,裁剪和调整方向,回调方法.返回图片地址和uuid。
  * Store.getCurGroup().uuid
+ * 
+ * 
+ *  *调用新开webview访问地址.并右上角添加分享功能.
+ *G_CallPhoneFN.openNewWindowUrl(title,title,pathurl,httpurl);	
+ *参数说明: titll为标题  content为分享内容，pathurl为分享图片地址，httpurl为链接地址
  */
 var G_jsCallBack={
 	/**
@@ -181,7 +186,23 @@ var G_CallPhoneFN={
 			}
 			return false;
 		},
-		
+		/**
+		 * 
+		 * G_CallPhoneFN.canShareUrl();
+		 * 判断是否能分享.
+		 * @returns {Boolean}
+		 */
+		canShareUrl:function(){
+			//andorid 手机允许分享
+			if(G_CallPhoneFN.isAndorid()){
+				return true;
+			}
+			//ios开发接口允许分享
+			if(G_CallIosFN.canShareUrl){
+				return true;
+			}
+			return false;
+		},
 		/**
           *网页内容分享回调接口方法  
           *setShareContent(title,content,pathurl,httpurl) 
@@ -189,9 +210,17 @@ var G_CallPhoneFN={
           *tml有问题暂时用title代替后续优化 
 		 */
 		setShareContent:function(title,content,pathurl,httpurl){
+			if(!pathurl)pathurl=G_logo;
+			
+			
+			
 			try{
-				if(window.JavaScriptCall){
-					if(!pathurl)pathurl=G_logo;
+				if(G_CallIosFN.canShareUrl){
+					 G_CallIosFN.setShareContent(title,content,pathurl,httpurl)
+					return true;
+				}
+				
+				if(window.JavaScriptCall){					
 					JavaScriptCall.setShareContent(title,title,pathurl,httpurl) ;					
 					return true;
 				}
@@ -204,12 +233,17 @@ var G_CallPhoneFN={
 		
 		/**
          *调用新开webview访问地址.并右上角添加分享功能.
-         *JavaScriptCall.openNewWindowUrl(title,title,pathurl,httpurl);	
-         *参数说明: titll为标题  content为分享内容，pathurl为分享图片地址，httpurl为链接地址
+         *G_CallPhoneFN.openNewWindowUrl(title,title,pathurl,httpurl);	
+         *参数说明: title为标题,content为分享内容，pathurl为分享图片地址，httpurl为链接地址
          *tml有问题暂时用title代替后续优化 
 		 */
 		openNewWindowUrl:function(title,content,pathurl,httpurl){
 			try{
+				if(G_CallIosFN.canShareUrl){
+					 G_CallIosFN.openNewWindowUrl(title,content,pathurl,httpurl)
+					return true;
+				}
+				
 				if(window.JavaScriptCall){
 					if(!pathurl)pathurl=G_logo;
 					JavaScriptCall.openNewWindowUrl(title,title,pathurl,httpurl) ;					
