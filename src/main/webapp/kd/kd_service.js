@@ -1041,7 +1041,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 	}
 	var list=Store.getGroupNoGroup_wjd();
 	if(!list||list.length==0){
-		G_msg_pop("没有加入学校,没得数据.");
+		G_msg_pop("您没有加入学校,没有食谱数据.");
 		return;
 	}
 	if(!groupuuid)groupuuid=list[0].uuid;

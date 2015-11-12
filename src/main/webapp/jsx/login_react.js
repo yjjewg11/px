@@ -262,8 +262,10 @@ var Div_userinfo_reg = React.createClass({
 				   <PxInput type="password" name="password1" id="password1"/>
 				  </div>			
 				 <br/>
+			  <AMR_ButtonToolbar>	 
 		      <button type="button" onClick={ajax_userinfo_reg} className="am-btn am-btn-primary">注册</button>
 		      <button type="button" onClick={menu_userinfo_login_fn} className="am-btn am-btn-primary">返回</button>	      
+		      </AMR_ButtonToolbar>
 		    </div>
 		   </form>	
 		  </div>

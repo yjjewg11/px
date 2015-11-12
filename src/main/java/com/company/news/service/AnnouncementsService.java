@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -294,15 +295,37 @@ public class AnnouncementsService extends AbstractService {
 		if (StringUtils.isBlank(groupuuid))
 			return null;
 
-		String hql = "from Announcements4Q where  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
-		if (StringUtils.isNotBlank(type))
-			hql += " and type=" + type;
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
 		
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
-		warpVoList(pageQueryResult.getData(),null);
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type,t2.count";
+		sql+=" FROM px_announcements t1 ";
+		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+		sql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(type))
+			sql += " and t1.type=" + type;
+		sql += " order by t1.create_time desc";
+		
+		
+		
+		String countsql="SELECT count(*) from px_announcements t1";
+		countsql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
+		
+		
+//		
+//		String hql = "from Announcements4Q where  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+//		if (StringUtils.isNotBlank(type))
+//			hql += " and type=" + type;
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//		
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHql(hql, pData);
+//		§warpVoList(pageQueryResult.getData(),null);
 		return pageQueryResult;
 	}
 	@Autowired

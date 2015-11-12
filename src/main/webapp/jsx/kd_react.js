@@ -5162,10 +5162,13 @@ render: function() {
             </div>	
              <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
     		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
-    		  </div>		 
+    	 	  </div>	
+		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <PxInput icon="calendar" type="text"  maxLength="4" size="4" placeholder="YYYY" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
-	 		
+	 		 </div>	
+		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <AMR_Button amStyle="secondary" onClick={this.ajax_list.bind(this)} >查询</AMR_Button>
+		     </div>
     	     </AMR_ButtonToolbar>
              </AMR_Panel>
 		  </AMUIReact.Form>

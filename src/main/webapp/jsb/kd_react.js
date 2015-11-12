@@ -5162,10 +5162,13 @@ render: function() {
             ), 	
              React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
     		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, placeholder: "所有", btnWidth: "200", multiple: false, btnStyle: "primary"})	 
-    		  ), 		 
-			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange}), 		   		
-	 		
+    	 	  ), 	
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange})		   		
+	 		 ), 	
+		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.ajax_list.bind(this)}, "查询")
+		     )
     	     )
              )
 		  ), 

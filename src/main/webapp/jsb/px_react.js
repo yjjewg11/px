@@ -3775,11 +3775,16 @@ render: function() {
 var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTable_byRight", 
 	  render: function() {
 	    var event = this.props.events;
+		var data_List=this.props.data_List;
+		var calss_number=(React.createElement("div", null));
 	    var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
+		if(data_List.pageNo==1){
+		  calss_number=(React.createElement("div", null, "班级总数:"+data_List.totalCount));
+		}
 	    return (
 	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
-	    		  React.createElement("div", null, "班级总数:"+event.length), 
+		          calss_number, 
 	    	    React.createElement("tr", null, 
 	              React.createElement("th", null, "班级"), 
 				  React.createElement("th", null, "(学生数)"), 
@@ -6533,9 +6538,24 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  
  
  
- 
+ /*
+function test1(name){
+   var uuid="";
+   $($("input[name='"+name+"']")).each(function(){
+					
+					 if(this.checked){
+						 if(!uuid){
+							 uuid=this.value;
+						  }else{
+						    uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+						 }
+						
+					 }
+					});
 
- 
+	return uuid;
+}
+*/ 
  
 //——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
  /*
@@ -6549,6 +6569,99 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      handleChange_selectgroup_uuid: function(val) {
  		px_ajax_course_byRight(val);
  	  },
+ handleClick: function(m) {
+         var uuid="";
+		 if(m=="addclass"){
+			 	$($("input[name='table_checkbox']")).each(function(){
+					
+					 if(this.checked){
+						 if(!uuid){
+							 uuid=this.value;
+						  }else{
+						    alert("请只选择一个课程复制！");
+						    return;
+						 }
+						// uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					 }
+					});
+				  if(!uuid){
+					  alert("请选择你要复制的课程！");
+					  return;
+				  }
+			  $.AMUI.progress.start();
+ 			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
+ 			$.ajax({
+ 				type : "GET",
+ 				url : url,
+ 				dataType : "json",
+ 				success : function(data) {
+ 					$.AMUI.progress.done();
+ 					if (data.ResMsg.status == "success") {
+					data.data.uuid=null;
+					px_course_onClick_byRight(data.data);
+ 					} else {
+ 						alert(data.ResMsg.message);
+ 						G_resMsg_filter(data.ResMsg);
+ 					}
+ 				}
+ 			});		
+		   }else if(m=="eitclass"){
+			   	$($("input[name='table_checkbox']")).each(function(){
+					
+					 if(this.checked){
+						 if(!uuid){
+						 uuid=this.value;
+						 }else{
+						   alert("请只选择一个课程修改！");
+						   return;
+						   }		  
+						// uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					 }
+					});
+				  if(!uuid){
+					  alert("请选择你要修改的课程！");
+					  return;
+				  }
+			   $.AMUI.progress.start();
+ 			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
+ 			$.ajax({
+ 				type : "GET",
+ 				url : url,
+ 				dataType : "json",
+ 				success : function(data) {
+ 					$.AMUI.progress.done();
+ 					if (data.ResMsg.status == "success") {
+					px_course_onClick_byRight(data.data);
+ 					 } else {
+ 						alert(data.ResMsg.message);
+ 						G_resMsg_filter(data.ResMsg);
+ 					}
+ 				}
+ 			});	
+		   
+		   }else if(m=="delete"){
+			   	$($("input[name='table_checkbox']")).each(function(){
+					
+					 if(this.checked){
+						 if(!uuid){
+						   uuid=this.value;
+						 }else{
+						  alert("请只选择一个课程删除！");
+						  return;
+						 }
+						 uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+					 }
+					});
+				  if(!uuid){
+					  alert("请选择你要删除的课程！");
+					  return;
+				  }
+		     react_ajax_class_course_delete(this.props.groupuuid,uuid)
+		     }
+	 	  },
+ handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+ },
  render: function() {
 	 var o=this.props;
      return (
@@ -6561,13 +6674,19 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			 ), 
 		     React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 	         React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.groupuuid)}, "新增课程")	
-			 )
+			 ), 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"eitclass")}, "修改"), 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addclass")}, "复制课程"), 
+			React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.handleClick.bind(this,"delete")}, "删除")
 		 )
 		 ), 		 
 
        React.createElement(AMR_Table, React.__spread({},  this.props), 
          React.createElement("thead", null, 
            React.createElement("tr", null, 
+		     React.createElement("th", null, 
+             React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
+             ), 
              React.createElement("th", null, "标题"), 		     
 		     React.createElement("th", null, "操作"), 
 		     React.createElement("th", null, "发布状态"), 
@@ -6595,48 +6714,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  /*  	
   * <发布课程>在表单上绘制详细内容;
   * */
- var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 
-	 handleChange_button: function(m,uuid) {
-		 if(m=="addclass"){
-			  $.AMUI.progress.start();
- 			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
- 			$.ajax({
- 				type : "GET",
- 				url : url,
- 				dataType : "json",
- 				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-					data.data.uuid=null;
-					px_course_onClick_byRight(data.data);
- 					} else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
- 				}
- 			});		
-		   }else if(m=="eitclass"){
-			   $.AMUI.progress.start();
- 			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
- 			$.ajax({
- 				type : "GET",
- 				url : url,
- 				dataType : "json",
- 				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-					px_course_onClick_byRight(data.data);
- 					 } else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
- 				}
- 			});	
-		   
-		   }else if(m=="delete"){
-		     react_ajax_class_course_delete(this.props.groupuuid,uuid)
-		     }
-	 	  },
+ var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 	
  	  render: function() {
  	    var event = this.props.event;
  	 	var className = event.highlight ? 'am-active' :
@@ -6649,13 +6727,12 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		   }
  	  	return (
  	  	  React.createElement("tr", {className: className}, 
+		  React.createElement("td", null, 
+	      React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
+	      ), 
  	  	    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: px_ajax_class_course_look_info.bind(this,event.uuid)}, event.title)), 
-			  React.createElement("td", null, 
-			React.createElement(AMR_ButtonToolbar, null, 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"eitclass",event.uuid)}, "修改"), 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,"addclass",event.uuid)}, "复制课程"), 
-			React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.handleChange_button.bind(this,"delete",event.uuid)}, "删除")
-			)
+			  React.createElement("td", null
+
 			 ), 
 			React.createElement("td", {className: txtclasssName}, Vo.get("course_status_"+event.status)), 
 		    React.createElement("td", null, Vo.get("course_type_"+event.type)), 
@@ -8358,4 +8435,327 @@ React.createElement("div", null,
 }
 }); 
 
-   //±±±±±±±±±±±±±±±±±±±±±±±±±±±     
+   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+
+
+
+
+
+
+
+
+
+////——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
+///*
+//* <发布课程>服务器请求后绘制处理方法；
+//* 
+//* */
+//var px_rect_course_byRight = React.createClass({
+//	 handleChange_button: function(groupuuid) {
+//		px_course_onClick_byRight({groupuuid:groupuuid,uuid:null});
+//	  },
+//   handleChange_selectgroup_uuid: function(val) {
+//		px_ajax_course_byRight(val);
+//	  },
+//render: function() {
+//	 var o=this.props;
+//   return (
+//   <div>
+//		 <G_px_help_List data={G_px_help_msg.msg_px_help_list3}/>
+//		 <AMR_Panel>
+//       <AMR_ButtonToolbar>
+//			 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//		     <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={o.groupList} btnStyle="primary" value={o.groupuuid} />
+//			 </div> 
+//		     <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//	         <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.groupuuid)} >新增课程</AMR_Button>	
+//			 </div> 
+//		 </AMR_ButtonToolbar>
+//		 </AMR_Panel>		 
+//
+//     <AMR_Table {...this.props}>  
+//       <thead> 
+//         <tr>
+//           <th>标题</th>		     
+//		     <th>操作</th>
+//		     <th>发布状态</th>
+//           <th>课程类型</th>
+//           <th>上课地点</th>
+//           <th>课程学时</th>
+//           <th>收费价格</th>
+//           <th>优惠价格</th>
+//		     <th>班级数</th>
+//		     <th>星级</th>
+//		     <th>浏览次数</th>
+//           <th>更新时间</th>
+//         </tr> 
+//       </thead>
+//       <tbody>
+//         {this.props.events.map(function(event) {
+//           return (<Query_course_byRight key={event.id} event={event} groupuuid={o.groupuuid}/>);
+//         })}
+//       </tbody>
+//     </AMR_Table>
+//     </div>
+//   );
+// }
+//});
+///*  	
+//* <发布课程>在表单上绘制详细内容;
+//* */
+//var Query_course_byRight = React.createClass({ 
+//	 handleChange_button: function(m,uuid) {
+//		 if(m=="addclass"){
+//			  $.AMUI.progress.start();
+//			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
+//			$.ajax({
+//				type : "GET",
+//				url : url,
+//				dataType : "json",
+//				success : function(data) {
+//					$.AMUI.progress.done();
+//					if (data.ResMsg.status == "success") {
+//					data.data.uuid=null;
+//					px_course_onClick_byRight(data.data);
+//					} else {
+//						alert(data.ResMsg.message);
+//						G_resMsg_filter(data.ResMsg);
+//					}
+//				}
+//			});		
+//		   }else if(m=="eitclass"){
+//			   $.AMUI.progress.start();
+//			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
+//			$.ajax({
+//				type : "GET",
+//				url : url,
+//				dataType : "json",
+//				success : function(data) {
+//					$.AMUI.progress.done();
+//					if (data.ResMsg.status == "success") {
+//					px_course_onClick_byRight(data.data);
+//					 } else {
+//						alert(data.ResMsg.message);
+//						G_resMsg_filter(data.ResMsg);
+//					}
+//				}
+//			});	
+//		   
+//		   }else if(m=="delete"){
+//		     react_ajax_class_course_delete(this.props.groupuuid,uuid)
+//		     }
+//	 	  },
+//	  render: function() {
+//	    var event = this.props.event;
+//	 	var className = event.highlight ? 'am-active' :
+//	  	  event.disabled ? 'am-disabled' : '';
+//      var txtclasssName;
+//		 if(event.status==0){
+//         txtclasssName="am-text-success";
+//		  }else{
+//         txtclasssName="am-text-danger";
+//		   }
+//	  	return (
+//	  	  <tr className={className} >
+//	  	    <td><a href="javascript:void(0);" onClick={px_ajax_class_course_look_info.bind(this,event.uuid)}>{event.title}</a></td>
+//			  <td>
+//			<AMR_ButtonToolbar>
+//			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"eitclass",event.uuid)} >修改</AMR_Button>
+//			<AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,"addclass",event.uuid)} >复制课程</AMR_Button>
+//			<AMR_Button amSize="xs" amStyle="danger" onClick={this.handleChange_button.bind(this,"delete",event.uuid)} >删除</AMR_Button>
+//			</AMR_ButtonToolbar>
+//			 </td>
+//			<td className={txtclasssName}>{Vo.get("course_status_"+event.status)}</td>
+//		    <td>{Vo.get("course_type_"+event.type)}</td>
+//	  	    <td>{event.address}</td>
+//	  	    <td>{event.schedule}</td>
+//	  	    <td>{event.fees}</td>
+//	  	    <td>{event.discountfees}</td>
+//			 <td>{event.class_count}</td>
+//          <G_rect_stars ct_stars={event.ct_stars}/>
+//			<td>{event.count==null?0:event.count}</td>
+//
+//
+//          <td>{event.updatetime}</td>
+//	  	  </tr> 
+//	    );
+//	  }
+//	}); 
+//
+///*发布课程中查看课程详情
+//* */
+//var Class_course_look_info =React.createClass({
+//	 getInitialState: function() {
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editClassStudentForm').serializeJson());
+//	  },
+//	  componentDidMount:function(){
+//
+//		},
+//		render: function() {
+//	     var o =this.state;
+//	     var imgGuid=o.logo;
+//	     var imglist=[imgGuid];
+//		 return (
+//		 		<div>
+//		 		
+//			    <AMUIReact.List static border striped>
+//			      <Common_mg_big_fn  imgsList={imglist} />				  
+//				  <br/>	      
+//			      
+//			         <AMUIReact.ListItem>标题:{o.title}</AMUIReact.ListItem>
+//			        <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
+//			      <AMUIReact.ListItem>上课地点:{o.address}</AMUIReact.ListItem>
+//			     <AMUIReact.ListItem>课程学时:{o.schedule}</AMUIReact.ListItem>
+//			    <AMUIReact.ListItem>收费价格:{o.fees}</AMUIReact.ListItem>
+//			   <AMUIReact.ListItem>优惠价格:{o.discountfees}</AMUIReact.ListItem>
+//			  <AMUIReact.ListItem>更新时间:{o.updatetime}</AMUIReact.ListItem>
+//			 <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
+//			 <AMUIReact.ListItem>课程详细内容:
+//	 			
+//				</AMUIReact.ListItem>		 			       			      
+//			 </AMUIReact.List> 	
+//					<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
+//		    </div> 
+//		     );
+//	        }
+//		 }); 
+//
+//
+//
+////发布课程添加与编辑绘制
+//var Px_course_edit = React.createClass({ 
+//	 getInitialState: function() {
+//
+//		 this.props.formdata.logo=this.props.logo;
+//		 this.props.formdata.groupList=this.props.groupList;
+//		    return this.props.formdata;
+//		  },
+//	 handleChange: function(event) {
+//		    this.setState($('#editCourseForm').serializeJson());
+//	  },
+//	  componentDidMount:function(){
+//		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+//	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+//	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+//	        });
+//    },
+//	   /*
+//	    * (发布课程)内上传LOGO图片
+//	    * */
+// btn_class_group_uploadHeadere :function(){      
+//     w_uploadImg.open(function (guid){
+//          $ ("#logo").val(guid);
+//          $("#img_head_image").attr("src",G_imgPath+ guid);
+//          G_img_down404("#img_head_image");
+//	         });   
+//	   },
+//	 handleChange_Selected: function(event) {
+//		   //根据选择学校刷新LOGO 如果有的话
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/group/getBaseInfo.json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		data : {uuid:event},
+//		dataType : "json",
+//		async: false,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				var img=data.data.img;
+//		  if(img){
+//          $ ("#logo").val(img);
+//          $("#img_head_image").attr("src",G_imgPath+ img);
+//          G_img_down404("#img_head_image");
+//				}			
+//			} else {
+//				alert(data.ResMsg.message);
+//				G_resMsg_filter(data.ResMsg);
+//			}
+//		},
+//		error : G_ajax_error_fn
+//	});
+//		    this.setState($('#editCourseForm').serializeJson());
+//	  },
+//render: function() {
+//	  var o = this.state;
+//	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
+//	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
+//	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
+//	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
+//	   var course_status_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_status"),"key","val");
+//	   if(o.type==null&&course_type_list.length>0)o.type=course_type_list[0].value;
+//	   if(o.status==null)o.status=1;
+//return (
+//		 <div>
+//
+//		  <div className=" am-u-md-6 am-u-sm-12">
+//		  <form id="editCourseForm" method="post" className="am-form">
+//			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
+//		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
+//			       <PxInput type="hidden" name="logo" id="logo" value={o.logo} onChange={this.handleChange}/>
+//			<div>
+//		      <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
+//             <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary">上传LOGO</button>
+//
+//
+//        </div>
+//        <hr/>
+//		   <div className="am-form-group">
+//           <div className="am-fl am-margin-bottom-sm ">
+//	 	  	  <AMUIReact.Selected amSize="xs" id="groupuuid" name="groupuuid" onChange={this.handleChange_Selected}  multiple= {false} data={o.groupList} btnStyle="primary" value={o.groupuuid} />    		     
+//	 	       </div>
+//		      <div className="am-fl am-margin-bottom-sm am-margin-left-xs"> 
+//		     <AMUIReact.Selected  id="type" name="type" onChange={this.handleChange}  data={course_type_list} btnStyle="primary" value={o.type+""} />    		     
+//	 	    </div>  
+//		     <AMUIReact.Selected  id="status" name="status" onChange={this.handleChange}  data={course_status_list} btnStyle="primary" value={o.status+""} />    		     
+//
+//	 	  	  <hr/>
+//		       <label className={one_classDiv}>标题:</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="title" id="title" maxLength="20" value={o.title} onChange={this.handleChange}/>
+//			        </div>
+//		 	         
+//		  		  
+//
+//			    <label className={one_classDiv}>上课地点:</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="address" id="address" maxLength="50" value={o.address} onChange={this.handleChange}/>
+//			        </div>
+//
+//
+//			    <label className={one_classDiv}>课程学时:</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
+//			        </div>
+//
+//			    <label className={one_classDiv}>收费价格:</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="fees" id="fees" maxLength="20" value={o.fees} onChange={this.handleChange}/>
+//			        </div>
+//
+//			    <label className={one_classDiv}>优惠价格:</label>
+//			     <div className={two_classDiv}>
+//			       <PxInput  type="text" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
+//			        </div>
+//			       
+//			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>
+//					{G_get_upload_img_Div()} 
+//	  		  
+//				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>
+//					   </div>  
+//		          </form> 
+//		       </div>	
+//
+//		   <div  className=" am-u-md-6 am-u-sm-12">
+//			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dykecheng.png"} className={"G_img_header2"}/>
+//		   </div>
+//
+//		</div>
+//);
+//}
+//}); 
+////±±±±±±±±±±±±±±±±±±±±±±±±±±±  
