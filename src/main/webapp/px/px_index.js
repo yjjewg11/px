@@ -509,10 +509,6 @@ function menu_announce_mylist_fn() {
  * */
 var G_myCurClassuuid=null;
 function menu_teachingplan_dayShow_fn(classuuid) {
-	if(!classuuid){
-		G_msg_pop("请先创建班级，再做课程操作!");
-		return;
-	}
 //培训机构课程表模块，列表代码	
 	var classList=Store.getMyClassList();
     var class_uuid =null;
@@ -522,6 +518,10 @@ function menu_teachingplan_dayShow_fn(classuuid) {
  			classuuid=classList[0].uuid;
  		}
 	} 
+	if(!classuuid){
+		G_msg_pop("请先创建班级，再做课程操作!");
+		return;
+	}
 	px_ajax_teachingplan_fn(classuuid);
 	return;
 //---------------------------------------------------------------------------------	
@@ -823,8 +823,10 @@ function menu_statistics_list_fn_byRight() {
 		return;
 	}
 		if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
-	
+	var now=new Date();//当天 
+
 	React.render(React.createElement(ECharts_Div_byRight, {
+		begDateStr:G_week.getDateStr(now,-7),
 		groupuuid:G_mygroup_choose,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")

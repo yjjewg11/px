@@ -5604,8 +5604,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	 			var o=this.getStateByPropes(nextProps);
  	 		   this.setState(o);
  	 		},
-	  addteachingplan_btn:function(event){
+	  addteachingplan_btn:function(m,event){
 		  //新增和修改按钮点击事件；更新form_data
+		  if(m=="copy"){
+		    event.uuid=null;
+		    }
 		  this.form_data=event;
  		  this.isAddteachingplanFlag=true;
  		  this.class_nameFlag=false;
@@ -5681,8 +5684,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      React.createElement("div", null, 
      React.createElement(AMR_Panel, null, 
      React.createElement(AMR_ButtonToolbar, null, 
-   
 	 React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	  React.createElement("a", {name: "top"}), 
   	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "courseuuid", onChange: this.handleChange_courseuuid_Selected, data: o.courseList, btnStyle: "primary", value: o.courseuuid})
   	   ), 	 
   	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
@@ -5691,7 +5694,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	 )
      ), 
 		   React.createElement(AMR_ButtonToolbar, null, 
-		   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,{classuuid:o.classuuid,uuid:null})}, "增加单条课程"), 	
+		   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addteachingplan_btn.bind(this,"add",{classuuid:o.classuuid,uuid:null})}, "增加单条课程"), 	
            React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.add_classbtn.bind(this)}, "批量添加课程"), 	  	  
 		   React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.Alldeletes_btn.bind(this)}, "删除所有课程")
 	       ), 
@@ -5739,7 +5742,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
           "课程详细内容:", event.context
           ), 
           React.createElement(AMR_ButtonToolbar, null, 
-		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,event)}, "修改"), 
+          React.createElement("a", {href: "#top"}), 
+		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,"eit",event)}, "修改"), 
+           React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: thit.addteachingplan_btn.bind(this,"copy",event)}, "复制"), 
 		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: thit.delete_button.bind(this,event)}, "删除")
          )
           )
@@ -5797,7 +5802,6 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		},
  render: function() {
  	  var o = this.state;
- 	  
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
   	  var class_name=(React.createElement("div", null));
@@ -6538,27 +6542,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  
  
  
- /*
-function test1(name){
-   var uuid="";
-   $($("input[name='"+name+"']")).each(function(){
-					
-					 if(this.checked){
-						 if(!uuid){
-							 uuid=this.value;
-						  }else{
-						    uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-						 }
-						
-					 }
-					});
-
-	return uuid;
-}
-*/ 
+ 
  
 //——————————————————————————<发布对外课程>发布课程<管理模块绘制>——————————————————————————  
- /*
+ /* 
   * <发布课程>服务器请求后绘制处理方法；
   * 
   * */
@@ -6571,23 +6558,25 @@ function test1(name){
  	  },
  handleClick: function(m) {
          var uuid="";
-		 if(m=="addclass"){
-			 	$($("input[name='table_checkbox']")).each(function(){
-					
+            $($("input[name='table_checkbox']")).each(function(){					
 					 if(this.checked){
 						 if(!uuid){
 							 uuid=this.value;
 						  }else{
-						    alert("请只选择一个课程复制！");
-						    return;
-						 }
-						// uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+							 uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+						 }						
 					 }
 					});
 				  if(!uuid){
 					  alert("请选择你要复制的课程！");
 					  return;
 				  }
+		if(uuid.indexOf(",")>=0){
+			alert("请只选择一个课程做操作");
+			return;
+		}
+
+		 if(m=="addclass"||m=="eitclass"){			 	
 			  $.AMUI.progress.start();
  			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
  			$.ajax({
@@ -6597,65 +6586,20 @@ function test1(name){
  				success : function(data) {
  					$.AMUI.progress.done();
  					if (data.ResMsg.status == "success") {
-					data.data.uuid=null;
-					px_course_onClick_byRight(data.data);
+                       if(m=="addclass"){
+					     data.data.uuid=null;
+					     px_course_onClick_byRight(data.data);
+					    }else{
+					      px_course_onClick_byRight(data.data);
+					  }
+
  					} else {
  						alert(data.ResMsg.message);
  						G_resMsg_filter(data.ResMsg);
  					}
  				}
  			});		
-		   }else if(m=="eitclass"){
-			   	$($("input[name='table_checkbox']")).each(function(){
-					
-					 if(this.checked){
-						 if(!uuid){
-						 uuid=this.value;
-						 }else{
-						   alert("请只选择一个课程修改！");
-						   return;
-						   }		  
-						// uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-					 }
-					});
-				  if(!uuid){
-					  alert("请选择你要修改的课程！");
-					  return;
-				  }
-			   $.AMUI.progress.start();
- 			var url = hostUrl + "rest/pxCourse/"+uuid+".json";
- 			$.ajax({
- 				type : "GET",
- 				url : url,
- 				dataType : "json",
- 				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-					px_course_onClick_byRight(data.data);
- 					 } else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
- 				}
- 			});	
-		   
 		   }else if(m=="delete"){
-			   	$($("input[name='table_checkbox']")).each(function(){
-					
-					 if(this.checked){
-						 if(!uuid){
-						   uuid=this.value;
-						 }else{
-						  alert("请只选择一个课程删除！");
-						  return;
-						 }
-						 uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-					 }
-					});
-				  if(!uuid){
-					  alert("请选择你要删除的课程！");
-					  return;
-				  }
 		     react_ajax_class_course_delete(this.props.groupuuid,uuid)
 		     }
 	 	  },

@@ -5164,7 +5164,7 @@ render: function() {
     		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, placeholder: "所有", btnWidth: "200", multiple: false, btnStyle: "primary"})	 
     	 	  ), 	
 		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-			 React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange})		   		
+             React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", viewMode: "years", minViewMode: "years", format: "YYYY", inline: true, name: "begDateStr", id: "begDateStr", dateTime: queryForm.begDateStr, onChange: this.handleChange})
 	 		 ), 	
 		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.ajax_list.bind(this)}, "查询")
@@ -5290,7 +5290,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
  	        
 		    React.createElement("label", {className: one_classDiv}, "收费日期:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	 	    React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "10", placeholder: "YYYY-MM-DD", name: "accounts_timeStr", value: o.accounts_timeStr, onChange: this.handleChange})		   		
+			React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_timeStr, onChange: this.handleChange})
+	
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
 		   React.createElement("div", {className: two_classDiv}, 
@@ -5315,7 +5316,6 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
    );
   }
   });
-
  var Account_edit_inner = React.createClass({displayName: "Account_edit_inner",
 	 getInitialState: function() {
 		return this.props.formData;
