@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.entity.Count;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 
 /**
@@ -92,6 +93,47 @@ public class CountService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	/**
+	 * 初始话计算
+	 * @param ext_uuid
+	 * @param type
+	 * @return
+	 */
+	public Count add(String ext_uuid, int type) {
+		if (StringUtils.isBlank(ext_uuid)) {
+			return null;
+		}
+			Count	c = new Count();
+		c.setType(type);
+		c.setUpdate_time(TimeUtils.getCurrentTimestamp());
+		c.setExt_uuid(ext_uuid);
+		c.setCount(0l);
+
+		// 有事务管理，统一在Controller调用时处理异常
+		this.nSimpleHibernateDao.getHibernateTemplate().save(c);
+
+		return c;
+		
+	}
+
+	/**
+	 * 批量更新计数,提供效率
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public void update_countBatch(String ext_uuids) throws Exception {
+		if (StringUtils.isBlank(ext_uuids)) {
+			return ;
+		}
+		String sql = "update px_count set count=count+1,update_time=now() where ext_uuid in("+DBUtil.stringsToWhereInValue(ext_uuids)+")";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+
 	}
 
 }

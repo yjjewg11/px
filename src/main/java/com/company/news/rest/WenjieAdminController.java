@@ -55,8 +55,9 @@ public class WenjieAdminController extends AbstractRESTController {
 			}
 			try {
 				// 修复数据时使用.
-				wenjieAdminService.updateDataRefresh_Group(responseMessage);
-				//wenjieAdminService.updateDataRefresh(responseMessage);
+				//wenjieAdminService.updateDataRefresh_Group(responseMessage);
+//				wenjieAdminService.updateDataRefresh(responseMessage);
+				wenjieAdminService.updateDataRefreshStudentContactRealationByStudent(responseMessage);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

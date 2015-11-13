@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +75,13 @@ public class PxStudentService extends AbstractStudentService {
 				pxStudent.setGroupuuid(pxClass.getGroupuuid());
 				pxStudent.setUuid(null);
 				this.nSimpleHibernateDao.save(pxStudent);
-				
+
+				Group4Q group = (Group4Q) CommonsCache.get(pxClass.getGroupuuid(), Group4Q.class);
+				String msg=pxStudent.getName()+"|老师增加学生资料|爸爸电话:"+pxStudent.getBa_tel()+"|妈妈电话:"+pxStudent.getMa_tel()+"|"+group.getBrand_name();
+				this.addStudentOperate(pxClass.getGroupuuid(), pxStudent.getUuid(), msg, null, request);
+
+		        this.updateAllStudentContactRealationByStudent(pxStudent);
+		        
 //				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("update PxStudent set uuid=? where uuid=?",student.getUuid(), pxStudent.getUuid());
 //				pxStudent.setUuid(student.getUuid());
 //				this.nSimpleHibernateDao.save(pxStudent);
@@ -508,6 +514,47 @@ public class PxStudentService extends AbstractStudentService {
 		return list;
 	}
 
+	/**
+	 * 幼儿园更新学生资料时,同步更新培训机构的学生资料
+	 * @param tel
+	 * @param type
+	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 */
+	public void updatePxStudentByKDstudent(Student student)  {
+		try {
+			String sql="select DISTINCT t1.student_uuid from px_pxstudentcontactrealation t1 LEFT JOIN px_studentcontactrealation t2";
+			sql+=" on t1.student_name=t2.student_name and t1.tel=t2.tel";
+			sql+=" where t2.student_uuid='"+student.getUuid()+"'";
+			Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+					.getSessionFactory().openSession();
+			Query q = s.createSQLQuery(sql);
+			List list =q.list();
+			if(list.size()==0){
+				return;
+			}
+			if(list.size()>1){
+				this.logger.error(" duplicate px student,student_uuid="+StringUtils.join(list,","));
+				return;
+			}
+			
+//		PxStudent o = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class, (String)list.get(0));
+//		if (o == null)
+//			return ;
+//		
+			PxStudentJsonform form=new PxStudentJsonform();
+
+			BeanUtils.copyProperties(form, student);
+
+			form.setUuid((String)list.get(0));
+			
+			this.update(form, new ResponseMessage(), null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub

@@ -40,9 +40,11 @@ import com.company.news.vo.ResponseMessage;
 public class StudentService extends AbstractStudentService {
 	private static final String model_name = "学生模块";
 	@Autowired
-	private UserinfoService userinfoService;
-	@Autowired
 	private StudentBindService studentBindService;
+	
+	
+	@Autowired
+	private PxStudentService pxStudentService;
 	/**
 	 * 用户注册
 	 * 
@@ -100,6 +102,10 @@ public class StudentService extends AbstractStudentService {
 		this.addStudentOperate(pClass.getGroupuuid(), student.getUuid(), msg, null, request);
 		// 添加学生关联联系人表
 		this.updateAllStudentContactRealationByStudent(student);
+		
+		//幼儿园更新学生资料时,同步更新培训机构的学生资料
+		pxStudentService.updatePxStudentByKDstudent(student);
+		
 		return true;
 	}
 
@@ -146,6 +152,11 @@ public class StudentService extends AbstractStudentService {
 			String msg=student.getName()+"|老师修改学生资料|"+"]|爸爸电话:"+student.getBa_tel()+"|妈妈电话:"+student.getMa_tel();
 			this.addStudentOperate(student.getGroupuuid(), student.getUuid(), msg, null, request);
 		
+			
+			
+			//幼儿园更新学生资料时,同步更新培训机构的学生资料
+			pxStudentService.updatePxStudentByKDstudent(student);
+			
 			return true;
 		} else {
 			responseMessage.setMessage("更新记录不存在");

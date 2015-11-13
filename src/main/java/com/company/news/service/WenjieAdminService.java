@@ -12,6 +12,7 @@ import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.Parent;
+import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.rest.util.TimeUtils;
@@ -32,6 +33,9 @@ public class WenjieAdminService extends AbstractService {
 	
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private PxStudentService pxStudentService;
 	
 	/**
 	 * 刷新学生与家长关系表
@@ -142,7 +146,43 @@ public class WenjieAdminService extends AbstractService {
 		
 	}
 	
-	
+	/**
+	 * 刷新学生与家长关系表(培训机构)
+	 * @param responseMessage
+	 * @throws Exception
+	 */
+	public void updateDataRefreshStudentContactRealationByStudent(ResponseMessage responseMessage) throws Exception {
+		
+		
+		
+
+		List<PxStudent> listStudent=(List<PxStudent>)this.nSimpleHibernateDao.getHibernateTemplate().find(
+				"from PxStudent ");
+		
+		//刷新学生和家长关系表.
+		for(PxStudent student:listStudent){
+			student.setBa_tel(PxStringUtil.repairCellphone(student.getBa_tel()));
+			student.setMa_tel(PxStringUtil.repairCellphone(student.getMa_tel()));
+			student.setYe_tel(PxStringUtil.repairCellphone(student.getYe_tel()));
+			student.setNai_tel(PxStringUtil.repairCellphone(student.getNai_tel()));
+			student.setWaigong_tel(PxStringUtil.repairCellphone(student.getWaigong_tel()));
+			student.setOther_tel(PxStringUtil.repairCellphone(student.getOther_tel()));
+			student.setWaipo_tel(PxStringUtil.repairCellphone(student.getWaipo_tel()));
+			
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(student);
+			
+			studentService.updateAllStudentContactRealationByStudent(student);
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ba, student.getBa_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ma, student.getMa_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_ye, student.getYe_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_nai, student.getNai_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_waigong, student.getWaigong_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_waipo, student.getWaipo_tel());
+//			this.updateStudentContactRealation(student, SystemConstants.USER_type_other, student.getOther_tel());
+		}
+		
+	}
 	
 	/**
 	 * 获取

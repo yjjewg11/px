@@ -407,9 +407,11 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
-			    	GTimeShow.showByTime(o.update_time), 
+			    	GTimeShow.showByTime(o.create_time), 
+					 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+						 "|阅读"+o.count, 
 			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
 			    	)
 			    	), 
@@ -5311,9 +5313,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			    ), 
      			    	React.createElement("footer", {className: "am-comment-footer"}, 
      			    	React.createElement("div", {className: "am-comment-actions"}, 
-     			    	GTimeShow.showByTime(o.update_time), 
+     			    	GTimeShow.showByTime(o.create_time), 
+					    
      			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
      			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+							"|阅读"+o.count, 
      			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 
      			    	React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid})
      			    	)
@@ -6606,11 +6610,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 					 }
 					});
 				  if(!uuid){
-					  alert("请选择你要复制的课程！");
+					  alert("亲,请勾选一个课程！");
 					  return;
 				  }
 		if(uuid.indexOf(",")>=0){
-			alert("请只选择一个课程做操作");
+			alert("亲,只选择一个课程做操作");
 			return;
 		}
 

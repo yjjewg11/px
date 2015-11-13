@@ -54,7 +54,7 @@ public class ClassNewsReplyService extends AbstractService {
 		PxStringUtil.addCreateUser(user, cn);
 
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
-		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+//		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		cn.setUsertype(USER_type_default);
 		cn.setStatus(SystemConstants.Check_status_fabu);
 		// 有事务管理，统一在Controller调用时处理异常
@@ -83,7 +83,7 @@ public class ClassNewsReplyService extends AbstractService {
 
 		if (cn != null) {
 			cn.setContent(classNewsReplyJsonform.getContent());
-			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+//			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(cn);
 		} else {

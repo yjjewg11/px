@@ -69,25 +69,28 @@ public class ClassNewsService extends AbstractService {
 		}
 		AbstractClass pClass=null;
 		if(SessionListener.isPXLogin(request)){
-			 pClass=(PxClass)this.nSimpleHibernateDao.getObject(PxClass.class, classNewsJsonform.getClassuuid());
+			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PxClass.class, classNewsJsonform.getClassuuid());
 		}else{
 			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());
 		}
-		
-		
 		
 
 		if(pClass==null){
 			responseMessage.setMessage("选择的班级不存在");
 			return false;
 		}
+		
+		
+		
 		ClassNews cn = new ClassNews();
 
 		BeanUtils.copyProperties(cn, classNewsJsonform);
 		cn.setGroupuuid(pClass.getGroupuuid());
+		cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
+		cn.setClass_name(pClass.getName());
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
-		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
-		cn.setReply_time(TimeUtils.getCurrentTimestamp());
+//		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+//		cn.setReply_time(TimeUtils.getCurrentTimestamp());
 		cn.setUsertype(USER_type_default);
 		cn.setStatus(SystemConstants.Check_status_fabu);
 		cn.setIllegal(0l);
@@ -96,6 +99,9 @@ public class ClassNewsService extends AbstractService {
 		PxStringUtil.addCreateUser(user, cn);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 
+		
+		//初始话计数
+				countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
 		return true;
 	}
 
@@ -122,8 +128,8 @@ public class ClassNewsService extends AbstractService {
 		if (cn != null) {
 			cn.setImgs(classNewsJsonform.getImgs());
 			cn.setContent(classNewsJsonform.getContent());
-			cn.setTitle(classNewsJsonform.getTitle());
-			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+//			cn.setTitle(classNewsJsonform.getTitle());
+//			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 
 			this.nSimpleHibernateDao.getHibernateTemplate().update(cn);
 		} else {
@@ -140,19 +146,46 @@ public class ClassNewsService extends AbstractService {
 	 * @return
 	 */
 	public PageQueryResult query(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
-		String hql = "from ClassNews where status=0";
+		
+		
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+			sql += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
 		if("myByTeacher".equals(type)){
-			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
+			sql += " and  t1.classuuid in (select classuuid from px_userclassrelation where useruuid='"+ user.getUuid() + "')";
 		}
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
-
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHql(hql, pData);
-		List<ClassNews> list=pageQueryResult.getData();
-		this.warpVoList(list, user.getUuid());
+		
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		
+//		
+//		String hql = "from ClassNews where status=0";
+//		if (StringUtils.isNotBlank(classuuid))
+//			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+//		if("myByTeacher".equals(type)){
+//			hql += " and  classuuid in (select classuuid from UserClassRelation where useruuid='"+ user.getUuid() + "')";
+//		}
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHql(hql, pData);
+//		List<ClassNews> list=pageQueryResult.getData();
+//		this.warpVoList(list, user.getUuid());
 		
 		return pageQueryResult;
 
@@ -167,14 +200,14 @@ public class ClassNewsService extends AbstractService {
 	 * 查询我班级相关的班级数据.
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public PageQueryResult getClassNewsByMy(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
+	public PageQueryResult getClassNewsByMy(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) throws Exception {
 //		if (StringUtils.isBlank(classuuid))
 //			return null; 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t2.brand_name as group_name";
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_group t2 on t2.uuid=t1.groupuuid ";
 		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
@@ -190,7 +223,16 @@ public class ClassNewsService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
-		this.warpMapList(list, user.getUuid());
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		countService.update_countBatch(uuids);
+		
+		//this.warpMapList(list, user.getUuid());
 		
 		
 		
@@ -232,7 +274,7 @@ public class ClassNewsService extends AbstractService {
 			o.put("dianzan", classNewsReplyService.getDianzanDianzanListVO((String)o.get("uuid"),cur_user_uuid));
 			o.put("replyPage", this.getReplyPageList((String)o.get("uuid")));
 			o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
-			
+			if(o.get("count")==null)o.put("count","0");
 			
 //			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
 //			o.setImgsList(PxStringUtil.uuids_to_imgMiddleurlList(o.getImgs()));
@@ -251,19 +293,47 @@ public class ClassNewsService extends AbstractService {
 	 * 查询我班级相关的班级数据.
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public PageQueryResult getAllClassNews(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
-		String hql = "from ClassNews where status=0 ";
-		if (StringUtils.isNotBlank(classuuid))
-			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+	public PageQueryResult getAllClassNews(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) throws Exception {
 		
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
 
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		List<ClassNews> list=pageQueryResult.getData();
-		this.warpVoList(list, user.getUuid());
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		sql+=" where t1.status=0  ";	
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+		
+		
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		
+		countService.update_countBatch(uuids);
+//		
+//		
+//		String hql = "from ClassNews where status=0 ";
+//		if (StringUtils.isNotBlank(classuuid))
+//			hql += " and  classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
+//		
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHqlNoTotal(hql, pData);
+//		List<ClassNews> list=pageQueryResult.getData();
+//		this.warpVoList(list, user.getUuid());
 		
 		return pageQueryResult;
 
@@ -429,49 +499,117 @@ public class ClassNewsService extends AbstractService {
 
 	public PageQueryResult listClassNewsByAdmin(String groups,SessionUserInfoInterface user,
 			PaginationData pData) {
-		String hql = "from ClassNews where status=0 ";
-		if (StringUtils.isNotBlank(groups))
-			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
-	
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
+		
+		
 
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		List<ClassNews> list=pageQueryResult.getData();
-		this.warpVoList(list, user.getUuid());
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		sql+=" where t1.status=0  ";	
+		if (StringUtils.isNotBlank(groups))
+			sql += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+	
+		
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+//		String hql = "from ClassNews where status=0 ";
+//		if (StringUtils.isNotBlank(groups))
+//			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+//	
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHqlNoTotal(hql, pData);
+//		List<ClassNews> list=pageQueryResult.getData();
+//		this.warpVoList(list, user.getUuid());
 		
 		return pageQueryResult;
 	}
 
 	public PageQueryResult listClassNewsByMygroup(String groups, SessionUserInfoInterface user,
 			PaginationData pData) {
-		String hql = "from ClassNews where status=0 ";
-		if (StringUtils.isNotBlank(groups))
-			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
-	
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
+		
 
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		List<ClassNews> list=pageQueryResult.getData();
-		this.warpVoList(list, user.getUuid());
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		sql+=" where t1.status=0  ";	
+		if (StringUtils.isNotBlank(groups))
+			sql += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+	
+		
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		
+//		
+//		String hql = "from ClassNews where status=0 ";
+//		if (StringUtils.isNotBlank(groups))
+//			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+//	
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHqlNoTotal(hql, pData);
+//		List<ClassNews> list=pageQueryResult.getData();
+//		this.warpVoList(list, user.getUuid());
 		
 		return pageQueryResult;
 	}
 	
 	public PageQueryResult getAllClassNewsByWJ( SessionUserInfoInterface user,
 			PaginationData pData) {
-		String hql = "from ClassNews where status=0 ";
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
 
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		List<ClassNews> list=pageQueryResult.getData();
-		this.warpVoList(list, user.getUuid());
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+//		sql+=" where t1.status=0  ";	
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
 		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		
+//		String hql = "from ClassNews where status=0 ";
+//		pData.setOrderFiled("create_time");
+//		pData.setOrderType("desc");
+//
+//		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+//				.findByPaginationToHqlNoTotal(hql, pData);
+//		List<ClassNews> list=pageQueryResult.getData();
+//		this.warpVoList(list, user.getUuid());
+//		
 		return pageQueryResult;
 	}
 

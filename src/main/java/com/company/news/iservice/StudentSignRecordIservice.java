@@ -11,6 +11,7 @@ import com.company.news.cache.CommonsCache;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
+import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.StudentSignRecord;
 import com.company.news.service.StudentBindService;
@@ -33,18 +34,20 @@ public class StudentSignRecordIservice {
 	  * @throws Exception
 	  */
 	  public void add(DoorRecord doorRecord) throws Exception{
-		  StudentSignRecord obj=new StudentSignRecord();
-		  obj.setCardid(doorRecord.getCardid());
-		  obj.setGroupuuid(doorRecord.getGroupuuid());
-		  if(doorRecord.getGroupuuid()!=null){
-			  Group group=(Group)CommonsCache.get(doorRecord.getGroupuuid(),Group.class );
-			  if(group!=null)obj.setGroupname(group.getBrand_name());
-		  }
-		  obj.setType(SystemConstants.StudentSignRecord_type_1);
-		  obj.setSign_time(doorRecord.getDt());
-		  if(doorRecord.getCardid()!=null){
+		  if(doorRecord.getCardid()!=null&&doorRecord.getGroupuuid()!=null){
 			  StudentBind studentBind=(StudentBind) studentBindService.getStudentBindBycardidAndGroup(doorRecord.getCardid(), doorRecord.getGroupuuid());
 			  if(studentBind!=null){
+				  StudentSignRecord obj=new StudentSignRecord();
+				  obj.setCardid(doorRecord.getCardid());
+				  obj.setGroupuuid(doorRecord.getGroupuuid());
+				  
+				  if(doorRecord.getGroupuuid()!=null){
+					  Group4QBaseInfo group=(Group4QBaseInfo)CommonsCache.get(doorRecord.getGroupuuid(),Group4QBaseInfo.class );
+					  if(group!=null)obj.setGroupname(group.getBrand_name());
+				  }
+				  obj.setType(SystemConstants.StudentSignRecord_type_1);
+				  obj.setSign_time(doorRecord.getDt());
+			 
 				  obj.setStudentuuid(studentBind.getStudentuuid());
 				  obj.setSign_name(studentBind.getName());
 				  this.nSimpleHibernateDao.save(obj);
