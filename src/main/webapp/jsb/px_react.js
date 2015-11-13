@@ -604,14 +604,18 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editClassnewsForm').serializeJson());
+			  var tmp=$('#editClassnewsForm').serializeJson();
+		    this.setState(tmp);
+				//根据学校uuid添加水印	
+			var obj=Store.getClassByMyClassList(tmp.classuuid);
+			if(obj){
+				w_img_upload_nocut.groupuuid=obj.groupuuid;
+			}else{
+				w_img_upload_nocut.groupuuid=null;
+			}
+
 	  },
-	  handleChange_selectclass_uuid:function(val){
-//		  this.selectclass_uuid_val=val;
-//		  this.props.formdata.classuuid=val
-			// $('#classuuid').val(val);
-			    this.setState($('#editClassnewsForm').serializeJson());
-	  },	  
+	
 	  imgDivNum:0,
 	  getNewImgDiv:function(){
 		  this.imgDivNum++;
@@ -633,7 +637,17 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 			  ////data.data.uuid,data.imgUrl
 			 that.addShowImg(imgurl);
 			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
-		  });		 
+		  });
+		  
+		 	//根据学校uuid添加水印	
+			var obj=Store.getClassByMyClassList( this.state.classuuid);
+			if(obj){
+				w_img_upload_nocut.groupuuid=obj.groupuuid;
+			}else{
+				w_img_upload_nocut.groupuuid=null
+			}
+
+
 		//已经有的图片,显示出来.
 		 if(!$('#imgs').val())return;
 		 var imgArr=$('#imgs').val().split(",");
@@ -654,7 +668,7 @@ return (
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
 			
 		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
@@ -841,13 +855,17 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editAnnouncementsForm').serializeJson());
+			  var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
+			w_img_upload_nocut.groupuuid=this.state.groupuuid;
+		
 	  },
 render: function() {
 	 var o = this.state;
@@ -2190,13 +2208,17 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editAnnouncementsForm').serializeJson());
+			 var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img   src="'+imgurl+'"/>')
           });
+
+		w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	  },
 render: function() {
 	 var o = this.state;
@@ -3369,13 +3391,18 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editAnnouncementsForm').serializeJson());
+		    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+			w_img_upload_nocut.groupuuid=tmp.groupuuid;
+			
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
               editor.pasteHTML( '<img   src="'+imgurl+'"/>')
         });
+			  	w_img_upload_nocut.groupuuid=this.state.groupuuid;
+	
 	  },
 render: function() {
 	 var o = this.state;
@@ -5478,14 +5505,17 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		    return this.props.formdata;
      		  },
      	 handleChange: function(event) {
-     		    this.setState($('#editClassnewsForm').serializeJson());
+     		 	  var tmp=$('#editClassnewsForm').serializeJson();
+		    this.setState(tmp);
+				//根据学校uuid添加水印	
+			var obj=Store.getClassByMyClassList(tmp.classuuid);
+			if(obj){
+				w_img_upload_nocut.groupuuid=obj.groupuuid;
+			}else{
+				w_img_upload_nocut.groupuuid=null;
+			}
      	  },
-     	  handleChange_selectclass_uuid:function(val){
-//     		  this.selectclass_uuid_val=val;
-//     		  this.props.formdata.classuuid=val
-     			// $('#classuuid').val(val);
-     			    this.setState($('#editClassnewsForm').serializeJson());
-     	  },	  
+     	  
      	  imgDivNum:0,
      	  getNewImgDiv:function(){
      		  this.imgDivNum++;
@@ -5508,6 +5538,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			 that.addShowImg(imgurl);
      			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
      		  });		 
+			//根据学校uuid添加水印	
+			var obj=Store.getClassByMyClassList( this.state.classuuid);
+			if(obj){
+				w_img_upload_nocut.groupuuid=obj.groupuuid;
+			}else{
+				w_img_upload_nocut.groupuuid=null
+			}
+
      		//已经有的图片,显示出来.
      		 if(!$('#imgs').val())return;
      		 var imgArr=$('#imgs').val().split(",");
@@ -5528,7 +5566,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		React.createElement("div", {className: "am-g"}, 
      		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
      		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
-     		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
+     		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
      			
      		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
      			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
@@ -6726,13 +6764,21 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editCourseForm').serializeJson());
+		   
+
+			var tmp=$('#editCourseForm').serializeJson();
+		    this.setState(tmp);
+			w_img_upload_nocut.groupuuid=tmp.groupuuid;
+			
 	  },
 	  componentDidMount:function(){
 		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
 	        });
+			w_img_upload_nocut.groupuuid=this.state.groupuuid;
+
+		
       },
 	   /*
 	    * (发布课程)内上传LOGO图片
@@ -7543,7 +7589,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    render: function() {
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
-   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 	
+   		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list16}), 
 		 React.createElement(AMR_ButtonToolbar, null, 
    		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), data: this.props.grouplist, btnStyle: "primary", value: G_mygroup_choose})
    		    ), 
@@ -7577,6 +7624,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		}
    	    return (
 			React.createElement("div", null, 
+			
 			totalCount_div, 
 			 React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
           React.createElement("thead", null, 
@@ -7978,13 +8026,16 @@ React.createElement("div", null,
 		var o=$('#editAnnouncementsForm').serializeJson();
 			   o.start_time=start_timeStr;
 			   o.end_time=end_timeStr;
-   		    this.setState($('#editAnnouncementsForm').serializeJson());
+				 w_img_upload_nocut.groupuuid=o.groupuuid;
+			      		    this.setState(o);
   },
   componentDidMount:function(){
   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
              });
+
+	 w_img_upload_nocut.groupuuid=this.state.groupuuid;
    	  },
    render: function() {
    	 var o = this.state;
@@ -8027,7 +8078,9 @@ React.createElement("div", null,
 			     ), 
 
 			 React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "优惠活动详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		  React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交")				      					  
+ 		  
+				G_get_upload_img_Div(), 
+			 React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交")				      					  
 		
 	  )	 
 		   ), 	
@@ -8238,13 +8291,23 @@ var Px_teacher_edit = React.createClass({displayName: "Px_teacher_edit",
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
-		    this.setState($('#editTeacherForm').serializeJson());
+		   
+			var o=$('#editTeacherForm').serializeJson();
+	
+			w_img_upload_nocut.groupuuid=o.groupuuid;
+			  
+   		    this.setState(o);
+
 	  },
 	  componentDidMount:function(){
 		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
 	        });
+				w_img_upload_nocut.groupuuid=this.state.groupuuid;
+				  
+			 
+
      },
 	   /*
 	    * (发布资料)内上传LOGO图片
@@ -8255,6 +8318,7 @@ var Px_teacher_edit = React.createClass({displayName: "Px_teacher_edit",
             $("#img_head_image").attr("src",G_imgPath+ guid);
             G_img_down404("#img_head_image");
 	         });   
+		
 	   },
   w_ch_user_open_callback :function(useruuids,usernames,groupuuid){
 		 //寻找对象中的符号;

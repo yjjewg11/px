@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.ui.ModelMap;
 
 import com.company.common.SpringContextHolder;
+import com.company.news.commons.util.PxLogUtils;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.UserinfoService;
@@ -148,18 +149,10 @@ public class UserInfoFilter implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			String msg="client IP:"+UserInfoFilter.getIpAddr((HttpServletRequest) request)+","+endTime + " count time(ms)="
+			String msg="client IP:"+UserInfoFilter.getIpAddr((HttpServletRequest) request)+","
                     + httpServletRequest.getMethod() +"|"+httpServletRequest.getRequestURL()+ "?"
                     + httpServletRequest.getQueryString();
-			if(endTime>10000){
-				logger.error(msg);
-			}else if(endTime>3000){
-				logger.warn(msg);
-			}else{
-				logger.info(msg);
-			}
-
-			
+			PxLogUtils.log(logger, endTime, msg);
 		}
 	}
 

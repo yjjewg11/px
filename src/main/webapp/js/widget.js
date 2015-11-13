@@ -239,7 +239,7 @@ var w_ch_user={
 			$("#"+w_ch_user.bind_inputid_name).val(usernames);
 			w_ch_user.bind_inputid_name=null;
 		}
-		if(w_ch_user.callback){
+		if(typeof w_ch_user.callback=='function'){
 			w_ch_user.callback(useruuids,usernames,groupuuid);
 			w_ch_user.callback=null;
 			return;

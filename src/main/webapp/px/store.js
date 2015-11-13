@@ -9,6 +9,7 @@
  * Store.getUserinfo();//获取当前用户
  * Store.getUserRights();//获取当前班级
  * Store.getMyClassList();//获取我关联的班级(老师)
+ * * Store.getClassByMyClassList(classuuid);//获取我关联的班级_的班级对象根据uuid(老师)
  * Store.getCurMyClass();//获取我当前班级
  * Store.getClassByUuid(uuid);//
  * Store.getChooseClass(uuid);根据组织id获取班级信息
@@ -133,6 +134,14 @@ var Store={
 			 store_ajax_MyClass_toStroe();
 			 if(this.map[key])return this.map[key];
 		 return [];
+	},
+	getClassByMyClassList:function(classuuid){
+		 var arr=Store.getMyClassList();
+			for(var i=0;i<arr.length;i++){
+				if(classuuid==arr[i].uuid)return arr[i];
+			}
+		 
+		 return null;
 	},
 	setMyClassList:function(v){
 		this.map["MyClass"]=v;

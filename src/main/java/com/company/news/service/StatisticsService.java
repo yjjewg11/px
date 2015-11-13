@@ -461,4 +461,54 @@ public class StatisticsService extends AbstractStatisticsService {
 		return this.model_name;
 	}
 
+	public PieStatisticsVo pie_studentParentType(
+			ResponseMessage responseMessage, String group_uuid) {
+		// 验证group合法性
+				if (!validateGroup(group_uuid, responseMessage))
+					return null;
+
+
+				List<Student> list = studentService.getStudentByGroup(group_uuid);
+
+				// 返回
+				PieStatisticsVo vo = new PieStatisticsVo();
+				
+				int sex_male = 0;
+				int sex_female = 0;
+
+				for (Student s : list) {
+					if (s.getSex().intValue() == SystemConstants.User_sex_male
+							.intValue())
+						sex_male++;
+					else
+						sex_female++;
+				}
+
+				PieSeriesDataVo male_sdvo = new PieSeriesDataVo();
+				male_sdvo.setName("男");
+				male_sdvo.setValue(sex_male);
+
+				PieSeriesDataVo female_sdvo = new PieSeriesDataVo();
+				female_sdvo.setName("女");
+				female_sdvo.setValue(sex_female);
+
+				List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+				plist.add(male_sdvo);
+				plist.add(female_sdvo);
+				vo.setSeries_data(plist);
+				
+				
+				// 需要获取机构名
+						Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+						vo.setTitle_text(g.getCompany_name() + " 学生统计（按性别）");
+						vo.setTitle_subtext("总计 " + list.size() + " 人");
+						List legend_data = new ArrayList();
+						legend_data.add("男("+sex_male+")");
+						legend_data.add("女("+sex_female+")");
+						vo.setLegend_data(legend_data);
+				logger.debug("end 用户性别统计");
+				return vo;
+
+	}
+
 }

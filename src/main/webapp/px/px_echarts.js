@@ -102,6 +102,8 @@ var PXECharts_ajax={
 		PXECharts_ajax.ajax_css(data);
 	},
 	/**
+	 * 
+	 * 饼图
 	 * 请求返回数据->图标显示.默认调用PXECharts_ajax.ajax_uss(data);
 	 * @param data
 	 */
@@ -117,7 +119,13 @@ var PXECharts_ajax={
 			        x : 'left',
 			        data:data.legend_data
 			    },
-			  
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            dataView : {show: true, readOnly: false},
+			            saveAsImage : {show: true}
+			        }
+			    },
 			    calculable : true,
 			    series : [
 			        {
@@ -135,6 +143,7 @@ var PXECharts_ajax={
 		
 	},
 	/**
+	 * 标志条形
 	 *  'css', label: '人数统计（按班级）'
 	 */
 	ajax_css:function(data){
@@ -149,7 +158,13 @@ var PXECharts_ajax={
 			    legend: {
 			        data:data.legend_data
 			    },
-			   
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            dataView : {show: true, readOnly: false},
+			            saveAsImage : {show: true}
+			        }
+			    },
 			    calculable : true,
 			    xAxis : [
 			        {

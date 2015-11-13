@@ -24,9 +24,13 @@ return serializeObj;
 })(jQuery);
 window.G_group_wjd="group_wjd";
 window.hostUrl='/px-rest/';
-var hostUrlCDN='/px-rest/';
-hostUrlCDN='http://img.wenjienet.com/';
+window.hostUrlCDN='/px-rest/';
+window.hostUrlCDN='http://img.wenjienet.com/';
 window.G_logo=hostUrlCDN+"i/logo.png";
+window.G_share_logo=hostUrlCDN+"i/share_logo.png";
+
+
+
 window.G_def_headImgPath=hostUrlCDN+"i/header.png";
 window.G_def_noImgPath=hostUrlCDN+"i/header.png";
 //取消G_imgPath

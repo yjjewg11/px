@@ -154,7 +154,13 @@ var PXECharts_ajax={
 			    legend: {
 			        data:data.legend_data
 			    },
-			   
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            dataView : {show: true, readOnly: false},
+			            saveAsImage : {show: true}
+			        }
+			    },
 			    calculable : true,
 			    xAxis : [
 			        {

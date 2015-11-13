@@ -30,7 +30,8 @@ var G_px_help_msg={
 	//学生列表Lst
 	msg_px_help_list14:['提示','1.查看全校的学生信息','2.输入学生姓名快速查找相关学生信息'],
 	//统计Lst
-	msg_px_help_list15:['提示','查询相关的统计信息']
+	msg_px_help_list15:['提示','查询相关的统计信息'],
+	msg_px_help_list16:['提示','显示家长点过咨询按钮的记录!']
 };
 
 var G_tip={

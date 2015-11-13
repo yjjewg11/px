@@ -102,6 +102,15 @@ public class StatisticsController extends AbstractRESTController {
 					model.addAttribute(RestConstants.Return_G_entity, vo);
 				else
 					return "";
+			}else if (type.toLowerCase().equals("pie_studentParentType"))// 学生家长注册类型比例统计
+			{
+				PieStatisticsVo vo = statisticsService.pie_studentParentType(
+						responseMessage, request.getParameter("groupuuid"));
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

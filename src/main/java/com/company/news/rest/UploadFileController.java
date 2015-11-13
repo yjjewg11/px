@@ -61,6 +61,7 @@ public class UploadFileController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
+			String groupuuid=request.getParameter("groupuuid");
 			UploadFile uploadFile = uploadFileService.uploadImg(base64, type,
 					responseMessage, request,
 					this.getUserInfoBySession(request));
@@ -150,10 +151,11 @@ public class UploadFileController extends AbstractRESTController {
 			}
 			model.clear();
 			model.addAttribute("err", "");
-			model.addAttribute("msg",
-					request.getContextPath()
-							+ "/rest/uploadFile/getImgFile.json?uuid="
-							+ uploadFile.getUuid());
+			model.addAttribute("msg",PxStringUtil.imgUrlByUuid(uploadFile.getUuid())
+//					request.getContextPath()
+//							+ "/rest/uploadFile/getImgFile.json?uuid="
+//							+ uploadFile.getUuid()
+							);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -251,10 +251,11 @@ public class AnnouncementsController extends AbstractRESTController {
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			String groupuuids=request.getParameter("groupuuids");
-			if(StringUtils.isBlank(groupuuids)){
-				groupuuids=this.getMyGroupUuidsBySession(request);
-			}
-			PageQueryResult pageQueryResult = announcementsService.query(groupuuids,pData);
+//			if(StringUtils.isBlank(groupuuids)){
+//				groupuuids=this.getMyGroupUuidsBySession(request);
+//			}
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			PageQueryResult pageQueryResult = announcementsService.queryMy(user,groupuuids,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

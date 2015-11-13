@@ -107,15 +107,26 @@ function G_ajax_shouc_save(opt){
 
 /**
  * 上传不用裁剪的图片,只是压缩上传
+1.绑定上传图片.w_img_upload_nocut.bind_onchange(fileId,callbackFN)
+2.传入学校uuid,后台判断是否加水印.w_img_upload_nocut.groupuuid=null;班级互动每次换班级时,都需要重设对应学校uuid..
  */
 w_img_upload_nocut={
 		div_id:"div_widget_chooseUser",
 		div_body:"div_body",
+		
 		cropper:null,
 		callbackFN:null,
 		type:4,
 		base64:null,
+		groupuuid:null,//用于添加水印时填值
+		/**
+		*加水印调用
+		1.绑定上传图片.w_img_upload_nocut.bind_onchange(fileId,callbackFN)
+2.传入学校uuid,后台判断是否加水印.w_img_upload_nocut.groupuuid=null;
+		*/
+		
 		bind_onchange:function(fileId,callbackFN){
+			w_img_upload_nocut.groupuuid=null;//清空
 			w_img_upload_nocut.callbackFN=callbackFN;
 			if(G_CallPhoneFN.isPhoneApp()){
 				$(fileId).bind("click", function(){
@@ -162,7 +173,7 @@ w_img_upload_nocut={
 				url : url,
 				timeout : 0, 
 				dataType : "json",
-				data:{type:w_img_upload_nocut.type,base64:base64},
+				data:{groupuuid:w_img_upload_nocut.groupuuid,type:w_img_upload_nocut.type,base64:base64},
 				 async: true,
 				success : function(data) {
 					$.AMUI.progress.done();

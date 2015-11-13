@@ -120,7 +120,13 @@ var PXECharts_ajax={
 			        x : 'left',
 			        data:data.legend_data
 			    },
-			  
+			    toolbox: {
+			        show : true,
+			        feature : {
+			            dataView : {show: true, readOnly: false},
+			            saveAsImage : {show: true}
+			        }
+			    },
 			    calculable : true,
 			    series : [
 			        {
@@ -152,7 +158,13 @@ var PXECharts_ajax={
 			    legend: {
 			        data:data.legend_data
 			    },
-			   
+			     toolbox: {
+			        show : true,
+			        feature : {
+			            dataView : {show: true, readOnly: false},
+			            saveAsImage : {show: true}
+			        }
+			    },
 			    calculable : true,
 			    xAxis : [
 			        {

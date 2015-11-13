@@ -1,19 +1,28 @@
 package com.company.news.service;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.Thumbnails.Builder;
+import net.coobird.thumbnailator.geometry.Positions;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -22,10 +31,13 @@ import sun.misc.BASE64Decoder;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.PxLogUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.commons.util.upload.DiskIUploadFile;
 import com.company.news.commons.util.upload.IUploadFile;
 import com.company.news.commons.util.upload.OssIUploadFile;
+import com.company.news.entity.GroupHabits;
 import com.company.news.entity.UploadFile;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.SmbFileUtil;
@@ -55,6 +67,8 @@ public class UploadFileService extends AbstractService {
 			iUploadFile = new DiskIUploadFile();
 	}
 
+	@Autowired
+	private GroupHabitsService groupHabitsService;
 	/**
 	 * 上载附件
 	 * 
@@ -72,7 +86,7 @@ public class UploadFileService extends AbstractService {
 			responseMessage.setMessage("上传内容是空的！");
 			return null;
 		}
-
+		
 		byte[] b = null;
 		if (base64 != null) {
 			try {
@@ -100,8 +114,17 @@ public class UploadFileService extends AbstractService {
 		String guid = new UUIDGenerator().generate().toString();
 		String filePath = this.getSecondPath(type, user) + guid + imgFormat;
 
+		
+		InputStream  imgInputStream=new ByteArrayInputStream(b);
+		String groupuuid=request.getParameter("groupuuid");
+		
+		//判断是否添加水印
+		imgInputStream=getWatermarkInputStream(imgInputStream,groupuuid,responseMessage);
+		
+		
+		
 		// 上传文件
-		if (iUploadFile.uploadFile(new ByteArrayInputStream(b), filePath, type)) {
+		if (iUploadFile.uploadFile(imgInputStream, filePath, type)) {
 			UploadFile uploadFile = new UploadFile();
 
 			uploadFile.setType(type);
@@ -119,7 +142,58 @@ public class UploadFileService extends AbstractService {
 
 		}
 	}
-
+	/**
+	 * 判断是否添加水印,如果是则添加水印
+	 * @param imgInputStream
+	 * @param groupuuid
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public InputStream getWatermarkInputStream(InputStream  imgInputStream,String groupuuid,ResponseMessage responseMessage) throws Exception{
+		BufferedImage watermark_Image=null;
+		//判断是否添加水印
+		GroupHabits watermarkObj=groupHabitsService.getByKey(groupuuid, SystemConstants.GroupHabits_key_Watermark, responseMessage);
+		//watermark_url="http://img.wenjienet.com/head/8a29000b4ff277d7014ff401ff3f002c.png@198w";
+		if(watermarkObj!=null){
+			String watermark_url=watermarkObj.getV();
+			//不是合法地址,返回
+			if(!PxStringUtil.isUrl(watermark_url))return imgInputStream;
+			
+			//优先取缓存.
+			String cacheKey=SystemConstants.GroupHabits_key_Watermark+"_"+groupuuid+"_"+watermark_url;
+			 watermark_Image=(BufferedImage)CommonsCache.getNoDb(cacheKey, BufferedImage.class);
+			 
+			if(watermark_Image==null){
+				try {
+					Long startTime = System.currentTimeMillis();
+					watermark_Image=ImageIO.read(new URL(watermark_url));
+					Long endTime = System.currentTimeMillis() - startTime;
+					PxLogUtils.log(logger, endTime, "ImageIO.read url="+watermark_url);
+					CommonsCache.put(cacheKey, watermark_Image);
+				} catch (Exception e) {
+					logger.error("get watermark failed!url="+watermark_url);
+					logger.error(e);
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		//满足要求则添加水印
+		if(watermark_Image!=null){
+			ByteArrayOutputStream  os=new  ByteArrayOutputStream();
+			Builder bulider=Thumbnails.of(imgInputStream).scale(1f);
+//			if(bulider.asBufferedImage().getWidth()>=640){//分辨率
+				bulider.watermark(Positions.TOP_RIGHT, watermark_Image, 1f)
+		        .toOutputStream(os);
+				imgInputStream = new ByteArrayInputStream(os.toByteArray());
+//			}
+			
+		}
+		
+		return imgInputStream;
+	}
 	/**
 	 * 上载附件
 	 * 
@@ -139,11 +213,20 @@ public class UploadFileService extends AbstractService {
 			return null;
 		}
 
+		
+		
 		String guid = new UUIDGenerator().generate().toString();
 		String filePath = this.getSecondPath(type, user) + guid + imgFormat;
+		InputStream  imgInputStream=file.getInputStream();
+		
+		String groupuuid=request.getParameter("groupuuid");
 
+		//判断是否添加水印
+		imgInputStream=getWatermarkInputStream(imgInputStream,groupuuid,responseMessage);
+		
+		
 		// 上传文件
-		if (iUploadFile.uploadFile(file.getInputStream(), filePath, type)) {
+		if (iUploadFile.uploadFile(imgInputStream, filePath, type)) {
 			UploadFile uploadFile = new UploadFile();
 
 			uploadFile.setType(type);

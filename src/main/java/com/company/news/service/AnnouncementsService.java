@@ -21,6 +21,7 @@ import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.AnnouncementsTo;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.User;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -272,10 +273,12 @@ public class AnnouncementsService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(String groupuuid, PaginationData pData) {
+	public PageQueryResult queryMy(SessionUserInfoInterface user,String groupuuid, PaginationData pData) {
 		String hql = "from Announcements4Q where (type=0 or type=1) and status=0 ";
 		if (StringUtils.isNotBlank(groupuuid)){
 			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+		}else{
+			hql += " and  groupuuid in(select groupuuid from UserGroupRelation where useruuid='"+user.getUuid()+"')";
 		}
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
