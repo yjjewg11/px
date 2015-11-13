@@ -5162,10 +5162,13 @@ render: function() {
             </div>	
              <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
     		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
-    		  </div>		 
-			 <PxInput icon="calendar" type="text"  maxLength="4" size="4" placeholder="YYYY" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
-	 		
+    	 	  </div>	
+		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+             <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" viewMode="years"  minViewMode="years" format="YYYY" inline  name="begDateStr" id="begDateStr" dateTime={queryForm.begDateStr}    onChange={this.handleChange}/>
+	 		 </div>	
+		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <AMR_Button amStyle="secondary" onClick={this.ajax_list.bind(this)} >查询</AMR_Button>
+		     </div>
     	     </AMR_ButtonToolbar>
              </AMR_Panel>
 		  </AMUIReact.Form>
@@ -5287,7 +5290,8 @@ render: function() {
  	        
 		    <label className={one_classDiv}>收费日期:</label>
 		   <div className={two_classDiv}>
-	 	    <PxInput icon="calendar" type="text" maxLength="10" placeholder="YYYY-MM-DD" name="accounts_timeStr"  value={o.accounts_timeStr} onChange={this.handleChange}/> 		   		
+			<AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_timeStr}    onChange={this.handleChange}/>
+	
 	 		 </div>	
 		    <label className={one_classDiv}>内容:</label>
 		   <div className={two_classDiv}>
@@ -5312,7 +5316,6 @@ render: function() {
    );
   }
   });
-
  var Account_edit_inner = React.createClass({
 	 getInitialState: function() {
 		return this.props.formData;

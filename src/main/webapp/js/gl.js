@@ -72,7 +72,7 @@ Date.prototype.format = function(format) {
  * @param m
  */
 function G_user_hasRight(s){
-//	console.log("权限判断参数S",s);
+	console.log("权限判断参数S",s);
 
 	var list=null;
 	if(PxRight&&PxRight.getUserRights){

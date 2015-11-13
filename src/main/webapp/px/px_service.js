@@ -2365,6 +2365,7 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success"){
  				React.render(React.createElement(Class_EventsTable_byRight, {
+ 					data_List:data.list,
  					events: data.list.data,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true

@@ -262,8 +262,10 @@ var Div_userinfo_reg = React.createClass({displayName: "Div_userinfo_reg",
 				   React.createElement(PxInput, {type: "password", name: "password1", id: "password1"})
 				  ), 			
 				 React.createElement("br", null), 
+			  React.createElement(AMR_ButtonToolbar, null, 	 
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_reg, className: "am-btn am-btn-primary"}, "注册"), 
 		      React.createElement("button", {type: "button", onClick: menu_userinfo_login_fn, className: "am-btn am-btn-primary"}, "返回")	      
+		      )
 		    )
 		   )	
 		  )
