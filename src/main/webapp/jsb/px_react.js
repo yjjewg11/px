@@ -4498,7 +4498,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       React.createElement("div", {className: "am-panel am-panel-default"}, 
         React.createElement("div", {className: "am-panel-hd"}, 
         React.createElement("h4", {className: "am-panel-title", "data-am-collapse": "{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}, 
-           "显示更多信息"
+           "填写更多信息"
           )
         ), 
         React.createElement("div", {id: "do-not-say-"+o.uuid, className: "am-panel-collapse am-collapse"}, 
@@ -8023,10 +8023,14 @@ React.createElement("div", null,
 		         React.createElement("th", null, 
                  React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
                  ), 
-	              React.createElement("th", null, "学校"), 
+	            
 		          React.createElement("th", null, "标题"), 
+				  React.createElement("th", null, "浏览次数"), 
 		          React.createElement("th", null, "活动开始时间"), 
-	              React.createElement("th", null, "活动结束时间")
+	              React.createElement("th", null, "活动结束时间"), 
+					    React.createElement("th", null, "学校"), 
+					   React.createElement("th", null, "创建时间"), 
+				  React.createElement("th", null, "创建人")
 	              ), 	
    	    			 events.data.map(function(event) {        
 	    			      return (
@@ -8034,12 +8038,16 @@ React.createElement("div", null,
 							        React.createElement("td", null, 
 	                                React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
 	                                ), 
-							        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+							      
                                     React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_px_Preferential_show.bind(this,event.uuid,event.title)}, 
    	    			  		        event.title
    	    			  		        )), 
+										 React.createElement("td", null, event.count), 
 	    			    	        React.createElement("td", null, event.start_time), 
-	    			                React.createElement("td", null, event.end_time)
+	    			                React.createElement("td", null, event.end_time), 
+									React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+										  React.createElement("td", null, event.create_time), 
+	      React.createElement("td", null, event.create_user)
 	    			    	      ) 
 	    			    		  )
 	    			         })	

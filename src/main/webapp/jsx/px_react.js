@@ -4498,7 +4498,7 @@ var Class_EventsTable_byRight = React.createClass({
       <div className="am-panel am-panel-default">      
         <div className="am-panel-hd">         
         <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}>
-           显示更多信息
+           填写更多信息
           </h4>
         </div>               
         <div id={"do-not-say-"+o.uuid} className="am-panel-collapse am-collapse">
@@ -8023,10 +8023,14 @@ setProvCity:function(){
 		         <th>  
                  <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
                  </th>
-	              <th>学校</th>
+	            
 		          <th>标题</th>
+				  <th>浏览次数</th>
 		          <th>活动开始时间</th>
 	              <th>活动结束时间</th>
+					    <th>学校</th>
+					   <th>创建时间</th>
+				  <th>创建人</th>
 	              </tr> 	
    	    			 {events.data.map(function(event) {        
 	    			      return (
@@ -8034,12 +8038,16 @@ setProvCity:function(){
 							        <td> 
 	                                <input type="checkbox" value={event.uuid} name="table_checkbox" />
 	                                </td>
-							        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+							      
                                     <td><a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_Preferential_show.bind(this,event.uuid,event.title)}>
    	    			  		        {event.title} 
    	    			  		        </a></td>
+										 <td>{event.count}</td>
 	    			    	        <td>{event.start_time}</td>
 	    			                <td>{event.end_time}</td>
+									<td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+										  <td>{event.create_time}</td>
+	      <td>{event.create_user}</td>
 	    			    	      </tr> 
 	    			    		  )
 	    			         })}	

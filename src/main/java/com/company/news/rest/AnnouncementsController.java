@@ -145,6 +145,55 @@ public class AnnouncementsController extends AbstractRESTController {
 		return "";
 	}
 	
+	
+	
+	/**
+	 * 根据分类获取所有，管理员用
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listPxbenefit", method = RequestMethod.GET)
+	public String listPxbenefit(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String right=RightConstants.KD_announce_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_announce_m;
+		}
+		
+		try {
+			String groupuuid=request.getParameter("groupuuid");
+			String type=request.getParameter("type");
+			type=SystemConstants.common_type_pxbenefit+"";
+			if(StringUtils.isBlank(groupuuid)){
+				groupuuid=RightUtils.getRightGroups(right, request);
+				if(StringUtils.isBlank(groupuuid)){
+					responseMessage.setStatus(RightConstants.Return_msg);
+					return "";
+				}
+			}else{
+				//判断是否有权限
+				if(!RightUtils.hasRight(groupuuid,right, request)){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return "";
+				}
+			}
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			PageQueryResult list = announcementsService.listByRight(type,groupuuid,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
 	/**
 	 * 根据分类获取所有，管理员用
 	 * 

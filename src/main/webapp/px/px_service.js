@@ -4018,7 +4018,7 @@ function ajax_class_students_look_info(uuid){
  * */
  function ajax_Preferential_px_list(list_div,pageNo,callback) {
  	$.AMUI.progress.start();
- 	var url = hostUrl + "rest/share/articleList.json";
+ 	var url = hostUrl + "rest/announcements/listPxbenefit.json";
  	$.ajax({
  		type : "GET",
  		url : url,
