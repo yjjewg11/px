@@ -3748,6 +3748,9 @@ var Announcements_Class_div = React.createClass({
 		this.forceUpdate();
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
+		if(G_mygroup_choose!=$("input[name='groupuuid']").val()){
+				$("input[name='courseuuid']").val("");
+			}
 		G_mygroup_choose=$("input[name='groupuuid']").val();
 		G_course_choose=$("input[name='courseuuid']").val();
 		this.load_more_data();
@@ -4490,8 +4493,17 @@ var Class_EventsTable_byRight = React.createClass({
  		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
  	           </div>		    
  		      </fieldset>  		    		      
- 		      <fieldset>
- 		      <legend>其他信息</legend>
+ 	
+
+      <div className="am-panel am-panel-default">      
+        <div className="am-panel-hd">         
+        <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}>
+           显示更多信息
+          </h4>
+        </div>               
+        <div id={"do-not-say-"+o.uuid} className="am-panel-collapse am-collapse">
+          <div className="am-panel-bd">
+
  		        <label className={one_classDiv}>奶奶电话</label>
  		         <div className={two_classDiv}>
  			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
@@ -4519,8 +4531,12 @@ var Class_EventsTable_byRight = React.createClass({
  			 	 	      placeholder="备注"
  			 	 	      wrapperClassName="am-u-sm-10"
  			 	 	      amSize="lg" />
- 		 		      <br/>
- 		 		      </fieldset>
+
+          </div>
+        </div>
+      </div>
+
+ 		 	
  				      <button type="button"  onClick={btn_ajax_myclass_student_save_byRight}  className="am-btn am-btn-primary">提交</button>		      
     		           </div>  
     		          </form> 	   		          
@@ -5647,6 +5663,7 @@ var Class_EventsTable_byRight = React.createClass({
  	 		   this.setState(o);
  	 		},
 	  addteachingplan_btn:function(m,event){
+		  $("html,body").animate({scrollTop:0},200);
 		  //新增和修改按钮点击事件；更新form_data
 		  if(m=="copy"){
 		    event.uuid=null;
@@ -5654,7 +5671,7 @@ var Class_EventsTable_byRight = React.createClass({
 		  this.form_data=event;
  		  this.isAddteachingplanFlag=true;
  		  this.class_nameFlag=false;
- 		  this.setState(this.state);
+ 		  this.setState(this.state);  
  	  },
  	 delete_button: function(event){
  		 //删除课程按钮事件
@@ -7929,19 +7946,57 @@ setProvCity:function(){
    		this.load_more_data();
    		
    	},
-	//创建优惠活动点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid) {
-  		btnclick_Preferential_announce(m,Store.getCurGroup().uuid);
-},
+	//创建优惠活动、编辑与删除、点击按钮事件跳转kd_servise方法;
+	handleClick_box_btn:function(m){
+		if(m=="add"){
+		 btnclick_Preferential_announce(m,null,Store.getCurGroup().uuid);
+		 return;
+		};
+     var uuid="";
+            $($("input[name='table_checkbox']")).each(function(){					
+					 if(this.checked){
+						 if(!uuid){
+							 uuid=this.value;
+						  }else{
+							 uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+						 }						
+					 }
+					});
+				  if(!uuid){
+					  alert("亲,请勾选一个优惠活动！");
+					  return;
+				  }
+		if(uuid.indexOf(",")>=0){
+			alert("亲,只选择一个优惠活动做操作");
+			return;
+		};
+		if(m=="edit"){
+		 btnclick_Preferential_announce(m,uuid);
+		}else if(m=="del"){
+		 btnclick_Preferential_announce(m,uuid);
+		};
+ },
+	 handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+ },
    render: function() {
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
    		  <div data-am-widget="list_news" className="am-list-news am-list-news-default"> 
    		  <G_px_help_List data={G_px_help_msg.msg_px_help_list4}/>
+		   <AMR_Panel>
 		   <AMR_ButtonToolbar>
-		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add",this.props.groupuuid)} >创建优惠活动</AMR_Button>
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick_box_btn.bind(this,"add")} >创建优惠活动</AMR_Button>
+            </div>
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button  amStyle="primary" onClick={this.handleClick_box_btn.bind(this,"edit")} >编辑</AMR_Button>
+            </div>
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+   		    <AMR_Button  amStyle="danger" onClick={this.handleClick_box_btn.bind(this,"del")} >删除</AMR_Button> 
+		    </div>
 		    </AMR_ButtonToolbar>
-   		  
+   		    </AMR_Panel>
    		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
    		  </div>
    		  
@@ -7952,43 +8007,51 @@ setProvCity:function(){
      );
    }
    });
-
-     
+ 
    /*
     *<优惠活动>表格内容绘制
     * 在kd_react；
     * */
    var Px_Preferentiallist_div = React.createClass({ 
    	  render: function() {
-   	    var event = this.props.events;
-   	    var className = event.highlight ? 'am-active' :
-       event.disabled ? 'am-disabled' : '';
+   	   var events = this.props.events;
+   	    var className = events.highlight ? 'am-active' :
+       events.disabled ? 'am-disabled' : '';
    	    return (
-   	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
-   	    	     <div className="am-list-news-bd">
-   	    	     <ul className="am-list">
-   	    			  {this.props.events.data.map(function(event) {
-   	    			      return (
-   	    			    		<li className="am-g am-list-item-dated">
-   	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_Preferential_show.bind(this,event.uuid,event.title)}>
-   	    			  		  {event.title} 
-   	    			  		  </a>	
-                               	 <AMR_ButtonToolbar>
-   		                         <AMR_Button  amStyle="primary" onClick={btnclick_Preferential_announce.bind(this,"edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
-   		                         <AMR_Button  amStyle="danger" onClick={btnclick_Preferential_announce.bind(this,"del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
-   		                         </AMR_ButtonToolbar>
-   	    			  		  <div className="am-list-item-text">
-   	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|(活动时间：{event.start_time}至{event.end_time})
-   	    			  		  </div> 
-   	    			  		    </li>
-   	    			    		  )
-   	    			         })}	
-   	    			  </ul> 
-   	    			  </div> 
-   	    	    </div>  		  
+   	    	   <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">
+		    	 <tr> 			      
+		         <th>  
+                 <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+                 </th>
+	              <th>学校</th>
+		          <th>标题</th>
+		          <th>活动开始时间</th>
+	              <th>活动结束时间</th>
+	              </tr> 	
+   	    			 {events.data.map(function(event) {        
+	    			      return (
+	    			    	      <tr className={className} >
+							        <td> 
+	                                <input type="checkbox" value={event.uuid} name="table_checkbox" />
+	                                </td>
+							        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+                                    <td><a href="javascript:void(0);" className="am-list-item-hd" onClick={react_px_Preferential_show.bind(this,event.uuid,event.title)}>
+   	    			  		        {event.title} 
+   	    			  		        </a></td>
+	    			    	        <td>{event.start_time}</td>
+	    			                <td>{event.end_time}</td>
+	    			    	      </tr> 
+	    			    		  )
+	    			         })}	
+   	    	     </AMR_Table>	  		  
    	    	  );
    }
    }); 
+
+
+
+     
+
 
 
 
@@ -8176,6 +8239,45 @@ setProvCity:function(){
    	 handleChange_button: function(groupuuid) {
    		px_teacher_onClick_byRight("add",{groupuuid:groupuuid,uuid:null});
    	  },
+  	 handleChange_box_btn: function() {
+		  var uuid="";
+            $($("input[name='table_checkbox']")).each(function(){					
+					 if(this.checked){
+						 if(!uuid){
+							 uuid=this.value;
+						  }else{
+							 uuid+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+						 }						
+					 }
+					});
+				  if(!uuid){
+					  alert("亲,请勾选一个老师！");
+					  return;
+				  }
+		if(uuid.indexOf(",")>=0){
+			alert("亲,只选择一个老师做操作");
+			return;
+		}
+		 $.AMUI.progress.start();
+ 			var url = hostUrl + "rest/pxteacher/"+uuid+".json";
+ 			$.ajax({
+ 				type : "GET",
+ 				url : url,
+ 				dataType : "json",
+ 				success : function(data) {
+ 					$.AMUI.progress.done();
+ 					if (data.ResMsg.status == "success") {
+					 px_teacher_onClick_byRight("eit",data.data);
+ 					} else {
+ 						alert(data.ResMsg.message);
+ 						G_resMsg_filter(data.ResMsg);
+ 					}
+ 				}
+ 			});	 		
+ 	 	  },
+ handleChange_checkbox_all:function(){
+	  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+ },
    render: function() {
    	this.load_more_btn_id="load_more_"+this.props.uuid;
      return (			
@@ -8188,6 +8290,9 @@ setProvCity:function(){
    		  </div>
    		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
           <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,$("input[name='group_uuid']").val())} >新增资料</AMR_Button>
+		  </div>
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+          <AMR_Button amStyle="secondary" onClick={this.handleChange_box_btn.bind(this)} >修改</AMR_Button>
 		  </div>
    		  </AMR_ButtonToolbar>	
    		  </AMR_Panel>  
@@ -8207,35 +8312,18 @@ setProvCity:function(){
 * 老师资料表单详情内容绘制;
 * */
 var Teacher_EventsTable_byRight = React.createClass({ 
-  	 handleChange_button: function(uuid) {
-		 $.AMUI.progress.start();
- 			var url = hostUrl + "rest/pxteacher/"+uuid+".json";
- 			$.ajax({
- 				type : "GET",
- 				url : url,
- 				dataType : "json",
- 				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-					 px_teacher_onClick_byRight("eit",data.data);
- 					} else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
- 				}
- 			});	 		
- 	 	  },
 	  render: function() {
 	    var event = this.props.events;
 	    var className = event.highlight ? 'am-active' :
   event.disabled ? 'am-disabled' : '';
-		var that=this;
 	    return (
 	    		  <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">
 		    	 <tr> 
+				   <th>  
+                  <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
+                  </th>
 	              <th>姓名</th>
 				  <th>发布状态</th>
-			      <th>修改资料</th>
 	              <th>教授课程</th>
 	              <th>星级</th>
 	              <th>简介</th>
@@ -8250,9 +8338,11 @@ var Teacher_EventsTable_byRight = React.createClass({
 						   }
 	    			      return (
 	    			    	      <tr className={className} >
+							        <td> 
+	                                <input type="checkbox" value={event.uuid} name="table_checkbox" />
+	                                </td>
 	    			     	  	    <td><a href="javascript:void(0);" onClick={px_ajax_teacher_look_info.bind(this,event.uuid)}>{event.name}</a></td>
-							  	    <td className={txtclasssName}>{Vo.get("course_status_"+event.status)}</td>
-								    <td><AMR_Button amStyle="secondary" onClick={that.handleChange_button.bind(this,event.uuid)} >修改</AMR_Button></td>	        
+							  	    <td className={txtclasssName}>{Vo.get("course_status_"+event.status)}</td>        
 									<td>{event.course_title}</td>
 	    			    	        <td>{event.ct_stars}</td>
 	    			    	        <td>{event.summary}</td>
