@@ -376,9 +376,52 @@ public class PxStudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public List<PxStudent> getStudentByGroup(String groupuuid) {
-
+		
 		List<PxStudent> list = (List<PxStudent>) this.nSimpleHibernateDao.getHibernateTemplate()
 				.find("from PxStudent  where groupuuid=?)", groupuuid);
+		return list;
+	}
+	
+	/**
+	 * 根据机构UUID,获取性别统计
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getStudentSexCountByGroup(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		//学生数量.教学计划数量,课程名,(班级信息)
+		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_pxstudent t0 left join px_pxstudentpxclassrelation t2 on t2.student_uuid=t0.uuid  left join  px_pxclass  t1 on t1.uuid=t2.class_uuid";
+				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+=" group by t0.sex";
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
+
+		return list;
+	}
+
+	/**
+	 * 根据机构UUID,获取性别统计
+	 * 
+	 * 
+	 * 幼儿园学生
+	 * SELECT DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)),'%Y') +0 AS age , sex,count(uuid) FROM px_student
+	GROUP BY age,sex
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getStudentAgeCountByGroup(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		//性别,年龄,
+		String sql = "SELECT DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(t0.birthday)),'%Y') +0 AS age,sum(t0.sex=0) as male,sum(t0.sex=1) as female from px_pxstudent t0 left join px_pxstudentpxclassrelation t2 on t2.student_uuid=t0.uuid  left join  px_pxclass  t1 on t1.uuid=t2.class_uuid";
+				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+=" group by age";
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
 
 		return list;
 	}

@@ -14,12 +14,9 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
-import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
 import com.company.news.entity.UserClassRelation;
-import com.company.news.entity.UserForJsCache;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxClassRegJsonform;
 import com.company.news.query.PageQueryResult;
@@ -229,6 +226,20 @@ public class PxClassService extends AbstractClassService {
 							groupuuid);
 
 		warpVoList(l);
+		return l;
+	}
+
+	/**
+	 * 查询所有班级,用于统计
+	 * @param groupuuid
+	 * @param isdisable
+	 * @return
+	 */
+	public List<Object[]> queryForCount(String groupuuid,Integer isdisable) {
+		
+		 String hql = "select uuid,name from PxClass where isdisable=:isdisable and groupuuid=:groupuuid ";
+		    List l = this.nSimpleHibernateDao.getSession().createQuery(hql).setInteger("isdisable", isdisable).setString("groupuuid", groupuuid).list();
+		    
 		return l;
 	}
 	

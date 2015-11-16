@@ -352,12 +352,61 @@ public class ClassNewsService extends AbstractService {
 		endDate.setHours(23);
 		endDate.setMinutes(59);
 		endDate.setSeconds(59);
-		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("select count(uuid),classuuid from ClassNews  where create_time<=? and create_time >=?  and classuuid in(select uuid from PClass where groupuuid=?) group by classuuid)",endDate,begDate,groupuuid);
 		
+		
+		 String hql = "select count(uuid),classuuid from ClassNews  where create_time<=:endDate and create_time >=:begDate  " ;
+		 //hql+=" and classuuid in(select uuid from PClass where isdisable=0 and groupuuid=:groupuuid ) group by classuuid)";
+		 hql+=" and classuuid in(select uuid from PClass where  groupuuid=:groupuuid ) group by classuuid)";
+		    List list = this.nSimpleHibernateDao.getSession().createQuery(hql)
+		    		.setTimestamp("begDate", begDate)
+		    		.setTimestamp("endDate", endDate)
+		    		.setString( "groupuuid" , groupuuid).list();
+
+		    
 		return list;
 	}
 	
+
+	/**
+	 * 根据机构UUID,获取班级互动
+	 * 
+	 * 
+	 * 
+	 * select t4.classuuid, sum(t1.count) as count_total,t4.dianzan_count,t4.reply_count from(
+select  t0.classuuid,count(t0.uuid),count(DISTINCT t2.uuid) as dianzan_count,count(DISTINCT t3.uuid) as reply_count
+from (select * from px_classnews t4 LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid) t0 
+LEFT JOIN px_classnewsdianzan t2 on t0.uuid=t2.newsuuid
+LEFT JOIN px_classnewsreply t3 on t0.uuid=t3.newsuuid
+
+
+GROUP BY t0.classuuid
+) t4
+LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
+
+
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getClassNewsCollectionByPxGroup(String groupuuid,String begDateStr, String endDateStr) {
+		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
+		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
+		endDate.setHours(23);
+		endDate.setMinutes(59);
+		endDate.setSeconds(59);
+
+		 String hql = "select count(uuid),classuuid from ClassNews  where create_time<=:endDate and create_time >=:begDate " ;
+		 hql+=" and classuuid in(select uuid from PxClass where isdisable=0 and groupuuid=:groupuuid ) group by classuuid)";
+		 
+		 
+		    List list = this.nSimpleHibernateDao.getSession().createQuery(hql)
+		    		.setTimestamp("begDate", begDate)
+		    		.setTimestamp("endDate", endDate)
+		    		.setString( "groupuuid" , groupuuid).list();
+
+		    
+		return list;
+	}
 	
 	/**
 	 * 根据机构UUID,获取班级热门互动top

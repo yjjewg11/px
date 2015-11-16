@@ -15,6 +15,14 @@ import com.company.news.service.PxStatisticsService;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieStatisticsVo;
 
+
+/**
+ * getStudentAgeCountBygroup_cnts
+ * _cnts:标识柱状图.
+ * _css:圆形图
+ * @author liumingquan
+ *
+ */
 @Controller
 @RequestMapping(value = "/pxstatistics")
 public class PxStatisticsController extends AbstractRESTController {
@@ -75,7 +83,53 @@ public class PxStatisticsController extends AbstractRESTController {
 					model.addAttribute(RestConstants.Return_G_entity, vo);
 				else
 					return "";
+			}else if (type.toLowerCase().equals("cns"))// 班级互动统计
+			{
+				PieStatisticsVo vo = pxStatisticsService.getCnsBygroup(
+						responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * 年龄段统计(按机构)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getStudentAgeCountBygroup_bar", method = RequestMethod.GET)
+	public String getStudentAgeCountBygroup_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+				PieStatisticsVo vo = pxStatisticsService.getStudentAgeCountBygroup(
+						responseMessage, request.getParameter("groupuuid"));
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

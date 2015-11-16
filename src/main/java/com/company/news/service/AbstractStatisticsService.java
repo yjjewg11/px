@@ -54,8 +54,11 @@ public class AbstractStatisticsService extends AbstractService {
 
 		logger.debug("begain 用户性别统计");
 
-		List<User4Q> list = userinfoService
-				.getUserByGroupuuid(group_uuid, null);
+//		List<User4Q> list = userinfoService
+//				.getUserByGroupuuid(group_uuid, null);
+//		
+		List<Object[]> list = userinfoService.getUserSexCountByGroup(group_uuid);
+		
 		logger.debug("getUserByGroupuuid 查询结束");
 
 		// 返回
@@ -65,20 +68,21 @@ public class AbstractStatisticsService extends AbstractService {
 		int sex_male = 0;
 		int sex_female = 0;
 
-		for (User4Q u : list) {
-			if (u.getSex().intValue() == SystemConstants.User_sex_male
-					.intValue())
-				sex_male++;
+		for (Object[] s : list) {
+			if(s[0]==null)continue;
+			if (SystemConstants.User_sex_male.toString().equals(s[0].toString()))
+				sex_male=Integer.valueOf(s[1].toString());
 			else
-				sex_female++;
+				sex_female=Integer.valueOf(s[1].toString());
 		}
+		int total_num=sex_male+sex_female;
 
 		PieSeriesDataVo male_sdvo = new PieSeriesDataVo();
-		male_sdvo.setName("男");
+		male_sdvo.setName("男("+sex_male+")");
 		male_sdvo.setValue(sex_male);
 
 		PieSeriesDataVo female_sdvo = new PieSeriesDataVo();
-		female_sdvo.setName("女");
+		female_sdvo.setName("女("+sex_female+")");
 		female_sdvo.setValue(sex_female);
 
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
@@ -90,7 +94,7 @@ public class AbstractStatisticsService extends AbstractService {
 		// 需要获取机构名
 				Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 				vo.setTitle_text(g.getCompany_name() + " 教师统计（按性别）");
-				vo.setTitle_subtext("总计 " + list.size() + " 人");
+				vo.setTitle_subtext("总计 " +total_num + " 人");
 				List legend_data = new ArrayList();
 				legend_data.add("男("+sex_male+")");
 				legend_data.add("女("+sex_female+")");

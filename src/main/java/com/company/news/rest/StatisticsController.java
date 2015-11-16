@@ -123,5 +123,40 @@ public class StatisticsController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	/**
+	 * 
+	 * 
+	 * 年龄段统计(按机构)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getStudentAgeCountBygroup_bar", method = RequestMethod.GET)
+	public String getStudentAgeCountBygroup_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
 
+		try {
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+				PieStatisticsVo vo = statisticsService.getStudentAgeCountBygroup(
+						responseMessage, request.getParameter("groupuuid"));
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 }

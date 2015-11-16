@@ -762,6 +762,25 @@ public class UserinfoService extends AbstractService {
 		return this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
 	}
 
+	
+	/**
+	 * 根据机构UUID,获取性别统计
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getUserSexCountByGroup(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		//学生数量.教学计划数量,课程名,(班级信息)
+		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_user t0 left join px_usergrouprelation t1 on t1.useruuid=t0.uuid";
+				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+=" group by t0.sex";
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
+		return list;
+	}
 	/**
 	 * 查询指定机构的用户列表
 	 * 
