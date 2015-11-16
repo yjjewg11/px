@@ -4237,6 +4237,8 @@ render: function() {
           React.createElement("th", null, "班主任"), 
           React.createElement("th", null, "老师"), 
           React.createElement("th", null, "学校"), 
+	      React.createElement("th", null, "状态"), 
+	      React.createElement("th", null, "结业时间"), 
           React.createElement("th", null, "创建时间")
         )
       ), 
@@ -4259,6 +4261,11 @@ render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
 	      event.disabled ? 'am-disabled' : '';
+			if(event.isdisable==1){
+				disable=React.createElement("td", null, React.createElement(AMR_Button, {amStyle: "success", disabled: "false"}, "已结业"))
+			}else{
+				disable=React.createElement("td", null, React.createElement(AMR_Button, {onClick: ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid), amStyle: "success"}, "结业"))
+			};
 	    return (
 	      React.createElement("tr", {className: className}, 
 	      React.createElement("td", null, 
@@ -4268,6 +4275,8 @@ render: function() {
 	        React.createElement("td", null, event.headTeacher_name), 
 	        React.createElement("td", null, event.teacher_name), 
 	        React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 
+		    disable, 
+            React.createElement("td", null, event.disable_time), 
 	        React.createElement("td", null, event.create_time)
 	      ) 
 	    );
@@ -4774,8 +4783,8 @@ render: function() {
 		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick_query.bind(this)}, "查询")
 
     	
-		  ), 
-    	 React.createElement("h6", null, "总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount), 
+		), 
+    	React.createElement("h6", null, "总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount), 
         React.createElement(Accounts_EventsTable2_byRight, React.__spread({}, this.props, {events: this.state.list}))
         )
       );
@@ -4817,17 +4826,17 @@ render: function() {
             this.props.events.map(function(event) {
               return ( 
 				  React.createElement("tr", {key: "_"+event.uuid}, 
-  	    React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
-  	    React.createElement("td", null, event.title), 
-  	    React.createElement("td", null, " ", event.num), 
-  	      React.createElement("td", null, G_getDateYMD(event.accounts_time)), 	     
-  	      React.createElement("td", null, " ", event.studentname), 
-  	      React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
-		   React.createElement("td", null, " ", event.invoice_num), 
-		  React.createElement("td", null, " ", event.description), 
-  	      React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 	      
-  	      React.createElement("td", null, event.create_user), 
-  	      React.createElement("td", null, event.create_time)
+  	     React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
+  	     React.createElement("td", null, event.title), 
+  	     React.createElement("td", null, " ", event.num), 
+  	     React.createElement("td", null, G_getDateYMD(event.accounts_time)), 	     
+  	     React.createElement("td", null, " ", event.studentname), 
+  	     React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
+		 React.createElement("td", null, " ", event.invoice_num), 
+		 React.createElement("td", null, " ", event.description), 
+  	     React.createElement("td", null, Store.getGroupNameByUuid(event.groupuuid)), 	      
+  	     React.createElement("td", null, event.create_user), 
+  	     React.createElement("td", null, event.create_time)
   	    ) )
             })
           )
@@ -4853,9 +4862,9 @@ render: function() {
 		if(!o.accounts_timeStr){
 			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
 		}
-			this.auto_addValue(o);
-  		    return this.loadData(this.props.formdata);
-  		  },
+		this.auto_addValue(o);
+  		   return this.loadData(this.props.formdata);
+  		},
   	  handleChange_groupuuid: function(v) {
   		 	var formdata=$('#editAccountsForm').serializeJson();
   		 	formdata.groupuuid=v;

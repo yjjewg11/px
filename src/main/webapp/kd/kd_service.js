@@ -2925,7 +2925,32 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   	});
   };
 
-
+  /*
+   * 班级管理结业服务器请求
+   * */
+    function ajax_class_disable_byRight(groupuuid,uuid) {	 
+  		if(!confirm("确定该班级要结业嘛?")){
+  			return;
+  		}
+  	 	$.AMUI.progress.start();
+  	 	var url = hostUrl + "rest/class/disable.json";
+  	 	$.ajax({
+  	 		type : "POST",
+  	 		url : url,
+  	 		data : {uuid:uuid},
+  	 		dataType : "json",
+  	 		success : function(data) {
+  	 			$.AMUI.progress.done();
+  	 			if (data.ResMsg.status == "success"){
+  	 				ajax_class_listByGroup_byRight(groupuuid);				
+  	 			}else{
+  	 				alert(data.ResMsg.message);
+  	 				G_resMsg_filter(data.ResMsg);
+  	 			}
+  	 		},
+  			error :G_ajax_error_fn
+  	 	});
+  	 }; 
 //—————————————————————————————————收支记录—————————————————————————
  /*
   * <收支记录>服务器请求

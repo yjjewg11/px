@@ -4237,6 +4237,8 @@ render: function() {
           <th>班主任</th>
           <th>老师</th>
           <th>学校</th>
+	      <th>状态</th>
+	      <th>结业时间</th>
           <th>创建时间</th>
         </tr> 
       </thead>
@@ -4259,6 +4261,11 @@ render: function() {
 	    var event = this.props.event;
 	    var className = event.highlight ? 'am-active' :
 	      event.disabled ? 'am-disabled' : '';
+			if(event.isdisable==1){
+				disable=<td><AMR_Button amStyle="success" disabled="false" >已结业</AMR_Button></td>
+			}else{
+				disable=<td><AMR_Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMR_Button></td>
+			};
 	    return (
 	      <tr className={className} >
 	      <td> 
@@ -4268,6 +4275,8 @@ render: function() {
 	        <td>{event.headTeacher_name}</td>
 	        <td>{event.teacher_name}</td>
 	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>
+		    {disable}
+            <td>{event.disable_time}</td>
 	        <td>{event.create_time}</td>
 	      </tr> 
 	    );
@@ -4774,8 +4783,8 @@ render: function() {
 		<AMR_Button amStyle="secondary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
 
     	
-		  </AMUIReact.Form>
-    	 <h6>{"总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount}</h6>
+		</AMUIReact.Form>
+    	<h6>{"总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount}</h6>
         <Accounts_EventsTable2_byRight{...this.props} events={this.state.list} />
         </div>
       );
@@ -4817,17 +4826,17 @@ render: function() {
             {this.props.events.map(function(event) {
               return ( 
 				  <tr  key={"_"+event.uuid} >
-  	    <td > {Vo.get("KD_Accounts_type_"+event.type)}</td>
-  	    <td  >{event.title}</td>
-  	    <td > {event.num}</td>
-  	      <td  >{G_getDateYMD(event.accounts_time)}</td>	     
-  	      <td > {event.studentname}</td>
-  	      <td > {Store.getClassByUuid(event.classuuid).name}</td>
-		   <td > {event.invoice_num}</td>
-		  <td > {event.description}</td>
-  	      <td >{Store.getGroupNameByUuid(event.groupuuid)}</td>  	      
-  	      <td >{event.create_user}</td>
-  	      <td >{event.create_time}</td>
+  	     <td> {Vo.get("KD_Accounts_type_"+event.type)}</td>
+  	     <td>{event.title}</td>
+  	     <td> {event.num}</td>
+  	     <td>{G_getDateYMD(event.accounts_time)}</td>	     
+  	     <td> {event.studentname}</td>
+  	     <td> {Store.getClassByUuid(event.classuuid).name}</td>
+		 <td> {event.invoice_num}</td>
+		 <td> {event.description}</td>
+  	     <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>  	      
+  	     <td>{event.create_user}</td>
+  	     <td>{event.create_time}</td>
   	    </tr> )
             })}
           </tbody>
@@ -4853,9 +4862,9 @@ render: function() {
 		if(!o.accounts_timeStr){
 			o.accounts_timeStr= new Date().format("yyyy-MM-dd"); 
 		}
-			this.auto_addValue(o);
-  		    return this.loadData(this.props.formdata);
-  		  },
+		this.auto_addValue(o);
+  		   return this.loadData(this.props.formdata);
+  		},
   	  handleChange_groupuuid: function(v) {
   		 	var formdata=$('#editAccountsForm').serializeJson();
   		 	formdata.groupuuid=v;

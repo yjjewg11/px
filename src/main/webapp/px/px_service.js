@@ -4085,13 +4085,13 @@ function ajax_class_students_look_info(uuid){
   * @edit:编辑；
   * @del:删除；
   * */  
-  function btnclick_Preferential_announce(m,groupuuid,uuid){
+  function btnclick_Preferential_announce(m,uuid,groupuuid){
  	  	if(m=="add"){
  	  		react_ajax_Preferential_edit({groupuuid:groupuuid,type:85},null);
  	  	}else if(m=="edit"){
  	  		react_ajax_Preferential_edit(null,uuid);
  	  	}else if(m=="del"){
- 	  		react_ajax_Preferential_delete(groupuuid,uuid);
+ 	  		react_ajax_Preferential_delete(uuid);
  	  	}
  	 };  
   /*
@@ -4139,7 +4139,7 @@ function ajax_class_students_look_info(uuid){
    *(优惠活动)删除按钮服务请求；
    *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
    * */  	  
-  function react_ajax_Preferential_delete(groupuuid,uuid){	 
+  function react_ajax_Preferential_delete(uuid){	 
   	if(!confirm("确定要删除吗?")){
   		return;
   	}
@@ -4154,7 +4154,7 @@ function ajax_class_students_look_info(uuid){
   			$.AMUI.progress.done();
   			// 登陆成功直接进入主页
   			if (data.ResMsg.status == "success") {
-  				Queue.doBackFN();
+  				px_Preferential_list_fn();
   			} else {
   				alert(data.ResMsg.message);
   			}
@@ -4242,7 +4242,7 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
   			formdata:formdata
   			}), document.getElementById('div_body'));
 
-    };       
+    };        
    
 /*(对外老师资料)查看详情方法按钮 
 * */
