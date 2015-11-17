@@ -1222,4 +1222,80 @@ public class UserinfoController extends AbstractRESTController {
 		return "";
 	}
 	
+	
+	/**
+	 * 问界科技用户管理
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/saveByAdminWjkj", method = RequestMethod.POST)
+	public String saveByAdminWjkj(ModelMap model, HttpServletRequest request) {
+		
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		
+		
+		try {
+			
+			// type 添加用户时需要指定用户类型
+			if (userRegJsonform.getType() == null) {
+				responseMessage.setMessage("用户类型不能为空！");
+				return "";
+			}
+			//设置当前用户
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			
+			String myRightgroup=SystemConstants.Group_uuid_wjkj;
+			
+			//平台管理员所有都可以修改.
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request)){
+				responseMessage.setMessage("非法操作,没有管理权限.");
+				return "";
+			}
+			
+			if(StringUtils.isEmpty(userRegJsonform.getUuid())){
+				boolean flag = userinfoService
+						.add(userRegJsonform, responseMessage,myRightgroup);
+				if (!flag)// 请求服务返回失败标示
+					return "";
+			}
+			else{
+				User user1 = userinfoService.updateByAdmin(userRegJsonform, responseMessage,myRightgroup,request);
+				if (user1==null)// 请求服务返回失败标示
+					return "";
+				responseMessage.setMessage("修改成功");
+			}
+			String desc=bodyJson;
+			userinfoService.addLog("saveByAdmin","添加用户", desc, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		
+		return "";
+	}
+	
 }

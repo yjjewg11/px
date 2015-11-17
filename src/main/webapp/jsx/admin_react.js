@@ -1350,7 +1350,7 @@ var Parent_EventsTable_div = React.createClass({
     			    </div>
     			    	<footer className="am-comment-footer">
     			    	<div className="am-comment-actions">
-    			    	{GTimeShow.showByTime(o.update_time)}
+    			    	{GTimeShow.showByTime(o.create_time)}
     			    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
     			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
     			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
