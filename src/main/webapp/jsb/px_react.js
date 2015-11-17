@@ -5929,7 +5929,6 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  }); 
 
 
-
  //培训机构批量添加课程表
  var Px_Teachingplan_addClass = React.createClass({displayName: "Px_Teachingplan_addClass", 
 	 getInitialState: function() {
@@ -5952,6 +5951,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		React.createElement("form", {id: "addtTeachingplanForm", method: "post", className: "am-form"}, 
  			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
  		    React.createElement(PxInput, {type: "hidden", name: "classuuid", value: o.classuuid}), 
+			React.createElement(PxInput, {type: "hidden", name: "per_week", value: o.per_week}), 
 
  		   React.createElement("div", {className: "am-form-group"}, 
 		       React.createElement("label", {className: one_classDiv}, "开课日期："), 
@@ -5962,13 +5962,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  				 
 				React.createElement(AMUIReact.FormGroup, null, 
 				  React.createElement("label", null, "上课周期："), 
-				  React.createElement(PxInput, {type: "radio", value: "1", name: "per_week", label: "周一", inline: true}), 
-				  React.createElement(PxInput, {type: "radio", value: "2", name: "per_week", label: "周二", inline: true}), 
-				  React.createElement(PxInput, {type: "radio", value: "3", name: "per_week", label: "周三", inline: true}), 
-				  React.createElement(PxInput, {type: "radio", value: "4", name: "per_week", label: "周四", inline: true}), 
-				  React.createElement(PxInput, {type: "radio", value: "5", name: "per_week", label: "周五", inline: true}), 
-					  React.createElement(PxInput, {type: "radio", value: "6", name: "per_week", label: "周六", inline: true}), 
-					  React.createElement(PxInput, {type: "radio", value: "7", name: "per_week", label: "周日", inline: true})
+				  React.createElement(PxInput, {type: "checkbox", value: "1", name: "per_week_check", label: "周一", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "2", name: "per_week_check", label: "周二", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "3", name: "per_week_check", label: "周三", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "4", name: "per_week_check", label: "周四", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "5", name: "per_week_check", label: "周五", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "6", name: "per_week_check", label: "周六", inline: true}), 
+				  React.createElement(PxInput, {type: "checkbox", value: "7", name: "per_week_check", label: "周日", inline: true})
 				), 
 
 	       React.createElement("label", {className: one_classDiv}, "上课次数："), 

@@ -3198,6 +3198,20 @@ function px_react_ajax_teachingplan_delete(obj){
 * */ 
    function addteachingplan_save_byRight(){
    	var objectForm = $('#addtTeachingplanForm').serializeJson();
+   	var per_week=null;
+	 $("input[name='per_week_check']").each(function(){
+		if(this.checked){
+			 if(per_week==null)per_week=this.value;
+			 else per_week+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+		}
+		});
+	 
+	  if(!per_week){
+		  G_msg_pop("请勾选复选框！");
+		  return;
+	  }
+   	
+    $("input[name='per_week']").val(per_week);
    var opt={
            formName: "addtTeachingplanForm",
            url:hostUrl + "rest/pxteachingplan/save.json",

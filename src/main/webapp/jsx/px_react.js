@@ -5929,7 +5929,6 @@ var Class_EventsTable_byRight = React.createClass({
  }); 
 
 
-
  //培训机构批量添加课程表
  var Px_Teachingplan_addClass = React.createClass({ 
 	 getInitialState: function() {
@@ -5952,6 +5951,7 @@ var Class_EventsTable_byRight = React.createClass({
  		<form id="addtTeachingplanForm" method="post" className="am-form">
  			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
  		    <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+			<PxInput type="hidden" name="per_week"  value={o.per_week}/>
 
  		   <div className="am-form-group">
 		       <label className={one_classDiv}>开课日期：</label>
@@ -5962,13 +5962,13 @@ var Class_EventsTable_byRight = React.createClass({
  				 
 				<AMUIReact.FormGroup>
 				  <label>上课周期：</label>
-				  <PxInput type="radio" value="1" name="per_week" label="周一" inline />
-				  <PxInput type="radio" value="2" name="per_week" label="周二" inline />
-				  <PxInput type="radio" value="3" name="per_week" label="周三" inline />
-				  <PxInput type="radio" value="4" name="per_week" label="周四" inline />
-				  <PxInput type="radio" value="5" name="per_week" label="周五" inline />
-					  <PxInput type="radio" value="6" name="per_week" label="周六" inline />
-					  <PxInput type="radio" value="7" name="per_week" label="周日" inline />
+				  <PxInput type="checkbox" value="1" name="per_week_check" label="周一" inline />
+				  <PxInput type="checkbox" value="2" name="per_week_check" label="周二" inline />
+				  <PxInput type="checkbox" value="3" name="per_week_check" label="周三" inline />
+				  <PxInput type="checkbox" value="4" name="per_week_check" label="周四" inline />
+				  <PxInput type="checkbox" value="5" name="per_week_check" label="周五" inline />
+				  <PxInput type="checkbox" value="6" name="per_week_check" label="周六" inline />
+				  <PxInput type="checkbox" value="7" name="per_week_check" label="周日" inline />
 				</AMUIReact.FormGroup>
 
 	       <label className={one_classDiv}>上课次数：</label>
