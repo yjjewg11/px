@@ -1224,7 +1224,7 @@ public class UserinfoController extends AbstractRESTController {
 	
 	
 	/**
-	 * 问界科技用户管理
+	 * 问界科技用户管理,添加用户.
 	 * 
 	 * @param model
 	 * @param request

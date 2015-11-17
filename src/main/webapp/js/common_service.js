@@ -119,6 +119,40 @@ w_img_upload_nocut={
 		type:4,
 		base64:null,
 		groupuuid:null,//用于添加水印时填值
+		
+		//客户端压缩图片
+		/**
+		 * lrz_callback:压缩完成后,回调函数.
+		 */
+		do_lrz:function(){
+			var file=w_img_upload_nocut.upload_files_arr.pop();
+			if(!file)return;
+			 lrz(file, {
+		            before: function() {
+		                console.log('压缩开始');
+		            },
+		            fail: function(err) {
+		                console.error(err);
+		            },
+		            always: function() {
+		                console.log('压缩结束');
+		            },
+		            done: function (results) {
+		            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+		            console.log(results);
+		            /*
+		            var data = {
+		                    base64: results.base64,
+		                    size: results.base64.length // 校验用，防止未完整接收
+		                };*/
+			            if(results&&results.base64){
+			            	
+			            	w_img_upload_nocut.ajax_uploadByphone(results.base64);
+			            }
+		            }
+		            });//end done fn
+		},
+		upload_files_arr:[],
 		/**
 		*加水印调用
 		1.绑定上传图片.w_img_upload_nocut.bind_onchange(fileId,callbackFN)
@@ -126,6 +160,7 @@ w_img_upload_nocut={
 		*/
 		
 		bind_onchange:function(fileId,callbackFN){
+			w_img_upload_nocut.upload_files_arr=[];
 			w_img_upload_nocut.groupuuid=null;//清空
 			w_img_upload_nocut.callbackFN=callbackFN;
 			if(G_CallPhoneFN.isPhoneApp()){
@@ -136,30 +171,12 @@ w_img_upload_nocut={
 				return;
 			}
 			$(fileId).bind("change", function(){
-				 lrz(this.files[0], {
-			            before: function() {
-			                console.log('压缩开始');
-			            },
-			            fail: function(err) {
-			                console.error(err);
-			            },
-			            always: function() {
-			                console.log('压缩结束');
-			            },
-			            done: function (results) {
-			            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
-			            console.log(results);
-			            /*
-			            var data = {
-			                    base64: results.base64,
-			                    size: results.base64.length // 校验用，防止未完整接收
-			                };*/
-				            if(results&&results.base64){
-				            	
-				            	w_img_upload_nocut.ajax_uploadByphone(results.base64);
-				            }
-			            }
-			            });//end done fn
+					//支持多 图片上传
+					for(var i=0;i<this.files.length;i++){
+						w_img_upload_nocut.upload_files_arr.push(this.files[i]);
+					}
+					
+					w_img_upload_nocut.do_lrz();
 			
 				
 				
@@ -183,6 +200,7 @@ w_img_upload_nocut={
 							//data.data.uuid,data.imgUrl
 							//w_img_upload_nocut.callbackFN(data);
 							w_img_upload_nocut.callbackFN(data.imgUrl,data.data.uuid);
+							w_img_upload_nocut.do_lrz();
 						}
 					} else {
 						alert(data.ResMsg.message);

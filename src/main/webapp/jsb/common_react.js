@@ -2,7 +2,7 @@ var AMR_Table=AMUIReact.Table;
 var AMR_ButtonToolbar=AMUIReact.ButtonToolbar;
 var AMR_Button=AMUIReact.Button;
 var AMR_Sticky=AMUIReact.Sticky;
-var AMR_Panel=AMUIReact.Panel;
+var AMR_Panel=AMUIReact.Panel;G_get_upload_img_Div
 var AMR_Gallery=AMUIReact.Gallery;
 var AMR_Input=AMUIReact.Input;
 var PxInput=AMUIReact.Input;
@@ -32,7 +32,7 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 	  }); 
 
 var G_get_upload_img_Div=function(){
-	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera"})
+	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
 	if(G_CallPhoneFN.isPhoneApp()){
 		G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload"}, "上传图片")
 	}
