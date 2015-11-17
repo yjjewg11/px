@@ -270,9 +270,7 @@ var Classnews_Div_list = React.createClass({
 			 return;
 		 }else{
 			 hd_type=val;
-			 console.log("123321",hd_type);
 			 this.pageNo=1;
-//			 ajax_classnews_list_div(num); 	
 			 this.refresh_data();
 			 
 			 

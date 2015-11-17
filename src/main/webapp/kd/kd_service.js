@@ -267,7 +267,7 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
 	case 99:     
-		   ajax_classnews_list_div(1);
+		   ajax_classnews_list_div("1");
 		   //ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	case 11:                                          
@@ -615,13 +615,15 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type,callback) {
 	$.AMUI.progress.start();
 	  	if(type==1){
 			url =hostUrl + "rest/classnews/getClassNewsByMy.json";
-	  	}else{
+	  	}else if(type==2){
 	  		url =hostUrl + "rest/classnews/getAllClassNews.json";
+	  	}else{
+	  		url =hostUrl + "rest/classnews/getAllGroupNews.json";
 	  	}
 	$.ajax({
 		type : "GET",
 		url : url,
-  		data : {classuuid:"",pageNo:pageNo},
+  		data : {pageNo:pageNo},
 		dataType : "json",
 		//async: false,
 		success : function(data) {

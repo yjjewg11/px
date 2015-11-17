@@ -137,6 +137,16 @@ var Classnews_Div_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	type:null,
+	getDefaultProps: function() {
+	 var data = [
+	            {value: "1", label: '我的班级'},
+	            {value: "2", label: '我的学校'},
+	            {value: "3", label: '所有学校'}
+	          ];
+	    return {
+	      btn_list: data
+	    };
+	  },
 	//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
 		  this.type=nextProps.type;
@@ -160,7 +170,7 @@ var Classnews_Div_list = React.createClass({
 			}
 			that.pageNo++;
 		}
-		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
+		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,hd_type,callback);
 	},
 
 	refresh_data:function(){
@@ -175,14 +185,13 @@ var Classnews_Div_list = React.createClass({
 		
 	},
 	selectclass_uuid_val:null,
-	handleClick: function(m,num) {
+	handleClick: function(m,val) {
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 this.type=num;
+			 hd_type=val;
 			 this.pageNo=1;
-//			 ajax_classnews_list_div(num); 	
 			 this.refresh_data();
 			 
 			 
@@ -191,18 +200,14 @@ var Classnews_Div_list = React.createClass({
 render: function() {
 	if(!this.type)this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	var  fn;
-	if(this.type==1){
-	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",2)} >其他班级</AMUIReact.Button>
-	}else{
-	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",1)} >我的班级</AMUIReact.Button>
-	}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 	      <AMR_Panel>
 		  <AMUIReact.ButtonToolbar>
+	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+     	<AMUIReact.Selected  btnStyle="secondary" id="selectclass_uuid" name="groupuuid" onChange={this.handleClick.bind(this,"oth")}  btnWidth="200"  value={hd_type} multiple= {false} data={this.props.btn_list}/>   
+     	</div>
 		    <AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"add")} >发布互动</AMUIReact.Button>
-		    {fn}
 		    <AMUIReact.Button amStyle="secondary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
