@@ -216,6 +216,16 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	type:null,
+	getDefaultProps: function() {
+	 var data = [
+	            {value: "1", label: '我的班级'},
+	            {value: "2", label: '我的学校'},
+	            {value: "3", label: '所有学校'}
+	          ];
+	    return {
+	      btn_list: data
+	    };
+	  },
 	//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
 		  this.type=nextProps.type;
@@ -239,7 +249,7 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 			}
 			that.pageNo++;
 		}
-		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
+		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,hd_type,callback);
 	},
 
 	refresh_data:function(){
@@ -254,12 +264,13 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 		
 	},
 	selectclass_uuid_val:null,
-	handleClick: function(m,num) {
+	handleClick: function(m,val) {
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 this.type=num;
+			 hd_type=val;
+			 console.log("123321",hd_type);
 			 this.pageNo=1;
 //			 ajax_classnews_list_div(num); 	
 			 this.refresh_data();
@@ -270,18 +281,18 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 render: function() {
 	if(!this.type)this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	var  fn;
-	if(this.type==1){
-	fn=React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"oth",2)}, "其他班级")
-	}else{
-	fn=React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"oth",1)}, "我的班级")
-	}
+
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
            React.createElement(AMR_Panel, null, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
+      
+  	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+     	React.createElement(AMUIReact.Selected, {btnStyle: "secondary", id: "selectclass_uuid", name: "groupuuid", onChange: this.handleClick.bind(this,"oth"), btnWidth: "200", value: hd_type, multiple: false, data: this.props.btn_list})
+     	), 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"add")}, "发布互动"), 
-		    fn, 
+
+		 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.refresh_data.bind(this)}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    )
@@ -3945,8 +3956,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
               React.createElement("th", null, "性别"), 
               React.createElement("th", null, "出生日期"), 
 			  React.createElement("th", null, "身份证"), 
-              React.createElement("th", null, "妈妈姓名"), 
-              React.createElement("th", null, "爸爸姓名")
+              React.createElement("th", null, "妈妈电话"), 
+              React.createElement("th", null, "爸爸电话")
             )
           ), 
           React.createElement("tbody", null, 
@@ -3978,8 +3989,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
-  	        React.createElement("td", null, event.ma_name), 
-  	        React.createElement("td", null, event.ba_name)
+		    React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "妈妈电话"))), 
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "爸爸电话")))
   	      ) 
   	    );
   	  }
@@ -4301,6 +4312,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		
 	return (
 	React.createElement("div", null, 
+		  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list17}), 
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 		  React.createElement(AMR_Panel, null, 
 	      React.createElement(AMR_ButtonToolbar, null, 
@@ -7001,8 +7013,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
               React.createElement("th", null, "性别"), 
               React.createElement("th", null, "出生日期"), 
 			  React.createElement("th", null, "身份证"), 
-              React.createElement("th", null, "妈妈姓名"), 
-              React.createElement("th", null, "爸爸姓名")
+              React.createElement("th", null, "妈妈电话"), 
+              React.createElement("th", null, "爸爸电话")
 
             )
           ), 
@@ -7036,8 +7048,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
-  	        React.createElement("td", null, event.ma_name), 
-  	        React.createElement("td", null, event.ba_name)
+		    React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "妈妈电话"))), 
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "爸爸电话")))
   	      ) 
   	    );
   	  }
@@ -7214,9 +7226,19 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	         React.createElement("div", {className: two_classDiv}, 
  		      React.createElement(PxInput, {icon: "home", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: ""})
  	           )		    
- 		      ), 		    		      
- 		      React.createElement("fieldset", null, 
- 		      React.createElement("legend", null, "其他信息"), 
+ 		      ), 
+				
+
+
+      React.createElement("div", {className: "am-panel am-panel-default"}, 
+        React.createElement("div", {className: "am-panel-hd"}, 
+        React.createElement("h4", {className: "am-panel-title", "data-am-collapse": "{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}, 
+           "填写更多信息"
+          )
+        ), 
+        React.createElement("div", {id: "do-not-say-"+o.uuid, className: "am-panel-collapse am-collapse"}, 
+          React.createElement("div", {className: "am-panel-bd"}, 
+
  		        React.createElement("label", {className: one_classDiv}, "奶奶电话"), 
  		         React.createElement("div", {className: two_classDiv}, 
  			      React.createElement(PxInput, {icon: "mobile", type: "text", name: "nai_tel", id: "nai_tel", value: o.nai_tel, onChange: this.handleChange, placeholder: ""})
@@ -7236,7 +7258,15 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		        React.createElement("label", {className: one_classDiv}, "其他电话"), 
  		         React.createElement("div", {className: two_classDiv}, 
  			      React.createElement(PxInput, {icon: "phone", type: "text", name: "other_tel", id: "other_tel", value: o.other_tel, onChange: this.handleChange, placeholder: ""})
- 		           ), 
+ 		           )
+
+
+					  )
+					 )
+					), 
+
+
+
  		 		   React.createElement(AMUIReact.Input, {type: "textarea", 
  			 	 	      label: "说明", 
  			 	 	    	 name: "note", 
@@ -7244,8 +7274,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  			 	 	      placeholder: "备注", 
  			 	 	      wrapperClassName: "am-u-sm-10", 
  			 	 	      amSize: "lg"}), 
- 		 		      React.createElement("br", null)
- 		 		      ), 
+ 		 		      
  				      React.createElement("button", {type: "button", onClick: btn_ajax_myclass_student_save, className: "am-btn am-btn-primary"}, "提交")		      
     		           )
     		          ) 	   		          
@@ -7348,6 +7377,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		
 	return (
 	React.createElement("div", null, 
+		React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list17}), 
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 	      React.createElement(AMR_Panel, null, 
 	      React.createElement(AMR_ButtonToolbar, null, 
@@ -7935,7 +7965,7 @@ React.createElement("div", null,
  			}
  			that.pageNo++;
  		}
-		  var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+		  var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,$("input[name='group_uuid']").val(),callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7943,6 +7973,7 @@ React.createElement("div", null,
    		this.forceUpdate();
    		this.pageNo=1;
    		$("#"+this.classnewsreply_list_div).html("");
+		G_mygroup_choose=$("input[name='group_uuid']").val();
    		this.load_more_data();
    		
    	},
@@ -7986,6 +8017,9 @@ React.createElement("div", null,
    		  React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list4}), 
 		   React.createElement(AMR_Panel, null, 
 		   React.createElement(AMR_ButtonToolbar, null, 
+		 	React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: G_mygroup_choose})
+		    ), 
 		    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick_box_btn.bind(this,"add")}, "创建优惠活动")
             ), 

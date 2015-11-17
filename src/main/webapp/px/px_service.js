@@ -476,13 +476,15 @@ function ajax_classs_Mygoodlist(list_div,pageNo,type,callback) {
 	$.AMUI.progress.start();
 	  	if(type==1){
 			url =hostUrl + "rest/classnews/getClassNewsByMy.json";
-	  	}else{
+	  	}else if(type==2){
 	  		url =hostUrl + "rest/classnews/getAllClassNews.json";
+	  	}else{
+	  		url =hostUrl + "rest/classnews/getAllGroupNews.json";
 	  	}
 	$.ajax({
 		type : "GET",
 		url : url,
-  		data : {classuuid:"",pageNo:pageNo},
+  		data : {pageNo:pageNo},
 		dataType : "json",
 		//async: false,
 		success : function(data) {
@@ -4007,8 +4009,12 @@ function ajax_class_students_look_info(uuid){
   * <优惠活动>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
   * 基本框 等
   * */
- function ajax_px_Preferential_div(){
- 	React.render(React.createElement(Preferential_px_Div_list), document.getElementById('div_body'));  	
+ function ajax_px_Preferential_div(groupuuid){
+	var list=Store.getGroupByRight("PX_announce_m");
+ 	React.render(React.createElement(Preferential_px_Div_list,{
+ 	  groupuuid:groupuuid,	
+ 	  groupList:G_selected_dataModelArray_byArray(list,"uuid","brand_name")
+ 	}), document.getElementById('div_body'));  	
  };
  /*
  *(优惠活动)服务器请求share/articleList
@@ -4016,13 +4022,13 @@ function ajax_class_students_look_info(uuid){
  * 取出数组服务器请求后
  * 开始绘制动态数据内容
  * */
- function ajax_Preferential_px_list(list_div,pageNo,callback) {
+ function ajax_Preferential_px_list(list_div,pageNo,groupuuid,callback) {
  	$.AMUI.progress.start();
  	var url = hostUrl + "rest/announcements/listPxbenefit.json";
  	$.ajax({
  		type : "GET",
  		url : url,
-   		data : {type:85,pageNo:pageNo},
+   		data : {type:85,groupuuid:groupuuid,pageNo:pageNo},
  		dataType : "json",
  		async: false,
  		success : function(data) {
@@ -4154,7 +4160,7 @@ function ajax_class_students_look_info(uuid){
   			$.AMUI.progress.done();
   			// 登陆成功直接进入主页
   			if (data.ResMsg.status == "success") {
-  				px_Preferential_list_fn();
+  				ajax_px_Preferential_div(G_mygroup_choose);
   			} else {
   				alert(data.ResMsg.message);
   			}

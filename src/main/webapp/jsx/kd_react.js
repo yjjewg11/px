@@ -2017,8 +2017,8 @@ var Class_students_show= React.createClass({
               <th>性别</th>
               <th>出生日期</th>
 			  <th>身份证</th>
-              <th>妈妈姓名</th>
-              <th>爸爸姓名</th>
+              <th>妈妈电话</th>
+              <th>爸爸电话</th>
             </tr> 
           </thead>
           <tbody>
@@ -2050,8 +2050,8 @@ var Class_students_show= React.createClass({
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-  	        <td>{event.ma_name}</td>
-  	        <td>{event.ba_name}</td>
+		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
   	      </tr> 
   	    );
   	  }
@@ -2359,8 +2359,17 @@ var Class_student_Tel_ListItem =React.createClass({
 		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
 	           </div>		    
 		      </fieldset>  		    		      
-		      <fieldset>
-		      <legend>其他信息</legend>
+
+
+      <div className="am-panel am-panel-default">      
+        <div className="am-panel-hd">         
+        <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}>
+           填写更多信息
+          </h4>
+        </div>               
+        <div id={"do-not-say-"+o.uuid} className="am-panel-collapse am-collapse">
+          <div className="am-panel-bd">
+
 		        <label className={one_classDiv}>奶奶电话</label>
 		         <div className={two_classDiv}>
 			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
@@ -2388,8 +2397,14 @@ var Class_student_Tel_ListItem =React.createClass({
 			 	 	      placeholder="备注"
 			 	 	      wrapperClassName="am-u-sm-10"
 			 	 	      amSize="lg" />
-		 		      <br/>
-		 		      </fieldset>
+
+                        
+						  </div>
+						</div>
+					  </div>
+
+ 
+
 				      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>		      
    		           </div>  
    		          </form> 	   		          
@@ -4238,7 +4253,7 @@ render: function() {
           <th>老师</th>
           <th>学校</th>
 	      <th>状态</th>
-	      <th>结业时间</th>
+	      <th>毕业时间</th>
           <th>创建时间</th>
         </tr> 
       </thead>
@@ -4262,9 +4277,9 @@ render: function() {
 	    var className = event.highlight ? 'am-active' :
 	      event.disabled ? 'am-disabled' : '';
 			if(event.isdisable==1){
-				disable=<td><AMR_Button amStyle="success" disabled="false" >已结业</AMR_Button></td>
+				disable=<td><AMR_Button amStyle="success" disabled="false" >已毕业</AMR_Button></td>
 			}else{
-				disable=<td><AMR_Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">结业</AMR_Button></td>
+				disable=<td><AMR_Button onClick={ajax_class_disable_byRight.bind(this,event.groupuuid,event.uuid)} amStyle="success">毕业</AMR_Button></td>
 			};
 	    return (
 	      <tr className={className} >
@@ -4405,8 +4420,8 @@ render: function() {
               <th>性别</th>
               <th>出生日期</th>
 			  <th>身份证</th>
-              <th>妈妈姓名</th>
-              <th>爸爸姓名</th>
+              <th>妈妈电话</th>
+              <th>爸爸电话</th>
             </tr> 
           </thead>
           <tbody>
@@ -4438,8 +4453,8 @@ render: function() {
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-  	        <td>{event.ma_name}</td>
-  	        <td>{event.ba_name}</td>
+		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
   	      </tr> 
   	    );
   	  }
@@ -4558,8 +4573,16 @@ render: function() {
 		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
 	           </div>		    
 		      </fieldset>  		    		      
-		      <fieldset>
-		      <legend>其他信息</legend>
+
+      <div className="am-panel am-panel-default">      
+        <div className="am-panel-hd">         
+        <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}>
+           填写更多信息
+          </h4>
+        </div>               
+        <div id={"do-not-say-"+o.uuid} className="am-panel-collapse am-collapse">
+          <div className="am-panel-bd">
+
 		        <label className={one_classDiv}>奶奶电话</label>
 		         <div className={two_classDiv}>
 			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
@@ -4587,8 +4610,12 @@ render: function() {
 			 	 	      placeholder="备注"
 			 	 	      wrapperClassName="am-u-sm-10"
 			 	 	      amSize="lg" />
-		 		      <br/>
-		 		      </fieldset>
+
+				
+						  </div>
+						</div>
+					  </div>
+
 				      <button type="button"  onClick={btn_ajax_class_student_save_byRight}  className="am-btn am-btn-primary">提交</button>		      
    		           </div>  
    		          </form> 

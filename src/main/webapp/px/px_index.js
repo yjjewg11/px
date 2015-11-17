@@ -482,8 +482,14 @@ function px_zixun_fn(){
  * （标头）对外发布-优惠活动
  */
 function px_Preferential_list_fn(){
+	var grouplist=Store.getGroupByRight("PX_announce_m");
+	if(!grouplist||grouplist.length==0){
+		G_msg_pop("没有权限!");
+		return "";
+	}
+	if(!G_mygroup_choose)G_mygroup_choose=grouplist[0].uuid;
   	Queue.push(px_Preferential_list_fn,"优惠活动");
-  	ajax_px_Preferential_div();
+  	ajax_px_Preferential_div(G_mygroup_choose);
 }
 //±±±±±±±±±±±±±±±±±±±±首页大图标±±±±±±±±±±±±±±±±±±±±
 /*
@@ -492,7 +498,7 @@ function px_Preferential_list_fn(){
  * 在kd_service;
  * */
 function menu_classnewsbyMy_list_fn() {
-	ajax_classnews_list_div(1);
+	ajax_classnews_list_div("1");
 	
 };
 /*
