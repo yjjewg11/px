@@ -2055,8 +2055,8 @@ var Class_students_show= React.createClass({
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
+		     <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
   	      </tr> 
   	    );
   	  }
@@ -4458,9 +4458,9 @@ render: function() {
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
-  	      </tr> 
+		  <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
+			</tr> 
   	    );
   	  }
   	});   

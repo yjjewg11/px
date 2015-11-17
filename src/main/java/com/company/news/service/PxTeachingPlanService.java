@@ -120,11 +120,13 @@ public class PxTeachingPlanService extends AbstractService {
 //        aCalendar.setFirstDayOfWeek(Calendar.DAY_OF_WEEK);
         //举例,week=3
         int week = aCalendar.get(Calendar.DAY_OF_WEEK)-1;
+        int i=0;
         
-		for(int i=0;i<per_num;i++){
-			
+		while(i<per_num){
+			if(step<1)break;
 			for(int k=0;k<step;k++){
 				if(i>=per_num)break;
+				i++;
 				//tmp_week=4
 				//tmp_week=2
 				int  tmp_week=Integer.valueOf(weeksArr[k]);
@@ -143,6 +145,7 @@ public class PxTeachingPlanService extends AbstractService {
 				pxTeachingplan.setPlandate(plandate);
 				// 有事务管理，统一在Controller调用时处理异常
 				this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
+				
 			}
 		}
 		return true;
