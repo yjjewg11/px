@@ -406,8 +406,8 @@ var Classnews_show = React.createClass({
 			  <div className="am-comment-main">
 			    <header className="am-comment-hd">
 			      <div className="am-comment-meta">
-			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}|{Store.getGroupNameByUuid(o.groupuuid)}</a>
-			      </div>
+			         <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
+				  </div>
 			    </header>
 			    <div className="am-comment-bd">
 			    <div dangerouslySetInnerHTML={{__html:o.content}}>
@@ -5332,8 +5332,8 @@ var Class_EventsTable_byRight = React.createClass({
      			  <div className="am-comment-main">
      			    <header className="am-comment-hd">
      			      <div className="am-comment-meta">
-     			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}|{Store.getGroupNameByUuid(o.groupuuid)}</a>
-     			      </div>
+     			          <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
+					  </div>
      			    </header>
      			    <div className="am-comment-bd">
      			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>

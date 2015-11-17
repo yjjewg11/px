@@ -406,8 +406,8 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			  React.createElement("div", {className: "am-comment-main"}, 
 			    React.createElement("header", {className: "am-comment-hd"}, 
 			      React.createElement("div", {className: "am-comment-meta"}, 
-			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
-			      )
+			         React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, o.class_name, "|", o.create_user, "|", o.group_name)
+				  )
 			    ), 
 			    React.createElement("div", {className: "am-comment-bd"}, 
 			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}
@@ -5332,8 +5332,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			  React.createElement("div", {className: "am-comment-main"}, 
      			    React.createElement("header", {className: "am-comment-hd"}, 
      			      React.createElement("div", {className: "am-comment-meta"}, 
-     			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
-     			      )
+     			          React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, o.class_name, "|", o.create_user, "|", o.group_name)
+					  )
      			    ), 
      			    React.createElement("div", {className: "am-comment-bd"}, 
      			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
