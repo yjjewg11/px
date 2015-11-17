@@ -216,6 +216,16 @@ var Classnews_Div_list = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	type:null,
+	getDefaultProps: function() {
+	 var data = [
+	            {value: "1", label: '我的班级'},
+	            {value: "2", label: '我的学校'},
+	            {value: "3", label: '所有学校'}
+	          ];
+	    return {
+	      btn_list: data
+	    };
+	  },
 	//同一模版,被其他调用是,Props参数有变化,必须实现该方法.
 	  componentWillReceiveProps: function(nextProps) {
 		  this.type=nextProps.type;
@@ -239,7 +249,7 @@ var Classnews_Div_list = React.createClass({
 			}
 			that.pageNo++;
 		}
-		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,this.type,callback);
+		ajax_classs_Mygoodlist(this.classnewsreply_list_div+this.pageNo,this.pageNo,hd_type,callback);
 	},
 
 	refresh_data:function(){
@@ -254,14 +264,13 @@ var Classnews_Div_list = React.createClass({
 		
 	},
 	selectclass_uuid_val:null,
-	handleClick: function(m,num) {
+	handleClick: function(m,val) {
 		if(m=="add"){
 			 btn_click_classnews(m,{classuuid:this.selectclass_uuid_val});
 			 return;
 		 }else{
-			 this.type=num;
+			 hd_type=val;
 			 this.pageNo=1;
-//			 ajax_classnews_list_div(num); 	
 			 this.refresh_data();
 			 
 			 
@@ -270,18 +279,18 @@ var Classnews_Div_list = React.createClass({
 render: function() {
 	if(!this.type)this.type=this.props.type;
 	this.load_more_btn_id="load_more_"+this.props.uuid;
-	var  fn;
-	if(this.type==1){
-	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",2)} >其他班级</AMUIReact.Button>
-	}else{
-	fn=<AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"oth",1)} >我的班级</AMUIReact.Button>
-	}
+
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
            <AMR_Panel>
 		  <AMUIReact.ButtonToolbar>
+      
+  	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+     	<AMUIReact.Selected  btnStyle="secondary" id="selectclass_uuid" name="groupuuid" onChange={this.handleClick.bind(this,"oth")}  btnWidth="200"  value={hd_type} multiple= {false} data={this.props.btn_list}/>   
+     	</div>
 		    <AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"add")} >发布互动</AMUIReact.Button>
-		    {fn}
+
+		 
 		    <AMUIReact.Button amStyle="secondary" onClick={this.refresh_data.bind(this)} >刷新</AMUIReact.Button>
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
@@ -3945,8 +3954,8 @@ var Class_EventsTable_byRight = React.createClass({
               <th>性别</th>
               <th>出生日期</th>
 			  <th>身份证</th>
-              <th>妈妈姓名</th>
-              <th>爸爸姓名</th>
+              <th>妈妈电话</th>
+              <th>爸爸电话</th>
             </tr> 
           </thead>
           <tbody>
@@ -3978,8 +3987,8 @@ var Class_EventsTable_byRight = React.createClass({
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-  	        <td>{event.ma_name}</td>
-  	        <td>{event.ba_name}</td>
+		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
   	      </tr> 
   	    );
   	  }
@@ -4301,6 +4310,7 @@ var Class_EventsTable_byRight = React.createClass({
 		
 	return (
 	<div>   
+		  <G_px_help_List data={G_px_help_msg.msg_px_help_list17}/>
 	      <form id="editGroupForm" method="post" className="am-form">
 		  <AMR_Panel>
 	      <AMR_ButtonToolbar>
@@ -5921,7 +5931,6 @@ var Class_EventsTable_byRight = React.createClass({
  }); 
 
 
-
  //培训机构批量添加课程表
  var Px_Teachingplan_addClass = React.createClass({ 
 	 getInitialState: function() {
@@ -5944,6 +5953,7 @@ var Class_EventsTable_byRight = React.createClass({
  		<form id="addtTeachingplanForm" method="post" className="am-form">
  			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
  		    <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
+			<PxInput type="hidden" name="per_week"  value={o.per_week}/>
 
  		   <div className="am-form-group">
 		       <label className={one_classDiv}>开课日期：</label>
@@ -5954,13 +5964,13 @@ var Class_EventsTable_byRight = React.createClass({
  				 
 				<AMUIReact.FormGroup>
 				  <label>上课周期：</label>
-				  <PxInput type="radio" value="1" name="per_week" label="周一" inline />
-				  <PxInput type="radio" value="2" name="per_week" label="周二" inline />
-				  <PxInput type="radio" value="3" name="per_week" label="周三" inline />
-				  <PxInput type="radio" value="4" name="per_week" label="周四" inline />
-				  <PxInput type="radio" value="5" name="per_week" label="周五" inline />
-					  <PxInput type="radio" value="6" name="per_week" label="周六" inline />
-					  <PxInput type="radio" value="7" name="per_week" label="周日" inline />
+				  <PxInput type="checkbox" value="1" name="per_week_check" label="周一" inline />
+				  <PxInput type="checkbox" value="2" name="per_week_check" label="周二" inline />
+				  <PxInput type="checkbox" value="3" name="per_week_check" label="周三" inline />
+				  <PxInput type="checkbox" value="4" name="per_week_check" label="周四" inline />
+				  <PxInput type="checkbox" value="5" name="per_week_check" label="周五" inline />
+				  <PxInput type="checkbox" value="6" name="per_week_check" label="周六" inline />
+				  <PxInput type="checkbox" value="7" name="per_week_check" label="周日" inline />
 				</AMUIReact.FormGroup>
 
 	       <label className={one_classDiv}>上课次数：</label>
@@ -7003,8 +7013,8 @@ var Class_EventsTable_byRight = React.createClass({
               <th>性别</th>
               <th>出生日期</th>
 			  <th>身份证</th>
-              <th>妈妈姓名</th>
-              <th>爸爸姓名</th>
+              <th>妈妈电话</th>
+              <th>爸爸电话</th>
 
             </tr> 
           </thead>
@@ -7038,8 +7048,8 @@ var Class_EventsTable_byRight = React.createClass({
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
-  	        <td>{event.ma_name}</td>
-  	        <td>{event.ba_name}</td>
+		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}><AMUIReact.Button amStyle="success">妈妈电话</AMUIReact.Button></a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}><AMUIReact.Button amStyle="success">爸爸电话</AMUIReact.Button></a></td>
   	      </tr> 
   	    );
   	  }
@@ -7216,9 +7226,19 @@ var Class_EventsTable_byRight = React.createClass({
  	         <div className={two_classDiv}>
  		      <PxInput icon="home" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder=""/>
  	           </div>		    
- 		      </fieldset>  		    		      
- 		      <fieldset>
- 		      <legend>其他信息</legend>
+ 		      </fieldset>  
+				
+
+
+      <div className="am-panel am-panel-default">      
+        <div className="am-panel-hd">         
+        <h4 className="am-panel-title" data-am-collapse={"{parent: '#accordion', target: '#do-not-say-"+o.uuid+"'}"}>
+           填写更多信息
+          </h4>
+        </div>               
+        <div id={"do-not-say-"+o.uuid} className="am-panel-collapse am-collapse">
+          <div className="am-panel-bd">
+
  		        <label className={one_classDiv}>奶奶电话</label>
  		         <div className={two_classDiv}>
  			      <PxInput icon="mobile" type="text" name="nai_tel" id="nai_tel" value={o.nai_tel} onChange={this.handleChange} placeholder=""/>
@@ -7239,6 +7259,14 @@ var Class_EventsTable_byRight = React.createClass({
  		         <div className={two_classDiv}>
  			      <PxInput icon="phone" type="text" name="other_tel" id="other_tel" value={o.other_tel} onChange={this.handleChange} placeholder=""/>
  		           </div>
+
+
+					  </div>
+					 </div>
+					</div>
+
+
+
  		 		   <AMUIReact.Input type="textarea"
  			 	 	      label="说明"
  			 	 	    	 name="note"
@@ -7246,8 +7274,7 @@ var Class_EventsTable_byRight = React.createClass({
  			 	 	      placeholder="备注"
  			 	 	      wrapperClassName="am-u-sm-10"
  			 	 	      amSize="lg" />
- 		 		      <br/>
- 		 		      </fieldset>
+ 		 		      
  				      <button type="button"  onClick={btn_ajax_myclass_student_save}  className="am-btn am-btn-primary">提交</button>		      
     		           </div>  
     		          </form> 	   		          
@@ -7350,6 +7377,7 @@ var Class_EventsTable_byRight = React.createClass({
 		
 	return (
 	<div>   
+		<G_px_help_List data={G_px_help_msg.msg_px_help_list17}/>
 	      <form id="editGroupForm" method="post" className="am-form">
 	      <AMR_Panel>
 	      <AMR_ButtonToolbar>
@@ -7937,7 +7965,7 @@ setProvCity:function(){
  			}
  			that.pageNo++;
  		}
-		  var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+		  var re_data=ajax_Preferential_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,$("input[name='group_uuid']").val(),callback);
    	},
    	refresh_data:function(){
 //   		classnewsreply_list_div 清除；
@@ -7945,6 +7973,7 @@ setProvCity:function(){
    		this.forceUpdate();
    		this.pageNo=1;
    		$("#"+this.classnewsreply_list_div).html("");
+		G_mygroup_choose=$("input[name='group_uuid']").val();
    		this.load_more_data();
    		
    	},
@@ -7988,6 +8017,9 @@ setProvCity:function(){
    		  <G_px_help_List data={G_px_help_msg.msg_px_help_list4}/>
 		   <AMR_Panel>
 		   <AMR_ButtonToolbar>
+		 	<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		    <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"   data={this.props.groupList} btnStyle="primary" value={G_mygroup_choose} />
+		    </div>
 		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		    <AMR_Button amStyle="secondary" onClick={this.handleClick_box_btn.bind(this,"add")} >创建优惠活动</AMR_Button>
             </div>

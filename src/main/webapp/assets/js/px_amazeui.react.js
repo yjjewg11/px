@@ -6131,6 +6131,10 @@ var Selected = React.createClass({displayName: "Selected",
     var filterText = this.state.filterText;
     var groupHeader;
     var checked_value=false;
+    if( !this.props.data){
+    	console.log("Amazeui.Selected name=",this.props.name);
+    }
+   
     this.props.data.forEach(function(option, i) {
       var checked = this.hasValue(option.value);
       checked_value=checked;

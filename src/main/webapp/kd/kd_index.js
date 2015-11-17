@@ -555,10 +555,10 @@ function menu_hellp_fn(){
  * */
 function menu_classnewsbyMy_list_fn() {
 	var myclasslist=Store.getMyClassList();
-	var type=1;
+	var type="1";
 	//默认查询我的班级,如果没有则查询其他班级的.
 	if(!myclasslist||myclasslist.length==0){
-		type=2;
+		type="2";
 	}
 	
 	

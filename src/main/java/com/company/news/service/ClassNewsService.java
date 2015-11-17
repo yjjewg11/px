@@ -759,4 +759,41 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		pvo.setTitle_text(str);
 		return pvo;
 	}
+	
+	
+	
+	
+	
+	
+	
+	public PageQueryResult listClassNewsByAllgroup(SessionUserInfoInterface user,
+			PaginationData pData) {
+		
+
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		sql+=" FROM px_classnews t1 ";
+		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		sql+=" where t1.status=0  ";	
+
+		
+	    sql += " order by t1.create_time desc";
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user.getUuid());
+			uuids+=o.get("uuid")+",";
+		}
+		
+		
+		return pageQueryResult;
+	}
+
+	
+	
 }
