@@ -207,11 +207,18 @@ function menu_userinfo_list_fn_byRight() {
 * 基本框 等
 * */
 function ajax_uesrinfo_listByGroup_div_admin(groupuuid){
-//	var list=Store.getGroupByRight('KD_teacher_m');
+	var GroupArry=[];
+	var list=Store.getAllGroup();
+	for (var i=0;i<list.length;i++){
+		if(list[i].uuid=="wjkj"){
+			GroupArry.push(list[i]);
+		}
+	}
+    console.log("GroupArry",GroupArry);
 	React.render(React.createElement(Userinfo_EventsTable_div,{
-		group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name"),
+		group_list:G_selected_dataModelArray_byArray(GroupArry,"uuid","brand_name"),
 		handleClick:btn_click_userinfo,
-		groupuuid:groupuuid
+		groupuuid:"wjkj"
 	}), document.getElementById('div_body'));  	
 };
 
@@ -387,7 +394,7 @@ function btn_click_userinfo(m,obj,usernames,sex){
  	if($("#password")[0])$("#password").val($.md5($("#password").val()));
      var opt={
              formName: "editUserinfoForm",
-             url:hostUrl + "rest/userinfo/saveByAdmin.json",
+             url:hostUrl + "rest/userinfo/saveByAdminWjkj.json",
              cbFN:null
              };
  G_ajax_abs_save(opt);
