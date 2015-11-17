@@ -290,7 +290,7 @@ public class PxStatisticsService extends AbstractStatisticsService {
 			Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
 			
 			
-		vo.setTitle_text(g.getBrand_name() + " 班级学生人数统计");
+		vo.setTitle_text(g.getBrand_name() + " 学生年龄统计");
 		vo.setTitle_subtext("总计 " + total_num + " 人,男"+sex_male+"人,女"+sex_female+"人");
 		List legend_data = new ArrayList();
 		legend_data.add("男");
