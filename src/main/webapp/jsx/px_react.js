@@ -5000,15 +5000,17 @@ var Class_EventsTable_byRight = React.createClass({
 							    		 
 				<AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
 	    		 </div>
-				 <div className="am-u-lg-3 am-u-md-6">
+				 <div className="am-u-lg-2 am-u-md-4 am-u-sm-6">
 					    		 
 				 <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
 	    		 </div>
-				<div className="am-u-lg-3 am-u-md-6">
+				<div className="am-u-lg-2 am-u-md-4  am-u-sm-6">
 			    <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
 	    		 
 	    		 </div>
-    		 
+    		 	<div className="am-u-lg-2 am-u-md-4">
+  			  <button type="button"  className= "am-u-sm-2"  onClick={this.handleChange}  className="am-btn am-btn-secondary">查询</button>	  				
+  	  	</div>
     		 </div>
     		 <div className="am-cf"></div>
     		 </form>

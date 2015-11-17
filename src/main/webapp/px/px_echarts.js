@@ -246,7 +246,7 @@ var PXECharts_ajax={
 		data.push( {value: 'sss', label: '学生性别统计（按机构）'});
 		data.push( {value: 'getStudentAgeCountBygroup_bar', label: '年龄段统计(按机构)'});
 		data.push( {value: 'css', label: '学生班级统计'});
-		data.push( {value: 'cns', label: '发帖互动统计（未结业班级）'});
+		data.push( {value: 'cns', label: '发帖互动统计（日期段）'});
 	
 	
 		return data;

@@ -5000,15 +5000,17 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 							    		 
 				React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
 	    		 ), 
-				 React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+				 React.createElement("div", {className: "am-u-lg-2 am-u-md-4 am-u-sm-6"}, 
 					    		 
 				 React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
 	    		 ), 
-				React.createElement("div", {className: "am-u-lg-3 am-u-md-6"}, 
+				React.createElement("div", {className: "am-u-lg-2 am-u-md-4  am-u-sm-6"}, 
 			    React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
 	    		 
-	    		 )
-    		 
+	    		 ), 
+    		 	React.createElement("div", {className: "am-u-lg-2 am-u-md-4"}, 
+  			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.handleChange, className: "am-btn am-btn-secondary"}, "查询")	  				
+  	  	)
     		 ), 
     		 React.createElement("div", {className: "am-cf"})
     		 ), 
