@@ -520,7 +520,7 @@ public class PxStudentService extends AbstractStudentService {
 		if (StringUtils.isNotBlank(student_name)) {
 			where_student_name = " and student_name like '%" + student_name + "%'";
 		}
-		String hql = "from StudentContactRealation  where student_uuid in"
+		String hql = "from PxStudentContactRealation  where student_uuid in"
 				+ "(select student_uuid from PxStudentPXClassRelation where class_uuid in("
 				+ DBUtil.stringsToWhereInValue(StringUtils.join(listClassuuids, ",")) + ") )" + where_student_name
 				+ "  order by student_name,type";
