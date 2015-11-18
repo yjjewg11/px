@@ -6705,6 +6705,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
              React.createElement("th", null, "标题"), 		     
 		     React.createElement("th", null, "操作"), 
 		     React.createElement("th", null, "发布状态"), 
+		     React.createElement("th", null, "适合最小年龄"), 
+		     React.createElement("th", null, "适合最大年龄"), 
              React.createElement("th", null, "课程类型"), 
              React.createElement("th", null, "上课地点"), 
              React.createElement("th", null, "课程学时"), 
@@ -6732,6 +6734,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 	
  	  render: function() {
  	    var event = this.props.event;
+		var min,max;
+		if(event.age_min)min=event.age_min+"岁";
+		else min="";
+		if(event.age_max)max=event.age_max+"岁";
+		else max="";
  	 	var className = event.highlight ? 'am-active' :
  	  	  event.disabled ? 'am-disabled' : '';
         var txtclasssName;
@@ -6750,6 +6757,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 
 			 ), 
 			React.createElement("td", {className: txtclasssName}, Vo.get("course_status_"+event.status)), 
+		    React.createElement("td", null, min), 
+		    React.createElement("td", null, max), 
 		    React.createElement("td", null, Vo.get("course_type_"+event.type)), 
  	  	    React.createElement("td", null, event.address), 
  	  	    React.createElement("td", null, event.schedule), 
@@ -6766,6 +6775,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  	  }
  	}); 
  
+
+
+
+
  /*发布课程中查看课程详情
   * */
  var Class_course_look_info =React.createClass({displayName: "Class_course_look_info",
@@ -6791,6 +6804,8 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  			      
  			         React.createElement(AMUIReact.ListItem, null, "标题:", o.title), 
  			        React.createElement(AMUIReact.ListItem, null, "课程类型:", Vo.get("course_type_"+o.type)), 
+				 React.createElement(AMUIReact.ListItem, null, "适合最小年龄:", o.age_min), 
+				 React.createElement(AMUIReact.ListItem, null, "适合最大年龄:", o.age_max), 
  			      React.createElement(AMUIReact.ListItem, null, "上课地点:", o.address), 
  			     React.createElement(AMUIReact.ListItem, null, "课程学时:", o.schedule), 
  			    React.createElement(AMUIReact.ListItem, null, "收费价格:", o.fees), 
@@ -6910,9 +6925,16 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			     React.createElement("div", {className: two_classDiv}, 
 			       React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "20", value: o.title, onChange: this.handleChange})
 			        ), 
-		 	         
+		 	    React.createElement("label", {className: one_classDiv}, "适合最小年龄:"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			       React.createElement(PxInput, {type: "text", name: "age_min", id: "age_min", maxLength: "2", placeholder: "用于方便户检索课程且不能小于0岁", value: o.age_min, onChange: this.handleChange})
+			        ), 
 		  		  
 
+		 	    React.createElement("label", {className: one_classDiv}, "适合最大年龄:"), 
+			     React.createElement("div", {className: two_classDiv}, 
+			       React.createElement(PxInput, {type: "text", name: "age_max", id: "age_max", maxLength: "3", placeholder: "用于方便户检索课程", value: o.age_max, onChange: this.handleChange})
+			        ), 
 			    React.createElement("label", {className: one_classDiv}, "上课地点:"), 
 			     React.createElement("div", {className: two_classDiv}, 
 			       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "50", value: o.address, onChange: this.handleChange})
