@@ -2056,7 +2056,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
 		     React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, event.ma_tel)), 
-            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ma_tel))
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ba_tel))
   	      ) 
   	    );
   	  }
@@ -4459,7 +4459,7 @@ render: function() {
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
 		  React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, event.ma_tel)), 
-            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ma_tel))
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ba_tel))
 			) 
   	    );
   	  }

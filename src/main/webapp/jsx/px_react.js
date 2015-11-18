@@ -3988,7 +3988,7 @@ var Class_EventsTable_byRight = React.createClass({
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
 		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ba_tel}</a></td>
 			</tr> 
   	    );
   	  }
@@ -7049,7 +7049,7 @@ var Class_EventsTable_byRight = React.createClass({
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
 		    <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ba_tel}</a></td>
 			 </tr> 
   	    );
   	  }

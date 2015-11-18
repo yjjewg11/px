@@ -30,7 +30,8 @@ setProvCity:function(){
 		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
 	return (			
 			   <div>		
-				
+			   <p className="am-text-warning">幼儿园注册:针对于幼儿园日常管理.</p>
+			   <p className="am-text-warning">教育机构注册:针对于培训机构日常管理,及对外发布特长课程.</p>
 			     <form id="kd_group_reg_form" method="post" className="am-form">
 			        <PxInput type="select" name="type">
 					  <option value="1">幼儿园注册</option>
@@ -70,7 +71,7 @@ setProvCity:function(){
                   <label className={one_classDiv}>手机号码:</label>
 				   <div className={two_classDiv}>
 					<PxInput type="text" name="tel" id="tel"/>
-					 <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",1)} className="am-btn am-btn-primary">发送验证码</button>
+					 <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",3)} className="am-btn am-btn-primary">发送验证码</button>
 					  </div>	
 					   <label className={one_classDiv}>验证码:</label>
 					   <div className={two_classDiv}>

@@ -30,7 +30,8 @@ setProvCity:function(){
 		var two_classDiv= "am-u-lg-10 am-u-md-10 am-u-sm-8";
 	return (			
 			   React.createElement("div", null, 		
-				
+			   React.createElement("p", {className: "am-text-warning"}, "幼儿园注册:针对于幼儿园日常管理."), 
+			   React.createElement("p", {className: "am-text-warning"}, "教育机构注册:针对于培训机构日常管理,及对外发布特长课程."), 
 			     React.createElement("form", {id: "kd_group_reg_form", method: "post", className: "am-form"}, 
 			        React.createElement(PxInput, {type: "select", name: "type"}, 
 					  React.createElement("option", {value: "1"}, "幼儿园注册"), 
@@ -70,7 +71,7 @@ setProvCity:function(){
                   React.createElement("label", {className: one_classDiv}, "手机号码:"), 
 				   React.createElement("div", {className: two_classDiv}, 
 					React.createElement(PxInput, {type: "text", name: "tel", id: "tel"}), 
-					 React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",1), className: "am-btn am-btn-primary"}, "发送验证码")
+					 React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",3), className: "am-btn am-btn-primary"}, "发送验证码")
 					  ), 	
 					   React.createElement("label", {className: one_classDiv}, "验证码:"), 
 					   React.createElement("div", {className: two_classDiv}, 
