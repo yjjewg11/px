@@ -197,13 +197,13 @@ public class PxCourseService extends AbstractService {
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students,t2.count";
+		String sql=" SELECT t1.age_min,t1.age_max,t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students,t2.count";
 		sql+=" FROM px_pxcourse t1 ";
 		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
 		sql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		sql += " order by CONVERT( t1.title USING gbk) ";
 		
-		
+	
 		
 		String countsql="SELECT count(*) from px_pxcourse t1";
 		countsql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
