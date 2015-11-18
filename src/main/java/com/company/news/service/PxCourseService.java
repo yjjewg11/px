@@ -50,6 +50,11 @@ public class PxCourseService extends AbstractService {
 
 		PxCourse pxCourse = new PxCourse();
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
+		
+		if(Integer.valueOf(0).equals(pxCourse.getAge_min()))pxCourse.setAge_min(null);
+		if(Integer.valueOf(0).equals(pxCourse.getAge_max()))pxCourse.setAge_max(null);
+		
+		
 		pxCourse.setUpdatetime(TimeUtils.getCurrentTimestamp());
 		
 		pxCourse.setUpdate_useruuid(user.getUuid());
@@ -81,10 +86,15 @@ public class PxCourseService extends AbstractService {
 		
 		PxCourseForUpdate pxCourse=(PxCourseForUpdate) this.nSimpleHibernateDao.getObject(PxCourseForUpdate.class, pxCourseJsonform.getUuid());
 		
-		
 		BeanUtils.copyProperties(pxCourse, pxCourseJsonform);
 		pxCourse.setUpdatetime(TimeUtils.getCurrentTimestamp());
 		pxCourse.setUpdate_useruuid(user.getUuid());
+		
+
+		if(Integer.valueOf(0).equals(pxCourse.getAge_min()))pxCourse.setAge_min(null);
+		if(Integer.valueOf(0).equals(pxCourse.getAge_max()))pxCourse.setAge_max(null);
+		
+		
 		this.nSimpleHibernateDao.getHibernateTemplate().update(pxCourse);
 		return pxCourse;
 	}

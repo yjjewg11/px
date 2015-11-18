@@ -553,7 +553,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 				}), document.getElementById(divid));  
 	  },
 	  componentDidMount:function(){
-		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -586,7 +586,7 @@ return (
 			
 		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
-		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
 			  G_get_upload_img_Div(), 
@@ -6759,7 +6759,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      				}), document.getElementById(divid));  
      	  },
      	  componentDidMount:function(){
-     		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+     		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
      		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
      		 var that=this;		 
      		 //已经有的图片,显示出来.		 
@@ -6792,7 +6792,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      			
      		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
      			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
-     		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+     		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
      		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
      		      React.createElement("div", {className: "cls"}), 
      			  G_get_upload_img_Div(), 

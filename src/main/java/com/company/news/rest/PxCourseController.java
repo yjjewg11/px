@@ -59,8 +59,17 @@ public class PxCourseController extends AbstractRESTController {
 		
 		
 		try {
-
-			
+			if(pxCourseJsonform.getAge_min()!=null&&pxCourseJsonform.getAge_max()!=null){
+				if(pxCourseJsonform.getAge_max()<pxCourseJsonform.getAge_min()){
+					responseMessage.setMessage("适应年龄 最小值不能大于最大值");
+					return "";
+				}
+				if(pxCourseJsonform.getAge_max()<0){
+					responseMessage.setMessage("适应年龄 不能为负数");
+					return "";
+				}
+			}
+		
 			pxCourseJsonform.setLogo(PxStringUtil.imgUrlToUuid(pxCourseJsonform.getLogo()));
 			
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
