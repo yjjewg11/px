@@ -386,6 +386,40 @@ public class ShareController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "/getKDInfo";
 	}
+	
+
+	/**
+	 * 获取幼儿园介绍
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getGroupContent", method = RequestMethod.GET)
+	public String getGroupContent(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		Group a=null;
+		try {
+			a = (Group)nSimpleHibernateDao.getObject(Group.class,uuid);
+			if(a==null){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+
+//			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_Kindergarten_introduction));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "/404";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getGroupContent";
+	}
 
 	/**
 	 * 获取招生计划,只查询最新的一篇
@@ -497,6 +531,49 @@ public class ShareController extends AbstractRESTController {
 			}
 			model.put("group",CommonsCache.get(a.getGroupuuid(), Group4Q.class));
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_pxcourse));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "/404";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getPxCourse";
+	}
+	
+
+	/**
+	 * 获取培训发布课程流程
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getPxCourseContent", method = RequestMethod.GET)
+	public String getPxCourseContent(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		PxCourse a=null;
+		try {
+			
+			 a = (PxCourse) this.nSimpleHibernateDao.getObjectById(
+					PxCourse.class, uuid);
+		
+			
+			if(a==null){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("数据不存在.");
+				return "/404";
+			}
+			
+			
+//			if(SystemConstants.PxCourse_status_weifabu.equals(a.getStatus())){
+//				return "/404";
+//			}
+//			model.put("group",CommonsCache.get(a.getGroupuuid(), Group4Q.class));
+//			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_pxcourse));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

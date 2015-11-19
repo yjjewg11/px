@@ -31,7 +31,7 @@ public class SmsService extends AbstractService {
 	private static long MINUTE = 1000 * 60L;
 	//限制重复时间5分钟
 	public static long SMS_TIME_LIMIT = 	Long.valueOf(ProjectProperties.getProperty(
-					"project.SMS.TIME_LIMIT", "5"));
+					"project.SMS.TIME_LIMIT", "1"));
 	
 	//验证码失效时间30分钟
 		public static long SMS_TIME_LIMIT_Effective =  Long.valueOf(ProjectProperties.getProperty(
@@ -74,6 +74,13 @@ public class SmsService extends AbstractService {
 				responseMessage.setMessage("手机号码已注册！忘记密码可以找回!");
 				return model;
 			}
+		}else if (SystemConstants.Sms_type_3.equals(type)) {
+//			if (userinfoService.isExitSameUserByLoginName(tel)) {
+//				responseMessage
+//						.setStatus(RestConstants.Return_ResponseMessage_failed);
+//				responseMessage.setMessage("手机号码已注册！忘记密码可以找回!");
+//				return model;
+//			}
 		}
 
 		TelSmsCode smsdb = (TelSmsCode) this.nSimpleHibernateDao

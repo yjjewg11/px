@@ -640,7 +640,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 				}), document.getElementById(divid));  
 	  },
 	  componentDidMount:function(){
-		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -683,7 +683,7 @@ return (
 			
 		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
-		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
 			  G_get_upload_img_Div(), 
@@ -3988,7 +3988,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
 		    React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, event.ma_tel)), 
-            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ma_tel))
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ba_tel))
 			) 
   	    );
   	  }
@@ -5566,7 +5566,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      				}), document.getElementById(divid));  
      	  },
      	  componentDidMount:function(){
-     		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+     		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
      		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
      		 var that=this;		 
      		 //已经有的图片,显示出来.		 
@@ -5607,7 +5607,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			
      		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
      			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
-     		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "3", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+     		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
      		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
      		      React.createElement("div", {className: "cls"}), 
      			  G_get_upload_img_Div(), 
@@ -6705,8 +6705,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
              React.createElement("th", null, "标题"), 		     
 		     React.createElement("th", null, "操作"), 
 		     React.createElement("th", null, "发布状态"), 
-		     React.createElement("th", null, "适合最小年龄"), 
-		     React.createElement("th", null, "适合最大年龄"), 
+		     React.createElement("th", null, "适应年龄"), 
              React.createElement("th", null, "课程类型"), 
              React.createElement("th", null, "上课地点"), 
              React.createElement("th", null, "课程学时"), 
@@ -6734,11 +6733,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  var Query_course_byRight = React.createClass({displayName: "Query_course_byRight", 	
  	  render: function() {
  	    var event = this.props.event;
-		var min,max;
-		if(event.age_min)min=event.age_min+"岁";
-		else min="";
-		if(event.age_max)max=event.age_max+"岁";
-		else max="";
+		
  	 	var className = event.highlight ? 'am-active' :
  	  	  event.disabled ? 'am-disabled' : '';
         var txtclasssName;
@@ -6757,8 +6752,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 
 			 ), 
 			React.createElement("td", {className: txtclasssName}, Vo.get("course_status_"+event.status)), 
-		    React.createElement("td", null, min), 
-		    React.createElement("td", null, max), 
+		    React.createElement("td", null, event.age_min, "-", event.age_max), 
 		    React.createElement("td", null, Vo.get("course_type_"+event.type)), 
  	  	    React.createElement("td", null, event.address), 
  	  	    React.createElement("td", null, event.schedule), 
@@ -6802,10 +6796,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
  				  React.createElement("br", null), 	      
  			      
- 			          React.createElement(AMUIReact.ListItem, null, "标题:", o.title), 
- 			         React.createElement(AMUIReact.ListItem, null, "课程类型:", Vo.get("course_type_"+o.type)), 
-				    React.createElement(AMUIReact.ListItem, null, "适合最小年龄:", o.age_min), 
-				   React.createElement(AMUIReact.ListItem, null, "适合最大年龄:", o.age_max), 
+ 			         React.createElement(AMUIReact.ListItem, null, "标题:", o.title), 
+ 			        React.createElement(AMUIReact.ListItem, null, "课程类型:", Vo.get("course_type_"+o.type)), 
+				 React.createElement(AMUIReact.ListItem, null, "适应年龄:", o.age_min, "-", o.age_max), 
  			      React.createElement(AMUIReact.ListItem, null, "上课地点:", o.address), 
  			     React.createElement(AMUIReact.ListItem, null, "课程学时:", o.schedule), 
  			    React.createElement(AMUIReact.ListItem, null, "收费价格:", o.fees), 
@@ -6925,16 +6918,20 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			     React.createElement("div", {className: two_classDiv}, 
 			       React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "20", value: o.title, onChange: this.handleChange})
 			        ), 
-		 	    React.createElement("label", {className: one_classDiv}, "适合最小年龄:"), 
-			     React.createElement("div", {className: two_classDiv}, 
-			       React.createElement(PxInput, {type: "text", name: "age_min", id: "age_min", maxLength: "2", placeholder: "用于方便户检索课程且不能小于0岁", value: o.age_min, onChange: this.handleChange})
-			        ), 
-		  		  
+		 	    React.createElement("label", {className: one_classDiv}, "适应年龄(岁):"), 
+			     React.createElement("div", {className: two_classDiv +" am-form-inline"}, 
+				   React.createElement("div", {className: "am-form-group"}, 
+			       React.createElement(PxInput, {type: "number", name: "age_min", id: "age_min", inline: true, maxLength: "2", placeholder: "最小岁(岁)", value: o.age_min, onChange: this.handleChange})
+				   ), 
+				    React.createElement("div", {className: "am-form-group"}, "- "), 
 
-		 	    React.createElement("label", {className: one_classDiv}, "适合最大年龄:"), 
-			     React.createElement("div", {className: two_classDiv}, 
-			       React.createElement(PxInput, {type: "text", name: "age_max", id: "age_max", maxLength: "3", placeholder: "用于方便户检索课程", value: o.age_max, onChange: this.handleChange})
-			        ), 
+				   React.createElement("div", {className: "am-form-group"}, 
+					React.createElement(PxInput, {type: "number", name: "age_max", id: "age_max", inline: true, maxLength: "3", placeholder: "最大岁(岁)", value: o.age_max, onChange: this.handleChange})
+			             )
+			  ), 
+		  		  
+				React.createElement("p", {className: "am-text-warning"}, "用于家长精确检索"), 
+		 	 
 			    React.createElement("label", {className: one_classDiv}, "上课地点:"), 
 			     React.createElement("div", {className: two_classDiv}, 
 			       React.createElement(PxInput, {type: "text", name: "address", id: "address", maxLength: "50", value: o.address, onChange: this.handleChange})
@@ -6948,12 +6945,12 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 
 			    React.createElement("label", {className: one_classDiv}, "收费价格:"), 
 			     React.createElement("div", {className: two_classDiv}, 
-			       React.createElement(PxInput, {type: "text", name: "fees", id: "fees", maxLength: "20", value: o.fees, onChange: this.handleChange})
+			       React.createElement(PxInput, {type: "number", name: "fees", id: "fees", maxLength: "20", value: o.fees, onChange: this.handleChange})
 			        ), 
 
 			    React.createElement("label", {className: one_classDiv}, "优惠价格:"), 
 			     React.createElement("div", {className: two_classDiv}, 
-			       React.createElement(PxInput, {type: "text", name: "discountfees", id: "discountfees", maxLength: "20", value: o.discountfees, onChange: this.handleChange})
+			       React.createElement(PxInput, {type: "number", name: "discountfees", id: "discountfees", maxLength: "20", value: o.discountfees, onChange: this.handleChange})
 			        ), 
 			       
 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "课程详细内容:", placeholder: "填写内容", name: "context", value: o.context, onChange: this.handleChange}), 
@@ -7071,7 +7068,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
 		    React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, event.ma_tel)), 
-            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ma_tel))
+            React.createElement("td", null, React.createElement("a", {className: event.ba_tel?"":"am-hide", href: "tel:"+event.ba_tel}, event.ba_tel))
 			 ) 
   	    );
   	  }

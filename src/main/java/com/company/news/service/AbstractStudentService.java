@@ -237,7 +237,7 @@ public class AbstractStudentService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	private StudentContactRealation warpStudentContactRealationVo(StudentContactRealation o) {
+	private AbstractStudentContactRealation warpStudentContactRealationVo(AbstractStudentContactRealation o) {
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		o.setStudent_img(PxStringUtil.imgUrlByUuid(o.getStudent_img()));
 		return o;
@@ -249,8 +249,8 @@ public class AbstractStudentService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	protected List<StudentContactRealation> warpStudentContactRealationVoList(List<StudentContactRealation> list) {
-		for (StudentContactRealation o : list) {
+	protected List<AbstractStudentContactRealation> warpStudentContactRealationVoList(List<AbstractStudentContactRealation> list) {
+		for (AbstractStudentContactRealation o : list) {
 			warpStudentContactRealationVo(o);
 		}
 		return list;

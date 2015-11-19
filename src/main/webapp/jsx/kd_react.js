@@ -553,7 +553,7 @@ var Classnews_edit = React.createClass({
 				}), document.getElementById(divid));  
 	  },
 	  componentDidMount:function(){
-		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -586,7 +586,7 @@ return (
 			
 		  <input type="hidden" name="uuid"  value={o.uuid}/>
 			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>			
-		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
+		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
 			  {G_get_upload_img_Div()}
@@ -2056,7 +2056,7 @@ var Class_students_show= React.createClass({
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
 		     <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ba_tel}</a></td>
   	      </tr> 
   	    );
   	  }
@@ -4459,7 +4459,7 @@ render: function() {
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
 		  <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
-            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ma_tel}</a></td>
+            <td><a className={event.ba_tel?"":"am-hide"} href={"tel:"+event.ba_tel}>{event.ba_tel}</a></td>
 			</tr> 
   	    );
   	  }
@@ -6759,7 +6759,7 @@ render: function() {
      				}), document.getElementById(divid));  
      	  },
      	  componentDidMount:function(){
-     		 var editor=$('#classnews_content').xheditor(xhEditor_upImgOption_emot);
+     		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
      		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
      		 var that=this;		 
      		 //已经有的图片,显示出来.		 
@@ -6792,7 +6792,7 @@ render: function() {
      			
      		  <input type="hidden" name="uuid"  value={o.uuid}/>
      			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>			
-     		      <AMR_Input id="classnews_content" type="textarea" rows="3" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
+     		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
      		      <div id="show_imgList"></div><br/>
      		      <div className="cls"></div>
      			  {G_get_upload_img_Div()}

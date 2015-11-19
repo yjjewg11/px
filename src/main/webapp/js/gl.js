@@ -431,15 +431,17 @@ window.xhEditor_upImgOption={
 	urlType:'abs'
 };
 window.xhEditor_upImgOption_emot={
-	    //upMultiple:false,
-		//upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
-		//onUpload:xhEditor_insertUpload,
-		//html5Upload:false,
-		//tools:'Emot,Img',
+
 		tools:'Emot',
+		cleanPaste:3,
 		urlType:'abs'
 	};
+window.xhEditor_classnews_emot={
 
+		tools:'Emot,Fullscreen',
+		cleanPaste:3,
+		urlType:'abs'
+	};
 //xhEditor编辑器图片上传回调函数
 function xhEditor_insertUpload(msg) {
 	msg=G_imgPath+msg[0];
