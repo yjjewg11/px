@@ -43,6 +43,11 @@ function login_affter_init(){
               "subCols": 2
              // "channelLink": "进入栏目 »",
             },
+    		  {
+                "link": "##",
+                "title": "信息管理",
+                "fn":function(){admin_announce_list_fn_wjkj();},
+              },
   		  {
                 "link": "##",
                 "title": "班级互动",
@@ -157,6 +162,9 @@ function login_affter_init(){
  * 显示bodydiv,隐藏其他所有控件div
  */
 function body_show(){
+	$("#div_body").show();
+	$("#div_widget_chooseUser").html("");
+	$("#div_widget_chooseCook").html("");
 }
 
 var div_menu_handleClick = function(nav, index, e) {
@@ -291,6 +299,17 @@ function menu_wenjieAdmin_dataRefresh_fn(){
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
+/*
+ * (信息管理)<校园公告><老师公告><精品文章><招生计划>
+ * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
+ * @跳转kd_service发服务器请求
+ * */
+var announce_types="";
+function admin_announce_list_fn_wjkj() {
+	Queue.push(function(){admin_announce_list_fn_wjkj();});
+	announce_types=1; 
+	admin_announce_listByGroup_wjkj();
+};
 /*
  * (帮助管理)<幼儿园帮助文档><培训机构帮助文档>
  * @types- 91:幼儿园帮助文档  92:培训机构帮助文档

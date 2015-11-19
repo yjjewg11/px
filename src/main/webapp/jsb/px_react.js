@@ -7999,7 +7999,7 @@ React.createElement("div", null,
 	//创建优惠活动、编辑与删除、点击按钮事件跳转kd_servise方法;
 	handleClick_box_btn:function(m){
 		if(m=="add"){
-		 btnclick_Preferential_announce(m,null,Store.getCurGroup().uuid);
+		 btnclick_Preferential_announce(m,null,G_mygroup_choose);
 		 return;
 		};
      var uuid="";
@@ -8081,8 +8081,8 @@ React.createElement("div", null,
 				  React.createElement("th", null, "浏览次数"), 
 		          React.createElement("th", null, "活动开始时间"), 
 	              React.createElement("th", null, "活动结束时间"), 
-					    React.createElement("th", null, "学校"), 
-					   React.createElement("th", null, "创建时间"), 
+				  React.createElement("th", null, "学校"), 
+				  React.createElement("th", null, "创建时间"), 
 				  React.createElement("th", null, "创建人")
 	              ), 	
    	    			 events.data.map(function(event) {        

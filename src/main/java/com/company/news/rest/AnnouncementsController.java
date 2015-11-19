@@ -109,30 +109,16 @@ public class AnnouncementsController extends AbstractRESTController {
 		String right=RightConstants.AD_announce_m;
 		
 		try {
-			String groupuuid=request.getParameter("groupuuid");
 			String type=request.getParameter("type");
-			//帮助文档指定groupuuid
-			if(String.valueOf(SystemConstants.common_type_KDHelp).equals(type)){
-				groupuuid=SystemConstants.Group_uuid_wjkj;
-			}else if(String.valueOf(SystemConstants.common_type_PDHelp).equals(type)){
-				groupuuid=SystemConstants.Group_uuid_wjkj;
-			}
+			String enddate=request.getParameter("enddate");
 			
-			if(StringUtils.isBlank(groupuuid)){
-				groupuuid=RightUtils.getRightGroups(right, request);
-				if(StringUtils.isBlank(groupuuid)){
-					responseMessage.setStatus(RightConstants.Return_msg);
-					return "";
-				}
-			}else{
-				//判断是否有权限
-				if(!RightUtils.hasRight(groupuuid,right, request)){
-					responseMessage.setMessage(RightConstants.Return_msg);
-					return "";
-				}
+			//判断是否有权限
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,right, request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
 			}
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult list = announcementsService.listByRight(type,groupuuid,pData);
+			PageQueryResult list = announcementsService.listByWjkjPage(type,enddate,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
