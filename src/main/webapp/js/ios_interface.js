@@ -24,6 +24,7 @@
  * 2.调用上传图片,要求不剪切,只压缩在800k以内,并可以调整方向
  * G_CallPhoneFN.selectImgPic();
  * 调用:ios/selectImgPic
+ * 调用2(学校groupuuid):ios/selectImgPic/groupuuid
  * G_jsCallBack.selectPic_callback_imgUrl(imgUrl,uuid);选择上图图片,回调方法,只压缩和调整方向.手机上传成功后，返回图片地址和uuid
 
  * 判断是否是手机app应用内嵌调用.(要求ios 启动是,设置标志)
@@ -102,12 +103,15 @@ var G_CallIosFN={
 			return false;
 		},
 		/**
-		 * 调用选择上传图片的回调
+		 * 调用选择上传图片的回调.增加参数.支持传入groupuuid.
+		 * ios/selectImgPic/groupuuid
 		 * @returns {Boolean}
 		 */
 		selectImgPic:function(){
 			try{
-				G_CallIosFN.iosIfr.src = "ios/selectImgPic";    
+				var tmp="ios/selectImgPic";
+				if(w_img_upload_nocut.groupuuid)tmp+="/"+w_img_upload_nocut.groupuuid;
+				G_CallIosFN.iosIfr.src = tmp;    
 				return true;
 			}catch(e){
 				  console.log('Exception:ios/selectImgPic', e.message);
