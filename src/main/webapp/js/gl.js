@@ -351,6 +351,7 @@ function loadJSAsy(url,callback,charset)
  * Queue.push(fn);
  */
 window.Queue={
+		body_scrollTop:0,
 		isBack:false,
 		/**
 		 * 如果是点击显示原图模式,回退时,操作是关闭原图
@@ -366,6 +367,8 @@ window.Queue={
 				return true;
 			}
 			if($("#div_body:visible").size()==0){
+				$("html,body").animate({scrollTop:Queue.body_scrollTop},200);
+				Queue.body_scrollTop=0;
 				body_show();
 				return true;
 			}
@@ -557,5 +560,33 @@ window.GTimeShow={
 		 ifm.scrolling="auto";
 	 }   
 
-	 }   
+	 } 
+ //进入查看时间BODY操作；
+ function G_get_div_second(){ 
+	 	Queue.body_scrollTop=$("html,body").prop("scrollTop");
+		var div_body='div_body';
+		var second="div_widget_chooseUser";
+		$("#"+div_body).hide();
+		$("#"+second).show();
+
+		$("#"+second).html("");
+
+		return  document.getElementById(second);
+	} 
+ //离开详情时Body操作
+ function G_get_div_body(){
+		var div_body='div_body';
+		var second="div_widget_chooseUser";
+
+		$("#"+div_body).show();
+		$("#"+second).hide();
+		$("#"+second).html("");
+
+		return  document.getElementById(div_body);
+	}
+
+ 
+ 
+ 
+ 
 GTimeShow.init();

@@ -1131,7 +1131,6 @@ function ajax_announce_Mygoodlist(list_div,pageNo,callback) {
  * 在kd_rect;
  * */
 function react_ajax_announce_good_show(uuid,title){
-	Queue.push(function(){react_ajax_announce_good_show(uuid,title);},"精品文章");
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/announcements/"+uuid+".json";
 	$.ajax({
@@ -1156,7 +1155,7 @@ function react_ajax_announce_good_show(uuid,title){
 					data:data.data,
 					share_url:data.share_url,
 					count:data.count
-					}), document.getElementById('div_body'));
+					}), G_get_div_second());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1706,7 +1705,7 @@ function react_ajax_favorites_show(type,reluuid){
      				if(m=="edit"){
      					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), document.getElementById('div_body'));
      				}else{
-     					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), G_get_div_second());
      				}
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
