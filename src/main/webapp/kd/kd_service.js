@@ -1545,7 +1545,6 @@ function ajax_favorites_list(list_div,pageNo,callback) {
  * 基本框 等
  * */
 function react_ajax_favorites_show(type,reluuid){
-	console.log("测试下数据",type,reluuid);
 	 switch (type)   
 	   {
     case 0:                                 
@@ -1561,7 +1560,7 @@ function react_ajax_favorites_show(type,reluuid){
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break; 	
 	case 91:                                          
-		  react_px_help_show(reluuid,"招生计划");   //(招生计划);  
+		  react_px_help_show(reluuid,"帮助列表");   //(招生计划);  
 	       break; 	       
 	   default:            
 	       Styte.out.println("此信息为非法信息，我的收藏！");
