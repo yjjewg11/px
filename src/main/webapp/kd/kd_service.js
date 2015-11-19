@@ -1309,10 +1309,9 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
  * 因有添加加载信息功能所以创建一个舞台然后把每一次添加的DIV添加到舞台上；
  * */
 function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
-	Queue.push(function(){ajax_parentContactByMyStudent_message_list(parent_uuid,name);},name);
 		React.render(React.createElement(ParentContactByMyStudent_message_list,{
 			parent_uuid:parent_uuid
-			}), document.getElementById('div_body'));
+			}), G_get_div_second());
 	   	
    };
 /* （首页）家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
@@ -1546,20 +1545,24 @@ function ajax_favorites_list(list_div,pageNo,callback) {
  * 基本框 等
  * */
 function react_ajax_favorites_show(type,reluuid){
+	console.log("测试下数据",type,reluuid);
 	 switch (type)   
 	   {
-  case 0:                                 
+    case 0:                                 
 	       react_ajax_announce_show(reluuid,"公告收藏");   //(公告);   
       break;      
-  case 1:                                 
+    case 1:                                 
 	       react_ajax_announce_show(reluuid,"老师公告");   //(老师公告);   
       break;   
-  case 3:                                          
+    case 3:                                          
 	       react_ajax_announce_good_show(reluuid,"我的收藏");   //(精品文章);
       break;
 	case 4:                                          
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break; 	
+	case 91:                                          
+		  react_px_help_show(reluuid,"招生计划");   //(招生计划);  
+	       break; 	       
 	   default:            
 	       Styte.out.println("此信息为非法信息，我的收藏！");
 	       break;
@@ -2547,9 +2550,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	 	* @send_user:发送者姓名
 	     * */
 	    function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
-	    	var message_name="园长信箱";
-	    	Queue.push(function(){ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user);},message_name);
-	 		React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+	 		React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), G_get_div_second());
 	 	   };
 	 		   
 	   
@@ -3093,7 +3094,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * @根据数据在 Kd_react做绘制处理 
   * */
  function ajax_class_students_look_info_byRight(uuid,title){
- 	Queue.push(function(){ajax_class_students_look_info_byRight(uuid,title);},"学生详情");
  	$.AMUI.progress.start();
      var url = hostUrl + "rest/student/"+uuid+".json";
  	$.ajax({
@@ -3104,7 +3104,9 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		success : function(data) {
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement( Class_student_look_info_byRight,{formdata:data.data}), document.getElementById('div_body'));
+ 				React.render(React.createElement( Class_student_look_info_byRight,{
+ 					formdata:data.data
+ 					}),G_get_div_second());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -3256,10 +3258,9 @@ function menu_userteacher_fn(){
 * 基本框 等
 * */
    function ajax_ClassCard_info_byRight(uuid){
-	   Queue.push(function(){ajax_ClassCard_info_byRight(uuid);},"签到详情");
    	React.render(React.createElement(Announcements_Div_ClassCard_info_byRight,{
    		studentuuid:uuid
-   	}), document.getElementById('div_body'));
+   	}), G_get_div_second());
       	
    };
    /*
@@ -3392,7 +3393,6 @@ $.ajax({
  	  * 在kd_rect;
  	  * */
  	 function react_px_help_show(uuid,title){
- 	 	Queue.push(function(){react_px_help_show(uuid,title);},"精品文章");
  	 	$.AMUI.progress.start();
  	     var url = hostUrl + "rest/announcements/"+uuid+".json";
  	 	$.ajax({
@@ -3413,7 +3413,7 @@ $.ajax({
  	 					data:data.data,
  	 					share_url:data.share_url,
  	 					count:data.count
- 	 					}), document.getElementById('div_body'));
+ 	 					}), G_get_div_second());
  	 			} else {
  	 				alert("加载数据失败："+data.ResMsg.message);
  	 			}
