@@ -166,7 +166,7 @@ public class PxStatisticsService extends AbstractStatisticsService {
 			}
 
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
-			sdvo.setName("班级人数");
+			sdvo.setName("学生人数");
 			sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
 
 			psdvlist.add(sdvo);
@@ -181,8 +181,8 @@ public class PxStatisticsService extends AbstractStatisticsService {
 		vo.setTitle_text(g.getBrand_name() + " 班级学生人数统计");
 		vo.setTitle_subtext("总计 " + list.size() + " 班,总学生数"+studentCount+"人,总家长数"+parentCount+"人");
 		List legend_data = new ArrayList();
-		legend_data.add("学生人数("+studentCount+")");
-		legend_data.add("家长人数("+parentCount+")");
+		legend_data.add("学生人数");
+		legend_data.add("家长人数");
 
 		vo.setLegend_data(legend_data);
 		
