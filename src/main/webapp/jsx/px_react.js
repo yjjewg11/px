@@ -6802,10 +6802,10 @@ var Class_EventsTable_byRight = React.createClass({
  			      <Common_mg_big_fn  imgsList={imglist} />				  
  				  <br/>	      
  			      
- 			         <AMUIReact.ListItem>标题:{o.title}</AMUIReact.ListItem>
- 			        <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
-				 <AMUIReact.ListItem>适合最小年龄:{o.age_min}</AMUIReact.ListItem>
-				 <AMUIReact.ListItem>适合最大年龄:{o.age_max}</AMUIReact.ListItem>
+ 			          <AMUIReact.ListItem>标题:{o.title}</AMUIReact.ListItem>
+ 			         <AMUIReact.ListItem>课程类型:{Vo.get("course_type_"+o.type)}</AMUIReact.ListItem>
+				    <AMUIReact.ListItem>适合最小年龄:{o.age_min}</AMUIReact.ListItem>
+				   <AMUIReact.ListItem>适合最大年龄:{o.age_max}</AMUIReact.ListItem>
  			      <AMUIReact.ListItem>上课地点:{o.address}</AMUIReact.ListItem>
  			     <AMUIReact.ListItem>课程学时:{o.schedule}</AMUIReact.ListItem>
  			    <AMUIReact.ListItem>收费价格:{o.fees}</AMUIReact.ListItem>
