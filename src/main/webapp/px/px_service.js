@@ -1007,7 +1007,6 @@ function ajax_announce_Mygoodlist(list_div,pageNo,callback) {
  * 在kd_rect;
  * */
 function react_ajax_announce_good_show(uuid,title){
-	Queue.push(function(){react_ajax_announce_good_show(uuid,title);},"精品文章");
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/announcements/"+uuid+".json";
 	$.ajax({
@@ -1031,7 +1030,7 @@ function react_ajax_announce_good_show(uuid,title){
 					data:data.data,
 					share_url:data.share_url,
 					count:data.count
-					}), document.getElementById('div_body'));
+					}), G_get_div_second());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1180,10 +1179,9 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
  * 因有添加加载信息功能所以创建一个舞台然后把每一次添加的DIV添加到舞台上；
  * */
 function ajax_parentContactByMyStudent_message_list(parent_uuid,name){
-	Queue.push(function(){ajax_parentContactByMyStudent_message_list(parent_uuid,name);},name);
 		React.render(React.createElement(ParentContactByMyStudent_message_list,{
 			parent_uuid:parent_uuid
-			}), document.getElementById('div_body'));
+			}), G_get_div_second());
 	   	
    };
 /* （首页）家长通讯录功能发信息界面功能<绘制每一个DIV信息放置在舞台上>服务器请求
@@ -1432,6 +1430,9 @@ function react_ajax_favorites_show(type,reluuid){
 	case 4:                                          
 		   react_ajax_announce_show(reluuid,"招生计划");   //(招生计划);  
 	       break; 	
+	case 91:                                          
+		  react_px_help_show(reluuid,"帮助列表");   //(招生计划);  
+	       break; 	       
 	   default:            
 	       Styte.out.println("此信息为非法信息，我的收藏！");
 	       break;
@@ -1576,9 +1577,14 @@ function react_ajax_favorites_show(type,reluuid){
      			$.AMUI.progress.done();
      			if (data.ResMsg.status == "success") {
      				if(m=="edit"){
-     					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_edit_byRight,{
+     						formdata:data.data
+     						}), document.getElementById('div_body'));
      				}else{
-     					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_show_byRight,{
+     						formdata:data.data,
+     						count:data.count
+     						}), G_get_div_second());
      				}
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
@@ -2262,9 +2268,10 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 * @send_user:发送者姓名
 * */
 function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
-	var message_name="园长信箱";
-	Queue.push(function(){ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user);},message_name);
-	React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+	React.render(React.createElement( Boss_message_stage_byRight,{
+		send_useruuid:send_useruuid,
+		revice_useruuid:revice_useruuid
+		}), G_get_div_second());
    };
 	 		   
 	   
@@ -2909,7 +2916,6 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
   * @根据数据在 Kd_react做绘制处理 
   * */
  function ajax_class_students_look_info_byRight(uuid,title){
- 	Queue.push(function(){ajax_class_students_look_info_byRight(uuid,title);},"学生详情");
  	$.AMUI.progress.start();
      var url = hostUrl + "rest/pxstudent/"+uuid+".json";
  	$.ajax({
@@ -2920,7 +2926,9 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
  		success : function(data) {
  			$.AMUI.progress.done();
  			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement( Class_student_look_info_byRight,{formdata:data.data}), document.getElementById('div_body'));
+ 				React.render(React.createElement( Class_student_look_info_byRight,{
+ 					formdata:data.data
+ 					}), G_get_div_second());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -3512,7 +3520,6 @@ $.ajax({
 /*(发布课程)查看课程详情方法按钮 
 * */
    function px_ajax_class_course_look_info(uuid){
-	  	Queue.push(function(){px_ajax_class_course_look_info(uuid);},"发布详情");
 	   $.AMUI.progress.start();
 		var url = hostUrl + "rest/pxCourse/"+uuid+".json";
 		$.ajax({
@@ -3525,7 +3532,7 @@ $.ajax({
 				if (data.ResMsg.status == "success") {
 					React.render(React.createElement(Class_course_look_info,{
 			 			formdata:data.data
-			 			}), document.getElementById('div_body'));
+			 			}), G_get_div_second());
 				} else {
 					alert("加载数据失败："+data.ResMsg.message);
 				} 
@@ -3836,7 +3843,6 @@ function ajax_class_students_look_info(uuid){
   * 在kd_rect;
   * */
  function react_px_help_show(uuid,title){
- 	Queue.push(function(){react_px_help_show(uuid,title);},"帮助列表");
  	$.AMUI.progress.start();
      var url = hostUrl + "rest/announcements/"+uuid+".json";
  	$.ajax({
@@ -3857,7 +3863,7 @@ function ajax_class_students_look_info(uuid){
  					data:data.data,
  					share_url:data.share_url,
  					count:data.count
- 					}), document.getElementById('div_body'));
+ 					}),G_get_div_second());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -3986,7 +3992,9 @@ function ajax_class_students_look_info(uuid){
     				if(m=="edit"){
     					React.render(React.createElement(Group_edit_byRight_px,{formdata:data.data}), document.getElementById('div_body'));
     				}else{
-    					React.render(React.createElement(Group_show_byRight_px,{formdata:data.data,count:data.count}), document.getElementById('div_body'));
+    					React.render(React.createElement(Group_show_byRight_px,{
+    						formdata:data.data,
+    						count:data.count}), G_get_div_second());
     				}
     			} else {
     				alert("加载数据失败："+data.ResMsg.message);
@@ -4267,7 +4275,6 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
 /*(对外老师资料)查看详情方法按钮 
 * */
    function px_ajax_teacher_look_info(uuid){
-	  	Queue.push(function(){px_ajax_teacher_look_info(uuid);},"老师详情");
 	   $.AMUI.progress.start();
 		var url = hostUrl + "rest/pxteacher/"+uuid+".json";
 		$.ajax({
@@ -4280,7 +4287,7 @@ function ajax_teacher_listByGroup_byRight(list_div,pageNo,callback) {
 				if (data.ResMsg.status == "success") {
 					React.render(React.createElement(Teacher_look_info,{
 			 			formdata:data.data
-			 			}), document.getElementById('div_body'));
+			 			}), G_get_div_second());
 				} else {
 					alert("加载数据失败："+data.ResMsg.message);
 				} 

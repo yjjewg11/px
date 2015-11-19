@@ -7999,7 +7999,7 @@ setProvCity:function(){
 	//创建优惠活动、编辑与删除、点击按钮事件跳转kd_servise方法;
 	handleClick_box_btn:function(m){
 		if(m=="add"){
-		 btnclick_Preferential_announce(m,null,Store.getCurGroup().uuid);
+		 btnclick_Preferential_announce(m,null,G_mygroup_choose);
 		 return;
 		};
      var uuid="";
@@ -8081,8 +8081,8 @@ setProvCity:function(){
 				  <th>浏览次数</th>
 		          <th>活动开始时间</th>
 	              <th>活动结束时间</th>
-					    <th>学校</th>
-					   <th>创建时间</th>
+				  <th>学校</th>
+				  <th>创建时间</th>
 				  <th>创建人</th>
 	              </tr> 	
    	    			 {events.data.map(function(event) {        

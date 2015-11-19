@@ -1934,4 +1934,207 @@ var Parent_EventsTable_div = React.createClass({
     	  }
     	}); 
     //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+    
+    
+    
+    
+  //——————————————————————————信息管理<绘制>—————————————————————  
+    /*
+    *(信息管理)<校园公告><老师公告><精品文章><招生计划>表单框绘制
+    *@btn_click_announce_byRight:点击按钮事件跳转kd_servise方法;
+    * */  
+    var admin_EventsTable_wjkj = React.createClass({
+    	getInitialState: function() {
+    		var obj= {
+    		    	pageNo:this.props.pageNo,
+    		    	type:this.props.type,
+    		    	list: []
+    		    };
+    	    return obj;
+    	   
+    	  },
+    		componentDidMount: function() {
+    			this.ajax_list(this.state); 
+    		  },
+    	  ajax_callback:function(list){
+    		     if (list== null )list= [];
+    		  this.state.list=list;
+    		  this.setState(this.state);
+    	  },
+    	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+    	  componentWillReceiveProps: function(nextProps) {
+    		  var obj= {
+    			    	pageNo:nextProps.pageNo,
+    			    	type:nextProps.type,
+    			    	list: []
+    			    };
+    				
+    			this.ajax_list(obj);
+    		    this.setState(obj);
+    		},
+    	 ajax_list:function(obj){
+    		$.AMUI.progress.start();
+    		var that=this;
+    		g_message_groupuuid=obj.groupuuid;
+    		var url = hostUrl + "rest/announcements/listByWjkj.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data : {type:announce_types,pageNo:obj.pageNo},
+    			dataType : "json",
+    			//async: false,//必须同步执行
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    					obj.list=data.list.data;
+    				    that.ajax_callback( data.list.data );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		return obj;
+    		
+    	},
+    	pageClick: function(m) {
+    		 var obj=this.state;
+    		 if(m=="pre"){
+    			
+    			 if(obj.pageNo<2){
+    				 G_msg_pop("第一页了");
+    				 return;
+    			 }
+    			 obj.pageNo=obj.pageNo-1;
+    			 this.ajax_list(obj);
+    			 return;
+    		 }else if(m=="next"){
+    			 if(!obj.list||obj.list.length==0){
+    				 G_msg_pop("最后一页了");
+    				 return ;
+    			 }
+    			 obj.pageNo=obj.pageNo+1;
+    			
+    			 this.ajax_list(obj);
+    			 return;
+    		 }
+    	},
+    handleChange_selectgroup_uuid:function(val){
+
+    },
+
+    render: function() {
+    	var obj=this.state;
+    	if(!this.state.list)this.state.list=[];
+    		var help=(<div></div>)
+      return (
+      <div>
+ 
+    	     <AMR_Panel>
+
+    	     </AMR_Panel> 
+
+    	  
+        <AMR_Table {...this.props}>  
+       <thead> 
+        <tr>
+          <th>标题</th>
+          <th>状态</th>
+          <th>浏览次数</th>
+          <th>创建时间</th>
+          <th>创建人</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {this.state.list.map(function(event) {
+          return (<Announcements_EventRow_byRight key={event.uuid} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+         <AMR_ButtonToolbar>
+    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>	  
+           <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
+    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>	
+      </AMR_ButtonToolbar>
+        </div>
+      );
+    }
+    });
+      
+    //信息管理绘制详情内容Map;   
+    var Announcements_EventRow_byRight = React.createClass({ 
+    	render: function() {
+    	  var event = this.props.event;
+    	  var className = event.highlight ? 'am-active' :
+    	    event.disabled ? 'am-disabled' : '';
+            var txtclasssName;
+    		 if(event.status==0){
+               txtclasssName="am-text-success";
+    		  }else{
+               txtclasssName="am-text-danger";
+    		   }
+    	  return (
+    	    <tr className={className} >
+    	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
+    	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
+    	      <td>{event.count}</td>
+    	      <td>{event.create_time}</td>
+    	      <td>{event.create_user}</td>
+    	    </tr> 
+    	  );
+    	}
+    	});    
+        
+ 
+
+
+    //
+    /*
+     *<信息管理>公告点赞、添加、删除、禁用、评论、加载更多等详情绘制模板；
+     *增加编辑与删除功能
+     * */
+    var Announcements_show_byRight = React.createClass({ 
+    render: function() {
+    	  var o = this.props.data;
+
+    	  var iframe=null;
+    	     if(o.url){
+    	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
+    	        }else{
+    	     iframe=(       
+    			<AMUIReact.Article
+    			title={o.title}
+    			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
+    			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+    			</AMUIReact.Article>)
+    	     }
+    return (
+    	  <div>
+           <div className="am-margin-left-sm">	 
+
+              {iframe}
+
+   
+   	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+
+    	     
+    	     </div>
+    	    	<footer className="am-comment-footer">
+    	    	<div className="am-comment-actions">
+    	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+    	    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+    	    	</div>
+    	    	</footer>
+    	    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+    		  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+    	   </div>
+    );
+    }
+    }); 
+
+
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
         

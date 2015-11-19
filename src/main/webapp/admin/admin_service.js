@@ -1,4 +1,11 @@
-
+function G_ajax_getGroup_uuid_wjkj() {
+	 var data = [
+		            {uuid: 'wjkj',brand_name: '问界科技'}
+		          ];
+	    return {
+		      group_list: data
+		    };
+}
 
 function ajax_getUserinfo(isInit) {
 	$.AMUI.progress.start();
@@ -207,16 +214,9 @@ function menu_userinfo_list_fn_byRight() {
 * 基本框 等
 * */
 function ajax_uesrinfo_listByGroup_div_admin(groupuuid){
-	var GroupArry=[];
-	var list=Store.getAllGroup();
-	for (var i=0;i<list.length;i++){
-		if(list[i].uuid=="wjkj"){
-			GroupArry.push(list[i]);
-		}
-	}
-    console.log("GroupArry",GroupArry);
+	var list=G_ajax_getGroup_uuid_wjkj().group_list;
 	React.render(React.createElement(Userinfo_EventsTable_div,{
-		group_list:G_selected_dataModelArray_byArray(GroupArry,"uuid","brand_name"),
+		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 		handleClick:btn_click_userinfo,
 		groupuuid:"wjkj"
 	}), document.getElementById('div_body'));  	
@@ -1244,3 +1244,57 @@ function ajax_announcements_save_helpbyRight(){
             };
 G_ajax_abs_save(opt);
 }  
+
+
+
+//————————————————————————————信息管理<管理模块>—————————————————————————    
+/*
+*(信息管理)<校园公告><老师公告><精品文章><招生计划>服务器请求
+* @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
+* @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
+* */
+
+function admin_announce_listByGroup_wjkj(){
+	React.render(React.createElement(admin_EventsTable_wjkj, {
+		pageNo:1,
+		events: [],
+		type:announce_types,
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
+/*
+* 信息管理模块详情内容绘制
+* @Announcements_show_Right:详情绘制
+* 在kd_rect;
+* */
+function react_ajax_announce_show_byRight(uuid){
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/announcements/"+uuid+".json";
+$.ajax({
+	type : "GET",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
+						if(flag)return;
+				  }
+			React.render(React.createElement(Announcements_show_byRight,{
+				share_url:data.share_url,
+				data:data.data,
+				count:data.count
+				}), G_get_div_second());
+		} else {
+			alert("加载数据失败："+data.ResMsg.message);
+		}
+	},
+	error :G_ajax_error_fn
+	});
+}; 
+
+  

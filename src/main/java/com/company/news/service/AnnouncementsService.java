@@ -290,6 +290,39 @@ public class AnnouncementsService extends AbstractService {
 
 	}
 	/**
+	 *后台admin查询信息管理
+	 * 
+	 * @return
+	 */
+	public PageQueryResult listByWjkjPage(String type, String enddate, PaginationData pData) {
+
+		
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type,t2.count";
+		sql+=" FROM px_announcements t1 ";
+		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+		sql+=" where  1=1";
+		if (StringUtils.isNotBlank(type))
+			sql += " and t1.type=" + type;
+		if (StringUtils.isNotBlank(enddate)){
+			enddate+=" 23:59:59";
+			sql += " and t1.create_time<=" + DBUtil.stringToDateByDBType(enddate);
+		}
+		sql += " order by t1.create_time desc";
+		
+		
+		
+		String countsql="SELECT count(*) from px_announcements t1";
+
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
+
+		return pageQueryResult;
+	}
+	
+	/**
 	 * 查询所有通知
 	 * 
 	 * @return
