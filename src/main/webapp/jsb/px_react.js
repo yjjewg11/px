@@ -871,13 +871,17 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 		
 	  },
+		editor:null,
+	 preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -894,11 +898,10 @@ render: function() {
 	  }
   return (
   		React.createElement("div", null, 
-  		React.createElement("div", {className: "header"}, 
-  		  React.createElement("hr", null)
-  		), 
+ React.createElement("hr", null), 
+ 		
   		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
@@ -911,15 +914,27 @@ render: function() {
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_announce_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: ajax_announce_save, className: "am-btn am-btn-primary"}, "提交"), 
+		   React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
-  	     )
-  	   )	   
+  	     ), 
+
+  
+			React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
+
+
+  	   )	
+			
+		  
+		 
   	  )
   );
 }
-}); 
+});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
 
 
 //——————————————————————————<培训机构新版>课程表<列表版>——————————————————————————  
@@ -2224,23 +2239,27 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 
 		w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	  },
+	 preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
+
+
 render: function() {
 	 var o = this.state;
 	
   return (
   		React.createElement("div", null, 
-  		React.createElement("div", {className: "header"}, 
-  		  React.createElement("hr", null)
-  		), 
+	   React.createElement("hr", null), 
+  	
   		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
@@ -2256,10 +2275,16 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
+			  React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
-  	     )
-  	   )	   
+  	     ), 
+			    React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
+
+          )
+   
   	  )
   );
 }
@@ -3124,7 +3149,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 			  
 			  
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 
 		if(!this.state.uuid){
@@ -3408,13 +3433,16 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 			
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
         });
 			  	w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var url=(React.createElement("div", null));
@@ -3432,7 +3460,7 @@ return (
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		   React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
 		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
@@ -3447,10 +3475,16 @@ return (
 
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
 		G_get_upload_img_Div(), 
-		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交")
-         
+		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+           React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
 		  )
-	     )
+	     ), 
+
+			    React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
+
+
 	   )	   
 	  )
 );
@@ -6833,9 +6867,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			
 	  },
 	  componentDidMount:function(){
-		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 
@@ -6879,6 +6913,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	});
 		    this.setState($('#editCourseForm').serializeJson());
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", null,this.editor.getSource(),this.state.title);
+       }, 
  render: function() {
  	  var o = this.state;
 	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
@@ -6955,15 +6992,15 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "课程详细内容:", placeholder: "填写内容", name: "context", value: o.context, onChange: this.handleChange}), 
 					G_get_upload_img_Div(), 
 	  		  
-				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+				      React.createElement("button", {type: "button", onClick: ajax_course_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+						    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
 					   )
 		          )
 		       ), 	
 
-		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dykecheng.png", className: "G_img_header2"})
-		   )
-
+		     React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
 		)
  );
  }
@@ -7853,7 +7890,7 @@ var Group_edit_byRight_px = React.createClass({displayName: "Group_edit_byRight_
 			  this.setProvCity();
 		       }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	},
 	   /*
@@ -8178,13 +8215,16 @@ React.createElement("div", null,
 			      		    this.setState(o);
   },
   componentDidMount:function(){
-  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-               editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+               editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
              });
 
 	 w_img_upload_nocut.groupuuid=this.state.groupuuid;
    	  },
+ preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
    render: function() {
    	 var o = this.state;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
@@ -8228,14 +8268,14 @@ React.createElement("div", null,
 			 React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "优惠活动详细内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		  
 				G_get_upload_img_Div(), 
-			 React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交")				      					  
-		
+			 React.createElement("button", {type: "button", onClick: ajax_Preferential_save, className: "am-btn am-btn-primary"}, "提交"), 				      					  
+		  React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
 	  )	 
 		   ), 	
 
-		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-			React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dyyouhuihuodong.png", className: "G_img_header2"})
-		   )
+  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
 
 		)
      );
@@ -8475,15 +8515,18 @@ var Px_teacher_edit = React.createClass({displayName: "Px_teacher_edit",
 
 	  },
 	  componentDidMount:function(){
-		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
 				w_img_upload_nocut.groupuuid=this.state.groupuuid;
 				  
 			 
 
      },
+		  preview_fn:function(){
+          G_html_preview("t_iframe", null,this.editor.getSource(),this.state.name);
+       }, 
 	   /*
 	    * (发布资料)内上传LOGO图片
 	    * */
@@ -8507,13 +8550,13 @@ var Px_teacher_edit = React.createClass({displayName: "Px_teacher_edit",
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {uuid:useruuids},
-		dataType : "json",
+		data : {uuid:useruuids}, 
+		dataType : "json", 
 		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				var img=data.data.img;
+				var img=data.data.img; 
 		  if(img){
 			$ ("#img").val(img);
 			$("#img_head_image").attr("src",G_imgPath+ img);
@@ -8522,7 +8565,7 @@ var Px_teacher_edit = React.createClass({displayName: "Px_teacher_edit",
 			
 			} else {
 				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+				G_resMsg_filter(data.ResMsg); 
 			}
 		},
 		error : G_ajax_error_fn
@@ -8582,15 +8625,17 @@ React.createElement("div", null,
  			      React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "详细介绍:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
  					G_get_upload_img_Div(), 
 	  		  
-				      React.createElement("button", {type: "button", onClick: ajax_teacher_save_byRight, className: "am-btn am-btn-primary"}, "提交")		      				      
+				      React.createElement("button", {type: "button", onClick: ajax_teacher_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+						    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
+
+
 				      )
 		          )
      ), 	
 
-		   React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
-		   React.createElement(AMUIReact.Image, {id: "img_head_image2", src: hostUrlCDN+"i/dylaoshiziliao.png", className: "G_img_header2"})
-		   )
-
+		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
 )
 
 );
@@ -8801,7 +8846,7 @@ React.createElement("div", null,
 //	  componentDidMount:function(){
 //		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 //	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-//	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+//	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 //	        });
 //    },
 //	   /*

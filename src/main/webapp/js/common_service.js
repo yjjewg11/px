@@ -721,3 +721,31 @@ function common_check_illegal(type,uuid){
 		error : G_ajax_error_fn
 	});
 }
+
+
+var G_html_preview=function(t_iframe,url,div,title) {   
+	 var ifm= document.getElementById(t_iframe);   
+	 if(url){
+		 ifm.src=url;
+		 return;
+	 }else{
+		 ifm.src="about:blank";
+	 }
+	 
+	
+	 var subWeb = document.frames ? document.frames[t_iframe].document : ifm.contentDocument; 
+	 subWeb.open("text/html","replace");
+
+	  subWeb.write("<!doctype html>");
+	   subWeb.write("<html class=\"no-js\" ><head>");
+	    subWeb.write("<meta charset=\"utf-8\">");
+		 subWeb.write("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
+		  subWeb.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no\">");
+		  subWeb.write('<link rel="stylesheet" href="../css/share.css"/>');
+		  subWeb.write("</head><body>");
+		   
+		  if(title) subWeb.write(' <h2  class="art_title">'+title+'</h2>');
+	 subWeb.write(div);
+	   subWeb.write("</body></html>");
+	subWeb.close();
+}

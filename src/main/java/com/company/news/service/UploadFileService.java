@@ -12,6 +12,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -40,9 +41,11 @@ import com.company.news.commons.util.upload.OssIUploadFile;
 import com.company.news.entity.GroupHabits;
 import com.company.news.entity.UploadFile;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 文件上传
@@ -153,6 +156,7 @@ public class UploadFileService extends AbstractService {
 	public InputStream getWatermarkInputStream(InputStream  imgInputStream,String groupuuid,ResponseMessage responseMessage) throws Exception{
 		BufferedImage watermark_Image=null;
 		//判断是否添加水印
+		if(StringUtils.isBlank(groupuuid))return imgInputStream;
 		GroupHabits watermarkObj=groupHabitsService.getByKey(groupuuid, SystemConstants.GroupHabits_key_Watermark, responseMessage);
 		//watermark_url="http://img.wenjienet.com/head/8a29000b4ff277d7014ff401ff3f002c.png@198w";
 		if(watermarkObj!=null){
@@ -220,10 +224,21 @@ public class UploadFileService extends AbstractService {
 		InputStream  imgInputStream=file.getInputStream();
 		
 		String groupuuid=request.getParameter("groupuuid");
-
-		//判断是否添加水印
-		imgInputStream=getWatermarkInputStream(imgInputStream,groupuuid,responseMessage);
 		
+		if (!SystemConstants.UploadFile_type_head.equals(type)){//非头像上传,加水印
+			if(StringUtils.isBlank(groupuuid)){//老师版本,ios app 上传图片调用方法.
+				  HttpSession session =SessionListener.getSession(request);
+				  //当前用户只关联了一个机构的情况下.允许判断水印
+				    String mygroupUuid= (String)session.getAttribute(RestConstants.Session_MygroupUuids);
+				    if(StringUtils.isNotBlank(mygroupUuid)&&mygroupUuid.indexOf(",")==-1){
+				    	groupuuid=mygroupUuid;
+				    }
+			}
+			//判断是否添加水印
+			imgInputStream=getWatermarkInputStream(imgInputStream,groupuuid,responseMessage);
+			
+		}
+	
 		
 		// 上传文件
 		if (iUploadFile.uploadFile(imgInputStream, filePath, type)) {
