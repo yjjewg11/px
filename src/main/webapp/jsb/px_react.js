@@ -679,7 +679,7 @@ return (
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", onChange: this.handleChange, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", multiple: true, onChange: this.handleChange, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
 			
 		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
