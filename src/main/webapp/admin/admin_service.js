@@ -1254,11 +1254,13 @@ G_ajax_abs_save(opt);
 * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
 * */
 
-function admin_announce_listByGroup_wjkj(){
+function admin_announce_listByGroup_wjkj(type){
+	if(!type)type=0;
 	React.render(React.createElement(admin_EventsTable_wjkj, {
 		pageNo:1,
 		events: [],
-		type:announce_types,
+		typelisg:G_getMsgProps().msg_list,
+		type:type,
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
 		}), document.getElementById('div_body'));
 	return;

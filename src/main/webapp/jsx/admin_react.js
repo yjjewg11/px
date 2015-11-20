@@ -1946,6 +1946,7 @@ var Parent_EventsTable_div = React.createClass({
     var admin_EventsTable_wjkj = React.createClass({
     	getInitialState: function() {
     		var obj= {
+    				typelisg:this.props.typelisg,
     		    	pageNo:this.props.pageNo,
     		    	type:this.props.type,
     		    	list: []
@@ -2032,7 +2033,9 @@ var Parent_EventsTable_div = React.createClass({
       <div>
  
     	     <AMR_Panel>
-
+    	  	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    	  		<AMUIReact.Selected amSize="xs" id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth= "200" data={this.props.typelisg} btnStyle="primary" value={o.type}/> 
+    	  		</div> 
     	     </AMR_Panel> 
 
     	  

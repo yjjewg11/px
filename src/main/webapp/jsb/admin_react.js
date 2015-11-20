@@ -1946,6 +1946,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     var admin_EventsTable_wjkj = React.createClass({displayName: "admin_EventsTable_wjkj",
     	getInitialState: function() {
     		var obj= {
+    				typelisg:this.props.typelisg,
     		    	pageNo:this.props.pageNo,
     		    	type:this.props.type,
     		    	list: []
@@ -2031,8 +2032,10 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
       return (
       React.createElement("div", null, 
  
-    	     React.createElement(AMR_Panel, null
-
+    	     React.createElement(AMR_Panel, null, 
+    	  	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+    	  		React.createElement(AMUIReact.Selected, {amSize: "xs", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.typelisg, btnStyle: "primary", value: o.type})
+    	  		)
     	     ), 
 
     	  
