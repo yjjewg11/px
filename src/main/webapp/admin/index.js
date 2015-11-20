@@ -299,16 +299,27 @@ function menu_wenjieAdmin_dataRefresh_fn(){
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
-/*
- * (信息管理)<校园公告><老师公告><精品文章><招生计划>
- * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
- * @跳转kd_service发服务器请求
- * */
-var announce_types="";
+//取信息管理数组方法
+function G_getMsgProps() {
+	 var data = [
+	            {value: '0', label: '校园公告'},
+	            {value: '1', label: '老师公告'},
+	            {value: '2', label: '班级通知'},
+	            {value: '3', label: '精品文章'},
+	            {value: '4', label: '招生计划'}
+	          ];
+	    return {
+	      msg_list: data
+	    };
+	  }
+  /*
+   * (信息管理)<校园公告><老师公告><精品文章><招生计划>
+   * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
+   * @跳转kd_service发服务器请求
+   * */
 function admin_announce_list_fn_wjkj() {
 	Queue.push(function(){admin_announce_list_fn_wjkj();});
-	announce_types=1; 
-	admin_announce_listByGroup_wjkj();
+	admin_announce_listByGroup_wjkj("0");
 };
 /*
  * (帮助管理)<幼儿园帮助文档><培训机构帮助文档>

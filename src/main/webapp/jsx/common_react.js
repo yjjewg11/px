@@ -12,9 +12,16 @@ var PxInput=AMUIReact.Input;
  * 全局模版-没有内容时显示
  * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
  */
-var G_check_disable_div_byRight = React.createClass({ 
+var G_check_disable_div_byRight = React.createClass({
 	  render: function() {
-		  if(G_user_hasRight("KD_announce_m")){
+			var right;
+			if(this.props.pxadmin==2){
+				right="PX_announce_m";//培训机构屏蔽权限;
+			}else{
+				right="KD_announce_m";//幼儿园屏蔽权限;	
+			}
+			console.log("屏蔽权限:",right);
+		  if(G_user_hasRight(right)){
 			  return (
 					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
 			    );
@@ -30,7 +37,6 @@ var G_check_disable_div_byRight = React.createClass({
 	    );
 	  }
 	  }); 
-
 var G_get_upload_img_Div=function(){
 	var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" multiple />
 	if(G_CallPhoneFN.isPhoneApp()){

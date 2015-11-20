@@ -679,7 +679,7 @@ return (
 		<div className="am-g">
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">	      
 		  <form id="editClassnewsForm" method="post" className="am-form">
-		  <AMUIReact.Selected id="selectclass_uuid" name="classuuid" onChange={this.handleChange} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={o.classuuid} />	      
+		  <AMUIReact.Selected id="selectclass_uuid" name="classuuid" multiple= {true} onChange={this.handleChange} btnWidth="300"  data={this.props.mycalsslist} btnStyle="primary" value={o.classuuid} />	      
 			
 		  <input type="hidden" name="uuid"  value={o.uuid}/>
 			<input type="hidden" name="imgs" id="imgs"  value={o.imgs}/>			
@@ -2234,6 +2234,31 @@ var Announcements_goodedit = React.createClass({
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
+		   var thit=this;
+		   var url=$("input[name='url']").val();
+	if(url){
+		 if(url.startsWith("http://")||url.startsWith("https://")){
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					success : function(data) {
+						$.AMUI.progress.done();
+						if (data.ResMsg.status == "success") {
+					thit.state.title=data.data;
+					  thit.setState(thit.state);
+						} else {
+							alert(data.ResMsg.message);
+							G_resMsg_filter(data.ResMsg);
+						}
+					}
+				});	
+		 }
+
+	  }
 			 var tmp=$('#editAnnouncementsForm').serializeJson();
 		    this.setState(tmp);
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
@@ -2268,7 +2293,7 @@ render: function() {
   	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
         </div>   
   		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
   		  <br/>
 
   		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
@@ -3432,6 +3457,37 @@ var Announcements_edit_byRight = React.createClass({
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 			
 	  },
+	 handleChange_url: function(event) {
+		  var thit=this;
+		   var url=$("input[name='url']").val();
+	if(url){
+		 if(url.startsWith("http://")||url.startsWith("https://")){
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					success : function(data) {
+						$.AMUI.progress.done();
+						if (data.ResMsg.status == "success") {
+					thit.state.title=data.data;
+					  thit.setState(thit.state);
+						} else {
+							alert(data.ResMsg.message);
+							G_resMsg_filter(data.ResMsg);
+						}
+					}
+				});	
+		 }
+
+	  }
+		    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+			w_img_upload_nocut.groupuuid=tmp.groupuuid;
+			
+	  },
 	  componentDidMount:function(){
 	   this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
@@ -3450,7 +3506,7 @@ render: function() {
 	   url=(
 		<div>
 		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
-		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
+		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
 		</div>
 		)
 	  }
@@ -3469,7 +3525,7 @@ return (
 	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
       </div>   
 		  <label htmlFor="name">标题:</label>
-		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="45"   placeholder="不超过45位"/>
+		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="128"   placeholder="不超过128位"/>
 		  <br/>
 		  {url}
 
@@ -3530,7 +3586,7 @@ return (
 	         <AMR_Button className="G_Edit_show" amStyle="secondary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>     
 	         <AMR_Button  amStyle="secondary" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
 			 <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid} pxadmin={2}/>
 	     </AMR_ButtonToolbar>
 	     
 	     </div>
@@ -5380,7 +5436,7 @@ var Class_EventsTable_byRight = React.createClass({
      			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
 							{"|阅读"+o.count}
      			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
-     			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}/>
+     			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}  pxadmin={2}/>
      			    	</div>
      			    	</footer>
      			    	
@@ -5501,7 +5557,7 @@ var Class_EventsTable_byRight = React.createClass({
      		      return (
      		    		  <li className="am-cf">
      		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
-     				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span><G_check_disable_div_byRight type={98} uuid={event.uuid}/>
+     				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span><G_check_disable_div_byRight type={98} uuid={event.uuid}  pxadmin={2}/>
      		    		  </li>
      		    		  )
      		  })}
@@ -8208,11 +8264,36 @@ setProvCity:function(){
    		    return this.props.formdata;
    		  },
    	 handleChange: function(event) {
+		   var thit=this;
+		   var url=$("input[name='url']").val();
+	if(url){
+		 if(url.startsWith("http://")||url.startsWith("https://")){
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					success : function(data) {
+						$.AMUI.progress.done();
+						if (data.ResMsg.status == "success") {
+					thit.state.title=data.data;
+					  thit.setState(thit.state);
+						} else {
+							alert(data.ResMsg.message);
+							G_resMsg_filter(data.ResMsg);
+						}
+					}
+				});	
+		 }
+
+	  }
 		var o=$('#editAnnouncementsForm').serializeJson();
 			   o.start_time=start_timeStr;
 			   o.end_time=end_timeStr;
 				 w_img_upload_nocut.groupuuid=o.groupuuid;
-			      		    this.setState(o);
+			    this.setState(o);
   },
   componentDidMount:function(){
   this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
@@ -8257,7 +8338,7 @@ setProvCity:function(){
 		
 			 <label className={one_classDiv}>标题:</label>
 			   <div className={two_classDiv}>
-				<input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+				<input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
 			     </div>  
 	
 		 	<label className={one_classDiv}>分享链接(链接和内容选填一个):</label>

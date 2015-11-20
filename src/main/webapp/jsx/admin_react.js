@@ -1946,6 +1946,7 @@ var Parent_EventsTable_div = React.createClass({
     var admin_EventsTable_wjkj = React.createClass({
     	getInitialState: function() {
     		var obj= {
+    				typelisg:this.props.typelisg,
     		    	pageNo:this.props.pageNo,
     		    	type:this.props.type,
     		    	list: []
@@ -1973,6 +1974,7 @@ var Parent_EventsTable_div = React.createClass({
     		    this.setState(obj);
     		},
     	 ajax_list:function(obj){
+    		 console.log("测试王璟昱啊我爱",$("input[name='enddate']").val());
     		$.AMUI.progress.start();
     		var that=this;
     		g_message_groupuuid=obj.groupuuid;
@@ -1980,7 +1982,7 @@ var Parent_EventsTable_div = React.createClass({
     		$.ajax({
     			type : "GET",
     			url : url,
-    			data : {type:announce_types,pageNo:obj.pageNo},
+    			data : {type:obj.type,enddate:$("input[name='enddate']").val(),pageNo:obj.pageNo},
     			dataType : "json",
     			//async: false,//必须同步执行
     			success : function(data) {
@@ -2021,18 +2023,24 @@ var Parent_EventsTable_div = React.createClass({
     		 }
     	},
     handleChange_selectgroup_uuid:function(val){
-
+    	admin_announce_listByGroup_wjkj(val);
     },
 
     render: function() {
     	var obj=this.state;
     	if(!this.state.list)this.state.list=[];
-    		var help=(<div></div>)
       return (
       <div>
  
     	     <AMR_Panel>
-
+    	     <AMR_ButtonToolbar>
+    	        <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    	  		<AMUIReact.Selected  id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth= "200" data={obj.typelisg} btnStyle="primary" value={obj.type}/> 
+				</div>
+				<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    	  		<AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="enddate" id="enddate" dateTime={obj.enddate} />
+    			 </div>
+    	  		</AMR_ButtonToolbar>	
     	     </AMR_Panel> 
 
     	  

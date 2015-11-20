@@ -1893,6 +1893,31 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
+			  		   var thit=this;
+		   var url=$("input[name='url']").val();
+	if(url){
+		 if(url.startsWith("http://")||url.startsWith("https://")){
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					success : function(data) {
+						$.AMUI.progress.done();
+						if (data.ResMsg.status == "success") {
+					thit.state.title=data.data;
+					  thit.setState(thit.state);
+						} else {
+							alert(data.ResMsg.message);
+							G_resMsg_filter(data.ResMsg);
+						}
+					}
+				});	
+		 }
+
+	  }
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
@@ -1920,7 +1945,7 @@ render: function() {
         ), 
   
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
   		  React.createElement("br", null), 
   		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
@@ -3202,6 +3227,34 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	 handleChange: function(event) {
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
+	 handleChange_url: function(event) {
+	 var thit=this;
+	 var url=$("input[name='url']").val();
+	if(url){
+		 if(url.startsWith("http://")||url.startsWith("https://")){
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					success : function(data) {
+						$.AMUI.progress.done();
+						if (data.ResMsg.status == "success") {
+					thit.state.title=data.data;
+					  thit.setState(thit.state);
+						} else {
+							alert(data.ResMsg.message);
+							G_resMsg_filter(data.ResMsg);
+						}
+					}
+				});	
+		 }
+
+	  }
+		    this.setState($('#editAnnouncementsForm').serializeJson());
+	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
@@ -3217,7 +3270,7 @@ render: function() {
 	   url=(
 		React.createElement("div", null, 
 		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
-		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
+		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})		
 		)
 		)
 	  } 
@@ -3237,7 +3290,7 @@ return (
       ), 
 		
 		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "45", placeholder: "不超过45位"}), 
+		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "128", placeholder: "不超过128位"}), 
 		  React.createElement("br", null), 
             url, 
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 

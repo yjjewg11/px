@@ -67,41 +67,78 @@ public class ClassNewsService extends AbstractService {
 			responseMessage.setMessage("必须选择一个班级");
 			return false;
 		}
-		AbstractClass pClass=null;
-		if(SessionListener.isPXLogin(request)){
-			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PxClass.class, classNewsJsonform.getClassuuid());
-		}else{
-			 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PClass.class, classNewsJsonform.getClassuuid());
+	
+		
+		String []  classuuidArray=classNewsJsonform.getClassuuid().split(",");
+		
+		for(String classuuid:classuuidArray){
+			System.out.println(classuuid); 
+
+			AbstractClass pClass=null;
+			if(SessionListener.isPXLogin(request)){
+				 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PxClass.class, classuuid);
+			}else{
+				 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PClass.class, classuuid);
+			}
+			
+			if(pClass==null){
+				responseMessage.setMessage("选择的班级不存在");
+				
+				  //关联管理员账号注册失败，回滚之前操作
+				throw new RuntimeException(responseMessage.getMessage());
+//				return false;
+			}
+			
+			ClassNews cn = new ClassNews();
+
+			BeanUtils.copyProperties(cn, classNewsJsonform);
+			cn.setClassuuid(classuuid);
+			cn.setGroupuuid(pClass.getGroupuuid());
+			cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
+			cn.setClass_name(pClass.getName());
+			cn.setCreate_time(TimeUtils.getCurrentTimestamp());
+//			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+//			cn.setReply_time(TimeUtils.getCurrentTimestamp());
+			cn.setUsertype(USER_type_default);
+			cn.setStatus(SystemConstants.Check_status_fabu);
+			cn.setIllegal(0l);
+			
+			// 有事务管理，统一在Controller调用时处理异常
+			PxStringUtil.addCreateUser(user, cn);
+			this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
+
+			
+			//初始话计数
+					countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
 		}
-		
-
-		if(pClass==null){
-			responseMessage.setMessage("选择的班级不存在");
-			return false;
-		}
-		
-		
-		
-		ClassNews cn = new ClassNews();
-
-		BeanUtils.copyProperties(cn, classNewsJsonform);
-		cn.setGroupuuid(pClass.getGroupuuid());
-		cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
-		cn.setClass_name(pClass.getName());
-		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
-//		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
-//		cn.setReply_time(TimeUtils.getCurrentTimestamp());
-		cn.setUsertype(USER_type_default);
-		cn.setStatus(SystemConstants.Check_status_fabu);
-		cn.setIllegal(0l);
-		
-		// 有事务管理，统一在Controller调用时处理异常
-		PxStringUtil.addCreateUser(user, cn);
-		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
-
-		
-		//初始话计数
-				countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
+//		System.out.println(classuuidArray); 
+////		if(pClass==null){
+////			responseMessage.setMessage("选择的班级不存在");
+////			return false;
+////		}
+//		
+//
+//		
+//		ClassNews cn = new ClassNews();
+//
+//		BeanUtils.copyProperties(cn, classNewsJsonform);
+//		cn.setGroupuuid(pClass.getGroupuuid());
+//		cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
+//		cn.setClass_name(pClass.getName());
+//		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
+////		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
+////		cn.setReply_time(TimeUtils.getCurrentTimestamp());
+//		cn.setUsertype(USER_type_default);
+//		cn.setStatus(SystemConstants.Check_status_fabu);
+//		cn.setIllegal(0l);
+//		
+//		// 有事务管理，统一在Controller调用时处理异常
+//		PxStringUtil.addCreateUser(user, cn);
+//		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
+//
+//		
+//		//初始话计数
+//				countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
 		return true;
 	}
 
