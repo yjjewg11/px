@@ -4044,8 +4044,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    return (
 		   
 		   React.createElement("div", null, 
-		   React.createElement("button", {type: "button", className: "am-btn am-btn-secondary", onClick: this.btn_ajax_classStudent_admin_byRight.bind(this,o.groupuuid,o.uuid)}, "换班级"), 
-
+		   
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
 		     React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
