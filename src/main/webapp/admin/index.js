@@ -317,11 +317,9 @@ function G_getMsgProps() {
    * @types- 0:校园公告 1:老师公告 2：班级通知,3:"精品文章',4:"招生计划" 
    * @跳转kd_service发服务器请求
    * */
-var announce_types="";
 function admin_announce_list_fn_wjkj() {
 	Queue.push(function(){admin_announce_list_fn_wjkj();});
-	announce_types=1; 
-	admin_announce_listByGroup_wjkj(0);
+	admin_announce_listByGroup_wjkj("0");
 };
 /*
  * (帮助管理)<幼儿园帮助文档><培训机构帮助文档>

@@ -1974,6 +1974,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     		    this.setState(obj);
     		},
     	 ajax_list:function(obj){
+    		 console.log("测试王璟昱啊我爱",$("input[name='enddate']").val());
     		$.AMUI.progress.start();
     		var that=this;
     		g_message_groupuuid=obj.groupuuid;
@@ -1981,7 +1982,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     		$.ajax({
     			type : "GET",
     			url : url,
-    			data : {type:announce_types,pageNo:obj.pageNo},
+    			data : {type:obj.type,enddate:$("input[name='enddate']").val(),pageNo:obj.pageNo},
     			dataType : "json",
     			//async: false,//必须同步执行
     			success : function(data) {
@@ -2022,20 +2023,24 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     		 }
     	},
     handleChange_selectgroup_uuid:function(val){
-
+    	admin_announce_listByGroup_wjkj(val);
     },
 
     render: function() {
     	var obj=this.state;
     	if(!this.state.list)this.state.list=[];
-    		var help=(React.createElement("div", null))
       return (
       React.createElement("div", null, 
  
     	     React.createElement(AMR_Panel, null, 
-    	  	   React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-    	  		React.createElement(AMUIReact.Selected, {amSize: "xs", id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.typelisg, btnStyle: "primary", value: o.type})
-    	  		)
+    	     React.createElement(AMR_ButtonToolbar, null, 
+    	        React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+    	  		React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: obj.typelisg, btnStyle: "primary", value: obj.type})
+				), 
+				React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+    	  		React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "enddate", id: "enddate", dateTime: obj.enddate})
+    			 )
+    	  		)	
     	     ), 
 
     	  

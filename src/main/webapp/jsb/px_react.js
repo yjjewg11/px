@@ -3496,7 +3496,7 @@ return (
 	         React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "secondary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
 	         React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
 			 React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
-	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
+	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid, pxadmin: 2})
 	     )
 	     
 	     ), 
@@ -5346,7 +5346,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
 							"|阅读"+o.count, 
      			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 
-     			    	React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid})
+     			    	React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid, pxadmin: 2})
      			    	)
      			    	), 
      			    	
@@ -5467,7 +5467,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		      return (
      		    		  React.createElement("li", {className: "am-cf"}, 
      		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
-     				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid})
+     				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, pxadmin: 2})
      		    		  )
      		    		  )
      		  })

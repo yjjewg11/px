@@ -3496,7 +3496,7 @@ return (
 	         <AMR_Button className="G_Edit_show" amStyle="secondary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>     
 	         <AMR_Button  amStyle="secondary" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
 			 <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid} pxadmin={2}/>
 	     </AMR_ButtonToolbar>
 	     
 	     </div>
@@ -5346,7 +5346,7 @@ var Class_EventsTable_byRight = React.createClass({
      			    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
 							{"|阅读"+o.count}
      			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
-     			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}/>
+     			    	<G_check_disable_div_byRight type={99} uuid={o.uuid}  pxadmin={2}/>
      			    	</div>
      			    	</footer>
      			    	
@@ -5467,7 +5467,7 @@ var Class_EventsTable_byRight = React.createClass({
      		      return (
      		    		  <li className="am-cf">
      		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
-     				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span><G_check_disable_div_byRight type={98} uuid={event.uuid}/>
+     				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span><G_check_disable_div_byRight type={98} uuid={event.uuid}  pxadmin={2}/>
      		    		  </li>
      		    		  )
      		  })}
