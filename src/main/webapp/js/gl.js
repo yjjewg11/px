@@ -46,7 +46,7 @@ window.G_share_logo=hostUrlCDN+"i/share_logo.png";
 
 
 window.G_def_headImgPath=hostUrlCDN+"i/header.png";
-window.G_def_noImgPath=hostUrlCDN+"i/header.png";
+window.G_def_noImgPath=hostUrlCDN+"i/KD_header.png";
 //取消G_imgPath
 window.G_imgPath=hostUrl+"rest/uploadFile/getImgFile?uuid=";
 G_imgPath="";

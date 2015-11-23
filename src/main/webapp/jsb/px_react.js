@@ -395,7 +395,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)G_def_headImgPath;		  
+		  if(!o.create_img)o.create_img=G_def_headImgPath;	
 	  return (
 			  React.createElement("div", null, 
 			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
@@ -3209,13 +3209,15 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 	  var o = this.state;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var header_img=G_imgPath+o.img;
+	  if(!o.img)header_img=G_def_noImgPath;
     return (
     		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
   		     React.createElement("hr", null), 
     		  React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
     	       React.createElement(PxInput, {type: "hidden", name: "type", value: o.type}), 
     		    React.createElement(PxInput, {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 		   
-              React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.img, className: "G_img_header"}), 
+              React.createElement(AMUIReact.Image, {id: "img_head_image", src: header_img, className: "G_img_header"}), 
              React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传LOGO"), 
             React.createElement("div", {className: "am-form-group"}, 
     		 React.createElement("label", {className: one_classDiv }, "品牌名:"), 
@@ -7979,6 +7981,8 @@ setProvCity:function(){
 	  var o = this.state;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
 	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
+	  	  var header_img=G_imgPath+o.img;
+	  if(!o.img)header_img=G_def_noImgPath;
     return (
 React.createElement("div", null, 
 
@@ -7988,7 +7992,7 @@ React.createElement("div", null,
     		  React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
     	       React.createElement(PxInput, {type: "hidden", name: "type", value: o.type}), 
     		    React.createElement(PxInput, {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 		   
-              React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_imgPath+o.img, className: "G_img_header"}), 
+              React.createElement(AMUIReact.Image, {id: "img_head_image", src: header_img, className: "G_img_header"}), 
              React.createElement("button", {type: "button", onClick: this.btn_class_group_uploadHeadere, className: "am-btn am-btn-secondary"}, "上传LOGO"), 
             React.createElement("div", {className: "am-form-group"}, 
     		 React.createElement("label", {className: one_classDiv }, "品牌名:"), 
