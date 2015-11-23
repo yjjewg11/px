@@ -404,7 +404,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			  ), 
 
 			  React.createElement("div", {className: "am-comment-main"}, 
-			    React.createElement("header", {className: "am-comment-hd"}, 
+			    React.createElement("header", {className: "am-comment-hd "}, 
 			      React.createElement("div", {className: "am-comment-meta"}, 
 			         React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, o.class_name, "|", o.create_user, "|", o.group_name)
 				  )
@@ -3840,13 +3840,13 @@ render: function() {
 	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.refresh_data.bind(this), data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
+		  React.createElement(AMUIReact.Selected, {name: "groupuuid", onChange: this.refresh_data.bind(this), placeholder: "学校", data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMUIReact.Selected, {name: "courseuuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: o.courseuuid})
+		  React.createElement(AMUIReact.Selected, {name: "courseuuid", onChange: this.refresh_data.bind(this), placeholder: "课程", btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: o.courseuuid})
 		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMUIReact.Selected, {i: true, name: "isdisable", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: pxclass_isdisable_list, btnStyle: "primary", value: o.isdisable})
+		  React.createElement(AMUIReact.Selected, {i: true, name: "isdisable", onChange: this.refresh_data.bind(this), placeholder: "状态", btnWidth: "200", multiple: false, data: pxclass_isdisable_list, btnStyle: "primary", value: o.isdisable})
 		  ), 
 	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"add_class",this.state.groupuuid)}, "创建班级")
 		  )	

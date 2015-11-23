@@ -404,7 +404,7 @@ var Classnews_show = React.createClass({
 			  </a>
 
 			  <div className="am-comment-main">
-			    <header className="am-comment-hd">
+			    <header className="am-comment-hd ">
 			      <div className="am-comment-meta">
 			         <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 				  </div>
@@ -3840,13 +3840,13 @@ render: function() {
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
+		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} placeholder="学校" data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} placeholder="课程" btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
+		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} placeholder="状态" btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
 		  </div>
 	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"add_class",this.state.groupuuid)} >创建班级</AMR_Button>
 		  </AMR_ButtonToolbar>	
