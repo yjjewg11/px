@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -28,7 +30,8 @@ import com.company.news.vo.ResponseMessage;
 public class ClassNewsReplyService extends AbstractService {
 	private static final String model_name = "回复模块";
 	public static final int USER_type_default = 0;// 0:老师
-
+	@Autowired
+	public PushMsgIservice pushMsgIservice;
 	/**
 	 * 增加班级
 	 * 
@@ -59,7 +62,13 @@ public class ClassNewsReplyService extends AbstractService {
 		cn.setStatus(SystemConstants.Check_status_fabu);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
-
+		//暂时屏蔽.
+//		if(cn.getType()!=null){
+//			if(SystemConstants.common_type_hudong==cn.getType().intValue()){
+//				pushMsgIservice.pushMsg_replay_to_classNews_to_teacherOrParent(cn.getNewsuuid(), cn.getContent());
+//			}
+//		}
+		
 		return true;
 	}
 

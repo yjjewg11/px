@@ -749,3 +749,49 @@ var G_html_preview=function(t_iframe,url,div,title) {
 	   subWeb.write("</body></html>");
 	subWeb.close();
 }
+
+/**
+根据url,返回url的标题
+*/
+var G_getHtmlTitle_url=null;
+//防止多次提交
+var G_getHtmlTitle_ajax_loading=false;
+function G_getHtmlTitle(url,callback){
+	if(url){
+			 if(url==G_getHtmlTitle_url)return;
+		 if(url.indexOf("http://")>-1||url.indexOf("https://")>-1){
+		
+				G_getHtmlTitle_url=url;
+
+				if(G_getHtmlTitle_ajax_loading)return;
+
+				G_getHtmlTitle_ajax_loading=true;
+				$.AMUI.progress.start();
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				$.ajax({
+					type : "GET",
+					url : url1,
+					data:{url:url},
+					dataType : "json",
+					error:function() {
+						G_getHtmlTitle_ajax_loading=false;
+					},
+					success : function(data) {
+						G_getHtmlTitle_ajax_loading=false;
+						$.AMUI.progress.done();
+						 if(url!=G_getHtmlTitle_url){
+							 G_getHtmlTitle(url,callback);
+							 return;
+						 }
+				
+						if (data.ResMsg.status == "success") {
+							callback(data.data);
+
+					
+						} 
+					}
+				});	
+		 }
+
+	  }
+}
