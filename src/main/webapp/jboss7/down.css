@@ -10,12 +10,16 @@ body{
 	margin-left: auto;
 	margin-right:auto;
 }
-.px_parent_app2{
-	color: #3bb4f2;
-}
+
 
 .px_parent_app{
 	color: red;
+}
+.px_parent_app2{
+	color: #3bb4f2;
+}
+.px_parent_txt{
+	color: #0A0A0A;
 }
 .px-bordered{
   	 border: 1px solid #dddddd;
@@ -26,30 +30,44 @@ body{
      
       padding: 100px 0 0 0;
     }
-    .get {
+ .get {
 
-      color: #fff;
-     
-      padding: 5px 0;
-    }
-.get_black {
-
-      color: black;
-    
-      padding: 5px 0;
-    }
-
+   color: #fff;
+  
+   padding: 5px 0;
+ }
+ .div_bg_white {
+      background: white;
+      	padding: 10px;
+    } 
  .get_bg {
-      background: #0f90d2;
+      background: #3bb4f2;
+      padding: 100px;
+    }     
+ .get_bg1 {
+      background: #f5f5f5;
+      padding: 50px 0;
+    }   
+ .get_bg2 {
+
+      color: black;   
+      padding: 50px 0;
     }
     
     
-    .get-title {
-      font-size: 200%;
-      border: 2px solid #fff;
-      padding: 20px;
-      display: inline-block;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+   
+    
+
 
     .get-btn {
       background: #fff;
