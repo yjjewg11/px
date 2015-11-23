@@ -872,12 +872,17 @@ var Announcements_edit = React.createClass({
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 		
 	  },
+		editor:null,
+	 preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -894,11 +899,10 @@ render: function() {
 	  }
   return (
   		<div>
-  		<div className="header">
-  		  <hr />
-  		</div>
+ <hr />
+ 		
   		<div className="am-g">
-  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <div className="am-u-lg-6 am-u-sm-12">
   		  <form id="editAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
   		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
@@ -912,14 +916,26 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_announce_save}  className="am-btn am-btn-primary">提交</button>
+		   <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
   		  </form>
   	     </div>
-  	   </div>	   
+
+  
+			<div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
+
+
+  	   </div>	
+			
+		  
+		 
   	  </div>
   );
 }
-}); 
+});
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
 
 
 //——————————————————————————<培训机构新版>课程表<列表版>——————————————————————————  
@@ -2250,22 +2266,27 @@ var Announcements_goodedit = React.createClass({
 	  },
 	  componentDidMount:function(){
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 
 		w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	  },
+	 preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
+
+
 render: function() {
 	 var o = this.state;
 	
   return (
   		<div>
-  		<div className="header">
-  		  <hr />
-  		</div>
+	   <hr />
+  	
   		<div className="am-g">
-  		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+  		  <div className="am-u-lg-6 am-u-sm-12">
   		  <form id="editAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
   		<input type="hidden" name="isimportant"  value={o.isimportant}/> 	
@@ -2282,9 +2303,15 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
+			  <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
   		  </form>
   	     </div>
-  	   </div>	   
+			    <div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
+
+          </div>    
+   
   	  </div>
   );
 }
@@ -3149,7 +3176,7 @@ var Group_edit_byRight = React.createClass({
 			  
 			  
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 
 		if(!this.state.uuid){
@@ -3464,13 +3491,17 @@ var Announcements_edit_byRight = React.createClass({
 			
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
         });
 			  	w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var url=(<div></div>);
@@ -3488,7 +3519,7 @@ return (
 		  <hr />
 		</div>
 		<div className="am-g">
-		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+		   <div  className="am-u-lg-6 am-u-sm-12 ">
 		  <form id="editAnnouncementsForm" method="post" className="am-form">
 		<input type="hidden" name="uuid"  value={o.uuid}/>
 		<input type="hidden" name="isimportant"  value={o.isimportant}/> 		
@@ -3504,9 +3535,15 @@ return (
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="详细内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
 		{G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
-         
+           <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 		  </form>
 	     </div>
+
+			    <div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
+
+
 	   </div>	   
 	  </div>
 );
@@ -6889,9 +6926,11 @@ var Class_EventsTable_byRight = React.createClass({
 			
 	  },
 	  componentDidMount:function(){
+
 		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		    this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 
@@ -6935,6 +6974,9 @@ var Class_EventsTable_byRight = React.createClass({
 	});
 		    this.setState($('#editCourseForm').serializeJson());
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", null,this.editor.getSource(),this.state.title);
+       }, 
  render: function() {
  	  var o = this.state;
 	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
@@ -7012,14 +7054,14 @@ var Class_EventsTable_byRight = React.createClass({
 					{G_get_upload_img_Div()} 
 	  		  
 				      <button type="button"  onClick={ajax_course_save_byRight}  className="am-btn am-btn-primary">提交</button>
+						    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 					   </div>  
 		          </form> 
 		       </div>	
 
-		   <div  className=" am-u-md-6 am-u-sm-12">
-			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dykecheng.png"} className={"G_img_header2"}/>
-		   </div>
-
+		     <div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
 		</div>
  );
  }
@@ -7909,7 +7951,7 @@ var Group_edit_byRight_px = React.createClass({
 			  this.setProvCity();
 		       }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	},
 	   /*
@@ -8232,7 +8274,7 @@ setProvCity:function(){
 	if(url){
 		 if(url.startsWith("http://")||url.startsWith("https://")){
 				$.AMUI.progress.start();
-				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json"; 
 				$.ajax({
 					type : "GET",
 					url : url1,
@@ -8260,12 +8302,16 @@ setProvCity:function(){
   },
   componentDidMount:function(){
   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+  this.editor=editor;
          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-               editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+               editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
              });
 
 	 w_img_upload_nocut.groupuuid=this.state.groupuuid;
    	  },
+ preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
    render: function() {
    	 var o = this.state;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
@@ -8310,13 +8356,13 @@ setProvCity:function(){
  		  
 				{G_get_upload_img_Div()} 
 			 <button type="button"  onClick={ajax_Preferential_save}  className="am-btn am-btn-primary">提交</button>				      					  
-		
+		  <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 	  </form> 	 
 		   </div>	
 
-		   <div  className=" am-u-md-6 am-u-sm-12">
-			<AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dyyouhuihuodong.png"} className={"G_img_header2"}/>
-		   </div>
+  <div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
 
 		</div>
      );
@@ -8556,15 +8602,19 @@ var Px_teacher_edit = React.createClass({
 
 	  },
 	  componentDidMount:function(){
-		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  var editor = $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
 				w_img_upload_nocut.groupuuid=this.state.groupuuid;
 				  
 			 
 
      },
+		  preview_fn:function(){
+          G_html_preview("t_iframe", null,this.editor.getSource(),this.state.name);
+       }, 
 	   /*
 	    * (发布资料)内上传LOGO图片
 	    * */
@@ -8588,13 +8638,13 @@ var Px_teacher_edit = React.createClass({
 	$.ajax({
 		type : "GET",
 		url : url,
-		data : {uuid:useruuids},
-		dataType : "json",
+		data : {uuid:useruuids}, 
+		dataType : "json", 
 		async: false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				var img=data.data.img;
+				var img=data.data.img; 
 		  if(img){
 			$ ("#img").val(img);
 			$("#img_head_image").attr("src",G_imgPath+ img);
@@ -8603,7 +8653,7 @@ var Px_teacher_edit = React.createClass({
 			
 			} else {
 				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+				G_resMsg_filter(data.ResMsg); 
 			}
 		},
 		error : G_ajax_error_fn
@@ -8663,15 +8713,17 @@ return (
  			      <AMR_Input id="announce_message" type="textarea" rows="10" label="详细介绍:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
  					{G_get_upload_img_Div()} 
 	  		  
-				      <button type="button"  onClick={ajax_teacher_save_byRight}  className="am-btn am-btn-primary">提交</button>		      				      
+				      <button type="button"  onClick={ajax_teacher_save_byRight}  className="am-btn am-btn-primary">提交</button>
+						    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
+
+
 				      </div>  
 		          </form> 
      </div>	
 
-		   <div  className=" am-u-md-6 am-u-sm-12">
-		   <AMUIReact.Image  id="img_head_image2"   src={hostUrlCDN+"i/dylaoshiziliao.png"} className={"G_img_header2"}/>
-		   </div>
-
+		  <div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
 </div>
 
 );
@@ -8882,7 +8934,7 @@ return (
 //	  componentDidMount:function(){
 //		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 //	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-//	              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+//	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 //	        });
 //    },
 //	   /*

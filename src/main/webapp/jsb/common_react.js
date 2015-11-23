@@ -1429,3 +1429,13 @@ var G_rect_stars = React.createClass({displayName: "G_rect_stars",
 
 
 
+//返回预览方法
+var G_phone_iframe = React.createClass({displayName: "G_phone_iframe", 
+	  render: function() {		
+	    return (
+	    		 React.createElement("div", {className: "iPhone px_margin_top_120"}, " ", React.createElement("div", {className: "screen"}, 
+               React.createElement("iframe", {id: "t_iframe", width: "258px", height: "431px", frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0"})
+			   ), "  ")
+	    );
+	  }
+	  }); 

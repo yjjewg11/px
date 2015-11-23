@@ -773,11 +773,15 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -798,7 +802,7 @@ render: function() {
   		  React.createElement("hr", null)
   		), 
   		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 		
@@ -811,9 +815,17 @@ render: function() {
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_announce_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: ajax_announce_save, className: "am-btn am-btn-primary"}, "提交"), 
+			  React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
+
+
   		  )
-  	     )
+  	     ), 
+			    React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
+               React.createElement(G_phone_iframe, null)
+             )
+
+
   	   )	   
   	  )
   );
@@ -1921,11 +1933,15 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	
@@ -1935,7 +1951,7 @@ render: function() {
   		  React.createElement("hr", null)
   		), 
   		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
   		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
@@ -1951,9 +1967,14 @@ render: function() {
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
+			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
-  	     )
+  	     ), 
+
+		React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
   	   )	   
   	  )
   );
@@ -3256,11 +3277,15 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 		    this.setState($('#editAnnouncementsForm').serializeJson());
 	  },
 	  componentDidMount:function(){
-	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
         });
 	  },
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -3280,7 +3305,7 @@ return (
 		  React.createElement("hr", null)
 		), 
 		React.createElement("div", {className: "am-g"}, 
-		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
 		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
 		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 	
@@ -3295,9 +3320,13 @@ return (
             url, 
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
 		G_get_upload_img_Div(), 
-		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交")
+		  React.createElement("button", {type: "button", onClick: ajax_announcements_save_byRight, className: "am-btn am-btn-primary"}, "提交"), 
+			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
 		  )
-	     )
+	     ), 
+			    React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
 	   )	   
 	  )
 );

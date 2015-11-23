@@ -13,7 +13,7 @@ var Div_login = React.createClass({
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
 		    this.setState(o);
 	  },
-render: function() {
+render: function() { 
 	  var o = this.state;
  return (
  		<div>
