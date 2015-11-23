@@ -871,7 +871,8 @@ var Announcements_edit = React.createClass({
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
-	  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
@@ -2264,7 +2265,8 @@ var Announcements_goodedit = React.createClass({
 			w_img_upload_nocut.groupuuid=tmp.groupuuid;
 	  },
 	  componentDidMount:function(){
-	  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
@@ -3489,7 +3491,8 @@ var Announcements_edit_byRight = React.createClass({
 			
 	  },
 	  componentDidMount:function(){
-	   this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
               editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
         });
@@ -6923,7 +6926,9 @@ var Class_EventsTable_byRight = React.createClass({
 			
 	  },
 	  componentDidMount:function(){
-		  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+
+		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		    this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
@@ -8269,7 +8274,7 @@ setProvCity:function(){
 	if(url){
 		 if(url.startsWith("http://")||url.startsWith("https://")){
 				$.AMUI.progress.start();
-				var url1 = hostUrl + "rest/share/getHtmlTitle.json";
+				var url1 = hostUrl + "rest/share/getHtmlTitle.json"; 
 				$.ajax({
 					type : "GET",
 					url : url1,
@@ -8296,7 +8301,8 @@ setProvCity:function(){
 			    this.setState(o);
   },
   componentDidMount:function(){
-  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+  this.editor=editor;
          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
              });
@@ -8596,7 +8602,8 @@ var Px_teacher_edit = React.createClass({
 
 	  },
 	  componentDidMount:function(){
-		  this.editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  var editor = $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+		  this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
 	        });
