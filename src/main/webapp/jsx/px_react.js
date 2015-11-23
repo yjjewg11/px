@@ -395,7 +395,7 @@ var Classnews_show = React.createClass({
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)G_def_headImgPath;		  
+		  if(!o.create_img)o.create_img=G_def_headImgPath;	
 	  return (
 			  <div>
 			  <article className="am-comment am-margin-xs">
@@ -404,7 +404,7 @@ var Classnews_show = React.createClass({
 			  </a>
 
 			  <div className="am-comment-main">
-			    <header className="am-comment-hd">
+			    <header className="am-comment-hd ">
 			      <div className="am-comment-meta">
 			         <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 				  </div>
@@ -3209,13 +3209,15 @@ var Group_edit_byRight = React.createClass({
 	  var o = this.state;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var header_img=G_imgPath+o.img;
+	  if(!o.img)header_img=G_def_noImgPath;
     return (
     		<form id="editGroupForm" method="post" className="am-form">
   		     <hr />
     		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
     	       <PxInput type="hidden" name="type"  value={o.type}/>
     		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
-              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+              <AMUIReact.Image  id="img_head_image"   src={header_img} className={"G_img_header"}/>
              <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary">上传LOGO</button>
             <div className= "am-form-group">
     		 <label className={one_classDiv }>品牌名:</label>
@@ -3877,13 +3879,13 @@ render: function() {
 	      <AMR_Panel>
 		  <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
+		  <AMUIReact.Selected name="groupuuid" onChange={this.refresh_data.bind(this)} placeholder="学校" data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />   
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
+		  <AMUIReact.Selected  name="courseuuid" onChange={this.refresh_data.bind(this)} placeholder="课程" btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
 		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
+		  <AMUIReact.Selected i name="isdisable" onChange={this.refresh_data.bind(this)} placeholder="状态" btnWidth="200"  multiple= {false} data={pxclass_isdisable_list} btnStyle="primary" value={o.isdisable} />          
 		  </div>
 	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"add_class",this.state.groupuuid)} >创建班级</AMR_Button>
 		  </AMR_ButtonToolbar>	
@@ -7979,6 +7981,8 @@ setProvCity:function(){
 	  var o = this.state;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
 	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
+	  	  var header_img=G_imgPath+o.img;
+	  if(!o.img)header_img=G_def_noImgPath;
     return (
 <div>
 
@@ -7988,7 +7992,7 @@ setProvCity:function(){
     		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
     	       <PxInput type="hidden" name="type"  value={o.type}/>
     		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
-              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+              <AMUIReact.Image  id="img_head_image"   src={header_img} className={"G_img_header"}/>
              <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary">上传LOGO</button>
             <div className= "am-form-group">
     		 <label className={one_classDiv }>品牌名:</label>

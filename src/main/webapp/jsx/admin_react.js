@@ -1333,7 +1333,7 @@ var Parent_EventsTable_div = React.createClass({
     		  
     	  return (
     			  <div>
-    			  <article className="am-comment am-margin-xs">
+    			  <article className="am-comment-secondary am-margin-xs">
     			  <a href="javascript:void(0);">
     			    <img src={o.create_img}  className="am-comment-avatar" width="48" height="48"/>
     			  </a>
