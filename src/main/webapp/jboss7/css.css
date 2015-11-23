@@ -6,6 +6,11 @@ body{
 }
 }
 
+.px_div_center{
+	margin-left: auto;
+	margin-right:auto;
+}
+
 
 .px_parent_app{
 	color: red;
