@@ -1358,9 +1358,9 @@ var Parent_EventsTable_div = React.createClass({
     			    	</div>
     			    	</footer>
     			    	
-    			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+    			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={99}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
     			    	<ul className="am-comments-list">
-    					  <Classnews_reply_list_byRight replyPage={o.replyPage} uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+    					  <Classnews_reply_list_byRight replyPage={o.replyPage} uuid={o.uuid}  type={99} btn_reply={"btn_reply_"+o.uuid}/>
     			    	</ul>
     			     </div>
     			</article>
@@ -1509,7 +1509,7 @@ var Parent_EventsTable_div = React.createClass({
     		   <form id={this.form_id} method="post" className="am-form">
     			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
     			<input type="hidden" name="uuid" />
-    			<input type="hidden" name="type"  value={this.props.uuid}/>						
+    			<input type="hidden" name="type"  value={this.props.type}/>						
     			<AMR_Input id={this.classnews_content} type="textarea" rows="3" label="我要回复" placeholder="填写内容" name="content" />
     			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
     		    </form>	   

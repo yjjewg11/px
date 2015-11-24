@@ -424,9 +424,9 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
 			    	)
 			    	), 
-			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 99, btn_dianzan: "btn_dianzan_"+o.uuid}), 
 			    	React.createElement("ul", {className: "am-comments-list"}, 
-					  React.createElement(Classnews_reply_list, {replyPage: o.replyPage, uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+					  React.createElement(Classnews_reply_list, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid})
 			    	)
 			     )
 			)
@@ -575,7 +575,7 @@ return (
 		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
-			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
+			React.createElement("input", {type: "hidden", name: "type", value: this.props.type}), 						
 			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "3", label: "我要回复", placeholder: "填写内容", name: "content"}), 
 			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 		    )	   
@@ -3244,7 +3244,8 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
     	    React.createElement("label", {className: one_classDiv }, "学校电话:"), 
     		 React.createElement("div", {className: two_classDiv }, 
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
-    	       ), 		
+    	       ), 	
+				 React.createElement("p", {className: "am-text-warning"}, "注意:多个电话请用英文逗号分隔"), 
     	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
   		  	  G_get_upload_img_Div(), 
   	          React.createElement("button", {type: "button", onClick: ajax_group_save_byRight, className: "am-btn am-btn-primary"}, "提交")
@@ -5415,9 +5416,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			    	)
      			    	), 
      			    	
-     			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+     			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 99, btn_dianzan: "btn_dianzan_"+o.uuid}), 
      			    	React.createElement("ul", {className: "am-comments-list"}, 
-     					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+     					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid})
      			    	)
      			     )
      			)
@@ -5566,7 +5567,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
      			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
      			React.createElement("input", {type: "hidden", name: "uuid"}), 
-     			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
+     			React.createElement("input", {type: "hidden", name: "type", value: this.props.type}), 						
      			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "3", label: "我要回复", placeholder: "填写内容", name: "content"}), 
      			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
      		    )	   
@@ -8000,7 +8001,8 @@ React.createElement("div", null,
     	    React.createElement("label", {className: one_classDiv }, "学校电话:"), 
     		 React.createElement("div", {className: two_classDiv }, 
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
-    	       ), 		
+    	       ), 	
+	  React.createElement("p", {className: "am-text-warning"}, "注意:多个电话请用英文逗号分隔"), 
     	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
   		  	  G_get_upload_img_Div(), 
   	          React.createElement("button", {type: "button", onClick: ajax_group_save_byRight_px, className: "am-btn am-btn-primary"}, "提交")

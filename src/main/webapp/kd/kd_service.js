@@ -223,9 +223,6 @@ function ajax_queryMyTimely_myList() {
 
 
 
-
-
-
 /*
  * （首页））即时消息(舞台跳转)；
  * @thpe:0:公告,1:内部通知（教师可见）,3:精品文章.4:招生计划 7:课程表 6:食谱,5:精品课程,99:班级互动.
@@ -267,7 +264,7 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		   Console.WriteLine("Case 7");             //(精品课程);
         break;
 	case 99:     
-		   ajax_classnews_list_div("1");
+		  ajax_msg_div(reluuid);
 		   //ajax_classnews_list(reluuid);        //(班级互动;
 	       break;
 	case 11:                                          
@@ -291,9 +288,34 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 	   
 } 
 
-
-
-
+/*
+ *  <即时消息>班级互动单独接口处理
+ * */
+function ajax_msg_div(uuid){
+	$.AMUI.progress.start();
+	var classnews_class_list=Store.getMyClassList();
+    var url = hostUrl + "rest/classnews/getAllGroupNews.json";
+	$.ajax({
+		type : "GET",
+		data : {uuid:uuid},
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement( Classnews_EventsTable,{
+					events: data.list,
+					class_list:G_selected_dataModelArray_byArray(classnews_class_list,"uuid","name"),
+					handleClick:btn_click_classnews
+					}),G_get_div_second());
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};	
 
 	  
 	  

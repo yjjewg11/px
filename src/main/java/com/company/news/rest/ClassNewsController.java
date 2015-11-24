@@ -391,6 +391,7 @@ public class ClassNewsController extends AbstractRESTController {
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+			String uuid=request.getParameter("uuid");
 			pData.setPageSize(5);
 			String groups=this.getMyGroupUuidsBySession(request);
 			if(StringUtils.isBlank(groups)){
@@ -398,7 +399,7 @@ public class ClassNewsController extends AbstractRESTController {
 				return "";
 			}
 			
-			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAllgroup(user, pData);
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAllgroup(user,uuid,pData);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);

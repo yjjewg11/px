@@ -66,13 +66,15 @@ setProvCity:function(){
 					 <label className={one_classDiv}>学校电话:</label>
 					<div className={two_classDiv}>
 				   <PxInput type="text" name="link_tel" id="link_tel"/>
-				  </div>				      
+				  </div>	
+				  <p className="am-text-warning">注意:多个电话请用英文逗号分隔</p>
 			      <legend><b>管理人员</b></legend>  
                   <label className={one_classDiv}>手机号码:</label>
 				   <div className={two_classDiv}>
 					<PxInput type="text" name="tel" id="tel"/>
 					 <button type="button" onClick={ajax_sms_sendCode.bind(this,"#tel",3)} className="am-btn am-btn-primary">发送验证码</button>
 					  </div>	
+					  
 					   <label className={one_classDiv}>验证码:</label>
 					   <div className={two_classDiv}>
 					  <PxInput type="text" name="smscode" id="smscode"/>

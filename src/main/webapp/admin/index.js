@@ -120,7 +120,23 @@ function login_affter_init(){
       	                      }
       	                  ]
                 },
-
+                {
+                    "link": "##",
+                    "title": "查询功能",
+                    "subCols": 3,
+                    "subMenu": [
+        	                    {
+        	                    	 "fn":function(){menu_Help_fn(91,"查询所有机构");},
+        	                      "link": "##",
+        	                      "title": "查询所有机构"
+        	                    },
+        	                    {
+        	                    	 "fn":function(){menu_Help_fn(92,"查询所有老师");},
+        	                        "link": "##",
+        	                        "title": "查询所有老师"
+        	                      }
+        	                  ]
+                  },
             {
                 "link": "##",
                 "title": "我",
