@@ -66,13 +66,15 @@ setProvCity:function(){
 					 React.createElement("label", {className: one_classDiv}, "学校电话:"), 
 					React.createElement("div", {className: two_classDiv}, 
 				   React.createElement(PxInput, {type: "text", name: "link_tel", id: "link_tel"})
-				  ), 				      
+				  ), 	
+				  React.createElement("p", {className: "am-text-warning"}, "注意:多个电话请用英文逗号分隔"), 
 			      React.createElement("legend", null, React.createElement("b", null, "管理人员")), 
                   React.createElement("label", {className: one_classDiv}, "手机号码:"), 
 				   React.createElement("div", {className: two_classDiv}, 
 					React.createElement(PxInput, {type: "text", name: "tel", id: "tel"}), 
 					 React.createElement("button", {type: "button", onClick: ajax_sms_sendCode.bind(this,"#tel",3), className: "am-btn am-btn-primary"}, "发送验证码")
 					  ), 	
+					  
 					   React.createElement("label", {className: one_classDiv}, "验证码:"), 
 					   React.createElement("div", {className: two_classDiv}, 
 					  React.createElement(PxInput, {type: "text", name: "smscode", id: "smscode"})

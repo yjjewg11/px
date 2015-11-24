@@ -844,6 +844,7 @@ function menu_class_list_fn_byRight() {
 
 /*
  * (标头)收支管理
+ * 收费记录列表
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_list_fn_byRight() {
@@ -864,6 +865,10 @@ var grouplist= Store.getGroupByRight("KD_accounts_m");
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  					}), document.getElementById('div_body'));
 };
+/*
+ * (标头)收支管理
+//学生缴费记录
+ * */
 function menu_accounts_listForYear_byRight() {
 	var grouplist= Store.getGroupByRight("KD_accounts_m");
 		if(!grouplist||grouplist.length==0){

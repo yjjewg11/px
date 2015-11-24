@@ -1439,3 +1439,18 @@ var G_phone_iframe = React.createClass({displayName: "G_phone_iframe",
 	    );
 	  }
 	  }); 
+
+
+
+
+//学生状态数组返回
+function G_staus(){
+    var data = [
+                {value:'0',label: '在校'},
+                {value:'1',label: '离校'},
+	        	{value:'2',label: '毕业'}
+              ];
+    return {
+        data_list: data
+      };
+}

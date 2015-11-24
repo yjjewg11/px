@@ -1358,9 +1358,9 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     			    	)
     			    	), 
     			    	
-    			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+    			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 99, btn_dianzan: "btn_dianzan_"+o.uuid}), 
     			    	React.createElement("ul", {className: "am-comments-list"}, 
-    					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 0, btn_reply: "btn_reply_"+o.uuid})
+    					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid})
     			    	)
     			     )
     			)
@@ -1509,7 +1509,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     		   React.createElement("form", {id: this.form_id, method: "post", className: "am-form"}, 
     			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
     			React.createElement("input", {type: "hidden", name: "uuid"}), 
-    			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 						
+    			React.createElement("input", {type: "hidden", name: "type", value: this.props.type}), 						
     			React.createElement(AMR_Input, {id: this.classnews_content, type: "textarea", rows: "3", label: "我要回复", placeholder: "填写内容", name: "content"}), 
     			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
     		    )	   

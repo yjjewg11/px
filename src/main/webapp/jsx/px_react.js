@@ -424,9 +424,9 @@ var Classnews_show = React.createClass({
 			    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
 			    	</div>
 			    	</footer>
-			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={99}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
 			    	<ul className="am-comments-list">
-					  <Classnews_reply_list replyPage={o.replyPage} uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+					  <Classnews_reply_list replyPage={o.replyPage} uuid={o.uuid}  type={99} btn_reply={"btn_reply_"+o.uuid}/>
 			    	</ul>
 			     </div>
 			</article>
@@ -575,7 +575,7 @@ return (
 		   <form id={this.form_id} method="post" className="am-form">
 			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
 			<input type="hidden" name="uuid" />
-			<input type="hidden" name="type"  value={this.props.uuid}/>						
+			<input type="hidden" name="type"  value={this.props.type}/>						
 			<AMR_Input id={this.classnews_content} type="textarea" rows="3" label="我要回复" placeholder="填写内容" name="content" />
 			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 		    </form>	   
@@ -3243,7 +3243,8 @@ var Group_edit_byRight = React.createClass({
     	    <label className={one_classDiv }>学校电话:</label>
     		 <div className={two_classDiv }>
     	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-    	       </div> 		
+    	       </div> 	
+				 <p className="am-text-warning">注意:多个电话请用英文逗号分隔</p>
     	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
   		  	  {G_get_upload_img_Div()}
   	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
@@ -5411,9 +5412,9 @@ var Class_EventsTable_byRight = React.createClass({
      			    	</div>
      			    	</footer>
      			    	
-     			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
+     			    	<Common_Dianzan_show_noAction dianzan={o.dianzan} uuid={o.uuid} type={99}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
      			    	<ul className="am-comments-list">
-     					  <Classnews_reply_list_byRight replyPage={o.replyPage} uuid={o.uuid}  type={0} btn_reply={"btn_reply_"+o.uuid}/>
+     					  <Classnews_reply_list_byRight replyPage={o.replyPage} uuid={o.uuid}  type={99} btn_reply={"btn_reply_"+o.uuid}/>
      			    	</ul>
      			     </div>
      			</article>
@@ -5562,7 +5563,7 @@ var Class_EventsTable_byRight = React.createClass({
      		   <form id={this.form_id} method="post" className="am-form">
      			<input type="hidden" name="newsuuid"  value={this.props.uuid}/>
      			<input type="hidden" name="uuid" />
-     			<input type="hidden" name="type"  value={this.props.uuid}/>						
+     			<input type="hidden" name="type"  value={this.props.type}/>						
      			<AMR_Input id={this.classnews_content} type="textarea" rows="3" label="我要回复" placeholder="填写内容" name="content" />
      			<button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
      		    </form>	   
@@ -7996,7 +7997,8 @@ setProvCity:function(){
     	    <label className={one_classDiv }>学校电话:</label>
     		 <div className={two_classDiv }>
     	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
-    	       </div> 		
+    	       </div> 	
+	  <p className="am-text-warning">注意:多个电话请用英文逗号分隔</p>
     	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
   		  	  {G_get_upload_img_Div()}
   	          <button type="button"  onClick={ajax_group_save_byRight_px}  className="am-btn am-btn-primary">提交</button>
