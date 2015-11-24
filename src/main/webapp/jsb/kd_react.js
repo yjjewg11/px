@@ -1910,9 +1910,10 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	 handleChange: function(event) {
@@ -3240,9 +3241,10 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	  componentDidMount:function(){

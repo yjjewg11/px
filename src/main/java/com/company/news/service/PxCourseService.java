@@ -207,9 +207,9 @@ public class PxCourseService extends AbstractService {
 	public PageQueryResult queryByPage(String groupuuid, PaginationData pData) {
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.age_min,t1.age_max,t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students,t2.count";
+		String sql=" SELECT t1.age_min,t1.age_max,t1.uuid,t1.type,t1.title,t1.address,t1.schedule,t1.fees,t1.discountfees,t1.status,t1.updatetime,t1.ct_stars,t1.ct_study_students";
 		sql+=" FROM px_pxcourse t1 ";
-		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";//px_count 多条数据时,导致显示多条重复内容
 		sql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		sql += " order by CONVERT( t1.title USING gbk) ";
 		
@@ -223,7 +223,13 @@ public class PxCourseService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
 		
+		List<Map> resultList=pageQueryResult.getData();
+		String uuids="";
+		for(Map map:resultList ){
+			uuids+=(String)map.get("uuid")+",";
+		}
 		
+		//获取已有课程关联班级的总数.
 		sql="select courseuuid,count(uuid) from px_pxclass where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		sql+=" group by courseuuid";
 		List<Object[]> listCount=session.createSQLQuery(sql).list();
@@ -231,12 +237,25 @@ public class PxCourseService extends AbstractService {
 		for(Object[] obj:listCount ){
 			tmpMap.put(obj[0], obj[1]);
 		}
-		List<Map> resultList=pageQueryResult.getData();
+		
+		//获取已有课程浏览次数
+		sql="select ext_uuid,sum(count) from px_count where ext_uuid in(" + DBUtil.stringsToWhereInValue(uuids) + ") group by ext_uuid";
+		List<Object[]> listReadCount=session.createSQLQuery(sql).list();
+		Map listReadCountMap=new HashMap();
+		for(Object[] obj:listReadCount ){
+			listReadCountMap.put(obj[0], obj[1]);
+		}
+		
 		for(Map map:resultList ){
 			String uuid=(String)map.get("uuid");
 			Object class_count=tmpMap.get(uuid);
 			if(class_count==null)class_count="0";
 			map.put("class_count", class_count);
+			
+			//获取已有课程浏览次数
+			Object read_count=listReadCountMap.get(uuid);
+			if(read_count==null)read_count="0";
+			map.put("count", read_count);
 		}
 		
 //		warpVoList(pageQueryResult.getData());
