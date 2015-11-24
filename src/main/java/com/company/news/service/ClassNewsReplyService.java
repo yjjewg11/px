@@ -63,9 +63,10 @@ public class ClassNewsReplyService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 		//暂时屏蔽.
+
 		if(cn.getType()!=null){
 			if(SystemConstants.common_type_hudong==cn.getType().intValue()){
-				pushMsgIservice.pushMsg_replay_to_classNews_to_teacherOrParent(cn.getNewsuuid(), cn.getContent());
+				pushMsgIservice.pushMsg_replay_to_classNews_to_teacherOrParent(cn.getNewsuuid(), user.getName()+":"+cn.getContent());
 			}
 		}
 		

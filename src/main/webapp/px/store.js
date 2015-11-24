@@ -137,6 +137,8 @@ var Store={
 	},
 	getClassByMyClassList:function(classuuid){
 		 var arr=Store.getMyClassList();
+			if(!classuuid)return null;
+			classuuid=classuuid.split(",")[0];
 			for(var i=0;i<arr.length;i++){
 				if(classuuid==arr[i].uuid)return arr[i];
 			}

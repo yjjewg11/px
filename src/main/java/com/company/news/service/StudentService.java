@@ -148,8 +148,9 @@ public class StudentService extends AbstractStudentService {
 			
 			
 			this.updateAllStudentContactRealationByStudent(student);
-			
-			String msg=student.getName()+"|老师修改学生资料|"+"]|爸爸电话:"+student.getBa_tel()+"|妈妈电话:"+student.getMa_tel();
+			 List xueliList=CommonsCache.getBaseDataListByTypeuuid("student_status");
+			String student_status= CommonsCache.getBaseDatavalue(student.getStatus(), xueliList);
+			String msg=student.getName()+"|状态:"+student_status+"|老师修改学生资料|"+"]|爸爸电话:"+student.getBa_tel()+"|妈妈电话:"+student.getMa_tel();
 			this.addStudentOperate(student.getGroupuuid(), student.getUuid(), msg, null, request);
 		
 			
