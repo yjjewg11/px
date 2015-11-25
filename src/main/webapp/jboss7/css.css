@@ -1,11 +1,23 @@
-@media only screen and (min-width:1200px) {
-body{
-	width:1200px;
-	margin-left: auto;
-	margin-right:auto;
-}
-}
 
+.px_content{
+		width:100%;
+		margin-left: auto;
+		margin-right:auto;
+	}
+@media only screen and (min-width:1200px) {
+	.px_content{
+		width:1200px;
+		margin-left: auto;
+		margin-right:auto;
+	}
+}
+.img_down_icon{
+	width:100%;
+	margin: 3px;
+}
+.px_thumbnail{
+	border: 0px;
+}
 .px_div_center{
 	margin-left: auto;
 	margin-right:auto;

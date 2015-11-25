@@ -64,10 +64,7 @@ function index_init(){
 		//MessageTimer.start();
 }
 
-//登录操作
-window.onload=function(){ 
-	index_init();
-}; 
+
 
 
 //登录操作
@@ -83,6 +80,19 @@ function login_init(){
 
 //登录操作
 window.onload=function(){ 
+	
+	
+	var fn=$.getUrlParam("fn");
+	if(fn){//优先使用url后面参数
+		try{
+			window[fn]();
+			$.AMUI.progress.done();
+			return;
+		}catch(e){
+			//alert("调用方法失败,参数fn="+fn);
+		}
+		
+	}
 	login_init();
 }; 
 //登录服务器请求

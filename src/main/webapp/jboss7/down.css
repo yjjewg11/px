@@ -1,9 +1,14 @@
+.px_content{
+		width:100%;
+		margin-left: auto;
+		margin-right:auto;
+	}
 @media only screen and (min-width:1200px) {
-body{
-	width:1200px;
-	margin-left: auto;
-	margin-right:auto;
-}
+	.px_content{
+		width:1200px;
+		margin-left: auto;
+		margin-right:auto;
+	}
 }
 
 .px_div_center{
