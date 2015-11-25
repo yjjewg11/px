@@ -785,7 +785,7 @@ function G_getHtmlTitle(url,callback){
 						 }
 				
 						if (data.ResMsg.status == "success") {
-							callback(data.data);
+							if(data.data)callback(data.data);
 
 					
 						} 

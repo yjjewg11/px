@@ -149,15 +149,15 @@ public class TeacherDailyTaskService extends AbstractService {
 		return resultList;
 	}
 	/**
-	 * 判断是否已经完成任务-班级互动
+	 * 判断是否已经完成任务-班级互动.
 	 * @param rel_uuid
 	 * @param user_uuid
 	 * @param date
 	 * @return
 	 */
 	boolean isFinishTask_ClassNews(String rel_uuid,String user_uuid,Timestamp date){
-
-		String hql="select uuid from ClassNews4Q where classuuid=? and create_useruuid=? and create_time>=? and create_time<=?";
+		//修复我的任务报错
+		String hql="select uuid from ClassNews where classuuid=? and create_useruuid=? and create_time>=? and create_time<=?";
 		Date firstdate=TimeUtils.getDate00(date);
 		Date lastdate=TimeUtils.getDate23(date);
 		List list=this.nSimpleHibernateDao.getHibernateTemplate().find(hql, rel_uuid,user_uuid,firstdate,lastdate);

@@ -1910,9 +1910,10 @@ var Announcements_goodedit = React.createClass({
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	 handleChange: function(event) {
@@ -2240,7 +2241,7 @@ var Class_student_look_info =React.createClass({
 	     var o =this.state;
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
-		 if(!o.staus)o.staus=0;
+		 if(!o.status)o.status=0;
 		 return (
 		 		<div>
 		 		
@@ -2258,7 +2259,7 @@ var Class_student_look_info =React.createClass({
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
 
-                  <AMUIReact.ListItem>状态:{Vo.get("staus_"+o.staus)}</AMUIReact.ListItem>
+                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
 			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
@@ -2334,7 +2335,7 @@ var Class_student_Tel_ListItem =React.createClass({
   	  var o = this.state;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-	  if(!o.staus)o.staus=0;
+	  if(!o.status)o.status=0;
    return (
 		   <form id="editClassStudentForm" method="post" className="am-form">
 		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
@@ -2370,7 +2371,7 @@ var Class_student_Tel_ListItem =React.createClass({
 			  <div className={two_classDiv}>  
 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
 		    </div>  
-			<AMUIReact.Selected name="staus" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.staus+""} />   	
+			<AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.status+""} />   	
 		    <fieldset>
 		    <legend>爸爸妈妈信息</legend> 
 	        <label className={one_classDiv}>妈妈姓名</label>
@@ -3246,9 +3247,10 @@ var Announcements_edit_byRight = React.createClass({
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	  componentDidMount:function(){
@@ -4509,13 +4511,13 @@ render: function() {
 		var G_def_headImgPath=event.headimg
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
-		if(!event.staus)event.staus=0;
+		if(!event.status)event.status=0;
   	    return (
   	      <tr className={className} >
 			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={G_def_headImgPath}/></td>
 			<td><a href="javascript:void(0);" onClick={ajax_class_students_edit_byRight.bind(this,null,event.uuid)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
-			<td>{Vo.get("staus_"+event.staus)}</td>
+			<td>{Vo.get("student_status_"+event.status)}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
 		  <td><a className={event.ma_tel?"":"am-hide"} href={"tel:"+event.ma_tel}>{event.ma_tel}</a></td>
@@ -4562,7 +4564,7 @@ render: function() {
 	  if(!o.uuid){
 		  calss_btn_className="G_Edit_hide";
 	  }
-	  if(!o.staus)o.staus=0;
+	  if(!o.status)o.status=0;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
@@ -4605,7 +4607,7 @@ render: function() {
 			  <div className={two_classDiv}>  
 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
 		    </div>  
-			   <AMUIReact.Selected name="staus" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.staus+""} />    
+			   <AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.status+""} />    
 		    <fieldset>
 		    <legend>爸爸妈妈信息</legend> 
 	        <label className={one_classDiv}>妈妈姓名</label>
@@ -5560,7 +5562,6 @@ render: function() {
   		},
   		maxPageNo:0,
   render: function() {
-			console.log("测试新值",Vo.get("staus_"+0))
   	this.props.group_list.unshift({value:"",label:"所有"});
   	this.state.class_list.unshift({value:"",label:"所有"});
   	if(this.state.group_uuid==""){			
@@ -5640,13 +5641,13 @@ render: function() {
   	    var event = this.props.event;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
-        if(!event.staus)event.staus=0;
+        if(!event.status)event.status=0;
   	    return (
   	      <tr className={className} >
   	        <td><a href="javascript:void(0);" onClick={this.btn_students_list_click.bind(this,event.uuid,event.name)}>{event.name}</a></td>
   	        <td>{event.nickname}</td>
   	        <td>{event.sex=="0"?"男":"女"}</td>
-            <td>{Vo.get("staus_"+event.staus)}</td>
+            <td>{Vo.get("student_status_"+event.status)}</td>
   	        <td>{event.birthday}</td>
   	        <td> {Store.getClassByUuid(event.classuuid).name}</td>
   	        <td>{event.idcard}</td>
@@ -5677,7 +5678,7 @@ render: function() {
   	  },
   		render: function() {
   	     var o =this.state;
-		 if(!o.staus)o.staus=0;
+		 if(!o.status)o.status=0;
   		 return (
   		 		<div>
   			    <AMUIReact.List static border striped>
@@ -5687,7 +5688,7 @@ render: function() {
   			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-                  <AMUIReact.ListItem>状态:{Vo.get("staus_"+o.staus)}</AMUIReact.ListItem>			 
+                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>			 
   			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
   			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>

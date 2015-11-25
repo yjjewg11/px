@@ -1910,9 +1910,10 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	 handleChange: function(event) {
@@ -2240,7 +2241,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 	     var o =this.state;
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
-		 if(!o.staus)o.staus=0;
+		 if(!o.status)o.status=0;
 		 return (
 		 		React.createElement("div", null, 
 		 		
@@ -2258,7 +2259,7 @@ var Class_student_look_info =React.createClass({displayName: "Class_student_look
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
 
-                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("staus_"+o.staus)), 
+                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status)), 
 			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
 			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
 			      React.createElement(Class_student_Tel_ListItem, {name: "妈妈电话", tel: o.ma_tel}), 
@@ -2334,7 +2335,7 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
   	  var o = this.state;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-	  if(!o.staus)o.staus=0;
+	  if(!o.status)o.status=0;
    return (
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
 		   React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
@@ -2370,7 +2371,7 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 			  React.createElement("div", {className: two_classDiv}, 
 			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
 		    ), 
-			React.createElement(AMUIReact.Selected, {name: "staus", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.staus+""}), 	
+			React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.status+""}), 	
 		    React.createElement("fieldset", null, 
 		    React.createElement("legend", null, "爸爸妈妈信息"), 
 	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 
@@ -3246,9 +3247,10 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 			this.setState(this.state);
 	  },
 	handleChange_url:function(){
-	   var url=$("input[name='url']").val();
-		var thit=this;
-	   G_getHtmlTitle(url,function(url_title){thit.handleChange_url_cb(url_title)});
+	    var tmp=$('#editAnnouncementsForm').serializeJson();
+		    this.setState(tmp);
+		var thit=this;		 
+	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
 		
 	},
 	  componentDidMount:function(){
@@ -4509,13 +4511,13 @@ render: function() {
 		var G_def_headImgPath=event.headimg
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
-		if(!event.staus)event.staus=0;
+		if(!event.status)event.status=0;
   	    return (
   	      React.createElement("tr", {className: className}, 
 			React.createElement("td", null, " ", React.createElement(AMUIReact.Image, {id: "img_head_image", width: "28", height: "28", src: G_def_headImgPath})), 
 			React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_edit_byRight.bind(this,null,event.uuid)}, event.name)), 			
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-			React.createElement("td", null, Vo.get("staus_"+event.staus)), 
+			React.createElement("td", null, Vo.get("student_status_"+event.status)), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, event.idcard), 
 		  React.createElement("td", null, React.createElement("a", {className: event.ma_tel?"":"am-hide", href: "tel:"+event.ma_tel}, event.ma_tel)), 
@@ -4562,7 +4564,7 @@ render: function() {
 	  if(!o.uuid){
 		  calss_btn_className="G_Edit_hide";
 	  }
-	  if(!o.staus)o.staus=0;
+	  if(!o.status)o.status=0;
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
    return (
@@ -4605,7 +4607,7 @@ render: function() {
 			  React.createElement("div", {className: two_classDiv}, 
 			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
 		    ), 
-			   React.createElement(AMUIReact.Selected, {name: "staus", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.staus+""}), 
+			   React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.status+""}), 
 		    React.createElement("fieldset", null, 
 		    React.createElement("legend", null, "爸爸妈妈信息"), 
 	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 
@@ -5560,7 +5562,6 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   		},
   		maxPageNo:0,
   render: function() {
-			console.log("测试新值",Vo.get("staus_"+0))
   	this.props.group_list.unshift({value:"",label:"所有"});
   	this.state.class_list.unshift({value:"",label:"所有"});
   	if(this.state.group_uuid==""){			
@@ -5640,13 +5641,13 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   	    var event = this.props.event;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
-        if(!event.staus)event.staus=0;
+        if(!event.status)event.status=0;
   	    return (
   	      React.createElement("tr", {className: className}, 
   	        React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.btn_students_list_click.bind(this,event.uuid,event.name)}, event.name)), 
   	        React.createElement("td", null, event.nickname), 
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
-            React.createElement("td", null, Vo.get("staus_"+event.staus)), 
+            React.createElement("td", null, Vo.get("student_status_"+event.status)), 
   	        React.createElement("td", null, event.birthday), 
   	        React.createElement("td", null, " ", Store.getClassByUuid(event.classuuid).name), 
   	        React.createElement("td", null, event.idcard)
@@ -5677,7 +5678,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   	  },
   		render: function() {
   	     var o =this.state;
-		 if(!o.staus)o.staus=0;
+		 if(!o.status)o.status=0;
   		 return (
   		 		React.createElement("div", null, 
   			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
@@ -5687,7 +5688,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
   			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
   			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("staus_"+o.staus)), 			 
+                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status)), 			 
   			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
   			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
   			      React.createElement(AMUIReact.ListItem, null, "妈妈电话:", o.ma_tel), 
