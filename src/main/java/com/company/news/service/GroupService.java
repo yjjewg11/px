@@ -613,9 +613,21 @@ public class GroupService extends AbstractService {
 		Query q = s.createSQLQuery(sql);
 		return q.list();
 	}
-	public PageQueryResult queryByPage(PaginationData pData) {
-		// TODO Auto-generated method stub
-		return null;
+	public PageQueryResult queryByPage(String type,PaginationData pData) {
+		String hql = "from Group where 1=1";
+//		if (StringUtils.isNotBlank(type))
+//			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(type) + ")";
+//		if (StringUtils.isNotBlank(classuuid))
+//			hql += " and  classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(type))
+		hql += " and  type =" + type;
+
+		hql += " order by convert(brand_name, 'gbk') ";
+
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
+		this.warpVoList(pageQueryResult.getData());
+
+		return pageQueryResult;
 	}
 
 

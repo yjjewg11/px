@@ -2145,4 +2145,198 @@ var Parent_EventsTable_div = React.createClass({
     //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-        
+    
+    
+    
+    
+  //—————————————————————————— 查询校务管理 <绘制>—————————————————————   
+    /*
+     *查询校务管理 <绘制>;
+     * */
+    var Group_EventsTable_wjkj_byRight = React.createClass({
+  		handleClick: function(m) {
+  			if(m=="pre"){
+  				ajax_group_myList_wjkj(g_group_list_type,--g_group_list_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_group_myList_wjkj(g_group_list_type,++g_group_list_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  render: function() {
+  	var pre_disabled=g_group_list_point<2;  	
+  	if(g_group_list_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_group_list_point>=this.maxPageNo;
+      return (
+  		  
+        <div> 
+  	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
+          <AMR_Panel>
+         <AMR_ButtonToolbar>
+        <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+       <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre")} >&laquo; 上一页</AMR_Button>
+      <label>{g_group_list_point}\{this.maxPageNo}</label> 
+     <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next")} >下一页 &raquo;</AMR_Button>
+    </div>
+
+  	
+  	</AMR_ButtonToolbar>
+    </AMR_Panel>
+  	 </form>
+        <AMR_Table {...this.props}>  
+          <thead> 
+            <tr>
+            <th>品牌名</th>
+            <th>预览</th>
+            <th>机构全称</th>
+            <th>电话</th>
+            <th>学校地址</th>
+            <th>创建时间</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<Query_EventRow_wjkj key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+  });
+      
+  /*  	
+   * 查询校务管理 <绘制>绘制详细内容;
+   * */
+  var Query_EventRow_wjkj = React.createClass({ 
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+  	    return (
+  	      <tr className={className} >
+          <td  >{event.brand_name}</td>
+          <td>
+     	<AMR_Button amStyle="secondary" onClick={ajax_group_edit_byRight_wjkj.bind(this,event)} >预览</AMR_Button>
+         </td>
+         <td>{event.company_name}</td>
+         <td > {event.link_tel}</td>
+         <td >{event.address}</td>
+         <td >{event.create_time}</td>
+  	      </tr> 
+  	    );
+  	  }
+  	});     
+    
+  /*
+   *(校务管理)<预览按钮>绘制 ;
+   * */
+    var Group_show_byRight_wjkj = React.createClass({ 
+    render: function() {
+    	  var o = this.props.formdata;
+      return (
+    		  <AMUIReact.Article
+    		    title={o.brand_name}
+    		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}>
+    			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+    		   </AMUIReact.Article>	    		     		   
+      );
+    }
+    });    
+    
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+    
+    
+    
+    
+ 
+    
+    
+    
+//—————————————————————————— 查询所有老师<绘制>—————————————————————   
+    /*
+     *查询所有老师<绘制>;
+     * */
+    var ajax_uesrinfo_listBy_wjkj = React.createClass({
+  		handleClick: function(m) {
+  			if(m=="pre"){
+  				ajax_group_myList_wjkj(--g_user_list_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_group_myList_wjkj(++g_user_list_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  render: function() {
+  	var pre_disabled=g_user_list_point<2;  	
+  	if(g_user_list_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_user_list_point>=this.maxPageNo;
+      return (
+  		  
+        <div> 
+  	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
+          <AMR_Panel>
+         <AMR_ButtonToolbar>
+        <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+       <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre")} >&laquo; 上一页</AMR_Button>
+      <label>{g_user_list_point}\{this.maxPageNo}</label> 
+     <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next")} >下一页 &raquo;</AMR_Button>
+    </div>
+
+  	
+  	</AMR_ButtonToolbar>
+    </AMR_Panel>
+  	 </form>
+        <AMR_Table {...this.props}>  
+          <thead> 
+            <tr>
+            <th >姓名</th>
+            <th>电话</th>
+            <th>邮箱</th>
+            <th>性别</th>
+            <th>状态</th>
+            <th>登录时间</th>
+            <th>创建时间</th>
+            </tr> 
+          </thead>
+          <tbody>
+            {this.props.events.map(function(event) {
+              return (<Query_User_wjkj key={event.id} event={event} />);
+            })}
+          </tbody>
+        </AMR_Table>
+        </div>
+      );
+    }
+  });
+      
+  /*  	
+   * 查询所有老师<绘制>;绘制详细内容;
+   * */
+  var Query_User_wjkj = React.createClass({ 
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+  	    return (
+  	      <tr className={className} >
+ 	        <td >{event.name}</td>
+   	        <td > {event.tel}</td>
+   	        <td >{event.email}</td>
+   	        <td>{event.sex=="0"?"男":"女"}</td>
+   	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
+   	        <td>{event.login_time}</td>
+   	        <td>{event.create_time}</td>
+  	      </tr> 
+  	    );
+  	  }
+  	});     
+    
+    
+  

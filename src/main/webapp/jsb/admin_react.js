@@ -2145,4 +2145,198 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-        
+    
+    
+    
+    
+  //—————————————————————————— 查询校务管理 <绘制>—————————————————————   
+    /*
+     *查询校务管理 <绘制>;
+     * */
+    var Group_EventsTable_wjkj_byRight = React.createClass({displayName: "Group_EventsTable_wjkj_byRight",
+  		handleClick: function(m) {
+  			if(m=="pre"){
+  				ajax_group_myList_wjkj(g_group_list_type,--g_group_list_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_group_myList_wjkj(g_group_list_type,++g_group_list_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  render: function() {
+  	var pre_disabled=g_group_list_point<2;  	
+  	if(g_group_list_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_group_list_point>=this.maxPageNo;
+      return (
+  		  
+        React.createElement("div", null, 
+  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+          React.createElement(AMR_Panel, null, 
+         React.createElement(AMR_ButtonToolbar, null, 
+        React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+       React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre")}, "« 上一页"), 
+      React.createElement("label", null, g_group_list_point, "\\", this.maxPageNo), 
+     React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next")}, "下一页 »")
+    )
+
+  	
+  	)
+    )
+  	 ), 
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+            React.createElement("th", null, "品牌名"), 
+            React.createElement("th", null, "预览"), 
+            React.createElement("th", null, "机构全称"), 
+            React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "学校地址"), 
+            React.createElement("th", null, "创建时间")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(Query_EventRow_wjkj, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+  });
+      
+  /*  	
+   * 查询校务管理 <绘制>绘制详细内容;
+   * */
+  var Query_EventRow_wjkj = React.createClass({displayName: "Query_EventRow_wjkj", 
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+  	    return (
+  	      React.createElement("tr", {className: className}, 
+          React.createElement("td", null, event.brand_name), 
+          React.createElement("td", null, 
+     	React.createElement(AMR_Button, {amStyle: "secondary", onClick: ajax_group_edit_byRight_wjkj.bind(this,event)}, "预览")
+         ), 
+         React.createElement("td", null, event.company_name), 
+         React.createElement("td", null, " ", event.link_tel), 
+         React.createElement("td", null, event.address), 
+         React.createElement("td", null, event.create_time)
+  	      ) 
+  	    );
+  	  }
+  	});     
+    
+  /*
+   *(校务管理)<预览按钮>绘制 ;
+   * */
+    var Group_show_byRight_wjkj = React.createClass({displayName: "Group_show_byRight_wjkj", 
+    render: function() {
+    	  var o = this.props.formdata;
+      return (
+    		  React.createElement(AMUIReact.Article, {
+    		    title: o.brand_name, 
+    		    meta: o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}, 
+    			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.description}})
+    		   )	    		     		   
+      );
+    }
+    });    
+    
+    //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+    
+    
+    
+    
+ 
+    
+    
+    
+//—————————————————————————— 查询所有老师<绘制>—————————————————————   
+    /*
+     *查询所有老师<绘制>;
+     * */
+    var ajax_uesrinfo_listBy_wjkj = React.createClass({displayName: "ajax_uesrinfo_listBy_wjkj",
+  		handleClick: function(m) {
+  			if(m=="pre"){
+  				ajax_group_myList_wjkj(--g_user_list_point);
+  				return;
+  			 }else if(m=="next"){
+  				ajax_group_myList_wjkj(++g_user_list_point);
+  				 return;
+  			 }
+  		},
+  		maxPageNo:0,
+  render: function() {
+  	var pre_disabled=g_user_list_point<2;  	
+  	if(g_user_list_point==1){
+  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+  	}
+  	var next_disabled=g_user_list_point>=this.maxPageNo;
+      return (
+  		  
+        React.createElement("div", null, 
+  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+          React.createElement(AMR_Panel, null, 
+         React.createElement(AMR_ButtonToolbar, null, 
+        React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+       React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre")}, "« 上一页"), 
+      React.createElement("label", null, g_user_list_point, "\\", this.maxPageNo), 
+     React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next")}, "下一页 »")
+    )
+
+  	
+  	)
+    )
+  	 ), 
+        React.createElement(AMR_Table, React.__spread({},  this.props), 
+          React.createElement("thead", null, 
+            React.createElement("tr", null, 
+            React.createElement("th", null, "姓名"), 
+            React.createElement("th", null, "电话"), 
+            React.createElement("th", null, "邮箱"), 
+            React.createElement("th", null, "性别"), 
+            React.createElement("th", null, "状态"), 
+            React.createElement("th", null, "登录时间"), 
+            React.createElement("th", null, "创建时间")
+            )
+          ), 
+          React.createElement("tbody", null, 
+            this.props.events.map(function(event) {
+              return (React.createElement(Query_User_wjkj, {key: event.id, event: event}));
+            })
+          )
+        )
+        )
+      );
+    }
+  });
+      
+  /*  	
+   * 查询所有老师<绘制>;绘制详细内容;
+   * */
+  var Query_User_wjkj = React.createClass({displayName: "Query_User_wjkj", 
+  	  render: function() {
+  	    var event = this.props.event;
+  	    var className = event.highlight ? 'am-active' :
+  	      event.disabled ? 'am-disabled' : '';
+  	    return (
+  	      React.createElement("tr", {className: className}, 
+ 	        React.createElement("td", null, event.name), 
+   	        React.createElement("td", null, " ", event.tel), 
+   	        React.createElement("td", null, event.email), 
+   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
+   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
+   	        React.createElement("td", null, event.login_time), 
+   	        React.createElement("td", null, event.create_time)
+  	      ) 
+  	    );
+  	  }
+  	});     
+    
+    
+  

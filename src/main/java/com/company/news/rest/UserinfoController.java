@@ -594,6 +594,47 @@ public class UserinfoController extends AbstractRESTController {
 		}
 		return "";
 	}
+	
+	
+	
+	/**
+	 * 查询所有老师用户信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/alllistByPagewjkj", method = RequestMethod.GET)
+	public String alllistByPagewjkj(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			pData.setPageSize(50);
+//			String groupuuid = request.getParameter("groupuuid");
+//			String name = request.getParameter("name");
+//			if (StringUtils.isEmpty(groupuuid)){// 查询所有用户
+//				if(!RightUtils.isAdmin(request)){//不是管理员,只能查询当前用户的学校.
+//					groupuuid=this.getMyGroupUuidsBySession(request);
+//					if (StringUtils.isEmpty(groupuuid)){
+//						responseMessage.setMessage("非法用户,没有关联的学校!");
+//						return "";
+//					}
+//				}
+//			
+//			}
+			PageQueryResult list = userinfoService.getUserByByPagewjkj(pData);
+
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}	
 	/**
 	 * 
 	 * @param model

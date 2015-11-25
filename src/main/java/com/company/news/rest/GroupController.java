@@ -170,21 +170,6 @@ public class GroupController extends AbstractRESTController {
 
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 *
 	 * 获取所有机构查询服务器
@@ -192,122 +177,31 @@ public class GroupController extends AbstractRESTController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/myListByRightwjkj", method = RequestMethod.GET)
-	public String myListByRightwjkj(ModelMap model, HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		
-		PaginationData pData = this.getPaginationDataByRequest(request);
-		String right=RightConstants.AD_group_m;
-//		if(SessionListener.isPXLogin(request)){
-//			right=RightConstants.PX_group_m;
-//		}
-		
-		String groupList=RightUtils.getRightGroups(right, request);
-		
-		if(StringUtils.isBlank(groupList)){
-			responseMessage.setMessage(RightConstants.Return_msg);
-			return "";
-		}
-		List list = groupService.getGroupByuuids(groupList);
-		
-		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		return "";
-	}
-	
-	
-	
-	
-	
+
 	@RequestMapping(value = "/allListByRightwjkj", method = RequestMethod.GET)
 	public String allListByRightwjkj(ModelMap model,
 			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-//		try {
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			
 			
 			String right=RightConstants.AD_group_m;
+			String type=request.getParameter("type");
 			
-			String groupList=RightUtils.getRightGroups(right, request);
-			
-			if(StringUtils.isBlank(groupList)){
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, right, request)){
 				responseMessage.setMessage(RightConstants.Return_msg);
 				return "";
-			}
-			List list = groupService.getGroupByuuids(groupList);
+			}		
 			
-//			if(SessionListener.isPXLogin(request)){
-//				right=RightConstants.PX_student_allquery;
-//			}
-			  
-//			if(StringUtils.isBlank(groupuuid)){ 
-//				groupuuid=RightUtils.getRightGroups(right, request);
-//			}else{
-//				String groupUuids=RightUtils.getRightGroups(right, request);
-//				if(groupUuids==null||!groupUuids.contains(groupuuid)){
-//					responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
-//					return "";
-//				}
-//			}
-			
-			// queryByPage   幼儿园那套考过去
-			PageQueryResult pageQueryResult = this.groupService.queryByPage(pData);
-			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+			// queryByPage 
+			PageQueryResult pageQueryResult = this.groupService.queryByPage(type,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//				responseMessage
-//				.setStatus(RestConstants.Return_ResponseMessage_failed);
-//		responseMessage.setMessage("服务器异常:"+e.getMessage());
-//		return "";
-//		}
 	}	
 	
-//	public String myListByRightwjkj(ModelMap model,
-//			HttpServletRequest request) {
-//		ResponseMessage responseMessage = RestUtil
-//				.addResponseMessageForModelMap(model);
-//		try {
-//			
-//			PaginationData pData = this.getPaginationDataByRequest(request);
-//			
-//			
-//			String groupuuid=request.getParameter("groupuuid");
-//			String classuuid=request.getParameter("classuuid");
-//			String name=request.getParameter("name");
-//			String right=RightConstants.KD_student_allquery;
-//			if(SessionListener.isPXLogin(request)){
-//				right=RightConstants.PX_student_allquery;
-//			}
-//			  
-//			if(StringUtils.isBlank(groupuuid)){ 
-//				groupuuid=RightUtils.getRightGroups(right, request);
-//			}else{
-//				String groupUuids=RightUtils.getRightGroups(right, request);
-//				if(groupUuids==null||!groupUuids.contains(groupuuid)){
-//					responseMessage.setMessage("非法参数,没有该幼儿园的学校查看权限:group_uuid"+groupuuid);
-//					return "";
-//				}
-//			}
-//			
-//			
-//			PageQueryResult pageQueryResult = studentService.queryByPage(groupuuid,classuuid,name,pData);
-//			model.addAttribute(RestConstants.Return_ResponseMessage_list,
-//					pageQueryResult);
-//			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-//			return "";
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//				responseMessage
-//				.setStatus(RestConstants.Return_ResponseMessage_failed);
-//		responseMessage.setMessage("服务器异常:"+e.getMessage());
-//		return "";
-//		}	
 	
 	
 	/**

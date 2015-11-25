@@ -2371,7 +2371,7 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 			  React.createElement("div", {className: two_classDiv}, 
 			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
 		    ), 
-			React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.status+""}), 	
+			React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_status().data_list, btnStyle: "primary", value: o.status+""}), 	
 		    React.createElement("fieldset", null, 
 		    React.createElement("legend", null, "爸爸妈妈信息"), 
 	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 
@@ -4607,7 +4607,7 @@ render: function() {
 			  React.createElement("div", {className: two_classDiv}, 
 			 React.createElement(PxInput, {type: "text", name: "idcard", id: "idcard", value: o.idcard, onChange: this.handleChange, placeholder: ""})
 		    ), 
-			   React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_staus().data_list, btnStyle: "primary", value: o.status+""}), 
+			   React.createElement(AMUIReact.Selected, {name: "status", onChange: this.handleChange, btnWidth: "200", data: G_status().data_list, btnStyle: "primary", value: o.status+""}), 
 		    React.createElement("fieldset", null, 
 		    React.createElement("legend", null, "爸爸妈妈信息"), 
 	        React.createElement("label", {className: one_classDiv}, "妈妈姓名"), 

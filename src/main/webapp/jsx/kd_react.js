@@ -2371,7 +2371,7 @@ var Class_student_Tel_ListItem =React.createClass({
 			  <div className={two_classDiv}>  
 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
 		    </div>  
-			<AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.status+""} />   	
+			<AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_status().data_list} btnStyle="primary" value={o.status+""} />   	
 		    <fieldset>
 		    <legend>爸爸妈妈信息</legend> 
 	        <label className={one_classDiv}>妈妈姓名</label>
@@ -4607,7 +4607,7 @@ render: function() {
 			  <div className={two_classDiv}>  
 			 <PxInput  type="text" name="idcard" id="idcard" value={o.idcard} onChange={this.handleChange} placeholder=""/>
 		    </div>  
-			   <AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_staus().data_list} btnStyle="primary" value={o.status+""} />    
+			   <AMUIReact.Selected name="status" onChange={this.handleChange} btnWidth="200"data={G_status().data_list} btnStyle="primary" value={o.status+""} />    
 		    <fieldset>
 		    <legend>爸爸妈妈信息</legend> 
 	        <label className={one_classDiv}>妈妈姓名</label>

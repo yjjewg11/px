@@ -61,7 +61,7 @@ function index_init(){
 		}
 	  ajax_getUserinfo(true);
 	  
-		//MessageTimer.start();
+	//	MessageTimer.start();
 }
 
 //登录操作
@@ -78,7 +78,7 @@ function login_init(){
 		}
 	  ajax_getUserinfo(true);
 	  
-	//	MessageTimer.start();
+//		MessageTimer.start();
 }
 
 //登录操作

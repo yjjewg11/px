@@ -126,12 +126,17 @@ function login_affter_init(){
                     "subCols": 3,
                     "subMenu": [
         	                    {
-        	                    	 "fn":function(){menu_Help_fn(91,"查询所有机构");},
+        	                    	 "fn":function(){menu_group_myList_wjkj(1,"查询所有机构");},//类型：2，培训机构，1:幼儿园
         	                      "link": "##",
-        	                      "title": "查询所有机构"
+        	                      "title": "查询幼儿园所有机构"
         	                    },
         	                    {
-        	                    	 "fn":function(){menu_Help_fn(92,"查询所有老师");},
+       	                    	 "fn":function(){menu_group_myList_wjkj(2,"查询所有机构");},//类型：2，培训机构，1:幼儿园
+       	                      "link": "##",
+       	                      "title": "查询培训机构所有机构"
+       	                    },
+        	                    {
+        	                    	 "fn":function(){menu_userinfo_list_fn_wjkj();},
         	                        "link": "##",
         	                        "title": "查询所有老师"
         	                      }
@@ -356,6 +361,31 @@ function menu_body_fn (){
 	login_affter_init();
 	menu_dohome();
 }
+
+
+
+
+/*
+ * (查询功能)-查询所有机构
+ * @跳转kd_service发服务器请求
+ * */
+function menu_group_myList_wjkj(type,name) {
+	Queue.push(function(){menu_group_myList_wjkj(type,name);},name);
+	ajax_group_myList_wjkj(type);
+}
+
+
+/*
+ * (查询功能)-查询所有老师
+ * @跳转发服务器请求
+ * */
+//var g_uesrinfo_groupuuid="";
+function menu_userinfo_list_fn_wjkj() {
+	Queue.push(function(){menu_userinfo_list_fn_wjkj();},"老师查询");
+	ajax_uesrinfo_myList_wjkj();
+};
+
+
 ajax_getUserinfo(true);
 //如果需要在手机或平板等触摸设备上使用 React，需要调用
 React.initializeTouchEvents(true);// 启用触摸事件处理。

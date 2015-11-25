@@ -1444,7 +1444,7 @@ var G_phone_iframe = React.createClass({
 
 
 //学生状态数组返回
-function G_staus(){
+function G_status(){
     var data = [
                 {value:'0',label: '在校'},
                 {value:'1',label: '离校'},
