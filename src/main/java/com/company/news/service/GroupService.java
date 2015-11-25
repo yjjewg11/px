@@ -21,6 +21,8 @@ import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserGroupRelation;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
@@ -610,6 +612,10 @@ public class GroupService extends AbstractService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		Query q = s.createSQLQuery(sql);
 		return q.list();
+	}
+	public PageQueryResult queryByPage(PaginationData pData) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
