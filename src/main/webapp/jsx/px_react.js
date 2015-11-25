@@ -6768,7 +6768,6 @@ var Class_EventsTable_byRight = React.createClass({
              <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
              </th>
              <th>标题</th>		     
-		     <th>操作</th>
 		     <th>发布状态</th>
 		     <th>适应年龄</th>
              <th>课程类型</th>
@@ -7004,23 +7003,23 @@ var Class_EventsTable_byRight = React.createClass({
 		 	 
 			    <label className={one_classDiv}>上课地点:</label>
 			     <div className={two_classDiv}>
-			       <PxInput  type="text" name="address" id="address" maxLength="50" value={o.address} onChange={this.handleChange}/>
+			       <PxInput placeholder="非必填项" type="text" name="address" id="address" maxLength="50" value={o.address} onChange={this.handleChange}/>
 			        </div>
 
 
 			    <label className={one_classDiv}>课程学时:</label>
 			     <div className={two_classDiv}>
-			       <PxInput  type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
+			       <PxInput placeholder="非必填项" type="text" name="schedule" id="schedule" maxLength="20" value={o.schedule} onChange={this.handleChange}/>
 			        </div>
 
 			    <label className={one_classDiv}>收费价格:</label>
 			     <div className={two_classDiv}>
-			       <PxInput  type="number" name="fees" id="fees" maxLength="20" value={o.fees} onChange={this.handleChange}/>
+			       <PxInput  placeholder="非必填项" type="number" name="fees" id="fees" maxLength="20" value={o.fees} onChange={this.handleChange}/>
 			        </div>
 
 			    <label className={one_classDiv}>优惠价格:</label>
 			     <div className={two_classDiv}>
-			       <PxInput  type="number" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
+			       <PxInput  placeholder="非必填项" type="number" name="discountfees" id="discountfees" maxLength="20" value={o.discountfees} onChange={this.handleChange}/>
 			        </div>
 			       
 			      <AMR_Input id="announce_message" type="textarea" rows="10" label="课程详细内容:" placeholder="填写内容" name="context" value={o.context} onChange={this.handleChange}/>

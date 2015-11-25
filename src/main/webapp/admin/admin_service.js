@@ -1299,4 +1299,149 @@ $.ajax({
 	});
 }; 
 
-  
+
+
+
+
+
+var g_student_query_point=1;
+function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
+	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
+	  if(!groupuuid)groupuuid="";
+	  if(!classuuid)classuuid="";
+	 if(!name)name="";
+	  if(!pageNo)pageNo=1;
+	 g_student_query_point=pageNo;
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/student/querybyRight.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
+		$.ajax({          
+			type : "GET",  
+			url : url,
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(Query_stutent_list_byRight, {
+	  					group_uuid:groupuuid,
+	  					class_uuid:classuuid,
+	  					name:name,
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
+	  					data:data,
+	  					events: data.list.data,
+	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	  					
+	  				}), document.getElementById('div_body'));
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error :G_ajax_error_fn
+		});
+	};
+
+
+
+
+
+
+
+
+
+
+//———————————————————————————查询所有机构<管理模块>—————————————————————————  
+/*
+ *(查询所有机构)<校园列表>服务器请求 ;
+ *@Group_EventsTable:kd_react开始绘制
+ * */
+var g_group_list_point=1;
+var g_group_list_type;
+function ajax_group_myList_wjkj(type,pageNo) {
+	  if(!pageNo)pageNo=1;
+   g_group_list_point=pageNo;
+   g_group_list_type=type;
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/group/allListByRightwjkj.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data :{type:type,pageNo:pageNo},
+		dataType : "json",
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Group_EventsTable_wjkj_byRight, {
+  					events: data.list.data,
+  					data:data,
+  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+  					
+  				}), document.getElementById('div_body'));
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
+
+/*
+*(查询所有机构)预览公共方法
+*/
+function ajax_group_edit_byRight_wjkj(formdata){
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/group/"+formdata.uuid+".json";
+   	$.ajax({
+   		type : "GET",
+   		url : url,
+   		dataType : "json",
+   		 async: true,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			if (data.ResMsg.status == "success") {
+   				React.render(React.createElement(Group_show_byRight_wjkj,{formdata:data.data,count:data.count}), G_get_div_second());
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+  		error :G_ajax_error_fn
+   	});
+   }; 
+   
+   
+   
+   
+ //———————————————————————————查询所有老师<管理模块>—————————————————————————    
+   
+   /*     
+   * (查询功能)-查询所有老师
+   * */
+   var g_user_list_point=1;
+  function ajax_uesrinfo_myList_wjkj(pageNo){
+	  if(!pageNo)pageNo=1;
+	  g_user_list_point=pageNo;
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/userinfo/alllistByPagewjkj.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data :{pageNo:pageNo},
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(ajax_uesrinfo_listBy_wjkj, {
+	  					events: data.list.data,
+	  					data:data,
+	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
+	  					
+	  				}), document.getElementById('div_body'));
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error :G_ajax_error_fn
+		});
+  };
+       

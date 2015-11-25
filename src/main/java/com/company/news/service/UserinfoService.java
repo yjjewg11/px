@@ -1367,4 +1367,22 @@ public class UserinfoService extends AbstractService {
 		}
 	}
 
+	public PageQueryResult getUserByByPagewjkj(PaginationData pData) {
+		String hql = "from User where 1=1" ;
+		
+//		if (StringUtils.isNotBlank(name)){
+//			if(StringUtils.isNumeric(name)){
+//				hql+=" and tel like '%"+name+"%'";
+//			}else{				
+//				hql+=" and name like '%"+name+"%'";
+//			}
+//		}
+		pData.setOrderFiled("login_time");
+		pData.setOrderType("desc");
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
+				.findByPaginationToHql(hql, pData);
+		return pageQueryResult;
+	}
+
 }

@@ -17,6 +17,8 @@ import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -165,13 +167,49 @@ public class GroupController extends AbstractRESTController {
 		return "";
 	}
 	
+
+	
+	
+	/**
+	 *
+	 * 获取所有机构查询服务器
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+
+	@RequestMapping(value = "/allListByRightwjkj", method = RequestMethod.GET)
+	public String allListByRightwjkj(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+			
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			
+			
+			String right=RightConstants.AD_group_m;
+			String type=request.getParameter("type");
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, right, request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}		
+			
+			// queryByPage 
+			PageQueryResult pageQueryResult = this.groupService.queryByPage(type,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+	}	
+	
+	
 	
 	/**
 	 * 获取我的机构信息
 	 * 
 	 * @param model
 	 * @param request
-	 * @return
+	 * @return AD_group_m 查询所有后台信息
 	 */
 	@RequestMapping(value = "/myListByRight", method = RequestMethod.GET)
 	public String myListByRight(ModelMap model, HttpServletRequest request) {
@@ -197,6 +235,29 @@ public class GroupController extends AbstractRESTController {
 		return "";
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 获取我的机构信息
 	 * 

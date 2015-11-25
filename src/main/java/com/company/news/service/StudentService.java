@@ -169,6 +169,26 @@ public class StudentService extends AbstractStudentService {
 
 
 
+	public StudentBindService getStudentBindService() {
+		return studentBindService;
+	}
+
+	public void setStudentBindService(StudentBindService studentBindService) {
+		this.studentBindService = studentBindService;
+	}
+
+	public PxStudentService getPxStudentService() {
+		return pxStudentService;
+	}
+
+	public void setPxStudentService(PxStudentService pxStudentService) {
+		this.pxStudentService = pxStudentService;
+	}
+
+	public static String getModelName() {
+		return model_name;
+	}
+
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
