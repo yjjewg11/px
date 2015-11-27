@@ -35,6 +35,14 @@ $(this.serializeArray()).each(function(){
 });
 return serializeObj;
 };
+
+
+$.getUrlParam = function (name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
+
 })(jQuery);
 window.G_group_wjd="group_wjd";
 window.hostUrl='/px-rest/';
