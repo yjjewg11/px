@@ -86,7 +86,9 @@ function ajax_queryMyTimely_myList() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				MessageTimer.update_create_time(); 
-		        React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), document.getElementById('div_body'));
+		        React.render(React.createElement(Message_queryMyTimely_myList,{
+		        	formdata:data.list
+		        	}), document.getElementById('div_body'));
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}

@@ -86,7 +86,7 @@ var Help_txt =React.createClass({
 		   
 		   
 		   
-		   
+		 //   <form id="editCourseForm" method="post" className="am-form">
 		   
 //——————————————————————————查看即时消息<绘制>——————————————————————————   
 /* <查看即时消息>信息详情界面绘制；
@@ -94,21 +94,50 @@ var Help_txt =React.createClass({
  * */
 
 
-var Message_queryMyTimely_myList =React.createClass({	 
+var Message_queryMyTimely_myList =React.createClass({
+handleClick: function(type,rel_uuid,group_uuid,uuid) {
+  $.AMUI.progress.start();
+ 			var url = hostUrl + "rest/pushMessage/read.json";
+ 			$.ajax({
+ 				type : "POST",
+ 				url : url,
+                data : {uuid:uuid},
+ 				dataType : "json",
+ 				success : function(data) {
+ 					$.AMUI.progress.done();
+ 					if (data.ResMsg.status == "success") {
+                    $("#"+uuid).removeClass("am-text-danger");
+                     ajax_State_style(type,rel_uuid,group_uuid,1)
+ 					} else {
+ 						alert(data.ResMsg.message);
+ 						G_resMsg_filter(data.ResMsg);
+ 					}
+ 				}
+ 			});		
+	  },
 	render: function() {
+		  var thit=this;
+		  var msg_classNmae;
 		  return (
 		    <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
 		      <div className="am-list-news-bd">
+
 		    	<ul className="am-list">
 				  {this.props.formdata.data.map(function(event) {
-					  return(							  										  
+						if(event.isread==0){
+						 msg_classNmae="am-list-item-text am-text-danger ";
+						 }else{
+						 msg_classNmae="am-list-item-text ";
+						  }
+					  return(	
+						  
 			    <li className="am-g am-list-item-dated">
-			  <a href="javascript:void(0);" className="am-list-item-hd" onClick={this.ajax_State_style.bind(this,event.type,event.rel_uuid,event.group_uuid,1)}>
-			    {event.title}： {event.message}
-			  </a>		
-			    <div className="am-list-item-text">
+			  <a href="javascript:void(0);" className="am-list-item-hd"  onClick={thit.handleClick.bind(this,event.type,event.rel_uuid,event.group_uuid,event.uuid)}>
+			    {event.title}： {event.message}			 			 	
+			    <div id= {event.uuid} className={msg_classNmae}>
 			  	   <time>消息发送于 {event.create_time}</time>
 			  		  </div> 
+					 </a>	
 			  		     </li>)})}
     			    </ul> 
     			  </div> 
@@ -118,7 +147,7 @@ var Message_queryMyTimely_myList =React.createClass({
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
-
+//event.sex=="0"?"男":"女"
 
 
 

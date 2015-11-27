@@ -691,7 +691,7 @@ function menu_body_fn (){
 	$("#div_login").html(null);
 	login_affter_init();
 	menu_dohome();
-	MessageTimer.start();
+	//MessageTimer.start();
 }
 
 

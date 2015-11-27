@@ -12,16 +12,32 @@ body{
 }
 
 
-
+.px_parent_app{
+	color: white;
+}
+.px_parent_app2{
+	color: #3bb4f2;
+}
 .px_parent_txt{
 	color: #0A0A0A;
 }
 .px-bordered{
   	 border: 1px solid #dddddd;
   	}
+  	 .get_head {
 
+      color: #fff;
+     
+      padding: 100px 0 0 0;
+    }
+ .get {
+
+   color: #fff;
+  
+   padding: 5px 0;
+ }
  .div_bg_white {
-      background: white;
+      background: #f5f5f5;
       	padding: 10px;
     } 
  .get_bg {
@@ -29,8 +45,8 @@ body{
       padding: 100px;
     }     
  .get_bg1 {
-      background: #f5f5f5;
-      padding: 50px 0;
+      background: #0e90d3;
+      padding: 5px 0;
     }   
  .get_bg2 {
 
@@ -38,9 +54,15 @@ body{
       padding: 50px 0;
     }
     
+   .get_bg3 {
+      background: #5eb85e;
+
+    }     
     
-    
-    
+    .get_bg4 {
+      background: #f37b1d;
+
+    }     
     
     
     
