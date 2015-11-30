@@ -174,25 +174,20 @@ var Help_txt =React.createClass({displayName: "Help_txt",
 
 
 var Message_queryMyTimely_myList =React.createClass({displayName: "Message_queryMyTimely_myList",
-	handleClick: function(type,rel_uuid,group_uuid,uuid) {
-  $.AMUI.progress.start();
+	handleClick: function(event) {
+		 $("#"+event.uuid).removeClass("am-text-danger");
+         ajax_State_style(event.type,event.rel_uuid,event.group_uuid,1);
+ if(event.isread==0){ 
  			var url = hostUrl + "rest/pushMessage/read.json";
  			$.ajax({
  				type : "POST",
  				url : url,
-                data : {uuid:uuid},
+                data : {uuid:event.uuid},
  				dataType : "json",
  				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-                      $("#"+uuid).removeClass("am-text-danger");
-                     ajax_State_style(type,rel_uuid,group_uuid,1)
- 					} else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
  				}
- 			});		
+ 			});	
+         }	
 	  },
 	render: function() {
 		  var thit=this;
@@ -209,7 +204,7 @@ var Message_queryMyTimely_myList =React.createClass({displayName: "Message_query
 						  }
 					  return(							  										  
 			    React.createElement("li", {className: "am-g am-list-item-dated"}, 
-			  React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: thit.handleClick.bind(this,event.type,event.rel_uuid,event.group_uuid,event.uuid)}, 
+			  React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: thit.handleClick.bind(this,event)}, 
 			    event.title, "： ", event.message
 			  ), 		
 			    React.createElement("div", {id: event.uuid, className: msg_classNmae}, 
@@ -4070,12 +4065,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   var Query_class_Students_EventRow_byRight = React.createClass({displayName: "Query_class_Students_EventRow_byRight", 
   	  render: function() {
   	    var event = this.props.event;
-		var G_def_headImgPath=event.headimg
+        var header_img=event.headimg;
+	  if(!header_img)header_img=G_def_noImgPath;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      React.createElement("tr", {className: className}, 
-			React.createElement("td", null, " ", React.createElement(AMUIReact.Image, {id: "img_head_image", width: "28", height: "28", src: G_def_headImgPath})), 
+			React.createElement("td", null, " ", React.createElement(AMUIReact.Image, {id: "img_head_image", width: "28", height: "28", src: header_img})), 
 			React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_edit_byRight.bind(this,null,event.uuid)}, event.name)), 			
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
@@ -5412,7 +5408,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		  var  o = this.props.event;
      		  if(!o.dianzanList)o.dianzanList=[];
      		  if(!o.imgsList)o.imgsList=[];
-     		  if(!o.create_img)G_def_headImgPath;
+     		  if(!o.create_img)o.create_img=G_def_headImgPath;
      		  
      	  return (
      			  React.createElement("div", null, 
@@ -6879,6 +6875,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		render: function() {
  	     var o =this.state;
  	     var imgGuid=o.logo;
+		  if(!o.logo)imgGuid=G_def_noImgPath;
  	     var imglist=[imgGuid];
  		 return (
  		 		React.createElement("div", null, 
@@ -6978,7 +6975,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
        }, 
  render: function() {
  	  var o = this.state;
-	  if(!o.logo)o.logo=Store.getMyGroupByUuid(o.groupuuid).img;
+	  var mygroupImg=Store.getMyGroupByUuid(o.groupuuid).img;
+	  if(!o.logo)o.logo=mygroupImg;
+	  if(!mygroupImg)o.logo=G_def_noImgPath;
 	  var one_classDiv="am-u-lg-4 am-u-md-4 am-u-sm-12 am-form-label";
 	  var two_classDiv="am-u-lg-8 am-u-md-8 am-u-sm-12";
 	   var course_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("course_type"),"key","val");
@@ -7153,12 +7152,13 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   var Query_Students_EventRow_byRight = React.createClass({displayName: "Query_Students_EventRow_byRight", 
   	  render: function() {
   	    var event = this.props.event;
-		var G_def_headImgPath=event.headimg
+         var header_img=event.headimg;
+	    if(!header_img)header_img=G_def_noImgPath;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      React.createElement("tr", {className: className}, 
-			React.createElement("td", null, " ", React.createElement(AMUIReact.Image, {id: "img_head_image", width: "28", height: "28", src: G_def_headImgPath})), 
+			React.createElement("td", null, " ", React.createElement(AMUIReact.Image, {id: "img_head_image", width: "28", height: "28", src: header_img})), 
 			React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 			
   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
   	        React.createElement("td", null, event.birthday), 
@@ -7190,6 +7190,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
  		render: function() {
  	     var o =this.state;
  	     var imgGuid=o.headimg;
+		 if(!imgGuid)imgGuid=G_def_noImgPath;
  	     var imglist=[imgGuid];
  		 return (
  		 		React.createElement("div", null, 
@@ -8548,6 +8549,7 @@ var Teacher_look_info =React.createClass({displayName: "Teacher_look_info",
 		render: function() {
 	     var o =this.state;
 	     var imgGuid=o.img;
+		 if(!o.img)imgGuid=G_def_noImgPath;
 	     var imglist=[imgGuid];
 		 return (
 		 		React.createElement("div", null, 
@@ -8662,12 +8664,15 @@ render: function() {
 	   var course_list=Store.getCourseList(o.groupuuid);
  	       course_list= G_selected_dataModelArray_byArray(Store.getCourseList(o.groupuuid),"uuid","title");
  	if(o.courseuuid==null&&course_list.length>0)o.courseuuid=course_list[0].value;
+	  var header_img=G_imgPath+o.img;
+	  if(!o.img)header_img=G_def_noImgPath;
 return (
 React.createElement("div", null, 
 
 	React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
            React.createElement("form", {id: "editTeacherForm", method: "post", className: "am-form"}, 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+		    React.createElement(PxInput, {type: "hidden", id: "img", name: "img", value: o.img, onChange: this.handleChange}), 
            React.createElement("hr", null), 
 		   React.createElement("div", {className: "am-form-group"}, 
 		React.createElement(AMR_ButtonToolbar, null, 

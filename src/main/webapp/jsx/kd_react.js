@@ -95,25 +95,20 @@ var Help_txt =React.createClass({
 
 
 var Message_queryMyTimely_myList =React.createClass({
-handleClick: function(type,rel_uuid,group_uuid,uuid) {
-  $.AMUI.progress.start();
- 			var url = hostUrl + "rest/pushMessage/read.json";
+handleClick: function(event) {
+	                 $("#"+event.uuid).removeClass("am-text-danger");
+                     ajax_State_style(event.type,event.rel_uuid,event.group_uuid,1);
+ if(event.isread==0){ 
+ 	 var url = hostUrl + "rest/pushMessage/read.json";
  			$.ajax({
  				type : "POST",
  				url : url,
-                data : {uuid:uuid},
+                data : {uuid:event.uuid},
  				dataType : "json",
  				success : function(data) {
- 					$.AMUI.progress.done();
- 					if (data.ResMsg.status == "success") {
-                    $("#"+uuid).removeClass("am-text-danger");
-                     ajax_State_style(type,rel_uuid,group_uuid,1)
- 					} else {
- 						alert(data.ResMsg.message);
- 						G_resMsg_filter(data.ResMsg);
- 					}
  				}
- 			});		
+ 			});	 
+        }
 	  },
 	render: function() {
 		  var thit=this;
@@ -132,7 +127,7 @@ handleClick: function(type,rel_uuid,group_uuid,uuid) {
 					  return(	
 						  
 			    <li className="am-g am-list-item-dated">
-			  <a href="javascript:void(0);" className="am-list-item-hd"  onClick={thit.handleClick.bind(this,event.type,event.rel_uuid,event.group_uuid,event.uuid)}>
+			  <a href="javascript:void(0);" className="am-list-item-hd"  onClick={thit.handleClick.bind(this,event)}>
 			    {event.title}： {event.message}			 			 	
 			    <div id= {event.uuid} className={msg_classNmae}>
 			  	   <time>消息发送于 {event.create_time}</time>
@@ -341,7 +336,7 @@ var Classnews_show = React.createClass({
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)G_def_headImgPath;		  
+		  if(!o.create_img)o.create_img=G_def_headImgPath;		  
 	  return (
 			  <div>
 			  <article className="am-comment am-margin-xs">
@@ -2108,12 +2103,13 @@ var Class_students_show= React.createClass({
   var Query_class_Students_EventRow = React.createClass({ 
   	  render: function() {
   	    var event = this.props.event;
-		var G_def_headImgPath=event.headimg
+	  var header_img=event.headimg;
+	  if(!header_img)header_img=G_def_noImgPath;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
   	    return (
   	      <tr className={className} >
-			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={G_def_headImgPath}/></td>
+			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={header_img}/></td>
 			<td><a href="javascript:void(0);" onClick={ajax_class_students_look_info.bind(this,event.uuid)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
@@ -3029,13 +3025,15 @@ setProvCity:function(){
 	  var o = this.state;
 	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	    var header_img=G_imgPath+o.img;
+	    if(!o.img)header_img=G_def_noImgPath;
     return (
     		<form id="editGroupForm" method="post" className="am-form">
   		     <hr />
     		  <PxInput type="hidden" name="uuid"  value={o.uuid}/>
     	       <PxInput type="hidden" name="type"  value={o.type}/>
     		    <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    		   
-              <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.img} className={"G_img_header"}/>
+              <AMUIReact.Image  id="img_head_image"   src={header_img} className={"G_img_header"}/>
              <button type="button"   onClick={this.btn_class_group_uploadHeadere}  className="am-btn am-btn-secondary">上传LOGO</button>
             <div className= "am-form-group">
     		 <label className={one_classDiv }>品牌名:</label>
@@ -4537,13 +4535,14 @@ render: function() {
   var Query_class_Students_EventRow_byRight = React.createClass({ 
   	  render: function() {
   	    var event = this.props.event;
-		var G_def_headImgPath=event.headimg
+	  var header_img=event.headimg;
+	  if(!header_img)header_img=G_def_noImgPath;
   	    var className = event.highlight ? 'am-active' :
   	      event.disabled ? 'am-disabled' : '';
 		if(!event.status)event.status=0;
   	    return (
   	      <tr className={className} >
-			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={G_def_headImgPath}/></td>
+			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={header_img}/></td>
 			<td><a href="javascript:void(0);" onClick={ajax_class_students_edit_byRight.bind(this,null,event.uuid)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
 			<td>{Vo.get("student_status_"+event.status)}</td>
@@ -6608,7 +6607,7 @@ render: function() {
      		  var  o = this.props.event;
      		  if(!o.dianzanList)o.dianzanList=[];
      		  if(!o.imgsList)o.imgsList=[];
-     		  if(!o.create_img)G_def_headImgPath;
+     		  if(!o.create_img)o.create_img=G_def_headImgPath;
      		  
      	  return (
      			  <div>
