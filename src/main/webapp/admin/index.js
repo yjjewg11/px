@@ -46,12 +46,12 @@ function login_affter_init(){
     		  {
                 "link": "##",
                 "title": "信息管理",
-                "fn":function(){admin_announce_list_fn_wjkj();},
+                "fn":function(){admin_announce_list_fn_wjkj();}
               },
   		  {
                 "link": "##",
                 "title": "班级互动",
-                "fn":function(){ajax_classnews_list_div_byRight(1);},
+                "fn":function(){ajax_classnews_list_div_byRight(1);}
               },
             {
                 "link": "##",

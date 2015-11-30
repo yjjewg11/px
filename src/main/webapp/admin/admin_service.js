@@ -859,7 +859,7 @@ function ajax_basedatatypelist_save(){
 	var opt={
 	 formName:"editBasedatatypelistForm",
 	 url:hostUrl + "rest/basedatalist/save.json",
-	 cbFN:null,
+	 cbFN:null
 	 };
 	G_ajax_abs_save(opt);
 }
@@ -1141,7 +1141,7 @@ $.ajax({
 		if (data.ResMsg.status == "success") {
 			React.render(React.createElement(Announcements_helpshow_byRight,{
 				data:data.data,
-				count:data.count,
+				count:data.count
 				}), document.getElementById('div_body'));
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
