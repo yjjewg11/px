@@ -735,11 +735,9 @@ var Classnews_edit = React.createClass({
 	},
 render: function() {
 	  var o = this.state;
-
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
-
 return (
 		<div>
 		<div className="header">

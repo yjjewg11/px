@@ -619,7 +619,7 @@ var hd_type="";
 function ajax_classnews_list_div(type){
 	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	  hd_type=type;
-	React.render(React.createElement(Classnews_Div_list,{
+	   React.render(React.createElement(Classnews_Div_list,{
 		type:hd_type
 		}), document.getElementById('div_body'));  	
 };

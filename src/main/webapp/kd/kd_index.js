@@ -482,6 +482,12 @@ function menu_dohome(){
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
+		                    	  },
+		                    	  
+		                    	  {
+		                    	    "img": hostUrlCDN+"i/qiandao.png",
+		                    	    "link": "javascript:PxSns.list_init()",
+		                    	    "title": "话题"
 		                    	  }
 		                    	  
 	                    	  ];
@@ -500,6 +506,7 @@ function menu_dohome(){
 	                    	    "link": "javascript:menu_favorites_push_fn()",
 	                    	    "title": "我的收藏"
 	                    	  }
+                                
                     	  ];
 	}
 	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
