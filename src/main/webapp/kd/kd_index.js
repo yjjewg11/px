@@ -516,6 +516,7 @@ function menu_dohome(){
 function menu_queryMyTimely_fn() {
 	Queue.push(menu_queryMyTimely_fn,"即时消息");
 	ajax_queryMyTimely_myList();
+	body_show();
 };
 
 /*
