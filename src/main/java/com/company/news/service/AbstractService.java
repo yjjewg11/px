@@ -128,6 +128,20 @@ public abstract class AbstractService {
 		}
 		return false;
 	}
+	/**
+	 * 
+	 * @param s 检验的字符串
+	 * @param length 允许的最大长度
+	 * @param columnname 错误时提示的字段名
+	 * @return
+	 */
+	protected boolean validateRequireByRegJsonformObject(Object s,String columnname,ResponseMessage responseMessage){
+		if (s==null) {
+			responseMessage.setMessage(columnname+"不能为空！");
+			return true;
+		}
+		return false;
+	}
 
 
 	/**

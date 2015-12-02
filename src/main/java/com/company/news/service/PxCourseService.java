@@ -239,12 +239,17 @@ public class PxCourseService extends AbstractService {
 		}
 		
 		//获取已有课程浏览次数
-		sql="select ext_uuid,sum(count) from px_count where ext_uuid in(" + DBUtil.stringsToWhereInValue(uuids) + ") group by ext_uuid";
-		List<Object[]> listReadCount=session.createSQLQuery(sql).list();
 		Map listReadCountMap=new HashMap();
-		for(Object[] obj:listReadCount ){
-			listReadCountMap.put(obj[0], obj[1]);
+		//修复为空是,拼接的sql报错bug.
+		if(StringUtils.isNotBlank(uuids)){
+			sql="select ext_uuid,sum(count) from px_count where ext_uuid in(" + DBUtil.stringsToWhereInValue(uuids) + ") group by ext_uuid";
+			List<Object[]> listReadCount=session.createSQLQuery(sql).list();
+		
+			for(Object[] obj:listReadCount ){
+				listReadCountMap.put(obj[0], obj[1]);
+			}
 		}
+		
 		
 		for(Map map:resultList ){
 			String uuid=(String)map.get("uuid");
