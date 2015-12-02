@@ -622,7 +622,6 @@ var ClassNews_Img_canDel = React.createClass({displayName: "ClassNews_Img_canDel
 	  }
 	});
 
-
 /*
 * <班级互动>添加与编辑详情绘制;（公用方法和大图标班级互动）
 * @整个班级互动逻辑思维 首先要调用公用模板内的数组转换方法，把我们的数组转换成Selected需要的数据模型
@@ -636,6 +635,52 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	 getInitialState: function() {
 		    return this.props.formdata;
 		  },
+	//班级互动全部选中班级方法；
+	handleClick_box_btn:function(event){
+          var class_uuid=[];
+		  var mycalsslist=this.props.mycalsslist;
+		  var tmp=$('#editClassnewsForm').serializeJson();
+				for(var i=0;i<mycalsslist.length;i++){
+				  class_uuid.push(mycalsslist[i].value);
+				  }    
+            $($("input[name='pw_checked']")).each(function(){					
+					 if(this.checked){
+						 g_checkflag=true;
+     	                 tmp.classuuid=class_uuid.join(",");	
+					 }else{		
+						 g_checkflag=false;
+					     tmp.classuuid=class_uuid[0];					     
+					 }
+					});
+
+                              this.setState(tmp);
+		   
+      },
+	//班级互动下拉框联动方法；
+	handleClick_selected:function(val){
+          var class_uuid=[];
+          var class_arry=[];
+		  var mycalsslist=this.props.mycalsslist;
+		  	 for(var i=0;i<mycalsslist.length;i++){
+				  class_uuid.push(mycalsslist[i].value);
+				  } 
+		  var tmp=$('#editClassnewsForm').serializeJson();
+              class_arry=tmp.classuuid.split(",");
+			  if(!class_arry[0])class_arry[0]=class_uuid[0];//当只有个选项时点击安全机制处理;
+			  if(class_arry.length==mycalsslist.length){
+		             g_checkflag=true;
+	            }else{
+	                 g_checkflag=false;
+	             }
+			  if(!class_arry[0]){
+				 tmp.classuuid=class_arry[0];	
+			  }else{		  
+			     tmp.classuuid=class_arry.join(",");	
+			    }
+				
+               this.setState(tmp);
+		   
+      },
 	 handleChange: function(event) {
 			  var tmp=$('#editClassnewsForm').serializeJson();
 		    this.setState(tmp);
@@ -690,9 +735,11 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	},
 render: function() {
 	  var o = this.state;
+
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
+
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -701,9 +748,16 @@ return (
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered"}, 	      
 		  React.createElement("form", {id: "editClassnewsForm", method: "post", className: "am-form"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", multiple: true, onChange: this.handleChange, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid}), 	      
-			
-		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+	      React.createElement("div", null, 
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "classuuid", inline: true, multiple: true, onChange: this.handleClick_selected, btnWidth: "300", data: this.props.mycalsslist, btnStyle: "primary", value: o.classuuid})	      
+          ), 
+	       React.createElement("div", null, 
+  
+          React.createElement("input", {id: " pw_checked", name: "pw_checked", type: "checkbox", checked: g_checkflag, onChange: this.handleClick_box_btn}), 
+	 	  "选中全部班级"
+	    
+		  ), 
+          React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 			React.createElement("input", {type: "hidden", name: "imgs", id: "imgs", value: o.imgs}), 			
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
