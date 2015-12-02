@@ -19,7 +19,7 @@ import com.company.news.service.SnsReplyService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
-@RequestMapping(value = "/reply")
+@RequestMapping(value = "/snsReply")
 public class SnsReplyController extends AbstractRESTController {
 
 	@Autowired

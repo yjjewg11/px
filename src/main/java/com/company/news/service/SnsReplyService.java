@@ -51,9 +51,14 @@ public class SnsReplyService extends AbstractService {
 			return false;
 		}
 
+		if (StringUtils.isBlank(snsReplyJsonform.getReply_uuid())) {
+			snsReplyJsonform.setReply_uuid("0");
+		}
+
 		SnsReply cn = new SnsReply();
 		BeanUtils.copyProperties(cn, snsReplyJsonform);
 
+		
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setCreate_useruuid(user.getUuid());
 		// 有事务管理，统一在Controller调用时处理异常
