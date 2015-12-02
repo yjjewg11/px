@@ -23,11 +23,11 @@ var PxSnsService=(function(){
 	}
 	function sns_announce_Mygoodlist(list_div,pageNo,callback){
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/share/articleList.json";
+		var url = hostUrl + "rest/snsSection/list.json";
 		$.ajax({
 			type : "GET",
 			url : url,
-	  		data : {type:3,pageNo:pageNo},
+	  		data :"",
 			dataType : "json",
 			async: false,
 			success : function(data) {
