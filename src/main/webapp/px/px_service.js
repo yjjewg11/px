@@ -484,6 +484,7 @@ function ajax_msg_div(uuid){
  * @type：Type：1自己相关的互动 Type:2 所有人的互动;
  * */
 var hd_type="";
+var g_checkflag;
 function ajax_classnews_list_div(type){
 	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	  hd_type=type;
@@ -589,6 +590,7 @@ function ajax_classnews_save(){
 			 url:hostUrl + "rest/classnews/save.json",
 			 cbFN:null
 			 };
+	g_checkflag=false;
 	G_ajax_abs_save(opt);
 }
 
