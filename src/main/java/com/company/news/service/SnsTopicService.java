@@ -11,19 +11,18 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
-import com.company.news.entity.Announcements;
+import com.company.news.SystemConstants;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -33,6 +32,9 @@ import com.company.web.listener.SessionListener;
 @Service
 public class SnsTopicService extends AbstractService {
 	private static final String model_name = "基础数据类型模块";
+	
+	@Autowired
+	private SnsDianzanService snsDianzanService;
 	/**
 	 * 新增权限
 	 * 
@@ -54,16 +56,14 @@ public class SnsTopicService extends AbstractService {
 		if (this.validateRequireByRegJsonform(jsonform.getContent(), "内容", responseMessage)) {
 			return null;
 		}
-		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+		if(user==null){
+			return null;
+		}
 		SnsTopic newEntity = new SnsTopic();
 		BeanUtils.copyProperties(newEntity, jsonform);
 		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
-		newEntity.setCreate_useruuid(user.getUuid());		
-		newEntity.setReply_count(0L);
-		newEntity.setYes_count(0L);
-		newEntity.setNo_count(0L);
-		newEntity.setStatus(0);
-		newEntity.setLevel(0);
+		newEntity.setCreate_useruuid(user.getUuid());
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 
@@ -138,12 +138,50 @@ public class SnsTopicService extends AbstractService {
 		
 		return pageQueryResult;
 	}
-	public SnsTopic get(String uuid) {
-		SnsTopic announcements = (SnsTopic) this.nSimpleHibernateDao
-				.getObjectById(SnsTopic.class, uuid);
-
-		return announcements;
-
+	public boolean updateDianzan(SessionUserInfoInterface user,String uuid,
+			Integer snsdianzanStatusYes,ResponseMessage responseMessage) {
+			
+			String sql=null;
+			if(SystemConstants.SnsDianzan_status_yes.equals(snsdianzanStatusYes)){
+				sql="update sns_topic set yes_count=yes_count+1 where uuid='"+uuid+"'";
+			}else{
+				sql="update sns_topic set no_count=no_count+1 where uuid='"+uuid+"'";
+			}
+			Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+			if(rel==0){
+				responseMessage.setMessage("未找到对应数据");
+				return false;
+			}
+			
+			return snsDianzanService.updateDianzan(uuid, user.getUuid(), snsdianzanStatusYes, responseMessage);
 	}
+	/**
+	 * 取消点赞
+	 * @param user
+	 * @param uuid
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean cancelDianzan(SessionUserInfoInterface user, String uuid,
+			ResponseMessage responseMessage) {
+		Integer status=snsDianzanService.cancelDianzan(uuid, user.getUuid(),responseMessage);
+		if(status==null){
+			responseMessage.setMessage("未找到对应数据");
+			return false;
+		}
+		String sql=null;
+		if(SystemConstants.SnsDianzan_status_yes.equals(status)){
+			sql="update sns_topic set yes_count=yes_count-1 where uuid='"+uuid+"'";
+		}else{
+			sql="update sns_topic set no_count=no_count-1 where uuid='"+uuid+"'";
+		}
+		Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+		if(rel==0){
+			responseMessage.setMessage("未找到对应数据");
+			return false;
+		}
+		return true;
+	}
+	
 
 }

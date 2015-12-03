@@ -51,7 +51,8 @@ public class ReplyController extends AbstractRESTController {
 		}
 		
 		//设置当前用户
-		SessionUserInfoInterface user=this.getUserInfoBySession(request);
+		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
+		if(user==null)
 		classNewsReplyJsonform.setContent(MyUbbUtils.htmlToMyUbb(classNewsReplyJsonform.getContent()));
 		try {
 			boolean flag;

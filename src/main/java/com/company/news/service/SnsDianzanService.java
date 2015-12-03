@@ -22,7 +22,7 @@ public class SnsDianzanService extends AbstractService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean save(String rel_uuid,String user_uuid ,Integer status,ResponseMessage responseMessage) {
+	public boolean updateDianzan(String rel_uuid,String user_uuid ,Integer status,ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(rel_uuid)) {
 			responseMessage.setMessage("Rel_uuid不能为空！");
 			return false;
@@ -74,27 +74,36 @@ public class SnsDianzanService extends AbstractService {
 		}
 		return false;
 	}
+
 	/**
-	 * 删除 支持多个，用逗号分隔
-	 * 
-	 * @param uuid
+	 * 获取当前用户点赞状态.
+	 * @param rel_uuid
+	 * @param user_uuid
+	 * @return
 	 */
-	public boolean cancelDianzan(String rel_uuid,String user_uuid ,ResponseMessage responseMessage) {
+	public Integer cancelDianzan(String rel_uuid,String user_uuid ,ResponseMessage responseMessage) {
+		
+		
 		if (StringUtils.isBlank(rel_uuid)) {
 			responseMessage.setMessage("Rel_uuid不能为空！");
-			return false;
+			return null;
 		}
 		if (StringUtils.isBlank(user_uuid)) {
 			responseMessage.setMessage("user_uuid不能为空！");
-			return false;
+			return null;
 		}
+		
+		
+		String sql="select status from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user_uuid+"' limit 0,1";
+		Object status=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).uniqueResult();
+		if(status==null)return null;
+
+		
 		String insertsql="delete from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user_uuid+"'";
-		int count=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).executeUpdate();
-		if(count==0){
-			responseMessage.setMessage("取消失败!");
-			return false;
-		}
-		return true;
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).executeUpdate();
+		
+		
+		return Integer.valueOf(status.toString());
 	}
 
 	@Override
@@ -108,5 +117,6 @@ public class SnsDianzanService extends AbstractService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
+
 
 }

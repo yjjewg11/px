@@ -10,6 +10,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.SnsReply;
@@ -31,6 +32,9 @@ public class SnsReplyService extends AbstractService {
 	public static final int USER_type_default = 0;// 0:老师
 	@Autowired
 	public PushMsgIservice pushMsgIservice;
+	
+	@Autowired
+	private SnsDianzanService snsDianzanService;
 	/**
 	 * 增加班级
 	 * 
@@ -189,51 +193,50 @@ public class SnsReplyService extends AbstractService {
 //		return list;
 //	}
 
-//
-//	/**
-//	 * 获取点赞列表信息
-//	 * 
-//	 * @param classNewsDianzanJsonform
-//	 * @param responseMessage
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	public DianzanListVO getDianzanDianzanListVO(String newsuuid, String cur_user_uuid) throws Exception {
-//		if (StringUtils.isBlank(newsuuid)) {
-//			return null;
-//		}
-//		DianzanListVO vo = new DianzanListVO();
-//		List list = this.nSimpleHibernateDao.getHibernateTemplate()
-//				.find("select create_user from ClassNewsDianzanOfShow where newsuuid=?", newsuuid);
-//
-//		Boolean canDianzan = true;
-//		if (list.size() > 0 && StringUtils.isNotBlank(cur_user_uuid)) {
-//			canDianzan = this.canDianzan(newsuuid, cur_user_uuid);
-//		}
-//		vo.setCanDianzan(canDianzan);
-//		vo.setNames(StringUtils.join(list, ","));
-//		vo.setCount(list.size());
-//		return vo;
-//	}
-//
-//	/**
-//	 * 判断是否能点赞
-//	 * 
-//	 * @param classNewsDianzanJsonform
-//	 * @param responseMessage
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	private boolean canDianzan(String newsuuid, String create_useruuid) throws Exception {
-//
-//		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(
-//				"select newsuuid from ClassNewsDianzan where newsuuid=? and create_useruuid=?", newsuuid,
-//				create_useruuid);
-//		if (list != null && list.size() > 0) {
-//			return false;
-//		}
-//		return true;
-//	}
+	public boolean updateDianzan(SessionUserInfoInterface user,String uuid,
+			Integer snsdianzanStatusYes,ResponseMessage responseMessage) {
+			
+			String sql=null;
+			if(SystemConstants.SnsDianzan_status_yes.equals(snsdianzanStatusYes)){
+				sql="update sns_reply set yes_count=yes_count+1 where uuid='"+uuid+"'";
+			}else{
+				sql="update sns_reply set no_count=no_count+1 where uuid='"+uuid+"'";
+			}
+			Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+			if(rel==0){
+				responseMessage.setMessage("未找到对应数据");
+				return false;
+			}
+			
+			return snsDianzanService.updateDianzan(uuid, user.getUuid(), snsdianzanStatusYes, responseMessage);
+	}
+	/**
+	 * 取消点赞
+	 * @param user
+	 * @param uuid
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean cancelDianzan(SessionUserInfoInterface user, String uuid,
+			ResponseMessage responseMessage) {
+		Integer status=snsDianzanService.cancelDianzan(uuid, user.getUuid(),responseMessage);
+		if(status==null){
+			responseMessage.setMessage("未找到对应数据");
+			return false;
+		}
+		String sql=null;
+		if(SystemConstants.SnsDianzan_status_yes.equals(status)){
+			sql="update sns_reply set yes_count=yes_count-1 where uuid='"+uuid+"'";
+		}else{
+			sql="update sns_reply set no_count=no_count-1 where uuid='"+uuid+"'";
+		}
+		Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+		if(rel==0){
+			responseMessage.setMessage("未找到对应数据");
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public String getEntityModelName() {

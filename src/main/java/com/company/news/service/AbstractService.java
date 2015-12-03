@@ -15,6 +15,7 @@ import com.company.news.entity.AbstractStudent;
 import com.company.news.entity.Logs;
 import com.company.news.entity.Operate;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
@@ -160,6 +161,14 @@ public abstract class AbstractService {
 			return true;
 
 	}
-	
+	public SessionUserInfoInterface getSessionUser(HttpServletRequest request,
+			ResponseMessage responseMessage) {
+		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
+		if(user==null){
+			responseMessage.setMessage("请先登录后在操作!");
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_sessionTimeout);
+		}
+		return null;
+	}
 
 }

@@ -1,37 +1,22 @@
-package com.company.news.rest;
-
-import java.util.List;
-import java.util.Map;
-
+package com.company.news.rest; 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
-import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.right.RightConstants;
-import com.company.news.right.RightUtils;
-import com.company.news.service.CountService;
 import com.company.news.service.SnsTopicService;
-import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/snsTopic")
@@ -54,7 +39,8 @@ public class SnsTopicController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
+		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
+		if(user==null)return "";
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		SnsTopicJsonform jsonform;
@@ -133,11 +119,15 @@ public class SnsTopicController extends AbstractRESTController {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
 			try {
-				String section_id=request.getParameter("topic_uuid");
+				
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
+					return "";
+				}
+				String uuid=request.getParameter("uuid");
 //				PaginationData pData = this.getPaginationDataByRequest(request);
-//				PageQueryResult list = snsTopicService.listPage(pData,section_id,request);
-//				
-//				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				boolean flag = snsTopicService.updateDianzan(user,uuid,SystemConstants.SnsDianzan_status_yes, responseMessage);
+				if(!flag)return "";
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -159,8 +149,16 @@ public class SnsTopicController extends AbstractRESTController {
 		public String no(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
-			try {
-				String section_id=request.getParameter("topic_uuid");
+try {
+				
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
+					return "";
+				}
+				String uuid=request.getParameter("uuid");
+//				PaginationData pData = this.getPaginationDataByRequest(request);
+				boolean flag = snsTopicService.updateDianzan(user,uuid,SystemConstants.SnsDianzan_status_no, responseMessage);
+				if(!flag)return "";
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -172,59 +170,34 @@ public class SnsTopicController extends AbstractRESTController {
 			}
 		}
 		
-		
-		
-		
-		private CountService countService;
-		@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-		public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+		 /**
+		 * 不同意观点
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/cancelDianzan", method = RequestMethod.GET)
+		public String cancelDianzan(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
-			SnsTopic a;
 			try {
 				
-
-				
-				
-				a = snsTopicService.get(uuid);
-				if(a==null){
-					responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-					responseMessage.setMessage("数据不存在.");
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
 					return "";
 				}
-				if(SystemConstants.Check_status_disable.equals(a.getStatus())){
-					responseMessage.setMessage("数据已被禁止浏览!");
-					return "";
-					//判断是否有权限.有权限的人可以浏览.禁用的.
-//					if(!RightUtils.hasRight(a.getGroupuuid(),right, request)){
-//						
-//						responseMessage.setMessage("数据已被禁止浏览!");
-//						return "";
-//					}
-				}
-				String share_url=null;
-//				if(!PxStringUtil.isUrl(a.getUrl())){
-//					share_url=PxStringUtil.getArticleByUuid(uuid);
-//				}else{
-//				//	model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
-//					share_url=a.getUrl();
-//				}
-				model.put(RestConstants.Return_ResponseMessage_share_url,share_url);
-				
-				SessionUserInfoInterface user=this.getUserInfoBySession(request);
-//				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
-//				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
-//				model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));
+				String uuid=request.getParameter("uuid");
+//				PaginationData pData = this.getPaginationDataByRequest(request);
+				boolean flag = snsTopicService.cancelDianzan(user,uuid, responseMessage);
+				if(!flag)return "";
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage(e.getMessage());
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
 				return "";
 			}
-			model.addAttribute(RestConstants.Return_G_entity,a);
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-			return "";
 		}
-		
 }
