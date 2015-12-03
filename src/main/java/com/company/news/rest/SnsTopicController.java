@@ -1,22 +1,16 @@
-package com.company.news.rest;
-
-import java.util.List;
-import java.util.Map;
-
+package com.company.news.rest; 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.ProjectProperties;
+import com.company.news.SystemConstants;
 import com.company.news.entity.SnsTopic;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -45,7 +39,8 @@ public class SnsTopicController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
+		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
+		if(user==null)return "";
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		SnsTopicJsonform jsonform;
@@ -124,11 +119,15 @@ public class SnsTopicController extends AbstractRESTController {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
 			try {
-				String section_id=request.getParameter("topic_uuid");
+				
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
+					return "";
+				}
+				String uuid=request.getParameter("uuid");
 //				PaginationData pData = this.getPaginationDataByRequest(request);
-//				PageQueryResult list = snsTopicService.listPage(pData,section_id,request);
-//				
-//				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				boolean flag = snsTopicService.updateDianzan(user,uuid,SystemConstants.SnsDianzan_status_yes, responseMessage);
+				if(!flag)return "";
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -150,8 +149,47 @@ public class SnsTopicController extends AbstractRESTController {
 		public String no(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
+try {
+				
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
+					return "";
+				}
+				String uuid=request.getParameter("uuid");
+//				PaginationData pData = this.getPaginationDataByRequest(request);
+				boolean flag = snsTopicService.updateDianzan(user,uuid,SystemConstants.SnsDianzan_status_no, responseMessage);
+				if(!flag)return "";
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
+				return "";
+			}
+		}
+		
+		 /**
+		 * 不同意观点
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/cancelDianzan", method = RequestMethod.GET)
+		public String cancelDianzan(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
 			try {
-				String section_id=request.getParameter("topic_uuid");
+				
+				SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+				if(user==null){
+					return "";
+				}
+				String uuid=request.getParameter("uuid");
+//				PaginationData pData = this.getPaginationDataByRequest(request);
+				boolean flag = snsTopicService.cancelDianzan(user,uuid, responseMessage);
+				if(!flag)return "";
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

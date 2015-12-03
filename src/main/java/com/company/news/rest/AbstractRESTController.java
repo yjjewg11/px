@@ -21,6 +21,7 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PaginationData;
+import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
 
@@ -58,6 +59,18 @@ public class AbstractRESTController   {
 		    // 返回用户信息
 		    return SessionListener.getUserInfoBySession(request);
 		  }
+	  
+	  public  SessionUserInfoInterface getSessionUser(HttpServletRequest request,
+				ResponseMessage responseMessage) {
+			SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
+			if(user==null){
+				responseMessage.setMessage("请先登录后在操作!");
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_sessionTimeout);
+			}
+			return null;
+		}
+
+	  
 	  /**
 	   * 获取我的幼儿园列表.
 	   * uuid1,uuid2
