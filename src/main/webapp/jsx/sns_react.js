@@ -85,14 +85,14 @@ var sns_mygoodlist_div = React.createClass({
 	    var events = this.props.events;
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
-				//如果相等为True不等为false用于判断编辑与删除是否
-				for(var i=0;i<events.data.length;i++){
-					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
-						events.data[i].canEdit=true;
-					}else{
-                      events.data[i].canEdit=false;
-					}
-				} 
+//				//如果相等为True不等为false用于判断编辑与删除是否
+//				for(var i=0;i<events.data.length;i++){
+//					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+//						events.data[i].canEdit=true;
+//					}else{
+//                      events.data[i].canEdit=false;
+//					}
+//				} 
 	    return (
 	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
 	    	     <div className="am-list-news-bd">
@@ -102,13 +102,9 @@ var sns_mygoodlist_div = React.createClass({
 	    			    		<li className="am-g am-list-item-dated">
 	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
-	    			  		  </a>	
-							  <AMR_ButtonToolbar>
-							  <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="primary" onClick={btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
-		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="danger" onClick={btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
-           		              </AMR_ButtonToolbar>	  
+	    			  		  </a>		  
 	    			  		  <div className="am-list-item-text">
-	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+	    			  		  {event.create_user}|{event.create_time}
 	    			  		  </div> 
 	    			  		    </li>
 	    			    		  )
@@ -141,9 +137,9 @@ var Announcements_snsedit = React.createClass({
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
-//		   preview_fn:function(){
-//          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-//       }, 
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	
@@ -153,6 +149,7 @@ render: function() {
   		  <hr />
   		</div>
   		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-sm-12">
   		  <form id="snsAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
 	    <input type="hidden" name="section_id"  value={o.section_id}/>
@@ -163,8 +160,13 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={PxSnsService.ajax_sns_save}  className="am-btn am-btn-primary">提交</button>
+			    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
   		  </form>
+  	     </div>
 
+		<div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
   	   </div>	   
   	  </div>
   );

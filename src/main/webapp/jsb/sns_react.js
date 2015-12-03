@@ -85,14 +85,14 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    var events = this.props.events;
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
-				//如果相等为True不等为false用于判断编辑与删除是否
-				for(var i=0;i<events.data.length;i++){
-					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
-						events.data[i].canEdit=true;
-					}else{
-                      events.data[i].canEdit=false;
-					}
-				} 
+//				//如果相等为True不等为false用于判断编辑与删除是否
+//				for(var i=0;i<events.data.length;i++){
+//					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+//						events.data[i].canEdit=true;
+//					}else{
+//                      events.data[i].canEdit=false;
+//					}
+//				} 
 	    return (
 	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 	    	     React.createElement("div", {className: "am-list-news-bd"}, 
@@ -102,13 +102,9 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
 	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
 	    			  		  event.title
-	    			  		  ), 	
-							  React.createElement(AMR_ButtonToolbar, null, 
-							  React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "primary", onClick: btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)}, "编辑"), 
-		                      React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "danger", onClick: btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)}, "删除")
-           		              ), 	  
+	    			  		  ), 		  
 	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
-	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_user, "|", event.create_time
+	    			  		  event.create_user, "|", event.create_time
 	    			  		  )
 	    			  		    )
 	    			    		  )
@@ -141,9 +137,9 @@ var Announcements_snsedit = React.createClass({displayName: "Announcements_snsed
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
-//		   preview_fn:function(){
-//          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-//       }, 
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	
@@ -153,6 +149,7 @@ render: function() {
   		  React.createElement("hr", null)
   		), 
   		React.createElement("div", {className: "am-g"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "snsAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 	    React.createElement("input", {type: "hidden", name: "section_id", value: o.section_id}), 
@@ -162,9 +159,14 @@ render: function() {
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交"), 
+			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
+  	     ), 
 
+		React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
   	   )	   
   	  )
   );
