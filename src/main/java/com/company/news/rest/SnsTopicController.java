@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -200,4 +201,89 @@ try {
 				return "";
 			}
 		}
+		
+	
+				@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+				public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+					ResponseMessage responseMessage = RestUtil
+							.addResponseMessageForModelMap(model);
+					SnsTopic a;
+					try {
+						
+		
+						
+						
+						a = snsTopicService.get(uuid);
+						if(a==null){
+							responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+							responseMessage.setMessage("数据不存在.");
+							return "";
+						}
+						if(SystemConstants.Check_status_disable.equals(a.getStatus())){
+							responseMessage.setMessage("数据已被禁止浏览!");
+							return "";
+							//判断是否有权限.有权限的人可以浏览.禁用的.
+		//					if(!RightUtils.hasRight(a.getGroupuuid(),right, request)){
+		//						
+		//						responseMessage.setMessage("数据已被禁止浏览!");
+		//						return "";
+		//					}
+						}
+						String share_url=null;
+		//				if(!PxStringUtil.isUrl(a.getUrl())){
+		//					share_url=PxStringUtil.getArticleByUuid(uuid);
+		//				}else{
+		//				//	model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
+		//					share_url=a.getUrl();
+		//				}
+						model.put(RestConstants.Return_ResponseMessage_share_url,share_url);
+						
+						SessionUserInfoInterface user=this.getUserInfoBySession(request);
+		//				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
+		//				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
+		//				model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+						responseMessage.setMessage(e.getMessage());
+						return "";
+					}
+					model.addAttribute(RestConstants.Return_G_entity,a);
+					responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+					return "";
+				}	
+				
+				
+				/**
+				 * 班级删除
+				 * 
+				 * @param model
+				 * @param request
+				 * @return
+				 */
+				@RequestMapping(value = "/delete", method = RequestMethod.POST)
+				public String delete(ModelMap model, HttpServletRequest request) {
+					// 返回消息体
+					ResponseMessage responseMessage = RestUtil
+							.addResponseMessageForModelMap(model);
+
+					try {
+						boolean flag = snsTopicService.delete(request.getParameter("uuid"),
+								responseMessage);
+						if (!flag)
+							return "";
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+						responseMessage.setMessage(e.getMessage());
+						return "";
+					}
+
+					responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+					responseMessage.setMessage("删除成功");
+					return "";
+				}
+		
 }

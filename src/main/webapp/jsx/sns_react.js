@@ -100,11 +100,12 @@ var sns_mygoodlist_div = React.createClass({
 	    			  {this.props.events.data.map(function(event) {
 	    			      return (
 	    			    		<li className="am-g am-list-item-dated">
-	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
+	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={PxSnsService.sns_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
 	    			  		  </a>		  
 	    			  		  <div className="am-list-item-text">
-	    			  		  {event.create_user}|{event.create_time}
+	    			  		  有{event.reply_count}人回复|有{event.yes_count}人赞成|有{event.no_count}人反对|{event.create_time}-
+	    			  		{PxSnsService.img_data_list(event.level)}-{PxSnsService.type_data_list(event.status)}
 	    			  		  </div> 
 	    			  		    </li>
 	    			    		  )
@@ -172,46 +173,18 @@ render: function() {
   );
 }
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 *公告点赞、评论、加载更多等详情绘制模板；
 * */
-var Announcements_goodshow = React.createClass({ 
+var sns_Announcements_goodshow = React.createClass({ 
 	//创建精品文章点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
+  	handleClick: function(m,uuid) {
+  		PxSnsService.btnclick_sns_announce(m,uuid);
 }, 
-//收藏按钮方法;
-favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-}, 
+////收藏按钮方法;
+//favorites_push: function(title,type,reluuid,url) {
+//	commons_ajax_favorites_push(title,type,reluuid,url)
+//}, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -226,7 +199,7 @@ render: function() {
 			<AMUIReact.Article
 			title={o.title}
 			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 			</AMUIReact.Article>)
 	     }
 
@@ -234,9 +207,9 @@ return (
 		  <div>
             {iframe}
 		     <AMR_ButtonToolbar>
-		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
-		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
+		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
+		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
+
 		     <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
 		     </AMR_ButtonToolbar>	
 		    	<footer className="am-comment-footer">
