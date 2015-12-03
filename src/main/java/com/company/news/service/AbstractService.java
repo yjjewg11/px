@@ -168,7 +168,7 @@ public abstract class AbstractService {
 			responseMessage.setMessage("请先登录后在操作!");
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_sessionTimeout);
 		}
-		return null;
+		return user;
 	}
 
 }

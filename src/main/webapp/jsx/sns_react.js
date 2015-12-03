@@ -85,14 +85,14 @@ var sns_mygoodlist_div = React.createClass({
 	    var events = this.props.events;
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
-				//如果相等为True不等为false用于判断编辑与删除是否
-				for(var i=0;i<events.data.length;i++){
-					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
-						events.data[i].canEdit=true;
-					}else{
-                      events.data[i].canEdit=false;
-					}
-				} 
+//				//如果相等为True不等为false用于判断编辑与删除是否
+//				for(var i=0;i<events.data.length;i++){
+//					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+//						events.data[i].canEdit=true;
+//					}else{
+//                      events.data[i].canEdit=false;
+//					}
+//				} 
 	    return (
 	    	     <div  data-am-widget="list_news" className="am-list-news am-list-news-default">
 	    	     <div className="am-list-news-bd">
@@ -100,15 +100,12 @@ var sns_mygoodlist_div = React.createClass({
 	    			  {this.props.events.data.map(function(event) {
 	    			      return (
 	    			    		<li className="am-g am-list-item-dated">
-	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
+	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={PxSnsService.sns_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
-	    			  		  </a>	
-							  <AMR_ButtonToolbar>
-							  <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="primary" onClick={btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
-		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="danger" onClick={btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
-           		              </AMR_ButtonToolbar>	  
+	    			  		  </a>		  
 	    			  		  <div className="am-list-item-text">
-	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
+	    			  		  有{event.reply_count}人回复|有{event.yes_count}人赞成|有{event.no_count}人反对|{event.create_time}-
+	    			  		{PxSnsService.img_data_list(event.level)}-{PxSnsService.type_data_list(event.status)}
 	    			  		  </div> 
 	    			  		    </li>
 	    			    		  )
@@ -141,9 +138,9 @@ var Announcements_snsedit = React.createClass({
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
-//		   preview_fn:function(){
-//          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-//       }, 
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	
@@ -153,6 +150,7 @@ render: function() {
   		  <hr />
   		</div>
   		<div className="am-g">
+  		  <div className="am-u-lg-6 am-u-sm-12">
   		  <form id="snsAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
 	    <input type="hidden" name="section_id"  value={o.section_id}/>
@@ -163,53 +161,30 @@ render: function() {
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
   		  <button type="button"  onClick={PxSnsService.ajax_sns_save}  className="am-btn am-btn-primary">提交</button>
+			    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
   		  </form>
+  	     </div>
 
+		<div  className="am-u-lg-6 am-u-sm-12 ">
+               <G_phone_iframe />
+             </div>
   	   </div>	   
   	  </div>
   );
 }
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 *公告点赞、评论、加载更多等详情绘制模板；
 * */
-var Announcements_goodshow = React.createClass({ 
+var sns_Announcements_goodshow = React.createClass({ 
 	//创建精品文章点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
+  	handleClick: function(m,uuid) {
+  		PxSnsService.btnclick_sns_announce(m,uuid);
 }, 
-//收藏按钮方法;
-favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-}, 
+////收藏按钮方法;
+//favorites_push: function(title,type,reluuid,url) {
+//	commons_ajax_favorites_push(title,type,reluuid,url)
+//}, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -224,7 +199,7 @@ render: function() {
 			<AMUIReact.Article
 			title={o.title}
 			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
 			</AMUIReact.Article>)
 	     }
 
@@ -232,9 +207,9 @@ return (
 		  <div>
             {iframe}
 		     <AMR_ButtonToolbar>
-		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
-		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
+		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
+		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
+
 		     <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
 		     </AMR_ButtonToolbar>	
 		    	<footer className="am-comment-footer">

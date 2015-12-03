@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.entity.Announcements;
+import com.company.news.entity.SnsReply;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
@@ -64,6 +66,11 @@ public class SnsTopicService extends AbstractService {
 		BeanUtils.copyProperties(newEntity, jsonform);
 		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
 		newEntity.setCreate_useruuid(user.getUuid());
+		newEntity.setReply_count(0L);
+		newEntity.setYes_count(0L);
+		newEntity.setNo_count(0L);
+		newEntity.setStatus(0);
+		newEntity.setLevel(0);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 
@@ -80,11 +87,13 @@ public class SnsTopicService extends AbstractService {
 			return null;
 		}
 
-		SnsTopic newEntity = new SnsTopic();
+		SnsTopic newEntity = (SnsTopic) this.nSimpleHibernateDao
+				.getObjectById(SnsTopic.class,
+						jsonform.getUuid());
+		
+		
 		BeanUtils.copyProperties(newEntity, jsonform);
-//		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
-//		newEntity.setTopic_count(0l);
-//		if(newEntity.getInd()==null)newEntity.setInd(0);
+
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 	}
@@ -123,7 +132,7 @@ public class SnsTopicService extends AbstractService {
 			HttpServletRequest request) {
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status";
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level";
 		sql+=" FROM sns_topic t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(section_id)){
@@ -182,6 +191,29 @@ public class SnsTopicService extends AbstractService {
 		}
 		return true;
 	}
+		public SnsTopic get(String uuid) {
+				SnsTopic announcements = (SnsTopic) this.nSimpleHibernateDao
+						.getObjectById(SnsTopic.class, uuid);		
+				return announcements;
+		
+			}
+		public boolean delete(String uuid, ResponseMessage responseMessage) {
+			if (StringUtils.isBlank(uuid)) {
+
+				responseMessage.setMessage("ID不能为空！");
+				return false;
+			}
+
+			if (uuid.indexOf(",") != -1) // 多ID
+			{
+				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from SnsTopic where uuid in(?)",
+						uuid);
+			} else {
+				this.nSimpleHibernateDao.deleteObjectById(SnsTopic.class, uuid);
+			}
+
+			return true;
+		}
 	
 
 }

@@ -1,16 +1,17 @@
  
-
+var PxSnsConfigsecond={
+	div_get_div:G_get_div_second(),
+    getdiv_second:function(){   	
+	return this.div_get_div;
+    }
+	
+}
 var PxSnsConfig={
 	div_body:'div_body',
-//	div_get_div:G_get_div_second,
 	 getBodyDiv:function(){
 		 
 		return document.getElementById(this.div_body);
 	}
-//    getdiv_second:function(){
-//    	
-//	return this.div_get_div;
-//    }
 	
 }
 var PxSnsService=(function(){
@@ -60,11 +61,13 @@ var PxSnsService=(function(){
 	 * */ 
 	function btnclick_sns_announce(m,uuid){
 	  	if(m=="add"){
+	  		Queue.push(function(){btnclick_sns_announce(m,uuid);},"创建话题");
 	  		sns_ajax_announce_good_edit(null);
 	  	}else if(m=="edit"){
+	  		Queue.push(function(){btnclick_sns_announce(m,uuid);},"编辑话题");
 	  		sns_ajax_announce_good_edit(uuid);
 	  	}else if(m=="del"){
-	  		//react_ajax_announce_good_delete(groupuuid,uuid);
+	  		sns_ajax_announce_good_delete(uuid);
 	  	}
 		   
 }	
@@ -75,13 +78,13 @@ var PxSnsService=(function(){
    * */ 	
 	function sns_ajax_announce_good_edit(uuid){
 	  	if(!uuid){
-	  		Queue.push(function(){sns_ajax_announce_good_edit(uuid);},"创建话题");
+	  		
 	  		React.render(React.createElement(Announcements_snsedit,{
 	  			formdata:{section_id:1}
 	  			}), PxSnsConfig.getBodyDiv());
 	  		return;
 	  	}
-	  	Queue.push(function(){sns_ajax_announce_good_edit(uuid);},"编辑话题");	
+	  	
 	  	$.AMUI.progress.start();
 	      var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 	  	$.ajax({
@@ -118,107 +121,108 @@ var PxSnsService=(function(){
 	 G_ajax_abs_save(opt);	
 		   
 }
-	
-	function sns_edit_topic_div(){
-				   React.render(React.createElement(Sns_Div_list,{
-					type:2
-					}), PxSnsConfig.getBodyDiv());  	
+	/*
+	 *<话题>详情服务器请求；
+	* @Announcements_show:详情绘制
+	 * 在kd_rect;
+	 * */	
+	function sns_ajax_announce_good_show(uuid){
+		Queue.push(function(){sns_ajax_announce_good_show(uuid);},"话题详情");
+		$.AMUI.progress.start();
+	    var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			 async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+//					var o=data.data;
+//					  if(o.url){
+//							var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
+//							if(flag)return;
+//					  }
+
+					//如果相等为True不等为false用于判断编辑与删除是否
+					var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
+					React.render(React.createElement(sns_Announcements_goodshow,{
+						canEdit:canEdit,
+						data:data.data,
+						share_url:data.share_url,
+						count:data.count
+						}),PxSnsConfig.getBodyDiv());
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				}
+			},
+			error :G_ajax_error_fn
+		});
+		   
+}	
+	  /*
+	   *<话题>删除按钮服务请求；
+	   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+	   * */  	
+	function sns_ajax_announce_good_delete(uuid){
+	  	if(!confirm("确定要删除吗?")){
+	  		return;
+	  	}
+	    	$.AMUI.progress.start();
+	        var url = hostUrl + "rest/snsTopic/delete.json?uuid="+uuid;
+	  	$.ajax({
+	  		type : "POST",
+	  		url : url,
+	  		dataType : "json",
+	  		 async: true,
+	  		success : function(data) {
+	  			$.AMUI.progress.done();
+	  			// 登陆成功直接进入主页
+	  			if (data.ResMsg.status == "success") {
+	  				Queue.doBackFN();
+	  			} else {
+	  				alert(data.ResMsg.message);
+	  			}
+	  		},
+	  		error :G_ajax_error_fn
+	  	});
 				   
-	}
+	}		
+	function img_data_list(level){
+	       var img;
+	       if(level==0){
+	    	   img="普通贴"
+	       }else if(level==1){
+	    	   img="热帖贴"
+	       }else{
+	    	   img="精华贴"
+	       }
+	       return img;	
+				   
+	}	
+	function type_data_list(status){
+	       var type;
+	       status=1
+	       if(status==0){
+	    	   type="发布中"
+	       }else if(status==1){
+	    	   type="未发布"
+	       }else{
+	    	   type="屏蔽"
+	       }
+	       return type;	
+				   
+	}	
 	return {
+		sns_ajax_announce_good_delete:sns_ajax_announce_good_delete,
+		sns_ajax_announce_good_show:sns_ajax_announce_good_show,
+		type_data_list:type_data_list,
+		img_data_list:img_data_list,
 		ajax_sns_save:ajax_sns_save,
 		btnclick_sns_announce:btnclick_sns_announce,
 		sns_announce_Mygoodlist:sns_announce_Mygoodlist,
-		sns_edit_topic_div:sns_edit_topic_div,
 		sns_list_div:sns_list_div
 	};//end return
 })();//end PxLazyM=(function(){return {}})();
-
-
-/*
- *(精品文章)创建与编辑提交按钮方法
- *@OPT：我们把内容用Form表单提交到Opt我们封装的
- *一个方法内直接传给服务器，服务器从表单取出需要的参数
- * */    
-// function ajax_good_save(){
-//     var opt={
-//             formName: "editAnnouncementsForm",
-//         url:hostUrl + "rest/announcements/save.json",
-//             cbFN:null
-//             };
-// G_ajax_abs_save(opt);
-// }
-
-
-
-
-
-
-
-//————————————————————————————精品文章————————————————————————— 
-/*
- *<精品文章>详情服务器请求；
-* @Announcements_show:详情绘制
- * 在kd_rect;
- * */
-//function react_ajax_announce_good_show(uuid,title){
-//	$.AMUI.progress.start();
-//    var url = hostUrl + "rest/announcements/"+uuid+".json";
-//	$.ajax({
-//		type : "GET",
-//		url : url,
-//		dataType : "json",
-//		 async: true,
-//		success : function(data) {
-//			$.AMUI.progress.done();
-//			// 登陆成功直接进入主页
-//			if (data.ResMsg.status == "success") {
-//				var o=data.data;
-//				  if(o.url){
-//						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
-//						if(flag)return;
-//				  }
-//
-//				//如果相等为True不等为false用于判断编辑与删除是否
-//				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
-//				React.render(React.createElement(Announcements_goodshow,{
-//					canEdit:canEdit,
-//					data:data.data,
-//					share_url:data.share_url,
-//					count:data.count
-//					}), G_get_div_second());
-//			} else {
-//				alert("加载数据失败："+data.ResMsg.message);
-//			}
-//		},
-//		error :G_ajax_error_fn
-//	});
-//};
-
-  /*
-   *(精品文章)删除按钮服务请求；
-   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
-   * */  	  
-//  function react_ajax_announce_good_delete(groupuuid,uuid){	 
-//  	if(!confirm("确定要删除吗?")){
-//  		return;
-//  	}
-//    	$.AMUI.progress.start();
-//        var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
-//  	$.ajax({
-//  		type : "POST",
-//  		url : url,
-//  		dataType : "json",
-//  		 async: true,
-//  		success : function(data) {
-//  			$.AMUI.progress.done();
-//  			// 登陆成功直接进入主页
-//  			if (data.ResMsg.status == "success") {
-//  				Queue.doBackFN();
-//  			} else {
-//  				alert(data.ResMsg.message);
-//  			}
-//  		},
-//  		error :G_ajax_error_fn
-//  	});
-//  };  	  	  
+  	  	  

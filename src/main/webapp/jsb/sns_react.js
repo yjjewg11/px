@@ -85,14 +85,14 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    var events = this.props.events;
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
-				//如果相等为True不等为false用于判断编辑与删除是否
-				for(var i=0;i<events.data.length;i++){
-					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
-						events.data[i].canEdit=true;
-					}else{
-                      events.data[i].canEdit=false;
-					}
-				} 
+//				//如果相等为True不等为false用于判断编辑与删除是否
+//				for(var i=0;i<events.data.length;i++){
+//					if(events.data[i].create_useruuid==Store.getUserinfo().uuid){
+//						events.data[i].canEdit=true;
+//					}else{
+//                      events.data[i].canEdit=false;
+//					}
+//				} 
 	    return (
 	    	     React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 	    	     React.createElement("div", {className: "am-list-news-bd"}, 
@@ -100,15 +100,12 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    			  this.props.events.data.map(function(event) {
 	    			      return (
 	    			    		React.createElement("li", {className: "am-g am-list-item-dated"}, 
-	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: react_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
+	    			  		    React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.sns_ajax_announce_good_show.bind(this,event.uuid,event.title)}, 
 	    			  		  event.title
-	    			  		  ), 	
-							  React.createElement(AMR_ButtonToolbar, null, 
-							  React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "primary", onClick: btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)}, "编辑"), 
-		                      React.createElement(AMR_Button, {className: event.canEdit==true?"G_Edit_show":"G_Edit_hide", amStyle: "danger", onClick: btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)}, "删除")
-           		              ), 	  
+	    			  		  ), 		  
 	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
-	    			  		  Store.getGroupNameByUuid(event.groupuuid), "|", event.create_user, "|", event.create_time
+	    			  		  "有", event.reply_count, "人回复|有", event.yes_count, "人赞成|有", event.no_count, "人反对|", event.create_time, "-", 
+	    			  		PxSnsService.img_data_list(event.level), "-", PxSnsService.type_data_list(event.status)
 	    			  		  )
 	    			  		    )
 	    			    		  )
@@ -141,9 +138,9 @@ var Announcements_snsedit = React.createClass({displayName: "Announcements_snsed
                 editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
           });
 	  },
-//		   preview_fn:function(){
-//          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-//       }, 
+		   preview_fn:function(){
+          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+       }, 
 render: function() {
 	 var o = this.state;
 	
@@ -153,6 +150,7 @@ render: function() {
   		  React.createElement("hr", null)
   		), 
   		React.createElement("div", {className: "am-g"}, 
+  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   		  React.createElement("form", {id: "snsAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 	    React.createElement("input", {type: "hidden", name: "section_id", value: o.section_id}), 
@@ -162,54 +160,31 @@ render: function() {
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交")
+  		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交"), 
+			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
+  	     ), 
 
+		React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
+               React.createElement(G_phone_iframe, null)
+             )
   	   )	   
   	  )
   );
 }
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 *公告点赞、评论、加载更多等详情绘制模板；
 * */
-var Announcements_goodshow = React.createClass({displayName: "Announcements_goodshow", 
+var sns_Announcements_goodshow = React.createClass({displayName: "sns_Announcements_goodshow", 
 	//创建精品文章点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
+  	handleClick: function(m,uuid) {
+  		PxSnsService.btnclick_sns_announce(m,uuid);
 }, 
-//收藏按钮方法;
-favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-}, 
+////收藏按钮方法;
+//favorites_push: function(title,type,reluuid,url) {
+//	commons_ajax_favorites_push(title,type,reluuid,url)
+//}, 
 render: function() {
 	  var o = this.props.data;
 	  var edit_btn_className="G_Edit_hide";
@@ -224,7 +199,7 @@ render: function() {
 			React.createElement(AMUIReact.Article, {
 			title: o.title, 
 			meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 			))
 	     }
 
@@ -232,9 +207,9 @@ return (
 		  React.createElement("div", null, 
             iframe, 
 		     React.createElement(AMR_ButtonToolbar, null, 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
-		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除"), 
+
 		     React.createElement(AMR_Button, {className:  G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
 		     ), 	
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
