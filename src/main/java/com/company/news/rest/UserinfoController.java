@@ -1,6 +1,5 @@
 package com.company.news.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Group4Q;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
@@ -30,7 +28,6 @@ import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.rest.util.StringOperationUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
@@ -61,6 +58,15 @@ public class UserinfoController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
+		
+		if(SystemConstants.Group_type_3.toString().equals(userLoginForm.getGrouptype())){
+			SessionUserInfoInterface user = userinfoService.loginBySns(userLoginForm, model, request,
+					responseMessage);
+			if(user==null)return "";
+			this.putUserInfoReturnToModel(user,model, request);
+			
+			return "";
+		}
 		
 		//登录验证.验证失败则返回.
 		try {
@@ -165,9 +171,6 @@ public class UserinfoController extends AbstractRESTController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			
-			
 			//设置session数据
 			userinfoService.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			// 返回用户信息
@@ -369,16 +372,23 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
-			User user=this.userinfoService.getUser(this.getUserInfoBySession(request).getUuid());
-			
-			String grouptype = request.getParameter("grouptype");
-			
-			if(StringUtils.isNotBlank(grouptype)){
-				String loginType=SessionListener.getLoginTypeBySession(request);
-				if(!grouptype.equals(loginType)){//不等,表示切换 到其他模块.重新家长session的属性.
-					userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+			SessionUserInfoInterface user=this.userinfoService.getUser(this.getUserInfoBySession(request).getUuid());
+			if(user!=null){
+				String grouptype = request.getParameter("grouptype");
+				
+				if(StringUtils.isNotBlank(grouptype)){
+					String loginType=SessionListener.getLoginTypeBySession(request);
+					if(!grouptype.equals(loginType)){//不等,表示切换 到其他模块.重新家长session的属性.
+						userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+					}
 				}
+				
+			}else{
+				String grouptype = request.getParameter("grouptype");
+				user=this.userinfoService.getParent(this.getUserInfoBySession(request).getUuid());
+				userinfoService.putSessionForSns(grouptype, SessionListener.getSession(request), user, SystemConstants.Session_User_Login_Type_Parent, request);
 			}
+			
 			// 返回用户信息
 			this.putUserInfoReturnToModel(user,model, request);
 			
@@ -856,7 +866,7 @@ public class UserinfoController extends AbstractRESTController {
 	   * @param request
 	   * @return
 	   */
-	  protected void putUserInfoReturnToModel( User  user,ModelMap model,HttpServletRequest request){
+	  protected void putUserInfoReturnToModel( SessionUserInfoInterface  user,ModelMap model,HttpServletRequest request){
 	    // 返回用户信息
 	    UserInfoReturn userInfoReturn = new UserInfoReturn();
 	    try {
@@ -872,7 +882,8 @@ public class UserinfoController extends AbstractRESTController {
 	    model.addAttribute(RestConstants.Session_UserInfo_rights,session.getAttribute(RestConstants.Session_UserInfo_rights));
 	    //返回真正的登录类型.
 	    model.addAttribute(RestConstants.LOGIN_TYPE,session.getAttribute(RestConstants.LOGIN_TYPE));
-		   
+	 // 4.session添加-用户登录类型.
+	    model.addAttribute(RestConstants.User_TYPE,session.getAttribute(RestConstants.User_TYPE));
 	  }
 	
 	/**

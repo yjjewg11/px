@@ -21,6 +21,7 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
+import com.company.news.entity.Parent;
 import com.company.news.entity.Role;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
@@ -481,7 +482,7 @@ public class UserinfoService extends AbstractService {
 
 		return user;
 	}
-
+	
 	/**
 	 * 
 	 * @param loginName
@@ -1137,6 +1138,17 @@ public class UserinfoService extends AbstractService {
 		return (User) this.nSimpleHibernateDao.getObjectById(User.class, uuid);
 
 	}
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 * @throws Exception
+	 */
+	public Parent getParent(String uuid) throws Exception {
+		return (Parent) this.nSimpleHibernateDao.getObjectById(Parent.class, uuid);
+
+	}
 
 	/**
 	 * 获取我关联幼儿园的所有用户的通信录
@@ -1360,6 +1372,12 @@ public class UserinfoService extends AbstractService {
 		session.setAttribute(RestConstants.Session_UserInfo, user);
 		// 4.session添加-用户类型.
 		session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
+		
+		
+		// 5.session添加-用户登录类型.
+		session.setAttribute(RestConstants.User_TYPE, SystemConstants.Session_User_Login_Type_Teacher);
+		
+		
 		// 5.session添加-设置当前用户是否管理员
 		if (SystemConstants.Group_type_0.toString().equals(grouptype)) {
 			boolean isAdmin = isAdmin(user.getUuid());
@@ -1384,5 +1402,249 @@ public class UserinfoService extends AbstractService {
 				.findByPaginationToHql(hql, pData);
 		return pageQueryResult;
 	}
+
+	/**
+	 * 用于sns模块登录
+	 * @param userLoginForm
+	 * @param model
+	 * @param request
+	 * @param responseMessage
+	 * @return
+	 */
+	public SessionUserInfoInterface loginBySns(UserLoginForm userLoginForm,
+			ModelMap model, HttpServletRequest request,
+			ResponseMessage responseMessage) {
+		String loginname = userLoginForm.getLoginname();
+		String password = userLoginForm.getPassword();
+
+		if (StringUtils.isBlank(loginname)) {
+			responseMessage.setMessage("用户登录名不能为空!");
+			return null;
+		}
+		if (StringUtils.isBlank(password)) {
+			responseMessage.setMessage("登陆密码不能为空!");
+			return null;
+		}
+		
+		// 创建session
+		HttpSession session = SessionListener
+				.getSession((HttpServletRequest) request);
+
+		if (session != null) {
+			SessionUserInfoInterface userInfo = (SessionUserInfoInterface) session
+					.getAttribute(RestConstants.Session_UserInfo);
+			if (userInfo != null && loginname.equals(userInfo.getLoginname())) {
+				return userInfo;
+			}
+		}
+		
+
+		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
+				User.class, "loginname", loginname);
+
+		if (user == null) {
+			Parent parent = (Parent) this.nSimpleHibernateDao.getObjectByAttribute(
+					Parent.class, "loginname", loginname);
+			
+			if(parent==null){
+				responseMessage.setMessage("用户不存在!");
+				return null;
+			}
+			return loginBySnsByParent(parent, userLoginForm, model, request, responseMessage);
+		}
+		
+		return loginBySnsByTeacher(user, userLoginForm, model, request, responseMessage);
+		
+	}
+	/**
+	 * 用于sns模块登录
+	 * @param userLoginForm
+	 * @param model
+	 * @param request
+	 * @param responseMessage
+	 * @return
+	 */
+	public SessionUserInfoInterface loginBySnsByTeacher(User user,UserLoginForm userLoginForm,
+			ModelMap model, HttpServletRequest request,
+			ResponseMessage responseMessage) {
+		String loginname = userLoginForm.getLoginname();
+		String password = userLoginForm.getPassword();
+
+		if (StringUtils.isBlank(loginname)) {
+			responseMessage.setMessage("用户登录名不能为空!");
+			return null;
+		}
+		if (StringUtils.isBlank(password)) {
+			responseMessage.setMessage("登陆密码不能为空!");
+			return null;
+		}
+
+		if (user.getDisable() != null
+				&& SystemConstants.USER_disable_true == user.getDisable()
+						.intValue()) {
+			responseMessage.setMessage("帐号被禁用,请联系互动家园");
+			return null;
+		}
+		boolean pwdIsTrue = false;
+		{
+			// 密码比较
+			String smmPWD = user.getPassword();
+
+			if (password.equals(smmPWD)) {
+				pwdIsTrue = true;
+			} else {
+				pwdIsTrue = false;
+			}
+
+			// 在限定次数内
+			String project_loginLimit = ProjectProperties.getProperty(
+					"project.LoginLimit", "true");
+			if ("true".equals(project_loginLimit)) {
+				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
+						responseMessage)) {// 密码错误次数验证
+					return null;
+				}
+				if (!pwdIsTrue) {
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					return null;
+				}
+
+			} else {
+				if (!pwdIsTrue) {
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					return null;
+				}
+			}
+
+		}
+		
+		HttpSession session = request.getSession(true);
+		
+		UserOfSession userOfSession = new UserOfSession();
+		try {
+			BeanUtils.copyProperties(userOfSession, user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		putSessionForSns(userLoginForm.getGrouptype(),session,user, SystemConstants.Session_User_Login_Type_Teacher,request);
+		
+		// 更新登陆日期,最近一次登陆日期
+		String sql = "update px_user set count=count+1,last_login_time=login_time,login_time=now(),login_type="
+				+ userLoginForm.getGrouptype()
+				+ ",sessionid='"
+				+ session.getId() + "' where uuid='" + user.getUuid() + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+		
+		return userOfSession;
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param loginName
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	public SessionUserInfoInterface loginBySnsByParent(Parent parent,UserLoginForm userLoginForm,
+			ModelMap model, HttpServletRequest request,
+			ResponseMessage responseMessage) {
+		
+		String loginname = userLoginForm.getLoginname();
+		String password = userLoginForm.getPassword();
+
+		if (StringUtils.isBlank(loginname)) {
+			responseMessage.setMessage("用户登录名不能为空!");
+			return null;
+		}
+		if (StringUtils.isBlank(password)) {
+			responseMessage.setMessage("登陆密码不能为空!");
+			return null;
+		}
+
+	
+		if (parent.getDisable() != null
+				&& SystemConstants.USER_disable_true == parent.getDisable()
+						.intValue()) {
+			responseMessage.setMessage("帐号被禁用,请联系互动家园");
+			return null;
+		}
+		boolean pwdIsTrue = false;
+		{
+			// 密码比较
+			String smmPWD = parent.getPassword();
+
+			if (password.equals(smmPWD)) {
+				pwdIsTrue = true;
+			} else {
+				pwdIsTrue = false;
+			}
+
+			// 在限定次数内
+			String project_loginLimit = ProjectProperties.getProperty(
+					"project.LoginLimit", "true");
+			if ("true".equals(project_loginLimit)) {
+				if (!LoginLimit.verifyCount(loginname, pwdIsTrue,
+						responseMessage)) {// 密码错误次数验证
+					return null;
+				}
+				if (!pwdIsTrue) {
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					return null;
+				}
+
+			} else {
+				if (!pwdIsTrue) {
+					responseMessage.setMessage("用户登录名或者密码错误，请重试!");
+					return null;
+				}
+			}
+
+		}
+
+		HttpSession session  = request.getSession(true);
+		
+		
+		UserOfSession userOfSession = new UserOfSession();
+		try {
+			BeanUtils.copyProperties(userOfSession, parent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		putSessionForSns(userLoginForm.getGrouptype(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
+
+		// 更新登陆日期,最近一次登陆日期
+		String sql = "update px_parent set count=count+1,last_login_time=login_time,login_time=now(),sessionid='"+session.getId()+"' where uuid='"
+				+ parent.getUuid() + "'";
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).executeUpdate();
+		//
+
+		return userOfSession;
+	}
+	/**
+	 * sns模式下面,放入session数据.
+	 * @param grouptype
+	 * @param session
+	 * @param user
+	 * @param userType
+	 * @param request
+	 */
+	public void putSessionForSns(String grouptype, HttpSession session,
+			SessionUserInfoInterface user,String userType, HttpServletRequest request){
+		
+
+		SessionListener.putSessionByJSESSIONID(session);
+		
+				//设置session数据
+				session.setAttribute(RestConstants.Session_UserInfo, user);
+				// 4.session添加-用户类型.
+				session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
+				// 4.session添加-用户登录类型.
+				session.setAttribute(RestConstants.User_TYPE, userType);
+	}
+	
 
 }
