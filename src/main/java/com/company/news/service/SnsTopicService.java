@@ -14,12 +14,14 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
+import com.company.news.entity.Announcements;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.AnnouncementsVo;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -56,7 +58,12 @@ public class SnsTopicService extends AbstractService {
 		SnsTopic newEntity = new SnsTopic();
 		BeanUtils.copyProperties(newEntity, jsonform);
 		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
-		newEntity.setCreate_useruuid(user.getUuid());
+		newEntity.setCreate_useruuid(user.getUuid());		
+		newEntity.setReply_count(0L);
+		newEntity.setYes_count(0L);
+		newEntity.setNo_count(0L);
+		newEntity.setStatus(0);
+		newEntity.setLevel(0);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 
@@ -130,6 +137,13 @@ public class SnsTopicService extends AbstractService {
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		
 		return pageQueryResult;
+	}
+	public SnsTopic get(String uuid) {
+		SnsTopic announcements = (SnsTopic) this.nSimpleHibernateDao
+				.getObjectById(SnsTopic.class, uuid);
+
+		return announcements;
+
 	}
 
 }

@@ -21,13 +21,16 @@ var PxSnsService=(function(){
 	function sns_list_div(){
 		React.render(React.createElement(Sns_good_Div_list),PxSnsConfig.getBodyDiv());  	
 	}
+	/*
+	 * <话题>获取列表数据服务器请求;
+	 * */
 	function sns_announce_Mygoodlist(list_div,pageNo,callback){
 		$.AMUI.progress.start();
-		var url = hostUrl + "rest/snsSection/list.json";
+		var url = hostUrl + "rest/snsTopic/listPage.json";
 		$.ajax({
 			type : "GET",
 			url : url,
-	  		data :"",
+	  		data :{pageNo:pageNo},
 			dataType : "json",
 			async: false,
 			success : function(data) {
@@ -49,10 +52,72 @@ var PxSnsService=(function(){
 		});	
 		   
 }
-	
-	
-	
-	
+	/*
+	 *<话题>添加等按钮绑定事件
+	 * @add:创建；
+	 * @edit:编辑；
+	 * @del:删除；
+	 * */ 
+	function btnclick_sns_announce(m,uuid){
+	  	if(m=="add"){
+	  		sns_ajax_announce_good_edit(null);
+	  	}else if(m=="edit"){
+	  		sns_ajax_announce_good_edit(uuid);
+	  	}else if(m=="del"){
+	  		//react_ajax_announce_good_delete(groupuuid,uuid);
+	  	}
+		   
+}	
+  /*
+   *<话题>创建与编辑服务请求；
+   * @if(!uuid):创建；
+   * @uuid不是则:编辑；
+   * */ 	
+	function sns_ajax_announce_good_edit(uuid){
+	  	if(!uuid){
+	  		Queue.push(function(){sns_ajax_announce_good_edit(uuid);},"创建话题");
+	  		React.render(React.createElement(Announcements_snsedit,{
+	  			formdata:{section_id:1}
+	  			}), PxSnsConfig.getBodyDiv());
+	  		return;
+	  	}
+	  	Queue.push(function(){sns_ajax_announce_good_edit(uuid);},"编辑话题");	
+	  	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+	  	$.ajax({
+	  		type : "GET",
+	  		url : url,
+	  		dataType : "json",
+	  		 async: true,
+	  		success : function(data) {
+	  			$.AMUI.progress.done();
+	  			if (data.ResMsg.status == "success") {
+	  				React.render(React.createElement(Announcements_snsedit,{
+	  					formdata:data.data,
+	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
+	  					}),PxSnsConfig.getBodyDiv());
+	  			} else {
+	  				alert("加载数据失败："+data.ResMsg.message);
+	  			}
+	  		},
+			error :G_ajax_error_fn
+	  	});  
+		   
+}	
+	/*
+	 *<话题>创建与编辑提交按钮方法
+	 *@OPT：我们把内容用Form表单提交到Opt我们封装的
+	 *一个方法内直接传给服务器，服务器从表单取出需要的参数
+	 * */  	
+	function ajax_sns_save(){
+	     var opt={
+	             formName: "snsAnnouncementsForm",
+	         url:hostUrl + "rest/snsTopic/save.json",
+	             cbFN:null
+	             };
+	 G_ajax_abs_save(opt);	
+		   
+}
 	
 	function sns_edit_topic_div(){
 				   React.render(React.createElement(Sns_Div_list,{
@@ -61,6 +126,8 @@ var PxSnsService=(function(){
 				   
 	}
 	return {
+		ajax_sns_save:ajax_sns_save,
+		btnclick_sns_announce:btnclick_sns_announce,
 		sns_announce_Mygoodlist:sns_announce_Mygoodlist,
 		sns_edit_topic_div:sns_edit_topic_div,
 		sns_list_div:sns_list_div
@@ -68,7 +135,19 @@ var PxSnsService=(function(){
 })();//end PxLazyM=(function(){return {}})();
 
 
-
+/*
+ *(精品文章)创建与编辑提交按钮方法
+ *@OPT：我们把内容用Form表单提交到Opt我们封装的
+ *一个方法内直接传给服务器，服务器从表单取出需要的参数
+ * */    
+// function ajax_good_save(){
+//     var opt={
+//             formName: "editAnnouncementsForm",
+//         url:hostUrl + "rest/announcements/save.json",
+//             cbFN:null
+//             };
+// G_ajax_abs_save(opt);
+// }
 
 
 
@@ -116,57 +195,6 @@ var PxSnsService=(function(){
 //	});
 //};
 
-/*
- *(精品文章)添加等按钮绑定事件
- * @add:创建；
- * @edit:编辑；
- * @del:删除；
- * */  
-// function btnclick_good_announce(m,groupuuid,uuid){
-//	  	if(m=="add"){
-//	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:3},null);
-//	  	}else if(m=="edit"){
-//	  		react_ajax_announce_good_edit(null,uuid);
-//	  	}else if(m=="del"){
-//	  		react_ajax_announce_good_delete(groupuuid,uuid);
-//	  	}
-//	 }; 
-  /*
-   *(精品文章)创建与编辑服务请求；
-   * @if(!uuid):创建；
-   * @uuid不是则:编辑；
-   * */  	  
-//  function react_ajax_announce_good_edit(formdata,uuid){
-//	  	if(!uuid){
-//			Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"创建文章");
-//	  		React.render(React.createElement(Announcements_goodedit,{
-//	  			formdata:formdata,
-//	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-//	  			}), document.getElementById('div_body'));
-//	  		return;
-//	  	}
-//		Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"编辑文章");
-//	  	$.AMUI.progress.start();
-//	      var url = hostUrl + "rest/announcements/"+uuid+".json";
-//	  	$.ajax({
-//	  		type : "GET",
-//	  		url : url,
-//	  		dataType : "json",
-//	  		 async: true,
-//	  		success : function(data) {
-//	  			$.AMUI.progress.done();
-//	  			if (data.ResMsg.status == "success") {
-//	  				React.render(React.createElement(Announcements_goodedit,{
-//	  					formdata:data.data,
-//	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-//	  					}),document.getElementById('div_body'));
-//	  			} else {
-//	  				alert("加载数据失败："+data.ResMsg.message);
-//	  			}
-//	  		},
-//			error :G_ajax_error_fn
-//	  	});
-//	  };
   /*
    *(精品文章)删除按钮服务请求；
    *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
@@ -193,17 +221,4 @@ var PxSnsService=(function(){
 //  		},
 //  		error :G_ajax_error_fn
 //  	});
-//  };  	  
-  /*
-  *(精品文章)创建与编辑提交按钮方法
-  *@OPT：我们把内容用Form表单提交到Opt我们封装的
-  *一个方法内直接传给服务器，服务器从表单取出需要的参数
-  * */    
-//  function ajax_good_save(){
-//      var opt={
-//              formName: "editAnnouncementsForm",
-//          url:hostUrl + "rest/announcements/save.json",
-//              cbFN:null
-//              };
-//  G_ajax_abs_save(opt);
-//  }	  
+//  };  	  	  

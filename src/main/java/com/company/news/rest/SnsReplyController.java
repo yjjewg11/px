@@ -26,7 +26,7 @@ public class SnsReplyController extends AbstractRESTController {
 	private SnsReplyService snsReplyService;
 
 	/**
-	 * 组织注册
+	 * 组织注册（回复请求）
 	 * 
 	 * @param model
 	 * @param request

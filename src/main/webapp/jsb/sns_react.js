@@ -1,7 +1,7 @@
 //——————————————————————————话题<绘制>—————————————————————  
 
 /* 
- * <精品文章>绘制舞台
+ * <话题>绘制舞台
  * @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
  * @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
  * @btn_click_announce:点击按钮事件跳转kd_servise方法;
@@ -42,9 +42,9 @@ var Sns_good_Div_list = React.createClass({displayName: "Sns_good_Div_list",
 		this.load_more_data();
 		
 	},
-	//创建精品文章点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid) {
-		//  btnclick_good_announce(m,Store.getCurGroup().uuid);
+	//创建话题点击按钮事件跳转sns_servise方法;
+  	handleClick: function(m) {
+  		PxSnsService.btnclick_sns_announce(m);
 },
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
@@ -52,7 +52,7 @@ render: function() {
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 
 		   React.createElement(AMR_ButtonToolbar, null, 
-		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add",this.props.groupuuid)}, "创建精品文章")
+		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "创建话题")
 		    ), 
 		    
 		    
@@ -77,7 +77,7 @@ render: function() {
   
   
 /*
- *<精品文章>表格内容绘制
+ *<话题>表格内容绘制
  * 在kd_react；
  * */
 var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div", 
@@ -119,6 +119,82 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    	  );
 }
 }); 
+
+
+
+/*
+ * (精品文章)创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * */    
+var Announcements_snsedit = React.createClass({displayName: "Announcements_snsedit", 
+	 getInitialState: function() {
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+			
+		    this.setState($('#snsAnnouncementsForm').serializeJson());
+	  },
+	  componentDidMount:function(){
+	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
+          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
+                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+          });
+	  },
+//		   preview_fn:function(){
+//          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
+//       }, 
+render: function() {
+	 var o = this.state;
+	
+  return (
+  		React.createElement("div", null, 
+  		React.createElement("div", {className: "header"}, 
+  		  React.createElement("hr", null)
+  		), 
+  		React.createElement("div", {className: "am-g"}, 
+  		  React.createElement("form", {id: "snsAnnouncementsForm", method: "post", className: "am-form"}, 
+  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
+	    React.createElement("input", {type: "hidden", name: "section_id", value: o.section_id}), 
+
+  		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
+  		  React.createElement("br", null), 
+  		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+ 		G_get_upload_img_Div(), 
+  		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交")
+  		  )
+
+  	   )	   
+  	  )
+  );
+}
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -175,76 +251,5 @@ return (
 }); 
 
 
- /*
- * (精品文章)创建与编辑界面绘制；
- * @w_img_upload_nocut:上传图片后发的请求刷新;
- * */    
-var Announcements_goodedit = React.createClass({displayName: "Announcements_goodedit", 
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
 
-	 handleChange_url_cb:function(url_title){
-			this.state.title=url_title;
-			this.setState(this.state);
-	  },
-	handleChange_url:function(){
-	    var tmp=$('#editAnnouncementsForm').serializeJson();
-		    this.setState(tmp);
-		var thit=this;		 
-	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
-		
-	},
-	 handleChange: function(event) {
-			
-		    this.setState($('#editAnnouncementsForm').serializeJson());
-	  },
-	  componentDidMount:function(){
-	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-	     this.editor=editor;
-          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
-          });
-	  },
-		   preview_fn:function(){
-          G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-       }, 
-render: function() {
-	 var o = this.state;
-	
-  return (
-  		React.createElement("div", null, 
-  		React.createElement("div", {className: "header"}, 
-  		  React.createElement("hr", null)
-  		), 
-  		React.createElement("div", {className: "am-g"}, 
-  		  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
-  		  React.createElement("form", {id: "editAnnouncementsForm", method: "post", className: "am-form"}, 
-  		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-  		React.createElement("input", {type: "hidden", name: "isimportant", value: o.isimportant}), 
-	    React.createElement("input", {type: "hidden", name: "type", value: o.type}), 
-  		React.createElement("div", {className: "am-form-group"}, 
-  	  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})		          
-        ), 
-  
-  		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
-  		  React.createElement("br", null), 
-  		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
-  		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
-  		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_get_upload_img_Div(), 
-  		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
-			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
-  		  )
-  	     ), 
-
-		React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
-               React.createElement(G_phone_iframe, null)
-             )
-  	   )	   
-  	  )
-  );
-}
-}); 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±

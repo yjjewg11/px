@@ -6693,10 +6693,10 @@ render: function() {
      	load_more_data:function(){
      		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
      		var re_data=this.state.replyPage;
-     		if(!re_data){
-     			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+     		if(re_data&& this.pageNo==1){
+				this.loadByFirst(this.classnewsreply_list_div+this.pageNo);			
      		}else{
-     			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
+     			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
      		}
      		if(!re_data)return;
      		if(re_data.data.length<re_data.pageSize){

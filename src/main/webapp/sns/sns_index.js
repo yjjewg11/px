@@ -3,7 +3,8 @@
 //PxSns.list_init(a);
 var PxSns=(function(){
 	//懒加载回调
-	function list_init(){		
+	function list_init(){	
+		Queue.push(list_init,"话题");
 		PxSnsService.sns_list_div();
 	}
 	
