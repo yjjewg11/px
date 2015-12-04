@@ -78,6 +78,7 @@ public class RightUtils {
 		HttpSession session =SessionListener.getSession(request);
 		List rights=(List)session.getAttribute(RestConstants.Session_UserInfo_rights);
 		List list=new ArrayList();
+		if(rights==null)return null;
 		try {
 			for(int i=0;i<rights.size();i++){
 				Object[] sa=(Object[])rights.get(i);

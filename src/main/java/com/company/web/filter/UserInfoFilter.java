@@ -22,9 +22,11 @@ import org.apache.log4j.Logger;
 import org.springframework.ui.ModelMap;
 
 import com.company.common.SpringContextHolder;
+import com.company.http.PxHttpSession;
 import com.company.news.commons.util.PxLogUtils;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.UserinfoService;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
@@ -143,6 +145,11 @@ public class UserInfoFilter implements Filter {
 					
 				}
 			}
+			
+			
+//			if(session instanceof PxHttpSession){//手动设置最后访问时间.
+//				((PxHttpSession) session).setLastAccessedTime(System.currentTimeMillis());
+//			}
 			startTime = System.currentTimeMillis();
 			filterChain.doFilter(request, response);
 			endTime = System.currentTimeMillis() - startTime;

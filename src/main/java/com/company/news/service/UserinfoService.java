@@ -11,11 +11,11 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import com.company.http.PxHttpSession;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
@@ -685,7 +685,7 @@ public class UserinfoService extends AbstractService {
 	}
 
 	/**
-	 * 根据手机号码获取
+	 * 根据sessionid
 	 * 
 	 * @param loginname
 	 * @return
@@ -693,6 +693,19 @@ public class UserinfoService extends AbstractService {
 	public User getUserBySessionid(String sessionid) {
 		String attribute = "sessionid";
 		return (User) nSimpleHibernateDao.getObjectByAttribute(User.class,
+				attribute, sessionid);
+
+	}
+	
+	/**
+	 * 根据sessionid
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public Parent getParentBySessionid(String sessionid) {
+		String attribute = "sessionid";
+		return (Parent) nSimpleHibernateDao.getObjectByAttribute(Parent.class,
 				attribute, sessionid);
 
 	}
@@ -1294,6 +1307,12 @@ public class UserinfoService extends AbstractService {
 	@Autowired
 	private RightService rightService;
 
+	/**
+	 * 集群解决方案.根据jessionid 重设session
+	 * @param jessionid
+	 * @param request
+	 * @return
+	 */
 	public boolean updateAndloginForJessionid(String jessionid,
 			HttpServletRequest request) {
 
@@ -1308,32 +1327,45 @@ public class UserinfoService extends AbstractService {
 					return true;
 				}
 				user = getUserBySessionid(jessionid);
-				if (user == null)// 请求服务返回失败标示
-					return false;
-				session = request.getSession(true);
-				SessionListener.putSessionByToken(jessionid, session);
+				if (user == null){
+					// 请求服务返回失败标示
+					
+					Parent parent= getParentBySessionid(jessionid);
+					if (parent == null){//家长或老师都没找到则退出.
+						return false;
+					}
+					session = new PxHttpSession(jessionid);
+					SessionListener.putSessionByJSESSIONID(session);
+					putSessionForSns(SystemConstants.Group_type_3.toString(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
+					return true;
+				}
+				
+				
+				
+				session = new PxHttpSession(jessionid);
+				SessionListener.putSessionByJSESSIONID(session);
+				UserOfSession userOfSession = new UserOfSession();
+				try {
+					BeanUtils.copyProperties(userOfSession, user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				String logintype = user.getLogin_type() == null ? "1" : user
+						.getLogin_type().toString();
+				// 设置session数据
+				this.putSession(logintype, session, userOfSession, request);
+
 			}
 
-			UserOfSession userOfSession = new UserOfSession();
-			try {
-				BeanUtils.copyProperties(userOfSession, user);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			String logintype = user.getLogin_type() == null ? "1" : user
-					.getLogin_type().toString();
-			// 设置session数据
-			this.putSession(logintype, session, userOfSession, request);
-
-			// 更新登陆日期,最近一次登陆日期
-			String sql = "update px_user set login_type=" + logintype
-					+ ",sessionid='" + session.getId() + "' where uuid='"
-					+ user.getUuid() + "'";
-			Session session1=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-			Transaction transaction=session1.beginTransaction();
-			//transaction.begin();
-			session1.createSQLQuery(sql).executeUpdate();
-			transaction.commit();
+//			// 更新登陆日期,最近一次登陆日期
+//			String sql = "update px_user set login_type=" + logintype
+//					+ ",sessionid='" + session.getId() + "' where uuid='"
+//					+ user.getUuid() + "'";
+//			Session session1=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+//			Transaction transaction=session1.beginTransaction();
+//			//transaction.begin();
+//			session1.createSQLQuery(sql).executeUpdate();
+//			transaction.commit();
 			return true;
 
 		} catch (Exception e) {
@@ -1426,7 +1458,7 @@ public class UserinfoService extends AbstractService {
 			return null;
 		}
 		
-		// 创建session
+		// session存在模式直接返回.
 		HttpSession session = SessionListener
 				.getSession((HttpServletRequest) request);
 
@@ -1438,11 +1470,12 @@ public class UserinfoService extends AbstractService {
 			}
 		}
 		
-
+		//优先判断是否是老师登录
 		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
 				User.class, "loginname", loginname);
 
 		if (user == null) {
+		//3.老师不存在则家长登录
 			Parent parent = (Parent) this.nSimpleHibernateDao.getObjectByAttribute(
 					Parent.class, "loginname", loginname);
 			
@@ -1520,13 +1553,8 @@ public class UserinfoService extends AbstractService {
 		
 		HttpSession session = request.getSession(true);
 		
-		UserOfSession userOfSession = new UserOfSession();
-		try {
-			BeanUtils.copyProperties(userOfSession, user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		putSessionForSns(userLoginForm.getGrouptype(),session,user, SystemConstants.Session_User_Login_Type_Teacher,request);
+	
+		UserOfSession userOfSession= putSessionForSns(userLoginForm.getGrouptype(),session,user, SystemConstants.Session_User_Login_Type_Teacher,request);
 		
 		// 更新登陆日期,最近一次登陆日期
 		String sql = "update px_user set count=count+1,last_login_time=login_time,login_time=now(),login_type="
@@ -1606,14 +1634,7 @@ public class UserinfoService extends AbstractService {
 
 		HttpSession session  = request.getSession(true);
 		
-		
-		UserOfSession userOfSession = new UserOfSession();
-		try {
-			BeanUtils.copyProperties(userOfSession, parent);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		putSessionForSns(userLoginForm.getGrouptype(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
+		UserOfSession userOfSession =putSessionForSns(userLoginForm.getGrouptype(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
 
 		// 更新登陆日期,最近一次登陆日期
 		String sql = "update px_parent set count=count+1,last_login_time=login_time,login_time=now(),sessionid='"+session.getId()+"' where uuid='"
@@ -1632,18 +1653,25 @@ public class UserinfoService extends AbstractService {
 	 * @param userType
 	 * @param request
 	 */
-	public void putSessionForSns(String grouptype, HttpSession session,
+	public UserOfSession putSessionForSns(String grouptype, HttpSession session,
 			SessionUserInfoInterface user,String userType, HttpServletRequest request){
 		
-
-		SessionListener.putSessionByJSESSIONID(session);
+				UserOfSession userOfSession = new UserOfSession();
+				try {
+					BeanUtils.copyProperties(userOfSession, user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				SessionListener.putSessionByJSESSIONID(session);
 		
 				//设置session数据
-				session.setAttribute(RestConstants.Session_UserInfo, user);
+				session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
 				// 4.session添加-用户类型.
 				session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
 				// 4.session添加-用户登录类型.
 				session.setAttribute(RestConstants.User_TYPE, userType);
+				
+				return userOfSession;
 	}
 	
 
