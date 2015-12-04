@@ -161,7 +161,7 @@
 		<property name="cacheManager">
 			<ref local="cacheManager" />
 		</property>
-		<!-- 用于session使用缓存 关联ehcache.xml中的缓存配置 -->
+		<!-- 使用缓存 关联ehcache.xml中的缓存配置 -->
 		<property name="cacheName" value="sessionCache" />
 	</bean>
 

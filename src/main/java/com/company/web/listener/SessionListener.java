@@ -39,35 +39,41 @@ public class SessionListener implements HttpSessionListener {
   public static void putSessionByToken(String jessionid, HttpSession session) {
 	  sessionMapBySessionid.put(jessionid, session);
 	}
+  
+  private static HttpSession   getSessionFromCache(String jessionid){
+	  //1优先取sessionMapBySessionid
+	  HttpSession	session=(HttpSession)sessionMapBySessionid.get(jessionid);
+      if(session!=null)return session;
+      //2从SessionCache中取
+      session=(HttpSession)SessionCache.getPxHttpSession(jessionid);
+     return session;
+  }
   /**
    * 获取session统一使用该方法.策略:JSESSIONID 优先于token
    * @param request
    * @return
    */
   public static HttpSession   getSession(HttpServletRequest request){
-    String JSESSIONID=request.getParameter(RestConstants.Return_JSESSIONID);
     //1.优先根据默认关系取
     HttpSession session=request.getSession(false);;
     if(session!=null)return session;
+    
+    
     //2.根据JSESSIONID 参数获取
+    String JSESSIONID=request.getParameter(RestConstants.Return_JSESSIONID);
     if(StringUtils.isNotBlank(JSESSIONID)){//使用JSESSIONID
-      session=(HttpSession)sessionMapBySessionid.get(JSESSIONID);
+    	session=getSessionFromCache(JSESSIONID);
       if(session!=null)return session;
+      //修复参数模式下面特殊字符处理
       String tmpsession=JSESSIONID.replaceAll(" ", "+");
       if(!JSESSIONID.equals(tmpsession)){
         logger.warn(session+",JSESSIONID Contains special characters,After the escape="+tmpsession);
       }
-      session=(HttpSession)sessionMapBySessionid.get(tmpsession);
-      if(session!=null){
-        return session;
-      }
+      session=getSessionFromCache(tmpsession);
+      if(session!=null)return session;
       
-      session=(HttpSession)SessionCache.getPxHttpSession(tmpsession);
-      if(session!=null){
-          return session;
-        }
    }
-    
+    //从cookie中取sessionid
     JSESSIONID=UserInfoFilter.getJSESSIONIDCookies(request);
     session=(HttpSession)SessionCache.getPxHttpSession(JSESSIONID);
     
