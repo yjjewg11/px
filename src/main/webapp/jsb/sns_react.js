@@ -73,9 +73,7 @@ render: function() {
 });
 
 
-
-  
-  
+ 
 /*
  *<话题>表格内容绘制
  * 在kd_react；
@@ -104,8 +102,7 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 	    			  		  event.title
 	    			  		  ), 		  
 	    			  		  React.createElement("div", {className: "am-list-item-text"}, 
-	    			  		  "有", event.reply_count, "人回复|有", event.yes_count, "人赞成|有", event.no_count, "人反对|", event.create_time, "-", 
-	    			  		PxSnsService.img_data_list(event.level), "-", PxSnsService.type_data_list(event.status)
+	    			  		  "有", event.reply_count, "人回复|", event.create_time, "-", PxSnsService.img_data_list(event.level)
 	    			  		  )
 	    			  		    )
 	    			    		  )
@@ -120,7 +117,7 @@ var sns_mygoodlist_div = React.createClass({displayName: "sns_mygoodlist_div",
 
 
 /*
- * (精品文章)创建与编辑界面绘制；
+ * <话题>创建与编辑界面绘制；
  * @w_img_upload_nocut:上传图片后发的请求刷新;
  * */    
 var Announcements_snsedit = React.createClass({displayName: "Announcements_snsedit", 
@@ -161,7 +158,7 @@ render: function() {
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_save, className: "am-btn am-btn-primary"}, "提交"), 
-			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
+		  React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
   	     ), 
 
@@ -174,7 +171,7 @@ render: function() {
 }
 }); 
 /*
-*公告点赞、评论、加载更多等详情绘制模板；
+*<话题>Show详情绘制（内含:点赞、举报、回复等）
 * */
 var sns_Announcements_goodshow = React.createClass({displayName: "sns_Announcements_goodshow", 
 	//创建精品文章点击按钮事件跳转kd_servise方法;
@@ -198,7 +195,7 @@ render: function() {
 	     iframe=(       
 			React.createElement(AMUIReact.Article, {
 			title: o.title, 
-			meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
+			meta: Vo.announce_type(o.type)+" | "+o.create_time+ "|赞成"+ this.props.data.yes_count+"人"+"|反对"+ this.props.data.no_count+"人"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 			))
 	     }
@@ -214,17 +211,214 @@ return (
 		     ), 	
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 		    	
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan2_"+o.uuid, className: "am-icon-thumbs-down px_font_size_click"})), 
 		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
 		    	)
 		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
-		   )
+		    	React.createElement(Sns_Dianzan_Yes_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 			 		 
+		       React.createElement(Sns_Dianzan_No_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan2_"+o.uuid}), 
+		    	 React.createElement(Sns_reply_list, {uuid: o.uuid, type: 0})	
+		    	)
 );
+}
+}); 
+
+//评论模板
+var Sns_reply_list = React.createClass({displayName: "Sns_reply_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentWillReceiveProps:function(){
+		this.load_more_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=PxSnsService.sns_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}		  
+		  this.pageNo++;
+	},
+	refreshReplyList:function(){
+		$("#"+this.classnewsreply_list_div).html("");
+		this.pageNo=1;
+		this.load_more_data();
+	},
+
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+	var parentThis=this;
+  return (
+		  React.createElement("div", null, 
+		  React.createElement("div", {id: this.classnewsreply_list_div}), 
+		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+			 React.createElement(Sns_ajax_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})			
+			 
+			 )
+  );
+}
+});
+
+//我要评论模块 
+//that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
+var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	reply_save_btn_click:function(){
+		var that=this.props.parentThis;
+		PxSnsService.sns_common_ajax_reply_save(function(){
+			that.refreshReplyList();
+		
+		})
+	},
+	componentDidMount:function(){
+		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+render: function() {
+return (
+		   React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+			React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+			React.createElement("input", {type: "hidden", name: "uuid"}), 
+			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 
+			
+			
+			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
+
+			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
+		      
+		    )	   
+);
+}
+});
+
+var Sns_Classnewsreply_listshow = React.createClass({displayName: "Sns_Classnewsreply_listshow", 	
+	render: function() {
+	  return (
+			  React.createElement("div", null, 
+			  this.props.events.data.map(function(event) {
+				  if(!event.create_img)event.create_img=G_def_headImgPath;
+			      return (
+			    		  React.createElement("article", {className: "am-comment am-comment-flip am-comment-success am-margin-xs"}, 
+			    		  React.createElement("a", {href: "javascript:void(0);"}, 
+			    		  React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+			    		  ), 
+
+			    		  React.createElement("div", {className: "am-comment-main am-comment-flip"}, 
+			    		    React.createElement("header", {className: "am-comment-hd"}, 
+			    		      React.createElement("div", {className: "am-comment-meta"}, 
+			    		      	React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
+			    		      		React.createElement("time", null, event.create_time), "|"			 
+			    		      )
+			    		    ), 
+			    		    React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 
+						        React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
+				  		    )
+			    			 
+			    			 )
+			    		)
+			    		
+			    		  )
+			  })
+			
+			    )		   
+	  );
+	}
+	}); 
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
+/* 同意观点
+ * 点赞模板1,点赞显示与点赞按钮分离,传入点赞按钮id
+ * 
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ **/
+var Sns_Dianzan_Yes_show_noAction = React.createClass({displayName: "Sns_Dianzan_Yes_show_noAction", 
+	getInitialState: function() {
+		if(this.props.dianzan)return this.props.dianzan;
+		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	  },
+   componentWillReceiveProps: function(nextProps) {
+	   this.setState(commons_ajax_dianzan_getByNewsuuid(nextProps.uuid));
+	},
+	handleChange_selectgroup_uuid:function(groupuuid){
+		  this.setState(this.load_role_bind_user(groupuuid));
+	},
+	obj:null,
+	 componentDidMount:function(){
+		 var that=this;
+		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
+		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		$("#"+this.props.btn_dianzan).bind("click",function(){
+			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
+			PxSnsService.sns_ajax_dianzan_yes_save(that.props.uuid,canDianzan,that.dianzansave_callback);
+		});
+	 },
+	 dianzansave_callback:function(canDianzan){
+		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
+		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
+	 },
+render: function() {	
+	var dianzanObject=this.state;
+	 this.obj=dianzanObject;
+	 var showStr=  null;
+	 if(!dianzanObject.names){
+		 return null;
+	 }
+  return (
+React.createElement("div", null)
+  );
 }
 }); 
 
 
 
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+/*  不同意观点
+ * 点赞模板2,点赞显示与点赞按钮分离,传入点赞按钮id
+ * 
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ **/
+var Sns_Dianzan_No_show_noAction = React.createClass({displayName: "Sns_Dianzan_No_show_noAction", 
+	getInitialState: function() {
+		if(this.props.dianzan)return this.props.dianzan;
+		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
+	  },
+   componentWillReceiveProps: function(nextProps) {
+	   this.setState(commons_ajax_dianzan_getByNewsuuid(nextProps.uuid));
+	},
+	handleChange_selectgroup_uuid:function(groupuuid){
+		  this.setState(this.load_role_bind_user(groupuuid));
+	},
+	obj:null,
+	 componentDidMount:function(){
+		 var that=this;
+		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
+		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		$("#"+this.props.btn_dianzan).bind("click",function(){
+			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
+			PxSnsService.sns_ajax_dianzan_No_save(that.props.uuid,canDianzan,that.dianzansave_callback);
+		});
+	 },
+	 dianzansave_callback:function(canDianzan){
+		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
+		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
+		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
+	 },
+render: function() {	
+	var dianzanObject=this.state;
+	 this.obj=dianzanObject;
+	 var showStr=  null;
+	 if(!dianzanObject.names){
+		 return null;
+	 }
+  return (
+React.createElement("div", null)
+  );
+}
+}); 

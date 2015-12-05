@@ -78,22 +78,22 @@ public class SnsReplyController extends AbstractRESTController {
 
 
 	 /**
-	 * 获取列表
+	 * 获取列表回复列表
 	 *	/share/getCourseType.json
 	 * @param model
-	 * @param request
+	 * @param request topic_uuid话题UUid
 	 * @return
 	 */
-	@RequestMapping(value = "/listPage", method = RequestMethod.GET)
-	public String getCourseType(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value = "/listPageByTopic", method = RequestMethod.GET)
+	public String listPageByTopic(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
 			String topic_uuid=request.getParameter("topic_uuid");
-			String reply_uuid=request.getParameter("reply_uuid");
+			//String reply_uuid=null;
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult list = snsReplyService.listPage(pData,topic_uuid,reply_uuid,request);
+			PageQueryResult list = snsReplyService.listPage(pData,topic_uuid,null,request);
 			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -107,7 +107,35 @@ public class SnsReplyController extends AbstractRESTController {
 		}
 	}
 	
-	
+	 /**
+		 * 获取列表单条回复再回复它的接口（参考微信朋友圈XX回复XXXXXTA的概念）
+		 *	/share/getCourseType.json
+		 * @param model
+		 * @param request topic_uuid话题UUid
+		 * @return
+		 */
+		@RequestMapping(value = "/listPageByReply", method = RequestMethod.GET)
+		public String listPageByReply(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			try {
+			//	String topic_uuid=request.getParameter("topic_uuid");
+				String reply_uuid=request.getParameter("reply_uuid");
+				
+				PaginationData pData = this.getPaginationDataByRequest(request);
+				PageQueryResult list = snsReplyService.listPage(pData,null,reply_uuid,request);
+				
+				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
+				return "";
+			}
+		}
 
 	/**
 	 * 班级删除
