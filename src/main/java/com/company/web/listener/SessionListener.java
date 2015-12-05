@@ -12,30 +12,41 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.company.http.PxHttpSession;
 import com.company.news.SystemConstants;
+import com.company.news.cache.SessionCache;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.RestConstants;
 import com.company.web.filter.UserInfoFilter;
 
 public class SessionListener implements HttpSessionListener {
    
-
-  //sessionMap<tokenid,session>
-  static Map sessionMap=new ConcurrentHashMap ();
   //sessionMap<JSESSIONID,session>
   static Map sessionMapBySessionid=new ConcurrentHashMap ();
   
-  public static void   putSessionByToken(Object key,HttpSession s ){
-    sessionMap.put(key, s);
-    SessionListener.putSessionByJSESSIONID(s);
-  }
   public static void   putSessionByJSESSIONID(HttpSession s ){
+		if(s instanceof PxHttpSession){//手动设置最后访问时间.
+			SessionCache.putPxHttpSession((PxHttpSession)s);
+			return;
+		}
     sessionMapBySessionid.put(s.getId(), s);
   }
-  public static HttpSession   getSessionByToken(Object key ){
-    
-   
-    return (HttpSession)sessionMap.get(key);
+  
+  public static void removeSessionByJSESSIONID(String jessionid) {
+	  sessionMapBySessionid.remove(jessionid);
+	}
+  @Deprecated
+  public static void putSessionByToken(String jessionid, HttpSession session) {
+	  sessionMapBySessionid.put(jessionid, session);
+	}
+  
+  private static HttpSession   getSessionFromCache(String jessionid){
+	  //1优先取sessionMapBySessionid
+	  HttpSession	session=(HttpSession)sessionMapBySessionid.get(jessionid);
+      if(session!=null)return session;
+      //2从SessionCache中取
+      session=(HttpSession)SessionCache.getPxHttpSession(jessionid);
+     return session;
   }
   /**
    * 获取session统一使用该方法.策略:JSESSIONID 优先于token
@@ -43,38 +54,28 @@ public class SessionListener implements HttpSessionListener {
    * @return
    */
   public static HttpSession   getSession(HttpServletRequest request){
-    String token=request.getParameter(RestConstants.Return_access_token);
-    String JSESSIONID=request.getParameter(RestConstants.Return_JSESSIONID);
     //1.优先根据默认关系取
     HttpSession session=request.getSession(false);;
     if(session!=null)return session;
     
+    
     //2.根据JSESSIONID 参数获取
+    String JSESSIONID=request.getParameter(RestConstants.Return_JSESSIONID);
     if(StringUtils.isNotBlank(JSESSIONID)){//使用JSESSIONID
-      session=(HttpSession)sessionMapBySessionid.get(JSESSIONID);
+    	session=getSessionFromCache(JSESSIONID);
       if(session!=null)return session;
+      //修复参数模式下面特殊字符处理
       String tmpsession=JSESSIONID.replaceAll(" ", "+");
       if(!JSESSIONID.equals(tmpsession)){
         logger.warn(session+",JSESSIONID Contains special characters,After the escape="+tmpsession);
       }
-      session=(HttpSession)sessionMapBySessionid.get(tmpsession);
-      if(session!=null){
-        return session;
-      }
+      session=getSessionFromCache(tmpsession);
+      if(session!=null)return session;
       
    }
-    //"http://120.25.127.141/runman-rest/rest/userinfo/modify.json?JSESSIONID=s6a3I+MMHVwIIq1-KAX4S0Iz.undefined";
-    //sessionid 包含+号的情况
-    // //3.根据token 参数获取
-    if(StringUtils.isNotBlank(token)){//使用token
-       return SessionListener.getSessionByToken(token);
-    }
-    
-    //根据客户端cookie获取.解决session同步.根据数据库表user
-	JSESSIONID=UserInfoFilter.getJSESSIONIDCookies(request);
-	if(StringUtils.isNotBlank(JSESSIONID)){
-		return (HttpSession)SessionListener.getSessionByToken(JSESSIONID);
-	}
+    //从cookie中取sessionid
+    JSESSIONID=UserInfoFilter.getJSESSIONIDCookies(request);
+    session=(HttpSession)SessionCache.getPxHttpSession(JSESSIONID);
     
     return session;
   }
@@ -134,14 +135,10 @@ public class SessionListener implements HttpSessionListener {
         }
 
         HttpSession session = se.getSession();
-        //有token,则清除cache大小.
-        Object token=session.getAttribute(RestConstants.Return_access_token);
-        if(token!=null){
-          sessionMap.remove(token);
-        }
         sessionMapBySessionid.remove(session.getId());
         count--;
         logger.info("sessionDestroyed,Session count="+count);
         logger.debug("sessionDestroyed(HttpSessionEvent) - end");
     }
+	
 }

@@ -3,6 +3,7 @@ package com.company.news.rest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -52,13 +53,13 @@ public class UserinfoController extends AbstractRESTController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
-			HttpServletRequest request) {
+			HttpServletRequest request,HttpServletResponse response) {
 		model.clear();
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
-		
+		//话题模块登录.
 		if(SystemConstants.Group_type_3.toString().equals(userLoginForm.getGrouptype())){
 			SessionUserInfoInterface user = userinfoService.loginBySns(userLoginForm, model, request,
 					responseMessage);
@@ -150,7 +151,6 @@ public class UserinfoController extends AbstractRESTController {
 			}else{
 
 				session = request.getSession(true);
-				// this.nSimpleHibernateDao.getHibernateTemplate().evict(user);
 				SessionListener.putSessionByJSESSIONID(session);
 				
 				// 返回客户端用户信息放入Map
