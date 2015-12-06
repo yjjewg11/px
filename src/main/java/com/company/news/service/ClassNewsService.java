@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.AbstractClass;
@@ -267,8 +268,11 @@ public class ClassNewsService extends AbstractService {
 			warpMap(o,user.getUuid());
 			uuids+=o.get("uuid")+",";
 		}
-		countService.update_countBatch(uuids);
-		
+		//countService.update_countBatch(uuids);
+//		if(StringUtils.isNotBlank(uuids)){
+//			
+//			PxRedisCache.getAddCountByExt_uuids(uuids.split(","));
+//		}
 		//this.warpMapList(list, user.getUuid());
 		
 		
@@ -351,13 +355,13 @@ public class ClassNewsService extends AbstractService {
 		List<Map> list=pageQueryResult.getData();
 		
 		
-		String uuids="";
+//		String uuids="";
 		for(Map o:list){
 			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
+//			uuids+=o.get("uuid")+",";
 		}
 		
-		countService.update_countBatch(uuids);
+//		countService.update_countBatch(uuids);
 //		
 //		
 //		String hql = "from ClassNews where status=0 ";
@@ -664,10 +668,10 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		List<Map> list=pageQueryResult.getData();
 		
 		
-		String uuids="";
+//		String uuids="";
 		for(Map o:list){
 			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
+//			uuids+=o.get("uuid")+",";
 		}
 //		String hql = "from ClassNews where status=0 ";
 //		if (StringUtils.isNotBlank(groups))
@@ -704,10 +708,10 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		List<Map> list=pageQueryResult.getData();
 		
 		
-		String uuids="";
+//		String uuids="";
 		for(Map o:list){
 			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
+//			uuids+=o.get("uuid")+",";
 		}
 		
 //		
@@ -741,10 +745,10 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		List<Map> list=pageQueryResult.getData();
 		
 		
-		String uuids="";
+//		String uuids="";
 		for(Map o:list){
 			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
+//			uuids+=o.get("uuid")+",";
 		}
 		
 //		String hql = "from ClassNews where status=0 ";
@@ -825,10 +829,10 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		List<Map> list=pageQueryResult.getData();
 		
 		
-		String uuids="";
+//		String uuids="";
 		for(Map o:list){
 			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
+//			uuids+=o.get("uuid")+",";
 		}
 		
 		
