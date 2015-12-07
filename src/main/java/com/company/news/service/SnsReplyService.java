@@ -65,6 +65,10 @@ public class SnsReplyService extends AbstractService {
 		
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setCreate_useruuid(user.getUuid());
+		cn.setReply_count(0L);
+		cn.setYes_count(0L);
+		cn.setNo_count(0L);
+		cn.setStatus(0);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 		//暂时屏蔽.
@@ -113,10 +117,10 @@ public class SnsReplyService extends AbstractService {
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(reply_uuid)){
-			sql+="and t1.reply_uuid= "+reply_uuid;
+			sql+="and t1.reply_uuid= '"+reply_uuid+"'";
 		}else 
 		if(StringUtils.isNotBlank(topic_uuid)){
-			sql+=" and reply_uuid='0' and t1.topic_uuid= "+topic_uuid;
+			sql+=" and reply_uuid='0' and t1.topic_uuid= '"+topic_uuid+"'";
 		}
 		sql += " order by t1.create_time desc";
 
