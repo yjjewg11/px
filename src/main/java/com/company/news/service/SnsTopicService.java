@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
-import com.company.news.entity.Announcements;
-import com.company.news.entity.SnsReply;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -144,6 +144,9 @@ public class SnsTopicService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		
+		
+		
 		
 		return pageQueryResult;
 	}

@@ -161,6 +161,23 @@ public abstract class AbstractService {
 			return true;
 
 	}
+	
+	/**
+	 * 是否可以收藏
+	 * 
+	 * @param loginname
+	 * @return
+	 */
+	public boolean isFavorites(SessionUserInfoInterface user,String reluuid) {
+		if(StringUtils.isBlank(reluuid)||user==null)return false;
+		List list = nSimpleHibernateDao.getHibernateTemplate().find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid,user.getUuid());
+
+		if (list != null&&list.size()>0)// 已被占用
+			return false;
+		else
+			return true;
+
+	}
 	public SessionUserInfoInterface getSessionUser(HttpServletRequest request,
 			ResponseMessage responseMessage) {
 		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);

@@ -1315,7 +1315,9 @@ public class UserinfoService extends AbstractService {
 	 */
 	public boolean updateAndloginForJessionid(String jessionid,
 			HttpServletRequest request) {
-
+		if(StringUtils.isBlank(jessionid)){
+			return false;
+		}
 		// 登录验证.验证失败则返回.
 		try {
 			User user = null;

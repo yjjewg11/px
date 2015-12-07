@@ -125,6 +125,7 @@ public class SnsReplyService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		
+
 		return pageQueryResult;
 	}
 
