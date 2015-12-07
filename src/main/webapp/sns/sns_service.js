@@ -145,298 +145,240 @@ var PxSnsService=(function(){
 //  		error :G_ajax_error_fn
 //  	});			   
 //}			
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	 *<话题>详情服务器请求；
-	* @Announcements_show:详情绘制
-	 * 在kd_rect;
-	 * */	
-	function ajax_sns_snsTopic_show(uuid){
-		Queue.push(function(){ajax_sns_snsTopic_show(uuid);},"话题详情");
-		$.AMUI.progress.start();
-	    var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+///*
+// *<话题>详情服务器请求；
+// * @Announcements_show:详情绘制
+// * */	
+//function ajax_sns_snsTopic_show(uuid){
+//	Queue.push(function(){ajax_sns_snsTopic_show(uuid);},"话题详情");
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				//如果相等为True不等为false用于判断编辑与删除是否
+//				var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
+//				    React.render(React.createElement(sns_snsTopicshow,{
+//					canEdit:canEdit,
+//					data:data.data,
+//					share_url:data.share_url,
+//					count:data.count
+//					}),PxSnsConfig.getBodyDiv());
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error :G_ajax_error_fn
+//	});		   
+//}	
+//
+///*
+// * <话题>评论回复内容获取服务请求;
+// * 绘制评论内容列表
+// * */	
+//function ajax_sns_reply_list(topic_uuid,list_div,pageNo,tempateClazz){
+//	if(!tempateClazz)tempateClazz=Common_Classnewsreply_listshow;
+//	var re_data=null;
+//	 if(!pageNo)pageNo=1;
+//	$.AMUI.progress.start();
+//	var url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+topic_uuid+"&pageNo="+pageNo;
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		async: false,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Sns_reply_list_show,{
+//					events: data.list,
+//					topic_uuid:topic_uuid,
+//					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//				 }), document.getElementById(list_div));
+//				re_data=data.list;
+//			} else {
+//				alert(data.ResMsg.message);
+//			}
+//		},
+//		error : G_ajax_error_fn
+//	});
+//	return re_data;					   
+//}
+
+///*
+// * <话题>我要评论保存操作;
+// * */		
+//function ajax_sns_reply_save(callback,formid){
+//	if(!formid)formid="snsClassnewsreplyForm";
+//	var opt={
+//	 formName:formid,
+//	 url:hostUrl + "rest/snsReply/save.json",
+//	 cbFN:function(data){
+//		 if (data.ResMsg.status == "success") {
+//			 G_msg_pop(data.ResMsg.message);
+//			 if(callback)callback();
+//
+//		} else {
+//			alert(data.ResMsg.message);
+//			G_resMsg_filter(data.ResMsg);
+//		}
+//	 }
+//	 };
+//	 G_ajax_abs_save(opt);					   
+//}	
+/*
+ * 话题模板模板
+ * YES同意观点服务器请求
+ * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
+ */	
+function ajax_sns_snsTopic_yes_save(uuid,canDianzan,dianzansave_callback){
+	var that=this;
+	$.AMUI.progress.start();
+	var url =hostUrl +(canDianzan?"rest/snsTopic/yes.json":"rest/snsTopic/cancelDianzan.json");
 		$.ajax({
 			type : "GET",
 			url : url,
+			data : {uuid:uuid},
 			dataType : "json",
-			 async: true,
 			success : function(data) {
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					//如果相等为True不等为false用于判断编辑与删除是否
-					var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
-					React.render(React.createElement(sns_Announcements_goodshow,{
-						canEdit:canEdit,
-						data:data.data,
-						share_url:data.share_url,
-						count:data.count
-						}),PxSnsConfig.getBodyDiv());
-				} else {
-					alert("加载数据失败："+data.ResMsg.message);
-				}
-			},
-			error :G_ajax_error_fn
-		});
-		   
-}	
-
-	function img_data_list(level){
-	       var img;
-	       if(level==0){
-	    	   img="普通贴"
-	       }else if(level==1){
-	    	   img="热帖贴"
-	       }else{
-	    	   img="精华贴"
-	       }
-	       return img;	
-				   
-	}	
-
-/*
- * <话题>评论回复内容获取服务请求;
- * 
- * */	
-	function sns_ajax_reply_list(topic_uuid,list_div,pageNo,tempateClazz){
-		if(!tempateClazz)tempateClazz=Common_Classnewsreply_listshow;
-		var re_data=null;
-		 if(!pageNo)pageNo=1;
-		$.AMUI.progress.start();
-		var url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+topic_uuid+"&pageNo="+pageNo;
-		$.ajax({
-			type : "GET",
-			url : url,
-			dataType : "json",
-			async: false,
-			success : function(data) {
-				$.AMUI.progress.done();
-				if (data.ResMsg.status == "success") {
-					React.render(React.createElement(Sns_Classnewsreply_listshow, {
-						events: data.list,
-						topic_uuid:topic_uuid,
-						responsive: true, bordered: true, striped :true,hover:true,striped:true
-						}), document.getElementById(list_div));
-					re_data=data.list;
-				} else {
+					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);				} else {
 					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
 				}
 			},
 			error : G_ajax_error_fn
 		});
-		return re_data;
 				   
 	}	
-	/*
-	 * <话题>我要评论保存操作;
-	 * 
-	 * */		
-	function sns_common_ajax_reply_save(callback,formid){
-		if(!formid)formid="snsClassnewsreplyForm";
-		var opt={
-		 formName:formid,
-		 url:hostUrl + "rest/snsReply/save.json",
-		 cbFN:function(data){
-			 if (data.ResMsg.status == "success") {
-				 G_msg_pop(data.ResMsg.message);
-				 if(callback)callback();
-
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		 }
-		 };
-		 G_ajax_abs_save(opt);
-				   
-	}
-	/*
-	 * 点赞功YES能模板服务器请求
-	 * @canDianzan：根据Data数据中的是否可以点赞判断进行请求 ;
-	 * True表示可以点赞,false表示点赞过了.可以取消点赞;
-	 * @newsuuid:哪篇文章的ID;
-	 * @type:哪个模板的点赞功能;
-	 * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
-	 */	
-	function sns_ajax_dianzan_yes_save(uuid,canDianzan,dianzansave_callback){
-		var that=this;
-		$.AMUI.progress.start();
-		var url =hostUrl +(canDianzan?"rest/snsTopic/yes.json":"rest/snsTopic/cancelDianzan.json");
-			$.ajax({
-				type : "GET",
-				url : url,
-				data : {uuid:uuid},
-				dataType : "json",
-				success : function(data) {
-					$.AMUI.progress.done();
-					// 登陆成功直接进入主页
-					if (data.ResMsg.status == "success") {
-						if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
-
-						//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-					} else {
-						alert(data.ResMsg.message);
-						G_resMsg_filter(data.ResMsg);
-					}
-				},
-				error : G_ajax_error_fn
-			});
-				   
-	}
-	/*
-	 * 点赞功No能模板服务器请求
-	 * @canDianzan：根据Data数据中的是否可以点赞判断进行请求 ;
-	 * True表示可以点赞,false表示点赞过了.可以取消点赞;
-	 * @newsuuid:哪篇文章的ID;
-	 * @type:哪个模板的点赞功能;
-	 * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
-	 */	
-	function sns_ajax_dianzan_No_save(uuid,canDianzan,dianzansave_callback){
-		var that=this;
-		$.AMUI.progress.start();           
-		var url =hostUrl +(canDianzan?"rest/snsTopic/no.json":"rest/snsTopic/cancelDianzan.json");
-			$.ajax({
-				type : "GET",
-				url : url,
-				data : {uuid:uuid},
-				dataType : "json",
-				success : function(data) {
-					$.AMUI.progress.done();
-					// 登陆成功直接进入主页
-					if (data.ResMsg.status == "success") {
-						if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
-
-						//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-					} else {
-						alert(data.ResMsg.message);
-						G_resMsg_filter(data.ResMsg);
-					}
-				},
-				error : G_ajax_error_fn
-			});
-				   
-	}
 	
-	/*
-	 * 回复模板YES能模板服务器请求
-	 * @canDianzan：根据Data数据中的是否可以点赞判断进行请求 ;
-	 * True表示可以点赞,false表示点赞过了.可以取消点赞;
-	 * @newsuuid:哪篇文章的ID;
-	 * @type:哪个模板的点赞功能;
-	 * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
-	 */	
-	function sns_snsReply_yes_save(uuid,canDianzan,dianzansave_callback){
-		var that=this;
-		$.AMUI.progress.start();
-		var url =hostUrl +(canDianzan?"rest/snsReply/yes.json":"rest/snsReply/cancelDianzan.json");
-			$.ajax({
-				type : "GET",
-				url : url,
-				data : {uuid:uuid},
-				dataType : "json",
-				success : function(data) {
-					$.AMUI.progress.done();
-					// 登陆成功直接进入主页
-					if (data.ResMsg.status == "success") {
-						if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
 
-						//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-					} else {
-						alert(data.ResMsg.message);
-						G_resMsg_filter(data.ResMsg);
-					}
-				},
-				error : G_ajax_error_fn
-			});
-				   
-	}
-	/*
-	 * 回复模板功No能模板服务器请求
-	 * @canDianzan：根据Data数据中的是否可以点赞判断进行请求 ;
-	 * True表示可以点赞,false表示点赞过了.可以取消点赞;
-	 * @newsuuid:哪篇文章的ID;
-	 * @type:哪个模板的点赞功能;
-	 * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
-	 */	
-	function sns_snsReply_No_save(uuid,canDianzan,dianzansave_callback){
-		var that=this;
-		$.AMUI.progress.start();           
-		var url =hostUrl +(canDianzan?"rest/snsReply/no.json":"rest/snsReply/cancelDianzan.json");
-			$.ajax({
-				type : "GET",
-				url : url,
-				data : {uuid:uuid},
-				dataType : "json",
-				success : function(data) {
-					$.AMUI.progress.done();
-					// 登陆成功直接进入主页
-					if (data.ResMsg.status == "success") {
-						if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
+/*
+ * 话题模板模板
+ * No不同意观点服务器请求
+ * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
+ */	
+function ajax_sns_snsTopic_no_save(uuid,canDianzan,dianzansave_callback){
+	var that=this;
+	$.AMUI.progress.start();           
+	var url =hostUrl +(canDianzan?"rest/snsTopic/no.json":"rest/snsTopic/cancelDianzan.json");
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {uuid:uuid},
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+			   
+}	
+	
+//--------------------------------------------------------------//	
+/*
+ * 评论回复模板
+ * YES同意观点服务器请求
+ * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
+ */	
+function ajax_sns_snsReply_yes_save(uuid,canDianzan,dianzansave_callback){
+	var that=this;
+	$.AMUI.progress.start();
+	var url =hostUrl +(canDianzan?"rest/snsReply/yes.json":"rest/snsReply/cancelDianzan.json");
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {uuid:uuid},
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
 
-						//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-					} else {
-						alert(data.ResMsg.message);
-						G_resMsg_filter(data.ResMsg);
-					}
-				},
-				error : G_ajax_error_fn
-			});
-				   
-	}
+					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+			   
+}	
+
+/*
+ * 评论回复模板
+ * NO不同意观点服务器请求
+ * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
+ */	
+function ajax_sns_snsReply_No_save(uuid,canDianzan,dianzansave_callback){
+	var that=this;
+	$.AMUI.progress.start();           
+	var url =hostUrl +(canDianzan?"rest/snsReply/no.json":"rest/snsReply/cancelDianzan.json");
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {uuid:uuid},
+			dataType : "json",
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
+
+					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+			   
+}	
+	
+	
+function img_data_list(level){
+    var img;
+    if(level==0){
+ 	   img="普通贴"
+    }else if(level==1){
+ 	   img="热帖贴"
+    }else{
+ 	   img="精华贴"
+    }
+    return img;	
+			   
+}	
 	return {
 		sns_list_div:sns_list_div,
 		sns_snsTopic_list:sns_snsTopic_list,
 		btnclick_sns_snsTopic:btnclick_sns_snsTopic,
 		ajax_sns_snsTopic_save:ajax_sns_snsTopic_save,
 		ajax_sns_snsTopic_show：ajax_sns_snsTopic_show,
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		sns_snsReply_yes_save:sns_snsReply_yes_save,
-		sns_snsReply_No_save:sns_snsReply_No_save,
-		sns_ajax_dianzan_No_save:sns_ajax_dianzan_No_save,
-		sns_ajax_dianzan_yes_save:sns_ajax_dianzan_yes_save,
-		sns_common_ajax_reply_save:sns_common_ajax_reply_save,
-		sns_ajax_reply_list:sns_ajax_reply_list,
-		//type_data_list:type_data_list,
-		img_data_list:img_data_list,
-
-		
+		ajax_sns_reply_list:ajax_sns_reply_list,
+		ajax_sns_reply_save:ajax_sns_reply_save,
+		ajax_sns_snsTopic_yes_save:ajax_sns_snsTopic_yes_save,
+		ajax_sns_snsTopic_no_save:ajax_sns_snsTopic_no_save,
+		ajax_sns_snsReply_yes_save:ajax_sns_snsReply_yes_save,
+		ajax_sns_snsReply_No_save:ajax_sns_snsReply_No_save,
+		img_data_list:img_data_list		
 	};//end return
 })();//end PxLazyM=(function(){return {}})();
   
