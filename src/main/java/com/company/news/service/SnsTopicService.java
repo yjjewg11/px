@@ -71,6 +71,7 @@ public class SnsTopicService extends AbstractService {
 		newEntity.setNo_count(0L);
 		newEntity.setStatus(0);
 		newEntity.setLevel(0);
+		newEntity.setIllegal(0l);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 

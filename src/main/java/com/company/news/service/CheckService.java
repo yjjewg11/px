@@ -53,6 +53,14 @@ public class CheckService extends AbstractService {
 		case SystemConstants.common_type_zhaoshengjihua:
 			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
 			break;
+			
+		case SystemConstants.common_type_SnsTopic:
+			 sql="update sns_topic set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			break;
+			
+		case SystemConstants.common_type_SnsReply:
+			 sql="update sns_reply set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			break;
 		default:
 			break;
 		}
