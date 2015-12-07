@@ -180,7 +180,7 @@ var PxSnsService=(function(){
 	 * 在kd_rect;
 	 * */	
 	function ajax_sns_snsTopic_show(uuid){
-		Queue.push(function(){sns_ajax_announce_good_show(uuid);},"话题详情");
+		Queue.push(function(){ajax_sns_snsTopic_show(uuid);},"话题详情");
 		$.AMUI.progress.start();
 	    var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 		$.ajax({
@@ -192,12 +192,6 @@ var PxSnsService=(function(){
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-//					var o=data.data;
-//					  if(o.url){
-//							var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
-//							if(flag)return;
-//					  }
-
 					//如果相等为True不等为false用于判断编辑与删除是否
 					var canEdit=data.data.create_useruuid==Store.getUserinfo().uuid;
 					React.render(React.createElement(sns_Announcements_goodshow,{
@@ -422,7 +416,7 @@ var PxSnsService=(function(){
 		sns_snsTopic_list:sns_snsTopic_list,
 		btnclick_sns_snsTopic:btnclick_sns_snsTopic,
 		ajax_sns_snsTopic_save:ajax_sns_snsTopic_save,
-		
+		ajax_sns_snsTopic_show：ajax_sns_snsTopic_show,
 		
 		
 		
@@ -439,7 +433,6 @@ var PxSnsService=(function(){
 		sns_ajax_dianzan_yes_save:sns_ajax_dianzan_yes_save,
 		sns_common_ajax_reply_save:sns_common_ajax_reply_save,
 		sns_ajax_reply_list:sns_ajax_reply_list,
-		sns_ajax_announce_good_show:sns_ajax_announce_good_show,
 		//type_data_list:type_data_list,
 		img_data_list:img_data_list,
 

@@ -78,7 +78,7 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
 		  this.props.events.data.map(function(event) {
 		      return (
 		       React.createElement("li", {className: "am-g am-list-item-dated"}, 
-		  		   React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid,event.title)}, 
+		  		   React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
 		  		    event.title
 		  		   ), 	
 		  		   
