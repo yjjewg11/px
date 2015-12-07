@@ -1,9 +1,19 @@
 package com.company.news.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -52,28 +62,7 @@ public class SnsDianzanService extends AbstractService {
 		return true;
 	}
 
-	/**
-	 * 判断是否能点赞
-	 * @param snsDianzanJsonform
-	 * @param responseMessage
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean canDianzan(String rel_uuid,String user_uuid) throws Exception {
-		if (StringUtils.isBlank(rel_uuid)) {
-			return true;
-		}
-		if (StringUtils.isBlank(user_uuid)) {
-			return true;
-		}
-		String insertsql="select count(*) from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user_uuid+"'";
-		Object count=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).uniqueResult();
-		
-		if("0".equals(count.toString())){
-			return true;
-		}
-		return false;
-	}
+	
 
 	/**
 	 * 获取当前用户点赞状态.
@@ -117,6 +106,67 @@ public class SnsDianzanService extends AbstractService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
+	
+	
+	/**
+	 * 接口方法提供给关联对象判断是否可以点赞.
+	 * @param list
+	 * @param request
+	 * @return
+	 */
+	public List warpReluuidsMapList(List<Map> list, HttpServletRequest request) {
+		
+		String uuids="";
+		for(Map o:list){
+			uuids+=o.get("uuid")+",";
+		}
+		
+		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
+		if(user!=null){
+			Map  dianzanMap=this.getMapCanDianzan(uuids,user);
+			for(Map o:list){
+				o.put(RestConstants.Return_ResponseMessage_dianZan, dianzanMap.get(o.get("uuid")));
+			}
+		}
+		
+		return list;
+		
+	}
+	/**
+	 * 获取点赞状态数据.null,没点赞.1赞同,2不赞同.根据关联uuids,和当前用户id
+	 * @param uuids
+	 * @param cur_user_uuid
+	 * @return
+	 */
+	public  Map getMapCanDianzan(String rel_uuids,SessionUserInfoInterface user) {
+		Map map =new HashMap();
+		if(user==null)return map;
+		String sql="select rel_uuid,status from sns_dianzan where rel_uuid in("+DBUtil.stringsToWhereInValue(rel_uuids)+") and user_uuid='"+user.getUuid()+"'";
+		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).list();
+		for(Object[] obj:list){
+			map.put(obj[0], obj[1]);
+		}
+		return map;
+	}
 
+	
+	/**
+	 * 判断是否能点赞
+	 * @param snsDianzanJsonform
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public Object getDianzanStatus(String rel_uuid,SessionUserInfoInterface user) throws Exception {
+		if (StringUtils.isBlank(rel_uuid)) {
+			return null;
+		}
+		if (user==null) {
+			return null;
+		}
+		String insertsql="select status from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user.getUuid()+"'";
+		Object status=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).uniqueResult();
+		return status;
+	}
 
 }

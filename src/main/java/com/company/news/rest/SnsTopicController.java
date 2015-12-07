@@ -10,21 +10,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.service.CountService;
+import com.company.news.service.SnsDianzanService;
 import com.company.news.service.SnsTopicService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/snsTopic")
 public class SnsTopicController extends AbstractRESTController {
-
+	@Autowired
+	private CountService countService;
 	@Autowired
 	private SnsTopicService snsTopicService;
+	
+
+	@Autowired
+	private SnsDianzanService snsDianzanService;
 
 	/**
 	 * 保存
@@ -222,26 +231,13 @@ try {
 						if(SystemConstants.Check_status_disable.equals(a.getStatus())){
 							responseMessage.setMessage("数据已被禁止浏览!");
 							return "";
-							//判断是否有权限.有权限的人可以浏览.禁用的.
-		//					if(!RightUtils.hasRight(a.getGroupuuid(),right, request)){
-		//						
-		//						responseMessage.setMessage("数据已被禁止浏览!");
-		//						return "";
-		//					}
 						}
-						String share_url=null;
-		//				if(!PxStringUtil.isUrl(a.getUrl())){
-		//					share_url=PxStringUtil.getArticleByUuid(uuid);
-		//				}else{
-		//				//	model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
-		//					share_url=a.getUrl();
-		//				}
-						model.put(RestConstants.Return_ResponseMessage_share_url,share_url);
 						
 						SessionUserInfoInterface user=this.getUserInfoBySession(request);
-		//				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getAnnByUuid(uuid));
-		//				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,a.getType()));
-		//				model.put(RestConstants.Return_ResponseMessage_isFavorites,announcementsService.isFavorites( user.getUuid(),uuid));
+						model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getSnsTopicByUuid(uuid));
+						model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,SystemConstants.common_type_SnsTopic));
+						model.put(RestConstants.Return_ResponseMessage_dianZan,snsDianzanService.getDianzanStatus(uuid, user));
+						model.put(RestConstants.Return_ResponseMessage_isFavorites,snsTopicService.isFavorites( user,uuid));
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
