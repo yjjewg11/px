@@ -30,6 +30,7 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
 import com.company.news.vo.statistics.PieStatisticsVo;
@@ -187,9 +188,9 @@ public class ClassNewsService extends AbstractService {
 		
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -203,13 +204,7 @@ public class ClassNewsService extends AbstractService {
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
-		
-		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
-		}
-		
+		this.warpMapList(list, user);
 //		
 //		String hql = "from ClassNews where status=0";
 //		if (StringUtils.isNotBlank(classuuid))
@@ -223,7 +218,7 @@ public class ClassNewsService extends AbstractService {
 //		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 //				.findByPaginationToHql(hql, pData);
 //		List<ClassNews> list=pageQueryResult.getData();
-//		this.warpVoList(list, user.getUuid());
+	
 		
 		return pageQueryResult;
 
@@ -244,9 +239,9 @@ public class ClassNewsService extends AbstractService {
 //		if (StringUtils.isBlank(classuuid))
 //			return null; 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -262,19 +257,7 @@ public class ClassNewsService extends AbstractService {
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
-		
-		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-			uuids+=o.get("uuid")+",";
-		}
-		//countService.update_countBatch(uuids);
-//		if(StringUtils.isNotBlank(uuids)){
-//			
-//			PxRedisCache.getAddCountByExt_uuids(uuids.split(","));
-//		}
-		//this.warpMapList(list, user.getUuid());
-		
+		this.warpMapList(list, user);
 		
 		
 		
@@ -298,21 +281,51 @@ public class ClassNewsService extends AbstractService {
 
 	}
 
-	private List warpMapList(List<Map> list, String cur_user_uuid) {
-		for(Map o:list){
-			warpMap(o,cur_user_uuid);
-		}
-		return list;
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
 		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o,user);
+			uuids+=o.get("uuid")+",";
+		}
+		
+		try {
+			Map countMap=countService.getCountByExt_uuids(uuids);
+			Map dianZanMap=classNewsReplyService.getDianzanDianzanMap(uuids, user);
+			for(Map o:list){
+				o.put("count", countMap.get(o.get("uuid")));
+				Object vo= (Object)dianZanMap.get(o.get("uuid"));
+				if(vo==null)vo= new DianzanListVO();
+				o.put("dianzan",vo);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
+//	private List warpMapList(List<Map> list, String cur_user_uuid) {
+//		for(Map o:list){
+//			warpMap(o,cur_user_uuid);
+//		}
+//		return list;
+//		
+//	}
 
-	private void warpMap(Map o, String cur_user_uuid) {
+	private void warpMap(Map o, SessionUserInfoInterface user) {
 		try {
 			//网页版本需要转为html显示.
 			o.put("content", MyUbbUtils.myUbbTohtml((String)o.get("content")));
 			o.put("imgsList", PxStringUtil.uuids_to_imgMiddleurlList((String)o.get("imgs")));
 			o.put("share_url", PxStringUtil.getClassNewsByUuid((String)o.get("uuid")));
-			o.put("dianzan", classNewsReplyService.getDianzanDianzanListVO((String)o.get("uuid"),cur_user_uuid));
+			
 			o.put("replyPage", this.getReplyPageList((String)o.get("uuid")));
 			o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
 			if(o.get("count")==null)o.put("count","0");
@@ -340,9 +353,9 @@ public class ClassNewsService extends AbstractService {
 		
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECTt1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -353,13 +366,8 @@ public class ClassNewsService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
+		this.warpMapList(list, user);
 		
-		
-//		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-//			uuids+=o.get("uuid")+",";
-		}
 		
 //		countService.update_countBatch(uuids);
 //		
@@ -635,6 +643,8 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @return
 	 */
 	private List<ClassNews> warpVoList(List<ClassNews> list,String cur_user_uuid){
+		
+		
 		for(ClassNews o:list){
 			warpVo(o,cur_user_uuid);
 		}
@@ -653,9 +663,9 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+	//	sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(groups))
 			sql += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
@@ -667,12 +677,9 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
+		this.warpMapList(list, user);
 		
-//		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-//			uuids+=o.get("uuid")+",";
-		}
+		
 //		String hql = "from ClassNews where status=0 ";
 //		if (StringUtils.isNotBlank(groups))
 //			hql += " and  groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
@@ -693,9 +700,9 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(groups))
 			sql += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
@@ -707,12 +714,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
-		
-//		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-//			uuids+=o.get("uuid")+",";
-		}
+		this.warpMapList(list, user);
 		
 //		
 //		String hql = "from ClassNews where status=0 ";
@@ -734,7 +736,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			PaginationData pData) {
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
 		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 //		sql+=" where t1.status=0  ";	
@@ -744,12 +746,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
-		
-//		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-//			uuids+=o.get("uuid")+",";
-		}
+		this.warpMapList(list, user);
 		
 //		String hql = "from ClassNews where status=0 ";
 //		pData.setOrderFiled("create_time");
@@ -812,9 +809,9 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t3.count,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
+		String sql=" SELECT t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		sql+=" FROM px_classnews t1 ";
-		sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 		sql+=" where t1.status=0   ";	
 		if (StringUtils.isNotBlank(uuid))
 			sql += " and  t1.uuid in("+DBUtil.stringsToWhereInValue(uuid)+")";
@@ -828,13 +825,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();
 		
-		
-//		String uuids="";
-		for(Map o:list){
-			warpMap(o,user.getUuid());
-//			uuids+=o.get("uuid")+",";
-		}
-		
+		this.warpMapList(list, user);
 		
 		return pageQueryResult;
 	}

@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
@@ -32,6 +33,8 @@ import com.company.news.vo.ResponseMessage;
  */
 @Service
 public class PxCourseService extends AbstractService {
+	@Autowired
+	private CountService countService;
 	private static final String model_name = "培训机构对外发布";
 	/**
 	 * 增加班级
@@ -239,17 +242,25 @@ public class PxCourseService extends AbstractService {
 		}
 		
 		//获取已有课程浏览次数
-		Map listReadCountMap=new HashMap();
-		//修复为空是,拼接的sql报错bug.
-		if(StringUtils.isNotBlank(uuids)){
-			sql="select ext_uuid,sum(count) from px_count where ext_uuid in(" + DBUtil.stringsToWhereInValue(uuids) + ") group by ext_uuid";
-			List<Object[]> listReadCount=session.createSQLQuery(sql).list();
-		
-			for(Object[] obj:listReadCount ){
-				listReadCountMap.put(obj[0], obj[1]);
-			}
+	
+		Map listReadCountMap=null;
+		try {
+			listReadCountMap = countService.getCountByExt_uuids(uuids);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			listReadCountMap=new HashMap();
 		}
-		
+		//	//修复为空是,拼接的sql报错bug.
+//		if(StringUtils.isNotBlank(uuids)){
+//			sql="select ext_uuid,sum(count) from px_count where ext_uuid in(" + DBUtil.stringsToWhereInValue(uuids) + ") group by ext_uuid";
+//			List<Object[]> listReadCount=session.createSQLQuery(sql).list();
+//		
+//			for(Object[] obj:listReadCount ){
+//				listReadCountMap.put(obj[0], obj[1]);
+//			}
+//		}
+//		
 		
 		for(Map map:resultList ){
 			String uuid=(String)map.get("uuid");

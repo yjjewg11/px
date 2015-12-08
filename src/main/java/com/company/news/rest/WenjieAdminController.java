@@ -19,6 +19,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.AbstractStudentService;
 import com.company.news.service.CountService;
+import com.company.news.service.SynPxRedisToDbImplService;
 import com.company.news.service.WenjieAdminService;
 import com.company.news.vo.ResponseMessage;
 
@@ -30,7 +31,8 @@ import com.company.news.vo.ResponseMessage;
 @Controller
 @RequestMapping(value = "/wenjieAdmin")
 public class WenjieAdminController extends AbstractRESTController {
-
+	@Autowired
+	private SynPxRedisToDbImplService synPxRedisToDbImplService;
 	 @Autowired
 	  protected WenjieAdminService wenjieAdminService;
 	
@@ -90,7 +92,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				new PxRedisCacheImpl().synCountRedisToDb(countService);
+				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -119,7 +121,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				new PxRedisCacheImpl().synCountRedisToDb(countService);
+				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

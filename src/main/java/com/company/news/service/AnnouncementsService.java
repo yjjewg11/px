@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,13 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Announcements;
 import com.company.news.entity.Announcements4Q;
-import com.company.news.entity.AnnouncementsTo;
-import com.company.news.entity.ClassNews;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AnnouncementsJsonform;
@@ -31,6 +29,7 @@ import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.vo.AnnouncementsVo;
+import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -44,7 +43,6 @@ public class AnnouncementsService extends AbstractService {
 	private static final String model_name = "文章模块";
 	@Autowired
 	public PushMsgIservice pushMsgIservice;
-
 	/**
 	 * 增加
 	 * 
@@ -298,9 +296,9 @@ public class AnnouncementsService extends AbstractService {
 
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type,t2.count";
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type";
 		sql+=" FROM px_announcements t1 ";
-		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+//		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
 		sql+=" where  1=1";
 		if (StringUtils.isNotBlank(type))
 			sql += " and t1.type=" + type;
@@ -318,7 +316,7 @@ public class AnnouncementsService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
-
+		this.warpMapList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	
@@ -333,9 +331,9 @@ public class AnnouncementsService extends AbstractService {
 
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type,t2.count";
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.create_useruuid,t1.isimportant,t1.groupuuid,t1.status,t1.url,t1.start_time,t1.end_time,t1.type";
 		sql+=" FROM px_announcements t1 ";
-		sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
+		//sql+=" LEFT JOIN  px_count t2 on t1.uuid=t2.ext_uuid ";
 		sql+=" where   t1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(type))
 			sql += " and t1.type=" + type;
@@ -351,6 +349,7 @@ public class AnnouncementsService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query, countsql, pData);
 		
+		this.warpMapList(pageQueryResult.getData());
 		
 //		
 //		String hql = "from Announcements4Q where  groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
@@ -363,6 +362,30 @@ public class AnnouncementsService extends AbstractService {
 //				.findByPaginationToHql(hql, pData);
 //		§warpVoList(pageQueryResult.getData(),null);
 		return pageQueryResult;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list) {
+		
+		String uuids="";
+		for(Map o:list){
+			uuids+=o.get("uuid")+",";
+		}
+		try {
+			Map countMap=countService.getCountByExt_uuids(uuids);
+			for(Map o:list){
+				o.put("count", countMap.get(o.get("uuid")));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 	@Autowired
 	private CountService countService;
@@ -394,57 +417,6 @@ public class AnnouncementsService extends AbstractService {
 			warpVo(o,cur_user_uuid);
 		}
 		return list;
-	}
-	/**
-	 * 查询指定班级的通知列表
-	 * 
-	 * @return
-	 */
-	private List<Announcements> getAnnouncementsByClassuuid(String classuuid) {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-				.getSessionFactory().openSession();
-		String sql = "";
-		Query q = s
-				.createSQLQuery(
-						"select {t1.*} from px_announcementsto t0,px_announcements {t1} where t0.announcementsuuid={t1}.uuid and t0.classuuid='"
-								+ classuuid + "' order by {t1}.create_time desc")
-				.addEntity("t1", Announcements4Q.class);
-
-		return q.list();
-	}
-
-	/**
-	 * 
-	 * @param type
-	 * @return
-	 */
-	public List queryMyAnnouncements(User user,String type, String groupuuid,
-			String classuuid) {
-//		if (StringUtils.isBlank(type))
-//			return null;
-		// 查询班级公告
-		if (type!=null&&Integer.parseInt(type) == SystemConstants.common_type_banjitongzhi) {
-			if (StringUtils.isBlank(classuuid))
-				return null;
-			return getAnnouncementsByClassuuid(classuuid);
-
-		} else {// 机构公告或老师公告
-
-			String hql = "from Announcements4Q where  status=0 ";
-			if (StringUtils.isNotBlank(groupuuid))
-				hql += "and groupuuid='" + groupuuid + "'";
-			else{
-				hql += "and groupuuid in (select groupuuid from UserGroupRelation where useruuid='"+user.getUuid()+"')";
-			}
-			if (StringUtils.isNotBlank(type))
-				hql += " and type=" + type;
-			else{
-				hql += " and type!=" + SystemConstants.common_type_banjitongzhi;
-			}
-			hql += " order by create_time desc";
-			return (List) this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
-		}
-
 	}
 
 	/**
