@@ -151,12 +151,17 @@ var o = this.state;
 *<话题>Show详情绘制（内含:点赞、举报、回复等）
 * */
 var sns_snsTopicshow = React.createClass({displayName: "sns_snsTopicshow", 
+//收藏按钮方法;
+  favorites_push: function(title,type,reluuid,url) {
+	commons_ajax_favorites_push(title,type,reluuid,url)
+  },
 	//创建精品文章点击按钮事件跳转kd_servise方法;
   handleClick: function(m,uuid) {
-   PxSnsService.btnclick_sns_announce(m,uuid);
+   PxSnsService.btnclick_sns_snsTopic(m,uuid);
    }, 
 render: function() {
   var o = this.props.data;
+  var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
   var iframe=null;
@@ -176,23 +181,87 @@ return (
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除"), 
+	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
        React.createElement(AMR_Button, {className:  G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
       ), 	
-    React.createElement("footer", {className: "am-comment-footer"}, 
-    	React.createElement("div", {className: "am-comment-actions"}, 
-    	 React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 		    	
-    	 React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan2_"+o.uuid, className: "am-icon-thumbs-down px_font_size_click"})), 
-    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
-    	)
-    ), 
-    	 React.createElement(Sns_snsTopic_Yes, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 			 		 
-         React.createElement(Sns_snsTopic_No, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan2_"+o.uuid}), 
+   React.createElement(Sns_comment_actions, {data: data}), 
     	 React.createElement(Sns_reply_list, {uuid: o.uuid, type: 0})	
    )
   );
  }
 }); 
-
+/*
+ * 话题同意和不同意抽离方法
+ * 功能：实现动态点击和双灰功能
+ * removeClass("am-text-danger");
+ * */
+var Sns_comment_actions = React.createClass({displayName: "Sns_comment_actions", 
+	getInitialState: function() {
+		if(this.props.data)return this.props.data;
+	  },
+	 callback_yes:function(o){
+		 var obj=this.state;
+		 if(obj.status==1){
+			 obj.yes_count-=1;
+			 obj.status=null;
+		 }else{
+			 obj.yes_count+=1;
+			 obj.status=1;
+		 }
+		 this.setState(obj);
+	 },
+	 yes_click:function(o){	
+		if(o.status==2)return;
+		 var url=hostUrl +"rest/snsTopic/yes.json";
+		 if(o.status==1){
+			 url=hostUrl +"rest/snsTopic/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_yes);
+		
+	 },
+	 callback_no:function(){
+		 var obj=this.state;
+		 if(obj.status==2){
+			 obj.no_count-=1;
+			 obj.status=null;
+		 }else{
+			 obj.no_count+=1;
+			 obj.status=2;
+		 }
+		 this.setState(obj);
+	 },
+	 no_click:function(o){
+		 if(o.status==1)return;
+		 var url=hostUrl +"rest/snsTopic/no.json";
+		 if(o.status==2){
+			 url=hostUrl +"rest/snsTopic/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
+		
+	 },
+render: function() {	
+	var obj=this.state;
+	var yesClick="",noClick="";
+	if(obj.status==1){
+		yesClick="px-icon-hasdianzan";
+		noClick="";
+	}else if(obj.status==2){
+		noClick="px-icon-hasdianzan";
+		 yesClick="";
+	}	
+  return (
+		  React.createElement("footer", {className: "am-comment-footer"}, 
+	    	React.createElement("div", {className: "am-comment-actions"}, 
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), " ", obj.yes_count, 		    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "  ", obj.no_count, 	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, "举报")
+	    	)
+	    )
+  );
+}
+}); 
 
 
 /*
@@ -270,8 +339,8 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 	    	  React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan2_"+event.uuid, className: "am-icon-thumbs-down px_font_size_click"}))
 	    	  )
 	    	), 
-	    	React.createElement(Sns_snsReply_Yes, {uuid: event.uuid, type: 0, btn_dianzan: "btn_dianzan_"+event.uuid}), 			 		 
-	        React.createElement(Sns_snsReply_No, {uuid: event.uuid, type: 0, btn_dianzan: "btn_dianzan2_"+event.uuid})
+	    	React.createElement(Sns_snsReply_Yes, {uuid: event.uuid, type: 71, btn_dianzan: "btn_dianzan_"+event.uuid}), 			 		 
+	        React.createElement(Sns_snsReply_No, {uuid: event.uuid, type: 71, btn_dianzan: "btn_dianzan2_"+event.uuid})
 		
 	      )
 		 )			    		
@@ -306,95 +375,6 @@ return (
 );
 }
 });
-
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±话题模板同意和不同意观点方法绘制±±±±±±±±±±±±±±±±±±±±±±±±±±±
-/* 
- * 话题同意观点舞台绘制
- **/
-var Sns_snsTopic_Yes = React.createClass({displayName: "Sns_snsTopic_Yes", 
-	getInitialState: function() {
-		if(this.props.dianzan)return this.props.dianzan;
-		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
-	  },
-   componentWillReceiveProps: function(nextProps) {
-	   this.setState(commons_ajax_dianzan_getByNewsuuid(nextProps.uuid));
-	},
-	handleChange_selectgroup_uuid:function(groupuuid){
-		  this.setState(this.load_role_bind_user(groupuuid));
-	},
-	obj:null,
-	 componentDidMount:function(){
-		 var that=this;
-		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
-		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
-		$("#"+this.props.btn_dianzan).bind("click",function(){
-			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
-			PxSnsService.ajax_sns_snsTopic_yes_save(that.props.uuid,canDianzan,that.dianzansave_callback);
-		});
-	 },
-	 dianzansave_callback:function(canDianzan){
-		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
-		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
-		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
-	 },
-render: function() {	
-	var dianzanObject=this.state;
-	 this.obj=dianzanObject;
-	 var showStr=  null;
-	 if(!dianzanObject.names){
-		 return null;
-	 }
-  return (
-React.createElement("div", null)
-  );
-}
-}); 
-
-/* 
- * 话题不同意观点舞台绘制
- **/
-var Sns_snsTopic_No = React.createClass({displayName: "Sns_snsTopic_No", 
-	getInitialState: function() {
-		if(this.props.dianzan)return this.props.dianzan;
-		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
-	  },
-   componentWillReceiveProps: function(nextProps) {
-	   this.setState(commons_ajax_dianzan_getByNewsuuid(nextProps.uuid));
-	},
-	handleChange_selectgroup_uuid:function(groupuuid){
-		  this.setState(this.load_role_bind_user(groupuuid));
-	},
-	obj:null,
-	 componentDidMount:function(){
-		 var that=this;
-		 //根据绑定的点赞按钮,设置对应状态,和绑定点击事件.
-		if(!that.obj.canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
-		$("#"+this.props.btn_dianzan).bind("click",function(){
-			var canDianzan=$("#"+that.props.btn_dianzan).hasClass("px-icon-hasdianzan")==false;
-			PxSnsService.ajax_sns_snsTopic_no_save(that.props.uuid,canDianzan,that.dianzansave_callback);
-		});
-	 },
-	 dianzansave_callback:function(canDianzan){
-		 if(canDianzan)$("#"+this.props.btn_dianzan).addClass("px-icon-hasdianzan");
-		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
-		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
-	 },
-render: function() {	
-	var dianzanObject=this.state;
-	 this.obj=dianzanObject;
-	 var showStr=  null;
-	 if(!dianzanObject.names){
-		 return null;
-	 }
-  return (
-React.createElement("div", null)
-  );
-}
-}); 
-
-
-
-//±±±±±±±±±±±±±±±±±±±±±±±±±±±
 
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±评论回复模板同意和不同意观点方法绘制±±±±±±±±±±±±±±±±±±±±±±±±±±±
