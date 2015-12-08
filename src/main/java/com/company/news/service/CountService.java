@@ -41,7 +41,7 @@ public class CountService extends AbstractService {
 			return 0l;
 		}
 		//缓存命中,直接返回.
-		Long cacheCount=PxRedisCache.getAddCountByExt_uuid(ext_uuid);
+		Long cacheCount=PxRedisCache.getIncrCountByExt_uuid(ext_uuid);
 		if(cacheCount!=null&&cacheCount>1)return cacheCount;
 		
 		if(cacheCount!=null){//缓存正常工作.
@@ -103,12 +103,17 @@ public class CountService extends AbstractService {
 		if (StringUtils.isBlank(ext_uuid)) {
 			return 0l;
 		}
-
-		Count c = (Count) this.nSimpleHibernateDao.getObjectByAttribute(
-				Count.class, "ext_uuid", ext_uuid);
+		//缓存命中,直接返回.
+		Long cacheCount=PxRedisCache.getCountByExt_uuid(ext_uuid);
+		if(cacheCount!=null)return cacheCount;
+		
+		Object dbCount =nSimpleHibernateDao.getSession().createSQLQuery("select sum(count) from Count where ext_uuid='"+ext_uuid+"'").uniqueResult();
 		Long count = 0l;
-		if (c != null)
-			count = c.getCount();
+		if (dbCount != null){//已有数据.
+			count=Long.valueOf(dbCount.toString());
+			PxRedisCache.setCountByExt_uuid(ext_uuid, count);
+			return count;
+		}
 
 		return count;
 
@@ -160,16 +165,15 @@ public class CountService extends AbstractService {
 		return c;
 		
 	}
-	
 	/**
-	 * 查询计数并且缓存.
+	 * 查询计数(并加1)并且缓存.
 	 * 
 	 * @param entityStr
 	 * @param model
 	 * @param request
 	 * @return
 	 */
-	public Map listByExtUuidsForCache(String ext_uuids) throws Exception {
+	public Map getCountByExt_uuids(String ext_uuids) throws Exception {
 		Map map=new HashMap();
 		if (StringUtils.isBlank(ext_uuids)) {
 			return map;
@@ -177,7 +181,60 @@ public class CountService extends AbstractService {
 		ext_uuids=PxStringUtil.StringDecComma(ext_uuids);
 		String[] ext_uuidsArr=ext_uuids.split(",");
 		//1.优先在缓存中取数据
-		 List<Object> list=PxRedisCache.getAddCountByExt_uuids(ext_uuidsArr);
+		 List<String> list=PxRedisCache.getCountByExt_uuids(ext_uuidsArr);
+		 //noCacheext_uuids 如果为"".表示缓存全部命中直接返回.否则取数据库.
+		 String noCacheext_uuids="";
+		 if(list!=null){
+			//2.构造数据.
+			 for(int i=0;i<ext_uuidsArr.length;i++){
+				 Object value= list.get(i);
+				 if(value!=null){
+					 map.put(ext_uuidsArr[i], value);
+				 }else{
+					 noCacheext_uuids+=ext_uuidsArr[i]+",";
+				 }
+			 }
+		 }else{
+			 noCacheext_uuids=ext_uuids;
+		 }
+		 
+		 //缓存全部命中直接返回
+		 if(StringUtils.isBlank(noCacheext_uuids)){
+			 return map;
+		 }
+		 //3.数据库中取数据
+		String sql = "select ext_uuid, sum(count) from px_count where ext_uuid in("+DBUtil.stringsToWhereInValue(noCacheext_uuids)+") group by ext_uuid";
+		List<Object[]> listNoCahe=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createSQLQuery(sql).list();
+		Map<String,String> mapToCache=new HashMap();
+		for(Object[] ObjArr:listNoCahe){
+			map.put(ObjArr[0], ObjArr[1]);
+			mapToCache.put(ObjArr[0]+"", ObjArr[1]+"");
+		}
+		//4.有数据则,缓存起来.
+		if(!mapToCache.isEmpty()){
+			PxRedisCache.setCountByExt_uuids(mapToCache);
+		}
+		return map;
+		
+	}
+	/**
+	 * 查询计数(并加1)并且缓存.
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public Map getIncrCountByExt_uuids(String ext_uuids) throws Exception {
+		Map map=new HashMap();
+		if (StringUtils.isBlank(ext_uuids)) {
+			return map;
+		}
+		ext_uuids=PxStringUtil.StringDecComma(ext_uuids);
+		String[] ext_uuidsArr=ext_uuids.split(",");
+		//1.优先在缓存中取数据
+		 List<Object> list=PxRedisCache.getIncrCountByExt_uuids(ext_uuidsArr);
 		 
 		 //2.构造数据.
 		 //noCacheext_uuids 如果为"".表示缓存全部命中直接返回.否则取数据库.
@@ -200,8 +257,12 @@ public class CountService extends AbstractService {
 				.getCurrentSession().createSQLQuery(sql).list();
 		Map<String,String> mapToCache=new HashMap();
 		for(Object[] ObjArr:listNoCahe){
-			map.put(ObjArr[0], ObjArr[1]);
-			mapToCache.put(ObjArr[0]+"", ObjArr[1]+"");
+			Object valObj=ObjArr[1];
+			if(valObj!=null){//计数加一
+				valObj=Long.valueOf(valObj.toString())+1;
+			}
+			map.put(ObjArr[0], valObj);
+			mapToCache.put(ObjArr[0]+"", valObj+"");
 		}
 		//4.有数据则,缓存起来.
 		if(!mapToCache.isEmpty()){
@@ -229,52 +290,5 @@ public class CountService extends AbstractService {
 
 	}
 
-	/**
-	 * 批量更新计数,提供效率.用于redis 同步到数据库
-	 * 
-	 * @param entityStr
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	public void update_synCountRedisToDb(final String[] keys, final List<String> values) throws Exception {
-//		if (StringUtils.isBlank(ext_uuids)) {
-//			return ;
-//		}
-		Session session=this.nSimpleHibernateDao.getSession();
-        final String sql = "update px_count set count=?,update_time=now() where ext_uuid =?";
-        final Logger tmpLogger=  logger;
-        try{
-             session.beginTransaction();
-             session.doWork(
-                     new Work() {
-                         public void execute(Connection connection) throws SQLException {
-                        	 	//经由过程JDBC API执行SQL语句
-                             PreparedStatement ps = connection.prepareStatement(sql);
-
-                             for (int i = 0; i <keys.length; i++) {
-                            	 String valueStr=values.get(i);
-                            	 String key=keys[i];
-                            	 if(valueStr!=null&&key!=null){
-                            		 ps.setLong(1, Long.valueOf(valueStr));
-                                	 ps.setString(2, key);
-                                     ps.addBatch();
-                            	 }else{
-                            		 tmpLogger.error("key="+key+",val="+valueStr);
-                            	 }
-                            	
-                             }
-
-                             ps.executeBatch();
-                         }
-                     }
-             );
-             session.getTransaction().commit();
-             //session.close();
-        }catch(Exception ex){
-        	  session.getTransaction().rollback();
-        }
-		
-
-	}
+	
 }

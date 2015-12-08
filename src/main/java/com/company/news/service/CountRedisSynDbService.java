@@ -11,10 +11,10 @@ import com.company.news.cache.redis.PxRedisCacheImpl;
 public class CountRedisSynDbService {
 	protected static Logger logger = Logger.getLogger(CountRedisSynDbService.class);
 	@Autowired
-	private CountService countService;
+	private SynPxRedisToDbImplService synPxRedisToDbImplService;
 	
 	public static final String PxRedisCache = ProjectProperties.getProperty(
-			"PxRedisCache", "false");
+			"PxRedisCache_synDB", "false");
 	
 	public void synCountRedisToDb(){
 		//判断是否启用定时
@@ -22,7 +22,7 @@ public class CountRedisSynDbService {
 		//1.增加
 		
 		try {
-			new PxRedisCacheImpl().synCountRedisToDb(countService);
+			new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -69,6 +69,7 @@ public class SnsReplyService extends AbstractService {
 		cn.setYes_count(0L);
 		cn.setNo_count(0L);
 		cn.setStatus(0);
+		cn.setIllegal(0l);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 		//暂时屏蔽.
@@ -129,6 +130,8 @@ public class SnsReplyService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		
+		//当前用户点赞情况.
+		snsDianzanService.warpReluuidsMapList(pageQueryResult.getData(), request);
 
 		return pageQueryResult;
 	}
