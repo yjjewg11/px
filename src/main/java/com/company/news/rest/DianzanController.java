@@ -1,10 +1,14 @@
 package com.company.news.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsDianzanJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.ClassNewsDianzanService;
+import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -73,18 +79,13 @@ public class DianzanController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 		String newsuuid = request.getParameter("newsuuid");
 
-		List list;
 		try {
-			list = classNewsDianzanService.getDianzanByNewsuuid(newsuuid);
 			
-			Boolean canDianzan=true;
-			if(list.size()>0){
-				SessionUserInfoInterface user = this.getUserInfoBySession(request);
-				canDianzan=classNewsDianzanService.canDianzan(newsuuid,user.getUuid());
-			}
-			model.addAttribute("names", StringUtils.join(list,","));
-			model.addAttribute("canDianzan", canDianzan);
-			model.addAttribute(RestConstants.Return_ResponseMessage_count, list.size());
+			DianzanListVO vo=this.classNewsDianzanService.getDianzanListVO(newsuuid, request);
+			
+			model.addAttribute("names",vo.getNames());
+			model.addAttribute("canDianzan", vo.getCanDianzan());
+			model.addAttribute(RestConstants.Return_ResponseMessage_count,vo.getCount());
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

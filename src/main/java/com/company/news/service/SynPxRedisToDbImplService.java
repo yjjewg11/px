@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
@@ -49,11 +51,14 @@ public class SynPxRedisToDbImplService implements  SynPxRedisToDbInterface{
                          public void execute(Connection connection) throws SQLException {
                         	  String sql = "update px_count set count=?,update_time=now() where ext_uuid =?";
                         	 	//经由过程JDBC API执行SQL语句
+                        	  logger.info(keys.length+" count,executeBatch");
+                        	  // logger.info(keys.length+" count,executeBatch:"+sql);
                              PreparedStatement ps = connection.prepareStatement(sql);
 
                              for (int i = 0; i <keys.length; i++) {
                             	 String valueStr=values.get(i);
                             	 String key=keys[i];
+                            	 logger.debug("key="+key+",val="+valueStr);
                             	 if(valueStr!=null&&key!=null){
                             		 ps.setLong(1, Long.valueOf(valueStr));
                                 	 ps.setString(2, key);
@@ -64,7 +69,9 @@ public class SynPxRedisToDbImplService implements  SynPxRedisToDbInterface{
                             	
                              }
 
-                             ps.executeBatch();
+                             int[] dd=ps.executeBatch();
+                             
+                             logger.info("update px_count,size="+dd.length);
                          }
                      }
              );

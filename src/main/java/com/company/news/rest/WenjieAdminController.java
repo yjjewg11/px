@@ -121,7 +121,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
+				new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

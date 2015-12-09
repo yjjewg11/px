@@ -56,7 +56,7 @@ public class SnsReplyService extends AbstractService {
 		}
 
 		if (StringUtils.isBlank(snsReplyJsonform.getReply_uuid())) {
-			snsReplyJsonform.setReply_uuid("0");
+			snsReplyJsonform.setReply_uuid(SystemConstants.DB_String_unrelated_Value);
 		}
 
 		SnsReply cn = new SnsReply();
@@ -72,6 +72,16 @@ public class SnsReplyService extends AbstractService {
 		cn.setIllegal(0l);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
+		
+		
+		String sql=null;
+		if(SystemConstants.DB_String_unrelated_Value.equals(snsReplyJsonform.getReply_uuid())){
+			sql="update sns_topic set reply_count=reply_count+1 where uuid='"+snsReplyJsonform.getTopic_uuid()+"'";
+		}else{
+			sql="update sns_reply set reply_count=reply_count+1 where uuid='"+snsReplyJsonform.getReply_uuid()+"'";
+		}
+		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+		
 		//暂时屏蔽.
 		
 		return true;

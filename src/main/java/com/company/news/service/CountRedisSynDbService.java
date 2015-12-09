@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import com.company.news.ProjectProperties;
 import com.company.news.cache.redis.PxRedisCacheImpl;
 
+/**
+ * 定时任务执行
+ * @author liumingquan
+ *
+ */
 @Service 
 public class CountRedisSynDbService {
 	protected static Logger logger = Logger.getLogger(CountRedisSynDbService.class);
@@ -17,10 +22,15 @@ public class CountRedisSynDbService {
 			"PxRedisCache_synDB", "false");
 	
 	public void synCountRedisToDb(){
-		//判断是否启用定时
-		if(!"true".equals(PxRedisCache))return ;
-		//1.增加
+		logger.warn("timer start-----------------------------");
 		
+		//判断是否启用定时
+		if(!"true".equals(PxRedisCache)){
+			logger.warn("timer end:PxRedisCache_synDB="+PxRedisCache);
+			return ;
+		}
+		//1.增加
+		Long startTime = System.currentTimeMillis() ;
 		try {
 			new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 		} catch (Exception e) {
@@ -29,6 +39,7 @@ public class CountRedisSynDbService {
 			logger.error(e);
 		}
 		//2.
-		
+		Long endTime = System.currentTimeMillis() - startTime;
+		logger.warn("timer end-----------------------------count time(ms)="+endTime);
 	}
 }

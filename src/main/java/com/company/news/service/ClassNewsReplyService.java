@@ -169,10 +169,10 @@ public class ClassNewsReplyService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	private ClassNewsReply warpVo(ClassNewsReply o, String cur_user_uuid) {
+	private ClassNewsReply warpVo(ClassNewsReply o) {
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		try {
-			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
+//			o.setDianzan(this.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
 			o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
 		} catch (Exception e) {
@@ -188,9 +188,27 @@ public class ClassNewsReplyService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	public List<ClassNewsReply> warpVoList(List<ClassNewsReply> list, String cur_user_uuid) {
-		for (ClassNewsReply o : list) {
-			warpVo(o, cur_user_uuid);
+	public List<ClassNewsReply> warpVoList(List<ClassNewsReply> list,SessionUserInfoInterface user) {
+		
+		
+		String uuids="";
+		for(ClassNewsReply o:list){
+			uuids+=o.getUuid()+",";
+		}
+		
+		try {
+			Map dianZanMap=this.getDianzanDianzanMap(uuids, user);
+			
+			
+			for (ClassNewsReply o : list) {
+				warpVo(o);
+				o.setDianzan((DianzanListVO)dianZanMap.get(o.getUuid()));
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return list;
 	}

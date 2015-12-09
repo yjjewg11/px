@@ -9,7 +9,7 @@
 
 	<description>Spring公共配置</description>
  <task:scheduled-tasks>   
-        <task:scheduled ref="countRedisSynDbService" method="synCountRedisToDb" cron="1 58 23 * * ?"/>   
+        <task:scheduled ref="countRedisSynDbService" method="synCountRedisToDb" cron="1 1 1 * * ?"/>   
         
 </task:scheduled-tasks>  
 
