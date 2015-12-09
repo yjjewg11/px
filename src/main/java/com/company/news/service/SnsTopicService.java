@@ -13,9 +13,12 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.HTMLUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
@@ -23,6 +26,7 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -64,6 +68,10 @@ public class SnsTopicService extends AbstractService {
 		}
 		SnsTopic newEntity = new SnsTopic();
 		BeanUtils.copyProperties(newEntity, jsonform);
+		String[] strings=HTMLUtils.getSummaryAndImgByHTML(newEntity.getContent());
+		newEntity.setSummary(strings[0]);
+		newEntity.setImguuids(strings[1]);
+		
 		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
 		newEntity.setCreate_useruuid(user.getUuid());
 		newEntity.setReply_count(0L);
@@ -94,7 +102,9 @@ public class SnsTopicService extends AbstractService {
 		
 		
 		BeanUtils.copyProperties(newEntity, jsonform);
-
+		String[] strings=HTMLUtils.getSummaryAndImgByHTML(newEntity.getContent());
+		newEntity.setSummary(strings[0]);
+		newEntity.setImguuids(strings[1]);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		return newEntity;
 	}
@@ -133,7 +143,7 @@ public class SnsTopicService extends AbstractService {
 			HttpServletRequest request) {
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level";
+		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids";
 		sql+=" FROM sns_topic t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(section_id)){
@@ -145,11 +155,27 @@ public class SnsTopicService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
-		
-		
-		
-		
+		this.warpMapList(pageQueryResult.getData(), null);
 		return pageQueryResult;
+	}
+	
+
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
+		
+		for(Map o:list){
+			warpMap(o);
+		}
+		
+		return list;
+	}
+	private void warpMap(Map o) {
+		o.put("imgList", PxStringUtil.uuids_to_imgSmallUrlurlList((String)o.get("imguuids")));
+		
 	}
 	public boolean updateDianzan(SessionUserInfoInterface user,String uuid,
 			Integer snsdianzanStatusYes,ResponseMessage responseMessage) {
