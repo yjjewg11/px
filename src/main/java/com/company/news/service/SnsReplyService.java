@@ -114,7 +114,7 @@ public class SnsReplyService extends AbstractService {
 			return new PageQueryResult();
 		}
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status";
+		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.no_count,t1.status";
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(reply_uuid)){

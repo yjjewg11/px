@@ -146,7 +146,7 @@ function sns_ajax_snsTopic_delete(uuid){
   	});			   
 }			
 /*
- *<话题>详情服务器请求；
+ *<话题>单条服务器请求；
  * @Announcements_show:详情绘制
  * */	
 function ajax_sns_snsTopic_show(uuid){
@@ -180,15 +180,19 @@ function ajax_sns_snsTopic_show(uuid){
 }	
 
 /*
- * <话题>评论回复内容获取服务请求;
+ * <话题>评论内容获取服务请求;
  * 绘制评论内容列表
  * */	
-function ajax_sns_reply_list(topic_uuid,list_div,pageNo,tempateClazz){
-	if(!tempateClazz)tempateClazz=Common_Classnewsreply_listshow;
+function ajax_sns_reply_list(uuid,list_div,pageNo,type){
 	var re_data=null;
+	var url
 	 if(!pageNo)pageNo=1;
+	if(type==71){
+		url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+uuid+"&pageNo="+pageNo;
+	 }else{
+		 url = hostUrl + "rest/snsReply/listPageByReply.json?reply_uuid="+uuid+"&pageNo="+pageNo;		
+	 }
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+topic_uuid+"&pageNo="+pageNo;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -197,11 +201,17 @@ function ajax_sns_reply_list(topic_uuid,list_div,pageNo,tempateClazz){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Sns_reply_list_show,{
-					events: data.list,
-					topic_uuid:topic_uuid,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-				 }), document.getElementById(list_div));
+				if(type==71){
+					React.render(React.createElement(Sns_reply_list_show,{
+						events: data.list,
+						responsive: true, bordered: true, striped :true,hover:true,striped:true
+					 }), document.getElementById(list_div));
+				 }else{
+						React.render(React.createElement(Sns_pinglun_list,{
+							events: data.list,
+							responsive: true, bordered: true, striped :true,hover:true,striped:true
+						 }), document.getElementById(list_div));	
+				 }
 				re_data=data.list;
 			} else {
 				alert(data.ResMsg.message);
@@ -259,70 +269,6 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 			   
 }		
 	
-//--------------------------------------------------------------//	
-/*
- * 评论回复模板
- * YES同意观点服务器请求
- * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
- */	
-function ajax_sns_snsReply_yes_save(uuid,canDianzan,dianzansave_callback){
-	var that=this;
-	$.AMUI.progress.start();
-	var url =hostUrl +(canDianzan?"rest/snsReply/yes.json":"rest/snsReply/cancelDianzan.json");
-		$.ajax({
-			type : "GET",
-			url : url,
-			data : {uuid:uuid},
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
-
-					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : G_ajax_error_fn
-		});
-			   
-}	
-
-/*
- * 评论回复模板
- * NO不同意观点服务器请求
- * @that.forceUpdate():点赞或取消点赞在数据返回后强制刷新当前页面的方法;
- */	
-function ajax_sns_snsReply_No_save(uuid,canDianzan,dianzansave_callback){
-	var that=this;
-	$.AMUI.progress.start();           
-	var url =hostUrl +(canDianzan?"rest/snsReply/no.json":"rest/snsReply/cancelDianzan.json");
-		$.ajax({
-			type : "GET",
-			url : url,
-			data : {uuid:uuid},
-			dataType : "json",
-			success : function(data) {
-				$.AMUI.progress.done();
-				// 登陆成功直接进入主页
-				if (data.ResMsg.status == "success") {
-					if(typeof dianzansave_callback=='function')dianzansave_callback(canDianzan);
-
-					//$('#dianzan').html($('#dianzan').html()+', <a href="javascript:void(0);">'+Store.getUserinfo().name+'</a>');
-				} else {
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
-				}
-			},
-			error : G_ajax_error_fn
-		});
-			   
-}	
-	
-	
 function img_data_list(level){
     var img;
     if(level==0){
@@ -332,9 +278,24 @@ function img_data_list(level){
     }else{
  	   img="精华贴"
     }
-    return img;	
-			   
+    return img;				   
 }	
+
+
+
+/*
+ * 对话题评论的回复 详情绘制
+ * 
+ * */  	  
+function react_ajax_sns_pinglun(event){
+	Queue.push(function(){react_ajax_sns_pinglun(event);},"评论回复");
+		React.render(React.createElement(Sns_info_event,{
+			event:event
+			}), document.getElementById('div_body'));
+	  };
+
+
+	//  listPageByReply
 	return {
 		sns_list_div:sns_list_div,
 		sns_snsTopic_list:sns_snsTopic_list,
@@ -343,11 +304,9 @@ function img_data_list(level){
 		ajax_sns_snsTopic_show:ajax_sns_snsTopic_show,
 		ajax_sns_reply_list:ajax_sns_reply_list,
 		ajax_sns_reply_save:ajax_sns_reply_save,
-
-		ajax_sns_snsReply_yes_save:ajax_sns_snsReply_yes_save,
-		ajax_sns_snsReply_No_save:ajax_sns_snsReply_No_save,
 		
 		ajax_sns_dianzan:ajax_sns_dianzan,
+		react_ajax_sns_pinglun:react_ajax_sns_pinglun,
 		img_data_list:img_data_list		
 	};//end return
 })();//end PxLazyM=(function(){return {}})();
