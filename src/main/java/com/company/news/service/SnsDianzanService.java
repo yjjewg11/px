@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -42,7 +43,12 @@ public class SnsDianzanService extends AbstractService {
 			return false;
 		}
 		String insertsql="insert into sns_dianzan(rel_uuid,user_uuid,status,create_time) values('"+rel_uuid+"','"+user_uuid+"',"+status+",now())";
-		int flag=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).executeUpdate();
+		try {
+			int flag=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).executeUpdate();
+		} catch (org.hibernate.exception.ConstraintViolationException e) {
+			responseMessage.setMessage("你已过投票!");
+			return false;
+		}
 
 		//		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(
 //				"from SnsDianzan where rel_uuid=? and user_uuid=?",
