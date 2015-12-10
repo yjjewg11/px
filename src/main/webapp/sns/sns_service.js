@@ -188,7 +188,7 @@ function ajax_sns_reply_list(uuid,list_div,pageNo,type){
 	var url
 	 if(!pageNo)pageNo=1;
 	if(type==71){
-		url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+uuid+"&pageNo="+pageNo;
+		 url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+uuid+"&pageNo="+pageNo;
 	 }else{
 		 url = hostUrl + "rest/snsReply/listPageByReply.json?reply_uuid="+uuid+"&pageNo="+pageNo;		
 	 }
@@ -269,17 +269,6 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 			   
 }		
 	
-function img_data_list(level){
-    var img;
-    if(level==0){
- 	   img="普通贴"
-    }else if(level==1){
- 	   img="热帖贴"
-    }else{
- 	   img="精华贴"
-    }
-    return img;				   
-}	
 
 
 
@@ -306,8 +295,7 @@ function react_ajax_sns_pinglun(event){
 		ajax_sns_reply_save:ajax_sns_reply_save,
 		
 		ajax_sns_dianzan:ajax_sns_dianzan,
-		react_ajax_sns_pinglun:react_ajax_sns_pinglun,
-		img_data_list:img_data_list		
+		react_ajax_sns_pinglun:react_ajax_sns_pinglun
 	};//end return
 })();//end PxLazyM=(function(){return {}})();
   
