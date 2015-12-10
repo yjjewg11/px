@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PxTeachingplan;
 import com.company.news.entity.User;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
@@ -303,7 +304,7 @@ public class PxTeachingPlanService extends AbstractService {
 		}
 
 			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from PxTeachingplan where classuuid ='"+classuuid+"'");
+					"delete from PxTeachingplan where classuuid ='"+DbUtils.safeToWhereString(classuuid)+"'");
 
 		
 		return true;

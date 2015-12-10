@@ -3,6 +3,7 @@ package com.company.news.service;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PxTelConsultation;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -66,7 +67,7 @@ public class PxTelConsultationService extends AbstractService {
 		if (StringUtils.isBlank(group_uuid)) {
 			return null;
 		}
-		String hql = "from PxTelConsultation where group_uuid='" + group_uuid
+		String hql = "from PxTelConsultation where group_uuid='" + DbUtils.safeToWhereString(group_uuid)
 				+ "' order by create_time desc";
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao

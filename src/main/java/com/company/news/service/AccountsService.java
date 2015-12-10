@@ -15,6 +15,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Accounts;
 import com.company.news.entity.Student;
 import com.company.news.jsonform.AccountsJsonform;
@@ -184,10 +185,10 @@ public class AccountsService extends AbstractService {
 			hql.append(" and type="+type);		
 		
 		if(StringUtils.isNotBlank(groupuuid))
-			hql.append(" and groupuuid='"+groupuuid+"'");	
+			hql.append(" and groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'");	
 		
 		if(StringUtils.isNotBlank(classuuid))
-			hql.append(" and classuuid='"+classuuid+"'");
+			hql.append(" and classuuid='"+DbUtils.safeToWhereString(classuuid)+"'");
 
 		hql.append(" order by create_time desc");
 
@@ -202,7 +203,7 @@ public class AccountsService extends AbstractService {
 	 * @return
 	 */
 	public PageQueryResult listByPage(PaginationData pData,String begDateStr, String endDateStr,AccountsJsonform accountsJsonform,ModelMap model) {
-		StringBuffer hql=new StringBuffer("from Accounts where groupuuid='"+accountsJsonform.getGroupuuid()+"'");
+		StringBuffer hql=new StringBuffer("from Accounts where groupuuid='"+DbUtils.safeToWhereString(accountsJsonform.getGroupuuid())+"'");
 		
 		if(StringUtils.isNotBlank(begDateStr))
 			hql.append(" and accounts_time>="+DBUtil.stringToDateByDBType(begDateStr));
@@ -214,12 +215,13 @@ public class AccountsService extends AbstractService {
 			hql.append(" and type="+accountsJsonform.getType());		
 		
 		if(StringUtils.isNotBlank(accountsJsonform.getClassuuid()))
-			hql.append(" and classuuid='"+accountsJsonform.getClassuuid()+"'");
+			hql.append(" and classuuid='"+DbUtils.safeToWhereString(accountsJsonform.getClassuuid())+"'");
 		
 		if(StringUtils.isNotBlank(accountsJsonform.getCreate_useruuid()))
-			hql.append(" and create_useruuid='"+accountsJsonform.getCreate_useruuid()+"'");
+			hql.append(" and create_useruuid='"+DbUtils.safeToWhereString(accountsJsonform.getCreate_useruuid())+"'");
 		if(StringUtils.isNotBlank(accountsJsonform.getTitle())){
 			String title=accountsJsonform.getTitle();
+			title=DbUtils.safeToWhereString(title);
 			//内容、学生名、单据号、填写人
 			hql.append(" and ( title  like '%" + title + "%'  or studentname  like '%" + title + "%'   or invoice_num  like '%" + title + "%'  or create_user  like '%" + title + "%')"  );
 		}

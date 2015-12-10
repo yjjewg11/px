@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
@@ -345,6 +346,8 @@ public class PxStudentService extends AbstractStudentService {
 		if (StringUtils.isBlank(name))
 			return new PageQueryResult();
 		//去掉多余用户
+		
+		name=DbUtils.safeToWhereString(name);
 		String hql = "from PxStudent where ";
 		if (StringUtils.isNumeric(name))
 			hql += "  uuid in (select student_uuid from PxStudentContactRealation where tel ='"+name+"')";
@@ -396,7 +399,7 @@ public class PxStudentService extends AbstractStudentService {
 		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_pxstudent t0";
 		
 		sql+=" where  t0.uuid in(  select DISTINCT t2.student_uuid from    px_pxstudentpxclassrelation t2  left join  px_pxclass  t1 on t1.uuid=t2.class_uuid";
-				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+= " where t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				
 				sql+=") group by t0.sex";
 				Query q = s.createSQLQuery(sql);
@@ -422,7 +425,7 @@ public class PxStudentService extends AbstractStudentService {
 		//性别,年龄,
 		String sql = "SELECT DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(t0.birthday)),'%Y') +0 AS age,sum(t0.sex=0) as male,sum(t0.sex=1) as female from px_pxstudent t0";
 		sql+=" 	where  t0.uuid in(  select DISTINCT t2.student_uuid from px_pxstudentpxclassrelation t2   left join  px_pxclass  t1 on t1.uuid=t2.class_uuid";
-		sql+= " where t1.groupuuid ='"+groupuuid+"'";
+		sql+= " where t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				sql+=") group by age";
 				Query q = s.createSQLQuery(sql);
 				List list =q.list();
@@ -522,7 +525,8 @@ public class PxStudentService extends AbstractStudentService {
 		// in("+StringOperationUtil.dateStr)+"))
 		String where_student_name = "";
 		if (StringUtils.isNotBlank(student_name)) {
-			where_student_name = " and student_name like '%" + student_name + "%'";
+			
+			where_student_name = " and student_name like '%" + DbUtils.safeToWhereString(student_name) + "%'";
 		}
 		String hql = "from PxStudentContactRealation  where student_uuid in"
 				+ "(select student_uuid from PxStudentPXClassRelation where class_uuid in("
@@ -548,7 +552,7 @@ public class PxStudentService extends AbstractStudentService {
 				.getSessionFactory().openSession();
 		//学生数量.教学计划数量,课程名,(班级信息)
 		String sql = "SELECT count(t2.student_uuid),t1.uuid from  px_pxclass  t1 left join px_pxstudentpxclassrelation t2 on t1.uuid=t2.class_uuid";
-				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+= " where t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				sql+=" group by t1.uuid";
 				
 				
@@ -573,7 +577,7 @@ public class PxStudentService extends AbstractStudentService {
 		try {
 			String sql="select DISTINCT t1.student_uuid from px_pxstudentcontactrealation t1 LEFT JOIN px_studentcontactrealation t2";
 			sql+=" on t1.student_name=t2.student_name and t1.tel=t2.tel";
-			sql+=" where t2.student_uuid='"+student.getUuid()+"'";
+			sql+=" where t2.student_uuid='"+DbUtils.safeToWhereString(student.getUuid())+"'";
 			Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 					.getSessionFactory().openSession();
 			Query q = s.createSQLQuery(sql);

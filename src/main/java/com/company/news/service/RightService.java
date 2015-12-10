@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Right;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -60,7 +61,7 @@ public class RightService extends AbstractService {
 
 		List rightList = s
 				.createSQLQuery(
-						"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1,px_right t3 where t3.uuid=t1.rightuuid and  t0.roleuuid=t1.roleuuid and t3.type="+grouptype+" and  t0.useruuid='"
+						"select DISTINCT t0.groupuuid,t1.rightname from px_roleuserrelation t0,px_rolerightrelation t1,px_right t3 where t3.uuid=t1.rightuuid and  t0.roleuuid=t1.roleuuid and t3.type="+DbUtils.safeToWhereString(grouptype)+" and  t0.useruuid='"
 								+ user.getUuid() + "'").list();
 
 		

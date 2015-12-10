@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.Favorites;
@@ -92,7 +93,7 @@ public class FavoritesService extends AbstractService {
 	 */
 	public PageQueryResult query(String type, String user_uuid, PaginationData pData) {
 
-		String hql = "from Favorites where user_uuid='" + user_uuid + "'";
+		String hql = "from Favorites where user_uuid='" + DbUtils.safeToWhereString(user_uuid) + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		pData.setOrderFiled("createtime");

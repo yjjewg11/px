@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
@@ -187,7 +188,7 @@ public class ClassService extends AbstractClassService {
 		if (StringUtils.isBlank(groupuuid))
 			hql="from PClass  order by groupuuid, convert(name, 'gbk') ";
 		else
-			hql="from PClass where groupuuid='"+groupuuid+"' order by  convert(name, 'gbk') ";
+			hql="from PClass where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' order by  convert(name, 'gbk') ";
 		PaginationData pData=new PaginationData();
 		pData.setPageSize(100);//防止大数据
 		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
@@ -205,7 +206,7 @@ public class ClassService extends AbstractClassService {
 	public List queryClassByUseruuid(String useruuid) {
 		PaginationData pData=new PaginationData();
 		pData.setPageSize(100);//防止大数据
-		String hql="from PClass where uuid in (select classuuid from UserClassRelation where   useruuid='"+useruuid+"') order by convert(name, 'gbk')";
+		String hql="from PClass where uuid in (select classuuid from UserClassRelation where   useruuid='"+DbUtils.safeToWhereString(useruuid)+"') order by convert(name, 'gbk')";
 		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
@@ -254,7 +255,7 @@ public class ClassService extends AbstractClassService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		Object o = s.createSQLQuery(
-				"select count(*) from px_student where classuuid='" + uuid
+				"select count(*) from px_student where classuuid='" +DbUtils.safeToWhereString( uuid)
 						+ "'").uniqueResult();
 		
 		

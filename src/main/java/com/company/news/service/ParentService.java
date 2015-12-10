@@ -9,6 +9,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -31,9 +32,9 @@ public class ParentService extends AbstractService {
 		
 		if (StringUtils.isNotBlank(name)){
 			if(StringUtils.isNumeric(name)){
-				hql+=" and tel like '%"+name+"%'";
+				hql+=" and tel like '%"+DbUtils.safeToWhereString(name)+"%'";
 			}else{				
-				hql+=" and name like '%"+name+"%'";
+				hql+=" and name like '%"+DbUtils.safeToWhereString(name)+"%'";
 			}
 		}
 		pData.setOrderFiled("login_time");
@@ -95,7 +96,7 @@ public class ParentService extends AbstractService {
 				.getSessionFactory().openSession();
 		String sql = "SELECT count(t3.parent_uuid),t1.uuid from  px_pxclass  t1 left join px_pxstudentpxclassrelation t2 on t1.uuid=t2.class_uuid";
 		sql+= " left join px_pxstudentcontactrealation t3 on t3.student_uuid=t2.student_uuid";
-		sql+= " where t1.groupuuid ='"+groupuuid+"'";
+		sql+= " where t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 		sql+=" group by t1.uuid";
 		
 		

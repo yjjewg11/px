@@ -450,9 +450,26 @@ public class AnnouncementsService extends AbstractService {
 			if(SessionListener.isPXLogin(request)){
 				right=RightConstants.PX_announce_m;
 			}
-			if(!RightUtils.hasRight(obj.getGroupuuid(),right,request)){
-				responseMessage.setMessage(RightConstants.Return_msg);
-				return false;
+			
+			
+			else if(!RightUtils.hasRight(obj.getGroupuuid(),right,request)){
+				
+				
+				if(SystemConstants.common_type_jingpinwenzhang!=obj.getType().intValue()){
+					responseMessage.setMessage(RightConstants.Return_msg);
+					return false;
+					
+				}
+				//精品文章创建者可以删除
+				if(SystemConstants.common_type_jingpinwenzhang==obj.getType().intValue()){
+					
+					SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+					if(!user.getUuid().equals(obj.getCreate_useruuid())){
+						responseMessage.setMessage(RightConstants.Return_msg);
+						return false;
+					}
+				}
+			
 			}
 		}
 		

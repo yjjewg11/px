@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.SnsReply;
@@ -128,10 +129,10 @@ public class SnsReplyService extends AbstractService {
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(reply_uuid)){
-			sql+="and t1.reply_uuid= '"+reply_uuid+"'";
+			sql+="and t1.reply_uuid= '"+DbUtils.safeToWhereString(reply_uuid)+"'";
 		}else 
 		if(StringUtils.isNotBlank(topic_uuid)){
-			sql+=" and reply_uuid='0' and t1.topic_uuid= '"+topic_uuid+"'";
+			sql+=" and reply_uuid='0' and t1.topic_uuid= '"+DbUtils.safeToWhereString(topic_uuid)+"'";
 		}
 		sql += " order by t1.create_time desc";
 
@@ -216,9 +217,9 @@ public class SnsReplyService extends AbstractService {
 			
 			String sql=null;
 			if(SystemConstants.SnsDianzan_status_yes.equals(snsdianzanStatusYes)){
-				sql="update sns_reply set yes_count=yes_count+1 where uuid='"+uuid+"'";
+				sql="update sns_reply set yes_count=yes_count+1 where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			}else{
-				sql="update sns_reply set no_count=no_count+1 where uuid='"+uuid+"'";
+				sql="update sns_reply set no_count=no_count+1 where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			}
 			Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
 			if(rel==0){
@@ -244,9 +245,9 @@ public class SnsReplyService extends AbstractService {
 		}
 		String sql=null;
 		if(SystemConstants.SnsDianzan_status_yes.equals(status)){
-			sql="update sns_reply set yes_count=yes_count-1 where uuid='"+uuid+"'";
+			sql="update sns_reply set yes_count=yes_count-1 where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 		}else{
-			sql="update sns_reply set no_count=no_count-1 where uuid='"+uuid+"'";
+			sql="update sns_reply set no_count=no_count-1 where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 		}
 		Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
 		if(rel==0){

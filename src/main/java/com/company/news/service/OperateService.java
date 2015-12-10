@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Operate;
 import com.company.news.jsonform.OperateJsonform;
 import com.company.news.query.PageQueryResult;
@@ -52,10 +53,10 @@ public class OperateService extends AbstractService {
 		String hql = "from Operate where 1=1";
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid ='"
-					+ groupuuid + "'";
+					+ DbUtils.safeToWhereString(groupuuid) + "'";
 		if (StringUtils.isNotBlank(studentuuid))
 			hql += " and  studentuuid ='"
-					+ studentuuid + "'";
+					+ DbUtils.safeToWhereString(studentuuid) + "'";
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 

@@ -9,6 +9,7 @@ import org.hibernate.transform.Transformers;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.AbstractClass;
 import com.company.news.entity.UserClassRelation;
@@ -32,7 +33,7 @@ public class AbstractClassService extends AbstractService {
 					.getSessionFactory().openSession();
 			String sql="select t2.type  ,group_concat( t1.name) as user_names,group_concat( t1.uuid) as user_uuids from px_user  t1 ";
 			sql+=" LEFT JOIN  px_userclassrelation t2 on t2.useruuid=t1.uuid  ";
-			sql+=" where t2.type is not null and t2.classuuid='"+o.getUuid()+"'";
+			sql+=" where t2.type is not null and t2.classuuid='"+DbUtils.safeToWhereString(o.getUuid())+"'";
 			sql+=" GROUP BY t2.type  ";
 			Query q = s.createSQLQuery(sql);
 			q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);

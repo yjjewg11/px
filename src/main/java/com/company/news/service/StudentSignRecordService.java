@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.StatMonthAttendance;
 import com.company.news.query.PageQueryResult;
@@ -112,7 +113,7 @@ public class StudentSignRecordService extends AbstractService {
 		
 		String sql = "select DISTINCT s1.uuid,s1.name ";
 		sql+=" from px_user s1 inner join px_studentbind b2 on  b2.studentuuid=s1.uuid   " ;
-		sql+=" where b2.cardid is not null and b2.groupuuid='"+groupuuid+"'";
+		sql+=" where b2.cardid is not null and b2.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
 		sql+="order by CONVERT( s1.name USING gbk)";
 		
 		//student_uuid,cardid,userid,student_name
@@ -127,7 +128,7 @@ public class StudentSignRecordService extends AbstractService {
 		sql+=" ,CONCAT(DATE_FORMAT(min(sign_time),'%H:%i'),'-',DATE_FORMAT(max(sign_time),'%H:%i')) as sign_time2 " ;
 		
 		sql+=" from  px_studentsignrecord where studentuuid is not null ";
-		sql+=" and groupuuid='"+groupuuid+"' and DATE_FORMAT(sign_time,'%Y-%m')='"+yyyy_mm+"'";
+		sql+=" and groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' and DATE_FORMAT(sign_time,'%Y-%m')='"+yyyy_mm+"'";
 		sql+="GROUP BY  studentuuid, DATE_FORMAT(sign_time,'%Y-%m-%d')  ORDER BY studentuuid; ";
 		
 		
@@ -167,7 +168,7 @@ public class StudentSignRecordService extends AbstractService {
 		}
 		else if(!isSaveStatMonth){
 			 sql = "delete from px_stat_month_attendance where type="+SystemConstants.StatMonthAttendance_type_1;
-			sql+=" and groupuuid='"+groupuuid+"' and yyyy_mm='"+yyyy_mm+"'" ;
+			sql+=" and groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' and yyyy_mm='"+yyyy_mm+"'" ;
 			s.createSQLQuery(sql).executeUpdate();
 		}
 		
@@ -221,7 +222,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		
 		String sql = "select DISTINCT s1.uuid,s1.name ";
 		sql+=" from px_student s1    " ;
-		sql+=" where classuuid='"+classuuid+"'";
+		sql+=" where classuuid='"+DbUtils.safeToWhereString(classuuid)+"'";
 		sql+=" order by CONVERT( s1.name USING gbk)";
 		//student_uuid,cardid,userid,student_name
 		Query q = s.createSQLQuery(sql);
@@ -235,7 +236,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		
 		//1.1 验证班级是否存在
 		 sql = "SELECT groupuuid from px_class" ;
-			sql+=" where uuid='"+classuuid+"'";
+			sql+=" where uuid='"+DbUtils.safeToWhereString(classuuid)+"'";
 			 List<Object[]> group_list = s.createSQLQuery(sql).list();
 			String groupuuid=null;
 			 if(group_list.size()==0){
@@ -250,7 +251,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		sql+=" ,CONCAT(DATE_FORMAT(min(t1.sign_time),'%H:%i'),'-',DATE_FORMAT(max(t1.sign_time),'%H:%i')) as sign_time2" ;
 		
 		sql+=" from  px_studentsignrecord t1 LEFT JOIN px_student t2 on t1.studentuuid=t2.uuid where t1.studentuuid is not null";
-		sql+=" and t2.classuuid='"+classuuid+"' and DATE_FORMAT(t1.sign_time,'%Y-%m')='"+yyyy_mm+"'";
+		sql+=" and t2.classuuid='"+DbUtils.safeToWhereString(classuuid)+"' and DATE_FORMAT(t1.sign_time,'%Y-%m')='"+yyyy_mm+"'";
 		sql+="GROUP BY  studentuuid, DATE_FORMAT(sign_time,'%Y-%m-%d')  ORDER BY studentuuid ";
 		
 		//student_uuid,cardid,userid,student_name
@@ -285,7 +286,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		}
 		else if(isSaveStatMonth){
 			 sql = "delete from px_stat_month_attendance where type="+SystemConstants.StatMonthAttendance_type_0;
-			sql+=" and classuuid='"+classuuid+"' and yyyy_mm='"+yyyy_mm+"'" ;
+			sql+=" and classuuid='"+DbUtils.safeToWhereString(classuuid)+"' and yyyy_mm='"+DbUtils.safeToWhereString(yyyy_mm)+"'" ;
 			s.createSQLQuery(sql).executeUpdate();
 		}
 		
@@ -329,7 +330,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 	public List listStatMonthByTeacher(String yyyy_mm, String groupuuid,
 			ResponseMessage responseMessage) {
 		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from StatMonthAttendance where type=1 and groupuuid='"+groupuuid+"' and yyyy_mm='"+yyyy_mm+"'");
+				.find("from StatMonthAttendance where type=1 and groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' and yyyy_mm='"+DbUtils.safeToWhereString(yyyy_mm)+"'");
 		return  list;
 	}
 	/**
@@ -342,7 +343,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 	public List listStatMonthByStudent(String yyyy_mm, String classuuid,
 			ResponseMessage responseMessage) {
 		List list= (List) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("from StatMonthAttendance where type=0 and  classuuid='"+classuuid+"' and yyyy_mm='"+yyyy_mm+"'" );
+				.find("from StatMonthAttendance where type=0 and  classuuid='"+DbUtils.safeToWhereString(classuuid)+"' and yyyy_mm='"+DbUtils.safeToWhereString(yyyy_mm)+"'" );
 		return  list;
 	}
 	
@@ -360,7 +361,7 @@ Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().
 		if(isCurrentMonth)return false;
 		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql="select updatetime from px_group_heartbeat where group_uuid='"+groupuuid+"'";
+		String sql="select updatetime from px_group_heartbeat where group_uuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
 		List list=s.createSQLQuery(sql).list();
 		//没有门禁同步心跳,不生成报表.
 		if(list.size()==0){

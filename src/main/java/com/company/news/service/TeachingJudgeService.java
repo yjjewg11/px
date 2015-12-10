@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Message;
@@ -82,9 +83,9 @@ public class TeachingJudgeService extends AbstractService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		String sql = "select {t0.*} from px_teacherjudge {t0},px_usergrouprelation t1 where {t0}.teacheruuid=t1.useruuid ";
-		sql += " and t1.groupuuid='" + groupuuid + "'";
-		sql += " and {t0}.create_time between '" + date_start + "' and '"
-				+ date_end + "'";
+		sql += " and t1.groupuuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
+		sql += " and {t0}.create_time between '" + DbUtils.safeToWhereString(date_start) + "' and '"
+				+ DbUtils.safeToWhereString(date_end) + "'";
 
 		Query q = s.createSQLQuery(sql).addEntity("t0", TeacherJudge.class);
 		return this.warpVoList(q.list());
@@ -123,7 +124,7 @@ public class TeachingJudgeService extends AbstractService {
 		Query q = s
 				.createSQLQuery("SELECT ug.useruuid,tj.type,count(tj.type) FROM pxdb.px_usergrouprelation ug "
 						+ "left join px_teacherjudge tj on ug.useruuid=tj.teacheruuid where ug.groupuuid='"
-						+ groupuuid
+						+ DbUtils.safeToWhereString(groupuuid)
 						+ "' and create_time<="
 						+ DBUtil.stringToDateByDBType(endDateStr)
 						+ " and create_time>="

@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
@@ -39,27 +40,27 @@ public class CheckService extends AbstractService {
 		
 		switch (type) {
 		case SystemConstants.common_type_hudong:
-			 sql="update px_classnews set illegal=illegal+1,illegal_time=now()  where uuid='"+uuid+"'";
+			 sql="update px_classnews set illegal=illegal+1,illegal_time=now()  where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 		case SystemConstants.common_type_gonggao:
-			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 		case SystemConstants.common_type_neibutongzhi:
-			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 		case SystemConstants.common_type_jingpinwenzhang:
-			 sql="update px_announcements set illegal=illegal+1,illegal_time=now()  where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1,illegal_time=now()  where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 		case SystemConstants.common_type_zhaoshengjihua:
-			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			 sql="update px_announcements set illegal=illegal+1 ,illegal_time=now() where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 			
 		case SystemConstants.common_type_SnsTopic:
-			 sql="update sns_topic set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			 sql="update sns_topic set illegal=illegal+1 ,illegal_time=now() where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 			
 		case SystemConstants.common_type_SnsReply:
-			 sql="update sns_reply set illegal=illegal+1 ,illegal_time=now() where uuid='"+uuid+"'";
+			 sql="update sns_reply set illegal=illegal+1 ,illegal_time=now() where uuid='"+DbUtils.safeToWhereString(uuid)+"'";
 			break;
 		default:
 			break;

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
@@ -271,7 +272,7 @@ public class StudentService extends AbstractStudentService {
 		// in("+StringOperationUtil.dateStr)+"))
 		String where_student_name = "";
 		if (StringUtils.isNotBlank(student_name)) {
-			where_student_name = " and name like '%" + student_name + "%'";
+			where_student_name = " and name like '%" + DbUtils.safeToWhereString(student_name) + "%'";
 		}
 		String hql = "from StudentContactRealation  where student_uuid in"
 				+ "(select uuid from Student where classuuid in("
@@ -332,7 +333,7 @@ public class StudentService extends AbstractStudentService {
 				.getSessionFactory().openSession();
 		//学生数量.教学计划数量,课程名,(班级信息)
 		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_student t0 ";
-				sql+= " where t0.groupuuid ='"+groupuuid+"'";
+				sql+= " where t0.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				sql+=" group by t0.sex";
 				Query q = s.createSQLQuery(sql);
 				List list =q.list();
@@ -643,7 +644,7 @@ public class StudentService extends AbstractStudentService {
 				.getSessionFactory().openSession();
 		//性别,年龄,
 		String sql = "SELECT DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)),'%Y') +0 AS age , sum(sex=0) as male,sum(sex=1) as female FROM px_student";
-				sql+= " where groupuuid ='"+groupuuid+"'";
+				sql+= " where groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				sql+=" group by age";
 				Query q = s.createSQLQuery(sql);
 				List list =q.list();
