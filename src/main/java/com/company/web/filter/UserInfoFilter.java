@@ -88,13 +88,33 @@ public class UserInfoFilter implements Filter {
 		}
 		return ip;
 	}
+	
+	private boolean isExcludeFilter(HttpServletRequest request){
+		String servletPath = request.getPathInfo().trim();
+		
+		if (excludeFiltersList.contains(servletPath)){
+			return true;
+		}
+		if ((servletPath.startsWith("/download/"))){
+			return true;
+		}
+		if ((servletPath.startsWith("/share/"))){
+			return true;
+		}
+		if ((servletPath.startsWith("/downloadTb/"))){
+			return true;
+		}
+		if ((servletPath.startsWith("/sns"))){
+			return true;
+		}
+		return false;
+	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain filterChain) throws IOException, ServletException {
  		HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-		String servletPath = httpServletRequest.getPathInfo().trim();
 		String token = httpServletRequest
 				.getParameter(RestConstants.Return_access_token);
 		long startTime = 0;
@@ -105,10 +125,7 @@ public class UserInfoFilter implements Filter {
 			if (session == null
 					|| session.getAttribute(RestConstants.Session_UserInfo) == null) {
 				// 如果是附件下载也不需要进行校验
-				if (!excludeFiltersList.contains(servletPath)
-						&& !(servletPath.contains("/download/") 
-								|| servletPath.contains("/share/")
-								|| servletPath.contains("/downloadTb/"))) {
+				if (!isExcludeFilter(httpServletRequest)) {
 					
 					boolean isLogin=false;
 					//根据传入的参数,从数据库获取用户信息.有则合法.自动登录.实现sessionid共享

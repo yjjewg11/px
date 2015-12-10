@@ -375,6 +375,7 @@ function loadJSAsy(url,callback,charset)
 window.Queue={
 		body_scrollTop:0,
 		isBack:false,
+		homePageFn:null,//设置主页,防止一直退回后,退回不到主页bug
 		/**
 		 * 如果是点击显示原图模式,回退时,操作是关闭原图
 		 * @returns {Boolean}
@@ -404,6 +405,7 @@ window.Queue={
 			this.isBack=true;
 			if(this.arr.length==0){
 				G_CallPhoneFN.finishProject();
+				if(Queue.homePageFn&&typeof Queue.homePageFn=='function')Queue.homePageFn();
 				return;
 			}
 			var tmp=this.pop();

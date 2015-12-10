@@ -295,11 +295,13 @@ public class AccountsService extends AbstractService {
 		begDateStr=begDateStr.split("-")[0]+"-01-01";
 		
 		Timestamp begDate = TimeUtils.string2Timestamp(null,begDateStr);
-		
+		if(begDate==null){
+			
+		}
 		Calendar begCal= Calendar.getInstance();
 		begCal.setTime(begDate);
 		
-		begCal.add(Calendar.YEAR, 1);
+		begCal.add(Calendar.MONTH, add_month);
 		 String endDateStr=TimeUtils.getDateString(begCal.getTime());
 		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
@@ -348,7 +350,7 @@ public class AccountsService extends AbstractService {
 				String numStr=(String)obj.get("month"+d1);
 				
 				if(numStr!=null){
-					numStr+=","+m.get("num");
+					numStr+=";"+m.get("num");
 				}
 				else{
 					numStr=m.get("num")+"";
