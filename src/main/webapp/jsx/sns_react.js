@@ -194,6 +194,8 @@ return (
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
 	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
+	     <AMR_Button  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
+
        <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
       </AMR_ButtonToolbar>	
          <Sns_comment_actions data={data} />
@@ -532,11 +534,21 @@ var Sns_ajax_reply_save = React.createClass({
 		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	var uuid;
+	var type=this.props.type;
+	var uuid=(<div></div>);
+	if(type==71){
+		uuid=(<div><input type="hidden" name="topic_uuid"  value={this.props.uuid}/></div>);
+	 }else{
+		 uuid=(<div>
+		 <input type="hidden" name="topic_uuid"  value={this.props.uuid}/> 
+		 <input type="hidden" name="reply_uuid"  value={this.props.uuid}/> 
+		 </div>); 
+	 } 
 return (
 <form id="snsClassnewsreplyForm" method="post" className="am-form" action="javascript:void(0);">
-	 <input type="hidden" name="topic_uuid"  value={this.props.uuid}/>
-	 <input type="hidden" name="reply_uuid"  value={this.props.uuid}/>
-	 <input type="hidden" name="type"  value={this.props.type}/>			
+	 {uuid}
+	 <input type="hidden" name="type"  value={type}/>			
 	 <AMR_Input id="classnews_content_replay" type="textarea" rows="4" label="我要评论" placeholder="填写内容" name="content" />
 	 <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 </form>	   

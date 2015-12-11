@@ -194,6 +194,8 @@ return (
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除"), 
 	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
+	     React.createElement(AMR_Button, {amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享"), 
+
        React.createElement(AMR_Button, {className:  G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
       ), 	
          React.createElement(Sns_comment_actions, {data: data}), 
@@ -532,11 +534,21 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	var uuid;
+	var type=this.props.type;
+	var uuid=(React.createElement("div", null));
+	if(type==71){
+		uuid=(React.createElement("div", null, React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid})));
+	 }else{
+		 uuid=(React.createElement("div", null, 
+		 React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+		 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid})
+		 )); 
+	 } 
 return (
 React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-	 React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
-	 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid}), 
-	 React.createElement("input", {type: "hidden", name: "type", value: this.props.type}), 			
+	 uuid, 
+	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
 	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 )	   
