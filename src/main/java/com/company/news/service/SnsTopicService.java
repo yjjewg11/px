@@ -139,17 +139,13 @@ public class SnsTopicService extends AbstractService {
 		
 		return list;
 	}
-	public PageQueryResult listPage(PaginationData pData,String section_id,
+	
+	private PageQueryResult listPageBySql(String sqlwhere,PaginationData pData,
 			HttpServletRequest request) {
-
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids ";
+		selectSql+=" FROM sns_topic t1 ";
+		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids";
-		sql+=" FROM sns_topic t1 ";
-		sql+=" where t1.status=0 ";
-		if(StringUtils.isNotBlank(section_id)){
-			sql+=" and t1.section_id= "+section_id;
-		}
-		sql += " order by t1.create_time desc";
 
 		Query  query =session.createSQLQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
@@ -158,7 +154,58 @@ public class SnsTopicService extends AbstractService {
 		this.warpMapList(pageQueryResult.getData(), null);
 		return pageQueryResult;
 	}
+	/**
+	 * 最新话题
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult listPage(PaginationData pData,String section_id,
+			HttpServletRequest request) {
+
+		String sqlwhere=" where t1.status=0 ";
+		if(StringUtils.isNotBlank(section_id)){
+			sqlwhere+=" and t1.section_id= "+section_id;
+		}
+		sqlwhere += " order by t1.create_time desc";
+		return listPageBySql(sqlwhere, pData, request);
+	}
+	/**
+	 * 精华话题
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult topListPage(PaginationData pData,String section_id,
+			HttpServletRequest request) {
+
+		String sqlwhere=" where t1.status=0 and t1.level=9 ";
+		if(StringUtils.isNotBlank(section_id)){
+			sqlwhere+=" and t1.section_id= "+section_id;
+		}
+		sqlwhere += " order by t1.create_time desc";
+		return listPageBySql(sqlwhere, pData, request);
+	}
 	
+	/**
+	 * 最新话题
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult hotlistPage(PaginationData pData,String section_id,
+			HttpServletRequest request) {
+
+		String sqlwhere=" where t1.status=0 ";
+		if(StringUtils.isNotBlank(section_id)){
+			sqlwhere+=" and t1.section_id= "+section_id;
+		}
+		sqlwhere += " order by t1.reply_count desc";
+		return listPageBySql(sqlwhere, pData, request);
+	}
 
 	/**
 	 * vo输出转换

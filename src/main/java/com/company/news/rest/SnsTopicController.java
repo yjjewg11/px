@@ -90,14 +90,14 @@ public class SnsTopicController extends AbstractRESTController {
 
 
 	 /**
-	 * 获取列表
-	 *	/share/getCourseType.json
+	 * 最新话题
+	 *	listPage
 	 * @param model
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/listPage", method = RequestMethod.GET)
-	public String getCourseType(ModelMap model, HttpServletRequest request) {
+	public String listPage(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
@@ -116,7 +116,63 @@ public class SnsTopicController extends AbstractRESTController {
 			return "";
 		}
 	}
-	
+	 /**
+		 * 热门话题
+		 * /hotListPage
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/hotListPage", method = RequestMethod.GET)
+		public String hotlistPage(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			try {
+				String section_id=request.getParameter("section_id");
+				PaginationData pData = this.getPaginationDataByRequest(request);
+				PageQueryResult list = snsTopicService.hotlistPage(pData,section_id,request);
+				
+				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
+				return "";
+			}
+		}
+		
+		
+		 /**
+		 * 精华话题
+		 *	/topListPage
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/topListPage", method = RequestMethod.GET)
+		public String topListPage(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			try {
+				String section_id=request.getParameter("section_id");
+				PaginationData pData = this.getPaginationDataByRequest(request);
+				PageQueryResult list = snsTopicService.topListPage(pData,section_id,request);
+				
+				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("服务器异常:"+e.getMessage());
+				return "";
+			}
+		}
+		
 	
 	 /**
 		 *同意观点

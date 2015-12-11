@@ -483,8 +483,8 @@ function ajax_msg_div(uuid){
  * 基本框 等
  * @type：Type：1自己相关的互动 Type:2 所有人的互动;
  * */
-var hd_type="";
-var g_checkflag;
+window.hd_type="";
+window.g_checkflag="";
 function ajax_classnews_list_div(type){
 	  Queue.push (function(){ajax_classnews_list_div(type);},"班级互动") ;
 	  hd_type=type;
