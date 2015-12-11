@@ -11,10 +11,10 @@ var Sns_Div = React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
 	componentWillReceiveProps:function(){
-		this.load_more_data();
+		//this.refresh_data();
 	},
 	componentDidMount:function(){
-		this.load_more_data();
+		this.refresh_data();
 	},
 	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
 	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
@@ -31,7 +31,7 @@ var Sns_Div = React.createClass({
     			}
     			that.pageNo++;
     		}
-	var re_data=PxSnsService.sns_snsTopic_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+	var re_data=PxSnsService.sns_snsTopic_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,that.props.snsKey,callback);
 	},
 	refresh_data:function(){
 		this.forceUpdate();
@@ -374,11 +374,11 @@ var Sns_reply_list_show = React.createClass({
      {this.props.events.data.map(function(event) {
 	   if(!event.create_img)event.create_img=G_def_headImgPath;
         return (
-		  <article className="am-comment am-comment-flip am-comment-success am-margin-xs">
+		  <article className="am-comment am-comment-success am-margin-xs">
 		   <a href="javascript:void(0);">
 		    <img src={event.create_img} className="am-comment-avatar" width="48" height="48"/>
 		   </a>
-		 <div className="am-comment-main am-comment-flip">
+		 <div className="am-comment-main ">
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
@@ -386,7 +386,7 @@ var Sns_reply_list_show = React.createClass({
 		      <time>{event.create_time}</time>		 
 		      </div>
 		    </header>
-		     <div className="am-comment-bd am-comment-flip am-inline">
+		     <div className="am-comment-bd  am-inline">
 		      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
   		     </div>	    	
 	    	<Sns_snsReply_comment_actions data={event} />
@@ -412,11 +412,11 @@ var Sns_info_event = React.createClass({
 		var event=this.props.event;
 	  return (
    <div>
-	  <article className="am-comment am-comment-flip am-comment-success am-margin-xs">
+	  <article className="am-comment  am-comment-success am-margin-xs">
 	   <a href="javascript:void(0);">
 	    <img src={event.create_img} className="am-comment-avatar" width="48" height="48"/>
 	   </a>
-	 <div className="am-comment-main am-comment-flip">
+	 <div className="am-comment-main ">
 	 
 	    <header className="am-comment-hd">
 	      <div className="am-comment-meta">
@@ -424,7 +424,7 @@ var Sns_info_event = React.createClass({
 	      <time>{event.create_time}</time>|			 
 	      </div>
 	    </header>
-	     <div className="am-comment-bd am-comment-flip am-inline">
+	     <div className="am-comment-bd  am-inline">
 	      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
 		     </div>	 
      </div>
@@ -446,11 +446,11 @@ var Sns_pinglun_list = React.createClass({
      {this.props.events.data.map(function(event) {
 	   if(!event.create_img)event.create_img=G_def_headImgPath;
         return (
-		  <article className="am-comment am-comment-flip am-comment-success am-margin-xs">
+		  <article className="am-comment  am-comment-success am-margin-xs">
 		   <a href="javascript:void(0);">
 		    <img src={event.create_img} className="am-comment-avatar" width="48" height="48"/>
 		   </a>
-		 <div className="am-comment-main am-comment-flip">
+		 <div className="am-comment-main ">
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
@@ -458,7 +458,7 @@ var Sns_pinglun_list = React.createClass({
 		      <time>{event.create_time}</time>|			 
 		      </div>
 		    </header>
-		     <div className="am-comment-bd am-comment-flip am-inline">
+		     <div className="am-comment-bd  am-inline">
 		      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
   		     </div>	    	
 	      </div>
@@ -553,13 +553,57 @@ return (
 	 <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 </form>	   
 );
-}
+}	
 });
 
+//分页栏方法;
+var TabsSelect = React.createClass({
+	  getInitialState: function() {
+	    return {
+	      key: '1'
+	    };
+	  },
+		componentDidMount:function(){			
+		this.loadSnsTopicList(this.state.key);
+		},
+	  handleSelect: function(key) {
+	    //console.log('你点击了：', key);
+	  this.loadSnsTopicList(key);
+
+	  },
+	  loadSnsTopicList: function(key) {
+		    //console.log('你点击了：', key);
+		    var divid;
+		    if(key=="1"){
+		    	divid="topiclist_div_1";
+		    }else if(key=="2"){
+		    	divid="topiclist_div_2";
+		    }else{
+		    	divid="topiclist_div_3";
+		    }
+		    React.render(React.createElement(Sns_Div, {snsKey:key}),document.getElementById(divid));  	
+
+		  },
+
+	  render: function() {
+	    return (
+	      <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect}>
+	        <Tabs.Item eventKey="1" title="最新话题">
+	        <div id="topiclist_div_1"></div>
+	        </Tabs.Item>
+	        <Tabs.Item eventKey="2" title="热门话题">
+	        <div id="topiclist_div_2"></div>
+	        </Tabs.Item>
+	        <Tabs.Item eventKey="3" title="精华话题">
+	        <div id="topiclist_div_3"></div>
+	        </Tabs.Item>
+	      </Tabs>
+	    );
+	  }
+	});
 
 
-
-
+var Tabs=AMUIReact.Tabs;
 
 
 

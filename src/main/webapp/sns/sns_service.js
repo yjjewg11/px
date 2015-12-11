@@ -15,19 +15,28 @@ var PxSnsConfig={
 	
 }
 var PxSnsService=(function(){
-//——————————————————————————(大图标)话题——————————————————————————  	
-/*
- * <话题>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
- * */
-function sns_list_div(){
-	React.render(React.createElement(Sns_Div),PxSnsConfig.getBodyDiv());  	
-}
+//——————————————————————————(大图标)话题—————————————————————————— 
+	
+/* 
+ * <话题>分页栏总入口
+ * */	
+function sns_Tabs_div(){
+	React.render(React.createElement(TabsSelect), PxSnsConfig.getBodyDiv()); 	
+}	
 /*
  * <话题>获取列表数据服务器请求;
  * */
-function sns_snsTopic_list(list_div,pageNo,callback){
+function sns_snsTopic_list(list_div,pageNo,snsKey,callback){
+	var KeyUrl;
+	if(snsKey==1){
+		KeyUrl="rest/snsTopic/listPage.json";
+	}else if(snsKey==2){
+		KeyUrl="rest/snsTopic/hotListPage.json";
+	}else{
+		KeyUrl="rest/snsTopic/topListPage.json";
+	}
 	$.AMUI.progress.start();
-	var url = hostUrl + "rest/snsTopic/listPage.json";
+	var url = hostUrl + KeyUrl;
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -286,14 +295,13 @@ function react_ajax_sns_pinglun(event){
 
 	//  listPageByReply
 	return {
-		sns_list_div:sns_list_div,
 		sns_snsTopic_list:sns_snsTopic_list,
 		btnclick_sns_snsTopic:btnclick_sns_snsTopic,
 		ajax_sns_snsTopic_save:ajax_sns_snsTopic_save,
 		ajax_sns_snsTopic_show:ajax_sns_snsTopic_show,
 		ajax_sns_reply_list:ajax_sns_reply_list,
 		ajax_sns_reply_save:ajax_sns_reply_save,
-		
+		sns_Tabs_div:sns_Tabs_div,
 		ajax_sns_dianzan:ajax_sns_dianzan,
 		react_ajax_sns_pinglun:react_ajax_sns_pinglun
 	};//end return
