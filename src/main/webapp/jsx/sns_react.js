@@ -70,6 +70,8 @@ render: function() {
 var sns_list_snsTopic_rect = React.createClass({ 
 	  render: function() {
 	    var events = this.props.events;
+	    var img_fine=hostUrlCDN+"i/fine.png";
+	    var img_hot=hostUrlCDN+"i/hot.png";
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
     return (
@@ -78,15 +80,22 @@ var sns_list_snsTopic_rect = React.createClass({
        <ul className="am-list">
 		  {this.props.events.data.map(function(event) {
 		      return (
-		       <li className="am-g am-list-item-dated">
-		  		   <a href="javascript:void(0);" className="am-list-item-hd" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
-		  		    {event.title} 
-		  		   </a>	
-		  		   
-		  		   <div className="am-list-item-text">
-		  		    有{event.reply_count}人回复|{event.create_time}-{PxSnsService.img_data_list(event.level)}
-		  		   </div> 
-		  	   </li>
+       <li className="am-g am-list-item-dated">
+		 <AMUIReact.Image className={event.level==2?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
+		 <AMUIReact.Image className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
+		 <a href="javascript:void(0);" className="am-list-item-hd" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
+  		  <h4>{event.title}</h4>
+  		 </a>	
+            <div className="am-list-item-text">
+            <h4 onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>摘要：{event.summary}</h4>
+            </div>
+            
+           <AMUIReact.Image onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)} className={event.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" width="88" height="88" src={event.imgList}/>
+  		   <div className="am-list-item-text">
+  		    有{event.reply_count}人回复|{event.create_time}
+  		   </div> 
+  		   
+  	   </li>
 		    )
 		})}	
 	  </ul> 
@@ -174,7 +183,7 @@ render: function() {
      iframe=(       
 		<AMUIReact.Article
 		 title={o.title}
-		 meta={Vo.announce_type(o.type)+" | "+o.create_time+ "|赞成"+ this.props.data.yes_count+"人"+"|反对"+ this.props.data.no_count+"人"}>
+		 meta={Vo.announce_type(o.type)+" | "+o.create_time}>
 		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		</AMUIReact.Article>)
      }
@@ -185,6 +194,8 @@ return (
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
 	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
+	     <AMR_Button  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
+
        <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
       </AMR_ButtonToolbar>	
          <Sns_comment_actions data={data} />
@@ -262,14 +273,17 @@ render: function() {
   return (
 		  <footer className="am-comment-footer">
 	    	<div className="am-comment-actions">
-	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a> {obj.yes_count}		    	
-	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>  {obj.no_count}	
-	    	 <a href="javascript:void(0);" onClick={common_check_illegal.bind(this,71,obj.uuid)}>举报</a>
+	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
+	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
+	    	 <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,71,obj.uuid)}>
+	    	 <h5>举报</h5>
+	    	 </a>
 	    	</div>
 	    </footer>
   );
 }
 }); 
+
 /*
  * 评论同意和不同意抽离方法
  * 功能：实现动态点击和双灰功能
@@ -333,8 +347,8 @@ render: function() {
   return (
 		  <footer className="am-comment-footer">
 	    	<div className="am-comment-actions">
-	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a> {obj.yes_count}		    	
-	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>  {obj.no_count}	
+	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
+	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
 	    	 <a href="javascript:void(0);" onClick={common_check_illegal.bind(this,72,obj.uuid)}>举报</a>
 	    	</div>
 	    </footer>
@@ -369,7 +383,7 @@ var Sns_reply_list_show = React.createClass({
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
 		      <a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
-		      <time>{event.create_time}</time>|			 
+		      <time>{event.create_time}</time>		 
 		      </div>
 		    </header>
 		     <div className="am-comment-bd am-comment-flip am-inline">
@@ -378,7 +392,7 @@ var Sns_reply_list_show = React.createClass({
 	    	<Sns_snsReply_comment_actions data={event} />
 	    	<footer className="am-comment-footer">
 	    	<div className="am-comment-actions">
-	    	<a href="javascript:void(0);" onClick={thit.pinlun.bind(this,event)}><i className="am-icon-reply px_font_size_click"></i></a>
+	    	<a href="javascript:void(0);" onClick={thit.pinlun.bind(this,event)}><i className="am-icon-reply px_font_size_click"></i>回复</a>
 	    	</div>
 	    	</footer>
 	      </div>
@@ -520,11 +534,21 @@ var Sns_ajax_reply_save = React.createClass({
 		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	var uuid;
+	var type=this.props.type;
+	var uuid=(<div></div>);
+	if(type==71){
+		uuid=(<div><input type="hidden" name="topic_uuid"  value={this.props.uuid}/></div>);
+	 }else{
+		 uuid=(<div>
+		 <input type="hidden" name="topic_uuid"  value={this.props.uuid}/> 
+		 <input type="hidden" name="reply_uuid"  value={this.props.uuid}/> 
+		 </div>); 
+	 } 
 return (
 <form id="snsClassnewsreplyForm" method="post" className="am-form" action="javascript:void(0);">
-	 <input type="hidden" name="topic_uuid"  value={this.props.uuid}/>
-	 <input type="hidden" name="reply_uuid"  value={this.props.uuid}/>
-	 <input type="hidden" name="type"  value={this.props.type}/>			
+	 {uuid}
+	 <input type="hidden" name="type"  value={type}/>			
 	 <AMR_Input id="classnews_content_replay" type="textarea" rows="4" label="我要评论" placeholder="填写内容" name="content" />
 	 <button type="button"  onClick={this.reply_save_btn_click.bind(this)}  className="am-btn am-btn-primary">提交</button>		      
 </form>	   

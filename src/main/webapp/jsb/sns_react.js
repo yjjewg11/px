@@ -70,6 +70,8 @@ render: function() {
 var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_rect", 
 	  render: function() {
 	    var events = this.props.events;
+	    var img_fine=hostUrlCDN+"i/fine.png";
+	    var img_hot=hostUrlCDN+"i/hot.png";
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
     return (
@@ -78,15 +80,22 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
        React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
 		      return (
-		       React.createElement("li", {className: "am-g am-list-item-dated"}, 
-		  		   React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
-		  		    event.title
-		  		   ), 	
-		  		   
-		  		   React.createElement("div", {className: "am-list-item-text"}, 
-		  		    "有", event.reply_count, "人回复|", event.create_time, "-", PxSnsService.img_data_list(event.level)
-		  		   )
-		  	   )
+       React.createElement("li", {className: "am-g am-list-item-dated"}, 
+		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
+		 React.createElement(AMUIReact.Image, {className: event.level==1?"am-show":"am-hide", id: "img_head_image", src: img_hot}), 
+		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
+  		  React.createElement("h4", null, event.title)
+  		 ), 	
+            React.createElement("div", {className: "am-list-item-text"}, 
+            React.createElement("h4", {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, "摘要：", event.summary)
+            ), 
+            
+           React.createElement(AMUIReact.Image, {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid), className: event.imgList.length==0?"am-hide":"am-show", id: "img_head_image", width: "88", height: "88", src: event.imgList}), 
+  		   React.createElement("div", {className: "am-list-item-text"}, 
+  		    "有", event.reply_count, "人回复|", event.create_time
+  		   )
+  		   
+  	   )
 		    )
 		})	
 	  )
@@ -174,7 +183,7 @@ render: function() {
      iframe=(       
 		React.createElement(AMUIReact.Article, {
 		 title: o.title, 
-		 meta: Vo.announce_type(o.type)+" | "+o.create_time+ "|赞成"+ this.props.data.yes_count+"人"+"|反对"+ this.props.data.no_count+"人"}, 
+		 meta: Vo.announce_type(o.type)+" | "+o.create_time}, 
 		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
 		))
      }
@@ -185,6 +194,8 @@ return (
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除"), 
 	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
+	     React.createElement(AMR_Button, {amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享"), 
+
        React.createElement(AMR_Button, {className:  G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
       ), 	
          React.createElement(Sns_comment_actions, {data: data}), 
@@ -262,14 +273,17 @@ render: function() {
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
 	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), " ", obj.yes_count, 		    	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "  ", obj.no_count, 	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, "举报")
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, 
+	    	 React.createElement("h5", null, "举报")
+	    	 )
 	    	)
 	    )
   );
 }
 }); 
+
 /*
  * 评论同意和不同意抽离方法
  * 功能：实现动态点击和双灰功能
@@ -333,8 +347,8 @@ render: function() {
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
 	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), " ", obj.yes_count, 		    	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "  ", obj.no_count, 	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,72,obj.uuid)}, "举报")
 	    	)
 	    )
@@ -369,7 +383,7 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 		    React.createElement("header", {className: "am-comment-hd"}, 
 		      React.createElement("div", {className: "am-comment-meta"}, 
 		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
-		      React.createElement("time", null, event.create_time), "|"			 
+		      React.createElement("time", null, event.create_time)		 
 		      )
 		    ), 
 		     React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 
@@ -378,7 +392,7 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 	    	React.createElement(Sns_snsReply_comment_actions, {data: event}), 
 	    	React.createElement("footer", {className: "am-comment-footer"}, 
 	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	React.createElement("a", {href: "javascript:void(0);", onClick: thit.pinlun.bind(this,event)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}))
+	    	React.createElement("a", {href: "javascript:void(0);", onClick: thit.pinlun.bind(this,event)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复")
 	    	)
 	    	)
 	      )
@@ -520,11 +534,21 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
+	var uuid;
+	var type=this.props.type;
+	var uuid=(React.createElement("div", null));
+	if(type==71){
+		uuid=(React.createElement("div", null, React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid})));
+	 }else{
+		 uuid=(React.createElement("div", null, 
+		 React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+		 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid})
+		 )); 
+	 } 
 return (
 React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-	 React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
-	 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid}), 
-	 React.createElement("input", {type: "hidden", name: "type", value: this.props.type}), 			
+	 uuid, 
+	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
 	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 )	   
