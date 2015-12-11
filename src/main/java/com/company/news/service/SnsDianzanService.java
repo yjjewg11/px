@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
@@ -88,7 +89,8 @@ public class SnsDianzanService extends AbstractService {
 			return null;
 		}
 		
-		
+		rel_uuid=DbUtils.safeToWhereString(rel_uuid);
+		user_uuid=DbUtils.safeToWhereString(user_uuid);
 		String sql="select status from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user_uuid+"' limit 0,1";
 		Object status=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).uniqueResult();
 		if(status==null)return null;
@@ -170,7 +172,7 @@ public class SnsDianzanService extends AbstractService {
 		if (user==null) {
 			return null;
 		}
-		String insertsql="select status from sns_dianzan where rel_uuid='"+rel_uuid+"' and user_uuid='"+user.getUuid()+"'";
+		String insertsql="select status from sns_dianzan where rel_uuid='"+DbUtils.safeToWhereString(rel_uuid)+"' and user_uuid='"+user.getUuid()+"'";
 		Object status=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).uniqueResult();
 		return status;
 	}

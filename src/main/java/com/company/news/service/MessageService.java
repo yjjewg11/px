@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.PushMsgIservice;
@@ -99,7 +100,7 @@ public class MessageService extends AbstractService {
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		if (StringUtils.isNotBlank(useruuid))
-			hql += " and revice_useruuid='" + useruuid + "'";
+			hql += " and revice_useruuid='" + DbUtils.safeToWhereString(useruuid) + "'";
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 		
@@ -115,6 +116,10 @@ public class MessageService extends AbstractService {
 	 * @return
 	 */
 	public PageQueryResult queryMessageByTeacher(String useruuid,String parentuuid,PaginationData pData) {
+		
+		
+		useruuid=DbUtils.safeToWhereString(useruuid);
+		parentuuid=DbUtils.safeToWhereString(parentuuid);
 		String hql = "from Message where isdelete=" + announcements_isdelete_no;
 			hql += " and type=1" ;
 			hql += " and (" ;
@@ -230,7 +235,7 @@ public class MessageService extends AbstractService {
 			 PaginationData pData) {
 		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type= "+SystemConstants.Message_type_1;
 		sql += " and (" ;
-		sql += "  revice_useruuid ='" + useruuid + "'";//家长发给我的.
+		sql += "  revice_useruuid ='" + DbUtils.safeToWhereString(useruuid) + "'";//家长发给我的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
 		sql += " order by create_time desc";

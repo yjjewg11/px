@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourse;
 import com.company.news.entity.PxCourse4Q;
@@ -183,7 +184,7 @@ public class PxCourseService extends AbstractService {
 
 		}
 		
-		String hql="select count(*) from PxClass where courseuuid='"+uuid+"'";
+		String hql="select count(*) from PxClass where courseuuid='"+DbUtils.safeToWhereString(uuid)+"'";
 		String total= this.nSimpleHibernateDao.getHibernateTemplate().find(hql).get(0).toString();
 		if(!"0".equals(total)){
 			responseMessage.setMessage("有关联班级,不能删除.关联班级共"+total);
@@ -292,7 +293,7 @@ public class PxCourseService extends AbstractService {
 	 * @param courseuuid
 	 */
 	public void update_minusPxcourseStudentCount(String courseuuid) {
-		String sql = "update px_pxcourse set ct_study_students=ct_study_students-1 where uuid='" + courseuuid + "'";
+		String sql = "update px_pxcourse set ct_study_students=ct_study_students-1 where uuid='" + DbUtils.safeToWhereString(courseuuid) + "'";
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
@@ -302,7 +303,7 @@ public class PxCourseService extends AbstractService {
 	 * @param courseuuid
 	 */
 	public void addPxcourseStudentCount(String courseuuid) {
-		String sql = "update px_pxcourse set ct_study_students=ct_study_students+1 where uuid='" + courseuuid + "'";
+		String sql = "update px_pxcourse set ct_study_students=ct_study_students+1 where uuid='" +DbUtils.safeToWhereString( courseuuid) + "'";
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}

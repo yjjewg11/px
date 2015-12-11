@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.User;
@@ -72,7 +73,7 @@ public class CookbookService extends AbstractService {
 			return null;
 		String hql="";
 		if(StringUtils.isNotBlank(groupuuid))
-			hql+=" and (groupuuid='"+groupuuid+"' or groupuuid='')";
+			hql+=" and (groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' or groupuuid='')";
 		List<Cookbook> list= (List<Cookbook>) this.nSimpleHibernateDao
 					.getHibernateTemplate().find("from Cookbook where type=?"+hql+" order by convert(name, 'gbk')",
 							type);

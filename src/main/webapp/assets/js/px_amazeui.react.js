@@ -2146,7 +2146,14 @@ var DateTimeInput = React.createClass({displayName: "DateTimeInput",
       format: 'YYYY-MM-DD HH:mm'
     };
   },
-
+	//modify by lmq.修复新的 props 不更新值的bug
+	componentWillReceiveProps: function(nextProps) {
+	  this.setState({
+		  value: nextProps.dateTime || fecha.format(new Date(), nextProps.format),
+		  showPicker: false
+		});
+	  
+	},
   getInitialState: function() {
     return {
       value: this.props.dateTime || fecha.format(new Date(), this.props.format),

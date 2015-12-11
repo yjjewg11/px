@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
@@ -270,7 +271,7 @@ public class StudentBindService extends AbstractService {
 		
 		// Group_uuid昵称验证
 		if (StringUtils.isNotBlank(studentuuid)) {
-			hql+=" and studentuuid='"+studentuuid+"'";
+			hql+=" and studentuuid='"+DbUtils.safeToWhereString(studentuuid)+"'";
 		}
 		
 		hql+=" order by createtime";
@@ -364,7 +365,7 @@ public class StudentBindService extends AbstractService {
 			if(StringUtils.isNumeric(cardid)){
 				sql += " and  b2.cardid like '%"+cardid+"%'";
 			}else{
-				sql += " and  s1.name like '%"+cardid+"%'";
+				sql += " and  s1.name like '%"+DbUtils.safeToWhereString(cardid)+"%'";
 			}
 			
 		}
@@ -402,7 +403,7 @@ public class StudentBindService extends AbstractService {
 			if(StringUtils.isNumeric(cardid)){
 				sql += " and  b2.cardid like '%"+cardid+"%'";
 			}else{
-				sql += " and  b2.name like '%"+cardid+"%'";
+				sql += " and  b2.name like '%"+DbUtils.safeToWhereString(cardid)+"%'";
 			}
 			
 		}

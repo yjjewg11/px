@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.PxRedisCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.AbstractClass;
@@ -469,7 +470,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
 		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from  px_class  left join px_classnews on px_classnews.classuuid=px_class.uuid";
-			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+groupuuid+"' ";
+			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
 			
 			sql+=" and (  px_classnews.create_time is NULL ";
 			sql+=" or( px_classnews.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";
@@ -499,7 +500,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
 		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from px_pxclass as px_class  left join px_classnews on px_classnews.classuuid=px_class.uuid";
-			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+groupuuid+"' ";
+			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
 			
 			sql+=" and (  px_classnews.create_time is NULL ";
 			sql+=" or( px_classnews.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";
@@ -529,7 +530,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		String sql="";
 		Query q = s.createSQLQuery("SELECT c.count,cn.title,cn.create_user FROM pxdb.px_count c left join px_classnews cn on c.ext_uuid=cn.uuid "
 				+ "where ext_uuid in (select uuid from px_classnews where create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and create_time>="+DBUtil.stringToDateByDBType(begDateStr)+" and classuuid in "
-				+ "(select uuid from px_class where groupuuid='"+groupuuid+"'))"
+				+ "(select uuid from px_class where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'))"
 				+ "order by count desc ");
 
 		q.setMaxResults(10);
@@ -622,7 +623,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			
 			PaginationData pData=new PaginationData();
 			pData.setPageSize(5);
-			String hql="from ClassNewsReply where  status ="+SystemConstants.Check_status_fabu +" and  newsuuid='"+newsuuid+"'";
+			String hql="from ClassNewsReply where  status ="+SystemConstants.Check_status_fabu +" and  newsuuid='"+DbUtils.safeToWhereString(newsuuid)+"'";
 			pData.setOrderFiled("create_time");
 			pData.setOrderType("desc");
 			

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PushMessage;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -34,7 +35,7 @@ public class PushMessageService extends AbstractService {
 	 */
 	public Long queryMsgCount(String type, String useruuid,Date createDate) {
 
-		String hql = "select count(*) from PushMessage where revice_useruuid='" + useruuid + "'";
+		String hql = "select count(*) from PushMessage where revice_useruuid='" + DbUtils.safeToWhereString(useruuid) + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		List list=null;
@@ -56,7 +57,7 @@ public class PushMessageService extends AbstractService {
 	 */
 	public PageQueryResult query(String type, String useruuid,PaginationData pData) {
 
-		String hql = "from PushMessage where revice_useruuid='" + useruuid + "'";
+		String hql = "from PushMessage where revice_useruuid='" + DbUtils.safeToWhereString(useruuid) + "'";
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		pData.setOrderFiled("create_time");

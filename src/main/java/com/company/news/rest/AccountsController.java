@@ -150,7 +150,7 @@ public class AccountsController extends AbstractRESTController {
 			String type= request.getParameter("type");
 			String begDateStr= request.getParameter("begDateStr");
 			String add_month= request.getParameter("add_month");
-			add_month="12";
+			//add_month="14";
 			
 			if (StringUtils.isBlank(class_uuid)) {
 				responseMessage.setMessage("选择一个班级");
@@ -162,8 +162,8 @@ public class AccountsController extends AbstractRESTController {
 				return "";
 			}
 
-			if (StringUtils.isBlank(begDateStr)) {
-				responseMessage.setMessage("请输入年份!");
+			if (!StringUtils.isNumeric(begDateStr)) {
+				responseMessage.setMessage("请输入有效年份!");
 				return "";
 			}
 			

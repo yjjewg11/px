@@ -14,6 +14,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PClass;
 import com.company.news.entity.PxClass;
 import com.company.news.entity.UserClassRelation;
@@ -255,12 +256,12 @@ public class PxClassService extends AbstractClassService {
 		//学生数量.教学计划数量,课程名,(班级信息)
 		String sql = "SELECT count( distinct t3.uuid) as student_count,count( distinct t1.uuid) as teachingplan_count,t2.title as course_title,t2.schedule,t0.* from   (select * from px_pxclass ";
 				
-				sql+= " where groupuuid ='"+groupuuid+"'";
+				sql+= " where groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				if(StringUtils.isNotBlank(isdisable)){
 					sql+= " and isdisable ="+isdisable;
 				}
 				if(StringUtils.isNotBlank(courseuuid)){
-					sql+= " and courseuuid ='"+courseuuid+"'";
+					sql+= " and courseuuid ='"+DbUtils.safeToWhereString(courseuuid)+"'";
 				}
 				sql+= " limit "+pData.getStartIndex()+","+pData.getPageSize();
 				sql+= " )  t0 LEFT JOIN px_pxteachingplan t1 on t0.uuid=t1.classuuid ";
@@ -278,11 +279,11 @@ public class PxClassService extends AbstractClassService {
 				    	  pageQueryResult.setTotalCount(list.size());
 				      }else{
 				    	  String sql_count = "SELECT count(*) from px_pxclass ";
-				    	  sql_count+= " where groupuuid ='"+groupuuid+"'";
+				    	  sql_count+= " where groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				    	  if(StringUtils.isNotBlank(isdisable))		
 				    		  	sql_count+= " and isdisable ="+isdisable;
 				    	  if(StringUtils.isNotBlank(courseuuid)){
-								sql+= " and courseuuid ='"+courseuuid+"'";
+								sql+= " and courseuuid ='"+DbUtils.safeToWhereString(courseuuid)+"'";
 							}
 				    	  pageQueryResult.setTotalCount(Long.valueOf(s.createSQLQuery(sql_count).uniqueResult()
 				    	            .toString()));
@@ -395,7 +396,7 @@ public class PxClassService extends AbstractClassService {
 				.getSessionFactory().openSession();
 		Object o = s.createSQLQuery(
 				"select count(*) from px_pxstudentpxclassrelation where class_uuid='"
-						+ uuid + "'").uniqueResult();
+						+ DbUtils.safeToWhereString(uuid) + "'").uniqueResult();
 		if (Long.valueOf(o.toString()) > 0) {
 			responseMessage.setMessage("该班级有学生不能删除.");
 			return false;

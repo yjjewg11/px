@@ -18,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import com.company.http.PxHttpSession;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -648,7 +649,7 @@ public class UserinfoService extends AbstractService {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession();
 		String sql="select DISTINCT t1.type from px_group t1 LEFT JOIN px_usergrouprelation t2 ON t1.uuid=t2.groupuuid";
-		sql+=" where t1.uuid !='group_wjd' and t2.useruuid='"+uuid+"'";
+		sql+=" where t1.uuid !='group_wjd' and t2.useruuid='"+DbUtils.safeToWhereString(uuid)+"'";
 		List tmpList = s.createSQLQuery(sql).list();
 		String str=StringUtils.join(tmpList, ",");
 		return str;
@@ -742,7 +743,7 @@ public class UserinfoService extends AbstractService {
 					+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 		}
 		if (StringUtils.isNotBlank(name)) {
-			sql += " and {t1}.name like '%" + name + "%'";
+			sql += " and {t1}.name like '%" + DbUtils.safeToWhereString(name) + "%'";
 		}
 
 		sql += "order by CONVERT( {t1}.name USING gbk)";
@@ -767,7 +768,7 @@ public class UserinfoService extends AbstractService {
 					+ DBUtil.stringsToWhereInValue(group_uuid) + ")";
 		}
 		if (StringUtils.isNotBlank(name)) {
-			sql += " and {t1}.name like '%" + name + "%'";
+			sql += " and {t1}.name like '%" + DbUtils.safeToWhereString(name) + "%'";
 		}
 
 		sql += "order by CONVERT( {t1}.name USING gbk)";
@@ -789,7 +790,7 @@ public class UserinfoService extends AbstractService {
 				.getSessionFactory().openSession();
 		//学生数量.教学计划数量,课程名,(班级信息)
 		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_user t0 left join px_usergrouprelation t1 on t1.useruuid=t0.uuid";
-				sql+= " where t1.groupuuid ='"+groupuuid+"'";
+				sql+= " where t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
 				sql+=" group by t0.sex";
 				Query q = s.createSQLQuery(sql);
 				List list =q.list();
@@ -811,11 +812,11 @@ public class UserinfoService extends AbstractService {
 		}
 		if (StringUtils.isNotBlank(name)) {
 			if (StringUtils.isNumeric(name)) {
-				sql += " and {t1}.tel like '%" + name + "%'";
+				sql += " and {t1}.tel like '%" + DbUtils.safeToWhereString(name) + "%'";
 
 			} else {
 
-				sql += " and {t1}.name like '%" + name + "%'";
+				sql += " and {t1}.name like '%" + DbUtils.safeToWhereString(name) + "%'";
 			}
 		}
 		sql += " order by {t1}.create_time desc";
@@ -845,7 +846,7 @@ public class UserinfoService extends AbstractService {
 				if (StringUtils.isNumeric(name)) {
 					sql += " and {t1}.tel like '%" + name + "%'";
 				} else {
-					sql += " and {t1}.name like '%" + name + "%'";
+					sql += " and {t1}.name like '%" + DbUtils.safeToWhereString(name) + "%'";
 				}
 			}
 			sql += "order by CONVERT( {t1}.name USING gbk)";
@@ -1171,7 +1172,7 @@ public class UserinfoService extends AbstractService {
 	 */
 	public List getAllTeacherPhoneListByUseruuid(String uuid) {
 		String hql = "from User where uuid in (select useruuid from UserClassRelation where groupuuid in (select groupuuid from UserClassRelation where useruuid='"
-				+ uuid + "'))";
+				+ DbUtils.safeToWhereString(uuid) + "'))";
 		List<User> userList = (List<User>) this.nSimpleHibernateDao
 				.getHibernateTemplate().find(hql, null);
 		List list = new ArrayList();
@@ -1265,10 +1266,10 @@ public class UserinfoService extends AbstractService {
 		if (StringUtils.isNotBlank(group_uuid)) {
 			if (SystemConstants.Group_uuid_wjd.equals(group_uuid))
 				group_uuid = SystemConstants.Group_uuid_wjkj;
-			sql += "and t0.groupuuid='" + group_uuid + "'";
+			sql += "and t0.groupuuid='" + DbUtils.safeToWhereString(group_uuid) + "'";
 		}
 		if (StringUtils.isNotBlank(name)) {
-			sql += " and {t1}.name like '%" + name + "%'";
+			sql += " and {t1}.name like '%" + DbUtils.safeToWhereString(name )+ "%'";
 		}
 		sql += "order by CONVERT( {t1}.name USING gbk)";
 		Query q = s.createSQLQuery(sql).addEntity("t1", UserForJsCache.class);

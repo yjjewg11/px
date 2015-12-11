@@ -5166,7 +5166,7 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_listForYear_byRight = React.createClass({	
-		 add_month:12,
+		 add_month:14,
 		add_monthArr:[],
 		getStateByPropes:function(nextProps){
 			
@@ -5201,13 +5201,41 @@ render: function() {
 		getInitialState: function() {
 			 this.add_monthArr=[];
 			 for(var i=1;i<=this.add_month;i++){
-				this.add_monthArr.push(i+"月");
+				 if(i>12){
+					 tmp=i-12;
+					this.add_monthArr.push(i);
+				 }else{
+					this.add_monthArr.push(i);
+				 }
+				
 			 }
 
 			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
 
     	    return this.getStateByPropes(this.props);
     	  },
+		pageClick: function(m) {
+		 var yyyy_mm=this.state.queryForm.begDateStr;
+		 var num=1;
+		 if(m=="pre"){
+			num=-1;
+		 }
+		try{
+			var year=parseInt(yyyy_mm,10);
+			if(!year){
+				G_msg_pop("输入格式不正确!");
+				return;
+			}
+			 this.state.queryForm.begDateStr=year+num; 
+			 this.setState(this.state); 
+			  this.ajax_list();
+			}catch(e){
+				
+			}
+		
+		
+
+	},
 		handleChange: function(v) {
 		 	var queryForm=$('#queryForm').serializeJson();
 			this.state.queryForm=queryForm;
@@ -5228,7 +5256,7 @@ render: function() {
 	
 		ajax_list:function(){
 			var queryForm=this.state.queryForm;
-			//queryForm.add_month=this.add_month;
+			queryForm.add_month=this.add_month;
     		$.AMUI.progress.start();
     		var that=this;
     		var url = hostUrl + "rest/accounts/listForYear.json";
@@ -5276,9 +5304,14 @@ render: function() {
 		this.setState(this.state); 
 		 
 	},
+	
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
+			var year=parseInt(queryForm.begDateStr,10);
+			if(!year){
+				year=1;
+			}
       return (
       <div>
 		  <G_px_help_List data={G_kd_help_msg.msg_help_list23}/>
@@ -5294,9 +5327,20 @@ render: function() {
              <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
     		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
     	 	  </div>	
-		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-             <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" viewMode="years"  minViewMode="years" format="YYYY" inline  name="begDateStr" id="begDateStr" dateTime={queryForm.begDateStr}    onChange={this.handleChange}/>
-	 		 </div>	
+
+
+		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上年</AMR_Button>	  
+			  </div>
+		       <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	          <PxInput icon="calendar" type="text"  maxLength="74" size="4" placeholder="YYYY" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 	
+		      </div>
+		      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	 		  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下年</AMR_Button>	  
+
+ </div>
+
+		    
 		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <AMR_Button amStyle="secondary" onClick={this.ajax_list.bind(this)} >查询</AMR_Button>
 		     </div>
@@ -5309,7 +5353,14 @@ render: function() {
               <tr>
               <th>学生名</th>
 			  {this.add_monthArr.map(function(event_add,index) {
-					 return (  <th>{event_add}</th> )
+					var yearShow=year;
+					var monthShow=event_add;
+					if(index>=12){
+						yearShow=year+1;
+						monthShow=event_add-12;
+					}
+					var showAll=yearShow+"-"+monthShow;
+					 return (  <th>{showAll}</th> )
 				
 			 })}
             
@@ -5320,12 +5371,19 @@ render: function() {
 			    return ( 
 				  <tr  key={"_"+event.uuid} >
   				 <td  >{event.name}</td>
-				   {that.add_monthArr.map(function(event_num,index) {
-						var year=queryForm.begDateStr;
-						var month=index+1;
-						var day= new Date().format("dd"); ;
+				   {that.add_monthArr.map(function(event_add,index) {
+
+					var yearShow=year;
+					var monthShow=event_add;
+					if(index>=12){
+						yearShow=year+1;
+						monthShow=event_add-12;
+					}
+					var day=1;// new Date().format("dd");
+					var showAll=yearShow+"-"+monthShow+"-"+day;
+
 						var formData={
-							accounts_timeStr:year+"-"+month+"-"+day,
+							accounts_timeStr:showAll,
 							title:"",
 							num:event["month"+index],
 							groupuuid:queryForm.groupuuid,
@@ -5421,7 +5479,7 @@ render: function() {
  	        
 		    <label className={one_classDiv}>收费日期:</label>
 		   <div className={two_classDiv}>
-			<AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="accounts_timeStr" id="accounts_timeStr" dateTime={o.accounts_timeStr}    onChange={this.handleChange}/>
+			<AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="accounts_timeStr" id="accounts_timeStr" value={o.accounts_timeStr}  dateTime={o.accounts_timeStr}    onChange={this.handleChange}/>
 	
 	 		 </div>	
 		    <label className={one_classDiv}>内容:</label>
@@ -5430,7 +5488,7 @@ render: function() {
  		 </div>	
 		  <label className={one_classDiv}>金额:</label>
 	       <div className={two_classDiv}>
-	   	    <PxInput type="number" name="num" id="num" value={o.num}  onChange={this.handleChange} placeholder=""/> 
+	   	    <PxInput type="number" name="num" id="num"   onChange={this.handleChange} placeholder=""/> 
 	 		 </div>	
 	   <label className={one_classDiv}>单据号:</label>
 	       <div className={two_classDiv}>
@@ -5475,7 +5533,12 @@ render: function() {
 				 url:hostUrl + "rest/accounts/save.json",
 				 cbFN:function(data){
 					G_msg_pop("保存成功!");
-					that.state.num=$("#num").val();
+					if(that.state.num){
+						that.state.num+=";"+$("#num").val();
+					}else{
+						that.state.num=$("#num").val();
+					}
+				
 					that.setState(that.state);
 					if(callback)callback();
 				 }
@@ -5510,7 +5573,7 @@ render: function() {
 	 render: function() {
 			if(this.state.num){
 				return(
-					<span>{this.state.num}</span>
+					<span>{this.state.num} <AMR_Button className="am-icon-plus"  onClick={this.add_account.bind(this)} ></AMR_Button></span>
 				)
 			}
       return (

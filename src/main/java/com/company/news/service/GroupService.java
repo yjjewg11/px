@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.RandomNumberGenerator;
@@ -397,7 +398,7 @@ public class GroupService extends AbstractService {
 	public List getGroupByUseruuidByAdmin(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("selec DISTINCT {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc")
+		Query q = s.createSQLQuery("selec DISTINCT {t1.*} from px_usergrouprelation t0,px_group {t1} where t0.groupuuid={t1}.uuid and t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"'  order by {t1}.create_time desc")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -423,7 +424,7 @@ public class GroupService extends AbstractService {
 	 */
 	public List getGroupuuidsByUseruuid(String uuid,String grouptype){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		Query q = s.createSQLQuery("select DISTINCT  t0.groupuuid from px_usergrouprelation t0,px_group t1 where  t0.groupuuid=t1.uuid and  t1.type="+grouptype+" and t0.useruuid='"+uuid+"' ");
+		Query q = s.createSQLQuery("select DISTINCT  t0.groupuuid from px_usergrouprelation t0,px_group t1 where  t0.groupuuid=t1.uuid and  t1.type="+grouptype+" and t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"' ");
 		return q.list();
 	}
 
@@ -435,7 +436,7 @@ public class GroupService extends AbstractService {
 	public List getGroupByUseruuid(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc" )
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"'  order by {t1}.create_time desc" )
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -450,7 +451,7 @@ public class GroupService extends AbstractService {
 	public List getPXGroupByUseruuid(String uuid){
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		String sql="";
-		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=2 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc" )
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=2 and t0.groupuuid={t1}.uuid and t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"'  order by {t1}.create_time desc" )
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -481,7 +482,7 @@ public class GroupService extends AbstractService {
 //		Query q = s.createSQLQuery("select {t1.*} from px_usergrouprelation t0,px_group {t1} where {t1}.type=1 and t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'")
 //				.addEntity("t1",Group4Q.class);
 //		
-		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+uuid+"'  order by {t1}.create_time desc")
+		Query q = s.createSQLQuery("select DISTINCT  {t1.*} from px_usergrouprelation t0,px_group {t1} where  t0.groupuuid={t1}.uuid and t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"'  order by {t1}.create_time desc")
 				.addEntity("t1",Group4Q.class);
 		
 		List list= q.list();
@@ -584,7 +585,7 @@ public class GroupService extends AbstractService {
 	 * @param courseuuid
 	 */
 	public void addGroupStudentCount(String groupuuid) {
-		String sql = "update px_group set ct_study_students=ct_study_students+1 where uuid='" + groupuuid + "'";
+		String sql = "update px_group set ct_study_students=ct_study_students+1 where uuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
@@ -594,7 +595,7 @@ public class GroupService extends AbstractService {
 	 * @param courseuuid
 	 */
 	public void update_minusGroupStudentCount(String groupuuid) {
-		String sql = "update px_group set ct_study_students=ct_study_students-1 where uuid='" + groupuuid + "'";
+		String sql = "update px_group set ct_study_students=ct_study_students-1 where uuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
 		this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
@@ -607,7 +608,7 @@ public class GroupService extends AbstractService {
 	public List getGroupuuidsByUseruuidAndCurUserRight(String uuid,
 			String myRightGroup) {
 		
-		String  sql="select DISTINCT  t0.groupuuid from px_usergrouprelation t0 where   t0.useruuid='"+uuid+"' ";
+		String  sql="select DISTINCT  t0.groupuuid from px_usergrouprelation t0 where   t0.useruuid='"+DbUtils.safeToWhereString(uuid)+"' ";
 		sql+=" and t0.groupuuid in("+DBUtil.stringsToWhereInValue(myRightGroup)+")";
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		Query q = s.createSQLQuery(sql);

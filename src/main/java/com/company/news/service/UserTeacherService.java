@@ -8,6 +8,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Student;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.UserTeacher;
@@ -121,7 +122,7 @@ public class UserTeacherService extends AbstractService {
 			if(StringUtils.isNumeric(name)){
 				sql+=" and {t1}.tel like '%"+name+"%'";
 			}else{				
-				sql+=" and {t1}.realname like '%"+name+"%'";
+				sql+=" and {t1}.realname like '%"+DbUtils.safeToWhereString(name)+"%'";
 			}
 		}
 		sql+="order by CONVERT( {t1}.realname USING gbk)";
@@ -142,7 +143,7 @@ public class UserTeacherService extends AbstractService {
 			if(StringUtils.isNumeric(name)){
 				sql+=" and t1.tel like '%"+name+"%'";
 			}else{				
-				sql+=" and t1.realname like '%"+name+"%'";
+				sql+=" and t1.realname like '%"+DbUtils.safeToWhereString(name)+"%'";
 			}
 		}
 			Object count=s

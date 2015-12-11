@@ -5166,7 +5166,7 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_listForYear_byRight = React.createClass({displayName: "Accounts_listForYear_byRight",	
-		 add_month:12,
+		 add_month:14,
 		add_monthArr:[],
 		getStateByPropes:function(nextProps){
 			
@@ -5201,13 +5201,41 @@ render: function() {
 		getInitialState: function() {
 			 this.add_monthArr=[];
 			 for(var i=1;i<=this.add_month;i++){
-				this.add_monthArr.push(i+"月");
+				 if(i>12){
+					 tmp=i-12;
+					this.add_monthArr.push(i);
+				 }else{
+					this.add_monthArr.push(i);
+				 }
+				
 			 }
 
 			this.data_type_list=G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val");
 
     	    return this.getStateByPropes(this.props);
     	  },
+		pageClick: function(m) {
+		 var yyyy_mm=this.state.queryForm.begDateStr;
+		 var num=1;
+		 if(m=="pre"){
+			num=-1;
+		 }
+		try{
+			var year=parseInt(yyyy_mm,10);
+			if(!year){
+				G_msg_pop("输入格式不正确!");
+				return;
+			}
+			 this.state.queryForm.begDateStr=year+num; 
+			 this.setState(this.state); 
+			  this.ajax_list();
+			}catch(e){
+				
+			}
+		
+		
+
+	},
 		handleChange: function(v) {
 		 	var queryForm=$('#queryForm').serializeJson();
 			this.state.queryForm=queryForm;
@@ -5228,7 +5256,7 @@ render: function() {
 	
 		ajax_list:function(){
 			var queryForm=this.state.queryForm;
-			//queryForm.add_month=this.add_month;
+			queryForm.add_month=this.add_month;
     		$.AMUI.progress.start();
     		var that=this;
     		var url = hostUrl + "rest/accounts/listForYear.json";
@@ -5276,9 +5304,14 @@ render: function() {
 		this.setState(this.state); 
 		 
 	},
+	
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
+			var year=parseInt(queryForm.begDateStr,10);
+			if(!year){
+				year=1;
+			}
       return (
       React.createElement("div", null, 
 		  React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list23}), 
@@ -5294,9 +5327,20 @@ render: function() {
              React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
     		 React.createElement(AMUIReact.Selected, {name: "type", value: queryForm.type, data: this.data_type_list, onChange: this.handleChange, placeholder: "所有", btnWidth: "200", multiple: false, btnStyle: "primary"})	 
     	 	  ), 	
-		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-             React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", viewMode: "years", minViewMode: "years", format: "YYYY", inline: true, name: "begDateStr", id: "begDateStr", dateTime: queryForm.begDateStr, onChange: this.handleChange})
-	 		 ), 	
+
+
+		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+			  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上年")	  
+			  ), 
+		       React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	          React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "74", size: "4", placeholder: "YYYY", name: "begDateStr", value: queryForm.begDateStr, onChange: this.handleChange})	
+		      ), 
+		      React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	 		  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下年")	  
+
+ ), 
+
+		    
 		     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.ajax_list.bind(this)}, "查询")
 		     )
@@ -5309,7 +5353,14 @@ render: function() {
               React.createElement("tr", null, 
               React.createElement("th", null, "学生名"), 
 			  this.add_monthArr.map(function(event_add,index) {
-					 return (  React.createElement("th", null, event_add) )
+					var yearShow=year;
+					var monthShow=event_add;
+					if(index>=12){
+						yearShow=year+1;
+						monthShow=event_add-12;
+					}
+					var showAll=yearShow+"-"+monthShow;
+					 return (  React.createElement("th", null, showAll) )
 				
 			 })
             
@@ -5320,12 +5371,19 @@ render: function() {
 			    return ( 
 				  React.createElement("tr", {key: "_"+event.uuid}, 
   				 React.createElement("td", null, event.name), 
-				   that.add_monthArr.map(function(event_num,index) {
-						var year=queryForm.begDateStr;
-						var month=index+1;
-						var day= new Date().format("dd"); ;
+				   that.add_monthArr.map(function(event_add,index) {
+
+					var yearShow=year;
+					var monthShow=event_add;
+					if(index>=12){
+						yearShow=year+1;
+						monthShow=event_add-12;
+					}
+					var day=1;// new Date().format("dd");
+					var showAll=yearShow+"-"+monthShow+"-"+day;
+
 						var formData={
-							accounts_timeStr:year+"-"+month+"-"+day,
+							accounts_timeStr:showAll,
 							title:"",
 							num:event["month"+index],
 							groupuuid:queryForm.groupuuid,
@@ -5421,7 +5479,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
  	        
 		    React.createElement("label", {className: one_classDiv}, "收费日期:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-			React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "accounts_timeStr", id: "accounts_timeStr", dateTime: o.accounts_timeStr, onChange: this.handleChange})
+			React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "accounts_timeStr", id: "accounts_timeStr", value: o.accounts_timeStr, dateTime: o.accounts_timeStr, onChange: this.handleChange})
 	
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
@@ -5430,7 +5488,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
  		 ), 	
 		  React.createElement("label", {className: one_classDiv}, "金额:"), 
 	       React.createElement("div", {className: two_classDiv}, 
-	   	    React.createElement(PxInput, {type: "number", name: "num", id: "num", value: o.num, onChange: this.handleChange, placeholder: ""})
+	   	    React.createElement(PxInput, {type: "number", name: "num", id: "num", onChange: this.handleChange, placeholder: ""})
 	 		 ), 	
 	   React.createElement("label", {className: one_classDiv}, "单据号:"), 
 	       React.createElement("div", {className: two_classDiv}, 
@@ -5475,7 +5533,12 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 				 url:hostUrl + "rest/accounts/save.json",
 				 cbFN:function(data){
 					G_msg_pop("保存成功!");
-					that.state.num=$("#num").val();
+					if(that.state.num){
+						that.state.num+=";"+$("#num").val();
+					}else{
+						that.state.num=$("#num").val();
+					}
+				
 					that.setState(that.state);
 					if(callback)callback();
 				 }
@@ -5510,7 +5573,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 	 render: function() {
 			if(this.state.num){
 				return(
-					React.createElement("span", null, this.state.num)
+					React.createElement("span", null, this.state.num, " ", React.createElement(AMR_Button, {className: "am-icon-plus", onClick: this.add_account.bind(this)}))
 				)
 			}
       return (
