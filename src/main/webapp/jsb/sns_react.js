@@ -10,9 +10,7 @@ var Sns_Div = React.createClass({displayName: "Sns_Div",
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
-	componentWillReceiveProps:function(){
-		//this.refresh_data();
-	},
+
 	componentDidMount:function(){
 		this.refresh_data();
 	},
@@ -45,6 +43,7 @@ var Sns_Div = React.createClass({displayName: "Sns_Div",
   		PxSnsService.btnclick_sns_snsTopic(m);
 },
 render: function() {
+	this.classnewsreply_list_div="snstopicList_"+this.props.snsKey
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
