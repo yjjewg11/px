@@ -78,6 +78,7 @@ var sns_list_snsTopic_rect = React.createClass({
       <div className="am-list-news-bd">
        <ul className="am-list">
 		  {this.props.events.data.map(function(event) {
+			  var events=event;
 		      return (
        <li className="am-g am-list-item-dated">
 		 <AMUIReact.Image className={event.level==2?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
@@ -86,10 +87,14 @@ var sns_list_snsTopic_rect = React.createClass({
   		  <h4>{event.title}</h4>
   		 </a>	
             <div className="am-list-item-text">
-            <h4 onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>摘要：{event.summary}</h4>
+            <h4 onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>{event.summary}</h4>
             </div>
             
-           <AMUIReact.Image onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)} className={event.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" width="88" height="88" src={event.imgList}/>
+            {event.imgList.map(function(event) {
+            	 return (
+            		<AMUIReact.Image onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid)} className={events.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" thumbnail width="88" height="88" src={event}/>           	 
+            	 )
+            })}         
   		   <div className="am-list-item-text">
   		    有{event.reply_count}人回复|{event.create_time}
   		   </div> 

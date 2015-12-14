@@ -78,6 +78,7 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
       React.createElement("div", {className: "am-list-news-bd"}, 
        React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
+			  var events=event;
 		      return (
        React.createElement("li", {className: "am-g am-list-item-dated"}, 
 		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
@@ -86,10 +87,14 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
   		  React.createElement("h4", null, event.title)
   		 ), 	
             React.createElement("div", {className: "am-list-item-text"}, 
-            React.createElement("h4", {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, "摘要：", event.summary)
+            React.createElement("h4", {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, event.summary)
             ), 
             
-           React.createElement(AMUIReact.Image, {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid), className: event.imgList.length==0?"am-hide":"am-show", id: "img_head_image", width: "88", height: "88", src: event.imgList}), 
+            event.imgList.map(function(event) {
+            	 return (
+            		React.createElement(AMUIReact.Image, {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid), className: events.imgList.length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
+            	 )
+            }), 
   		   React.createElement("div", {className: "am-list-item-text"}, 
   		    "有", event.reply_count, "人回复|", event.create_time
   		   )
