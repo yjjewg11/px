@@ -835,7 +835,7 @@ render: function() {
         </div>   
   		{type_div}
   		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45字"/>
   		  <br/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
  		{G_get_upload_img_Div()} 
@@ -1973,7 +1973,7 @@ render: function() {
         </div>   
   
   		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
+  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128字"/>
   		  <br/>
   		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
@@ -2161,7 +2161,7 @@ var AMR_Col=AMUIReact.Col;
     		  <span id="help1_span">{G_tip.class_edit_groupwjd}</span>
     		  </div> 		    
     		      <label htmlFor="name">班级:</label>
-    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
+    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45字！"/>
     		      <br/>   		   
   		      <label htmlFor="name">班主任:</label>
   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
@@ -3038,11 +3038,11 @@ setProvCity:function(){
             <div className= "am-form-group">
     		 <label className={one_classDiv }>品牌名:</label>
     		  <div className={two_classDiv }>
-    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	       <PxInput type="text" name="brand_name" id="brand_name" value={o.brand_name} onChange={this.handleChange} placeholder="不超过45字"/>
     	        </div>    		
     	       <label className={one_classDiv }>机构全称:</label>
     		  <div className={two_classDiv }>
-    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45位"/>
+    	     <PxInput type="text" name="company_name" id="company_name" value={o.company_name} onChange={this.handleChange} placeholder="不超过45字"/>
     	    </div>   
 			 <div> 
 		    <button type="button"  onClick={this.setProvCity.bind(this)}  className="am-btn am-btn-primary">获取当前省市</button>
@@ -3057,7 +3057,7 @@ setProvCity:function(){
     	       </div> 	
     	     <label className={one_classDiv }>学校地址:</label>
     		  <div className={two_classDiv }>
-    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64位"/>
+    	       <PxInput icon="university" type="text" name="address" id="address" value={o.address} onChange={this.handleChange} placeholder="不超过64字"/>
      	        </div>    	      
     	       <label className={one_classDiv }>地址坐标:</label>
     		  <div className={two_classDiv }>
@@ -3068,7 +3068,12 @@ setProvCity:function(){
     		 <div className={two_classDiv }>
     	      <PxInput icon="phone" type="text" name="link_tel" id="link_tel" value={o.link_tel} onChange={this.handleChange} placeholder=""/>
     	       </div> 
-		      <p className="am-text-warning">注意:多个电话请用英文逗号分隔</p>
+		   <p className="am-text-warning">注意:多个电话请用英文逗号分隔</p>
+		   <label className={one_classDiv }>获奖称号:</label>
+    		 <div className={two_classDiv }>
+    	      <PxInput type="text" name="summary" id="summary" value={o.summary} onChange={this.handleChange}  maxlength="100"  placeholder="多个逗号分割,推荐3个,最多100字.多的放到内容区"/>
+    	       </div> 		
+		   
     	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
   		  	  {G_get_upload_img_Div()}
   	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
@@ -3319,7 +3324,7 @@ return (
       </div>   
 		
 		  <label htmlFor="name">标题:</label>
-		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="128"   placeholder="不超过128位"/>
+		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="128"   placeholder="不超过128字"/>
 		  <br/>
             {url}
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
@@ -4416,7 +4421,7 @@ render: function() {
     		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
     		    </div> 		    
     		      <label htmlFor="name">班级:</label>
-    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45位！"/>
+    		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过45字！"/>
     		      <br/>   		   
   		      <label htmlFor="name">班主任:</label>
   	  		    <input type="hidden" name="headTeacher" id="headTeacher" value={o.headTeacher} onChange={this.handleChange}/>
@@ -5129,7 +5134,7 @@ render: function() {
 	 		 </div>	
 		    <label className={one_classDiv}>内容:</label>
 		   <div className={two_classDiv}>
-   	      <PxInput type="text" name="title" id="title" maxLength="64" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
+   	      <PxInput type="text" name="title" id="title" maxLength="64" value={o.title} onChange={this.handleChange} placeholder="不超过64字"/>
  		 </div>	
 		  <label className={one_classDiv}>金额:</label>
 	       <div className={two_classDiv}>
@@ -5141,7 +5146,7 @@ render: function() {
 	 		 </div>	
 			<label className={one_classDiv}>备注:</label>
 		   <div className={two_classDiv}>
-	  	  <PxInput type="text" name="description" id="description" maxLength="100" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+	  	  <PxInput type="text" name="description" id="description" maxLength="100" value={o.description} onChange={this.handleChange} placeholder="不超过100字"/>
 		 </div>
 		 <button type="button"  onClick={this.ajax_accounts_saveAndAdd_byRight.bind(this)}  className="am-btn am-btn-primary">提交</button>
  	      
@@ -5484,7 +5489,7 @@ render: function() {
 	 		 </div>	
 		    <label className={one_classDiv}>内容:</label>
 		   <div className={two_classDiv}>
-   	      <PxInput type="text" name="title" id="title" maxLength="64" value={o.title} onChange={this.handleChange} placeholder="不超过64位"/>
+   	      <PxInput type="text" name="title" id="title" maxLength="64" value={o.title} onChange={this.handleChange} placeholder="不超过64字"/>
  		 </div>	
 		  <label className={one_classDiv}>金额:</label>
 	       <div className={two_classDiv}>
@@ -5496,7 +5501,7 @@ render: function() {
 	 		 </div>	
 			<label className={one_classDiv}>备注:</label>
 		   <div className={two_classDiv}>
-	  	  <PxInput type="text" name="description" id="description" maxLength="100" value={o.description} onChange={this.handleChange} placeholder="不超过100位"/>
+	  	  <PxInput type="text" name="description" id="description" maxLength="100" value={o.description} onChange={this.handleChange} placeholder="不超过100字"/>
 		 </div>
 		  
    	       </div>
@@ -6183,7 +6188,7 @@ render: function() {
 					   <form id="commonform" method="post" className="am-form" action="javascript:void(0);">     		     		
 		    		  <label className={one_classDiv }>电话号码:</label>
 		    		 <div className={two_classDiv }>
-		   		    <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange} maxLength="20"  placeholder="必填，不超过15位"/>
+		   		    <PxInput  type="text" name="tel" id="tel"  value={o.tel} onChange={this.handleChange} maxLength="20"  placeholder="必填，不超过15字"/>
 		    	   </div>
 						
 					<label className={one_classDiv}>性别：</label>
