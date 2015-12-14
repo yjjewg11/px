@@ -835,7 +835,7 @@ render: function() {
         ), 
   		type_div, 
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"}), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45字"}), 
   		  React.createElement("br", null), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
  		G_get_upload_img_Div(), 
@@ -1973,7 +1973,7 @@ render: function() {
         ), 
   
   		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
+  		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128字"}), 
   		  React.createElement("br", null), 
   		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
@@ -2161,7 +2161,7 @@ var AMR_Col=AMUIReact.Col;
     		  React.createElement("span", {id: "help1_span"}, G_tip.class_edit_groupwjd)
     		  ), 		    
     		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
-    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45位！"}), 
+    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45字！"}), 
     		      React.createElement("br", null), 		   
   		      React.createElement("label", {htmlFor: "name"}, "班主任:"), 
   	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
@@ -3038,11 +3038,11 @@ setProvCity:function(){
             React.createElement("div", {className: "am-form-group"}, 
     		 React.createElement("label", {className: one_classDiv }, "品牌名:"), 
     		  React.createElement("div", {className: two_classDiv }, 
-    	       React.createElement(PxInput, {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	       React.createElement(PxInput, {type: "text", name: "brand_name", id: "brand_name", value: o.brand_name, onChange: this.handleChange, placeholder: "不超过45字"})
     	        ), 		
     	       React.createElement("label", {className: one_classDiv }, "机构全称:"), 
     		  React.createElement("div", {className: two_classDiv }, 
-    	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45位"})
+    	     React.createElement(PxInput, {type: "text", name: "company_name", id: "company_name", value: o.company_name, onChange: this.handleChange, placeholder: "不超过45字"})
     	    ), 
 			 React.createElement("div", null, 
 		    React.createElement("button", {type: "button", onClick: this.setProvCity.bind(this), className: "am-btn am-btn-primary"}, "获取当前省市")
@@ -3057,7 +3057,7 @@ setProvCity:function(){
     	       ), 	
     	     React.createElement("label", {className: one_classDiv }, "学校地址:"), 
     		  React.createElement("div", {className: two_classDiv }, 
-    	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64位"})
+    	       React.createElement(PxInput, {icon: "university", type: "text", name: "address", id: "address", value: o.address, onChange: this.handleChange, placeholder: "不超过64字"})
      	        ), 	      
     	       React.createElement("label", {className: one_classDiv }, "地址坐标:"), 
     		  React.createElement("div", {className: two_classDiv }, 
@@ -3068,7 +3068,12 @@ setProvCity:function(){
     		 React.createElement("div", {className: two_classDiv }, 
     	      React.createElement(PxInput, {icon: "phone", type: "text", name: "link_tel", id: "link_tel", value: o.link_tel, onChange: this.handleChange, placeholder: ""})
     	       ), 
-		      React.createElement("p", {className: "am-text-warning"}, "注意:多个电话请用英文逗号分隔"), 
+		   React.createElement("p", {className: "am-text-warning"}, "注意:多个电话请用英文逗号分隔"), 
+		   React.createElement("label", {className: one_classDiv }, "获奖称号:"), 
+    		 React.createElement("div", {className: two_classDiv }, 
+    	      React.createElement(PxInput, {type: "text", name: "summary", id: "summary", value: o.summary, onChange: this.handleChange, maxlength: "100", placeholder: "多个逗号分割,推荐3个,最多100字.多的放到内容区"})
+    	       ), 		
+		   
     	      React.createElement(AMR_Input, {id: "description", type: "textarea", rows: "50", label: "校园介绍:", placeholder: "校园介绍", name: "description", value: o.description, onChange: this.handleChange}), 
   		  	  G_get_upload_img_Div(), 
   	          React.createElement("button", {type: "button", onClick: ajax_group_save_byRight, className: "am-btn am-btn-primary"}, "提交")
@@ -3319,7 +3324,7 @@ return (
       ), 
 		
 		  React.createElement("label", {htmlFor: "name"}, "标题:"), 
-		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "128", placeholder: "不超过128位"}), 
+		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "128", placeholder: "不超过128字"}), 
 		  React.createElement("br", null), 
             url, 
 		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
@@ -4416,7 +4421,7 @@ render: function() {
     		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})
     		    ), 		    
     		      React.createElement("label", {htmlFor: "name"}, "班级:"), 
-    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45位！"}), 
+    		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过45字！"}), 
     		      React.createElement("br", null), 		   
   		      React.createElement("label", {htmlFor: "name"}, "班主任:"), 
   	  		    React.createElement("input", {type: "hidden", name: "headTeacher", id: "headTeacher", value: o.headTeacher, onChange: this.handleChange}), 
@@ -5129,7 +5134,7 @@ render: function() {
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"})
+   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64字"})
  		 ), 	
 		  React.createElement("label", {className: one_classDiv}, "金额:"), 
 	       React.createElement("div", {className: two_classDiv}, 
@@ -5141,7 +5146,7 @@ render: function() {
 	 		 ), 	
 			React.createElement("label", {className: one_classDiv}, "备注:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"})
+	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100字"})
 		 ), 
 		 React.createElement("button", {type: "button", onClick: this.ajax_accounts_saveAndAdd_byRight.bind(this), className: "am-btn am-btn-primary"}, "提交")
  	      
@@ -5484,7 +5489,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 	 		 ), 	
 		    React.createElement("label", {className: one_classDiv}, "内容:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64位"})
+   	      React.createElement(PxInput, {type: "text", name: "title", id: "title", maxLength: "64", value: o.title, onChange: this.handleChange, placeholder: "不超过64字"})
  		 ), 	
 		  React.createElement("label", {className: one_classDiv}, "金额:"), 
 	       React.createElement("div", {className: two_classDiv}, 
@@ -5496,7 +5501,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 	 		 ), 	
 			React.createElement("label", {className: one_classDiv}, "备注:"), 
 		   React.createElement("div", {className: two_classDiv}, 
-	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100位"})
+	  	  React.createElement(PxInput, {type: "text", name: "description", id: "description", maxLength: "100", value: o.description, onChange: this.handleChange, placeholder: "不超过100字"})
 		 )
 		  
    	       )
@@ -6183,7 +6188,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 					   React.createElement("form", {id: "commonform", method: "post", className: "am-form", action: "javascript:void(0);"}, 		     		
 		    		  React.createElement("label", {className: one_classDiv }, "电话号码:"), 
 		    		 React.createElement("div", {className: two_classDiv }, 
-		   		    React.createElement(PxInput, {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, maxLength: "20", placeholder: "必填，不超过15位"})
+		   		    React.createElement(PxInput, {type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, maxLength: "20", placeholder: "必填，不超过15字"})
 		    	   ), 
 						
 					React.createElement("label", {className: one_classDiv}, "性别："), 

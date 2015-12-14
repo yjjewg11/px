@@ -76,7 +76,10 @@ var SnsIndexPage=(function(){
 		}
 	
 	function menu_dohome() {
-		menu_body_fn();
+		$("#div_seesion_body").show();
+		$("#div_login").html(null);
+		body_show();
+		PxSns.list_init();
 	}
 	function addTopic() {
 		PxSnsService.btnclick_sns_snsTopic('add');
