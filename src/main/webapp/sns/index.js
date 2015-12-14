@@ -15,8 +15,9 @@ var SnsIndexPage=(function(){
 		$("#div_seesion_body").show();
 		$("#div_login").html(null);
 		body_show();
-		PxSns.list_init();
-		
+		if(!doInitUrlParam()){
+			PxSns.list_init();
+		}
 	}
 
 	//获取用户信息
@@ -80,12 +81,42 @@ var SnsIndexPage=(function(){
 	function addTopic() {
 		PxSnsService.btnclick_sns_snsTopic('add');
 	}
+	/**
+	 * 初始url是否带执行参数,有则优先执行
+	 */
+	function doInitUrlParam(){
+		
+		var topic_uuid=$.getUrlParam("topic_uuid");
+		if(topic_uuid){
+			PxSnsService.ajax_sns_snsTopic_show(topic_uuid);
+			return true;
+		}
+		return false;
+//		var fn=$.getUrlParam("fn");
+//		if(fn){
+//			try{
+//				G_jsCallBack[fn]();
+//			}catch(e){
+//				alert("调用方法失败,参数fn="+fn);
+//			    console.log('调用方法失败,参数fn=', e);
+//			}
+//			
+//		}
+	}
 	function init() {
 		Queue.homePageFn=menu_dohome;
-		menu_body_fn();
 		ajax_getUserinfo(true);
 		title_info_init();
+		menu_body_fn();
+	
+		
+		
+		
+		
+		
 	}
+	
+	
 	//SnsIndexPage.init();
 	return {
 		menu_dohome:menu_dohome,

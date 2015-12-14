@@ -150,13 +150,19 @@ var G_jsCallBack={
  * 手机回退按键退到最后调用此方法是否是要退出了;
  * G_CallPhoneFN.finishProject();
  * 
- * 返回jsessionid
+ * 
+
+	 * 
+	 * G_CallPhoneFN.setDoBackFN();
+	 * JavaScriptCall.setDoBackFN("javascript:G_jsCallBack.QueuedoBackFN();");
+	 * 设置andorid webview 回退按钮,指定方法.
+	 * 判断逻辑.1.加载页面过程,js调用方法通知webview启用js回退方法.并注册js回退方法.JavaScriptCall.setDoBackFN("javascript:G_jsCallBack.QueuedoBackFN();");
+	 * 1.1 如果没有注册则按照原逻辑处理.
+	 * 2.如果有则优先调用该js回退方法执行.
+	 * 3.如果该js回退已经退到最后异步时,会调用webview注册事件,JavaScriptCall.finishProject();收到这个消息后,则走正常逻辑.
+	 * 
+* 返回jsessionid
  * G_CallPhoneFN.getJsessionid();
- * 
- * 
- *  
- * 
- 
 window.JavaScriptCall={
 		selectImgPic:function(){alert("ddd");},
 		jsessionToPhone:function(){}
@@ -341,6 +347,33 @@ var G_CallPhoneFN={
 		return false;
 	},
 	/**
+	 * 
+	 * 
+	 * JavaScriptCall.setDoBackFN("javascript:G_jsCallBack.QueuedoBackFN();");
+	 * 设置andorid webview 回退按钮,指定方法.
+	 * 判断逻辑.1.加载页面过程,js调用方法通知webview启用js回退方法.并注册js回退方法.JavaScriptCall.setDoBackFN("javascript:G_jsCallBack.QueuedoBackFN();");
+	 * 1.1 如果没有注册则按照原逻辑处理.
+	 * 2.如果有则优先调用该js回退方法执行.
+	 * 3.如果该js回退已经退到最后异步时,会调用webview注册事件,JavaScriptCall.finishProject();收到这个消息后,则走正常逻辑.
+	 */
+	setDoBackFN:function(){
+		try{
+			
+			//if(G_CallIosFN.isIos){
+				//G_CallIosFN.setDoBackFN(sessionid);
+				//return true;
+			//}
+			if(window.JavaScriptCall){
+				JavaScriptCall.setDoBackFN("javascript:G_jsCallBack.QueuedoBackFN();");
+				return true;
+			}
+		}catch(e){
+			  console.log('G_CallPhoneFN：', e.message);
+		}
+		console.log('G_CallPhoneFN：', "false");
+		return false;
+	},
+	/**
 	 * JSESSIONID=C483CC4E6FECB6F6267591D624704A86
 	 */
 	jsessionToPhone:function(sessionid){
@@ -360,4 +393,8 @@ var G_CallPhoneFN={
 		console.log('G_CallPhoneFN：', "false");
 		return false;
 	}
+	
+	
 }
+//向手机app注册回退事件.
+G_CallPhoneFN.setDoBackFN();
