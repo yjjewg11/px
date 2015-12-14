@@ -147,8 +147,15 @@ var G_jsCallBack={
  * G_CallPhoneFN.hideLoadingDialog();
  * 登录后,将sessionid传给手机
  * G_CallPhoneFN.jsessionToPhone(JSESSIONID);
- * G_CallPhoneFN.finishProject();
  * 手机回退按键退到最后调用此方法是否是要退出了;
+ * G_CallPhoneFN.finishProject();
+ * 
+ * 返回jsessionid
+ * G_CallPhoneFN.getJsessionid();
+ * 
+ * 
+ *  
+ * 
  
 window.JavaScriptCall={
 		selectImgPic:function(){alert("ddd");},

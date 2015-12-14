@@ -1,0 +1,20 @@
+[2015-12-12 01:21:04] [ERROR] - aaa
+redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+	at redis.clients.util.Pool.getResource(Pool.java:50)
+	at redis.clients.jedis.JedisPool.getResource(JedisPool.java:99)
+	at com.company.news.cache.redis.PxRedisCacheImpl.getJedis(PxRedisCacheImpl.java:109)
+	at com.company.news.cache.redis.PxRedisCacheImpl.getUploadFilePath(PxRedisCacheImpl.java:402)
+	at com.company.news.cache.redis.PxRedisCacheImpl.main(PxRedisCacheImpl.java:526)
+Caused by: redis.clients.jedis.exceptions.JedisDataException: ERR Client sent AUTH, but no password is set
+	at redis.clients.jedis.Protocol.processError(Protocol.java:117)
+	at redis.clients.jedis.Protocol.process(Protocol.java:151)
+	at redis.clients.jedis.Protocol.read(Protocol.java:205)
+	at redis.clients.jedis.Connection.readProtocolWithCheckingBroken(Connection.java:297)
+	at redis.clients.jedis.Connection.getStatusCodeReply(Connection.java:196)
+	at redis.clients.jedis.BinaryJedis.auth(BinaryJedis.java:2048)
+	at redis.clients.jedis.JedisFactory.makeObject(JedisFactory.java:89)
+	at org.apache.commons.pool2.impl.GenericObjectPool.create(GenericObjectPool.java:861)
+	at org.apache.commons.pool2.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:435)
+	at org.apache.commons.pool2.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:363)
+	at redis.clients.util.Pool.getResource(Pool.java:48)
+	... 4 more

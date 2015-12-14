@@ -29,8 +29,9 @@ public class CountRedisSynDbService {
 			logger.warn("timer end:PxRedisCache_synDB="+PxRedisCache);
 			return ;
 		}
-		//1.增加
+		//1.同步
 		Long startTime = System.currentTimeMillis() ;
+		logger.warn("synCountRedisToDb start-----------------------------");
 		try {
 			new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 		} catch (Exception e) {
@@ -38,8 +39,25 @@ public class CountRedisSynDbService {
 			e.printStackTrace();
 			logger.error(e);
 		}
-		//2.
 		Long endTime = System.currentTimeMillis() - startTime;
+		logger.warn("synCountRedisToDb start----------count time(ms)="+endTime);
+		//2.
+		startTime = System.currentTimeMillis() ;
+		logger.warn("synAllCountRedisToDb start-----------------------------");
+		try {
+			new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e);
+		}
+		 endTime = System.currentTimeMillis() - startTime;
+		logger.warn("synAllCountRedisToDb start----------count time(ms)="+endTime);
+		//2.
+		
+		
+		
+		
 		logger.warn("timer end-----------------------------count time(ms)="+endTime);
 	}
 }
