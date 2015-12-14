@@ -1,5 +1,7 @@
 package com.company.news.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +16,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.CheckService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/check")
@@ -110,5 +113,42 @@ public class CheckController extends AbstractRESTController {
 		return "";
 	}
 
+	
+//	/**
+//	 * 获取我的机构信息
+//	 * 
+//	 * @param model
+//	 * @param request
+//	 * @return AD_group_m 查询所有后台信息
+//	 */
+//	@RequestMapping(value = "/checkGroup", method = RequestMethod.GET)
+//	public String checkGroup(ModelMap model, HttpServletRequest request) {
+//		ResponseMessage responseMessage = RestUtil
+//				.addResponseMessageForModelMap(model);
+//		
+//		
+////		String right=RightConstants.KD_group_m;
+////		if(SessionListener.isPXLogin(request)){
+////			right=RightConstants.PX_group_m;
+////		}
+//		
+//		String groupList=RightUtils.getRightGroups(request);
+//		
+//		if(StringUtils.isBlank(groupList)){
+//			responseMessage.setMessage(RightConstants.Return_msg);
+//			return "";
+//		}
+//		List list = groupService.getGroupCheckuuids(groupList);
+//		
+//		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+//		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+//		return "";
+//	}	
+	
+	
+	
+	
+	
+	
 
 }

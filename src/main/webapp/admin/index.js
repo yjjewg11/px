@@ -168,7 +168,12 @@ function login_affter_init(){
     	                        "title": "注销"
     	                      }
     	                  ]
-              }
+              },
+   	       {
+                  "link": "##",
+                  "title": "审核",
+                  "fn":menu_check_fn
+                }
         
       ];
 	
@@ -316,7 +321,7 @@ function menu_wenjieAdmin_dataRefresh_fn(){
 	ajax_wenjieAdmin_dataRefresh();
 }
 
-
+//统计
 function menu_userinfo_logout_fn(){
 	ajax_userinfo_logout();
 }
@@ -384,7 +389,10 @@ function menu_userinfo_list_fn_wjkj() {
 	Queue.push(function(){menu_userinfo_list_fn_wjkj();},"老师查询");
 	ajax_uesrinfo_myList_wjkj();
 };
-
+//审核
+function menu_check_fn(){
+	console.log("审批");
+}
 
 ajax_getUserinfo(true);
 //如果需要在手机或平板等触摸设备上使用 React，需要调用
