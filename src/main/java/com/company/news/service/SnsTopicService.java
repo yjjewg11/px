@@ -147,7 +147,7 @@ public class SnsTopicService extends AbstractService {
 	
 	private PageQueryResult listPageBySql(String sqlwhere,PaginationData pData,
 			HttpServletRequest request) {
-		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids ";
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids ";
 		selectSql+=" FROM sns_topic t1 ";
 		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
