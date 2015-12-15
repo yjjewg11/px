@@ -11,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
@@ -127,6 +128,7 @@ public class SnsDianzanService extends AbstractService {
 		String uuids="";
 		for(Map o:list){
 			uuids+=o.get("uuid")+",";
+			warpMap(o);
 		}
 		
 		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
@@ -140,6 +142,12 @@ public class SnsDianzanService extends AbstractService {
 		return list;
 		
 	}
+	
+	private void warpMap(Map o) {
+		o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
+		
+	}
+	
 	/**
 	 * 获取点赞状态数据.null,没点赞.1赞同,2不赞同.根据关联uuids,和当前用户id
 	 * @param uuids

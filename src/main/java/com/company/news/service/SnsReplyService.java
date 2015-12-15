@@ -66,6 +66,8 @@ public class SnsReplyService extends AbstractService {
 		
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setCreate_useruuid(user.getUuid());
+		cn.setCreate_user(user.getName());
+		cn.setCreate_img(user.getImg());
 		cn.setReply_count(0L);
 		cn.setYes_count(0L);
 		cn.setNo_count(0L);
@@ -136,6 +138,33 @@ public class SnsReplyService extends AbstractService {
 		}
 		sql += " order by t1.create_time desc";
 
+		Query  query =session.createSQLQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+		
+		//当前用户点赞情况.
+		snsDianzanService.warpReluuidsMapList(pageQueryResult.getData(), request);
+
+		return pageQueryResult;
+	}
+
+	/**
+	 * 最新话题,用于审查,根据举报时间排序
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult listPageForCheck(PaginationData pData,
+			HttpServletRequest request) {
+
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.no_count,t1.status";
+		sql+=" FROM sns_reply t1 ";
+		sql+=" where t1.status="+SystemConstants.Check_status_fabu ;
+		sql+=" and t1.illegal>0 ";
+		sql += " order by t1.illegal_time desc";
 		Query  query =session.createSQLQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		

@@ -74,6 +74,11 @@ public class SnsTopicService extends AbstractService {
 		
 		newEntity.setCreate_time(TimeUtils.getCurrentTimestamp());
 		newEntity.setCreate_useruuid(user.getUuid());
+		newEntity.setCreate_user(user.getName());
+		newEntity.setCreate_img(user.getImg());
+		
+		
+		
 		newEntity.setReply_count(0L);
 		newEntity.setYes_count(0L);
 		newEntity.setNo_count(0L);
@@ -164,11 +169,47 @@ public class SnsTopicService extends AbstractService {
 	public PageQueryResult listPage(PaginationData pData,String section_id,
 			HttpServletRequest request) {
 
-		String sqlwhere=" where t1.status=0 ";
+		String sqlwhere=" where t1.status= "+SystemConstants.Check_status_fabu;
 		if(StringUtils.isNotBlank(section_id)){
 			sqlwhere+=" and t1.section_id= "+section_id;
 		}
 		sqlwhere += " order by t1.create_time desc";
+		return listPageBySql(sqlwhere, pData, request);
+	}
+	
+	/**
+	 * 最新话题,用于审查,根据举报时间排序
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult listPageForCheck(PaginationData pData,String section_id,
+			HttpServletRequest request) {
+
+		String sqlwhere=" where t1.status= "+SystemConstants.Check_status_fabu ;
+		sqlwhere+=" and t1.illegal>0 ";
+		if(StringUtils.isNotBlank(section_id)){
+			sqlwhere+=" and t1.section_id= "+section_id;
+		}
+		sqlwhere += " order by t1.illegal_time desc";
+		return listPageBySql(sqlwhere, pData, request);
+	}
+	/**
+	 * 最新话题,平台查询,查询所有状态,包括屏蔽的.
+	 * @param pData
+	 * @param section_id
+	 * @param request
+	 * @return
+	 */
+	public PageQueryResult listPageByWjkj(PaginationData pData,String section_id,
+			HttpServletRequest request) {
+
+		String sqlwhere="  order by t1.create_time desc ";
+//		if(StringUtils.isNotBlank(section_id)){
+//			sqlwhere+=" and t1.section_id= "+section_id;
+//		}
+//		sqlwhere += " order by t1.create_time desc";
 		return listPageBySql(sqlwhere, pData, request);
 	}
 	/**
@@ -222,6 +263,7 @@ public class SnsTopicService extends AbstractService {
 	}
 	private void warpMap(Map o) {
 		o.put("imgList", PxStringUtil.uuids_to_imgSmallUrlurlList((String)o.get("imguuids")));
+		o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
 		
 	}
 	public boolean updateDianzan(SessionUserInfoInterface user,String uuid,

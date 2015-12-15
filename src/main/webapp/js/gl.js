@@ -594,7 +594,8 @@ window.GTimeShow={
 		$("#"+second).show();
 
 		$("#"+second).html("");
-
+		//2级显示时,回到顶部.
+		$("html,body").animate({scrollTop:0},200);
 		return  document.getElementById(second);
 	} 
  //离开详情时Body操作
