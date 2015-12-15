@@ -167,10 +167,6 @@ var o = this.state;
 *<话题>Show详情绘制（内含:点赞、举报、回复等）
 * */
 var sns_snsTopicshow = React.createClass({displayName: "sns_snsTopicshow", 
-//收藏按钮方法;
-  favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-  },
 	//创建精品文章点击按钮事件跳转kd_servise方法;
   handleClick: function(m,uuid) {
    PxSnsService.btnclick_sns_snsTopic(m,uuid);
@@ -196,14 +192,10 @@ return (
     iframe, 
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
-       React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除"), 
-	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
-	     React.createElement(AMR_Button, {amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享"), 
-
-       React.createElement(AMR_Button, {className:  G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
+       React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除")
       ), 	
          React.createElement(Sns_comment_actions, {data: data}), 
-    	 React.createElement(Sns_reply_list, {uuid: o.uuid, type: 71})	
+    	 React.createElement(Sns_reply_list, {uuid: o.uuid, type: 71, url: this.props.share_url})	
    )
   );
  }
@@ -264,6 +256,13 @@ var Sns_comment_actions = React.createClass({displayName: "Sns_comment_actions",
 		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
 		
 	 },
+	//收藏按钮方法; 
+	  favorites_push: function(title,type,reluuid,url) {
+		commons_ajax_favorites_push(title,type,reluuid,url)
+	  },
+	  gogogo: function() {
+		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
+		  },	 
 render: function() {	
 	var obj=this.state;
 	var yesClick="",noClick="";
@@ -279,9 +278,12 @@ render: function() {
 	    	React.createElement("div", {className: "am-comment-actions"}, 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, 
-	    	 React.createElement("h5", null, "举报")
-	    	 )
+             React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj.title,71,obj.uuid,this.props.url)}, React.createElement("i", {className: "am-icon-heart px_font_size_click"}), "收藏"), 	    	 	    	 
+             React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj.title,obj.title,null,this.props.url)}, React.createElement("i", {className: "am-icon-share-alt-square px_font_size_click"}), "分享"), 	    	 	    	 
+
+             React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+             React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
+             React.createElement("legend", null)
 	    	)
 	    )
   );
@@ -338,6 +340,10 @@ var Sns_snsReply_comment_actions = React.createClass({displayName: "Sns_snsReply
 		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
 		
 	 },
+//对评论回复按钮	 
+	pinlun:function(o){	
+		PxSnsService.react_ajax_sns_pinglun(o);			
+		 },	 
 render: function() {	
 	var obj=this.state;
 	var yesClick="",noClick="";
@@ -350,11 +356,13 @@ render: function() {
 	}	
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
-	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,72,obj.uuid)}, "举报")
-	    	)
+	    	React.createElement("div", {className: "am-comment-actions"}, 		      		 
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+		     React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
+		     React.createElement("time", null, obj.create_time)
+		    )
 	    )
   );
 }
@@ -368,11 +376,7 @@ render: function() {
  *评论信息列表绘制 
  * */
 var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
-	pinlun:function(o){	
-		PxSnsService.react_ajax_sns_pinglun(o);			
-		 },
 	render: function() {
-		var thit=this;
 	  return (
    React.createElement("div", null, 
      this.props.events.data.map(function(event) {
@@ -386,19 +390,13 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 		 
 		    React.createElement("header", {className: "am-comment-hd"}, 
 		      React.createElement("div", {className: "am-comment-meta"}, 
-		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
-		      React.createElement("time", null, event.create_time)		 
+		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "ssssssss")
 		      )
 		    ), 
 		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
 		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
   		     ), 	    	
-	    	React.createElement(Sns_snsReply_comment_actions, {data: event}), 
-	    	React.createElement("footer", {className: "am-comment-footer"}, 
-	    	React.createElement("div", {className: "am-comment-actions"}, 
-	    	React.createElement("a", {href: "javascript:void(0);", onClick: thit.pinlun.bind(this,event)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复")
-	    	)
-	    	)
+	    	React.createElement(Sns_snsReply_comment_actions, {data: event})
 	      )
 		 )			    		
  	      )
@@ -424,7 +422,7 @@ var Sns_info_event = React.createClass({displayName: "Sns_info_event",
 	 
 	    React.createElement("header", {className: "am-comment-hd"}, 
 	      React.createElement("div", {className: "am-comment-meta"}, 
-	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
+	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "xxxxxxxxxx"), "|", 
 	      React.createElement("time", null, event.create_time), "|"			 
 	      )
 	    ), 
@@ -458,8 +456,8 @@ var Sns_pinglun_list = React.createClass({displayName: "Sns_pinglun_list",
 		 
 		    React.createElement("header", {className: "am-comment-hd"}, 
 		      React.createElement("div", {className: "am-comment-meta"}, 
-		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
-		      React.createElement("time", null, event.create_time), "|"			 
+		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "aaaaaaaa"), "|", 
+		      React.createElement("time", null, event.create_time)			 
 		      )
 		    ), 
 		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 

@@ -169,11 +169,23 @@ function login_affter_init(){
     	                      }
     	                  ]
               },
-   	       {
-                  "link": "##",
-                  "title": "审核",
-                  "fn":menu_check_fn
-                }
+          {
+              "link": "##",
+              "title": "审核",
+              "subCols": 3,
+              "subMenu": [
+  	                    {
+  	                    	 "fn":menu_check_fn,
+  	                      "link": "##",
+  	                      "title": "审核机构"
+  	                    },
+  	                    {
+  	                    	 "fn":menu_sns_check_fn,
+  	                        "link": "##",
+  	                        "title": "审核话题举报"
+  	                      }
+  	                  ]
+            }
         
       ];
 	
@@ -389,11 +401,20 @@ function menu_userinfo_list_fn_wjkj() {
 	Queue.push(function(){menu_userinfo_list_fn_wjkj();},"老师查询");
 	ajax_uesrinfo_myList_wjkj();
 };
-//审核
+//审核机构
 function menu_check_fn(){
 	console.log("审批");
+}
+//审核话题举报
+function menu_sns_check_fn(){
+	console.log("sns_check");
 }
 
 ajax_getUserinfo(true);
 //如果需要在手机或平板等触摸设备上使用 React，需要调用
 React.initializeTouchEvents(true);// 启用触摸事件处理。
+
+
+
+
+
