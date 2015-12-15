@@ -167,10 +167,6 @@ var o = this.state;
 *<话题>Show详情绘制（内含:点赞、举报、回复等）
 * */
 var sns_snsTopicshow = React.createClass({ 
-//收藏按钮方法;
-  favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-  },
 	//创建精品文章点击按钮事件跳转kd_servise方法;
   handleClick: function(m,uuid) {
    PxSnsService.btnclick_sns_snsTopic(m,uuid);
@@ -197,13 +193,9 @@ return (
       <AMR_ButtonToolbar>
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
-	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
-	     <AMR_Button  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
-
-       <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
       </AMR_ButtonToolbar>	
          <Sns_comment_actions data={data} />
-    	 <Sns_reply_list uuid={o.uuid}  type={71}/>	
+    	 <Sns_reply_list uuid={o.uuid}  type={71} url={this.props.share_url} />	
    </div>
   );
  }
@@ -264,6 +256,13 @@ var Sns_comment_actions = React.createClass({
 		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
 		
 	 },
+	//收藏按钮方法; 
+	  favorites_push: function(title,type,reluuid,url) {
+		commons_ajax_favorites_push(title,type,reluuid,url)
+	  },
+	  gogogo: function() {
+		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
+		  },	 
 render: function() {	
 	var obj=this.state;
 	var yesClick="",noClick="";
@@ -279,9 +278,12 @@ render: function() {
 	    	<div className="am-comment-actions">
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
-	    	 <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,71,obj.uuid)}>
-	    	 <h5>举报</h5>
-	    	 </a>
+             <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj.title,71,obj.uuid,this.props.url)}><i className={"am-icon-heart px_font_size_click"}></i>收藏</a>	    	 	    	 
+             <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
+
+             <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+             <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
+             <legend></legend> 
 	    	</div>
 	    </footer>
   );
@@ -338,6 +340,10 @@ var Sns_snsReply_comment_actions = React.createClass({
 		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
 		
 	 },
+//对评论回复按钮	 
+	pinlun:function(o){	
+		PxSnsService.react_ajax_sns_pinglun(o);			
+		 },	 
 render: function() {	
 	var obj=this.state;
 	var yesClick="",noClick="";
@@ -350,11 +356,13 @@ render: function() {
 	}	
   return (
 		  <footer className="am-comment-footer">
-	    	<div className="am-comment-actions">
-	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
-	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
-	    	 <a href="javascript:void(0);" onClick={common_check_illegal.bind(this,72,obj.uuid)}>举报</a>
-	    	</div>
+	    	<div className="am-comment-actions">		      		 
+	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
+	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
+	    	 <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+		     <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj)}><i className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
+		     <time>{obj.create_time}</time>
+		    </div>
 	    </footer>
   );
 }
@@ -368,11 +376,7 @@ render: function() {
  *评论信息列表绘制 
  * */
 var Sns_reply_list_show = React.createClass({
-	pinlun:function(o){	
-		PxSnsService.react_ajax_sns_pinglun(o);			
-		 },
 	render: function() {
-		var thit=this;
 	  return (
    <div>
      {this.props.events.data.map(function(event) {
@@ -386,19 +390,13 @@ var Sns_reply_list_show = React.createClass({
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
-		      <a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
-		      <time>{event.create_time}</time>		 
+		      <a href="#link-to-user" className="am-comment-author">ssssssss</a>
 		      </div>
 		    </header>
 		     <div className="am-comment-bd  am-inline">
 		      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
   		     </div>	    	
 	    	<Sns_snsReply_comment_actions data={event} />
-	    	<footer className="am-comment-footer">
-	    	<div className="am-comment-actions">
-	    	<a href="javascript:void(0);" onClick={thit.pinlun.bind(this,event)}><i className="am-icon-reply px_font_size_click"></i>回复</a>
-	    	</div>
-	    	</footer>
 	      </div>
 		 </article>			    		
  	      )
@@ -424,7 +422,7 @@ var Sns_info_event = React.createClass({
 	 
 	    <header className="am-comment-hd">
 	      <div className="am-comment-meta">
-	      <a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
+	      <a href="#link-to-user" className="am-comment-author">xxxxxxxxxx</a>|
 	      <time>{event.create_time}</time>|			 
 	      </div>
 	    </header>
@@ -458,8 +456,8 @@ var Sns_pinglun_list = React.createClass({
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
-		      <a href="#link-to-user" className="am-comment-author">{event.create_user}</a>|
-		      <time>{event.create_time}</time>|			 
+		      <a href="#link-to-user" className="am-comment-author">aaaaaaaa</a>|
+		      <time>{event.create_time}</time>			 
 		      </div>
 		    </header>
 		     <div className="am-comment-bd  am-inline">
