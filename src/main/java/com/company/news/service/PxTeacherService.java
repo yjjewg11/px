@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.PxCourseCache;
@@ -62,7 +63,10 @@ public class PxTeacherService extends AbstractService {
 		BeanUtils.copyProperties(ut, userTeacherJsonform);
 		ut.setUpdate_time(TimeUtils.getCurrentTimestamp());
 		
-		
+		if(ut==null){
+			ut.setCt_stars(SystemConstants.Ct_stars_init);
+			ut.setCt_stars_count(0l);
+		}
 		
 		// 先删除原来数据
 				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
