@@ -525,6 +525,15 @@ window.GTimeShow={
 		this.day =  this.hour * 24;
 		this.month =  this.day * 30;
 	},
+	/**
+	 *  2015-12-16 17:19:27
+	 *  转换为2015-12-16
+	 *  GTimeShow.getYMD(o);
+	 */
+	getYMD:function(d1){
+		if(!d1)return "";
+		return  d1.split(" ")[0];
+	},
 	showByTime:function(d1){
 		if(typeof(d1)=='string'){
 			d1= d1.replace(/-/ig,'/'); 

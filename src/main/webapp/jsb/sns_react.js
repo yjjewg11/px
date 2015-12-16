@@ -176,25 +176,20 @@ render: function() {
   var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
-  var iframe=null;
- if(o.url){
-     iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
-    }else{
-     iframe=(    
-		React.createElement(AMUIReact.Article, {
-		 title: o.title, 
-		 meta: o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count}, 
-		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
-		))
-     }
+ 
 return (
 
   React.createElement("div", null, 
-    iframe, 
+	  React.createElement(AMUIReact.Article, {
+		 title: o.title, 
+		 meta: GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+o.click_count}, 
+		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
+		), 
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除")
       ), 	
+
          React.createElement(Sns_comment_actions, {data: data}), 
     	 React.createElement(Sns_reply_list, {uuid: o.uuid, type: 71, url: this.props.share_url})	
    )
@@ -266,6 +261,8 @@ var Sns_comment_actions = React.createClass({displayName: "Sns_comment_actions",
 	  },
 	  gogogo: function() {
 		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
+		  $("#classnews_content_replay").focus();
+
 		  },	 
 render: function() {	
 	var obj=this.state;
@@ -279,14 +276,16 @@ render: function() {
 	}	
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
-	    	React.createElement("div", {className: "am-comment-actions"}, 
+	    	React.createElement("div", {className: "am-comment-actions am-cf"}, 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
              React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), "收藏"), 	    	 	    	 
-             React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}, React.createElement("i", {className: "am-icon-share-alt-square px_font_size_click"}), "分享"), 	    	 	    	 
+             React.createElement("a", {href: "javascript:void(0);", className: G_CallPhoneFN.canShareUrl()?"":"am-hide", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}, React.createElement("i", {className: "am-icon-share-alt-square px_font_size_click"}), "分享"), 	    	 	    	 
 
-             React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
-             React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
+              React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
+
+				  React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+            
              React.createElement("legend", null)
 	    	)
 	    )
@@ -360,12 +359,14 @@ render: function() {
 	}	
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
-	    	React.createElement("div", {className: "am-comment-actions"}, 		      		 
+	    	React.createElement("div", {className: "am-comment-actions  am-cf"}, 		 
+			  React.createElement("time", null, GTimeShow.getYMD(obj.create_time)), 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
-		     React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
-		     React.createElement("time", null, obj.create_time)
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
+		    React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+		     
+			
 		    )
 	    )
   );
@@ -427,7 +428,7 @@ var Sns_info_event = React.createClass({displayName: "Sns_info_event",
 	    React.createElement("header", {className: "am-comment-hd"}, 
 	      React.createElement("div", {className: "am-comment-meta"}, 
 	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "楼主：", event.create_user), "|", 
-	      React.createElement("time", null, event.create_time)	 
+	      React.createElement("time", null, GTimeShow.getYMD(event.create_time))	 
 	      )
 	    ), 
 	     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
@@ -461,7 +462,7 @@ var Sns_pinglun_list = React.createClass({displayName: "Sns_pinglun_list",
 		    React.createElement("header", {className: "am-comment-hd"}, 
 		      React.createElement("div", {className: "am-comment-meta"}, 
 		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "来自", event.create_user, "的回复"), "|", 
-		      React.createElement("time", null, event.create_time)			 
+		      React.createElement("time", null, GTimeShow.getYMD(event.create_time))			 
 		      )
 		    ), 
 		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 

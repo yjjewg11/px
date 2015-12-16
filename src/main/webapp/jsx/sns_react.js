@@ -176,25 +176,20 @@ render: function() {
   var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
-  var iframe=null;
- if(o.url){
-     iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
-    }else{
-     iframe=(    
-		<AMUIReact.Article
-		 title={o.title}
-		 meta={o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count}>
-		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>		 
-		</AMUIReact.Article>)
-     }
+ 
 return (
 
   <div>
-    {iframe}    
+	  <AMUIReact.Article
+		 title={o.title}
+		 meta={GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+o.click_count}>
+		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>		 
+		</AMUIReact.Article>
       <AMR_ButtonToolbar>
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
       </AMR_ButtonToolbar>	
+
          <Sns_comment_actions data={data} />
     	 <Sns_reply_list uuid={o.uuid}  type={71} url={this.props.share_url} />	
    </div>
@@ -266,6 +261,8 @@ var Sns_comment_actions = React.createClass({
 	  },
 	  gogogo: function() {
 		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
+		  $("#classnews_content_replay").focus();
+
 		  },	 
 render: function() {	
 	var obj=this.state;
@@ -279,14 +276,16 @@ render: function() {
 	}	
   return (
 		  <footer className="am-comment-footer">
-	    	<div className="am-comment-actions">
+	    	<div className="am-comment-actions am-cf">
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
              <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>收藏</a>	    	 	    	 
-             <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
+             <a href="javascript:void(0);"  className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
 
-             <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
-             <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
+              <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
+
+				  <a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+            
              <legend></legend> 
 	    	</div>
 	    </footer>
@@ -360,12 +359,14 @@ render: function() {
 	}	
   return (
 		  <footer className="am-comment-footer">
-	    	<div className="am-comment-actions">		      		 
+	    	<div className="am-comment-actions  am-cf">		 
+			  <time>{GTimeShow.getYMD(obj.create_time)}</time>
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
-	    	 <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
-		     <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj)}><i className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
-		     <time>{obj.create_time}</time>
+	    	 <a href="javascript:void(0);"   onClick={this.pinlun.bind(this,obj)}><i className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
+		    <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+		     
+			
 		    </div>
 	    </footer>
   );
@@ -427,7 +428,7 @@ var Sns_info_event = React.createClass({
 	    <header className="am-comment-hd">
 	      <div className="am-comment-meta">
 	      <a href="#link-to-user" className="am-comment-author">楼主：{event.create_user}</a>|
-	      <time>{event.create_time}</time>	 
+	      <time>{GTimeShow.getYMD(event.create_time)}</time>	 
 	      </div>
 	    </header>
 	     <div className="am-comment-bd  am-inline">
@@ -461,7 +462,7 @@ var Sns_pinglun_list = React.createClass({
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
 		      <a href="#link-to-user" className="am-comment-author">来自{event.create_user}的回复</a>|
-		      <time>{event.create_time}</time>			 
+		      <time>{GTimeShow.getYMD(event.create_time)}</time>			 
 		      </div>
 		    </header>
 		     <div className="am-comment-bd  am-inline">
