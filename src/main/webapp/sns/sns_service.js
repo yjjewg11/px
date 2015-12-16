@@ -177,6 +177,7 @@ function ajax_sns_snsTopic_show(uuid){
 				    dianZan:data.dianZan,	
 					canEdit:canEdit,
 					data:data.data,
+					isFavor:data.isFavor,
 					share_url:data.share_url,
 					count:data.count
 					}),PxSnsConfig.getBodyDiv());

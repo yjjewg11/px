@@ -96,7 +96,7 @@ var sns_list_snsTopic_rect = React.createClass({
             	 )
             })}         
   		   <div className="am-list-item-text">
-  		    有{event.reply_count}人回复|{event.create_time}
+  		    作者：{event.create_user}  |  有{event.reply_count}人回复  |  {event.create_time}
   		   </div> 
   		   
   	   </li>
@@ -173,7 +173,7 @@ var sns_snsTopicshow = React.createClass({
    }, 
 render: function() {
   var o = this.props.data;
-  var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count};
+  var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
   var iframe=null;
@@ -183,7 +183,7 @@ render: function() {
      iframe=(       
 		<AMUIReact.Article
 		 title={o.title}
-		 meta={Vo.announce_type(o.type)+" | "+o.create_time}>
+		 meta={o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count}>
 		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>
 		</AMUIReact.Article>)
      }
@@ -257,8 +257,11 @@ var Sns_comment_actions = React.createClass({
 		
 	 },
 	//收藏按钮方法; 
-	  favorites_push: function(title,type,reluuid,url) {
-		commons_ajax_favorites_push(title,type,reluuid,url)
+	  favorites_push: function(obj) {
+		  var url=this.props.url;
+		  obj.isFavor=false;
+		  this.setState(obj);
+		commons_ajax_favorites_push(obj.title,71,obj.uuid,url)
 	  },
 	  gogogo: function() {
 		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
@@ -278,8 +281,8 @@ render: function() {
 	    	<div className="am-comment-actions">
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
-             <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj.title,71,obj.uuid,this.props.url)}><i className={"am-icon-heart px_font_size_click"}></i>收藏</a>	    	 	    	 
-             <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
+             <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>收藏</a>	    	 	    	 
+             <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
 
              <a href="javascript:void(0);"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
              <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
@@ -390,7 +393,7 @@ var Sns_reply_list_show = React.createClass({
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
-		      <a href="#link-to-user" className="am-comment-author">ssssssss</a>
+		      <a href="#link-to-user" className="am-comment-author">来自{event.create_user}的回复</a>
 		      </div>
 		    </header>
 		     <div className="am-comment-bd  am-inline">
@@ -422,8 +425,8 @@ var Sns_info_event = React.createClass({
 	 
 	    <header className="am-comment-hd">
 	      <div className="am-comment-meta">
-	      <a href="#link-to-user" className="am-comment-author">xxxxxxxxxx</a>|
-	      <time>{event.create_time}</time>|			 
+	      <a href="#link-to-user" className="am-comment-author">楼主：{event.create_user}</a>|
+	      <time>{event.create_time}</time>	 
 	      </div>
 	    </header>
 	     <div className="am-comment-bd  am-inline">
@@ -456,7 +459,7 @@ var Sns_pinglun_list = React.createClass({
 		 
 		    <header className="am-comment-hd">
 		      <div className="am-comment-meta">
-		      <a href="#link-to-user" className="am-comment-author">aaaaaaaa</a>|
+		      <a href="#link-to-user" className="am-comment-author">来自{event.create_user}的回复</a>|
 		      <time>{event.create_time}</time>			 
 		      </div>
 		    </header>

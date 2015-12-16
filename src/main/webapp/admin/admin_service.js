@@ -1444,4 +1444,149 @@ function ajax_group_edit_byRight_wjkj(formdata){
 			error :G_ajax_error_fn
 		});
   };
-       
+ 
+  
+  
+  
+//————————————————————————————审核话题举报<审核>—————————————————————————    
+  /*
+  *(信息管理)<校园公告><老师公告><精品文章><招生计划>服务器请求
+  * @types- 0:校园公告,1:老师公告 2:班级通知,3:"精品文章',4:"招生计划"
+  * @group_list:根据下拉框需求的数据模型调用公用方法转换一次；
+  * */
+function admin_sns_checklist_byRight(){
+	React.render(React.createElement(Admin_SnsTable_byRight, {
+		pageNo:1,
+		events: [],
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
+/*
+ * 信息管理模块详情内容绘制
+ * @Announcements_show_Right:详情绘制
+ * 在kd_rect;
+ * */
+function react_ajax_announce_show_byRight(uuid,Titlenmae){
+	Queue.push(function(){react_ajax_announce_show_byRight(uuid,Titlenmae);},Titlenmae);
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/announcements/"+uuid+".json";
+$.ajax({
+	type : "GET",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
+						if(flag)return;
+				  }
+			React.render(React.createElement(Announcements_show_byRight,{
+				share_url:data.share_url,
+				data:data.data,
+				count:data.count
+				}), document.getElementById('div_body'));
+		} else {
+			alert("加载数据失败："+data.ResMsg.message);
+		}
+	},
+	error :G_ajax_error_fn
+	});
+}; 
+/*
+*(信息管理)<校园公告><老师公告><精品文章><招生计划>创建按钮、详情里面的删除、编辑按钮
+* @add:创建；
+* @edit:编辑；
+* @del:删除；
+* */  
+function btn_click_announce_byRight(m,groupuuid,uuid){
+  	if(m=="add"){
+		Queue.push(function(){btn_click_announce_byRight(m,groupuuid,uuid);},"创建信息");
+  		react_ajax_announce_edit_byRight({groupuuid:groupuuid,type:announce_types},null);
+  	}else if(m=="edit"){
+  		Queue.push(function(){btn_click_announce_byRight(m,groupuuid,uuid);},"编辑信息");
+  		react_ajax_announce_edit_byRight(null,uuid);
+  	}else if(m=="del"){
+  		react_ajax_announce_delete_byRight(groupuuid,uuid);
+  	}
+  }; 
+
+/*
+ *(信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑服务请求；
+ * @if(!uuid):创建；
+ * @uuid不是则:编辑；
+ * */  	  
+function react_ajax_announce_edit_byRight(formdata,uuid){
+  	if(!uuid){
+  		React.render(React.createElement(Announcements_edit_byRight,{
+  			formdata:formdata,
+  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
+  			}), document.getElementById('div_body'));
+  		return;
+  	}
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/announcements/"+uuid+".json";
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Announcements_edit_byRight,{
+  					formdata:data.data,
+  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
+  					}),document.getElementById('div_body'));
+  			} else {
+  				alert("加载数据失败："+data.ResMsg.message);
+  			}
+  		},
+		error :G_ajax_error_fn
+  	});
+  };
+  
+  
+/*
+ *(信息管理)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+ *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+ * */  	  
+function react_ajax_announce_delete_byRight(groupuuid,uuid){	 
+	if(!confirm("确定要删除吗?")){
+		return;
+	}
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/announcements/delete.json?uuid="+uuid;
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				ajax_announce_listByGroup_byRight();
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};  
+  /*
+  *(信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑提交按钮方法
+  *@OPT：我们把内容用Form表单提交到Opt我们封装的
+  *一个方法内直接传给服务器，服务器从表单取出需要的参数
+  * */    
+  function ajax_announcements_save_byRight(){
+      var opt={
+              formName: "editAnnouncementsForm",
+          url:hostUrl + "rest/announcements/save.json",
+              cbFN:null
+              };
+  G_ajax_abs_save(opt);
+  }    
