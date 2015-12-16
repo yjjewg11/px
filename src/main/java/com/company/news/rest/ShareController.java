@@ -601,7 +601,7 @@ public class ShareController extends AbstractRESTController {
 		String url=request.getParameter("url");
 		try {
 
-			String title=HttpRequestUtils.httpGetHtmlTitle(url);
+			String title="[链接]"+HttpRequestUtils.httpGetHtmlTitle(url);
 			model.addAttribute(RestConstants.Return_G_entity,title);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";

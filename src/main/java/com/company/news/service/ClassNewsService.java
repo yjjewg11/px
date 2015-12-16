@@ -75,8 +75,6 @@ public class ClassNewsService extends AbstractService {
 		String []  classuuidArray=classNewsJsonform.getClassuuid().split(",");
 		
 		for(String classuuid:classuuidArray){
-			System.out.println(classuuid); 
-
 			AbstractClass pClass=null;
 			if(SessionListener.isPXLogin(request)){
 				 pClass=(AbstractClass)this.nSimpleHibernateDao.getObject(PxClass.class, classuuid);
@@ -100,6 +98,7 @@ public class ClassNewsService extends AbstractService {
 			cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
 			cn.setClass_name(pClass.getName());
 			cn.setCreate_time(TimeUtils.getCurrentTimestamp());
+			cn.setUrl(StringUtils.trim(cn.getUrl()));
 //			cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
 //			cn.setReply_time(TimeUtils.getCurrentTimestamp());
 			cn.setUsertype(USER_type_default);
