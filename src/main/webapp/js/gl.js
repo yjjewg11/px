@@ -97,7 +97,7 @@ function G_user_hasRight(s){
 	console.log("权限判断参数S",s);
 
 	var list=null;
-	if(PxRight&&PxRight.getUserRights){
+	if(typeof(PxRight)!= "undefined"&&PxRight.getUserRights){
 		list=PxRight.getUserRights();
 	}else{
 		list=Store.getUserRights();

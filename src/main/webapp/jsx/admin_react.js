@@ -2507,7 +2507,7 @@ var Parent_EventsTable_div = React.createClass({
            {iframe}
   	     
   	     <AMR_ButtonToolbar>
-  	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+  	     <Sns_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
   	     </AMR_ButtonToolbar>
   	     
   	     </div>	 
@@ -2670,7 +2670,7 @@ var Parent_EventsTable_div = React.createClass({
   	      <td>{event.yes_count}</td>
   	      <td>{event.reply_count}</td>
   	      <td>{event.create_user}</td>
-  	      <td><G_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
+  	      <td><Sns_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
   	      <td>{event.create_time}</td> 	      
@@ -2682,3 +2682,27 @@ var Parent_EventsTable_div = React.createClass({
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
   
   
+  /**
+   * 全局模版-没有内容时显示
+   * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+   */
+  var Sns_check_disable_div_byRight = React.createClass({
+  	  render: function() {
+  			var right="AD_checkSns_m";
+  			console.log("屏蔽权限:",right);
+  		  if(G_user_hasRight(right)){
+  			  return (
+  					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
+  			    );
+  		  }else{
+  			  return (
+  			    		<div></div>
+  			    );
+  		  }
+  			 
+  		  if(this.props.msg)msg=this.props.msg;
+  	    return (
+  	    		<div><h1>{msg}</h1></div>
+  	    );
+  	  }
+  	  }); 

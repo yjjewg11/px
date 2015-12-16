@@ -2507,7 +2507,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
            iframe, 
   	     
   	     React.createElement(AMR_ButtonToolbar, null, 
-  	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
+  	     React.createElement(Sns_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
   	     )
   	     
   	     )	 
@@ -2670,7 +2670,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	      React.createElement("td", null, event.yes_count), 
   	      React.createElement("td", null, event.reply_count), 
   	      React.createElement("td", null, event.create_user), 
-  	      React.createElement("td", null, React.createElement(G_check_disable_div_byRight, {type: 72, uuid: event.uuid})), 
+  	      React.createElement("td", null, React.createElement(Sns_check_disable_div_byRight, {type: 72, uuid: event.uuid})), 
   	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
   	      React.createElement("td", null, event.illegal), 
   	      React.createElement("td", null, event.create_time)	      
@@ -2682,3 +2682,27 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
   
   
+  /**
+   * 全局模版-没有内容时显示
+   * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+   */
+  var Sns_check_disable_div_byRight = React.createClass({displayName: "Sns_check_disable_div_byRight",
+  	  render: function() {
+  			var right="AD_checkSns_m";
+  			console.log("屏蔽权限:",right);
+  		  if(G_user_hasRight(right)){
+  			  return (
+  					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger ", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
+  			    );
+  		  }else{
+  			  return (
+  			    		React.createElement("div", null)
+  			    );
+  		  }
+  			 
+  		  if(this.props.msg)msg=this.props.msg;
+  	    return (
+  	    		React.createElement("div", null, React.createElement("h1", null, msg))
+  	    );
+  	  }
+  	  }); 
