@@ -2341,8 +2341,7 @@ var Parent_EventsTable_div = React.createClass({
     
 //——————————————————————————话题审核<绘制>—————————————————————  
   /*
-  *(信息管理)<校园公告><老师公告><精品文章><招生计划>表单框绘制
-  *@btn_click_announce_byRight:点击按钮事件跳转kd_servise方法;
+  *(话题审核)表单框绘制
   * */  
   var Admin_SnsTable_byRight = React.createClass({
   	getInitialState: function() {
@@ -2378,12 +2377,14 @@ var Parent_EventsTable_div = React.createClass({
   		$.ajax({
   			type : "GET",
   			url : url,
+  			data :{pageNo:obj.pageNo},
   			dataType : "json",
   			//async: false,//必须同步执行
   			success : function(data) {
   				$.AMUI.progress.done();
   				if (data.ResMsg.status == "success") {
   					obj.list=data.list.data;
+  					obj.pageSize=data.list.pageSize;
   				    that.ajax_callback( data.list.data );     
   				} else {
   					alert(data.ResMsg.message);
@@ -2407,7 +2408,7 @@ var Parent_EventsTable_div = React.createClass({
   			 this.ajax_list(obj);
   			 return;
   		 }else if(m=="next"){
-  			 if(!obj.list||obj.list.length==0){
+  			 if(!obj.list||obj.list.length<obj.pageSize){
   				 G_msg_pop("最后一页了");
   				 return ;
   			 }
@@ -2442,16 +2443,15 @@ var Parent_EventsTable_div = React.createClass({
      <thead> 
       <tr>
         <th>标题</th>
-  	  <th>编辑与删除操作</th>
         <th>状态</th>
-        <th>浏览次数</th>
+        <th>举报次数</th>
         <th>创建时间</th>
         <th>创建人</th>
       </tr> 
     </thead>
     <tbody>
       {this.state.list.map(function(event) {
-        return (<Announcements_EventRow_byRight key={event.uuid} event={event} />);
+        return (<Sns_EventRow_byRight key={event.uuid} event={event} />);
           })}
         </tbody>
       </AMR_Table>
@@ -2460,8 +2460,8 @@ var Parent_EventsTable_div = React.createClass({
   }
   });
     
-  //信息管理绘制详情内容Map;   
-  var Announcements_EventRow_byRight = React.createClass({ 
+  //话题审核绘制详情内容Map;   
+  var Sns_EventRow_byRight = React.createClass({ 
   	render: function() {
   	  var event = this.props.event;
   	  var className = event.highlight ? 'am-active' :
@@ -2474,116 +2474,19 @@ var Parent_EventsTable_div = React.createClass({
   		   }
   	  return (
   	    <tr className={className} >
-  	      <td><a  href="javascript:void(0);" onClick={react_ajax_announce_show_byRight.bind(this,event.uuid,Vo.announce_type(event.type))}>{event.title}</a></td>
-            <th> <AMR_ButtonToolbar>
-  	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={btn_click_announce_byRight.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
-  	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={btn_click_announce_byRight.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
-  	     </AMR_ButtonToolbar></th>
-
+  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
-  	      <td>{event.count}</td>
+  	      <td>{event.illegal}</td>
   	      <td>{event.create_time}</td>
   	      <td>{event.create_user}</td>
   	    </tr> 
   	  );
   	}
   	});    
-      
-
   /*
-  * (信息管理)<校园公告><老师公告><精品文章><招生计划>创建与编辑界面绘制；
-  * @w_img_upload_nocut:上传图片后发的请求刷新;
-  * */    
-  var Announcements_edit_byRight = React.createClass({ 
-  	 getInitialState: function() {
-  		    return this.props.formdata;
-  		  },
-  	 handleChange: function(event) {
-  		    this.setState($('#editAnnouncementsForm').serializeJson());
-  	  },
-  	 handleChange_url_cb:function(url_title){
-  			this.state.title=url_title;
-  			this.setState(this.state);
-  	  },
-  	handleChange_url:function(){
-  	    var tmp=$('#editAnnouncementsForm').serializeJson();
-  		    this.setState(tmp);
-  		var thit=this;		 
-  	   G_getHtmlTitle(tmp.url,function(url_title){thit.handleChange_url_cb(url_title)});
-  		
-  	},
-  	  componentDidMount:function(){
-  	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-  	     this.editor=editor;
-          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
-          });
-  	  },
-  		   preview_fn:function(){
-            G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
-         }, 
-  render: function() {
-  	 var o = this.state;
-  	  var type_div;
-  	   var url=(<div></div>);
-  	  var ylBtn=(<div></div>);
-  	   if(announce_types==3){
-  	   url=(
-  		<div>
-  		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
-  		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxlength="256"   placeholder="可直接使用外部内容的链接地址显示"/>		
-  		</div>
-  		)
-  	  } 
-  return (
-  		<div> 		
-  		<div className="header">
-  		  <hr />
-  		</div>
-  		<div className="am-g">
-  		  <div  className="am-u-lg-6 am-u-sm-12 ">
-  		  <form id="editAnnouncementsForm" method="post" className="am-form">
-  		<input type="hidden" name="uuid"  value={o.uuid}/>
-  		<input type="hidden" name="isimportant"  value={o.isimportant}/> 	
-  	<input type="hidden" name="type"  value={o.type}/>
-  		<div className="am-form-group">
-  	  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />    		          
-        </div>   
-  		
-  		  <label htmlFor="name">标题:</label>
-  		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="128"   placeholder="不超过128字"/>
-  		  <br/>
-              {url}
-  		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
-  		{G_get_upload_img_Div()} 
-  		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
-  			    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
-  		  </form>
-  	     </div>
-  			    <div  className="am-u-lg-6 am-u-sm-12 ">
-                 <G_phone_iframe />
-               </div>
-  	   </div>	   
-  	  </div>
-  );
-  }
-  }); 
-
-
-  //
-  /*
-   *<信息管理>公告点赞、添加、删除、禁用、评论、加载更多等详情绘制模板；
-   *增加编辑与删除功能
+   *<话题审核>详情绘制模板；
    * */
-  var Announcements_show_byRight = React.createClass({ 
-  	//创建信息管理点击按钮事件跳转kd_servise方法;
-   	handleClick: function(m,groupuuid,uuid) {
-   		btn_click_announce_byRight(m,groupuuid,uuid);
-      }, 
-  	//收藏按钮方法;
-  	favorites_push: function(title,type,reluuid,url) {
-  		commons_ajax_favorites_push(title,type,reluuid,url);
-  	},
+  var Sns_snsTopic_show_byRight = React.createClass({ 
   render: function() {
   	  var o = this.props.data;
         var iframe=(<div></div>);
@@ -2593,35 +2496,189 @@ var Parent_EventsTable_div = React.createClass({
   	     iframe=(       
   			<AMUIReact.Article
   			title={o.title}
-  			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-  			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+  			meta={o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count+" | 举报次数:"+o.illegal}>
+  			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
   			</AMUIReact.Article>)
   	     }
   return (
   	  <div>
          <div className="am-margin-left-sm">
-  	 
+     	<G_check_disable_div_byRight type={71} uuid={o.uuid}/>
            {iframe}
   	     
   	     <AMR_ButtonToolbar>
-  	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
-  	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-  	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
   	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
   	     </AMR_ButtonToolbar>
   	     
-  	     </div>
-  	    	<footer className="am-comment-footer">
-  	    	<div className="am-comment-actions">
-  	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-  	    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
-  	    	</div>
-  	    	</footer>
-  	    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-  		  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+  	     </div>	 
   	   </div>
   );
   }
   }); 
 
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//——————————————————————————话题评论审核<绘制>—————————————————————  
+  /*
+  *(话题评论审核)表单框绘制
+  * */  
+  var Admin_snsReplyTable_byRight = React.createClass({
+  	getInitialState: function() {
+  		var obj= {
+  		    	pageNo:this.props.pageNo,
+  		    	list: []
+  		    };
+  	    return obj;
+  	   
+  	  },
+  		componentDidMount: function() {
+  			this.ajax_list(this.state); 
+  		  },
+  	  ajax_callback:function(list){
+  		     if (list== null )list= [];
+  		  this.state.list=list;
+  		  this.setState(this.state);
+  	  },
+  	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+  	  componentWillReceiveProps: function(nextProps) {
+  		  var obj= {
+  			    	pageNo:nextProps.pageNo,
+  			    	list: []
+  			    };
+  				
+  			this.ajax_list(obj);
+  		  //this.setState(obj);
+  		},
+  	 ajax_list:function(obj){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsReply/listPageForCheck.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{pageNo:obj.pageNo},
+  			dataType : "json",
+  			//async: false,//必须同步执行
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					obj.list=data.list.data;
+  					obj.pageSize=data.list.pageSize;
+  				    that.ajax_callback( data.list.data );     
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		return obj;
+  		
+  	},
+  	pageClick: function(m) {
+  		 var obj=this.state;
+  		 if(m=="pre"){
+  			
+  			 if(obj.pageNo<2){
+  				 G_msg_pop("第一页了");
+  				 return;
+  			 }
+  			 obj.pageNo=obj.pageNo-1;
+  			 this.ajax_list(obj);
+  			 return;
+  		 }else if(m=="next"){
+  			 if(!obj.list||obj.list.length<obj.pageSize){
+  				 G_msg_pop("最后一页了");
+  				 return ;
+  			 }
+  			 obj.pageNo=obj.pageNo+1;
+  			
+  			 this.ajax_list(obj);
+  			 return;
+  		 }
+  	},
+  	handleClick: function(m,Titlename) {
+  		btn_click_announce_byRight(m,this.state.groupuuid,null);
+  },
+  handleChange_selectgroup_uuid:function(val){
+  	 var obj=this.state;
+  	 obj.groupuuid=val;
+  	 this.ajax_list(obj);
+  },
+
+  render: function() {
+  	var obj=this.state;
+  	if(!this.state.list)this.state.list=[];
+    return (
+    <div>
+       <AMR_Panel>
+      <AMR_ButtonToolbar>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+  	  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>	
+    </AMR_ButtonToolbar>
+     </AMR_Panel> 
+      <AMR_Table {...this.props}>  
+     <thead> 
+      <tr>
+        <th>评论内容</th>
+        <th>点赞次数</th>
+        <th>回复次数</th>
+        <th>创建人</th>
+        <th>操作</th>
+        <th>状态</th>
+        <th>举报次数</th>
+        <th>创建时间</th>
+        
+      </tr> 
+    </thead>
+    <tbody>
+      {this.state.list.map(function(event) {
+        return (<SnsReply_EventRow_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+  });
+    
+  //话题评论审核绘制详情内容Map;   
+  var SnsReply_EventRow_byRight = React.createClass({ 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+          var txtclasssName;
+  		 if(event.status==0){
+             txtclasssName="am-text-success";
+  		  }else{
+             txtclasssName="am-text-danger";
+  		   }
+  	  return (
+  	    <tr className={className} >
+  	      <td>{event.content}</td>
+  	      <td>{event.yes_count}</td>
+  	      <td>{event.reply_count}</td>
+  	      <td>{event.create_user}</td>
+  	      <td><G_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
+  	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
+  	      <td>{event.illegal}</td>
+  	      <td>{event.create_time}</td> 	      
+  	    </tr> 
+  	  );
+  	}
+  	});    
+
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
+  
+  

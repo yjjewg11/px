@@ -3141,6 +3141,7 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
 					obj.list=data.list.data;
+					obj.pageSize=data.list.pageSize;
 				    that.ajax_callback( data.list.data );     
 				} else {
 					alert(data.ResMsg.message);
@@ -3164,7 +3165,7 @@ var Announcements_EventsTable_byRight = React.createClass({displayName: "Announc
 			 this.ajax_list(obj);
 			 return;
 		 }else if(m=="next"){
-			 if(!obj.list||obj.list.length==0){
+			 if(!obj.list||obj.list.length<obj.pageSize){
 				 G_msg_pop("最后一页了");
 				 return ;
 			 }

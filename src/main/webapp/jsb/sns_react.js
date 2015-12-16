@@ -180,14 +180,15 @@ render: function() {
  if(o.url){
      iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
     }else{
-     iframe=(       
+     iframe=(    
 		React.createElement(AMUIReact.Article, {
 		 title: o.title, 
 		 meta: o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count}, 
-		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
+		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
 		))
      }
 return (
+
   React.createElement("div", null, 
     iframe, 
       React.createElement(AMR_ButtonToolbar, null, 

@@ -180,16 +180,17 @@ render: function() {
  if(o.url){
      iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
     }else{
-     iframe=(       
+     iframe=(    
 		<AMUIReact.Article
 		 title={o.title}
 		 meta={o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count}>
-		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>
+		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>		 
 		</AMUIReact.Article>)
      }
 return (
+
   <div>
-    {iframe}
+    {iframe}    
       <AMR_ButtonToolbar>
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
