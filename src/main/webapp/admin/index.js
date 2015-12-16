@@ -183,7 +183,12 @@ function login_affter_init(){
   	                    	 "fn":menu_sns_check_fn,
   	                        "link": "##",
   	                        "title": "审核话题举报"
-  	                      }
+  	                      },
+  	                    {
+ 	                    	 "fn":menu_snsReply_check_fn,
+ 	                        "link": "##",
+ 	                        "title": "审核话题评论举报"
+ 	                      }
   	                  ]
             }
         
@@ -407,9 +412,14 @@ function menu_check_fn(){
 }
 //审核话题举报
 function menu_sns_check_fn(){
-	console.log("sns_check");
+	Queue.push(function(){menu_sns_check_fn();},"话题举报审核");
+	admin_sns_checklist_byRight();
 }
-
+//审核话题评论举报
+function menu_snsReply_check_fn(){
+	Queue.push(function(){menu_snsReply_check_fn();},"话题评论举报审核");
+	admin_snsReply_checklist_byRight();
+}
 ajax_getUserinfo(true);
 //如果需要在手机或平板等触摸设备上使用 React，需要调用
 React.initializeTouchEvents(true);// 启用触摸事件处理。

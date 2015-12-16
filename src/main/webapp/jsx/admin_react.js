@@ -2339,4 +2339,346 @@ var Parent_EventsTable_div = React.createClass({
   	});     
     
     
+//——————————————————————————话题审核<绘制>—————————————————————  
+  /*
+  *(话题审核)表单框绘制
+  * */  
+  var Admin_SnsTable_byRight = React.createClass({
+  	getInitialState: function() {
+  		var obj= {
+  		    	pageNo:this.props.pageNo,
+  		    	list: []
+  		    };
+  	    return obj;
+  	   
+  	  },
+  		componentDidMount: function() {
+  			this.ajax_list(this.state); 
+  		  },
+  	  ajax_callback:function(list){
+  		     if (list== null )list= [];
+  		  this.state.list=list;
+  		  this.setState(this.state);
+  	  },
+  	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+  	  componentWillReceiveProps: function(nextProps) {
+  		  var obj= {
+  			    	pageNo:nextProps.pageNo,
+  			    	list: []
+  			    };
+  				
+  			this.ajax_list(obj);
+  		  //this.setState(obj);
+  		},
+  	 ajax_list:function(obj){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsTopic/listPageForCheck.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{pageNo:obj.pageNo},
+  			dataType : "json",
+  			//async: false,//必须同步执行
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					obj.list=data.list.data;
+  					obj.pageSize=data.list.pageSize;
+  				    that.ajax_callback( data.list.data );     
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		return obj;
+  		
+  	},
+  	pageClick: function(m) {
+  		 var obj=this.state;
+  		 if(m=="pre"){
+  			
+  			 if(obj.pageNo<2){
+  				 G_msg_pop("第一页了");
+  				 return;
+  			 }
+  			 obj.pageNo=obj.pageNo-1;
+  			 this.ajax_list(obj);
+  			 return;
+  		 }else if(m=="next"){
+  			 if(!obj.list||obj.list.length<obj.pageSize){
+  				 G_msg_pop("最后一页了");
+  				 return ;
+  			 }
+  			 obj.pageNo=obj.pageNo+1;
+  			
+  			 this.ajax_list(obj);
+  			 return;
+  		 }
+  	},
+  	handleClick: function(m,Titlename) {
+  		btn_click_announce_byRight(m,this.state.groupuuid,null);
+  },
+  handleChange_selectgroup_uuid:function(val){
+  	 var obj=this.state;
+  	 obj.groupuuid=val;
+  	 this.ajax_list(obj);
+  },
+
+  render: function() {
+  	var obj=this.state;
+  	if(!this.state.list)this.state.list=[];
+    return (
+    <div>
+       <AMR_Panel>
+      <AMR_ButtonToolbar>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+  	  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>	
+    </AMR_ButtonToolbar>
+     </AMR_Panel> 
+      <AMR_Table {...this.props}>  
+     <thead> 
+      <tr>
+        <th>标题</th>
+        <th>状态</th>
+        <th>举报次数</th>
+        <th>创建时间</th>
+        <th>创建人</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {this.state.list.map(function(event) {
+        return (<Sns_EventRow_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+  });
+    
+  //话题审核绘制详情内容Map;   
+  var Sns_EventRow_byRight = React.createClass({ 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+          var txtclasssName;
+  		 if(event.status==0){
+             txtclasssName="am-text-success";
+  		  }else{
+             txtclasssName="am-text-danger";
+  		   }
+  	  return (
+  	    <tr className={className} >
+  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
+  	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
+  	      <td>{event.illegal}</td>
+  	      <td>{event.create_time}</td>
+  	      <td>{event.create_user}</td>
+  	    </tr> 
+  	  );
+  	}
+  	});    
+  /*
+   *<话题审核>详情绘制模板；
+   * */
+  var Sns_snsTopic_show_byRight = React.createClass({ 
+  render: function() {
+  	  var o = this.props.data;
+        var iframe=(<div></div>);
+  	     if(o.url){
+  	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
+  	        }else{
+  	     iframe=(       
+  			<AMUIReact.Article
+  			title={o.title}
+  			meta={o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count+" | 举报次数:"+o.illegal}>
+  			<div dangerouslySetInnerHTML={{__html: o.content}}></div>
+  			</AMUIReact.Article>)
+  	     }
+  return (
+  	  <div>
+         <div className="am-margin-left-sm">
+     	<G_check_disable_div_byRight type={71} uuid={o.uuid}/>
+           {iframe}
+  	     
+  	     <AMR_ButtonToolbar>
+  	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+  	     </AMR_ButtonToolbar>
+  	     
+  	     </div>	 
+  	   </div>
+  );
+  }
+  }); 
+
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//——————————————————————————话题评论审核<绘制>—————————————————————  
+  /*
+  *(话题评论审核)表单框绘制
+  * */  
+  var Admin_snsReplyTable_byRight = React.createClass({
+  	getInitialState: function() {
+  		var obj= {
+  		    	pageNo:this.props.pageNo,
+  		    	list: []
+  		    };
+  	    return obj;
+  	   
+  	  },
+  		componentDidMount: function() {
+  			this.ajax_list(this.state); 
+  		  },
+  	  ajax_callback:function(list){
+  		     if (list== null )list= [];
+  		  this.state.list=list;
+  		  this.setState(this.state);
+  	  },
+  	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+  	  componentWillReceiveProps: function(nextProps) {
+  		  var obj= {
+  			    	pageNo:nextProps.pageNo,
+  			    	list: []
+  			    };
+  				
+  			this.ajax_list(obj);
+  		  //this.setState(obj);
+  		},
+  	 ajax_list:function(obj){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsReply/listPageForCheck.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{pageNo:obj.pageNo},
+  			dataType : "json",
+  			//async: false,//必须同步执行
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					obj.list=data.list.data;
+  					obj.pageSize=data.list.pageSize;
+  				    that.ajax_callback( data.list.data );     
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		return obj;
+  		
+  	},
+  	pageClick: function(m) {
+  		 var obj=this.state;
+  		 if(m=="pre"){
+  			
+  			 if(obj.pageNo<2){
+  				 G_msg_pop("第一页了");
+  				 return;
+  			 }
+  			 obj.pageNo=obj.pageNo-1;
+  			 this.ajax_list(obj);
+  			 return;
+  		 }else if(m=="next"){
+  			 if(!obj.list||obj.list.length<obj.pageSize){
+  				 G_msg_pop("最后一页了");
+  				 return ;
+  			 }
+  			 obj.pageNo=obj.pageNo+1;
+  			
+  			 this.ajax_list(obj);
+  			 return;
+  		 }
+  	},
+  	handleClick: function(m,Titlename) {
+  		btn_click_announce_byRight(m,this.state.groupuuid,null);
+  },
+  handleChange_selectgroup_uuid:function(val){
+  	 var obj=this.state;
+  	 obj.groupuuid=val;
+  	 this.ajax_list(obj);
+  },
+
+  render: function() {
+  	var obj=this.state;
+  	if(!this.state.list)this.state.list=[];
+    return (
+    <div>
+       <AMR_Panel>
+      <AMR_ButtonToolbar>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+  	  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
+  	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>	
+    </AMR_ButtonToolbar>
+     </AMR_Panel> 
+      <AMR_Table {...this.props}>  
+     <thead> 
+      <tr>
+        <th>评论内容</th>
+        <th>点赞次数</th>
+        <th>回复次数</th>
+        <th>创建人</th>
+        <th>操作</th>
+        <th>状态</th>
+        <th>举报次数</th>
+        <th>创建时间</th>
+        
+      </tr> 
+    </thead>
+    <tbody>
+      {this.state.list.map(function(event) {
+        return (<SnsReply_EventRow_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+  });
+    
+  //话题评论审核绘制详情内容Map;   
+  var SnsReply_EventRow_byRight = React.createClass({ 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+          var txtclasssName;
+  		 if(event.status==0){
+             txtclasssName="am-text-success";
+  		  }else{
+             txtclasssName="am-text-danger";
+  		   }
+  	  return (
+  	    <tr className={className} >
+  	      <td>{event.content}</td>
+  	      <td>{event.yes_count}</td>
+  	      <td>{event.reply_count}</td>
+  	      <td>{event.create_user}</td>
+  	      <td><G_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
+  	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
+  	      <td>{event.illegal}</td>
+  	      <td>{event.create_time}</td> 	      
+  	    </tr> 
+  	  );
+  	}
+  	});    
+
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
+  
   

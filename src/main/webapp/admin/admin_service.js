@@ -1444,4 +1444,67 @@ function ajax_group_edit_byRight_wjkj(formdata){
 			error :G_ajax_error_fn
 		});
   };
-       
+ 
+  
+  
+  
+//————————————————————————————审核话题举报<审核>—————————————————————————    
+  /*
+  *(审核话题)服务器请求
+  * */
+function admin_sns_checklist_byRight(){
+	React.render(React.createElement(Admin_SnsTable_byRight, {
+		pageNo:1,
+		events: [],
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
+/*
+ * 审核话题模块详情内容绘制
+ * */
+function admin_snsTopic_show_byRight(uuid){
+	Queue.push(function(){admin_snsTopic_show_byRight(uuid);},"话题详情");
+	$.AMUI.progress.start();
+    var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+$.ajax({
+	type : "GET",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
+						if(flag)return;
+				  }
+			React.render(React.createElement(Sns_snsTopic_show_byRight,{
+				share_url:data.share_url,
+				data:data.data,
+				count:data.count
+				}), document.getElementById('div_body'));
+		} else {
+			alert("加载数据失败："+data.ResMsg.message);
+		}
+	},
+	error :G_ajax_error_fn
+	});
+}; 
+
+
+
+
+//————————————————————————————审核话题评论举报<审核>—————————————————————————    
+/*
+*(审核话题评论)服务器请求
+* */
+function admin_snsReply_checklist_byRight(){
+	React.render(React.createElement(Admin_snsReplyTable_byRight, {
+		pageNo:1,
+		events: [],
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
