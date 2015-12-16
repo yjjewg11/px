@@ -2443,10 +2443,11 @@ var Parent_EventsTable_div = React.createClass({
      <thead> 
       <tr>
         <th>标题</th>
+        <th>创建人</th>
         <th>状态</th>
         <th>举报次数</th>
-        <th>创建时间</th>
-        <th>创建人</th>
+        <th>创建时间</th>       
+        <th>最后举报时间</th>
       </tr> 
     </thead>
     <tbody>
@@ -2475,10 +2476,12 @@ var Parent_EventsTable_div = React.createClass({
   	  return (
   	    <tr className={className} >
   	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
+  	      <td>{event.create_user}</td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
   	      <td>{event.create_time}</td>
-  	      <td>{event.create_user}</td>
+  	      <td>{event.illegal_time}</td>
+  	      
   	    </tr> 
   	  );
   	}
@@ -2507,7 +2510,7 @@ var Parent_EventsTable_div = React.createClass({
            {iframe}
   	     
   	     <AMR_ButtonToolbar>
-  	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+  	     <Sns_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
   	     </AMR_ButtonToolbar>
   	     
   	     </div>	 
@@ -2638,7 +2641,7 @@ var Parent_EventsTable_div = React.createClass({
         <th>状态</th>
         <th>举报次数</th>
         <th>创建时间</th>
-        
+        <th>最后举报时间</th>
       </tr> 
     </thead>
     <tbody>
@@ -2666,14 +2669,15 @@ var Parent_EventsTable_div = React.createClass({
   		   }
   	  return (
   	    <tr className={className} >
-  	      <td>{event.content}</td>
+  	      <td><div dangerouslySetInnerHTML={{__html: event.content}}></div></td>
   	      <td>{event.yes_count}</td>
   	      <td>{event.reply_count}</td>
   	      <td>{event.create_user}</td>
-  	      <td><G_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
+  	      <td><Sns_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
-  	      <td>{event.create_time}</td> 	      
+  	      <td>{event.create_time}</td>
+  	      <td>{event.illegal_time}</td>
   	    </tr> 
   	  );
   	}
@@ -2682,3 +2686,27 @@ var Parent_EventsTable_div = React.createClass({
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±    
   
   
+  /**
+   * 全局模版-没有内容时显示
+   * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+   */
+  var Sns_check_disable_div_byRight = React.createClass({
+  	  render: function() {
+  			var right="AD_checkSns_m";
+  			console.log("屏蔽权限:",right);
+  		  if(G_user_hasRight(right)){
+  			  return (
+  					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_sns_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
+  			    );
+  		  }else{
+  			  return (
+  			    		<div></div>
+  			    );
+  		  }
+  			 
+  		  if(this.props.msg)msg=this.props.msg;
+  	    return (
+  	    		<div><h1>{msg}</h1></div>
+  	    );
+  	  }
+  	  }); 

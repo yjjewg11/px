@@ -10,6 +10,8 @@ import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Announcements4Q;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
+import com.company.news.entity.SnsReply;
+import com.company.news.entity.SnsTopic;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -160,6 +162,27 @@ public class CheckService extends AbstractService {
 			  desc="uuid="+uuid+"|context="+classNewsReply.getContent();
 				this.addLog("check.updateDisable.Announcements4Q","屏蔽评论", desc, request);
 			break;
+		case SystemConstants.common_type_SnsTopic:
+			SnsTopic snsTopic=(SnsTopic)this.nSimpleHibernateDao.getObjectById(SnsTopic.class, uuid);
+			 if(snsTopic==null){
+				 return false;
+			 }
+			 snsTopic.setStatus(SystemConstants.Check_status_disable);
+			 this.nSimpleHibernateDao.save(snsTopic);
+			  desc="uuid="+uuid+"|context="+snsTopic.getTitle();
+				this.addLog("check.updateDisable.SnsTopic","屏蔽话题", desc, request);
+				break;
+		case SystemConstants.common_type_SnsReply:
+			SnsReply snsReply=(SnsReply)this.nSimpleHibernateDao.getObjectById(SnsReply.class, uuid);
+			 if(snsReply==null){
+				 return false;
+			 }
+			 snsReply.setStatus(SystemConstants.Check_status_disable);
+			 this.nSimpleHibernateDao.save(snsReply);
+			  desc="uuid="+uuid+"|context="+snsReply.getContent();
+				this.addLog("check.updateDisable.SnsReply","屏蔽话题评论", desc, request);
+				
+				break;
 		default:
 			break;
 			

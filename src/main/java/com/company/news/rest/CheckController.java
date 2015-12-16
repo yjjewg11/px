@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -24,6 +25,51 @@ public class CheckController extends AbstractRESTController {
 
 	@Autowired
 	private CheckService checkService;
+	/**
+	 * 禁用发布.type有效值:99,3,0.参考模块类型
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/disableByWjkj", method = RequestMethod.POST)
+	public String disableByWjkj(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_checkSns_m,request)){
+			//有任意权限可以禁止
+		}else{
+			responseMessage.setMessage(RightConstants.Return_msg);
+			return "";
+		}
+		String typeStr = request.getParameter("type");
+		String uuid = request.getParameter("uuid");
+		
+		if(!StringUtils.isNumeric(typeStr)){
+			responseMessage.setMessage("参数:type 不是有效数据");
+			return "";
+		}
+		if(StringUtils.isBlank(uuid)){
+			responseMessage.setMessage("参数:uuid 不能为空");
+			return "";
+		}
+		try {
+			boolean flag;
+			flag = checkService.updateDisable(Integer.valueOf(typeStr), uuid, responseMessage,request);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("操作成功");
+		return "";
+	}
 	
 	/**
 	 * 禁用发布.type有效值:99,3,0.参考模块类型

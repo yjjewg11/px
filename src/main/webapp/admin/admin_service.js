@@ -20,6 +20,8 @@ function ajax_getUserinfo(isInit) {
 			if (data.ResMsg.status == "success") {
 				if(data.userinfo)Store.setUserinfo(data.userinfo);
 				if(data.list)Store.setGroup(data.list);
+				//Store.setUserRights(data.S_User_rights);
+				PxRight.setUserRights(data.S_User_rights);
 				menu_body_fn();
 			} else {
 				if(!isInit)alert(data.ResMsg.message);
@@ -80,6 +82,8 @@ function ajax_userinfo_login() {
 				}
 				Store.setUserinfo(data.userinfo);
 				Store.setGroup(data.list);
+				//Store.setUserRights(data.S_User_rights);
+				PxRight.setUserRights(data.S_User_rights);
 				menu_body_fn();
 				
 				

@@ -160,7 +160,7 @@ public class SnsReplyService extends AbstractService {
 			HttpServletRequest request) {
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.illegal,t1.yes_count,t1.no_count,t1.status";
+		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.illegal,t1.illegal_time,t1.yes_count,t1.no_count,t1.status";
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status="+SystemConstants.Check_status_fabu ;
 		sql+=" and t1.illegal>0 ";
