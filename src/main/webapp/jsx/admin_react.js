@@ -2443,10 +2443,11 @@ var Parent_EventsTable_div = React.createClass({
      <thead> 
       <tr>
         <th>标题</th>
+        <th>创建人</th>
         <th>状态</th>
         <th>举报次数</th>
-        <th>创建时间</th>
-        <th>创建人</th>
+        <th>创建时间</th>       
+        <th>最后举报时间</th>
       </tr> 
     </thead>
     <tbody>
@@ -2475,10 +2476,12 @@ var Parent_EventsTable_div = React.createClass({
   	  return (
   	    <tr className={className} >
   	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
+  	      <td>{event.create_user}</td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
   	      <td>{event.create_time}</td>
-  	      <td>{event.create_user}</td>
+  	      <td>{event.illegal_time}</td>
+  	      
   	    </tr> 
   	  );
   	}
@@ -2638,7 +2641,7 @@ var Parent_EventsTable_div = React.createClass({
         <th>状态</th>
         <th>举报次数</th>
         <th>创建时间</th>
-        
+        <th>最后举报时间</th>
       </tr> 
     </thead>
     <tbody>
@@ -2673,7 +2676,8 @@ var Parent_EventsTable_div = React.createClass({
   	      <td><Sns_check_disable_div_byRight type={72} uuid={event.uuid}/></td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
-  	      <td>{event.create_time}</td> 	      
+  	      <td>{event.create_time}</td>
+  	      <td>{event.illegal_time}</td>
   	    </tr> 
   	  );
   	}

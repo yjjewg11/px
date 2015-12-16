@@ -2443,10 +2443,11 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
      React.createElement("thead", null, 
       React.createElement("tr", null, 
         React.createElement("th", null, "标题"), 
+        React.createElement("th", null, "创建人"), 
         React.createElement("th", null, "状态"), 
         React.createElement("th", null, "举报次数"), 
         React.createElement("th", null, "创建时间"), 
-        React.createElement("th", null, "创建人")
+        React.createElement("th", null, "最后举报时间")
       )
     ), 
     React.createElement("tbody", null, 
@@ -2475,10 +2476,12 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	  return (
   	    React.createElement("tr", {className: className}, 
   	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_snsTopic_show_byRight.bind(this,event.uuid)}, event.title)), 
+  	      React.createElement("td", null, event.create_user), 
   	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
   	      React.createElement("td", null, event.illegal), 
   	      React.createElement("td", null, event.create_time), 
-  	      React.createElement("td", null, event.create_user)
+  	      React.createElement("td", null, event.illegal_time)
+  	      
   	    ) 
   	  );
   	}
@@ -2637,8 +2640,8 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
         React.createElement("th", null, "操作"), 
         React.createElement("th", null, "状态"), 
         React.createElement("th", null, "举报次数"), 
-        React.createElement("th", null, "创建时间")
-        
+        React.createElement("th", null, "创建时间"), 
+        React.createElement("th", null, "最后举报时间")
       )
     ), 
     React.createElement("tbody", null, 
@@ -2673,7 +2676,8 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	      React.createElement("td", null, React.createElement(Sns_check_disable_div_byRight, {type: 72, uuid: event.uuid})), 
   	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
   	      React.createElement("td", null, event.illegal), 
-  	      React.createElement("td", null, event.create_time)	      
+  	      React.createElement("td", null, event.create_time), 
+  	      React.createElement("td", null, event.illegal_time)
   	    ) 
   	  );
   	}
