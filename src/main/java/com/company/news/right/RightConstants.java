@@ -33,6 +33,8 @@ public class RightConstants {
 		static public String AD_announce_m="AD_announce_m";//发布消息权限-帮助文档(增改)
 		static public String AD_group_m="AD_group_m";	//浏览所有学校权限
 		
+		static public String AD_checkSns_m="AD_checkSns_m";	//话题和话题评论审核权限
+		
 	static public String KD_group_m="KD_group_m";//添加分校权限
 	static public String KD_announce_m="KD_announce_m";//发布消息权限(增改)
 	static public String KD_cookbookplan_m="KD_cookbookplan_m";//发布每日食谱

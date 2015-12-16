@@ -2666,7 +2666,7 @@ var Parent_EventsTable_div = React.createClass({
   		   }
   	  return (
   	    <tr className={className} >
-  	      <td>{event.content}</td>
+  	      <td><div dangerouslySetInnerHTML={{__html: event.content}}></div></td>
   	      <td>{event.yes_count}</td>
   	      <td>{event.reply_count}</td>
   	      <td>{event.create_user}</td>
@@ -2692,7 +2692,7 @@ var Parent_EventsTable_div = React.createClass({
   			console.log("屏蔽权限:",right);
   		  if(G_user_hasRight(right)){
   			  return (
-  					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
+  					  <button  className="am-margin-left-lg am-btn-sm am-btn-danger " onClick={common_sns_check_disable.bind(this,this.props.type,this.props.uuid)} >屏蔽</button>
   			    );
   		  }else{
   			  return (

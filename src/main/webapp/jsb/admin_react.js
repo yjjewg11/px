@@ -2666,7 +2666,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   		   }
   	  return (
   	    React.createElement("tr", {className: className}, 
-  	      React.createElement("td", null, event.content), 
+  	      React.createElement("td", null, React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}})), 
   	      React.createElement("td", null, event.yes_count), 
   	      React.createElement("td", null, event.reply_count), 
   	      React.createElement("td", null, event.create_user), 
@@ -2692,7 +2692,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   			console.log("屏蔽权限:",right);
   		  if(G_user_hasRight(right)){
   			  return (
-  					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger ", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
+  					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger ", onClick: common_sns_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
   			    );
   		  }else{
   			  return (

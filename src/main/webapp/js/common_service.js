@@ -698,6 +698,34 @@ function common_check_disable(type,uuid){
 	});
 }
 
+
+/*/check/disable.json?type=99&uuid=1
+ * 禁止发布公共组件方法
+ * */
+function common_sns_check_disable(type,uuid){
+	
+	if(!confirm("确定要屏蔽吗?")){
+		return;
+	}
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/check/disableByWjkj.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		data:{type:type,uuid:uuid},
+		dataType : "json",
+		async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				 G_msg_pop("屏蔽成功");
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+}
 /*
  * 举报公用服务器请求         /check/illegal.json?type=99&uuid=1
 
