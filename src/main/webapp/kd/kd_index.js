@@ -485,7 +485,7 @@ function menu_dohome(){
 		                    	  },
 		                    	  
 		                    	  {
-		                    	    "img": hostUrlCDN+"i/qiandao.png",
+		                    	    "img": hostUrlCDN+"i/sns.png",
 		                    	    "link": "javascript:PxSns.list_init()",
 		                    	    "title": "话题"
 		                    	  }

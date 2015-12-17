@@ -78,7 +78,6 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
       React.createElement("div", {className: "am-list-news-bd"}, 
        React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
-			  var events=event;
 		      return (
        React.createElement("li", {className: "am-g am-list-item-dated"}, 
 		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
@@ -91,12 +90,13 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
             ), 
             
             event.imgList.map(function(event) {
+            	var time
             	 return (
             		React.createElement(AMUIReact.Image, {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid), className: events.imgList.length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
             	 )
             }), 
   		   React.createElement("div", {className: "am-list-item-text"}, 
-  		    "作者：", event.create_user, "  |  有", event.reply_count, "人回复  |  ", event.create_time
+  		    "作者：", event.create_user, "  |  有", event.reply_count, "人回复  |   ", React.createElement("time", null, GTimeShow.getYMD(event.create_time))
   		   )
   		   
   	   )
@@ -284,7 +284,7 @@ render: function() {
 
               React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
 
-				  React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
             
              React.createElement("legend", null)
 	    	)
@@ -364,10 +364,8 @@ render: function() {
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
-		    React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
-		     
-			
-		    )
+		     React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+		   )
 	    )
   );
 }
@@ -415,28 +413,89 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
  * 单条详情
  * */
 var Sns_info_event = React.createClass({displayName: "Sns_info_event",
+	getInitialState: function() {
+		if(this.props.data)return this.props.data;
+	  },
+	 callback_yes:function(o){
+		 var obj=this.state;
+		 if(obj.dianZan==1){
+			 obj.yes_count-=1;
+			 obj.dianZan=null;
+		 }else{
+			 obj.yes_count+=1;
+			 obj.dianZan=1;
+		 }
+		 this.setState(obj);
+	 },
+	 yes_click:function(o){	
+		if(o.dianZan==2)return;
+		 var url=hostUrl +"rest/snsReply/yes.json";
+		 if(o.dianZan==1){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_yes);
+		
+	 },
+	 callback_no:function(){
+		 var obj=this.state;
+		 if(obj.dianZan==2){
+			 obj.no_count-=1;
+			 obj.dianZan=null;
+		 }else{
+			 obj.no_count+=1;
+			 obj.dianZan=2;
+		 }
+		 this.setState(obj);
+	 },
+	 no_click:function(o){
+		 if(o.dianZan==1)return;
+		 var url=hostUrl +"rest/snsReply/no.json";
+		 if(o.dianZan==2){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
+		
+	 },
 	render: function() {
-		var event=this.props.event;
+		var obj=this.state;
+		var yesClick="",noClick="";
+		if(obj.dianZan==1){
+			yesClick="px-icon-hasdianzan";
+			noClick="";
+		}else if(obj.dianZan==2){
+			noClick="px-icon-hasdianzan";
+			 yesClick="";
+		}	
 	  return (
    React.createElement("div", null, 
 	  React.createElement("article", {className: "am-comment  am-comment-success am-margin-xs"}, 
 	   React.createElement("a", {href: "javascript:void(0);"}, 
-	    React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+	    React.createElement("img", {src: obj.create_img, className: "am-comment-avatar", width: "48", height: "48"})
 	   ), 
 	 React.createElement("div", {className: "am-comment-main "}, 
 	 
 	    React.createElement("header", {className: "am-comment-hd"}, 
 	      React.createElement("div", {className: "am-comment-meta"}, 
-	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "楼主：", event.create_user), "|", 
-	      React.createElement("time", null, GTimeShow.getYMD(event.create_time))	 
+	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "楼主：", obj.create_user), "|", 
+	      React.createElement("time", null, GTimeShow.getYMD(obj.create_time))	 
 	      )
 	    ), 
 	     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
-	      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
-		     )	 
+	      React.createElement("div", {dangerouslySetInnerHTML: {__html:obj.content}})
+		     ), 	 
+			  React.createElement("footer", {className: "am-comment-footer"}, 
+		    	React.createElement("div", {className: "am-comment-actions  am-cf"}, 		 
+				  React.createElement("time", null, GTimeShow.getYMD(obj.create_time)), 
+		    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
+		    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
+			     React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+			   )
+		    )
      )
 	 ), 	
-       React.createElement(Sns_reply_list, {uuid: event.uuid, type: 72})	
+       React.createElement(Sns_reply_list, {uuid: obj.uuid, type: 72})	
   )		   
 	  );
 	 }
@@ -469,7 +528,8 @@ var Sns_pinglun_list = React.createClass({displayName: "Sns_pinglun_list",
 		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
   		     )	    	
 	      )
-		 )			    		
+		 )		
+		 
  	      )
        })		
   )		   
@@ -492,11 +552,8 @@ var Sns_reply_list = React.createClass({displayName: "Sns_reply_list",
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
 	componentDidMount:function(){
-		this.load_more_data();
+		this.refreshReplyList();
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");

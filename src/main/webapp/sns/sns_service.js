@@ -289,7 +289,7 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 function react_ajax_sns_pinglun(event){
 	Queue.push(function(){react_ajax_sns_pinglun(event);},"评论回复");
 		React.render(React.createElement(Sns_info_event,{
-			event:event
+			data:event
 			}), document.getElementById('div_body'));
 	  };
 
