@@ -182,9 +182,9 @@ render: function() {
     React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
     ), 
       React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_edit.bind(this, event)}, event.name)), 
+      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限"), 
       React.createElement("td", null, event.description), 
-      React.createElement("td", null, Vo.type(event.type)), 
-      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: ajax_role_bind_right.bind(this, event)}, "绑定权限")
+      React.createElement("td", null, Vo.type(event.type))
      )
     ) 
   );
@@ -258,9 +258,9 @@ render: function() {
           React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
           ), 
           React.createElement("th", null, "名称"), 
+          React.createElement("th", null, "操作"), 
           React.createElement("th", null, "描述"), 
-          React.createElement("th", null, "类型"), 
-          React.createElement("th", null, "操作")
+          React.createElement("th", null, "类型")
         )
       ), 
       React.createElement("tbody", null, 
@@ -663,8 +663,9 @@ return (
   React.createElement("input", {type: "checkbox", value: event.uuid, name: "table_checkbox"})
   ), 
     React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.handleClick.bind(this,"edit", event)}, event.name)), 
-    React.createElement("td", null, event.description), 
-    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.handleClick.bind(this,"detail", event)}, "详细"))
+    React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: this.handleClick.bind(this,"detail", event)}, "详细")), 
+    React.createElement("td", null, event.description)
+   
   ) 
 );
 }
@@ -707,8 +708,8 @@ React.createElement(AMUIReact.ButtonToolbar, null,
         React.createElement("input", {type: "checkbox", id: "id_checkbox_all", onChange: this.handleChange_checkbox_all})
         ), 
         React.createElement("th", null, "名称"), 
-        React.createElement("th", null, "描述"), 
-        React.createElement("th", null, "操作")
+        React.createElement("th", null, "操作"), 
+        React.createElement("th", null, "描述")
       )
     ), 
     React.createElement("tbody", null, 
@@ -748,6 +749,9 @@ return (
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
 		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange}), 
+		      React.createElement("label", {htmlFor: "name"}, "顺序:"), 
+		      React.createElement("input", {type: "text", name: "ind", id: "ind", value: o.ind, onChange: this.handleChange, placeholder: "0、1、2、3、4、5"}), 
+		      
 		      React.createElement("button", {type: "button", onClick: ajax_basedatatype_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 
@@ -2475,7 +2479,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   		   }
   	  return (
   	    React.createElement("tr", {className: className}, 
-  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_snsTopic_show_byRight.bind(this,event.uuid)}, event.title)), 
+  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_snsTopic_show_byRight.bind(this,event.uuid,true)}, event.title)), 
   	      React.createElement("td", null, event.create_user), 
   	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
   	      React.createElement("td", null, event.illegal), 
@@ -2493,6 +2497,14 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   render: function() {
   	  var o = this.props.data;
         var iframe=(React.createElement("div", null));
+        var check=(React.createElement("div", null));
+        if(this.props.pingbiType==true){
+        	check=(React.createElement("div", null, 	     
+        	React.createElement(AMR_ButtonToolbar, null, 
+      	     React.createElement(Sns_check_disable_div_byRight, {type: 71, uuid: o.uuid})
+      	     )
+      	     ));
+        }
   	     if(o.url){
   	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
   	        }else{
@@ -2506,12 +2518,10 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   return (
   	  React.createElement("div", null, 
          React.createElement("div", {className: "am-margin-left-sm"}, 
-     	React.createElement(G_check_disable_div_byRight, {type: 71, uuid: o.uuid}), 
+
            iframe, 
-  	     
-  	     React.createElement(AMR_ButtonToolbar, null, 
-  	     React.createElement(Sns_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
-  	     )
+           check
+
   	     
   	     )	 
   	   )
@@ -2634,6 +2644,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
      React.createElement("thead", null, 
       React.createElement("tr", null, 
         React.createElement("th", null, "评论内容"), 
+        React.createElement("th", null, "查看相关话题"), 
         React.createElement("th", null, "点赞次数"), 
         React.createElement("th", null, "回复次数"), 
         React.createElement("th", null, "创建人"), 
@@ -2670,6 +2681,8 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	  return (
   	    React.createElement("tr", {className: className}, 
   	      React.createElement("td", null, React.createElement("div", {dangerouslySetInnerHTML: {__html: event.content}})), 
+  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_snsTopic_show_byRight.bind(this,event.topic_uuid,false)}, "查看相关话题")), 
+
   	      React.createElement("td", null, event.yes_count), 
   	      React.createElement("td", null, event.reply_count), 
   	      React.createElement("td", null, event.create_user), 

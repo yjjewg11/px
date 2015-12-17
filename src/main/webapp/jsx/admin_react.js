@@ -182,9 +182,9 @@ render: function() {
     <input type="checkbox" value={event.uuid} name="table_checkbox" />
     </td>
       <td><a href="javascript:void(0);" onClick={ajax_role_edit.bind(this, event)}>{event.name}</a></td>
+      <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a>
       <td>{event.description}</td>
       <td>{Vo.type(event.type)}</td>
-      <td><a href="javascript:void(0);" onClick={ajax_role_bind_right.bind(this, event)}>绑定权限</a>
      </td>
     </tr> 
   );
@@ -258,9 +258,9 @@ render: function() {
           <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
           </th>
           <th>名称</th>
-          <th>描述</th>
-          <th>类型</th>
           <th>操作</th>
+          <th>描述</th>
+          <th>类型</th>     
         </tr> 
       </thead>
       <tbody>
@@ -663,8 +663,9 @@ return (
   <input type="checkbox" value={event.uuid} name="table_checkbox" />
   </td>
     <td><a href="javascript:void(0);" onClick={this.handleClick.bind(this,"edit", event)}>{event.name}</a></td>
-    <td>{event.description}</td>
     <td><a href="javascript:void(0);" onClick={this.handleClick.bind(this,"detail", event)}>详细</a></td>
+    <td>{event.description}</td>
+   
   </tr> 
 );
 }
@@ -706,9 +707,9 @@ return (
       	<th>  
         <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
         </th>
-        <th>名称</th>
-        <th>描述</th>
+        <th>名称</th>       
         <th>操作</th>
+        <th>描述</th>
       </tr> 
     </thead>
     <tbody>
@@ -748,6 +749,9 @@ return (
 		      <br/>
 		       <label htmlFor="description">描述:</label>
 		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>
+		      <label htmlFor="name">顺序:</label>
+		      <input type="text" name="ind" id="ind" value={o.ind} onChange={this.handleChange} placeholder="0、1、2、3、4、5"/>
+		      
 		      <button type="button"  onClick={ajax_basedatatype_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
@@ -2475,7 +2479,7 @@ var Parent_EventsTable_div = React.createClass({
   		   }
   	  return (
   	    <tr className={className} >
-  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid)}>{event.title}</a></td>
+  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid,true)}>{event.title}</a></td>
   	      <td>{event.create_user}</td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
@@ -2493,6 +2497,14 @@ var Parent_EventsTable_div = React.createClass({
   render: function() {
   	  var o = this.props.data;
         var iframe=(<div></div>);
+        var check=(<div></div>);
+        if(this.props.pingbiType==true){
+        	check=(<div>    	     
+        	<AMR_ButtonToolbar>
+      	     <Sns_check_disable_div_byRight type={71} uuid={o.uuid}/>
+      	     </AMR_ButtonToolbar>
+      	     </div>);
+        }
   	     if(o.url){
   	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
   	        }else{
@@ -2506,12 +2518,10 @@ var Parent_EventsTable_div = React.createClass({
   return (
   	  <div>
          <div className="am-margin-left-sm">
-     	<G_check_disable_div_byRight type={71} uuid={o.uuid}/>
+
            {iframe}
-  	     
-  	     <AMR_ButtonToolbar>
-  	     <Sns_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
-  	     </AMR_ButtonToolbar>
+           {check}
+
   	     
   	     </div>	 
   	   </div>
@@ -2634,6 +2644,7 @@ var Parent_EventsTable_div = React.createClass({
      <thead> 
       <tr>
         <th>评论内容</th>
+        <th>查看相关话题</th>
         <th>点赞次数</th>
         <th>回复次数</th>
         <th>创建人</th>
@@ -2670,6 +2681,8 @@ var Parent_EventsTable_div = React.createClass({
   	  return (
   	    <tr className={className} >
   	      <td><div dangerouslySetInnerHTML={{__html: event.content}}></div></td>
+  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.topic_uuid,false)}>查看相关话题</a></td>
+
   	      <td>{event.yes_count}</td>
   	      <td>{event.reply_count}</td>
   	      <td>{event.create_user}</td>
