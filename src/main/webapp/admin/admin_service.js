@@ -1467,8 +1467,9 @@ function admin_sns_checklist_byRight(){
 /*
  * 审核话题模块详情内容绘制
  * */
-function admin_snsTopic_show_byRight(uuid){
-	Queue.push(function(){admin_snsTopic_show_byRight(uuid);},"话题详情");
+function admin_snsTopic_show_byRight(uuid,pingbiType){
+	Queue.push(function(){admin_snsTopic_show_byRight(uuid,pingbiType);},"话题详情");
+	console.log("pingbiType",pingbiType);
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 $.ajax({
@@ -1485,6 +1486,7 @@ $.ajax({
 						if(flag)return;
 				  }
 			React.render(React.createElement(Sns_snsTopic_show_byRight,{
+				pingbiType:pingbiType,
 				share_url:data.share_url,
 				data:data.data,
 				count:data.count
