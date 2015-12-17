@@ -174,7 +174,7 @@ var sns_snsTopicshow = React.createClass({
    }, 
 render: function() {
   var o = this.props.data;
-  var data={uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
+  var data={title:o.title,content:o.content,uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
  
@@ -191,7 +191,7 @@ return (
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
       </AMR_ButtonToolbar>	
 
-         <Sns_comment_actions data={data} />
+         <Sns_comment_actions data={data} url={this.props.share_url}/>
     	 <Sns_reply_list uuid={o.uuid}  type={71} url={this.props.share_url} />	
    </div>
   );
@@ -281,7 +281,7 @@ render: function() {
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
              <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>收藏</a>	    	 	    	 
-             <a href="javascript:void(0);"  className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
+             <a href="javascript:void(0);"  className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.content,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
 
               <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
 
