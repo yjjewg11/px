@@ -78,7 +78,6 @@ var sns_list_snsTopic_rect = React.createClass({
       <div className="am-list-news-bd">
        <ul className="am-list">
 		  {this.props.events.data.map(function(event) {
-			  var events=event;
 		      return (
        <li className="am-g am-list-item-dated">
 		 <AMUIReact.Image className={event.level==2?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
@@ -91,12 +90,13 @@ var sns_list_snsTopic_rect = React.createClass({
             </div>
             
             {event.imgList.map(function(event) {
+            	var time
             	 return (
             		<AMUIReact.Image onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid)} className={events.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" thumbnail width="88" height="88" src={event}/>           	 
             	 )
             })}         
   		   <div className="am-list-item-text">
-  		    作者：{event.create_user}  |  有{event.reply_count}人回复  |  {event.create_time}
+  		    作者：{event.create_user}  |  有{event.reply_count}人回复  |   <time>{GTimeShow.getYMD(event.create_time)}</time>
   		   </div> 
   		   
   	   </li>
@@ -284,7 +284,7 @@ render: function() {
 
               <a href="javascript:void(0);" onClick={this.gogogo.bind()}><i className="am-icon-reply px_font_size_click"></i>评论</a> 
 
-				  <a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+			 <a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,71,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
             
              <legend></legend> 
 	    	</div>
@@ -363,11 +363,9 @@ render: function() {
 			  <time>{GTimeShow.getYMD(obj.create_time)}</time>
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
-	    	 <a href="javascript:void(0);"   onClick={this.pinlun.bind(this,obj)}><i className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
-		    <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
-		     
-			
-		    </div>
+	    	 <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj)}><i className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
+		     <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+		   </div>
 	    </footer>
   );
 }
@@ -415,28 +413,89 @@ var Sns_reply_list_show = React.createClass({
  * 单条详情
  * */
 var Sns_info_event = React.createClass({
+	getInitialState: function() {
+		if(this.props.data)return this.props.data;
+	  },
+	 callback_yes:function(o){
+		 var obj=this.state;
+		 if(obj.dianZan==1){
+			 obj.yes_count-=1;
+			 obj.dianZan=null;
+		 }else{
+			 obj.yes_count+=1;
+			 obj.dianZan=1;
+		 }
+		 this.setState(obj);
+	 },
+	 yes_click:function(o){	
+		if(o.dianZan==2)return;
+		 var url=hostUrl +"rest/snsReply/yes.json";
+		 if(o.dianZan==1){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_yes);
+		
+	 },
+	 callback_no:function(){
+		 var obj=this.state;
+		 if(obj.dianZan==2){
+			 obj.no_count-=1;
+			 obj.dianZan=null;
+		 }else{
+			 obj.no_count+=1;
+			 obj.dianZan=2;
+		 }
+		 this.setState(obj);
+	 },
+	 no_click:function(o){
+		 if(o.dianZan==1)return;
+		 var url=hostUrl +"rest/snsReply/no.json";
+		 if(o.dianZan==2){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
+		
+	 },
 	render: function() {
-		var event=this.props.event;
+		var obj=this.state;
+		var yesClick="",noClick="";
+		if(obj.dianZan==1){
+			yesClick="px-icon-hasdianzan";
+			noClick="";
+		}else if(obj.dianZan==2){
+			noClick="px-icon-hasdianzan";
+			 yesClick="";
+		}	
 	  return (
    <div>
 	  <article className="am-comment  am-comment-success am-margin-xs">
 	   <a href="javascript:void(0);">
-	    <img src={event.create_img} className="am-comment-avatar" width="48" height="48"/>
+	    <img src={obj.create_img} className="am-comment-avatar" width="48" height="48"/>
 	   </a>
 	 <div className="am-comment-main ">
 	 
 	    <header className="am-comment-hd">
 	      <div className="am-comment-meta">
-	      <a href="#link-to-user" className="am-comment-author">楼主：{event.create_user}</a>|
-	      <time>{GTimeShow.getYMD(event.create_time)}</time>	 
+	      <a href="#link-to-user" className="am-comment-author">楼主：{obj.create_user}</a>|
+	      <time>{GTimeShow.getYMD(obj.create_time)}</time>	 
 	      </div>
 	    </header>
 	     <div className="am-comment-bd  am-inline">
-	      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
+	      <div dangerouslySetInnerHTML={{__html:obj.content}}></div>
 		     </div>	 
+			  <footer className="am-comment-footer">
+		    	<div className="am-comment-actions  am-cf">		 
+				  <time>{GTimeShow.getYMD(obj.create_time)}</time>
+		    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
+		    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
+			     <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+			   </div>
+		    </footer>
      </div>
 	 </article>	
-       <Sns_reply_list uuid={event.uuid}  type={72}/>	
+       <Sns_reply_list uuid={obj.uuid}  type={72}/>	
   </div>		   
 	  );
 	 }
@@ -469,7 +528,8 @@ var Sns_pinglun_list = React.createClass({
 		      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
   		     </div>	    	
 	      </div>
-		 </article>			    		
+		 </article>		
+		 
  	      )
        })}		
   </div>		   
@@ -492,11 +552,8 @@ var Sns_reply_list = React.createClass({
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
-	componentWillReceiveProps:function(){
-		this.load_more_data();
-	},
 	componentDidMount:function(){
-		this.load_more_data();
+		this.refreshReplyList();
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
