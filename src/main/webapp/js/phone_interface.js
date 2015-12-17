@@ -166,6 +166,8 @@ var G_jsCallBack={
 window.JavaScriptCall={
 		selectImgPic:function(){alert("ddd");},
 		jsessionToPhone:function(){}
+		
+		注意JavaScriptCall 优先与isIos判断.
 };*/
 var G_CallPhoneFN={
 	
@@ -230,15 +232,16 @@ var G_CallPhoneFN={
 			
 			
 			try{
-				if(G_CallIosFN.canShareUrl){
-					 G_CallIosFN.setShareContent(title,content,pathurl,httpurl)
-					return true;
-				}
 				
 				if(window.JavaScriptCall){					
 					JavaScriptCall.setShareContent(title,content,pathurl,httpurl) ;					
 					return true;
 				}
+				if(G_CallIosFN.canShareUrl){
+					 G_CallIosFN.setShareContent(title,content,pathurl,httpurl)
+					return true;
+				}
+				
 			}catch(e){
 				  console.log('Exception:JavaScriptCall.finishProject()=', e.message);
 			}
@@ -256,14 +259,15 @@ var G_CallPhoneFN={
 			console.log("openNewWindowUrl:",title,content,pathurl,httpurl);
 			if(!pathurl)pathurl=G_share_logo;
 			try{
-				if(G_CallIosFN.canShareUrl){
-					 G_CallIosFN.openNewWindowUrl(title,content,pathurl,httpurl)
-					return true;
-				}
+				
 				
 				if(window.JavaScriptCall){
 					if(!pathurl)pathurl=G_logo;
 					JavaScriptCall.openNewWindowUrl(title,content,pathurl,httpurl) ;					
+					return true;
+				}
+				if(G_CallIosFN.canShareUrl){
+					 G_CallIosFN.openNewWindowUrl(title,content,pathurl,httpurl)
 					return true;
 				}
 			}catch(e){
@@ -313,12 +317,13 @@ var G_CallPhoneFN={
 		selectImgPic:function(){
 			try{
 				
-				if(G_CallIosFN.isIos){
-					G_CallIosFN.selectImgPic();
-					return true;
-				}
+				
 				if(window.JavaScriptCall){
 					JavaScriptCall.selectImgPic();
+					return true;
+				}
+				if(G_CallIosFN.isIos){
+					G_CallIosFN.selectImgPic();
 					return true;
 				}
 			}catch(e){
@@ -333,13 +338,14 @@ var G_CallPhoneFN={
 	 */
 	selectHeadPic:function(){
 		try{
+		
+			if(window.JavaScriptCall){
+				JavaScriptCall.selectHeadPic();
+				return true;
+			}
 			
 			if(G_CallIosFN.isIos){
 				G_CallIosFN.selectHeadPic();
-				return true;
-			}
-			if(window.JavaScriptCall){
-				JavaScriptCall.selectHeadPic();
 				return true;
 			}
 		}catch(e){
@@ -375,18 +381,34 @@ var G_CallPhoneFN={
 		console.log('G_CallPhoneFN：', "false");
 		return false;
 	},
+	getJsessionid:function(){
+		try{
+			if(window.JavaScriptCall){
+				return JavaScriptCall.getJsessionid();
+				
+			}
+			
+			
+			
+		}catch(e){
+			  console.log('Exception:JavaScriptCall.selectHeadPic()=', e.message);
+		}
+		console.log('window.JavaScriptCall==false');
+		return false;
+	},
 	/**
 	 * JSESSIONID=C483CC4E6FECB6F6267591D624704A86
 	 */
 	jsessionToPhone:function(sessionid){
 		try{
 			
-			if(G_CallIosFN.isIos){
-				G_CallIosFN.jsessionToPhone(sessionid);
-				return true;
-			}
+			
 			if(window.JavaScriptCall){
 				JavaScriptCall.jsessionToPhone(sessionid);
+				return true;
+			}
+			if(G_CallIosFN.isIos){
+				G_CallIosFN.jsessionToPhone(sessionid);
 				return true;
 			}
 		}catch(e){

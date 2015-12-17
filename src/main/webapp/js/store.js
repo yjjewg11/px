@@ -482,8 +482,9 @@ function store_ajax_getUserinfo() {
 				if(data.list)Store.setGroup(data.list);
 				Store.setUserRights(data.S_User_rights);
 			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+				//alert(data.ResMsg.message);
+				//G_resMsg_filter(data.ResMsg);
+				Store.setUserinfo({uuid:"",name:"游客"});
 			}
 			
 		},

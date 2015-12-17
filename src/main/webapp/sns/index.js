@@ -32,7 +32,7 @@ var SnsIndexPage=(function(){
 			success : function(data) {
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
-					alert(data.userinfo.loginname);
+					//alert(data.userinfo.loginname);
 					G_msg_pop(data.userinfo.name+"签到");
 					//if(data.userinfo)Store.setUserinfo(data.userinfo);
 					//if(data.list)Store.setGroup(data.list);

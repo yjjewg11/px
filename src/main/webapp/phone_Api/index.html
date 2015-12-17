@@ -56,7 +56,11 @@
 <script src="../jsb/common_react.js"></script>
 <script src="../jsb/kd_widget.js"></script>
 
+<script type="text/javascript">
+//window.JavaScriptCall={getJsessionid:function(){return "aaa"}};
 
+</script>
+app注册到webview对象为JavaScriptCall:<br/>
 <button onClick="alert(G_CallPhoneFN.isPhoneApp())">判断是否是手机app应用内嵌调用(isPhoneApp)</button>
 <br/>
 <button onClick="alert(G_CallPhoneFN.isAndorid())">判断是否是安卓手机app应用内嵌调用(isAndorid)</button>
@@ -79,9 +83,10 @@
 <br/>
 <button onClick="alert(G_CallPhoneFN.setDoBackFN())">设置andorid webview 回退按钮,指定方法(setDoBackFN)</button>
 <br/>
-<button onClick="alert(G_CallPhoneFN.jsessionToPhone())">jsessionToPhone()</button>
+<button onClick="alert(G_CallPhoneFN.jsessionToPhone('JSESSIONID'))">jsessionToPhone('JSESSIONID')</button>
 
-
+<br/>
+<button onClick="alert(G_CallPhoneFN.getJsessionid())">getJsessionid()</button>
 
 
 
