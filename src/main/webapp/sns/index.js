@@ -132,5 +132,3 @@ var SnsIndexPage=(function(){
 
 SnsIndexPage.init();
 
-
-

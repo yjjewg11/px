@@ -1,5 +1,6 @@
 
-
+var Tabs=AMUIReact.Tabs;
+var replyEditor=null;
 //——————————————————————————话题<绘制>—————————————————————  
 /* 
  * <话题>绘制舞台1.0
@@ -45,11 +46,18 @@ var Sns_Div = React.createClass({displayName: "Sns_Div",
 render: function() {
 	this.classnewsreply_list_div="snstopicList_"+this.props.snsKey
 	this.load_more_btn_id="load_more_"+this.props.uuid;
+		var toolbar=null;
+		//家长模式,右上角创建
+		if(typeof SnsIndexPage=='undefined'){
+			 toolbar=(
+			  React.createElement(AMR_ButtonToolbar, null, 
+				 React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "创建话题")
+				)
+			);
+		}
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
-		    React.createElement(AMR_ButtonToolbar, null, 
-		     React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "创建话题")
-		    ), 		    		    
+	toolbar, 		    
 		  React.createElement("div", {id: this.classnewsreply_list_div, className: "am-list-news-bd"}		   		    
 		  ), 
 		  
@@ -262,7 +270,7 @@ var Sns_comment_actions = React.createClass({displayName: "Sns_comment_actions",
 	  },
 	  gogogo: function() {
 		  $("html,body").animate({scrollTop:$(document.body).height()},200);	
-		  $("#classnews_content_replay").focus();
+		  if(replyEditor)replyEditor.focus();
 
 		  },	 
 render: function() {	
@@ -596,7 +604,7 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 		})
 	},
 	componentDidMount:function(){
-		$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		replyEditor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
 	var uuid;
@@ -668,7 +676,6 @@ var TabsSelect = React.createClass({displayName: "TabsSelect",
 	});
 
 
-var Tabs=AMUIReact.Tabs;
 
 
 
