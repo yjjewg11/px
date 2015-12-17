@@ -69,6 +69,7 @@ render: function() {
 var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_rect", 
 	  render: function() {
 	    var events = this.props.events;
+	   
 	    var img_fine=hostUrlCDN+"i/fine.png";
 	    var img_hot=hostUrlCDN+"i/hot.png";
 	    var className = events.highlight ? 'am-active' :
@@ -78,21 +79,21 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
       React.createElement("div", {className: "am-list-news-bd"}, 
        React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
+			  if(event.imgList)event.imgList=[];
 		      return (
-       React.createElement("li", {className: "am-g am-list-item-dated"}, 
+       React.createElement("li", {className: "am-g am-list-item-dated", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
 		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
 		 React.createElement(AMUIReact.Image, {className: event.level==1?"am-show":"am-hide", id: "img_head_image", src: img_hot}), 
-		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
+		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd"}, 
   		  React.createElement("h4", null, event.title)
   		 ), 	
             React.createElement("div", {className: "am-list-item-text"}, 
-            React.createElement("h4", {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, event.summary)
+            React.createElement("h4", null, event.summary)
             ), 
             
             event.imgList.map(function(event) {
-            	var time
             	 return (
-            		React.createElement(AMUIReact.Image, {onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid), className: events.imgList.length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
+            		React.createElement(AMUIReact.Image, {className: events.imgList.length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
             	 )
             }), 
   		   React.createElement("div", {className: "am-list-item-text"}, 

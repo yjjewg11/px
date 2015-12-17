@@ -69,6 +69,7 @@ render: function() {
 var sns_list_snsTopic_rect = React.createClass({ 
 	  render: function() {
 	    var events = this.props.events;
+	   
 	    var img_fine=hostUrlCDN+"i/fine.png";
 	    var img_hot=hostUrlCDN+"i/hot.png";
 	    var className = events.highlight ? 'am-active' :
@@ -78,21 +79,21 @@ var sns_list_snsTopic_rect = React.createClass({
       <div className="am-list-news-bd">
        <ul className="am-list">
 		  {this.props.events.data.map(function(event) {
+			  if(event.imgList)event.imgList=[];
 		      return (
-       <li className="am-g am-list-item-dated">
+       <li className="am-g am-list-item-dated" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
 		 <AMUIReact.Image className={event.level==2?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
 		 <AMUIReact.Image className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
-		 <a href="javascript:void(0);" className="am-list-item-hd" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
+		 <a href="javascript:void(0);" className="am-list-item-hd">
   		  <h4>{event.title}</h4>
   		 </a>	
             <div className="am-list-item-text">
-            <h4 onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>{event.summary}</h4>
+            <h4 >{event.summary}</h4>
             </div>
             
             {event.imgList.map(function(event) {
-            	var time
             	 return (
-            		<AMUIReact.Image onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,events.uuid)} className={events.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" thumbnail width="88" height="88" src={event}/>           	 
+            		<AMUIReact.Image  className={events.imgList.length==0?"am-hide":"am-show"}   id="img_head_image" thumbnail width="88" height="88" src={event}/>           	 
             	 )
             })}         
   		   <div className="am-list-item-text">

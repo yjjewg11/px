@@ -33,6 +33,7 @@ var SnsIndexPage=(function(){
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
 					alert(data.userinfo.loginname);
+					G_msg_pop(data.userinfo.name+"签到");
 					//if(data.userinfo)Store.setUserinfo(data.userinfo);
 					//if(data.list)Store.setGroup(data.list);
 					//G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
