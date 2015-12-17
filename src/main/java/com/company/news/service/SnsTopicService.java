@@ -19,6 +19,7 @@ import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.HTMLUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.NewMsgNumberIservice;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
@@ -41,6 +42,10 @@ public class SnsTopicService extends AbstractService {
 	
 	@Autowired
 	private SnsDianzanService snsDianzanService;
+	
+	@Autowired
+	private NewMsgNumberIservice newMsgNumberIservice;
+	
 	/**
 	 * 新增权限
 	 * 
@@ -86,6 +91,8 @@ public class SnsTopicService extends AbstractService {
 		newEntity.setLevel(0);
 		newEntity.setIllegal(0l);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
+		
+		newMsgNumberIservice.today_snsTopic_incrCountOfNewMsgNumber();
 		return newEntity;
 
 	}

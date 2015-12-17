@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.NewMsgNumberIservice;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Announcements;
 import com.company.news.entity.Announcements4Q;
@@ -43,6 +44,41 @@ public class AnnouncementsService extends AbstractService {
 	private static final String model_name = "文章模块";
 	@Autowired
 	public PushMsgIservice pushMsgIservice;
+	@Autowired
+	private NewMsgNumberIservice newMsgNumberIservice;
+	
+	/**
+	 * 验证基本form表单信息
+	 * @param announcementsJsonform
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean valiateForm(AnnouncementsJsonform announcementsJsonform,ResponseMessage responseMessage){
+		if (announcementsJsonform.getType()==null) {
+			responseMessage.setMessage("type 不能为空.");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(announcementsJsonform.getTitle())
+				|| announcementsJsonform.getTitle().length() > 128) {
+			responseMessage.setMessage("Title不能为空！，且长度不能超过128位！");
+			return false;
+		}
+
+		if (StringUtils.isBlank(announcementsJsonform.getMessage())
+				&&StringUtils.isBlank(announcementsJsonform.getUrl())) {
+			responseMessage.setMessage("内容或分享地址需要填写一个");
+			return false;
+		}
+
+		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
+			responseMessage.setMessage("必须选择一个学校");
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * 增加
 	 * 
@@ -53,10 +89,7 @@ public class AnnouncementsService extends AbstractService {
 	 */
 	public boolean add(AnnouncementsJsonform announcementsJsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
-		if (announcementsJsonform.getType()==null) {
-			responseMessage.setMessage("type 不能为空.");
-			return false;
-		}
+		if(!valiateForm(announcementsJsonform,responseMessage))return false;
 		
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
 				||SystemConstants.common_type_PDHelp==announcementsJsonform.getType().intValue()){
@@ -86,23 +119,6 @@ public class AnnouncementsService extends AbstractService {
 				}
 			}
 			
-		}
-		
-		if (StringUtils.isBlank(announcementsJsonform.getTitle())
-				|| announcementsJsonform.getTitle().length() > 128) {
-			responseMessage.setMessage("Title不能为空！，且长度不能超过128位！");
-			return false;
-		}
-
-		if (StringUtils.isBlank(announcementsJsonform.getMessage())
-				&&StringUtils.isBlank(announcementsJsonform.getUrl())) {
-			responseMessage.setMessage("内容或分享地址需要填写一个");
-			return false;
-		}
-
-		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("必须选择一个学校");
-			return false;
 		}
 
 		Announcements announcements = new Announcements();
@@ -155,13 +171,22 @@ public class AnnouncementsService extends AbstractService {
 //						announcementsTo);
 //			}
 //		}
+		
+		//优惠活动计数
+		if(SystemConstants.common_type_pxbenefit==announcementsJsonform.getType().intValue()){
+			newMsgNumberIservice.today_pxbenefit_incrCountOfNewMsgNumber();
+		}
+		//精品文章计数
+		else if(SystemConstants.common_type_jingpinwenzhang==announcementsJsonform.getType().intValue()){
+			newMsgNumberIservice.today_pxbenefit_incrCountOfNewMsgNumber();
+		}
 
 		return true;
 	}
 
 	/**
-	 * 增加机构
-	 * 
+	 * 增加机构,
+	 * 12-17修复,只有url没内容保存不成功bug.
 	 * @param entityStr
 	 * @param model
 	 * @param request
@@ -170,10 +195,7 @@ public class AnnouncementsService extends AbstractService {
 	public boolean update(AnnouncementsJsonform announcementsJsonform,
 			ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
 		
-		if (announcementsJsonform.getType()==null) {
-			responseMessage.setMessage("type 不能为空.");
-			return false;
-		}
+		if(!valiateForm(announcementsJsonform,responseMessage))return false;
 		
 		boolean isRight=false;
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
@@ -187,28 +209,6 @@ public class AnnouncementsService extends AbstractService {
 			isRight=true;
 		
 		}
-		
-		if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-			responseMessage.setMessage("必须选择一个学校");
-			return false;
-		}
-		
-		if (StringUtils.isBlank(announcementsJsonform.getTitle())
-				|| announcementsJsonform.getTitle().length() > 45) {
-			responseMessage.setMessage("Title不能为空！，且长度不能超过45位！");
-			return false;
-		}
-
-		if (StringUtils.isBlank(announcementsJsonform.getMessage())) {
-			responseMessage.setMessage("Message不能为空！");
-			return false;
-		}
-
-		if (StringUtils.isBlank(announcementsJsonform.getUuid())) {
-			responseMessage.setMessage("uuid不能为空！");
-			return false;
-		}
-
 		Announcements announcements = (Announcements) this.nSimpleHibernateDao
 				.getObjectById(Announcements.class,
 						announcementsJsonform.getUuid());
