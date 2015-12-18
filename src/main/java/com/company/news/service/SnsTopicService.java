@@ -17,6 +17,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.HTMLUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.NewMsgNumberIservice;
@@ -90,9 +91,12 @@ public class SnsTopicService extends AbstractService {
 		newEntity.setStatus(0);
 		newEntity.setLevel(0);
 		newEntity.setIllegal(0l);
+		newEntity.setClick_count(0l);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		
 		newMsgNumberIservice.today_snsTopic_incrCountOfNewMsgNumber();
+		
+		PxRedisCache.setSnsTopicByExt_uuid(newEntity.getUuid(), 1l);
 		return newEntity;
 
 	}
@@ -154,7 +158,7 @@ public class SnsTopicService extends AbstractService {
 	
 	private PageQueryResult listPageBySql(String sqlwhere,PaginationData pData,
 			HttpServletRequest request) {
-		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids ";
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.click_count ";
 		selectSql+=" FROM sns_topic t1 ";
 		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
@@ -204,7 +208,7 @@ public class SnsTopicService extends AbstractService {
 		
 		
 		
-		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.illegal_time,t1.illegal ";
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.illegal_time,t1.illegal,t1.click_count ";
 		selectSql+=" FROM sns_topic t1 ";
 		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();

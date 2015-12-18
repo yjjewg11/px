@@ -1,7 +1,5 @@
 package com.company.news.rest;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +8,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.redis.PxRedisCacheImpl;
-import com.company.news.entity.BaseDataList;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
-import com.company.news.service.AbstractStudentService;
 import com.company.news.service.CountService;
 import com.company.news.service.SynPxRedisToDbImplService;
 import com.company.news.service.WenjieAdminService;
@@ -81,6 +76,7 @@ public class WenjieAdminController extends AbstractRESTController {
 		 * @param request
 		 * @return
 		 */
+		@Deprecated
 		@RequestMapping(value = "/redisToDb", method = RequestMethod.GET)
 		public String redisToDb(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
@@ -111,6 +107,7 @@ public class WenjieAdminController extends AbstractRESTController {
 		 * @return
 		 */
 		@RequestMapping(value = "/redisTodayToDb", method = RequestMethod.GET)
+		@Deprecated
 		public String redisTodayToDb(ModelMap model, HttpServletRequest request) {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
@@ -122,6 +119,71 @@ public class WenjieAdminController extends AbstractRESTController {
 			}
 			try {
 				new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
+		
+		
+		/**
+		 * 同步昨天以前的数据到数据库
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/redisToDbBy2DayBefore", method = RequestMethod.GET)
+		public String redisToDbBy2DayBefore(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			
+			if(!RightUtils.isAdmin(request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("redisToDb is not admin!");
+				return "";
+			}
+			try {
+				PxRedisCacheImpl dd=new PxRedisCacheImpl();
+				dd.getPx_count().synCountRedisToDb();
+				dd.getSns_topic().synCountRedisToDb();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
+		
+		/**
+		 * 刷新当天数据
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/redisTodayToDbByAll", method = RequestMethod.GET)
+		public String redisTodayToDbByAll(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			
+			if(!RightUtils.isAdmin(request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("redisToDb is not admin!");
+				return "";
+			}
+			try {
+				
+				PxRedisCacheImpl dd=new PxRedisCacheImpl();
+				dd.getPx_count().synAllCountRedisToDb();
+				dd.getSns_topic().synAllCountRedisToDb();
+				
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

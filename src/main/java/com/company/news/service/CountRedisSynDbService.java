@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
 import com.company.news.ProjectProperties;
@@ -10,7 +11,8 @@ import com.company.news.cache.redis.PxRedisCacheImpl;
 /**
  * 定时任务执行
  * @author liumingquan
- *
+ * applicationContext.xml
+ *     <task:scheduled ref="countRedisSynDbService" method="synCountRedisToDb" cron="1 1 1 * * ?"/>  
  */
 @Service 
 public class CountRedisSynDbService {
@@ -29,35 +31,47 @@ public class CountRedisSynDbService {
 			logger.warn("timer end:PxRedisCache_synDB="+PxRedisCache);
 			return ;
 		}
-		//1.同步
-		Long startTime = System.currentTimeMillis() ;
-		logger.warn("synCountRedisToDb start-----------------------------");
-		try {
-			new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e);
-		}
-		Long endTime = System.currentTimeMillis() - startTime;
-		logger.warn("synCountRedisToDb start----------count time(ms)="+endTime);
-		//2.
-		startTime = System.currentTimeMillis() ;
-		logger.warn("synAllCountRedisToDb start-----------------------------");
-		try {
-			new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e);
-		}
-		 endTime = System.currentTimeMillis() - startTime;
-		logger.warn("synAllCountRedisToDb start----------count time(ms)="+endTime);
-		//2.
+		//运行线程,执行同步数据.
+		new Thread(new Runnable() {				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						PxRedisCacheImpl dd=new PxRedisCacheImpl();
+						//同步数据,清空2天前数据
+						dd.getPx_count().synCountRedisToDb();
+						//同步所有数据
+						dd.getPx_count().synAllCountRedisToDb();
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+					
+				}
+			}).run();
+			
+		
+		new Thread(new Runnable() {				
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					PxRedisCacheImpl dd=new PxRedisCacheImpl();
+					//同步数据,清空2天前数据
+					dd.getSns_topic().synCountRedisToDb();
+					//同步所有数据
+					dd.getSns_topic().synAllCountRedisToDb();
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
+				
+			}
+		}).run();
 		
 		
-		
-		
-		logger.warn("timer end-----------------------------count time(ms)="+endTime);
+		logger.warn("timer end-----------------------------");
 	}
 }

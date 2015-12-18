@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -343,9 +344,17 @@ try {
 							return "";
 						}
 						
+						Long cacheCount=PxRedisCache.getIncrSnsTopicCountByExt_uuid(uuid);
+						if(cacheCount==null||cacheCount<=1){
+							Long tmp_count=a.getClick_count();
+							if(tmp_count==null)tmp_count=0l;
+							cacheCount=tmp_count+1;
+							PxRedisCache.setSnsTopicByExt_uuid(uuid, cacheCount);
+						}
+						
 						SessionUserInfoInterface user=this.getUserInfoBySession(request);
 						model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getSnsTopicByUuid(uuid));
-						model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid,SystemConstants.common_type_SnsTopic));
+						model.put(RestConstants.Return_ResponseMessage_count, cacheCount);
 						model.put(RestConstants.Return_ResponseMessage_dianZan,snsDianzanService.getDianzanStatus(uuid, user));
 						model.put(RestConstants.Return_ResponseMessage_isFavorites,snsTopicService.isFavorites( user,uuid));
 					} catch (Exception e) {
