@@ -159,7 +159,6 @@ function sns_ajax_snsTopic_delete(uuid){
  * @Announcements_show:详情绘制
  * */	
 function ajax_sns_snsTopic_show(uuid){
-	Queue.push(function(){ajax_sns_snsTopic_show(uuid);},"话题详情");
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 	$.ajax({
@@ -180,7 +179,7 @@ function ajax_sns_snsTopic_show(uuid){
 					isFavor:data.isFavor,
 					share_url:data.share_url,
 					count:data.count
-					}),PxSnsConfig.getBodyDiv());
+					}),G_get_div_second());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -278,20 +277,7 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 		});
 			   
 }		
-	
 
-
-
-/*
- * 对话题评论的回复 详情绘制
- * 
- * */  	  
-function react_ajax_sns_pinglun(event){
-	Queue.push(function(){react_ajax_sns_pinglun(event);},"评论回复");
-		React.render(React.createElement(Sns_info_event,{
-			data:event
-			}), document.getElementById('div_body'));
-	  };
 
 
 	//  listPageByReply
@@ -303,8 +289,8 @@ function react_ajax_sns_pinglun(event){
 		ajax_sns_reply_list:ajax_sns_reply_list,
 		ajax_sns_reply_save:ajax_sns_reply_save,
 		sns_Tabs_div:sns_Tabs_div,
-		ajax_sns_dianzan:ajax_sns_dianzan,
-		react_ajax_sns_pinglun:react_ajax_sns_pinglun
+		ajax_sns_dianzan:ajax_sns_dianzan
+
 	};//end return
 })();//end PxLazyM=(function(){return {}})();
   
