@@ -45,7 +45,7 @@ var Sns_Div = React.createClass({displayName: "Sns_Div",
 },
 render: function() {
 	this.classnewsreply_list_div="snstopicList_"+this.props.snsKey
-	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.load_more_btn_id="load_more_"+this.props.snsKey;
 		var toolbar=null;
 		//家长模式,右上角创建
 		if(typeof SnsIndexPage=='undefined'){
@@ -77,7 +77,7 @@ render: function() {
 var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_rect", 
 	  render: function() {
 	    var events = this.props.events;
-	   
+	    var length;
 	    var img_fine=hostUrlCDN+"i/fine.png";
 	    var img_hot=hostUrlCDN+"i/hot.png";
 	    var className = events.highlight ? 'am-active' :
@@ -87,7 +87,8 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
       React.createElement("div", {className: "am-list-news-bd"}, 
        React.createElement("ul", {className: "am-list"}, 
 		  this.props.events.data.map(function(event) {
-			  if(event.imgList)event.imgList=[];
+			  if(!event.imgList)event.imgList=[];
+			  length=event.imgList.length;
 		      return (
        React.createElement("li", {className: "am-g am-list-item-dated", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
 		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
@@ -101,7 +102,7 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
             
             event.imgList.map(function(event) {
             	 return (
-            		React.createElement(AMUIReact.Image, {className: events.imgList.length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
+            		React.createElement(AMUIReact.Image, {className: length==0?"am-hide":"am-show", id: "img_head_image", thumbnail: true, width: "88", height: "88", src: event})           	 
             	 )
             }), 
   		   React.createElement("div", {className: "am-list-item-text"}, 
@@ -134,7 +135,7 @@ var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_ed
      var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
      this.editor=editor;
       w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-            editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+            editor.pasteHTML( '<img width="100%" style="margin: 5px;"  src="'+imgurl+'"/>')
        });
 	 },
 	preview_fn:function(){
@@ -157,10 +158,13 @@ var o = this.state;
 	    React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
 	    React.createElement("br", null), 
 	    React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
+	   
+	    React.createElement(AMR_ButtonToolbar, null, 
 	    G_get_upload_img_Div(), 
 	    React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_snsTopic_save, className: "am-btn am-btn-primary"}, "提交"), 
 	    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
-	 )
+	    )
+	  )
     ), 
 
 	  React.createElement("div", {className: "am-u-lg-6 am-u-sm-12 "}, 
@@ -171,11 +175,15 @@ var o = this.state;
   );
 }
 }); 
-/*
+/* 
  * 1.0
 *<话题>Show详情绘制（内含:点赞、举报、回复等）
 * */
-var sns_snsTopicshow = React.createClass({displayName: "sns_snsTopicshow", 
+var sns_snsTopicshow = React.createClass({displayName: "sns_snsTopicshow",
+	//初始进入默认顶部位置浏览;
+	componentDidMount:function(){
+		$("html,body").animate({scrollTop:0},200);
+	},
 	//创建精品文章点击按钮事件跳转kd_servise方法;
   handleClick: function(m,uuid) {
    PxSnsService.btnclick_sns_snsTopic(m,uuid);
@@ -191,7 +199,7 @@ return (
   React.createElement("div", null, 
 	  React.createElement(AMUIReact.Article, {
 		 title: o.title, 
-		 meta: GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+o.click_count}, 
+		 meta: GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+this.props.count}, 
 		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
 		), 
       React.createElement(AMR_ButtonToolbar, null, 
@@ -205,11 +213,6 @@ return (
   );
  }
 }); 
-
-
-
-
-//################话题与评论上的点赞与举报抽离代码################
 /*
  * 话题同意和不同意抽离方法
  * 功能：实现动态点击和双灰功能
@@ -263,6 +266,7 @@ var Sns_comment_actions = React.createClass({displayName: "Sns_comment_actions",
 	 },
 	//收藏按钮方法; 
 	  favorites_push: function(obj) {
+		  if(obj.isFavor==false)return;
 		  var url=this.props.url;
 		  obj.isFavor=false;
 		  this.setState(obj);
@@ -288,10 +292,10 @@ render: function() {
 	    	React.createElement("div", {className: "am-comment-actions am-cf"}, 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
-             React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), "收藏"), 	    	 	    	 
+             React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	    	 	    	 
              React.createElement("a", {href: "javascript:void(0);", className: G_CallPhoneFN.canShareUrl()?"":"am-hide", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.content,null,this.props.url)}, React.createElement("i", {className: "am-icon-share-alt-square px_font_size_click"}), "分享"), 	    	 	    	 
 
-              React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
+             React.createElement("a", {href: "javascript:void(0);", onClick: this.gogogo.bind()}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "评论"), 
 
 			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,71,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
             
@@ -302,6 +306,107 @@ render: function() {
 }
 }); 
 
+//±±±±±±±±±±±±±±±±±±±±±话题回复代码块±±±±±±±±±±±±±±±±±±±±±
+/*
+ * <话题>回复列表
+ * 绘制舞台方法
+ * */
+var Sns_reply_list = React.createClass({displayName: "Sns_reply_list", 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"classnewsreply_list_div",
+	componentDidMount:function(){
+		this.refreshReplyList();
+	},
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		var re_data=PxSnsService.ajax_sns_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
+		if(re_data.data.length<re_data.pageSize){
+			$("#"+this.load_more_btn_id).hide();
+		}else{
+			$("#"+this.load_more_btn_id).show();
+		}		  
+		  this.pageNo++;
+	},
+	refreshReplyList:function(){
+		$("#"+this.classnewsreply_list_div).html("");
+		this.pageNo=1;
+		this.load_more_data();
+	},
+
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+	var parentThis=this;
+  return (
+      React.createElement("div", null, 
+       React.createElement("div", {className: "am-comments-list", id: this.classnewsreply_list_div}), 
+       React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+	   React.createElement(Sns_ajax_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})						 
+	  )
+  );
+}
+});
+//<话题>我要评论模块
+//that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
+var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save", 
+	classnewsreply_list_div:"classnewsreply_list_div",
+	reply_save_btn_click:function(){
+		var that=this.props.parentThis;
+		PxSnsService.ajax_sns_reply_save(function(){
+			that.refreshReplyList();		
+		})
+	},
+	componentDidMount:function(){
+		replyEditor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	},
+render: function() {
+	var type=this.props.type;
+return (
+React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+     React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
+	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
+	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
+)	   
+);
+}	
+});
+
+
+/*
+ *<话题>评论信息列表绘制 
+ * */
+var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
+	render: function() {
+	  return (
+   React.createElement("div", null, 
+     this.props.events.data.map(function(event) {
+	   if(!event.create_img)event.create_img=G_def_headImgPath;
+        return (
+		  React.createElement("article", {className: "am-comment am-comment-success am-margin-xs"}, 
+		   React.createElement("a", {href: "javascript:void(0);"}, 
+		    React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
+		   ), 
+		 React.createElement("div", {className: "am-comment-main "}, 
+		 
+		    React.createElement("header", {className: "am-comment-hd"}, 
+		      React.createElement("div", {className: "am-comment-meta"}, 
+		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "来自", event.create_user, "的回复")
+		      )
+		    ), 
+		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
+		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
+  		     ), 	    	
+	    	React.createElement(Sns_snsReply_comment_actions, {data: event})
+	      )
+		 )			    		
+ 	      )
+       })		
+  )		   
+	  );
+	 }
+	}); 
 /*
  * 评论同意和不同意抽离方法
  * 功能：实现动态点击和双灰功能
@@ -352,12 +457,18 @@ var Sns_snsReply_comment_actions = React.createClass({displayName: "Sns_snsReply
 		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
 		
 	 },
-//对评论回复按钮	 
+//对评论的评论按钮	 
 	pinlun:function(o){	
-		PxSnsService.react_ajax_sns_pinglun(o);			
-		 },	 
+		React.render(React.createElement(Sns_reply_reply_list_div,
+ 		 		{uuid:o.uuid,
+ 		 			parentThis:this,
+ 		 			type:72
+ 		 			}), document.getElementById(this.div_reply_save_id));		
+	},	
+	 
 render: function() {	
 	var obj=this.state;
+	this.div_reply_save_id="btn_reply_save"+obj.uuid;
 	var yesClick="",noClick="";
 	if(obj.dianZan==1){
 		yesClick="px-icon-hasdianzan";
@@ -372,8 +483,10 @@ render: function() {
 			  React.createElement("time", null, GTimeShow.getYMD(obj.create_time)), 
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
-		     React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.pinlun.bind(this,obj)}, React.createElement("i", {id: "btn_reply_"+obj.uuid, className: "am-icon-reply px_font_size_click"}), "回复", obj.reply_count), 
+	    	 React.createElement("div", {id: this.div_reply_save_id}, "   "), 	
+
+	    	 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
 		   )
 	    )
   );
@@ -381,183 +494,11 @@ render: function() {
 }); 
 
 
-
-
-//################针对评论做操作的代码块################
 /*
- *评论信息列表绘制 
- * */
-var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
-	render: function() {
-	  return (
-   React.createElement("div", null, 
-     this.props.events.data.map(function(event) {
-	   if(!event.create_img)event.create_img=G_def_headImgPath;
-        return (
-		  React.createElement("article", {className: "am-comment am-comment-success am-margin-xs"}, 
-		   React.createElement("a", {href: "javascript:void(0);"}, 
-		    React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
-		   ), 
-		 React.createElement("div", {className: "am-comment-main "}, 
-		 
-		    React.createElement("header", {className: "am-comment-hd"}, 
-		      React.createElement("div", {className: "am-comment-meta"}, 
-		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "来自", event.create_user, "的回复")
-		      )
-		    ), 
-		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
-		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
-  		     ), 	    	
-	    	React.createElement(Sns_snsReply_comment_actions, {data: event})
-	      )
-		 )			    		
- 	      )
-       })		
-  )		   
-	  );
-	 }
-	}); 
-/*
- *<话题>评论的评论代码
- * 单条详情
- * */
-var Sns_info_event = React.createClass({displayName: "Sns_info_event",
-	getInitialState: function() {
-		if(this.props.data)return this.props.data;
-	  },
-	 callback_yes:function(o){
-		 var obj=this.state;
-		 if(obj.dianZan==1){
-			 obj.yes_count-=1;
-			 obj.dianZan=null;
-		 }else{
-			 obj.yes_count+=1;
-			 obj.dianZan=1;
-		 }
-		 this.setState(obj);
-	 },
-	 yes_click:function(o){	
-		if(o.dianZan==2)return;
-		 var url=hostUrl +"rest/snsReply/yes.json";
-		 if(o.dianZan==1){
-			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
-		 }
-		 var that=this;
-		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_yes);
-		
-	 },
-	 callback_no:function(){
-		 var obj=this.state;
-		 if(obj.dianZan==2){
-			 obj.no_count-=1;
-			 obj.dianZan=null;
-		 }else{
-			 obj.no_count+=1;
-			 obj.dianZan=2;
-		 }
-		 this.setState(obj);
-	 },
-	 no_click:function(o){
-		 if(o.dianZan==1)return;
-		 var url=hostUrl +"rest/snsReply/no.json";
-		 if(o.dianZan==2){
-			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
-		 }
-		 var that=this;
-		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
-		
-	 },
-	render: function() {
-		var obj=this.state;
-		var yesClick="",noClick="";
-		if(obj.dianZan==1){
-			yesClick="px-icon-hasdianzan";
-			noClick="";
-		}else if(obj.dianZan==2){
-			noClick="px-icon-hasdianzan";
-			 yesClick="";
-		}	
-	  return (
-   React.createElement("div", null, 
-	  React.createElement("article", {className: "am-comment  am-comment-success am-margin-xs"}, 
-	   React.createElement("a", {href: "javascript:void(0);"}, 
-	    React.createElement("img", {src: obj.create_img, className: "am-comment-avatar", width: "48", height: "48"})
-	   ), 
-	 React.createElement("div", {className: "am-comment-main "}, 
-	 
-	    React.createElement("header", {className: "am-comment-hd"}, 
-	      React.createElement("div", {className: "am-comment-meta"}, 
-	      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "楼主：", obj.create_user), "|", 
-	      React.createElement("time", null, GTimeShow.getYMD(obj.create_time))	 
-	      )
-	    ), 
-	     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
-	      React.createElement("div", {dangerouslySetInnerHTML: {__html:obj.content}})
-		     ), 	 
-			  React.createElement("footer", {className: "am-comment-footer"}, 
-		    	React.createElement("div", {className: "am-comment-actions  am-cf"}, 		 
-				  React.createElement("time", null, GTimeShow.getYMD(obj.create_time)), 
-		    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
-		    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 
-			     React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
-			   )
-		    )
-     )
-	 ), 	
-       React.createElement(Sns_reply_list, {uuid: obj.uuid, type: 72})	
-  )		   
-	  );
-	 }
-	}); 
-
-
-/*
- *评论的评论列表绘制
- * */
-var Sns_pinglun_list = React.createClass({displayName: "Sns_pinglun_list",
-	render: function() {
-	  return (
-   React.createElement("div", null, 
-     this.props.events.data.map(function(event) {
-	   if(!event.create_img)event.create_img=G_def_headImgPath;
-        return (
-		  React.createElement("article", {className: "am-comment  am-comment-success am-margin-xs"}, 
-		   React.createElement("a", {href: "javascript:void(0);"}, 
-		    React.createElement("img", {src: event.create_img, className: "am-comment-avatar", width: "48", height: "48"})
-		   ), 
-		 React.createElement("div", {className: "am-comment-main "}, 
-		 
-		    React.createElement("header", {className: "am-comment-hd"}, 
-		      React.createElement("div", {className: "am-comment-meta"}, 
-		      React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, "来自", event.create_user, "的回复"), "|", 
-		      React.createElement("time", null, GTimeShow.getYMD(event.create_time))			 
-		      )
-		    ), 
-		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
-		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
-  		     )	    	
-	      )
-		 )		
-		 
- 	      )
-       })		
-  )		   
-	  );
-	 }
-	}); 
-
-
-
-
-
-
-
-//±±±±±±±±±±±±±±±±±±±±±±±±±评论回复列表公用模板（话题回复、我要回复和评论@回复里的评论回复列表和回复）±±±±±±±±±±±±±±±±±±±±±±
-/*
- * <话题>回复列表公用模板模板2.0
+ * <话题>评论的评论的绘制舞台
  * 绘制舞台方法
  * */
-var Sns_reply_list = React.createClass({displayName: "Sns_reply_list", 
+var Sns_reply_reply_list_div = React.createClass({displayName: "Sns_reply_reply_list_div", 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -593,7 +534,7 @@ render: function() {
   );
 }
 });
-//我要评论模块公用模板 我要回复框
+//评论的评论-我要评论模块公用模板 我要回复框
 //that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
 var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -607,20 +548,11 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 		replyEditor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
-	var uuid;
 	var type=this.props.type;
-	var uuid=(React.createElement("div", null));
-	if(type==71){
-		uuid=(React.createElement("div", null, React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid})));
-	 }else{
-		 uuid=(React.createElement("div", null, 
-		 React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
-		 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid})
-		 )); 
-	 } 
 return (
 React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-	 uuid, 
+React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid}), 
 	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
 	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
@@ -628,6 +560,107 @@ React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", classN
 );
 }	
 });
+
+/*
+ *评论的评论列表绘制
+ * */
+var Sns_pinglun_list = React.createClass({displayName: "Sns_pinglun_list", 	
+	 render: function() {
+	 return (
+	 		  React.createElement("div", null, 
+	 		  this.props.events.data.map(function(event) {
+	 		      return (
+	 		    		  React.createElement("li", {className: "am-comment am-cf"}, 
+	 		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
+	 				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), 
+	 				       React.createElement(Sns_reply_reply_reply_actions, {data: event})
+	 				        )
+	 		    		  )
+	 		  })
+	 		
+	 		    )		   
+	 );
+	 }
+	 }); 
+
+/*
+ * 话题-评论的评论的评论同意和不同意抽离方法
+ * 功能：实现动态点击和双灰功能
+ * removeClass("am-text-danger");
+ * */
+var Sns_reply_reply_reply_actions = React.createClass({displayName: "Sns_reply_reply_reply_actions", 
+	getInitialState: function() {
+		if(this.props.data)return this.props.data;
+	  },
+	 callback_yes:function(o){
+		 var obj=this.state;
+		 if(obj.status==1){
+			 obj.yes_count-=1;
+			 obj.status=null;
+		 }else{
+			 obj.yes_count+=1;
+			 obj.status=1;
+		 }
+		 this.setState(obj);
+	 },
+	 yes_click:function(o){	
+		if(o.status==2)return;
+		 var url=hostUrl +"rest/snsReply/yes.json";
+		 if(o.status==1){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_yes);
+		
+	 },
+	 callback_no:function(){
+		 var obj=this.state;
+		 if(obj.status==2){
+			 obj.no_count-=1;
+			 obj.status=null;
+		 }else{
+			 obj.no_count+=1;
+			 obj.status=2;
+		 }
+		 this.setState(obj);
+	 },
+	 no_click:function(o){
+		 if(o.status==1)return;
+		 var url=hostUrl +"rest/snsReply/no.json";
+		 if(o.status==2){
+			 url=hostUrl +"rest/snsReply/cancelDianzan.json";
+		 }
+		 var that=this;
+		 PxSnsService.ajax_sns_dianzan(url,o.uuid,that.callback_no);
+		
+	 }, 
+render: function() {	
+	var obj=this.state;
+	var yesClick="",noClick="";
+	if(obj.status==1){
+		yesClick="px-icon-hasdianzan";
+		noClick="";
+	}else if(obj.status==2){
+		noClick="px-icon-hasdianzan";
+		 yesClick="";
+	}	
+  return (
+		  React.createElement("footer", {className: "am-comment-footer"}, 
+	    	React.createElement("div", {className: "am-comment-actions am-cf"}, 
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), obj.yes_count, 	    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 	
+
+			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+            
+             React.createElement("legend", null)
+	    	)
+	    )
+  );
+}
+}); 
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±分页栏方法±±±±±±±±±±±±±±±±±±±±±±
+
 
 //分页栏方法;
 var TabsSelect = React.createClass({displayName: "TabsSelect",
