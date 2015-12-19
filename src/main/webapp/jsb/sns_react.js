@@ -355,18 +355,18 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 		var that=this.props.parentThis;
 		PxSnsService.ajax_sns_reply_save(function(){
 			that.refreshReplyList();		
-		})
+		},'snstopic_replayForm')
 	},
 	componentDidMount:function(){
-		replyEditor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		replyEditor=$( '#snstopic_replay_content').xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
 	var type=this.props.type;
 return (
-React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+React.createElement("form", {id: "snstopic_replayForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
      React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
 	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
-	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
+	 React.createElement(AMR_Input, {id: "snstopic_replay_content", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 )	   
 );
@@ -379,6 +379,7 @@ React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", classN
  * */
 var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 	render: function() {
+		var that=this;
 	  return (
    React.createElement("div", null, 
      this.props.events.data.map(function(event) {
@@ -398,7 +399,7 @@ var Sns_reply_list_show = React.createClass({displayName: "Sns_reply_list_show",
 		     React.createElement("div", {className: "am-comment-bd  am-inline"}, 
 		      React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
   		     ), 	    	
-	    	React.createElement(Sns_snsReply_comment_actions, {data: event})
+	    	React.createElement(Sns_snsReply_comment_actions, {data: event, topic_uuid: that.props.topic_uuid})
 	      )
 		 )			    		
  	      )
@@ -462,6 +463,7 @@ var Sns_snsReply_comment_actions = React.createClass({displayName: "Sns_snsReply
 		React.render(React.createElement(Sns_reply_reply_list_div,
  		 		{uuid:o.uuid,
  		 			parentThis:this,
+					topic_uuid:this.props.topic_uuid,
  		 			type:72
  		 			}), document.getElementById(this.div_reply_save_id));		
 	},	
@@ -529,32 +531,37 @@ render: function() {
       React.createElement("div", null, 
        React.createElement("div", {id: this.classnewsreply_list_div}), 
        React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
-	   React.createElement(Sns_ajax_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})						 
+	   React.createElement(SnsReply_reply_save, {uuid: this.props.uuid, topic_uuid: this.props.topic_uuid, type: this.props.type, parentThis: parentThis})						 
 	  )
   );
 }
 });
 //评论的评论-我要评论模块公用模板 我要回复框
 //that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
-var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save", 
+var SnsReply_reply_save = React.createClass({displayName: "SnsReply_reply_save", 
 	classnewsreply_list_div:"classnewsreply_list_div",
+	formid:"snsreply_replyForm",
+	form_content_id:"form_content_id",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		PxSnsService.ajax_sns_reply_save(function(){
 			that.refreshReplyList();		
-		})
+		},this.formid)
 	},
 	componentDidMount:function(){
-		replyEditor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+		replyEditor=$(this.form_content_id).xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
 	var type=this.props.type;
+	this.formid="snsreply_replyForm"+this.props.uuid;
+	this.form_content_id="form_content_id"+this.props.uuid;
+
 return (
-React.createElement("form", {id: "snsClassnewsreplyForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.uuid}), 
+React.createElement("form", {id: this.formid, method: "post", className: "am-form", action: "javascript:void(0);"}, 
+React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.props.topic_uuid}), 
 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid}), 
 	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
-	 React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
+	 React.createElement(AMR_Input, {id: this.form_content_id, type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
 )	   
 );

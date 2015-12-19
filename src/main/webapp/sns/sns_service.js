@@ -212,6 +212,7 @@ function ajax_sns_reply_list(uuid,list_div,pageNo,type){
 			if (data.ResMsg.status == "success") {
 				if(type==71){
 					React.render(React.createElement(Sns_reply_list_show,{
+						topic_uuid:uuid,
 						events: data.list,
 						responsive: true, bordered: true, striped :true,hover:true,striped:true
 					 }), document.getElementById(list_div));
