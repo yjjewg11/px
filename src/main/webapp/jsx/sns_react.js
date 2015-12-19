@@ -549,7 +549,7 @@ var SnsReply_reply_save = React.createClass({
 		},this.formid)
 	},
 	componentDidMount:function(){
-		replyEditor=$(this.form_content_id).xheditor(xhEditor_upImgOption_emot);
+		$("#"+this.form_content_id).xheditor(xhEditor_upImgOption_emot);
 	},
 render: function() {
 	var type=this.props.type;
