@@ -4592,6 +4592,9 @@ render: function() {
   			 G_img_down404("#img_head_image");
   		});	
   	},
+		 handleChange: function(event) {
+  		    this.setState($('#editClassStudentForm').serializeJson());
+  	  },
   render: function() {
   	  var o = this.state;
 	  var calss_btn_className="G_Edit_show am-btn am-btn-secondary";
