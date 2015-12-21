@@ -440,13 +440,37 @@ window.Queue={
 		}	
 }
 
+//Xheditor增加插入音频文件插件
+var pxXheditorPlugin={
+		
+		add_audio:{c:'xheditor_add_audio',t:'音频文件',s:null,h:1,e:function(){
+			var _this=this;
+
+			var jTest=$('<div><label for="xheImgUrl">音频文件: </label><input type="text" id="input_add_audio_src" value="http://" class="xheText" /></div><div style="text-align:right;"><input type="button" id="xheSave" value="确定" /></div>');
+			var jTestInput=$('#input_add_audio_src',jTest),jSave=$('#xheSave',jTest);
+			jSave.click(function(){
+				var tmp=jTestInput.val();
+				if(!tmp||tmp=="http://")return false;
+				_this.loadBookmark();
+				_this.pasteHTML('<audio src="'+tmp+'" controls="controls"></audio>');
+				_this.hidePanel();
+				return false;	
+			});
+			_this.saveBookmark();
+			_this.showDialog(jTest);
+		}}
+	};
+
+
 window.xhEditor_upImgOption_mfull={
+		plugins:pxXheditorPlugin,
 	    upMultiple:false,
 		upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 		onUpload:xhEditor_insertUpload,
 		html5Upload:false,
 		height:'500',
-		tools:'mfull',
+		//tools:'mfull',
+		tools:'Cut,Copy,Paste,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Anchor,Img,Flash,Media,add_audio,Hr,Emot,Table,|,Source,Preview,Print,Fullscreen',
 		urlType:'abs'
 	};
 window.xhEditor_upImgOption={

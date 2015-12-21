@@ -51,7 +51,6 @@ public class AbstractStudentService extends AbstractService {
 		
 		
 		tel=PxStringUtil.repairCellphone(tel);
-		String student_uuid = student.getUuid();
 		AbstractStudentContactRealation studentContactRealation = this
 				.getStudentContactRealationBy(student, type);
 		
@@ -146,18 +145,25 @@ public class AbstractStudentService extends AbstractService {
 		if (parent != null) {
 			String newParentName = PxStringUtil
 					.getParentNameByStudentContactRealation(studentContactRealation);
-			
+			boolean needUpdateParent=false;
 			if (parent.getImg() == null
-					|| parent.getImg().equals(student.getHeadimg())) {
+					|| !parent.getImg().equals(student.getHeadimg())) {
+				needUpdateParent=true;
 				parent.setImg(student.getHeadimg());
 			}
 			if (newParentName != null
 					&& !newParentName.equals(parent.getName())) {
 				parent.setName(newParentName);
-				userinfoService
-						.relUpdate_updateSessionUserInfoInterface(parent);
+				needUpdateParent=true;
+				
 			}
-			nSimpleHibernateDao.save(parent);
+			//是否更新
+			if(needUpdateParent){
+				nSimpleHibernateDao.save(parent);
+				userinfoService
+				.relUpdate_updateSessionUserInfoInterface(parent);
+			}
+			
 		}
 		
 		if(isUpdateStudentContactRealation){

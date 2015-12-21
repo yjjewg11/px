@@ -1349,21 +1349,27 @@ public class UserinfoService extends AbstractService {
 				if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
 					return true;
 				}
-				user = getUserBySessionid(jessionid);
-				if (user == null){
+				
+				//优先判断家长.在判断老师
+				{
 					// 请求服务返回失败标示
 					
 					Parent parent= getParentBySessionid(jessionid);
-					if (parent == null){//家长或老师都没找到则退出.
-						return false;
+					if (parent!=null ){//家长或老师都没找到则退出.
+						session = new PxHttpSession(jessionid);
+						SessionListener.putSessionByJSESSIONID(session);
+						putSessionForSns(SystemConstants.Group_type_3.toString(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
+						return true;
 					}
-					session = new PxHttpSession(jessionid);
-					SessionListener.putSessionByJSESSIONID(session);
-					putSessionForSns(SystemConstants.Group_type_3.toString(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
-					return true;
+					
 				}
 				
 				
+				//判断是否是老师
+				user = getUserBySessionid(jessionid);
+				if (user == null){
+					return false;
+				}
 				
 				session = new PxHttpSession(jessionid);
 				SessionListener.putSessionByJSESSIONID(session);
