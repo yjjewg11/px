@@ -748,10 +748,7 @@ return (
 		      <input type="text" name="name" id="name" value={o.name} onChange={this.handleChange} placeholder="不超过15位"/>
 		      <br/>
 		       <label htmlFor="description">描述:</label>
-		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>
-		      <label htmlFor="name">顺序:</label>
-		      <input type="text" name="ind" id="ind" value={o.ind} onChange={this.handleChange} placeholder="0、1、2、3、4、5"/>
-		      
+		      <input type="text" name="description" id="description" value={o.description} onChange={this.handleChange}/>		      
 		      <button type="button"  onClick={ajax_basedatatype_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 
@@ -865,6 +862,9 @@ var Basedatatypelist_edit = React.createClass({
     		      <option value="1" >{Vo.get("enable_1")}</option>
     		      <option value="0" >{Vo.get("enable_0")}</option>
     		      </select>
+    		      <label htmlFor="ind">顺序:</label>
+    		      <input type="text" name="ind" id="ind" value={o.ind} onChange={this.handleChange} placeholder="0、1、2、3、4、5"/>
+
     		    </div>
     			      
     		      

@@ -1,19 +1,4 @@
- 
-var PxSnsConfigsecond={
-	div_get_div:G_get_div_second(),
-    getdiv_second:function(){   	
-	return this.div_get_div;
-    }
-	
-}
-var PxSnsConfig={
-	div_body:'div_body',
-	 getBodyDiv:function(){
-		 
-		return document.getElementById(this.div_body);
-	}
-	
-}
+
 var PxSnsService=(function(){
 //——————————————————————————(大图标)话题—————————————————————————— 
 	
@@ -21,7 +6,7 @@ var PxSnsService=(function(){
  * <话题>分页栏总入口
  * */	
 function sns_Tabs_div(){
-	React.render(React.createElement(TabsSelect), PxSnsConfig.getBodyDiv()); 	
+	React.render(React.createElement(TabsSelect), G_get_div_body()); 	
 }	
 /*
  * <话题>获取列表数据服务器请求;
@@ -90,7 +75,7 @@ function sns_ajax_snsTopic_add_edit(uuid){
   	if(!uuid){	  		
   		React.render(React.createElement(Sns_snsTopic_add_edit,{
   			formdata:{section_id:1}
-  			}), PxSnsConfig.getBodyDiv());
+  			}), G_get_div_body());
   		return;
   	}
  //编辑话题
@@ -106,7 +91,7 @@ function sns_ajax_snsTopic_add_edit(uuid){
 		 if (data.ResMsg.status == "success") {
 		 	React.render(React.createElement(Sns_snsTopic_add_edit,{
 		 		formdata:data.data
-		 		}),PxSnsConfig.getBodyDiv());
+		 		}),G_get_div_body());
 	 	} else {
 			alert("加载数据失败："+data.ResMsg.message);
 	 	}

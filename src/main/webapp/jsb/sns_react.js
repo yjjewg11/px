@@ -11,7 +11,9 @@ var Sns_Div = React.createClass({displayName: "Sns_Div",
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
-
+	componentWillReceiveProps: function(nextProps) {
+		  this.refresh_data();
+		},
 	componentDidMount:function(){
 		this.refresh_data();
 	},
@@ -681,6 +683,7 @@ var TabsSelect = React.createClass({displayName: "TabsSelect",
 		},
 	  handleSelect: function(key) {
 	    //console.log('你点击了：', key);
+		  
 	  this.loadSnsTopicList(key);
 
 	  },
