@@ -225,9 +225,9 @@ var G_CallPhoneFN={
           *tml有问题暂时用title代替后续优化 
 		 */
 		setShareContent:function(title,content,pathurl,httpurl){
+			content="";//防止传入html标签
 			console.log("setShareContent:",title,content,pathurl,httpurl);
 			if(!pathurl)pathurl=G_share_logo;
-			
 			
 			
 			
@@ -256,6 +256,7 @@ var G_CallPhoneFN={
          *tml有问题暂时用title代替后续优化 
 		 */
 		openNewWindowUrl:function(title,content,pathurl,httpurl){
+			content="";//防止传入html标签
 			console.log("openNewWindowUrl:",title,content,pathurl,httpurl);
 			if(!pathurl)pathurl=G_share_logo;
 			try{
