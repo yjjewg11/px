@@ -482,12 +482,6 @@ function menu_dohome(){
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  },
-		                    	  
-		                    	  {
-		                    	    "img": hostUrlCDN+"i/sns.png",
-		                    	    "link": "javascript:PxSns.list_init()",
-		                    	    "title": "话题"
 		                    	  }
 		                    	  
 	                    	  ];
