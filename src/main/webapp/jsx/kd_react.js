@@ -1848,6 +1848,10 @@ var Announcements_mygoodlist_div = React.createClass({
 	    			  		    <a href="javascript:void(0);" className="am-list-item-hd" onClick={react_ajax_announce_good_show.bind(this,event.uuid,event.title)}>
 	    			  		  {event.title} 
 	    			  		  </a>	
+								   <AMR_ButtonToolbar>
+-							  <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="primary" onClick={btnclick_good_announce.bind(this, "edit",event.groupuuid,event.uuid)} >编辑</AMR_Button>
+-		                      <AMR_Button className={event.canEdit==true?"G_Edit_show":"G_Edit_hide"} amStyle="danger" onClick={btnclick_good_announce.bind(this, "del",event.groupuuid,event.uuid)} >删除</AMR_Button> 
+-           		              </AMR_ButtonToolbar>
 	    			  		  <div className="am-list-item-text">
 	    			  		  {Store.getGroupNameByUuid(event.groupuuid)}|{event.create_user}|{event.create_time}
 	    			  		  </div> 
