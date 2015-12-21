@@ -748,10 +748,7 @@ return (
 		      React.createElement("input", {type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"}), 
 		      React.createElement("br", null), 
 		       React.createElement("label", {htmlFor: "description"}, "描述:"), 
-		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange}), 
-		      React.createElement("label", {htmlFor: "name"}, "顺序:"), 
-		      React.createElement("input", {type: "text", name: "ind", id: "ind", value: o.ind, onChange: this.handleChange, placeholder: "0、1、2、3、4、5"}), 
-		      
+		      React.createElement("input", {type: "text", name: "description", id: "description", value: o.description, onChange: this.handleChange}), 		      
 		      React.createElement("button", {type: "button", onClick: ajax_basedatatype_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 
@@ -864,7 +861,10 @@ var Basedatatypelist_edit = React.createClass({displayName: "Basedatatypelist_ed
     		      React.createElement("select", {name: "enable", value: this.props.enable, onChange: this.handleChange}, 
     		      React.createElement("option", {value: "1"}, Vo.get("enable_1")), 
     		      React.createElement("option", {value: "0"}, Vo.get("enable_0"))
-    		      )
+    		      ), 
+    		      React.createElement("label", {htmlFor: "ind"}, "顺序:"), 
+    		      React.createElement("input", {type: "text", name: "ind", id: "ind", value: o.ind, onChange: this.handleChange, placeholder: "0、1、2、3、4、5"})
+
     		    ), 
     			      
     		      

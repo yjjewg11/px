@@ -632,7 +632,7 @@ function ajax_userinfo_logout(){
  * 基本框 等
  * */
 function ajax_announce_div(){
-	React.render(React.createElement(Announcements_Div_list), document.getElementById('div_body'));
+	React.render(React.createElement(Announcements_Div_list),G_get_div_body());
    	
 };
 /*
@@ -672,7 +672,6 @@ function ajax_announce_Mylist(list_div,pageNo,callback) {
  * 在kd_rect;
  * */
 function react_ajax_announce_show(uuid,Titlenmae){
-	Queue.push(function(){react_ajax_announce_show(uuid,Titlenmae);},Titlenmae);
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/announcements/"+uuid+".json";
 	$.ajax({
@@ -697,7 +696,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 					count:data.count,
 					share_url:data.share_url,
 					canEdit:canEdit
-					}), document.getElementById('div_body'));
+					}), G_get_div_second());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -713,8 +712,10 @@ function react_ajax_announce_show(uuid,Titlenmae){
  * */  
  function btnclick_announce(m,groupuuid,uuid){
 	  	if(m=="add"){
+			Queue.push(function(){btnclick_announce(m,groupuuid,uuid);},"创建文章");
 	  		react_ajax_announce_edit({groupuuid:groupuuid,type:3},null);
 	  	}else if(m=="edit"){
+			Queue.push(function(){btnclick_announce(m,groupuuid,uuid);},"编辑文章");
 	  		react_ajax_announce_edit(null,uuid);
 	  	}else if(m=="del"){
 	  		react_ajax_announce_delete(groupuuid,uuid);
@@ -727,14 +728,12 @@ function react_ajax_announce_show(uuid,Titlenmae){
    * */  	  
   function react_ajax_announce_edit(formdata,uuid){
 	  	if(!uuid){
-			Queue.push(function(){react_ajax_announce_edit(formdata,uuid);},"创建文章");
 	  		React.render(React.createElement(Announcements_edit,{
 	  			formdata:formdata,
 	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-	  			}), document.getElementById('div_body'));
+	  			}), G_get_div_body());
 	  		return;
 	  	}
-		Queue.push(function(){react_ajax_announce_edit(formdata,uuid);},"编辑文章");
 	  	$.AMUI.progress.start();
 	      var url = hostUrl + "rest/announcements/"+uuid+".json";
 	  	$.ajax({
@@ -748,7 +747,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 	  				React.render(React.createElement(Announcements_edit,{
 	  					formdata:data.data,
 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-	  					}),document.getElementById('div_body'));
+	  					}),G_get_div_body());
 	  			} else {
 	  				alert("加载数据失败："+data.ResMsg.message);
 	  			}
@@ -997,7 +996,7 @@ G_ajax_abs_save(opt);
  * 基本框 等
  * */
 function ajax_good_announce_div(){
-	React.render(React.createElement(Announcements_good_Div_list), document.getElementById('div_body'));  	
+	React.render(React.createElement(Announcements_good_Div_list), G_get_div_body());  	
 };
 /*
 *(精品文章)服务器请求share/articleList
@@ -1078,8 +1077,10 @@ function react_ajax_announce_good_show(uuid,title){
  * */  
  function btnclick_good_announce(m,groupuuid,uuid){
 	  	if(m=="add"){
+	  		Queue.push(function(){btnclick_good_announce(m,groupuuid,uuid);},"创建文章");
 	  		react_ajax_announce_good_edit({groupuuid:groupuuid,type:3},null);
 	  	}else if(m=="edit"){
+	  		Queue.push(function(){btnclick_good_announce(m,groupuuid,uuid);},"编辑文章");
 	  		react_ajax_announce_good_edit(null,uuid);
 	  	}else if(m=="del"){
 	  		react_ajax_announce_good_delete(groupuuid,uuid);
@@ -1092,14 +1093,14 @@ function react_ajax_announce_good_show(uuid,title){
    * */  	  
   function react_ajax_announce_good_edit(formdata,uuid){
 	  	if(!uuid){
-			Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"创建文章");
+			
 	  		React.render(React.createElement(Announcements_goodedit,{
 	  			formdata:formdata,
 	  			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-	  			}), document.getElementById('div_body'));
+	  			}),G_get_div_body());
 	  		return;
 	  	}
-		Queue.push(function(){react_ajax_announce_good_edit(formdata,uuid);},"编辑文章");
+	
 	  	$.AMUI.progress.start();
 	      var url = hostUrl + "rest/announcements/"+uuid+".json";
 	  	$.ajax({
@@ -1113,7 +1114,7 @@ function react_ajax_announce_good_show(uuid,title){
 	  				React.render(React.createElement(Announcements_goodedit,{
 	  					formdata:data.data,
 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-	  					}),document.getElementById('div_body'));
+	  					}),G_get_div_body());
 	  			} else {
 	  				alert("加载数据失败："+data.ResMsg.message);
 	  			}
@@ -1409,7 +1410,7 @@ function ajax_Teacher_tel_list(list_div,groupuuid,name,pageNo,callback){
  * 基本框 等
  * */
 function ajax_favorites_div(){
-	React.render(React.createElement(rect_favorites_Div_list), document.getElementById('div_body'));  	
+	React.render(React.createElement(rect_favorites_Div_list), G_get_div_body());  	
 };
 /*
  * <我的收藏>（获取用户收藏列表服务器请求；
