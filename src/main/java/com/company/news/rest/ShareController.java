@@ -1,11 +1,16 @@
 package com.company.news.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -15,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.common.HttpRequestUtils;
 import com.company.news.ProjectProperties;
+import com.company.news.ResponseMessageConstants;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.Announcements;
@@ -156,7 +163,7 @@ public class ShareController extends AbstractRESTController {
 				a = (Announcements)nSimpleHibernateDao.getObject(Announcements.class,uuid);
 				if(a==null){
 					responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-					responseMessage.setMessage("数据不存在.");
+					responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 					return "";
 				}
 				
@@ -187,16 +194,38 @@ public class ShareController extends AbstractRESTController {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
 			String uuid=request.getParameter("uuid");
-			Announcements a;
 			try {
-				a = (Announcements)nSimpleHibernateDao.getObject(Announcements.class,uuid);
-				if(a==null){
+//				a = (Announcements)nSimpleHibernateDao.getObject(Announcements.class,uuid);
+//				if(a==null){
+//					responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+//					responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
+//					return "/404";
+//				}
+				
+				String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.status,t1.message";
+				sql+=" FROM px_announcements t1 ";
+				sql+=" where  t1.uuid='"+DbUtils.safeToWhereString(uuid)+"'";
+				
+				Session session=this.nSimpleHibernateDao.getSession();
+				Query  query =session.createSQLQuery(sql);
+				query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+				List<Map> list=query.list();
+				if(list==null||list.size()==0){
 					responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-					responseMessage.setMessage("数据不存在.");
+					responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 					return "/404";
 				}
-				model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
-				model.put("show_time", TimeUtils.getDateString(a.getCreate_time()));
+				Map dbOjb=list.get(0);
+				
+				if(SystemConstants.Check_status_disable.toString().equals(dbOjb.get("status")+"")){
+					responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+					responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
+					return "/404";
+				}
+				//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+				model.put("show_time", TimeUtils.getDateString((Date)dbOjb.get("create_time")));
+				model.addAttribute(RestConstants.Return_G_entity,dbOjb);
+				
 				model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getArticleByUuid(uuid));
 				model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
 			} catch (Exception e) {
@@ -206,7 +235,7 @@ public class ShareController extends AbstractRESTController {
 				responseMessage.setMessage(e.getMessage());
 				return "/404";
 			}
-			model.addAttribute(RestConstants.Return_G_entity,a);
+		
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "/getArticle";
 		}
@@ -221,22 +250,34 @@ public class ShareController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		String uuid=request.getParameter("uuid");
-		Announcements a=null;
 		try {
-			a = (Announcements)nSimpleHibernateDao.getObject(Announcements.class,uuid);
-			if(a==null){
-				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
-				return "/404";
-			}
-			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
-				return "/404";
-			}
-			model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
 			
-			model.put("show_time", TimeUtils.getDateString(a.getCreate_time()));
+			String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.status,t1.message,t1.groupuuid";
+			sql+=" FROM px_announcements t1 ";
+			sql+=" where  t1.uuid='"+DbUtils.safeToWhereString(uuid)+"'";
+			
+			Session session=this.nSimpleHibernateDao.getSession();
+			Query  query =session.createSQLQuery(sql);
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			List<Map> list=query.list();
+			if(list==null||list.size()==0){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
+				return "/404";
+			}
+			Map dbOjb=list.get(0);
+			
+			if(SystemConstants.Check_status_disable.toString().equals(dbOjb.get("status")+"")){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
+				return "/404";
+			}
+			//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+			model.put("show_time", TimeUtils.getDateString((Date)dbOjb.get("create_time")));
+			model.put("group",CommonsCache.get((String)dbOjb.get("groupuuid"), Group4Q.class));
+			
 			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
-			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_gonggao));
+			model.addAttribute(RestConstants.Return_G_entity,dbOjb);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -244,7 +285,7 @@ public class ShareController extends AbstractRESTController {
 			responseMessage.setMessage(e.getMessage());
 			return "/404";
 		}
-		model.addAttribute(RestConstants.Return_G_entity,a);
+	
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "/getAnn";
 	}
@@ -267,7 +308,7 @@ public class ShareController extends AbstractRESTController {
 			a = (ClassNews)nSimpleHibernateDao.getObject(ClassNews.class,uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 			classNewsService.warpVo(a, null);
@@ -276,6 +317,12 @@ public class ShareController extends AbstractRESTController {
 //			model.put("pclass",CommonsCache.get(a.getClassuuid(), PClass.class));
 
 //			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_hudong));
+			
+			if(StringUtils.isNotBlank(a.getUrl())){
+				model.addAttribute("url",a.getUrl());
+			}else{
+				model.addAttribute("url",null);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -304,7 +351,7 @@ public class ShareController extends AbstractRESTController {
 			a = (CookbookPlan)nSimpleHibernateDao.getObject(CookbookPlan.class,uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 			
@@ -371,7 +418,7 @@ public class ShareController extends AbstractRESTController {
 			a = (Group)nSimpleHibernateDao.getObject(Group.class,uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 
@@ -405,7 +452,7 @@ public class ShareController extends AbstractRESTController {
 			a = (Group)nSimpleHibernateDao.getObject(Group.class,uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 
@@ -443,7 +490,7 @@ public class ShareController extends AbstractRESTController {
 			List list= nSimpleHibernateDao.getHibernateTemplate().find(hql);
 			if(list==null||list.size()==0){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 			a=(Announcements)list.get(0);
@@ -522,7 +569,7 @@ public class ShareController extends AbstractRESTController {
 			
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 			
@@ -565,7 +612,7 @@ public class ShareController extends AbstractRESTController {
 			
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
 			
@@ -601,7 +648,9 @@ public class ShareController extends AbstractRESTController {
 		String url=request.getParameter("url");
 		try {
 
-			String title="[链接]"+HttpRequestUtils.httpGetHtmlTitle(url);
+			String title=HttpRequestUtils.httpGetHtmlTitle(url);
+			if(title==null)title="";
+			title="[链接]"+title;
 			model.addAttribute(RestConstants.Return_G_entity,title);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 			return "";
@@ -613,4 +662,56 @@ public class ShareController extends AbstractRESTController {
 			return "";
 		}
 	}
+	
+	
+	/**
+	 * 分享地址-获取话题内容
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getSnsTopic", method = RequestMethod.GET)
+	public String getSnsTopic(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		String uuid=request.getParameter("uuid");
+		try {
+			
+			String sql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_user,t1.yes_count,t1.no_count,t1.reply_count,t1.status,t1.content";
+			sql+=" FROM sns_topic t1 ";
+			sql+=" where  t1.uuid='"+DbUtils.safeToWhereString(uuid)+"'";
+			
+			Session session=this.nSimpleHibernateDao.getSession();
+			Query  query =session.createSQLQuery(sql);
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			List<Map> list=query.list();
+			if(list==null||list.size()==0){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
+				return "/404";
+			}
+			Map dbOjb=list.get(0);
+			
+			if(SystemConstants.Check_status_disable.toString().equals(dbOjb.get("status")+"")){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
+				return "/404";
+			}
+			//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+			model.put("show_time", TimeUtils.getDateString((Date)dbOjb.get("create_time")));
+			model.addAttribute(RestConstants.Return_G_entity,dbOjb);
+			
+			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "/404";
+		}
+	
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "/getSnsTopic";
+	}
+	
 }

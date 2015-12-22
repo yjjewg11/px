@@ -11,5 +11,11 @@
 </head>
 <body >
   <div>${data.context}</div>
+  
+  
+  <%@ include file="subpage_footer.jsp"%> 
+  
 </body>
+
+
 </html>

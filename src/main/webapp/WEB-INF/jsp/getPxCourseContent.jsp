@@ -17,10 +17,7 @@
   </div>
   <div>${data.context}</div>
   
-  
-  <footer class="footer">
-  <p><a href="http://www.wenjienet.com/">问界互动家园</a></p>
-</footer>
+<%@ include file="subpage_footer.jsp"%> 
   
 </body>
 </html>
