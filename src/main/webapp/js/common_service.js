@@ -731,6 +731,9 @@ function common_sns_check_disable(type,uuid){
 
  * */
 function common_check_illegal(type,uuid){
+  	if(!confirm("确定要举报吗?")){
+  		return;
+  	  }
 	var url = hostUrl + "rest/check/illegal.json";
 	$.ajax({
 		type : "POST",

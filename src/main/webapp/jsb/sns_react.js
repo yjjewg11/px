@@ -128,11 +128,18 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
  * */    
 var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_edit", 
  getInitialState: function() {
-	    return this.props.formdata;
+		var formdata= this.props.formdata;
+		formdata.section_id=this.props.section_id;
+		formdata.snsTopic_data=this.props.snsTopic_data;
+	    return formdata;
 	  },
- handleChange: function(event) {			
+ handleChange: function(event) {
 	    this.setState($('#snsAnnouncementsForm').serializeJson());
   },
+  handleChange_Select: function(val) {	
+		this.state.section_id=val;
+		this.setState(this.state);
+	  },
   componentDidMount:function(){
      var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
      this.editor=editor;
@@ -150,13 +157,15 @@ var o = this.state;
     React.createElement("div", {className: "header"}, 
      React.createElement("hr", null)
     ), 
-    
   	React.createElement("div", {className: "am-g"}, 
   	 React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   	  React.createElement("form", {id: "snsAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
 	    React.createElement("input", {type: "hidden", name: "section_id", value: o.section_id}), 
-	    React.createElement("label", {htmlFor: "name"}, "标题:"), 
+  		React.createElement("div", {className: "am-form-group"}, 
+	    React.createElement(AMUIReact.Selected, {btnStyle: "secondary", onChange: this.handleChange_Select, btnWidth: "200", data: o.snsTopic_data, value: o.section_id})
+  	    ), 
+  		React.createElement("label", {htmlFor: "name"}, "标题:"), 
 	    React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
 	    React.createElement("br", null), 
 	    React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
@@ -356,7 +365,8 @@ var Sns_ajax_reply_save = React.createClass({displayName: "Sns_ajax_reply_save",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		PxSnsService.ajax_sns_reply_save(function(){
-			that.refreshReplyList();		
+			$("#snstopic_replay_content").val("");
+			that.refreshReplyList();
 		},'snstopic_replayForm')
 	},
 	componentDidMount:function(){
@@ -544,9 +554,10 @@ var SnsReply_reply_save = React.createClass({displayName: "SnsReply_reply_save",
 	classnewsreply_list_div:"classnewsreply_list_div",
 	formid:"snsreply_replyForm",
 	form_content_id:"form_content_id",
-	reply_save_btn_click:function(){
+	reply_save_btn_click:function(form_content_id){
 		var that=this.props.parentThis;
 		PxSnsService.ajax_sns_reply_save(function(){
+			$("#"+form_content_id).val("");
 			that.refreshReplyList();		
 		},this.formid)
 	},
@@ -564,7 +575,7 @@ React.createElement("input", {type: "hidden", name: "topic_uuid", value: this.pr
 React.createElement("input", {type: "hidden", name: "reply_uuid", value: this.props.uuid}), 
 	 React.createElement("input", {type: "hidden", name: "type", value: type}), 			
 	 React.createElement(AMR_Input, {id: this.form_content_id, type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
-	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")		      
+	 React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this,this.form_content_id), className: "am-btn am-btn-primary"}, "提交")		      
 )	   
 );
 }	
