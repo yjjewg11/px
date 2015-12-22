@@ -128,10 +128,7 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
  * */    
 var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_edit", 
  getInitialState: function() {
-		var formdata= this.props.formdata;
-		formdata.section_id=this.props.section_id;
-		formdata.snsTopic_data=this.props.snsTopic_data;
-	    return formdata;
+	    return this.props.formdata;
 	  },
  handleChange: function(event) {
 	    this.setState($('#snsAnnouncementsForm').serializeJson());
@@ -152,6 +149,9 @@ var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_ed
        }, 
 render: function() {
 var o = this.state;	
+if(!o.section_id)o.section_id="1";
+
+var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
   return (
    React.createElement("div", null, 
     React.createElement("div", {className: "header"}, 
@@ -161,9 +161,8 @@ var o = this.state;
   	 React.createElement("div", {className: "am-u-lg-6 am-u-sm-12"}, 
   	  React.createElement("form", {id: "snsAnnouncementsForm", method: "post", className: "am-form"}, 
   		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
-	    React.createElement("input", {type: "hidden", name: "section_id", value: o.section_id}), 
   		React.createElement("div", {className: "am-form-group"}, 
-	    React.createElement(AMUIReact.Selected, {btnStyle: "secondary", onChange: this.handleChange_Select, btnWidth: "200", data: o.snsTopic_data, value: o.section_id})
+	    React.createElement(AMUIReact.Selected, {btnStyle: "secondary", name: "section_id", onChange: this.handleChange_Select, btnWidth: "200", data: snsTopic_data, value: o.section_id+""})
   	    ), 
   		React.createElement("label", {htmlFor: "name"}, "标题:"), 
 	    React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 

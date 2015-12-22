@@ -71,17 +71,10 @@ function btnclick_sns_snsTopic(m,uuid){
    * @uuid不是则:编辑；
    * */ 	
 function sns_ajax_snsTopic_add_edit(uuid){
-	 var snsTopic_data = [
-		            {value: '1', label: '大杂烩 '},
-		            {value: '2', label: '商品热卖'},
-		            {value: '3', label: '图片专区'}
-		          ];
   //创建话题
   	if(!uuid){	  		
   		React.render(React.createElement(Sns_snsTopic_add_edit,{
-  			formdata:{section_id:""},
-  		    snsTopic_data:snsTopic_data,
-  		    section_id:"1"
+  			formdata:{section_id:"1"}
   			}), G_get_div_body());
   		return;
   	}
@@ -97,9 +90,7 @@ function sns_ajax_snsTopic_add_edit(uuid){
 	 	$.AMUI.progress.done();
 		 if (data.ResMsg.status == "success") {
 		 	React.render(React.createElement(Sns_snsTopic_add_edit,{
-		 		formdata:data.data,
-		 		section_id:"1",
-		 		snsTopic_data:snsTopic_data
+		 		formdata:data.data
 		 		}),G_get_div_body());
 	 	} else {
 			alert("加载数据失败："+data.ResMsg.message);
