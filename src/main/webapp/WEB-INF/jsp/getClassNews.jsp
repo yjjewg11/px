@@ -28,9 +28,16 @@
   </style>
 </head>
 <body>
- 
+ <c:choose>  
+         <c:when test="${empty url}">     
+               <div>${data.content}</div>
+         </c:when>  
+         <c:otherwise>  
+              <a href="${url}"><div>${data.content}</div></a>
+         </c:otherwise>     
+</c:choose> 
 
-  <div>${data.content}</div>
+
   <div>
     <c:forEach items="${data.imgsList}" varStatus="i" var="item" >  
     
@@ -40,5 +47,9 @@
         </tr>  
         </c:forEach>  
   </div>
+  
+  
+  <%@ include file="subpage_footer.jsp"%> 
+  
 </body>
 </html>

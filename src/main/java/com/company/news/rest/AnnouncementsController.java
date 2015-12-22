@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.ResponseMessageConstants;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -347,7 +348,7 @@ public class AnnouncementsController extends AbstractRESTController {
 			a = announcementsService.get(uuid);
 			if(a==null){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-				responseMessage.setMessage("数据不存在.");
+				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "";
 			}
 			if(SystemConstants.Check_status_disable.equals(a.getStatus())){
@@ -355,7 +356,7 @@ public class AnnouncementsController extends AbstractRESTController {
 				//判断是否有权限.有权限的人可以浏览.禁用的.
 				if(!RightUtils.hasRight(a.getGroupuuid(),right, request)){
 					
-					responseMessage.setMessage("数据已被禁止浏览!");
+					responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
 					return "";
 				}
 			}

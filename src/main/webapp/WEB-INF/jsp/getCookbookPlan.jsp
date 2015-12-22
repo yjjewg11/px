@@ -99,5 +99,9 @@
 </div>
 
 </div>
+
+
+<%@ include file="subpage_footer.jsp"%> 
+  
 </body>
 </html>

@@ -10,10 +10,7 @@
  	<link rel="stylesheet" href="../../css/share.css?090132"/>
 </head>
 <body>
-  <div>亲,暂时没有数据!</div>
-<footer class="footer">
-  <p><a href="http://www.wenjienet.com/">问界互动家园</a></p>
-</footer>
-  
+  <h3 style="color: red;text-align: center;">${ResMsg.message}</h3>
+	<%@ include file="subpage_footer.jsp"%> 
 </body>
 </html>

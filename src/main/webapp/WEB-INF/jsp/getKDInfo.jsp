@@ -28,5 +28,10 @@
   <h2> ${data.brand_name}|${data.link_tel}|${data.address}</h2>
   <h3>浏览${count}次</h3>
   <div>${data.description}</div>
+  
+  <%@ include file="subpage_footer.jsp"%> 
+  
 </body>
+
+
 </html>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.ResponseMessageConstants;
 import com.company.news.SystemConstants;
 import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.PxStringUtil;
@@ -336,11 +337,11 @@ try {
 						a = snsTopicService.get(uuid);
 						if(a==null){
 							responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-							responseMessage.setMessage("数据不存在.");
+							responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 							return "";
 						}
 						if(SystemConstants.Check_status_disable.equals(a.getStatus())){
-							responseMessage.setMessage("数据已被禁止浏览!");
+							responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
 							return "";
 						}
 						
