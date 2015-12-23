@@ -431,6 +431,7 @@ var Classnews_show = React.createClass({
 			         <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 				  </div>
 			    </header>
+				   <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
 			    <div className="am-comment-bd">
 			    <div dangerouslySetInnerHTML={{__html:o.content}}>
 			    </div>
@@ -2064,6 +2065,7 @@ var Parent_message_save = React.createClass({
 	},
 	reply_save_btn_click:function(){
 		ajax_parent_message_save(this.props.parent_React);
+		$("#classnews_content_replay").val("");
 	},
 render: function() {
   return (
@@ -3783,6 +3785,7 @@ componentDidMount:function(){
 },
 reply_boss_save_btn_click:function(){
 	ajax_boss_message_save_byRight(this.props.parent_React);
+	$("#classnews_content_replay").val("");
 },
 render: function() {
 return (
@@ -5475,6 +5478,7 @@ var Class_EventsTable_byRight = React.createClass({
      			          <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 					  </div>
      			    </header>
+					   <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
      			    <div className="am-comment-bd">
      			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
      			    	<Common_mg_big_fn  imgsList={o.imgsList} />

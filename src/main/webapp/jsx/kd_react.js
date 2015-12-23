@@ -343,17 +343,20 @@ var Classnews_show = React.createClass({
 			  <a href="javascript:void(0);">
 			    <img src={o.create_img}  className="am-comment-avatar" width="48" height="48"/>
 			  </a>
-
 			  <div className="am-comment-main">
 			    <header className="am-comment-hd">
 			      <div className="am-comment-meta">
 			         <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 				</div>
 			    </header>
+		      
+               <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
 			    <div className="am-comment-bd">
 			    <div dangerouslySetInnerHTML={{__html:o.content}}>
 			    </div>
 			    	<Common_mg_big_fn  imgsList={o.imgsList} />
+
+
 			    </div>
 			    	<footer className="am-comment-footer">
 			    	<div className="am-comment-actions">
@@ -1683,8 +1686,9 @@ var Parent_message_save = React.createClass({
 		 var editor=$( '#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 
 	},
-	reply_save_btn_click:function(){
+	reply_save_btn_click:function(){		
 		ajax_parent_message_save(this.props.parent_React);
+		$("#classnews_content_replay").val("");
 	},
 render: function() {
   return (
@@ -4152,6 +4156,7 @@ refresh_data:function(){
 	
 },
 render: function() {
+var parentThis=this;
 this.load_more_btn_id="load_more_"+this.props.uuid;
 return (
 	  <div>
@@ -4159,7 +4164,7 @@ return (
 	   
 	   </div>
 		<button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-		<Boss_message_save_byRight parent_React={this} send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
+		<Boss_message_save_byRight parentThis={parentThis} send_useruuid={this.props.send_useruuid} revice_useruuid={this.props.revice_useruuid} />
 		</div>
 		
 );
@@ -4178,15 +4183,19 @@ classnewsreply_list_div:"classnewsreply_list_div",
 componentDidMount:function(){
 	$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
 },
-reply_boss_save_btn_click:function(){
-	ajax_boss_message_save_byRight(this.props.parent_React);
-},
+	reply_boss_save_btn_click:function(){
+		var that=this.props.parentThis;
+		ajax_boss_message_save_byRight(function(){
+			$("#Boss_content_replay").val("");
+			that.refresh_data();		
+		})
+	},
 render: function() {
 return (
-	   <form id="editForm" method="post" className="am-form">
+	   <form id="BosseditForm" method="post" className="am-form">
 	   <input type="hidden" name="revice_useruuid"  value={this.props.send_useruuid}/>
 		<input type="hidden" name="send_useruuid"  value={this.props.revice_useruuid}/>			
-		<AMR_Input id="classnews_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
+		<AMR_Input id="Boss_content_replay" type="textarea" rows="10" label="信息发送" placeholder="填写内容" name="message" />
 	      <button type="button"  onClick={this.reply_boss_save_btn_click.bind(this)}  className="am-btn am-btn-primary">发送</button>		      
 	    </form>	   
 );
@@ -6694,6 +6703,7 @@ render: function() {
      			            <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 					  </div>
      			    </header>
+					  <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
      			    <div className="am-comment-bd">
      			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
      			    	<Common_mg_big_fn  imgsList={o.imgsList} />

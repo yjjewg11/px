@@ -2620,23 +2620,25 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * @opt：高级封装做处理 直接把表单和URL地址送进去
   * @formName:表单信息
   * @直接传给服务器，服务器根据自己需要的从form表单取参数；
-  * */
- function ajax_boss_message_save_byRight(that){
+  * */  
+ function ajax_boss_message_save_byRight(callback,formid){
+ 	if(!formid)formid="BosseditForm";
  	var opt={
- 	 formName:"editForm",
+ 	 formName:formid,
  	 url:hostUrl + "rest/message/saveLeaderToParent.json",
  	 cbFN:function(data){
-			if (data.ResMsg.status == "success") {
-				that.refresh_data();
-		} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}  		
- 	  }
+ 		 if (data.ResMsg.status == "success") {
+ 			 G_msg_pop(data.ResMsg.message);
+ 			 if(callback)callback();
+
+ 		} else {
+ 			alert(data.ResMsg.message);
+ 			G_resMsg_filter(data.ResMsg);
+ 		}
+ 	 }
  	 };
  	 G_ajax_abs_save(opt);
- }    
-
+ }
  
  
  

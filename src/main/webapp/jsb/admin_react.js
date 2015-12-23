@@ -1348,6 +1348,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     			        React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, Store.getClassNameByUuid(o.classuuid), "|", o.create_user, "|", Store.getGroupNameByUuid(o.groupuuid))
     			      )
     			    ), 
+					   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: common_classnews_url.bind(this,o.url)}, "url"), 	
     			    React.createElement("div", {className: "am-comment-bd"}, 
     			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
     			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
