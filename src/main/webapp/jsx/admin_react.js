@@ -1348,6 +1348,7 @@ var Parent_EventsTable_div = React.createClass({
     			        <a href="javascript:void(0);" className="am-comment-author">{Store.getClassNameByUuid(o.classuuid)}|{o.create_user}|{Store.getGroupNameByUuid(o.groupuuid)}</a>
     			      </div>
     			    </header>
+					   <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
     			    <div className="am-comment-bd">
     			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
     			    	<Common_mg_big_fn  imgsList={o.imgsList} />

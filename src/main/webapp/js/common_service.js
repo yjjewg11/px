@@ -826,3 +826,28 @@ function G_getHtmlTitle(url,callback){
 
 	  }
 }
+
+
+
+
+
+
+/*
+ * <班级互动>公共url绘制方法
+ * 在kd_react
+ * */
+function common_classnews_url(data){
+	if(!data){
+		  G_msg_pop("URL为空");
+		  return;
+	}
+	Queue.push(common_classnews_url);
+		React.render(React.createElement(Common_Classnews_url,{
+			url:data
+			}), document.getElementById('div_body'));
+};
+
+
+
+
+

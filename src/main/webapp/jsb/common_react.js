@@ -1364,6 +1364,7 @@ var Common_reply_save = React.createClass({displayName: "Common_reply_save",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		common_ajax_reply_save(function(){
+			$("#classnews_content_replay").val("");
 			that.refreshReplyList();
 		
 		})
@@ -1454,3 +1455,18 @@ function G_status(){
         data_list: data
       };
 }
+
+
+/*
+ *URL绘制公用组件
+ * */
+ var Common_Classnews_url = React.createClass({displayName: "Common_Classnews_url", 
+ render: function() {
+ 	  var url = this.props.url;
+ return (
+React.createElement("div", null, 
+React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: url})
+ )
+ );
+ }
+ }); 
