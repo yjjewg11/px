@@ -210,7 +210,7 @@ function ajax_queryMyTimely_myList() {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				MessageTimer.update_create_time(); 
-		        React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), document.getElementById('div_body'));
+		        React.render(React.createElement(Message_queryMyTimely_myList,{formdata:data.list}), G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -383,7 +383,7 @@ function react_ajax_class_students_manage(uuid){
 		classList:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid" ,"name"),
 		classuuid:uuid,
 		stutent_num:stutent_num,
-		students:students}), document.getElementById('div_body'));
+		students:students}), G_get_div_body());
 	return ;
 };
 
@@ -470,7 +470,7 @@ function ajax_class_delete_byRight(uuid){
 * <我的班级>添加学生详情绘制入口
 * */
 function add_studentsByData(formdata){
-	React.render(React.createElement(Mycalss_student_edit,{formdata:formdata}), document.getElementById('div_body'));
+	React.render(React.createElement(Mycalss_student_edit,{formdata:formdata}), G_get_div_body());
 	return;
 };
 
@@ -512,7 +512,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 		React.render(React.createElement(Class_edit,{
 			formdata:formdata,
 			group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-			}), document.getElementById('div_body'));
+			}), G_get_div_body());
 		return;
 	}
 	$.AMUI.progress.start();
@@ -528,7 +528,7 @@ function react_ajax_class_edit_get(formdata,uuid){
 				React.render(React.createElement(Class_edit,{
 					formdata:data.data,
 					group_list:G_selected_dataModelArray_byArray(Store.getGroup(),"uuid","brand_name")
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -571,7 +571,7 @@ function ajax_class_students_look_info(uuid,title){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -598,7 +598,7 @@ function ajax_class_students_look_info(uuid,title){
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Mycalss_student_edit,{
  					formdata:data.data
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -621,7 +621,7 @@ function ajax_classnews_list_div(type){
 	  hd_type=type;
 	   React.render(React.createElement(Classnews_Div_list,{
 		type:hd_type
-		}), document.getElementById('div_body'));  	
+		}), G_get_div_body());  	
 };
 /*
  * <班级互动>服务器请求（首页大图标也调用此请求）
@@ -695,7 +695,7 @@ function ajax_classnews_edit(m,formdata){
 		React.render(React.createElement(Classnews_edit,{
 			formdata:formdata,
 			mycalsslist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
-			}), document.getElementById('div_body'));
+			}), G_get_div_body());
 	}
 };
 /*
@@ -974,7 +974,7 @@ function ajax_teachingplan_dayShow(num,myclazz) {
 					ch_day:begDateStr,					
 					classList:G_selected_dataModelArray_byArray (Store.getMyClassList(),"uuid" ,"name"),
 					formdata:formdata
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 				
 			} else {
 				alert(data.ResMsg.message);
@@ -1010,7 +1010,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
 			G_msg_pop("新建课程，班级id必填");
 			return;
 		}
-		React.render(React.createElement(Teachingplan_edit,{formdata:formdata}), document.getElementById('div_body'));
+		React.render(React.createElement(Teachingplan_edit,{formdata:formdata}), G_get_div_body());
 		return;
 	}
 	$.AMUI.progress.start();
@@ -1026,7 +1026,7 @@ function react_ajax_teachingplan_edit(formdata,uuid,nmae){
 			if (data.ResMsg.status == "success") {
 				React.render(React.createElement(Teachingplan_edit,{
 					formdata:data.data
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1091,7 +1091,7 @@ function ajax_cookbookPlan_dayShow(num,groupuuid) {
 					ch_group:G_selected_dataModelArray_byArray(list,"uuid" ,"brand_name"),
 					ch_day:begDateStr,
 					formdata:formdata
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 				
 			} else {
 				alert(data.ResMsg.message);
@@ -1320,7 +1320,7 @@ function ajax_parentContactByMyStudent(student_name,class_uuid){
 					//type:g_parentContact_listToShow_type,
 					formdata:data.list,
   					class_list:G_selected_dataModelArray_byArray(Store.getMyClassList(),"uuid","name")
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1449,7 +1449,7 @@ function ajax_parentContact_tels(tels){
 //					group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 //					events: data.list.data,
 //					responsive: true, bordered: true, striped :true,hover:true,striped:true
-//				}), document.getElementById('div_body'));
+//				}), G_get_div_body());
 //			} else {
 //				alert(data.ResMsg.message);
 //				G_resMsg_filter(data.ResMsg);
@@ -1475,7 +1475,7 @@ function ajax_Teacher_tel_div(groupuuid){
 	React.render(React.createElement(Announcements_Teacher_tel_div,{
 		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 		groupuuid:groupuuid
-	}), document.getElementById('div_body'));  	
+	}), G_get_div_body());  	
 };
 
 /*
@@ -1613,10 +1613,10 @@ function react_ajax_favorites_show(type,reluuid){
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
 	   				if(data.list.length!=0){
-		   				React.render(React.createElement(My_student_tel,{formdata:data.list}), document.getElementById('div_body'));	
+		   				React.render(React.createElement(My_student_tel,{formdata:data.list}), G_get_div_body());	
 	   				}else{
 	   					G_msg_pop("您的信箱暂无数据!");
-		   				React.render(React.createElement(My_student_tel2), document.getElementById('div_body'));
+		   				React.render(React.createElement(My_student_tel2), G_get_div_body());
 	   				}
 
 	   			} else {
@@ -1650,7 +1650,7 @@ function react_ajax_favorites_show(type,reluuid){
 						events: data.list,
  						responsive: true, bordered: true, striped :true,hover:true,striped:true
  						
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
  	   			} else {
  	   				alert("加载数据失败："+data.ResMsg.message);
  	   			}
@@ -1681,7 +1681,7 @@ function react_ajax_favorites_show(type,reluuid){
   				React.render(React.createElement(Group_EventsTable_byRight, {
   					events: data.list,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
-  					}), document.getElementById('div_body'));
+  					}), G_get_div_body());
   			} else {
   				alert(data.ResMsg.message);
   				G_resMsg_filter(data.ResMsg);
@@ -1715,7 +1715,7 @@ function react_ajax_favorites_show(type,reluuid){
   */
   function ajax_group_edit_byRight(m,formdata){
     if(m=="add"){
-  	React.render(React.createElement(Group_edit_byRight,{formdata:formdata}), document.getElementById('div_body'));
+  	React.render(React.createElement(Group_edit_byRight,{formdata:formdata}), G_get_div_body());
   	return;
      }
      	$.AMUI.progress.start();
@@ -1729,7 +1729,7 @@ function react_ajax_favorites_show(type,reluuid){
      			$.AMUI.progress.done();
      			if (data.ResMsg.status == "success") {
      				if(m=="edit"){
-     					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), document.getElementById('div_body'));
+     					React.render(React.createElement(Group_edit_byRight,{formdata:data.data}), G_get_div_body());
      				}else{
      					React.render(React.createElement(Group_show_byRight,{formdata:data.data,count:data.count}), G_get_div_second());
      				}
@@ -1788,7 +1788,7 @@ function ajax_announce_listByGroup_byRight(){
 		events: [],
 		type:announce_types,
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 	return;
 }; 
 /*
@@ -1817,7 +1817,7 @@ $.ajax({
 				share_url:data.share_url,
 				data:data.data,
 				count:data.count
-				}), document.getElementById('div_body'));
+				}), G_get_div_body());
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
 		}
@@ -1853,7 +1853,7 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
   		React.render(React.createElement(Announcements_edit_byRight,{
   			formdata:formdata,
   			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
-  			}), document.getElementById('div_body'));
+  			}), G_get_div_body());
   		return;
   	}
   	$.AMUI.progress.start();
@@ -1869,7 +1869,7 @@ function react_ajax_announce_edit_byRight(formdata,uuid){
   				React.render(React.createElement(Announcements_edit_byRight,{
   					formdata:data.data,
   					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_announce_m"),"uuid","brand_name")
-  					}),document.getElementById('div_body'));
+  					}),G_get_div_body());
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
   			}
@@ -1933,7 +1933,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   	  hd_type_byRight=type;
   	  React.render(React.createElement(Classnews_Div_list_byRight,{
   		type:hd_type_byRight
-  		}), document.getElementById('div_body'));  	
+  		}), G_get_div_body());  	
   };
   /*
    * <班级互动>服务器请求
@@ -2000,7 +2000,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   		React.render(React.createElement(Classnews_edit_byRight,{
   			formdata:formdata,
   			mycalsslist:G_selected_dataModelArray_byArray(mycalsslist,"uuid","name")
-  			}), document.getElementById('div_body'));
+  			}), G_get_div_body());
   	}
   };
   /*
@@ -2055,7 +2055,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 //     					handleClick:btn_click_userinfo,
 //     					responsive: true, bordered: true, striped :true,hover:true,striped:true
 //     					
-//     				}), document.getElementById('div_body'));
+//     				}), G_get_div_body());
 //     			} else {
 //     				alert(data.ResMsg.message);
 //     				G_resMsg_filter(data.ResMsg);
@@ -2082,7 +2082,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
 	    handleClick:btn_click_userinfo,
  		groupuuid:groupuuid
- 	}), document.getElementById('div_body'));  	
+ 	}), G_get_div_body());  	
  };
  /*
   * <老师管理>（获取用户列表服务器请求）；
@@ -2168,7 +2168,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      		React.render(React.createElement(Userinfo_edit,{
      			formdata:formdata,
      			select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name")
-     			}), document.getElementById('div_body'));
+     			}), G_get_div_body());
      		return;
      	
      	}
@@ -2186,7 +2186,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      					mygroup_uuids:data.mygroup_uuids,
      					formdata:data.data,
      					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name")
-     					}), document.getElementById('div_body'));
+     					}), G_get_div_body());
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
      			}
@@ -2269,7 +2269,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      					formdata:data,
      					select_group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_teacher_m"),"uuid","brand_name"),
      					sex:data.sex
-     					}), document.getElementById('div_body'));
+     					}), G_get_div_body());
      			} else {
      				alert("加载数据失败："+data.ResMsg.message);
      			}
@@ -2309,7 +2309,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	React.render(React.createElement(UserTeacher_EventsTable_div,{
  		group_list:G_selected_dataModelArray_byArray(list,"uuid","brand_name"),
  		groupuuid:groupuuid
- 	}), document.getElementById('div_body'));  	
+ 	}), G_get_div_body());  	
  };
  /*
   * <老师资料管理>（获取用户列表服务器请求）；
@@ -2407,7 +2407,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_cookbookplan_m"),"uuid","brand_name"),
   					handleClick:btn_click_cookbookPlan_byRight,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
-  					}), document.getElementById('div_body'));
+  					}), G_get_div_body());
   				
   			} else {
   				alert(data.ResMsg.message);
@@ -2442,7 +2442,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   		React.render(React.createElement(CookbookPlan_edit_byRight,{
   			group_list:Store.getCurGroupByRight("KD_cookbookplan_m"),
   			formdata:formdata}
-  		), document.getElementById('div_body'));
+  		), G_get_div_body());
   		return; 	
   	}
   	Queue.push(function(){react_ajax_cookbookPlan_edit_byRight(m,formdata);},"食谱编辑");
@@ -2459,7 +2459,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   				React.render(React.createElement(CookbookPlan_edit_byRight,{
   					group_list:Store.getGroupByRight("KD_cookbookplan_m"),
   					formdata:data.data
-  					}), document.getElementById('div_body'));
+  					}), G_get_div_body());
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
   			}
@@ -2538,10 +2538,10 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
 	   				if(data.list.length!=0){
-		   				React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), document.getElementById('div_body'));	
+		   				React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), G_get_div_body());	
 	   				}else{
 	   					G_msg_pop("暂无园长信箱数据!");
-		   				React.render(React.createElement( Boss_student_tel2_byRight), document.getElementById('div_body'));
+		   				React.render(React.createElement( Boss_student_tel2_byRight), G_get_div_body());
 	   				}
 
 	   			} else {
@@ -2561,7 +2561,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 //  function ajax_my_message_list(send_useruuid,revice_useruuid,send_user){
 //  	var message_name="我的信箱222222222222";
 //  	Queue.push(function(){ajax_my_message_list(send_useruuid,revice_useruuid,send_user);},message_name);
-//		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), document.getElementById('div_body'));
+//		React.render(React.createElement( My_message_stage,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), G_get_div_body());
 //	   };
 //		   
 		   
@@ -2679,7 +2679,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  					events: data.list,
  					handleClick:btn_click_class_list_byRight,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById('div_body'));				
+ 					}), G_get_div_body());				
  			}else{
  				alert(data.ResMsg.message);
  				G_resMsg_filter(data.ResMsg);
@@ -2721,7 +2721,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * <班级管理>毕业按钮处理方法
   * */
  function ajax_class_edit_byRight(formdata,operate){
- 	//React.render(React.createElement(Class_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), document.getElementById('div_body'));
+ 	//React.render(React.createElement(Class_edit,{operate:operate,formdata:formdata,group_list:Store.getGroup()}), G_get_div_body());
  	
  };
  /*
@@ -2737,7 +2737,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		React.render(React.createElement(Class_edit_byRight,{
  			formdata:formdata,
  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
- 			}), document.getElementById('div_body'));
+ 			}), G_get_div_body());
  		return;
  	}
  	$.AMUI.progress.start();
@@ -2753,7 +2753,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  				React.render(React.createElement(Class_edit_byRight,{
  					formdata:data.data,
  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name")
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -2854,7 +2854,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		formdata:formdata,
  		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
 		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),
- 		students:students}), document.getElementById('div_body'));
+ 		students:students}), G_get_div_body());
  };
 
  
@@ -2885,7 +2885,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  function ajax_class_students_edit_byRight(formdata,uuid){
  	if(!uuid){
  		Queue.push(function(){ajax_class_students_edit_byRight(formdata,uuid);},"新增学生");
- 		React.render(React.createElement(Class_student_edit_byRight,{formdata:formdata}), document.getElementById('div_body'));
+ 		React.render(React.createElement(Class_student_edit_byRight,{formdata:formdata}), G_get_div_body());
  		return;
  	}
  	Queue.push(function(){ajax_class_students_edit_byRight(formdata,uuid);},"编辑学生");
@@ -2902,7 +2902,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Class_student_edit_byRight,{
  					formdata:data.data
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
  			} else {
  				alert("加载数据失败："+data.ResMsg.message);
  			}
@@ -3009,7 +3009,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
  					events: data.list,
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
  				
  			} else {
  				alert(data.ResMsg.message);
@@ -3042,7 +3042,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_accounts_m"),"uuid","brand_name"),
  			formdata:formdata
  			}),
- 			document.getElementById('div_body'));
+ 			G_get_div_body());
  };
 
  /*<收支记录>保存按钮服务器请求；	
@@ -3102,7 +3102,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
  	  					
- 	  				}), document.getElementById('div_body'));
+ 	  				}), G_get_div_body());
  					
  				} else {
  					alert(data.ResMsg.message);
@@ -3182,7 +3182,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
  	  					events: data.list,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
- 	  				}), document.getElementById('div_body'));					
+ 	  				}), G_get_div_body());					
  				}
  			}
  		}); 
@@ -3206,7 +3206,7 @@ function menu_kd_roleUser_list_fn() {
 			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 			role_list:Store.getRoleList(1)
 		};
-	React.render(React.createElement(G_Role_User_EventsTable,opt), document.getElementById('div_body'));
+	React.render(React.createElement(G_Role_User_EventsTable,opt), G_get_div_body());
 };
 
 //（我）<修改教师资料资料>
@@ -3234,7 +3234,7 @@ function menu_userteacher_fn(){
 				React.render(React.createElement(Div_userteacher_update,{
 					formdata:data.data,
 					userteacherlist:userteacherlist
-					}), document.getElementById('div_body'));
+					}), G_get_div_body());
 				
 			} else {
 				alert(data.ResMsg.message);
@@ -3263,10 +3263,10 @@ function menu_userteacher_fn(){
 //	   			$.AMUI.progress.done();
 //	   			if (data.ResMsg.status == "success") {
 //	   				if(data.list.length!=0){
-//		   				//React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), document.getElementById('div_body'));	
+//		   				//React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), G_get_div_body());	
 //	   				}else{
 //	   					G_msg_pop("暂无刷卡数据!");
-//		   				React.render(React.createElement( Boss_student_tel2_byRight), document.getElementById('div_body'));
+//		   				React.render(React.createElement( Boss_student_tel2_byRight), G_get_div_body());
 //	   				}
 //
 //	   			} else {
@@ -3360,7 +3360,7 @@ $.ajax({
 // 	  					events: data.list.data,
 // 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
 // 	  					
-// 	  				}), document.getElementById('div_body'));
+// 	  				}), G_get_div_body());
 // 					
 // 				} else {
 // 					alert(data.ResMsg.message);
@@ -3377,7 +3377,7 @@ $.ajax({
  	  * 基本框 等
  	  * */
  	 function ajax_px_help_div(){
- 	 	React.render(React.createElement(Announcements_px_Div_list), document.getElementById('div_body'));  	
+ 	 	React.render(React.createElement(Announcements_px_Div_list), G_get_div_body());  	
  	 };
  	 /*
  	 *(帮助列表)服务器请求share/articleList

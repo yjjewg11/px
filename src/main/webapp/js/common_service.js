@@ -838,13 +838,16 @@ function G_getHtmlTitle(url,callback){
  * */
 function common_classnews_url(data){
 	if(!data){
-		  G_msg_pop("URL为空");
+		//  G_msg_pop("URL为空");
 		  return;
 	}
-	Queue.push(common_classnews_url);
+	var title="链接详情";
+	var flag=G_CallPhoneFN.openNewWindowUrl(title,title,null,data);
+	if(flag)return;
+
 		React.render(React.createElement(Common_Classnews_url,{
 			url:data
-			}), document.getElementById('div_body'));
+			}),G_get_div_second());
 };
 
 

@@ -336,7 +336,15 @@ var Classnews_show = React.createClass({
 	render: function() {		  
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)o.create_img=G_def_headImgPath;		  
+		  if(!o.create_img)o.create_img=G_def_headImgPath;		 
+		  
+		   
+			  var contentDiv=( <div dangerouslySetInnerHTML={{__html:o.content}}></div>);
+
+			  if(o.url){
+					 contentDiv=(  <a href="javascript:void(0);"  onClick={common_classnews_url.bind(this,o.url)}><div className="classnews_url" dangerouslySetInnerHTML={{__html:o.content}}></div>  </a>);
+			  }
+
 	  return (
 			  <div>
 			  <article className="am-comment am-margin-xs">
@@ -350,11 +358,9 @@ var Classnews_show = React.createClass({
 				</div>
 			    </header>
 		      
-               <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
 			    <div className="am-comment-bd">
-			    <div dangerouslySetInnerHTML={{__html:o.content}}>
-			    </div>
-			    	<Common_mg_big_fn  imgsList={o.imgsList} />
+					{contentDiv}
+			   <Common_mg_big_fn  imgsList={o.imgsList} />
 
 
 			    </div>
@@ -6690,6 +6696,11 @@ render: function() {
      		  if(!o.imgsList)o.imgsList=[];
      		  if(!o.create_img)o.create_img=G_def_headImgPath;
      		  
+			  var contentDiv=( <div dangerouslySetInnerHTML={{__html:o.content}}></div>);
+
+			  if(o.url){
+					 contentDiv=(  <a href="javascript:void(0);"  onClick={common_classnews_url.bind(this,o.url)}><div className="classnews_url" dangerouslySetInnerHTML={{__html:o.content}}></div>  </a>);
+			  }
      	  return (
      			  <div>
      			  <article className="am-comment am-margin-xs">
@@ -6703,9 +6714,9 @@ render: function() {
      			            <a href="javascript:void(0);" className="am-comment-author">{o.class_name}|{o.create_user}|{o.group_name}</a>
 					  </div>
      			    </header>
-					  <AMR_Button amSize="xs" amStyle="secondary" onClick={common_classnews_url.bind(this,o.url)} >url</AMR_Button>	
+					 
      			    <div className="am-comment-bd">
-     			    <div dangerouslySetInnerHTML={{__html:o.content}}></div>
+						{contentDiv}
      			    	<Common_mg_big_fn  imgsList={o.imgsList} />
      			    </div>
      			    	<footer className="am-comment-footer">
