@@ -1,4 +1,5 @@
 /**
+ * 废弃,合并到phone_interface.js
  * 
  * 第1步,启用ios模式.ios 等待webview加载完成后,调用:
  * G_jsCallBack.setIosApp();//设置为ios调用模式,给ios使用.

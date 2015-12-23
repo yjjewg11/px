@@ -16,7 +16,7 @@
  <p>${show_time}|${data.create_user}|赞成 ${data.yes_count}|反对${data.no_count}评论${data.reply_count}| 浏览${count}
   </p>
   </div>
-  <div>${data.context}</div>
+  <div>${data.content}</div>
   
 <%@ include file="subpage_footer.jsp"%> 
   

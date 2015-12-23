@@ -33,7 +33,8 @@ var SnsIndexPage=(function(){
 				$.AMUI.progress.done();
 				if (data.ResMsg.status == "success") {
 					//alert(data.userinfo.loginname);
-					G_msg_pop(data.userinfo.name+"签到");
+				//	G_msg_pop(data.userinfo.name+"签到");
+					SnsIndexPage.user=data.userinfo;
 					//if(data.userinfo)Store.setUserinfo(data.userinfo);
 					//if(data.list)Store.setGroup(data.list);
 					//G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);			
@@ -52,7 +53,8 @@ var SnsIndexPage=(function(){
 		function title_info_init(type){
 			//主页顶部按钮；
 			var header_right=null;
-			if(!type)type="话题";
+			if(!type)type="话题|"+SnsIndexPage.user.name;
+			
 			var div_header_title_info = {
 					  "title":type,
 					  "link": "#title-link",
@@ -122,7 +124,9 @@ var SnsIndexPage=(function(){
 	
 	
 	//SnsIndexPage.init();
+	//SnsIndexPage.user.name
 	return {
+		user:{uuid:"",name:"游客"},
 		menu_dohome:menu_dohome,
 		addTopic:addTopic,
 		init:init

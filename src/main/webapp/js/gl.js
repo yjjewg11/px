@@ -393,6 +393,12 @@ window.Queue={
 				$("html,body").animate({scrollTop:Queue.body_scrollTop},200);
 				Queue.body_scrollTop=0;
 				body_show();
+				
+				//如果第1级没内容,返回false,继续执行回退方法.否则不继续执行.
+				if($("#div_body").text()==""){
+					return false;
+				}
+			
 				return true;
 			}
 			return false;
@@ -405,7 +411,7 @@ window.Queue={
 			this.isBack=true;
 			if(this.arr.length==0){
 				G_CallPhoneFN.finishProject();
-				if(Queue.homePageFn&&typeof Queue.homePageFn=='function')Queue.homePageFn();
+				if(typeof Queue.homePageFn=='function')Queue.homePageFn();
 				return;
 			}
 			var tmp=this.pop();

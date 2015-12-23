@@ -169,7 +169,7 @@ public abstract class AbstractService {
 	 * @return
 	 */
 	public boolean isFavorites(SessionUserInfoInterface user,String reluuid) {
-		if(StringUtils.isBlank(reluuid)||user==null)return false;
+		if(StringUtils.isBlank(reluuid)||user==null)return true;
 		List list = nSimpleHibernateDao.getHibernateTemplate().find("select reluuid from Favorites where reluuid=? and user_uuid=?", reluuid,user.getUuid());
 
 		if (list != null&&list.size()>0)// 已被占用

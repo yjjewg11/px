@@ -1,0 +1,7 @@
+﻿<jscompress public="http://www.jscompress.cn/" command="import-combineset">
+<combinefile path=".js">
+<sourcefile path=".\lrz\mobileFix.mini.js" />
+<sourcefile path=".\lrz\exif.js" />
+<sourcefile path=".\lrz\lrz.js" />
+</combinefile>
+</jscompress>

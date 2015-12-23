@@ -1104,7 +1104,7 @@ public class UserinfoService extends AbstractService {
 		}
 
 		if (!user.getPassword().equals(userRegJsonform.getOldpassword())) {
-			responseMessage.setMessage("2次密码不匹配！");
+			responseMessage.setMessage("当前密码不匹配！");
 			return false;
 		}
 

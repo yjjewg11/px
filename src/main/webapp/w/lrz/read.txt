@@ -1,0 +1,26 @@
+只需要引入合并后的文件.lrz.merge.min.js
+图片质量压缩
+ lrz(file, {
+		            before: function() {
+		                console.log('压缩开始');
+		            },
+		            fail: function(err) {
+		                console.error(err);
+		            },
+		            always: function() {
+		                console.log('压缩结束');
+		            },
+		            done: function (results) {
+		            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+		            console.log(results);
+		            /*
+		            var data = {
+		                    base64: results.base64,
+		                    size: results.base64.length // 校验用，防止未完整接收
+		                };*/
+			            if(results&&results.base64){
+			            	
+			            	w_img_upload_nocut.ajax_uploadByphone(results.base64);
+			            }
+		            }
+		            });//end done fn

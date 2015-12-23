@@ -375,7 +375,7 @@ var div_menu_handleClick = function(nav, index, e) {
 			 body_show();
 			 this.closeAll();
 			 nav.fn();			 
-		 }
+		 } 
 		  console.log('点击的链接为1：', nav);
 	  } else {
 	    e.preventDefault();
