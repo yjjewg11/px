@@ -93,9 +93,9 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
 			  length=event.imgList.length;
 		      return (
        React.createElement("li", {className: "am-g am-list-item-dated", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
-		 React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
+		 React.createElement(AMUIReact.Image, {className: event.level==9?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
 		 React.createElement(AMUIReact.Image, {className: event.level==1?"am-show":"am-hide", id: "img_head_image", src: img_hot}), 
-		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd"}, 
+		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd snsTopic_list_title"}, 
   		  React.createElement("h4", null, event.title)
   		 ), 	
             React.createElement("div", {className: "am-list-item-text"}, 
@@ -207,11 +207,27 @@ render: function() {
 return (
 
   React.createElement("div", null, 
-	  React.createElement(AMUIReact.Article, {
-		 title: o.title, 
-		 meta: GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+this.props.count}, 
-		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
-		), 
+
+	  React.createElement("article", {className: "am-article"}, 
+  React.createElement("div", {className: "am-article-hd"}, 
+    React.createElement("h1", {className: "am-article-title"}, o.title), 
+    React.createElement("p", {className: "am-article-meta am-text-default"}, 
+	GTimeShow.getYMD(o.create_time)+" | "+o.create_user+ " |", 
+		  React.createElement("i", {className: "am-icon-thumbs-up am-margin-sm"}, o.yes_count), 
+			  
+		    "|", 
+			React.createElement("i", {className: "am-icon-thumbs-down  am-margin-sm"}, " ", o.no_count), 
+			 
+		  " | 评论"+o.reply_count+" | 浏览"+this.props.count
+	  )
+  ), 
+
+  React.createElement("div", {className: "am-article-bd", dangerouslySetInnerHTML: {__html: o.content}}
+ 
+  )
+), 
+
+	  
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除")

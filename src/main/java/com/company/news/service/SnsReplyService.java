@@ -121,7 +121,7 @@ public class SnsReplyService extends AbstractService {
 		return true;
 	}
 	public PageQueryResult listPage(PaginationData pData,String topic_uuid,String reply_uuid,
-			HttpServletRequest request) {
+			HttpServletRequest request,String sort ) {
 
 		if(StringUtils.isBlank(reply_uuid)&&StringUtils.isBlank(topic_uuid)){
 			return new PageQueryResult();
@@ -136,7 +136,17 @@ public class SnsReplyService extends AbstractService {
 		if(StringUtils.isNotBlank(topic_uuid)){
 			sql+=" and reply_uuid='0' and t1.topic_uuid= '"+DbUtils.safeToWhereString(topic_uuid)+"'";
 		}
-		sql += " order by t1.create_time desc";
+		
+		//sort	 否	排序.取值: hot(热评). recent(最新).oldest(最早)
+		if("hot".equals(sort)){
+			sql += " order by t1.yes_count desc";
+		}else if("oldest".equals(sort)){
+			sql += " order by t1.create_time asc";
+		}else{
+			sql += " order by t1.create_time desc";
+		}
+		
+	
 
 		Query  query =session.createSQLQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);

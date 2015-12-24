@@ -121,8 +121,7 @@ public class ClassNewsReplyService extends AbstractService {
 		if (StringUtils.isNotBlank(newsuuid))
 			hql += " and  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
 
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
+	
 
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNewsReply> list = pageQueryResult.getData();

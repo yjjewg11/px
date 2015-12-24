@@ -93,9 +93,9 @@ var sns_list_snsTopic_rect = React.createClass({
 			  length=event.imgList.length;
 		      return (
        <li className="am-g am-list-item-dated" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
-		 <AMUIReact.Image className={event.level==2?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
+		 <AMUIReact.Image className={event.level==9?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
 		 <AMUIReact.Image className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
-		 <a href="javascript:void(0);" className="am-list-item-hd">
+		 <a href="javascript:void(0);" className="am-list-item-hd snsTopic_list_title">
   		  <h4>{event.title}</h4>
   		 </a>	
             <div className="am-list-item-text">
@@ -207,11 +207,27 @@ render: function() {
 return (
 
   <div>
-	  <AMUIReact.Article
-		 title={o.title}
-		 meta={GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 赞成"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+this.props.count}>
-		 <div dangerouslySetInnerHTML={{__html: o.content}}></div>		 
-		</AMUIReact.Article>
+
+	  <article className="am-article">
+  <div className="am-article-hd">
+    <h1 className="am-article-title">{o.title}</h1>
+    <p className="am-article-meta am-text-default">
+	{GTimeShow.getYMD(o.create_time)+" | "+o.create_user+ " |"}
+		  <i className='am-icon-thumbs-up am-margin-sm'>{o.yes_count}</i>
+			  
+		    |
+			<i className='am-icon-thumbs-down  am-margin-sm'> {o.no_count}</i>
+			 
+		  {" | 评论"+o.reply_count+" | 浏览"+this.props.count}
+	  </p>
+  </div>
+
+  <div className="am-article-bd"  dangerouslySetInnerHTML={{__html: o.content}}>
+ 
+  </div>
+</article>
+
+	  
       <AMR_ButtonToolbar>
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 

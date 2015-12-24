@@ -215,3 +215,14 @@ color: red;
 .classnews_url{
 	background-color: #E6E6E6;
 }
+
+
+.snsTopic_list_title{
+	padding-right: 5px;
+display: block;
+word-wrap: normal;
+text-overflow: ellipsis;
+white-space: normal;
+overflow: visible;
+
+}
