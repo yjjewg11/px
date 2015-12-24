@@ -458,7 +458,7 @@ var pxXheditorPlugin={
 				var tmp=jTestInput.val();
 				if(!tmp||tmp=="http://")return false;
 				_this.loadBookmark();
-				_this.pasteHTML('<audio src="'+tmp+'" controls="controls"></audio>');
+				_this.pasteHTML('<audio src="'+tmp+'" controls="controls" preload="auto"></audio>');
 				_this.hidePanel();
 				return false;	
 			});
