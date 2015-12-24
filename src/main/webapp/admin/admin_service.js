@@ -1514,3 +1514,52 @@ function admin_snsReply_checklist_byRight(){
 		}), document.getElementById('div_body'));
 	return;
 }; 
+
+
+
+//————————————————————————————审核话题加精<审核>—————————————————————————    
+/*
+*(审核话题加精)服务器请求
+* */
+function admin_sns_finelist_byRight(){
+	React.render(React.createElement(Admin_SnsfineTable_byRight, {
+		pageNo:1,
+		events: [],
+		responsive: true, bordered: true, striped :true,hover:true,striped:true
+		}), document.getElementById('div_body'));
+	return;
+}; 
+/*
+* 审核话题加精模块详情内容绘制
+* */
+function admin_snsTopic_show_byRight(uuid,pingbiType){
+	Queue.push(function(){admin_snsTopic_show_byRight(uuid,pingbiType);},"话题详情");
+	console.log("pingbiType",pingbiType);
+	$.AMUI.progress.start();
+  var url = hostUrl + "rest/snsTopic/"+uuid+".json";
+$.ajax({
+	type : "GET",
+	url : url,
+	dataType : "json",
+	 async: true,
+	success : function(data) {
+		$.AMUI.progress.done();
+		if (data.ResMsg.status == "success") {
+				var o=data.data;
+				  if(o.url){
+						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
+						if(flag)return;
+				  }
+			React.render(React.createElement(Sns_snsTopic_show_byRight,{
+				pingbiType:pingbiType,
+				share_url:data.share_url,
+				data:data.data,
+				count:data.count
+				}), document.getElementById('div_body'));
+		} else {
+			alert("加载数据失败："+data.ResMsg.message);
+		}
+	},
+	error :G_ajax_error_fn
+	});
+}; 

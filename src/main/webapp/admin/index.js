@@ -180,6 +180,11 @@ function login_affter_init(){
   	                      "title": "审核机构"
   	                    },
   	                    {
+ 	                    	 "fn":menu_sns_fine_fn,
+ 	                        "link": "##",
+ 	                        "title": "话题加精审核"
+ 	                      },
+  	                    {
   	                    	 "fn":menu_sns_check_fn,
   	                        "link": "##",
   	                        "title": "审核话题举报"
@@ -419,6 +424,11 @@ function menu_sns_check_fn(){
 function menu_snsReply_check_fn(){
 	Queue.push(function(){menu_snsReply_check_fn();},"话题评论举报审核");
 	admin_snsReply_checklist_byRight();
+}
+//审核话题加精
+function menu_sns_fine_fn(){
+	Queue.push(function(){menu_sns_fine_fn();},"审核话题加精");
+	admin_sns_finelist_byRight();
 }
 ajax_getUserinfo(true);
 //如果需要在手机或平板等触摸设备上使用 React，需要调用
