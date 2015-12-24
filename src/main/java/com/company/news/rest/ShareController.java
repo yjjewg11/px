@@ -23,6 +23,7 @@ import com.company.news.ProjectProperties;
 import com.company.news.ResponseMessageConstants;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
@@ -697,11 +698,23 @@ public class ShareController extends AbstractRESTController {
 				responseMessage.setMessage(ResponseMessageConstants.Check_status_disable);
 				return "/404";
 			}
-			//model.put("group",CommonsCache.get(a.getGroupuuid(), Group.class));
+			//修复分享话题,点击次数不准确bug.
+			Long cacheCount=PxRedisCache.getIncrSnsTopicCountByExt_uuid(uuid);
+			if(cacheCount==null||cacheCount<=1){
+				try {
+					Long tmp_count=Long.valueOf(dbOjb.get("click_count")+"");
+					if(tmp_count==null)tmp_count=0l;
+					cacheCount=tmp_count+1;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				PxRedisCache.setSnsTopicByExt_uuid(uuid, cacheCount);
+			}
+			dbOjb.put("click_count", cacheCount);
+			
 			model.put("show_time", TimeUtils.getDateString((Date)dbOjb.get("create_time")));
 			model.addAttribute(RestConstants.Return_G_entity,dbOjb);
 			
-			model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

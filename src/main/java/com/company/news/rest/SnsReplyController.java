@@ -93,7 +93,14 @@ public class SnsReplyController extends AbstractRESTController {
 			//String reply_uuid=null;
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult list = snsReplyService.listPage(pData,topic_uuid,null,request);
+			
+			
+
+			//sort	 否	排序.取值: hot(热评). recent(最新).oldest(最早)
+			String sort = request.getParameter("sort");
+			
+		
+			PageQueryResult list = snsReplyService.listPage(pData,topic_uuid,null,request,sort);
 			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

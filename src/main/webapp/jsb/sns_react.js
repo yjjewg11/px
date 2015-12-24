@@ -93,11 +93,10 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
 			  length=event.imgList.length;
 		      return (
        React.createElement("li", {className: "am-g am-list-item-dated", onClick: PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}, 
-		 
-		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd"}, 
-         React.createElement(AMUIReact.Image, {className: event.level==2?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
+		 React.createElement(AMUIReact.Image, {className: event.level==9?"am-show":"am-hide", id: "img_head_image", src: img_fine}), 
 		 React.createElement(AMUIReact.Image, {className: event.level==1?"am-show":"am-hide", id: "img_head_image", src: img_hot}), 
-  		 event.title
+		 React.createElement("a", {href: "javascript:void(0);", className: "am-list-item-hd snsTopic_list_title"}, 
+  		  React.createElement("h4", null, event.title)
   		 ), 	
             React.createElement("div", {className: "am-list-item-text"}, 
             React.createElement("h4", null, event.summary)
@@ -109,7 +108,7 @@ var sns_list_snsTopic_rect = React.createClass({displayName: "sns_list_snsTopic_
             	 )
             }), 
   		   React.createElement("div", {className: "am-list-item-text"}, 
-  		    "作者：", event.create_user, "  |  有", event.reply_count, "人回复 |  点赞  ", event.yes_count, "   |   ", React.createElement("time", null, GTimeShow.getYMD(event.create_time))
+  		    "作者：", event.create_user, "  |  有", event.reply_count, "人回复  |   ", React.createElement("time", null, GTimeShow.getYMD(event.create_time))
   		   )
   		   
   	   )
@@ -208,11 +207,27 @@ render: function() {
 return (
 
   React.createElement("div", null, 
-	  React.createElement(AMUIReact.Article, {
-		 title: o.title, 
-		 meta: GTimeShow.getYMD(o.create_time)+" | "+o.create_user+" | 点赞"+o.yes_count+" | 反对"+o.no_count+" | 评论"+o.reply_count+" | 浏览"+this.props.count}, 
-		 React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})		 
-		), 
+
+	  React.createElement("article", {className: "am-article"}, 
+  React.createElement("div", {className: "am-article-hd"}, 
+    React.createElement("h1", {className: "am-article-title"}, o.title), 
+    React.createElement("p", {className: "am-article-meta am-text-default"}, 
+	GTimeShow.getYMD(o.create_time)+" | "+o.create_user+ " |", 
+		  React.createElement("i", {className: "am-icon-thumbs-up am-margin-sm"}, o.yes_count), 
+			  
+		    "|", 
+			React.createElement("i", {className: "am-icon-thumbs-down  am-margin-sm"}, " ", o.no_count), 
+			 
+		  " | 评论"+o.reply_count+" | 浏览"+this.props.count
+	  )
+  ), 
+
+  React.createElement("div", {className: "am-article-bd", dangerouslySetInnerHTML: {__html: o.content}}
+ 
+  )
+), 
+
+	  
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除")
@@ -301,7 +316,7 @@ render: function() {
   return (
 		  React.createElement("footer", {className: "am-comment-footer"}, 
 	    	React.createElement("div", {className: "am-comment-actions am-cf"}, 
-	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "点赞", obj.yes_count, "人", 		    	
+	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.yes_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-up px_font_size_click "+yesClick})), "赞成", obj.yes_count, "人", 		    	
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), "反对", obj.no_count, "人", 	
              React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	    	 	    	 
              React.createElement("a", {href: "javascript:void(0);", className: G_CallPhoneFN.canShareUrl()?"":"am-hide", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.content,null,this.props.url)}, React.createElement("i", {className: "am-icon-share-alt-square px_font_size_click"}), "分享"), 	    	 	    	 

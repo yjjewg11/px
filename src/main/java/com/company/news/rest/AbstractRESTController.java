@@ -17,6 +17,7 @@ import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ui.ModelMap;
 
+import com.company.news.ResponseMessageConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.User;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -64,7 +65,7 @@ public class AbstractRESTController   {
 				ResponseMessage responseMessage) {
 			SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
 			if(user==null){
-				responseMessage.setMessage("请先登录后在操作!");
+				responseMessage.setMessage(ResponseMessageConstants.SessionTimeout);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_sessionTimeout);
 			}
 			return user;
