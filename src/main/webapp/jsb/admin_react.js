@@ -2866,7 +2866,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   		   }
   	  return (
   	    React.createElement("tr", {className: className}, 
-  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_snsTopic_show_byRight.bind(this,event.uuid,true)}, event.title)), 
+  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_fineTopic_show_byRight.bind(this,event.uuid,true)}, event.title)), 
   	      React.createElement("td", null, event.create_user), 
   	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
   	      React.createElement("td", null, event.illegal), 
@@ -2880,7 +2880,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   /*
    *<话题审核加精>详情绘制模板；
    * */
-  var Sns_snsTopic_show_byRight = React.createClass({displayName: "Sns_snsTopic_show_byRight", 
+  var Sns_fineTopic_show_byRight = React.createClass({displayName: "Sns_fineTopic_show_byRight", 
   render: function() {
   	  var o = this.props.data;
         var iframe=(React.createElement("div", null));

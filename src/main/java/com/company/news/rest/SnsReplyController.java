@@ -160,7 +160,7 @@ public class SnsReplyController extends AbstractRESTController {
 				String reply_uuid=request.getParameter("reply_uuid");
 				
 				PaginationData pData = this.getPaginationDataByRequest(request);
-				PageQueryResult list = snsReplyService.listPage(pData,null,reply_uuid,request);
+				PageQueryResult list = snsReplyService.listPage(pData,null,reply_uuid,request,null);
 				
 				model.addAttribute(RestConstants.Return_ResponseMessage_list,list);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

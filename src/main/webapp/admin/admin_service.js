@@ -1532,8 +1532,8 @@ function admin_sns_finelist_byRight(){
 /*
 * 审核话题加精模块详情内容绘制
 * */
-function admin_snsTopic_show_byRight(uuid,pingbiType){
-	Queue.push(function(){admin_snsTopic_show_byRight(uuid,pingbiType);},"话题详情");
+function admin_fineTopic_show_byRight(uuid,pingbiType){
+	Queue.push(function(){admin_fineTopic_show_byRight(uuid,pingbiType);},"话题详情");
 	console.log("pingbiType",pingbiType);
 	$.AMUI.progress.start();
   var url = hostUrl + "rest/snsTopic/"+uuid+".json";
@@ -1550,7 +1550,7 @@ $.ajax({
 						var flag=G_CallPhoneFN.openNewWindowUrl(o.title,o.title,null,data.share_url);
 						if(flag)return;
 				  }
-			React.render(React.createElement(Sns_snsTopic_show_byRight,{
+			React.render(React.createElement(Sns_fineTopic_show_byRight,{
 				pingbiType:pingbiType,
 				share_url:data.share_url,
 				data:data.data,

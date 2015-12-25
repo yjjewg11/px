@@ -177,12 +177,19 @@ function ajax_sns_snsTopic_show(uuid){
  * <话题>评论内容获取服务请求;
  * 绘制评论内容列表
  * */	
-function ajax_sns_reply_list(uuid,list_div,pageNo,type){
-	var re_data=null;
-	var url
+function ajax_sns_reply_list(uuid,list_div,pageNo,type,key,callback){
+	var url;
+	var sort;
+    if(key==1){
+    	sort="recent";
+    }else if(key==2){
+    	sort="hot";
+    }else{
+    	sort="oldest";
+    }
 	 if(!pageNo)pageNo=1;
 	if(type==71){
-		 url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+uuid+"&pageNo="+pageNo;
+		 url = hostUrl + "rest/snsReply/listPageByTopic.json?topic_uuid="+uuid+"&pageNo="+pageNo+"&sort="+sort;
 	 }else{
 		 url = hostUrl + "rest/snsReply/listPageByReply.json?reply_uuid="+uuid+"&pageNo="+pageNo;		
 	 }
@@ -197,24 +204,27 @@ function ajax_sns_reply_list(uuid,list_div,pageNo,type){
 			if (data.ResMsg.status == "success") {
 				if(type==71){
 					React.render(React.createElement(Sns_reply_list_show,{
+						snskey:key,
 						topic_uuid:uuid,
 						events: data.list,
 						responsive: true, bordered: true, striped :true,hover:true,striped:true
 					 }), document.getElementById(list_div));
 				 }else{
 						React.render(React.createElement(Sns_pinglun_list,{
+							snskey:key,
 							events: data.list,
 							responsive: true, bordered: true, striped :true,hover:true,striped:true
 						 }), document.getElementById(list_div));	
 				 }
-				re_data=data.list;
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
 			} else {
 				alert(data.ResMsg.message);
 			}
 		},
 		error : G_ajax_error_fn
-	});
-	return re_data;					   
+	});			   
 }
 
 /*

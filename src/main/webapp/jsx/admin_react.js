@@ -2866,7 +2866,7 @@ var Parent_EventsTable_div = React.createClass({
   		   }
   	  return (
   	    <tr className={className} >
-  	      <td><a  href="javascript:void(0);" onClick={admin_snsTopic_show_byRight.bind(this,event.uuid,true)}>{event.title}</a></td>
+  	      <td><a  href="javascript:void(0);" onClick={admin_fineTopic_show_byRight.bind(this,event.uuid,true)}>{event.title}</a></td>
   	      <td>{event.create_user}</td>
   	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
   	      <td>{event.illegal}</td>
@@ -2880,7 +2880,7 @@ var Parent_EventsTable_div = React.createClass({
   /*
    *<话题审核加精>详情绘制模板；
    * */
-  var Sns_snsTopic_show_byRight = React.createClass({ 
+  var Sns_fineTopic_show_byRight = React.createClass({ 
   render: function() {
   	  var o = this.props.data;
         var iframe=(<div></div>);
