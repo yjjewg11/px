@@ -13,7 +13,7 @@
  
  <h2  class="art_title">${data.title}</h2>
  <div class="art_meta">
-  <p> ${group.brand_name}|${group.link_tel}|发布时间:${data.create_time}|浏览${count}次|${group.address}</p>
+  <p> ${group.brand_name}|${group.link_tel}|${group.address}</p>
   </div>
   <div>${data.message}</div>
   
