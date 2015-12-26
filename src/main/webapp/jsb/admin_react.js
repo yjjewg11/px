@@ -2724,3 +2724,196 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	    );
   	  }
   	  }); 
+  
+  
+  
+  
+  
+  
+//——————————————————————————话题审核加精<绘制>—————————————————————  
+  /*
+  *(话题审核加精)表单框绘制
+  * */  
+  var Admin_SnsfineTable_byRight = React.createClass({displayName: "Admin_SnsfineTable_byRight",
+  	getInitialState: function() {
+  		var obj= {
+  		    	pageNo:this.props.pageNo,
+  		    	list: []
+  		    };
+  	    return obj;
+  	   
+  	  },
+  		componentDidMount: function() {
+  			this.ajax_list(this.state); 
+  		  },
+  	  ajax_callback:function(list){
+  		     if (list== null )list= [];
+  		  this.state.list=list;
+  		  this.setState(this.state);
+  	  },
+  	  //同一模版,被其他调用是,Props参数有变化,必须实现该方法.
+  	  componentWillReceiveProps: function(nextProps) {
+  		  var obj= {
+  			    	pageNo:nextProps.pageNo,
+  			    	list: []
+  			    };
+  				
+  			this.ajax_list(obj);
+  		  //this.setState(obj);
+  		},
+  	 ajax_list:function(obj){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsTopic/listPageForCheck.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{pageNo:obj.pageNo},
+  			dataType : "json",
+  			//async: false,//必须同步执行
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+  					obj.list=data.list.data;
+  					obj.pageSize=data.list.pageSize;
+  				    that.ajax_callback( data.list.data );     
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});
+  		return obj;
+  		
+  	},
+  	pageClick: function(m) {
+  		 var obj=this.state;
+  		 if(m=="pre"){
+  			
+  			 if(obj.pageNo<2){
+  				 G_msg_pop("第一页了");
+  				 return;
+  			 }
+  			 obj.pageNo=obj.pageNo-1;
+  			 this.ajax_list(obj);
+  			 return;
+  		 }else if(m=="next"){
+  			 if(!obj.list||obj.list.length<obj.pageSize){
+  				 G_msg_pop("最后一页了");
+  				 return ;
+  			 }
+  			 obj.pageNo=obj.pageNo+1;
+  			
+  			 this.ajax_list(obj);
+  			 return;
+  		 }
+  	},
+  	handleClick: function(m,Titlename) {
+  		btn_click_announce_byRight(m,this.state.groupuuid,null);
+  },
+  handleChange_selectgroup_uuid:function(val){
+  	 var obj=this.state;
+  	 obj.groupuuid=val;
+  	 this.ajax_list(obj);
+  },
+
+  render: function() {
+  	var obj=this.state;
+  	if(!this.state.list)this.state.list=[];
+    return (
+    React.createElement("div", null, 
+       React.createElement(AMR_Panel, null, 
+      React.createElement(AMR_ButtonToolbar, null, 
+  	React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页"), 
+  	  React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", obj.pageNo, "页"), 
+  	React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")	
+    )
+     ), 
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+     React.createElement("thead", null, 
+      React.createElement("tr", null, 
+        React.createElement("th", null, "标题"), 
+        React.createElement("th", null, "创建人"), 
+        React.createElement("th", null, "状态"), 
+        React.createElement("th", null, "举报次数"), 
+        React.createElement("th", null, "创建时间"), 
+        React.createElement("th", null, "最后举报时间")
+      )
+    ), 
+    React.createElement("tbody", null, 
+      this.state.list.map(function(event) {
+        return (React.createElement(Sns_EventRow_byRight, {key: event.uuid, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+  });
+    
+  //话题审核加精绘制详情内容Map;   
+  var Sns_EventRow_byRight = React.createClass({displayName: "Sns_EventRow_byRight", 
+  	render: function() {
+  	  var event = this.props.event;
+  	  var className = event.highlight ? 'am-active' :
+  	    event.disabled ? 'am-disabled' : '';
+          var txtclasssName;
+  		 if(event.status==0){
+             txtclasssName="am-text-success";
+  		  }else{
+             txtclasssName="am-text-danger";
+  		   }
+  	  return (
+  	    React.createElement("tr", {className: className}, 
+  	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_fineTopic_show_byRight.bind(this,event.uuid,true)}, event.title)), 
+  	      React.createElement("td", null, event.create_user), 
+  	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
+  	      React.createElement("td", null, event.illegal), 
+  	      React.createElement("td", null, event.create_time), 
+  	      React.createElement("td", null, event.illegal_time)
+  	      
+  	    ) 
+  	  );
+  	}
+  	});    
+  /*
+   *<话题审核加精>详情绘制模板；
+   * */
+  var Sns_fineTopic_show_byRight = React.createClass({displayName: "Sns_fineTopic_show_byRight", 
+  render: function() {
+  	  var o = this.props.data;
+        var iframe=(React.createElement("div", null));
+        var check=(React.createElement("div", null));
+        if(this.props.pingbiType==true){
+        	check=(React.createElement("div", null, 	     
+        	React.createElement(AMR_ButtonToolbar, null, 
+      	     React.createElement(Sns_check_disable_div_byRight, {type: 71, uuid: o.uuid})
+      	     )
+      	     ));
+        }
+  	     if(o.url){
+  	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
+  	        }else{
+  	     iframe=(       
+  			React.createElement(AMUIReact.Article, {
+  			title: o.title, 
+  			meta: o.create_user+" | "+o.create_time+" | 浏览次数:"+o.click_count+" | 举报次数:"+o.illegal}, 
+  			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.content}})
+  			))
+  	     }
+  return (
+  	  React.createElement("div", null, 
+         React.createElement("div", {className: "am-margin-left-sm"}, 
+
+           iframe, 
+           check
+
+  	     
+  	     )	 
+  	   )
+  );
+  }
+  }); 
+
+  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  

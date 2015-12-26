@@ -1,6 +1,7 @@
 
 var Tabs=AMUIReact.Tabs;
 var replyEditor=null;
+var reply_callback_save=null;
 //——————————————————————————话题<绘制>—————————————————————  
 /* 
  * <话题>绘制舞台1.0
@@ -93,10 +94,10 @@ var sns_list_snsTopic_rect = React.createClass({
 			  length=event.imgList.length;
 		      return (
        <li className="am-g am-list-item-dated" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
+		 <a href="javascript:void(0);" className="am-list-item-hd snsTopic_list_title">
 		 <AMUIReact.Image className={event.level==9?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
 		 <AMUIReact.Image className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
-		 <a href="javascript:void(0);" className="am-list-item-hd snsTopic_list_title">
-  		  <h4>{event.title}</h4>
+         {event.title}
   		 </a>	
             <div className="am-list-item-text">
             <h4 >{event.summary}</h4>
@@ -108,7 +109,7 @@ var sns_list_snsTopic_rect = React.createClass({
             	 )
             })}         
   		   <div className="am-list-item-text">
-  		    作者：{event.create_user}  |  有{event.reply_count}人回复  |   <time>{GTimeShow.getYMD(event.create_time)}</time>
+  		    作者：{event.create_user} |  点赞  {event.yes_count}  |  有{event.reply_count}人回复  |   <time>{GTimeShow.getYMD(event.create_time)}</time>
   		   </div> 
   		   
   	   </li>
@@ -234,8 +235,9 @@ return (
       </AMR_ButtonToolbar>	
 
          <Sns_comment_actions data={data} url={this.props.share_url}/>
-    	 <Sns_reply_list uuid={o.uuid}  type={71} url={this.props.share_url} />	
-   </div>
+    	 <TabSnsTopicSelect uuid={o.uuid}  type={71} url={this.props.share_url} />		
+		<Sns_ajax_reply_save uuid={o.uuid}  type={71}/>
+    </div>
   );
  }
 }); 
@@ -316,7 +318,7 @@ render: function() {
   return (
 		  <footer className="am-comment-footer">
 	    	<div className="am-comment-actions am-cf">
-	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>赞成{obj.yes_count}人		    	
+	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>点赞{obj.yes_count}人		    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>反对{obj.no_count}人	
              <a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	    	 	    	 
              <a href="javascript:void(0);"  className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.content,null,this.props.url)}><i className={"am-icon-share-alt-square px_font_size_click"}></i>分享</a>	    	 	    	 
@@ -333,26 +335,86 @@ render: function() {
 }); 
 
 //±±±±±±±±±±±±±±±±±±±±±话题回复代码块±±±±±±±±±±±±±±±±±±±±±
+//±±±±±±±±±±±±±±±±±±±±±±±±±分页栏方法±±±±±±±±±±±±±±±±±±±±±±
+
+//分页栏方法;
+var TabSnsTopicSelect = React.createClass({
+	  getInitialState: function() {
+	    return {
+	      key: '1',
+	      uuid:this.props.uuid,
+	      type:this.props.type,
+	      url:this.props.url
+	    };
+	  },
+		componentDidMount:function(){			
+		this.loadSnsTopicList(this.state.key);
+		},
+	  handleSelect: function(key) {  
+	  this.loadSnsTopicList(key);
+
+	  },
+	  loadSnsTopicList: function(key) {
+		  var that=this.props;
+		    var divid;
+		    if(key=="1"){
+		    	divid="topSnsreplylist_div_1";
+		    }else if(key=="2"){
+		    	divid="topSnsreplylist_div_2";
+		    }else{
+		    	divid="topSnsreplylist_div_3";
+		    }
+		    React.render(React.createElement(Sns_reply_list, {uuid:that.uuid,type:that.type,url:that.url,snskey:key}),document.getElementById(divid));  	
+		  },
+
+	  render: function() {
+
+	    return (
+	      <Tabs defaultActiveKey={this.state.key} onSelect={this.handleSelect}>
+	        <Tabs.Item eventKey="1" title="最新评论">
+	        <div id="topSnsreplylist_div_1"></div>
+	        </Tabs.Item>
+	        <Tabs.Item eventKey="2" title="热门评论">
+	        <div id="topSnsreplylist_div_2"></div>
+	        </Tabs.Item>
+	        <Tabs.Item eventKey="3" title="最早评论">
+	        <div id="topSnsreplylist_div_3"></div>
+	        </Tabs.Item>
+	      </Tabs>
+	    );
+	  }
+	});
 /*
  * <话题>回复列表
  * 绘制舞台方法
  * */
 var Sns_reply_list = React.createClass({ 
-	load_more_btn_id:"load_more_",
+	load_more_btn_id:"Sns_reply_list_load_more_",
 	pageNo:1,
-	classnewsreply_list_div:"classnewsreply_list_div",
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps: function(nextProps) {
+		  this.refreshReplyList();
+			var that=this;
+			reply_callback_save=function(){that.refreshReplyList();};
+		},
 	componentDidMount:function(){
 		this.refreshReplyList();
+		var that=this;
+		reply_callback_save=function(){that.refreshReplyList();};
 	},
-	load_more_data:function(){
-		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=PxSnsService.ajax_sns_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
+	load_more_data:function(){ 
+			$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+	   		var that=this;
+	   		var callback=function(re_data){
+	    			if(!re_data)return;
+	    			if(re_data.data.length<re_data.pageSize){
+	    				$("#"+that.load_more_btn_id).hide();
+	    			}else{
+	    				$("#"+that.load_more_btn_id).show();
+	    			}
+	    			that.pageNo++;
+	    		}
+		var re_data=PxSnsService.ajax_sns_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type,this.props.snskey,callback);		  
 	},
 	refreshReplyList:function(){
 		$("#"+this.classnewsreply_list_div).html("");
@@ -361,18 +423,23 @@ var Sns_reply_list = React.createClass({
 	},
 
 render: function() {
-	this.load_more_btn_id="load_more_"+this.props.uuid;
-	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+	this.load_more_btn_id="Sns_reply_list_load_more_"+this.props.snskey;
+	this.classnewsreply_list_div="topSnsreplylist_"+this.props.snskey;
 	var parentThis=this;
   return (
-      <div>
-       <div className="am-comments-list" id={this.classnewsreply_list_div}></div>
-       <button id={this.load_more_btn_id}  type="button"  onClick={this.load_more_data.bind(this)}  className="am-btn am-btn-primary">加载更多</button>
-	   <Sns_ajax_reply_save uuid={this.props.uuid}  type={this.props.type} parentThis={parentThis}/>						 
-	  </div>
+
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">	    
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  </div>
+		  
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		</div>	
   );
 }
 });
+
 //<话题>我要评论模块
 //that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
 var Sns_ajax_reply_save = React.createClass({ 
@@ -381,7 +448,9 @@ var Sns_ajax_reply_save = React.createClass({
 		var that=this.props.parentThis;
 		PxSnsService.ajax_sns_reply_save(function(){
 			$("#snstopic_replay_content").val("");
-			that.refreshReplyList();
+			
+			if(typeof reply_callback_save=='function')reply_callback_save();
+		    
 		},'snstopic_replayForm')
 	},
 	componentDidMount:function(){
@@ -426,7 +495,7 @@ var Sns_reply_list_show = React.createClass({
 		     <div className="am-comment-bd  am-inline">
 		      <div dangerouslySetInnerHTML={{__html:event.content}}></div>
   		     </div>	    	
-	    	<Sns_snsReply_comment_actions data={event} topic_uuid={that.props.topic_uuid} />
+	    	<Sns_snsReply_comment_actions data={event} snskey={that.props.snskey} topic_uuid={that.props.topic_uuid} />
 	      </div>
 		 </article>			    		
  	      )
@@ -486,18 +555,20 @@ var Sns_snsReply_comment_actions = React.createClass({
 		
 	 },
 //对评论的评论按钮	 
-	pinlun:function(o){	
+	pinlun:function(o,sky){	
 		React.render(React.createElement(Sns_reply_reply_list_div,
  		 		{uuid:o.uuid,
  		 			parentThis:this,
 					topic_uuid:this.props.topic_uuid,
+					snskey:sky,
  		 			type:72
  		 			}), document.getElementById(this.div_reply_save_id));		
 	},	
 	 
 render: function() {	
 	var obj=this.state;
-	this.div_reply_save_id="btn_reply_save"+obj.uuid;
+	var snskey=this.props.snskey;
+	this.div_reply_save_id="btn_reply_save"+obj.uuid+snskey;
 	var yesClick="",noClick="";
 	if(obj.dianZan==1){
 		yesClick="px-icon-hasdianzan";
@@ -512,7 +583,7 @@ render: function() {
 			  <time>{GTimeShow.getYMD(obj.create_time)}</time>
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
-	    	 <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj)}><i id={"btn_reply_"+obj.uuid} className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
+	    	 <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj,snskey)}><i id={"btn_reply_"+obj.uuid} className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
 	    	 <div id={this.div_reply_save_id}>			</div>	
 
 	    	 <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
@@ -528,22 +599,26 @@ render: function() {
  * 绘制舞台方法
  * */
 var Sns_reply_reply_list_div = React.createClass({ 
-	load_more_btn_id:"load_more_",
+	load_more_btn_id:"Sns_reply_reply_load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
 	componentDidMount:function(){
 		this.refreshReplyList();
 	},
-	load_more_data:function(){
+	load_more_data:function(){ 
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=PxSnsService.ajax_sns_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type);
-		if(re_data.data.length<re_data.pageSize){
-			$("#"+this.load_more_btn_id).hide();
-		}else{
-			$("#"+this.load_more_btn_id).show();
-		}		  
-		  this.pageNo++;
-	},
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+	var re_data=PxSnsService.ajax_sns_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,this.props.type,this.props.snskey,callback);		  
+},
 	refreshReplyList:function(){
 		$("#"+this.classnewsreply_list_div).html("");
 		this.pageNo=1;
@@ -551,8 +626,8 @@ var Sns_reply_reply_list_div = React.createClass({
 	},
 
 render: function() {
-	this.load_more_btn_id="load_more_"+this.props.uuid;
-	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+	this.load_more_btn_id="Sns_reply_reply_load_more_"+this.props.uuid+this.props.snskey;
+	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid+this.props.snskey;
 	var parentThis=this;
   return (
       <div>
@@ -563,7 +638,7 @@ render: function() {
   );
 }
 });
-//评论的评论-我要评论模块公用模板 我要回复框
+
 //that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
 var SnsReply_reply_save = React.createClass({ 
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -581,8 +656,8 @@ var SnsReply_reply_save = React.createClass({
 	},
 render: function() {
 	var type=this.props.type;
-	this.formid="snsreply_replyForm"+this.props.uuid;
-	this.form_content_id="form_content_id"+this.props.uuid;
+	this.formid="snsreply_replyForm"+this.props.uuid+this.props.snskey;
+	this.form_content_id="form_content_id"+this.props.uuid+this.props.snskey;
 
 return (
 <form id={this.formid} method="post" className="am-form" action="javascript:void(0);">
@@ -605,11 +680,13 @@ var Sns_pinglun_list = React.createClass({
 	 		  <div>
 	 		  {this.props.events.data.map(function(event) {
 	 		      return (
+	 		    		 <ul className="am-list">
 	 		    		  <li className="am-comment am-cf">
 	 		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
 	 				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span>
 	 				       <Sns_reply_reply_reply_actions data={event} />
 	 				        </li>
+	 				      </ul>
 	 		    		  )
 	 		  })}
 	 		
@@ -687,7 +764,7 @@ render: function() {
 
 			 <a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
             
-             <legend></legend> 
+          
 	    	</div>
 	    </footer>
   );
