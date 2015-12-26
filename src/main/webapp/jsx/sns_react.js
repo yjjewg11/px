@@ -207,7 +207,7 @@ render: function() {
  
 return (
 
-  <div>
+  <div className="max_with_lg">
 
 	  <article className="am-article">
   <div className="am-article-hd">

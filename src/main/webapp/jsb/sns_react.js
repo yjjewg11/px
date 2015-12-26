@@ -207,7 +207,7 @@ render: function() {
  
 return (
 
-  React.createElement("div", null, 
+  React.createElement("div", {className: "max_with_lg"}, 
 
 	  React.createElement("article", {className: "am-article"}, 
   React.createElement("div", {className: "am-article-hd"}, 
