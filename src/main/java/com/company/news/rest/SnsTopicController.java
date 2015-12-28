@@ -401,5 +401,50 @@ try {
 					responseMessage.setMessage("删除成功");
 					return "";
 				}
+				
+				
+				 /**
+				 *设置话题级别.
+				 *snsTopic/updateLevel.json?uuid=aaa&leve=9
+				 *level:0,表示正常,9:表示精华帖
+				 * @param model
+				 * @param request
+				 * @return
+				 */
+				@RequestMapping(value = "/updateLevel", method = RequestMethod.GET)
+				public String updateLevel(ModelMap model, HttpServletRequest request) {
+					ResponseMessage responseMessage = RestUtil
+							.addResponseMessageForModelMap(model);
+					try {
+						
+						SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+						if(user==null){
+							return "";
+						}
+						String uuid=request.getParameter("uuid");
+						String level=request.getParameter("level");
+						if(!StringUtils.isNumeric(level)){
+							responseMessage.setMessage("level不是有效数字.");
+							return "";
+						}
+						if(!"0".equals(level)&&
+								!"9".equals(level)){
+							responseMessage.setMessage("level不是有效数字.");
+							return "";
+						}
+//						PaginationData pData = this.getPaginationDataByRequest(request);
+						boolean flag = snsTopicService.updateLevel(user,uuid,level, responseMessage);
+						if(!flag)return "";
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+						return "";
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+						responseMessage.setMessage("服务器异常:"+e.getMessage());
+						return "";
+					}
+				}
+				
 		
 }

@@ -359,6 +359,18 @@ public class SnsTopicService extends AbstractService {
 
 			return true;
 		}
-	
+		public boolean updateLevel(SessionUserInfoInterface user,String uuid,
+				String level,ResponseMessage responseMessage) {
+				
+			
+			String sql="update sns_topic set level="+level+" where uuid='"+uuid+"'";
+				Integer rel=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+				if(rel==0){
+					responseMessage.setMessage("未找到对应数据");
+					return false;
+				}
+				
+				return true;
+		}
 
 }
