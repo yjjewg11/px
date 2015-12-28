@@ -418,6 +418,11 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 		  var  o = this.props.event;
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)o.create_img=G_def_headImgPath;	
+		    var contentDiv=( React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}));
+
+			  if(o.url){
+					 contentDiv=(  React.createElement("a", {href: "javascript:void(0);", onClick: common_classnews_url.bind(this,o.url)}, React.createElement("div", {className: "classnews_url", dangerouslySetInnerHTML: {__html:o.content}}), "  "));
+			  }
 	  return (
 			  React.createElement("div", null, 
 			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
@@ -431,10 +436,9 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			         React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, o.class_name, "|", o.create_user, "|", o.group_name)
 				  )
 			    ), 
-				   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: common_classnews_url.bind(this,o.url)}, "url"), 	
+				  
 			    React.createElement("div", {className: "am-comment-bd"}, 
-			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}
-			    ), 
+			   	contentDiv, 
 			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
 			    ), 
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
@@ -5464,7 +5468,12 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      		  if(!o.dianzanList)o.dianzanList=[];
      		  if(!o.imgsList)o.imgsList=[];
      		  if(!o.create_img)o.create_img=G_def_headImgPath;
-     		  
+     		    
+			  var contentDiv=( React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}));
+
+			  if(o.url){
+					 contentDiv=(  React.createElement("a", {href: "javascript:void(0);", onClick: common_classnews_url.bind(this,o.url)}, React.createElement("div", {className: "classnews_url", dangerouslySetInnerHTML: {__html:o.content}}), "  "));
+			  }
      	  return (
      			  React.createElement("div", null, 
      			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
@@ -5478,9 +5487,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
      			          React.createElement("a", {href: "javascript:void(0);", className: "am-comment-author"}, o.class_name, "|", o.create_user, "|", o.group_name)
 					  )
      			    ), 
-					   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: common_classnews_url.bind(this,o.url)}, "url"), 	
+					 
      			    React.createElement("div", {className: "am-comment-bd"}, 
-     			    React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}), 
+     			    	contentDiv, 
      			    	React.createElement(Common_mg_big_fn, {imgsList: o.imgsList})
      			    ), 
      			    	React.createElement("footer", {className: "am-comment-footer"}, 

@@ -150,6 +150,19 @@ public class AnnouncementsService extends AbstractService {
 			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
 				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
 			}
+			
+			
+			//优惠活动计数
+			if(SystemConstants.common_type_pxbenefit==announcementsJsonform.getType().intValue()){
+				newMsgNumberIservice.today_pxbenefit_incrCountOfNewMsgNumber();
+			}
+			//精品文章计数//修复精品文章添加计数失败bug.
+			else if(SystemConstants.common_type_jingpinwenzhang==announcementsJsonform.getType().intValue()){
+				newMsgNumberIservice.today_goodArticle_incrCountOfNewMsgNumber();
+			}
+
+			
+			
 		}
 	
 //		// 如果类型是班级通知
@@ -172,15 +185,7 @@ public class AnnouncementsService extends AbstractService {
 //			}
 //		}
 		
-		//优惠活动计数
-		if(SystemConstants.common_type_pxbenefit==announcementsJsonform.getType().intValue()){
-			newMsgNumberIservice.today_pxbenefit_incrCountOfNewMsgNumber();
-		}
-		//精品文章计数
-		else if(SystemConstants.common_type_jingpinwenzhang==announcementsJsonform.getType().intValue()){
-			newMsgNumberIservice.today_pxbenefit_incrCountOfNewMsgNumber();
-		}
-
+		
 		return true;
 	}
 

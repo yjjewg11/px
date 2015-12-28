@@ -448,7 +448,22 @@ window.Queue={
 
 //Xheditor增加插入音频文件插件
 var pxXheditorPlugin={
-		
+		add_Media_forCommons:{c:'xheIcon xheBtnMedia',t:'网络视频',s:null,h:1,e:function(){
+			var _this=this;
+			
+			var jTest=$('<div><textarea id="input_add_Media_forCommons" style="width:100%;height:100px;"></textarea></div><div style="text-align:right;"><input type="button" id="xheSave" value="确定" /></div><div>添加网络视频通用代码:<br/>1、点击分享按钮，展开弹出框<br/>2、点击弹出框下方小箭头，展开通用代码项,复制Html代码.<br/>3.修改高度和宽度为100%.已适应手机屏幕,设置如下:height="100%" width="100%"</div>');
+			var jTestInput=$('#input_add_Media_forCommons',jTest),jSave=$('#xheSave',jTest);
+			jSave.click(function(){
+				var tmp=jTestInput.val();
+				if(!tmp)return false;
+				_this.loadBookmark();
+				_this.pasteHTML(tmp);
+				_this.hidePanel();
+				return false;	
+			});
+			_this.saveBookmark();
+			_this.showDialog(jTest);
+		}},
 		add_audio:{c:'xheditor_add_audio',t:'音频文件',s:null,h:1,e:function(){
 			var _this=this;
 
@@ -476,7 +491,7 @@ window.xhEditor_upImgOption_mfull={
 		html5Upload:false,
 		height:'500',
 		//tools:'mfull',
-		tools:'Cut,Copy,Paste,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Anchor,Img,Flash,Media,add_audio,Hr,Emot,Table,|,Source,Preview,Print,Fullscreen',
+		tools:'Cut,Copy,Paste,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Anchor,Img,Flash,add_Media_forCommons,add_audio,Hr,Emot,Table,|,Source,Preview,Print,Fullscreen',
 		urlType:'abs'
 	};
 window.xhEditor_upImgOption={
