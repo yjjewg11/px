@@ -763,8 +763,7 @@ render: function() {
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}	
 
 			 <a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
-            
-          
+                      
 	    	</div>
 	    </footer>
   );

@@ -763,8 +763,7 @@ render: function() {
 	    	 React.createElement("a", {href: "javascript:void(0);", onClick: this.no_click.bind(this,obj)}, React.createElement("i", {className: "am-icon-thumbs-down px_font_size_click "+noClick})), obj.no_count, 	
 
 			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,72,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
-            
-          
+                      
 	    	)
 	    )
   );
