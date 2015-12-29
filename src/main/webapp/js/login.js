@@ -129,7 +129,7 @@ function ajax_getUserinfo(isInit) {
 				//menu_body_fn();
 			} else {
 				if(!isInit)alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+				menu_userinfo_login_fn();
 			}
 			
 		},
