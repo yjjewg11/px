@@ -236,7 +236,8 @@ var G_CallPhoneFN={
           *tml有问题暂时用title代替后续优化 
 		 */
 		setShareContent:function(title,content,pathurl,httpurl){
-			content="";//防止传入html标签
+			
+			content=title;//content不能为空,否则导致报错.//防止传入html标签
 			console.log("setShareContent:",title,content,pathurl,httpurl);
 			if(!pathurl)pathurl=G_share_logo;
 			
@@ -267,7 +268,11 @@ var G_CallPhoneFN={
          *tml有问题暂时用title代替后续优化 
 		 */
 		openNewWindowUrl:function(title,content,pathurl,httpurl){
-			content="";//防止传入html标签
+			if(!title||title.length<6){//修复andorid标题小于6长度.
+				title="链接内容详细";
+			}
+			
+			content=title;//content不能为空,否则导致报错.//防止传入html标签
 			console.log("openNewWindowUrl:",title,content,pathurl,httpurl);
 			if(!pathurl)pathurl=G_share_logo;
 			try{

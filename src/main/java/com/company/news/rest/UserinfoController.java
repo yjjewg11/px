@@ -372,7 +372,13 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			ResponseMessage responseMessage = RestUtil
 					.addResponseMessageForModelMap(model);
-			SessionUserInfoInterface user=this.userinfoService.getUser(this.getUserInfoBySession(request).getUuid());
+			SessionUserInfoInterface sessionUser=this.getUserInfoBySession(request);
+			//修复null指针.
+			if(sessionUser==null){
+				RestUtil.addNoSessionForResponseMessage(responseMessage);
+				return "";
+			}
+			SessionUserInfoInterface user=this.userinfoService.getUser(sessionUser.getUuid());
 			if(user!=null){
 				String grouptype = request.getParameter("grouptype");
 				

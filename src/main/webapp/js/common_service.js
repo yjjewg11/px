@@ -841,7 +841,7 @@ function common_classnews_url(data){
 		//  G_msg_pop("URL为空");
 		  return;
 	}
-	var title="链接详情";
+	var title="链接内容详情";
 	var flag=G_CallPhoneFN.openNewWindowUrl(title,title,null,data);
 	if(flag)return;
 
