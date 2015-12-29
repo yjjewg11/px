@@ -1897,10 +1897,10 @@ render: function() {
 	  }
       var iframe=null;
 	     if(o.url){
-	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
+	       iframe=(<iframe id="t_iframe" classNmae="text-align_center" onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
 	        }else{
 	     iframe=(       
-			<AMUIReact.Article
+			<AMUIReact.Article classNmae="text-align_center"
 			title={o.title}
 			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
 			<div dangerouslySetInnerHTML={{__html: o.message}}></div>

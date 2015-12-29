@@ -355,7 +355,7 @@ function login_affter_init(){
 	
 	title_info_init("首页");
 	
-	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
+	React.render(React.createElement(AMUIReact.Menu,{className:"px_menu",cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
 }
 

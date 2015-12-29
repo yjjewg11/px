@@ -1897,10 +1897,10 @@ render: function() {
 	  }
       var iframe=null;
 	     if(o.url){
-	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
+	       iframe=(React.createElement("iframe", {id: "t_iframe", classNmae: "text-align_center", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: o.url}))	   
 	        }else{
 	     iframe=(       
-			React.createElement(AMUIReact.Article, {
+			React.createElement(AMUIReact.Article, {classNmae: "text-align_center", 
 			title: o.title, 
 			meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})

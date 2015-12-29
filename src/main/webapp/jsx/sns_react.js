@@ -95,8 +95,8 @@ var sns_list_snsTopic_rect = React.createClass({
 		      return (
        <li className="am-g am-list-item-dated" onClick={PxSnsService.ajax_sns_snsTopic_show.bind(this,event.uuid)}>
 		 <a href="javascript:void(0);" className="am-list-item-hd snsTopic_list_title">
-		 <AMUIReact.Image className={event.level==9?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
-		 <AMUIReact.Image className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
+		 <AMUIReact.Image width="28" height="28" className={event.level==9?"am-show":"am-hide"}  id="img_head_image" src={img_fine}/>
+		 <AMUIReact.Image width="28" height="28" className={event.level==1?"am-show":"am-hide"} id="img_head_image" src={img_hot}/>
          {event.title}
   		 </a>	
             <div className="am-list-item-text">
@@ -151,7 +151,8 @@ var Sns_snsTopic_add_edit = React.createClass({
 render: function() {
 var o = this.state;	
 if(!o.section_id)o.section_id="1";
-
+var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
   return (
    <div>
@@ -162,12 +163,21 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
   	 <div className="am-u-lg-6 am-u-sm-12">  
   	  <form id="snsAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
-  		<div className="am-form-group">
-	    <AMUIReact.Selected  btnStyle="secondary" name="section_id"  onChange={this.handleChange_Select} btnWidth="200" data={snsTopic_data} value={o.section_id+""} />   
-  	    </div>
-  		<label htmlFor="name">标题:</label>
-	    <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
-	    <br/>
+
+	       <label className={one_classDiv}>分类:</label>
+		     <div className={two_classDiv}>
+		     <div className="am-form-group">
+			    <AMUIReact.Selected  className="data-am-selected" btnStyle="data-am-selected" name="section_id"  onChange={this.handleChange_Select} btnWidth="200" data={snsTopic_data} value={o.section_id+""} />   
+			    </div>
+			    </div>
+
+
+	       <label className={one_classDiv}>标题:</label>
+ 		     <div className={two_classDiv}>
+		       <PxInput type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
+		        </div>
+		       
+		       
 	    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 	   
 	    <AMR_ButtonToolbar>
@@ -207,14 +217,14 @@ render: function() {
  
 return (
 
-  <div className="max_with_lg">
+  <div className="max_with_lg px_margin_div">
 
-	  <article className="am-article">
+	  <article className="am-article px_margin_div">
   <div className="am-article-hd">
-    <h1 className="am-article-title">{o.title}</h1>
-    <p className="am-article-meta am-text-default">
+    <h1 className="am-article-title text-align_center ">{o.title}</h1>
+    <p className="am-article-meta am-text-default text-align_center ">
 	{GTimeShow.getYMD(o.create_time)+" | "+o.create_user+ " |"}
-		  <i className='am-icon-thumbs-up am-margin-sm'>{o.yes_count}</i>
+		  <i className='am-icon-thumbs-up am-margin-sm '>{o.yes_count}</i>
 			  
 		    |
 			<i className='am-icon-thumbs-down  am-margin-sm'> {o.no_count}</i>
@@ -223,7 +233,7 @@ return (
 	  </p>
   </div>
 
-  <div className="am-article-bd"  dangerouslySetInnerHTML={{__html: o.content}}>
+  <div className="am-article-bd "  dangerouslySetInnerHTML={{__html: o.content}}>
  
   </div>
 </article>
@@ -584,9 +594,10 @@ render: function() {
 	    	 <a href="javascript:void(0);"  onClick={this.yes_click.bind(this,obj)}><i className={"am-icon-thumbs-up px_font_size_click "+yesClick}></i></a>{obj.yes_count}	    	
 	    	 <a href="javascript:void(0);"  onClick={this.no_click.bind(this,obj)}><i className={"am-icon-thumbs-down px_font_size_click "+noClick}></i></a>{obj.no_count}
 	    	 <a href="javascript:void(0);"  onClick={this.pinlun.bind(this,obj,snskey)}><i id={"btn_reply_"+obj.uuid} className="am-icon-reply px_font_size_click"></i>回复{obj.reply_count}</a>
+	    	 <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+
 	    	 <div id={this.div_reply_save_id}>			</div>	
 
-	    	 <a href="javascript:void(0);"  className="am-fr" onClick={common_check_illegal.bind(this,72,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
 		   </div>
 	    </footer>
   );
