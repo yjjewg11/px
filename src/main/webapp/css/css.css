@@ -186,6 +186,14 @@ color: red;
 } 
 
 
+ .G_Edit_hide{
+ 	display:none;
+ } 
+
+.ECharts{
+	height:800px;
+}
+
 .px_border{
 	  border: 1px solid #CCC;
 }

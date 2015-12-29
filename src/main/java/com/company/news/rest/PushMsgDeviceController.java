@@ -74,7 +74,7 @@ public class PushMsgDeviceController extends AbstractRESTController {
 		jsonform.setGroup_uuid(this.getMyGroupUuidsBySession(request));
 		try {
 			boolean flag;
-			    flag = pushMsgDeviceService.save(jsonform, responseMessage);
+			    flag = pushMsgDeviceService.save(jsonform, responseMessage,request);
 
 			if (!flag)// 请求服务返回失败标示
 				return "";

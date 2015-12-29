@@ -81,8 +81,8 @@ var sns_list_snsTopic_rect = React.createClass({
 	  render: function() {
 	    var events = this.props.events;
 	    var length;
-	    var img_fine=hostUrlCDN+"i/fine.png";
-	    var img_hot=hostUrlCDN+"i/hot.png";
+	    var img_fine=hostUrlCDN+"i/fine1.png";
+	    var img_hot=hostUrlCDN+"i/hot1.png";
 	    var className = events.highlight ? 'am-active' :
     events.disabled ? 'am-disabled' : '';
     return (

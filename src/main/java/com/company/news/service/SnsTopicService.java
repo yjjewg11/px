@@ -23,6 +23,7 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.NewMsgNumberIservice;
 import com.company.news.entity.SnsTopic;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -47,6 +48,27 @@ public class SnsTopicService extends AbstractService {
 	@Autowired
 	private NewMsgNumberIservice newMsgNumberIservice;
 	
+	
+	
+	/**
+	 * 验证基本form表单信息
+	 * @param announcementsJsonform
+	 * @param responseMessage
+	 * @return
+	 */
+	public boolean valiateForm(SnsTopicJsonform jsonform,ResponseMessage responseMessage){
+		if (this.validateRequireAndLengthByRegJsonform(jsonform.getTitle(), 128, "标题", responseMessage)) {
+			return false;
+		}
+		if (this.validateRequireByRegJsonformObject(jsonform.getSection_id(), "话题板块", responseMessage)) {
+			return false;
+		}
+		if (this.validateRequireByRegJsonform(jsonform.getContent(), "内容", responseMessage)) {
+			return false;
+		}
+		return true;
+	}
+		
 	/**
 	 * 新增权限
 	 * 
@@ -59,15 +81,8 @@ public class SnsTopicService extends AbstractService {
 	 */
 	public SnsTopic add(SnsTopicJsonform jsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws IllegalAccessException, InvocationTargetException {
-		if (this.validateRequireAndLengthByRegJsonform(jsonform.getTitle(), 32, "标题", responseMessage)) {
-			return null;
-		}
-		if (this.validateRequireByRegJsonformObject(jsonform.getSection_id(), "话题板块", responseMessage)) {
-			return null;
-		}
-		if (this.validateRequireByRegJsonform(jsonform.getContent(), "内容", responseMessage)) {
-			return null;
-		}
+		if(!valiateForm(jsonform,responseMessage))return null;
+		
 		SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
 		if(user==null){
 			return null;
@@ -102,15 +117,7 @@ public class SnsTopicService extends AbstractService {
 	}
 	public SnsTopic update(SnsTopicJsonform jsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws IllegalAccessException, InvocationTargetException {
-		if (this.validateRequireAndLengthByRegJsonform(jsonform.getTitle(), 32, "标题", responseMessage)) {
-			return null;
-		}
-		if (this.validateRequireByRegJsonformObject(jsonform.getSection_id(), "话题板块", responseMessage)) {
-			return null;
-		}
-		if (this.validateRequireByRegJsonform(jsonform.getContent(), "内容", responseMessage)) {
-			return null;
-		}
+		if(!valiateForm(jsonform,responseMessage))return null;
 
 		SnsTopic newEntity = (SnsTopic) this.nSimpleHibernateDao
 				.getObjectById(SnsTopic.class,
