@@ -8349,11 +8349,10 @@ setProvCity:function(){
 
 	},
    	 handleChange: function(event) {
-		
 		var o=$('#editAnnouncementsForm').serializeJson();
-			   o.start_time=start_timeStr;
-			   o.end_time=end_timeStr;
-				 w_img_upload_nocut.groupuuid=o.groupuuid;
+			  o.start_time=o.start_timeStr;
+			  o.end_time=o.end_timeStr;
+			  w_img_upload_nocut.groupuuid=o.groupuuid;
 			    this.setState(o);
   },
   componentDidMount:function(){

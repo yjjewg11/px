@@ -1881,49 +1881,59 @@ var Announcements_mygoodlist_div = React.createClass({
 *公告点赞、评论、加载更多等详情绘制模板；
 * */
 var Announcements_goodshow = React.createClass({ 
+	getInitialState: function() {
+		this.props.data.isFavor=this.props.isFavor;
+		if(this.props.data)return this.props.data;
+	  },
 	//创建精品文章点击按钮事件跳转kd_servise方法;
   	handleClick: function(m,groupuuid,uuid) {
 		  btnclick_good_announce(m,groupuuid,uuid);
 }, 
 //收藏按钮方法;
-favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-}, 
+	  favorites_push: function(obj) {
+		  if(obj.isFavor==false)return;
+		  var url=obj.url;
+		   obj.isFavor=false;
+		  this.setState(obj);
+		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
+	  },
 render: function() {
-	  var o = this.props.data;
+	  var obj=this.state;
+	  console.log("obj",obj);
+
 	  var edit_btn_className="G_Edit_hide";
 	  if(this.props.canEdit){
 		  edit_btn_className="G_Edit_show";
 	  }
       var iframe=null;
-	     if(o.url){
-	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={o.url}></iframe>)	   
+	     if(obj.url){
+	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={obj.url}></iframe>)	   
 	        }else{
 	     iframe=(       
 			<AMUIReact.Article
-			title={o.title}
-			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+			title={obj.title}
+			meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
+			<div dangerouslySetInnerHTML={{__html: obj.message}}></div>
 			</AMUIReact.Article>)
 	     }
 
-return (
-		  <div>
+return ( 
+		  <div className="px_margin_div">
             {iframe}
 		     <AMR_ButtonToolbar>
-		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
-		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
-		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
-		     <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
+		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)} >编辑</AMR_Button>
+		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)} >删除</AMR_Button> 
+		     <AMR_Button className={ G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)} >分享</AMR_Button>
 		     </AMR_ButtonToolbar>	
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
-		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
-		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+obj.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
+				<a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	  
+				<a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,3,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
 		    	</div>
 		    	</footer>
-		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-			  <Common_reply_list uuid={o.uuid}  type={0}/>			 
+		    	<Common_Dianzan_show_noAction uuid={obj.uuid} type={0}  btn_dianzan={"btn_dianzan_"+obj.uuid}/>
+			  <Common_reply_list uuid={obj.uuid}  type={0}/>			 
 		   </div>
 );
 }

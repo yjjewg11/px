@@ -1175,6 +1175,7 @@ function react_ajax_announce_good_show(uuid,title){
 				React.render(React.createElement(Announcements_goodshow,{
 					canEdit:canEdit,
 					data:data.data,
+					isFavor:data.isFavor,
 					share_url:data.share_url,
 					count:data.count
 					}), G_get_div_second());
