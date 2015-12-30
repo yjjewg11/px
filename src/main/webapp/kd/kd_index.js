@@ -420,6 +420,13 @@ function menu_dohome(){
 			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
 			                    	    "title": "每日任务"
 			                    	  },
+			                    	   
+			                    	  {
+			                    	    "img": hostUrlCDN+"i/sns.png",
+			                    	    "link": "javascript:PxSns.list_init()",
+			                    	    "title": "话题"
+			                    	  },
+			                    	  
 		                    	  {
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
@@ -482,12 +489,6 @@ function menu_dohome(){
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
 		                    	    "link": "javascript:menu_favorites_push_fn()",
 		                    	    "title": "我的收藏"
-		                    	  },
-		                    	  
-		                    	  {
-		                    	    "img": hostUrlCDN+"i/sns.png",
-		                    	    "link": "javascript:PxSns.list_init()",
-		                    	    "title": "话题"
 		                    	  }
 		                    	  
 	                    	  ];

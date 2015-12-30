@@ -369,9 +369,10 @@ public class UserinfoController extends AbstractRESTController {
 	 */
 	@RequestMapping(value = "/getUserinfo", method = RequestMethod.GET)
 	public String getUserinfo(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
 		try {
-			ResponseMessage responseMessage = RestUtil
-					.addResponseMessageForModelMap(model);
+			
 			SessionUserInfoInterface sessionUser=this.getUserInfoBySession(request);
 			//修复null指针.
 			if(sessionUser==null){
@@ -403,6 +404,8 @@ public class UserinfoController extends AbstractRESTController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			RestUtil.addNoSessionForResponseMessage(responseMessage);
+			return "";
 		}
 		return "";
 	}

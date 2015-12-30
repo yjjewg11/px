@@ -89,7 +89,6 @@ public class AnnouncementsService extends AbstractService {
 	 */
 	public boolean add(AnnouncementsJsonform announcementsJsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
-		if(!valiateForm(announcementsJsonform,responseMessage))return false;
 		
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
 				||SystemConstants.common_type_PDHelp==announcementsJsonform.getType().intValue()){
@@ -101,10 +100,7 @@ public class AnnouncementsService extends AbstractService {
 			}
 		
 		}else{
-			if (StringUtils.isBlank(announcementsJsonform.getGroupuuid())) {
-				responseMessage.setMessage("必须选择一个学校");
-				return false;
-			}
+			
 			//精品文章都可以新加
 			if(SystemConstants.common_type_jingpinwenzhang!=announcementsJsonform.getType().intValue()){
 				
@@ -120,7 +116,8 @@ public class AnnouncementsService extends AbstractService {
 			}
 			
 		}
-
+		if(!valiateForm(announcementsJsonform,responseMessage))return false;
+		
 		Announcements announcements = new Announcements();
 
 		BeanUtils.copyProperties(announcements, announcementsJsonform);

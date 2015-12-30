@@ -287,9 +287,9 @@ function login_affter_init(){
 //		if(G_user_hasRight("PX_student_allquery")){
 			menu_data.push(t_menu);
 //		}
-	//if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
+	if(!G_CallPhoneFN.isPhoneApp()){//app hide my button
 		menu_data.push(div_menu_data);
-	//}
+	}
 
 	$("#div_menu").html("");
 	
@@ -364,7 +364,13 @@ function menu_dohome(){
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
 			                    	    "title": "课程表"
-			                    	  },  
+			                    	  }, 
+			                    	  
+			                    	  {
+			                    	    "img": hostUrlCDN+"i/sns.png",
+			                    	    "link": "javascript:PxSns.list_init()",
+			                    	    "title": "话题"
+			                    	  },
 	                    	  {
 		                    	    "img": hostUrlCDN+"i/xinxiang.png",
 		                    	    "link": "javascript:menu_queryCountMsgByParents_message_fn()",

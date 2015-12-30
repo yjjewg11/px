@@ -302,7 +302,7 @@ function login_affter_init(){
 	
 	title_info_init("首页");
 	
-	React.render(React.createElement(AMUIReact.Menu,{cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
+	React.render(React.createElement(AMUIReact.Menu,{className:"px_menu",cols:4,data:menu_data,onSelect:div_menu_handleClick}), document.getElementById('div_menu'));
 	
 }
 
@@ -362,11 +362,11 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
-//			                   	  { 
-//			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
-//			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
-//			                    	    "title": "每日任务"
-//			                    	  },
+			                   	   {
+		                    	    "img": hostUrlCDN+"i/sns.png",
+		                    	    "link": "javascript:PxSns.list_init()",
+		                    	    "title": "话题"
+		                    	  },
 		                    	  {
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
