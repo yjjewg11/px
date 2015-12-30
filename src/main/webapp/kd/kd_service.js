@@ -1818,6 +1818,7 @@ $.ajax({
 			React.render(React.createElement(Announcements_show_byRight,{
 				share_url:data.share_url,
 				data:data.data,
+				isFavor:data.isFavor,
 				count:data.count
 				}), G_get_div_body());
 		} else {
@@ -3438,6 +3439,7 @@ $.ajax({
 					  }
  	 				React.render(React.createElement(Announcements_helpshow,{
  	 					data:data.data,
+ 	 					isFavor:data.isFavor,
  	 					share_url:data.share_url,
  	 					count:data.count
  	 					}), G_get_div_second());

@@ -694,6 +694,7 @@ function react_ajax_announce_show(uuid,Titlenmae){
 				React.render(React.createElement(Announcements_show,{
 					data:data.data,
 					count:data.count,
+					isFavor:data.isFavor,
 					share_url:data.share_url,
 					canEdit:canEdit
 					}), G_get_div_second());
@@ -1058,6 +1059,7 @@ function react_ajax_announce_good_show(uuid,title){
 				React.render(React.createElement(Announcements_goodshow,{
 					canEdit:canEdit,
 					data:data.data,
+					isFavor:data.isFavor,
 					share_url:data.share_url,
 					count:data.count
 					}), G_get_div_second());
@@ -1701,6 +1703,7 @@ $.ajax({
 			React.render(React.createElement(Announcements_show_byRight,{
 				share_url:data.share_url,
 				data:data.data,
+				isFavor:data.isFavor,
 				count:data.count
 				}), document.getElementById('div_body'));
 		} else {
@@ -3894,6 +3897,7 @@ function ajax_class_students_look_info(uuid){
  				React.render(React.createElement(Announcements_helpshow,{
  					data:data.data,
  					share_url:data.share_url,
+ 					isFavor:data.isFavor,
  					count:data.count
  					}),G_get_div_second());
  			} else {
