@@ -2764,7 +2764,7 @@ var Parent_EventsTable_div = React.createClass({
   	 ajax_list:function(obj){
   		$.AMUI.progress.start();
   		var that=this;
-  		var url = hostUrl + "rest/snsTopic/listPageForCheck.json";
+  		var url = hostUrl + "rest/snsTopic/listPage.json";
   		$.ajax({
   			type : "GET",
   			url : url,
@@ -2835,6 +2835,7 @@ var Parent_EventsTable_div = React.createClass({
       <tr>
         <th>标题</th>
         <th>创建人</th>
+		<th>操作</th>
         <th>状态</th>
         <th>举报次数</th>
         <th>创建时间</th>       
@@ -2854,8 +2855,34 @@ var Parent_EventsTable_div = React.createClass({
     
   //话题审核加精绘制详情内容Map;   
   var Sns_EventRow_byRight = React.createClass({ 
+		getInitialState: function() {
+		if(this.props.event)return this.props.event;
+	  },
+	  fire_fn:function(obj,level){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsTopic/updateLevel.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{level:level,uuid:obj.uuid},
+  			dataType : "json",
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+                    obj.level=level;
+                    that.setState(obj);
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});		
+  	},
   	render: function() {
-  	  var event = this.props.event;
+  	  var event = this.state;
+	  var bt_sns,sns_name,bt_snsNmae;
   	  var className = event.highlight ? 'am-active' :
   	    event.disabled ? 'am-disabled' : '';
           var txtclasssName;
@@ -2864,11 +2891,23 @@ var Parent_EventsTable_div = React.createClass({
   		  }else{
              txtclasssName="am-text-danger";
   		   }
+		 if(event.level==0){
+           bt_sns="9";
+		   sns_name="正常帖";
+		   bt_snsNmae="加精";
+		 }else{
+           bt_sns="0";
+		   sns_name="加精帖";
+		   bt_snsNmae="取消加精";
+		   }
   	  return (
   	    <tr className={className} >
   	      <td><a  href="javascript:void(0);" onClick={admin_fineTopic_show_byRight.bind(this,event.uuid,true)}>{event.title}</a></td>
   	      <td>{event.create_user}</td>
-  	      <td className={txtclasssName}>{Vo.get("announce_status_"+event.status)}</td>
+          <td> <AMR_ButtonToolbar>
+		  <AMR_Button  amStyle="secondary"  onClick={this.fire_fn.bind(this,event,bt_sns)}>{bt_snsNmae}</AMR_Button> 
+	     </AMR_ButtonToolbar></td>
+  	      <td>{sns_name}</td>
   	      <td>{event.illegal}</td>
   	      <td>{event.create_time}</td>
   	      <td>{event.illegal_time}</td>

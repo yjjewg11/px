@@ -2764,7 +2764,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   	 ajax_list:function(obj){
   		$.AMUI.progress.start();
   		var that=this;
-  		var url = hostUrl + "rest/snsTopic/listPageForCheck.json";
+  		var url = hostUrl + "rest/snsTopic/listPage.json";
   		$.ajax({
   			type : "GET",
   			url : url,
@@ -2835,6 +2835,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
       React.createElement("tr", null, 
         React.createElement("th", null, "标题"), 
         React.createElement("th", null, "创建人"), 
+		React.createElement("th", null, "操作"), 
         React.createElement("th", null, "状态"), 
         React.createElement("th", null, "举报次数"), 
         React.createElement("th", null, "创建时间"), 
@@ -2854,8 +2855,34 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
     
   //话题审核加精绘制详情内容Map;   
   var Sns_EventRow_byRight = React.createClass({displayName: "Sns_EventRow_byRight", 
+		getInitialState: function() {
+		if(this.props.event)return this.props.event;
+	  },
+	  fire_fn:function(obj,level){
+  		$.AMUI.progress.start();
+  		var that=this;
+  		var url = hostUrl + "rest/snsTopic/updateLevel.json";
+  		$.ajax({
+  			type : "GET",
+  			url : url,
+  			data :{level:level,uuid:obj.uuid},
+  			dataType : "json",
+  			success : function(data) {
+  				$.AMUI.progress.done();
+  				if (data.ResMsg.status == "success") {
+                    obj.level=level;
+                    that.setState(obj);
+  				} else {
+  					alert(data.ResMsg.message);
+  					G_resMsg_filter(data.ResMsg);
+  				}
+  			},
+  			error : G_ajax_error_fn
+  		});		
+  	},
   	render: function() {
-  	  var event = this.props.event;
+  	  var event = this.state;
+	  var bt_sns,sns_name,bt_snsNmae;
   	  var className = event.highlight ? 'am-active' :
   	    event.disabled ? 'am-disabled' : '';
           var txtclasssName;
@@ -2864,11 +2891,23 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
   		  }else{
              txtclasssName="am-text-danger";
   		   }
+		 if(event.level==0){
+           bt_sns="9";
+		   sns_name="正常帖";
+		   bt_snsNmae="加精";
+		 }else{
+           bt_sns="0";
+		   sns_name="加精帖";
+		   bt_snsNmae="取消加精";
+		   }
   	  return (
   	    React.createElement("tr", {className: className}, 
   	      React.createElement("td", null, React.createElement("a", {href: "javascript:void(0);", onClick: admin_fineTopic_show_byRight.bind(this,event.uuid,true)}, event.title)), 
   	      React.createElement("td", null, event.create_user), 
-  	      React.createElement("td", {className: txtclasssName}, Vo.get("announce_status_"+event.status)), 
+          React.createElement("td", null, " ", React.createElement(AMR_ButtonToolbar, null, 
+		  React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.fire_fn.bind(this,event,bt_sns)}, bt_snsNmae)
+	     )), 
+  	      React.createElement("td", null, sns_name), 
   	      React.createElement("td", null, event.illegal), 
   	      React.createElement("td", null, event.create_time), 
   	      React.createElement("td", null, event.illegal_time)

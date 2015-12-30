@@ -1469,7 +1469,6 @@ function admin_sns_checklist_byRight(){
  * */
 function admin_snsTopic_show_byRight(uuid,pingbiType){
 	Queue.push(function(){admin_snsTopic_show_byRight(uuid,pingbiType);},"话题详情");
-	console.log("pingbiType",pingbiType);
 	$.AMUI.progress.start();
     var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 $.ajax({
@@ -1534,7 +1533,6 @@ function admin_sns_finelist_byRight(){
 * */
 function admin_fineTopic_show_byRight(uuid,pingbiType){
 	Queue.push(function(){admin_fineTopic_show_byRight(uuid,pingbiType);},"话题详情");
-	console.log("pingbiType",pingbiType);
 	$.AMUI.progress.start();
   var url = hostUrl + "rest/snsTopic/"+uuid+".json";
 $.ajax({
