@@ -751,17 +751,25 @@ var Announcements_mylist_div = React.createClass({displayName: "Announcements_my
   *增加编辑与删除功能
   *setShareContent(title,content,pathurl,httpurl)
   * */
-var Announcements_show = React.createClass({displayName: "Announcements_show", 
-	//收藏按钮方法;
-  favorites_push: function(title,type,reluuid,url) {
-	commons_ajax_favorites_push(title,type,reluuid,url)
-  },
+var Announcements_show = React.createClass({displayName: "Announcements_show",
+		getInitialState: function() {
+		this.props.data.isFavor=this.props.isFavor;
+		if(this.props.data)return this.props.data;
+	  },
+//收藏按钮方法;
+	  favorites_push: function(obj) {
+		  if(obj.isFavor==false)return;
+		  var url=obj.url;
+		   obj.isFavor=false;
+		  this.setState(obj);
+		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
+	  },
 //公告编辑、删除点击按钮事件跳转kd_servise方法;
  handleClick: function(m,groupuuid,uuid) {
    btnclick_announce(m,groupuuid,uuid);
   }, 
 render: function() {
-	  var o = this.props.data;
+	 var obj=this.state;
 	  var edit_btn_className="G_Edit_hide";
 	  if(this.props.canEdit){
 		  edit_btn_className="G_Edit_show";
@@ -771,24 +779,24 @@ return (
             React.createElement("div", {className: "am-margin-left-sm"}, 
 		 
             React.createElement(AMUIReact.Article, {
-		    title: o.title, 
-		    meta: Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: o.message}})
+		    title: obj.title, 
+		    meta: Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}, 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: obj.message}})
 		      ), 		     
 		     React.createElement(AMR_ButtonToolbar, null, 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
-		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
-		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)}, "编辑"), 
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除"), 
+		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, "分享")
 		     )		     
 		     ), 
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
-		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
+		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
+				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏")	
 		    	)
 		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
-			  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})			 
+		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
+			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
 		   )
 );
 }

@@ -822,6 +822,7 @@ function react_ajax_announce_show(uuid){
 				React.render(React.createElement(Announcements_show,{
 					data:data.data,
 					count:data.count,
+					isFavor:data.isFavor,
 					share_url:data.share_url,
 					canEdit:canEdit
 					}),G_get_div_second());
