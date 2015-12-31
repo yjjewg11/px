@@ -828,9 +828,37 @@ function G_getHtmlTitle(url,callback){
 }
 
 
+/*/
+ * 学生列表查看操作详情
+ * */
+var g_student_operate_point=1;
+function common_stutent_operate(studen_tuuid,pageNo) {
+	Queue.push(function(){common_stutent_operate(studen_tuuid,pageNo);},"修改详情");
+	  if(!pageNo)pageNo=1;
+	 g_student_operate_point=pageNo;
 
-
-
+		var url = hostUrl + "rest/operate/query.json";
+		$.ajax({          
+			type : "GET",  
+			url : url,
+			data:{studentuuid:studen_tuuid,pageNo:pageNo},
+			dataType : "json",
+			success : function(data) {
+ 				if (data.ResMsg.status == "success") {
+ 	 				React.render(React.createElement( Query_stutent_operate,{
+ 	 					studen_tuuid:studen_tuuid,
+ 	  					data:data,
+ 	  					events: data.list.data,
+ 						responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}),  G_get_div_body());
+ 					
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 				}
+			},
+			error : G_ajax_error_fn
+		});
+	};
 
 /*
  * <班级互动>公共url绘制方法

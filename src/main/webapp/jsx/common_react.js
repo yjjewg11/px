@@ -1470,3 +1470,81 @@ function G_status(){
  );
  }
  }); 
+ 
+ 
+ 
+ 
+//——————————————————————————学生列表操作公共方法<绘制>——————————————————————————  
+
+ var Query_stutent_operate = React.createClass({
+
+ 		handleClick: function(m,studen_tuuid) {
+ 			if(m=="pre"){
+ 				common_stutent_operate(studen_tuuid,--g_student_operate_point);
+ 				return;
+ 			 }else if(m=="next"){
+ 				common_stutent_operate(studen_tuuid,++g_student_operate_point);
+ 				 return;
+ 			 }
+ 		},
+ 		maxPageNo:0,
+ render: function() {
+ 	var pre_disabled=g_student_operate_point<2;
+ 	
+ 	if(g_student_operate_point==1){
+ 		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+ 	}
+ 	var next_disabled=g_student_operate_point>=this.maxPageNo;
+     return (
+ 		  
+       <div> 
+ 	      <form id="operateGroupForm" method="post" className="am-form" action="javascript:void(0);">
+         <AMR_Panel>
+        <AMR_ButtonToolbar>
+       <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+      <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.props.studen_tuuid)} >&laquo; 上一页</AMR_Button>
+     <label>{g_student_operate_point}\{this.maxPageNo}</label> 
+    <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.props.studen_tuuid)} >下一页 &raquo;</AMR_Button>
+   </div>		
+ 	</AMR_ButtonToolbar>
+   </AMR_Panel>
+ 	 </form>
+       <AMR_Table {...this.props}>  
+         <thead> 
+           <tr>
+             <th>修改人姓名</th>
+             <th>修改时间</th>
+             <th>具体操作</th>
+           </tr> 
+         </thead>
+         <tbody>
+           {this.props.events.map(function(event) {
+             return (<Query_operate_byRight key={event.id} event={event} />);
+           })}
+         </tbody>
+       </AMR_Table>
+       </div>
+     );
+   }
+ });
+     
+ /*  	
+  * 学生列表操作详情表单上绘制详细内容;
+  * */
+ var Query_operate_byRight = React.createClass({ 
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	    var className = event.highlight ? 'am-active' :
+ 	      event.disabled ? 'am-disabled' : '';
+       if(!event.status)event.status=0;
+ 	    return (
+ 	      <tr className={className} >
+ 	        <td>{event.create_user}</td>
+ 	        <td>{event.create_time}</td>
+ 	        <td>{event.message}</td>
+ 	      </tr> 
+ 	    );
+ 	  }
+ 	}); 
+
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±  

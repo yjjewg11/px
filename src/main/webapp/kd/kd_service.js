@@ -2843,15 +2843,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 		error :G_ajax_error_fn
  	});
  	Queue.push(function(){react_ajax_class_students_manage_byRight(uuid);},"班级详情");
-// 	if(students){
-// 		for(var i=0;i<students.length;i++){
-// 			var tmp=students[i];
-// 			tmp.img=G_def_headImgPath;
-// 			if(tmp.headimg)tmp.img=G_imgPath+tmp.headimg;
-// 			tmp.title=tmp.name;
-// 			tmp.link= "javascript:ajax_class_students_edit_byRight(null,'"+tmp.uuid+"')";
-// 		}
-// 	}	
+
  	React.render(React.createElement(Class_students_manage_byRight,{
  		students:students,
  		formdata:formdata,

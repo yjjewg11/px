@@ -2855,7 +2855,7 @@ var Parent_EventsTable_div = React.createClass({
     
   //话题审核加精绘制详情内容Map;   
   var Sns_EventRow_byRight = React.createClass({ 
-		getInitialState: function() {
+	getInitialState: function() {
 		if(this.props.event)return this.props.event;
 	  },
 	  fire_fn:function(obj,level){
