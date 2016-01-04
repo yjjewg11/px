@@ -4086,6 +4086,7 @@ var Class_EventsTable_byRight = React.createClass({
   		if(!this.props.students)this.props.students=[];
   	  return (
   	  <div>
+	<G_px_help_List data={G_px_help_msg.msg_px_help_list13_1}/>
 	     <AMR_Panel>
 			  <AMR_Grid className="doc-g">
   	  <AMR_ButtonToolbar>
@@ -4217,7 +4218,6 @@ var Class_EventsTable_byRight = React.createClass({
    return (
 		   
 		   <div>
-		   
 		   <form id="editClassStudentForm" method="post" className="am-form">
 		     <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
@@ -5106,6 +5106,9 @@ var Class_EventsTable_byRight = React.createClass({
   	     var o =this.state;
   		 return (
   		 		<div>
+			 			  	 <AMR_ButtonToolbar>
+ 		 	    <AMR_Button amStyle="secondary" onClick={common_stutent_operate.bind(this,o.uuid,o.pageNo)} >查看修改记录</AMR_Button>
+ 		 	    </AMR_ButtonToolbar>
   			    <AMUIReact.List static border striped>
   			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
   				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>

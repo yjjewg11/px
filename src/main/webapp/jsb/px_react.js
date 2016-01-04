@@ -4086,6 +4086,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   		if(!this.props.students)this.props.students=[];
   	  return (
   	  React.createElement("div", null, 
+	React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list13_1}), 
 	     React.createElement(AMR_Panel, null, 
 			  React.createElement(AMR_Grid, {className: "doc-g"}, 
   	  React.createElement(AMR_ButtonToolbar, null, 
@@ -4217,7 +4218,6 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    return (
 		   
 		   React.createElement("div", null, 
-		   
 		   React.createElement("form", {id: "editClassStudentForm", method: "post", className: "am-form"}, 
 		     React.createElement(PxInput, {type: "hidden", name: "headimg", id: "headimg", value: o.headimg, onChange: this.handleChange}), 
 			React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
@@ -5106,6 +5106,9 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   	     var o =this.state;
   		 return (
   		 		React.createElement("div", null, 
+			 			  	 React.createElement(AMR_ButtonToolbar, null, 
+ 		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: common_stutent_operate.bind(this,o.uuid,o.pageNo)}, "查看修改记录")
+ 		 	    ), 
   			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
   			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
   				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 

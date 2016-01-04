@@ -1470,3 +1470,81 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  );
  }
  }); 
+ 
+ 
+ 
+ 
+//——————————————————————————学生列表操作公共方法<绘制>——————————————————————————  
+
+ var Query_stutent_operate = React.createClass({displayName: "Query_stutent_operate",
+
+ 		handleClick: function(m,studen_tuuid) {
+ 			if(m=="pre"){
+ 				common_stutent_operate(studen_tuuid,--g_student_operate_point);
+ 				return;
+ 			 }else if(m=="next"){
+ 				common_stutent_operate(studen_tuuid,++g_student_operate_point);
+ 				 return;
+ 			 }
+ 		},
+ 		maxPageNo:0,
+ render: function() {
+ 	var pre_disabled=g_student_operate_point<2;
+ 	
+ 	if(g_student_operate_point==1){
+ 		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
+ 	}
+ 	var next_disabled=g_student_operate_point>=this.maxPageNo;
+     return (
+ 		  
+       React.createElement("div", null, 
+ 	      React.createElement("form", {id: "operateGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+         React.createElement(AMR_Panel, null, 
+        React.createElement(AMR_ButtonToolbar, null, 
+       React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+      React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.props.studen_tuuid)}, "« 上一页"), 
+     React.createElement("label", null, g_student_operate_point, "\\", this.maxPageNo), 
+    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next",this.props.studen_tuuid)}, "下一页 »")
+   )		
+ 	)
+   )
+ 	 ), 
+       React.createElement(AMR_Table, React.__spread({},  this.props), 
+         React.createElement("thead", null, 
+           React.createElement("tr", null, 
+             React.createElement("th", null, "修改人姓名"), 
+             React.createElement("th", null, "修改时间"), 
+             React.createElement("th", null, "具体操作")
+           )
+         ), 
+         React.createElement("tbody", null, 
+           this.props.events.map(function(event) {
+             return (React.createElement(Query_operate_byRight, {key: event.id, event: event}));
+           })
+         )
+       )
+       )
+     );
+   }
+ });
+     
+ /*  	
+  * 学生列表操作详情表单上绘制详细内容;
+  * */
+ var Query_operate_byRight = React.createClass({displayName: "Query_operate_byRight", 
+ 	  render: function() {
+ 	    var event = this.props.event;
+ 	    var className = event.highlight ? 'am-active' :
+ 	      event.disabled ? 'am-disabled' : '';
+       if(!event.status)event.status=0;
+ 	    return (
+ 	      React.createElement("tr", {className: className}, 
+ 	        React.createElement("td", null, event.create_user), 
+ 	        React.createElement("td", null, event.create_time), 
+ 	        React.createElement("td", null, event.message)
+ 	      ) 
+ 	    );
+ 	  }
+ 	}); 
+
+ //±±±±±±±±±±±±±±±±±±±±±±±±±±±  

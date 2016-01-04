@@ -4299,28 +4299,23 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	 addClass_handleClick: function(m,groupuuid,uuid) {		 
   		btn_click_class_list_byRight(m,groupuuid,uuid);
 	 },
-	handleClick: function(m) {
-		 if(this.props.handleClick){		 
-			 if(m=="add_class"){
-				 this.props.handleClick(m,this.props.group_uuid);
-				 return;
-			 }else if(m=="flower_name"){
-				 var uuids=null;
-				 $($("input[name='table_checkbox']")).each(function(){
-					
-					 if(this.checked){
-						 if(uuids==null)uuids=this.value;
-						 else
-						 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
-					 }
-					});
-				  if(!uuids){
-					  alert("请选择你要下载的班级花名册！");
-					  return;
-				  }
-				 ajax_flowername_download_byRight(this.props.group_uuid,uuids);
-			 }
-		 }
+  	handleClick: function(m) {	
+		 	var uuids=null;
+			 $($("input[name='table_checkbox']")).each(function(){
+				
+				 if(this.checked){
+					 if(uuids==null)uuids=this.value;
+					 else
+					 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+				 }
+				});
+			  if(!uuids){
+				  alert("至少选择一个班级");
+				  return;
+			  }
+	   var group_uuid=$("input[name='group_uuid']").val();
+		btn_click_class_list_byRight(m,group_uuid,uuids);
+  		
 	 },
 	 handleClick_download: function(xlsname) {
 			 var uuids=null;
@@ -4352,14 +4347,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 	            {value: 'yiLiaoBaoXian', label: '医疗保险银行代扣批量导入表'},
 	            {value: 'doorrecord', label: '导出接送卡表'}
 	          ];
-	/*
-    	       var data = [
-    	                  {value: 'one' , label: '学生基本表 ' },
-    	                  {value: 'huaMingCe' , label: '幼儿花名册' },
-    	                  {value: 'yiLiaoBaoXian' , label: '医疗保险银行代扣批量导入表' },
-    	                  {value: 'doorrecord' , label: '导出接送卡表' }
-    	                ];*/
-			 var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
+	var data=G_selected_dataModelArray_byArray(Vo.getTypeList("exportStudentExcel"),"desc","val");
 	    return {
 	      down_list: data
 	    };
@@ -4376,7 +4364,8 @@ render: function() {
 	  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 	  React.createElement(AMUIReact.Selected, {className: "am-hide-sm", btnStyle: "secondary", placeholder: "下载表格到电脑", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list})
 	  ), 
-	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addClass_handleClick.bind(this,"add_class",this.props.group_uuid)}, "创建班级")
+	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.addClass_handleClick.bind(this,"add_class",this.props.group_uuid)}, "创建班级"), 
+	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"edit_class")}, "编辑班级")
 	  )
 	  ), 
 	  React.createElement("div", null, "班级总数:"+this.props.events.length), 	
@@ -5822,6 +5811,9 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 		 if(!o.status)o.status=0;
   		 return (
   		 		React.createElement("div", null, 
+			  	 React.createElement(AMR_ButtonToolbar, null, 
+ 		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: common_stutent_operate.bind(this,o.uuid,o.pageNo)}, "查看修改记录")
+ 		 	    ), 
   			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
   			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
   				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
