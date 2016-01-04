@@ -144,6 +144,12 @@ public class UserInfoFilter implements Filter {
 //					
 					
 					if(!isLogin){
+						//增加自动登录日志记录.
+						this.logger.warn("updateAndloginForJessionid failed!jessionid="+jessionid);
+						String msg="client IP:"+UserInfoFilter.getIpAddr((HttpServletRequest) request)+","
+			                    + httpServletRequest.getMethod() +"|"+httpServletRequest.getRequestURL()+ "?"
+			                    + httpServletRequest.getQueryString();
+						this.logger.warn(msg);
 						ModelMap model = new ModelMap();
 						ResponseMessage responseMessage = RestUtil
 								.addResponseMessageForModelMap(model);

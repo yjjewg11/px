@@ -362,7 +362,13 @@ public class AnnouncementsController extends AbstractRESTController {
 			}
 			String share_url=null;
 			if(!PxStringUtil.isUrl(a.getUrl())){
-				share_url=PxStringUtil.getArticleByUuid(uuid);
+				//如果是公告则显示公告分享地址
+				if(SystemConstants.common_type_gonggao==a.getType().intValue()){
+					share_url=PxStringUtil.getAnnByUuid(uuid);
+				}else{
+					share_url=PxStringUtil.getArticleByUuid(uuid);
+
+				}
 			}else{
 			//	model.put(RestConstants.Return_ResponseMessage_count, countService.count(uuid, SystemConstants.common_type_jingpinwenzhang));
 				share_url=a.getUrl();
