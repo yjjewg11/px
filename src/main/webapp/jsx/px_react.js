@@ -3753,9 +3753,9 @@ var Boss_student_tel2_byRight =React.createClass({
 * this.props.parentReact.forceUpdate();
 * */
 var Boss_message_stage_byRight = React.createClass({ 
-load_more_btn_id:"load_more_",
+load_more_btn_id:"load_more_boss_",
 pageNo:1,
-classnewsreply_list_div:"classnewsreply_list_div",
+classnewsreply_list_div:"classnewsreply_message_list_div",
 componentWillReceiveProps:function(){
 	this.refresh_data();
 },
@@ -3786,7 +3786,7 @@ refresh_data:function(){
 	
 },
 render: function() {
-this.load_more_btn_id="load_more_"+this.props.uuid;
+this.load_more_btn_id="load_more_boss_"+this.props.uuid;
 return (
 	  <div>
 	   <div id={this.classnewsreply_list_div}>
@@ -5102,13 +5102,18 @@ var Class_EventsTable_byRight = React.createClass({
   		 }
 
   	  },
+		//查看操作记录方法
+       	stutent_operate:function(uuid,pageNo){	
+		React.render(React.createElement(Common_operate_rect,
+ 		 		{uuid:uuid,
+			    pageNo:pageNo
+ 		 			}),  document.getElementById(this.div_reply_save_id));		
+	},	
   		render: function() {
   	     var o =this.state;
+		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
   		 return (
   		 		<div>
-			 			  	 <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="secondary" onClick={common_stutent_operate.bind(this,o.uuid,o.pageNo)} >查看修改记录</AMR_Button>
- 		 	    </AMR_ButtonToolbar>
   			    <AMUIReact.List static border striped>
   			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
   				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
@@ -5132,7 +5137,10 @@ var Class_EventsTable_byRight = React.createClass({
   			      <AMUIReact.ListItem>
   			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
   			      </AMUIReact.ListItem>			      
-  			      
+  			    <AMR_ButtonToolbar>
+ 		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+ 		 	    </AMR_ButtonToolbar>
+			    <div id={this.div_reply_save_id}>			</div>	
   			      </AMUIReact.List>
   		 	     </div> 
   		     );

@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -263,7 +266,7 @@ public class MessageService extends AbstractService {
 	 * @param pData
 	 * @return
 	 */
-	public List queryCountLeaderMsgByParents(String group_uuids,
+	public PageQueryResult queryCountLeaderMsgByParents(String group_uuids,
 			 PaginationData pData) {
 		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
@@ -272,21 +275,27 @@ public class MessageService extends AbstractService {
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
 		sql += " order by create_time desc";
-		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
-		List relList=new ArrayList();
-		for(Object[] o:list){
-			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
-			vo.setRevice_useruuid(o[0]+"");
-			vo.setRevice_user(o[1]+"");
-			vo.setSend_useruuid(o[2]+"");
-			vo.setSend_user(o[3]+"");
-			vo.setCount(o[4]+"");
-			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
-			relList.add(vo);
-		}
+//		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
+//		List relList=new ArrayList();
+//		for(Object[] o:list){
+//			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
+//			vo.setRevice_useruuid(o[0]+"");
+//			vo.setRevice_user(o[1]+"");
+//			vo.setSend_useruuid(o[2]+"");
+//			vo.setSend_user(o[3]+"");
+//			vo.setCount(o[4]+"");
+//			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
+//			relList.add(vo);
+//		}
+//		
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Query  query =session.createSQLQuery(sql);
 		
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
+
 		
-	return relList;
+		return pageQueryResult;
 	}
 	
 	/**

@@ -2523,30 +2523,52 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   }	    
   
 
+  
+  
+  
+//————————————————————————————园长信箱————————————————————————— 
+
+  /*
+   * <园长信箱>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
+   * 基本框 等
+   * */
+  function ajax_message_boss_div(){
+  	React.render(React.createElement(Message_boss_Div_list),G_get_div_body());
+     	
+  };
+
+
 
 //———————————————————————————————————园长信箱—————————————————————————      
 /*(园长信箱)（服务器请求）-取出所有家长和园长沟通讯息List；
  * 调用Boss_student_tel绘制一层界面；
  * */ 
- function ajax_queryLeaderMsgByParents_message_byRight(){ 
-	   Queue.push(function(){ajax_queryLeaderMsgByParents_message_byRight();},"园长信箱");
+ function ajax_queryLeaderMsgByParents_message_byRight(list_div,pageNo,callback){ 
 	   	$.AMUI.progress.start();
-	       var url = hostUrl + "rest/message/queryLeaderMsgByParents.json";
+	       var url = hostUrl + "rest/message/queryLeaderMsgByParents.json?pageNo="+pageNo;
 	   	$.ajax({
 	   		type : "GET",
+	   		dara:null,
 	   		url : url,
 	   		dataType : "json",
-	   		 async: true,
+	   		 async: false,
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
-	   				if(data.list.length!=0){
-		   				React.render(React.createElement( Boss_student_tel_byRight,{formdata:data.list}), G_get_div_body());	
+	   				if(data.list.length!=0){		   				
+						React.render(React.createElement(Boss_student_tel_byRight, {
+							events: data.list.data,
+							responsive: true, bordered: true, striped :true,hover:true,striped:true
+							}), document.getElementById(list_div));
 	   				}else{
 	   					G_msg_pop("暂无园长信箱数据!");
-		   				React.render(React.createElement( Boss_student_tel2_byRight), G_get_div_body());
+						React.render(React.createElement(Boss_student_tel2_byRight, {
+							responsive: true, bordered: true, striped :true,hover:true,striped:true
+							}), document.getElementById(list_div));
 	   				}
-
+	  				if(typeof callback=='function'){
+						callback(data.list);
+					}
 	   			} else {
 	   				alert("加载数据失败："+data.ResMsg.message);
 	   			}

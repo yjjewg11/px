@@ -347,7 +347,7 @@ public class MessageController extends AbstractRESTController {
 			
 		
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			List list= messageService.queryCountLeaderMsgByParents(groupuuid,pData);
+			PageQueryResult list= messageService.queryCountLeaderMsgByParents(groupuuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

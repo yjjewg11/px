@@ -3753,9 +3753,9 @@ var Boss_student_tel2_byRight =React.createClass({displayName: "Boss_student_tel
 * this.props.parentReact.forceUpdate();
 * */
 var Boss_message_stage_byRight = React.createClass({displayName: "Boss_message_stage_byRight", 
-load_more_btn_id:"load_more_",
+load_more_btn_id:"load_more_boss_",
 pageNo:1,
-classnewsreply_list_div:"classnewsreply_list_div",
+classnewsreply_list_div:"classnewsreply_message_list_div",
 componentWillReceiveProps:function(){
 	this.refresh_data();
 },
@@ -3786,7 +3786,7 @@ refresh_data:function(){
 	
 },
 render: function() {
-this.load_more_btn_id="load_more_"+this.props.uuid;
+this.load_more_btn_id="load_more_boss_"+this.props.uuid;
 return (
 	  React.createElement("div", null, 
 	   React.createElement("div", {id: this.classnewsreply_list_div}
@@ -5102,13 +5102,18 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   		 }
 
   	  },
+		//查看操作记录方法
+       	stutent_operate:function(uuid,pageNo){	
+		React.render(React.createElement(Common_operate_rect,
+ 		 		{uuid:uuid,
+			    pageNo:pageNo
+ 		 			}),  document.getElementById(this.div_reply_save_id));		
+	},	
   		render: function() {
   	     var o =this.state;
+		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
   		 return (
   		 		React.createElement("div", null, 
-			 			  	 React.createElement(AMR_ButtonToolbar, null, 
- 		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: common_stutent_operate.bind(this,o.uuid,o.pageNo)}, "查看修改记录")
- 		 	    ), 
   			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
   			      React.createElement(AMUIReact.ListItem, null, "头像:"), 
   				  React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
@@ -5131,8 +5136,11 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
   			      React.createElement(AMUIReact.ListItem, null, "其他电话:", o.other_tel), 			      
   			      React.createElement(AMUIReact.ListItem, null, 
   			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
-  			      )			      
-  			      
+  			      ), 			      
+  			    React.createElement(AMR_ButtonToolbar, null, 
+ 		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
+ 		 	    ), 
+			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
   			      )
   		 	     ) 
   		     );
