@@ -2537,9 +2537,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      	
   };
 
-
-
-//———————————————————————————————————园长信箱—————————————————————————      
 /*(园长信箱)（服务器请求）-取出所有家长和园长沟通讯息List；
  * 调用Boss_student_tel绘制一层界面；
  * */ 
@@ -2555,7 +2552,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	   		success : function(data) {
 	   			$.AMUI.progress.done();
 	   			if (data.ResMsg.status == "success") {
-	   				if(data.list.length!=0){		   				
+	   				if(data.list.data.length!=0){		   				
 						React.render(React.createElement(Boss_student_tel_byRight, {
 							events: data.list.data,
 							responsive: true, bordered: true, striped :true,hover:true,striped:true

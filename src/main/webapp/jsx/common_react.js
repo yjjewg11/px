@@ -1566,3 +1566,61 @@ function G_status(){
  }
  }); 
  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+ /*
+  * <重新登录>添加按钮详情绘制;
+  * @ajax_accounts_save：保存按钮调用
+  * @ajax_accounts_save：保存继续按钮
+  * 都在kd_service；
+  * */ 
+ var Common_load_pop= React.createClass({ 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	 handleChange: function(event) {
+		 var o=$('#login_form').serializeJson();
+		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
+		    this.setState(o);
+	  },
+	 handle_onKeyDown: function(e){
+		if(G_isKeyDown_enter(e)){
+			ajax_userinfo_login();
+			return false;
+	 }
+	},
+	handleChange_group_type_data:function(v){
+		 window.location.replace(v);
+	},
+  	 
+  render: function() {
+
+	  var o = this.state;
+		if(!o.grouptype)o.grouptype=3;
+   return (
+   		<div>
+ 		<div className="header">
+		  <div className="am-g">
+		 <img src={hostUrl+"i/denglulogo.png"} width="100px" height="100px"/>
+		  </div>
+		</div>
+		<div className="am-g">
+		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm">
+		
+		 <form id="login_form" method="post" className="am-form" onKeyDown={this.handle_onKeyDown}>
+
+	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
+
+	      <div className="am-cf">
+	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
+	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
+	      </div>
+
+	      
+
+	    </form>
+	     </div> 
+	   </div>
+   	         </div>
+   );
+  }
+  });
