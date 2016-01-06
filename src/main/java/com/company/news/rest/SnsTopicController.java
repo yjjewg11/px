@@ -22,21 +22,20 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.service.CountService;
 import com.company.news.service.SnsDianzanService;
 import com.company.news.service.SnsTopicService;
+import com.company.news.service.SnsTopicVoteItemService;
 import com.company.news.vo.ResponseMessage;
-import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/snsTopic")
 public class SnsTopicController extends AbstractRESTController {
-	@Autowired
-	private CountService countService;
 	@Autowired
 	private SnsTopicService snsTopicService;
 	
 
 	@Autowired
 	private SnsDianzanService snsDianzanService;
-
+	@Autowired
+	private SnsTopicVoteItemService snsTopicVoteItemService;
 	/**
 	 * 保存
 	 * 
@@ -56,6 +55,7 @@ public class SnsTopicController extends AbstractRESTController {
 		// 请求消息体
 		String bodyJson = RestUtil.getJsonStringByRequest(request);
 		SnsTopicJsonform jsonform;
+		
 		try {
 			jsonform = (SnsTopicJsonform) this.bodyJsonToFormObject(
 					bodyJson, SnsTopicJsonform.class);
@@ -330,10 +330,6 @@ try {
 							.addResponseMessageForModelMap(model);
 					SnsTopic a;
 					try {
-						
-		
-						
-						
 						a = snsTopicService.get(uuid);
 						if(a==null){
 							responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
@@ -358,6 +354,12 @@ try {
 						model.put(RestConstants.Return_ResponseMessage_count, cacheCount);
 						model.put(RestConstants.Return_ResponseMessage_dianZan,snsDianzanService.getDianzanStatus(uuid, user));
 						model.put(RestConstants.Return_ResponseMessage_isFavorites,snsTopicService.isFavorites( user,uuid));
+						
+						
+						if(SystemConstants.SnsTopic_section_id_Vote.equals(a.getSection_id())){
+							model.put("voteItem_uuid", snsTopicVoteItemService.getVoteItemUuid(uuid, user));
+						}
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -386,7 +388,7 @@ try {
 
 					try {
 						boolean flag = snsTopicService.delete(request.getParameter("uuid"),
-								responseMessage);
+								responseMessage,request);
 						if (!flag)
 							return "";
 					} catch (Exception e) {

@@ -170,7 +170,7 @@ public class SnsDianzanService extends AbstractService {
 	 * 判断是否能点赞
 	 * @param snsDianzanJsonform
 	 * @param responseMessage
-	 * @return
+	 * @return null:没有点过,1:点赞.2:不赞同
 	 * @throws Exception
 	 */
 	public Object getDianzanStatus(String rel_uuid,SessionUserInfoInterface user) throws Exception {

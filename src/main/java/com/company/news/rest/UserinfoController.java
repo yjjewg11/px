@@ -82,6 +82,7 @@ public class UserinfoController extends AbstractRESTController {
 				String str=userinfoService.getGroupTypes(user.getUuid());
 				//c1.如果用户有关联的机构类型,这根据类型判断.
 				if(StringUtils.isNotBlank(str)){
+					if(userLoginForm.getGrouptype()==null)userLoginForm.setGrouptype("1");
 					//c1.1 如果选择登录的类型不在 关联的机构类型,则自动登录为关联类型的机构.
 					if(!str.contains(userLoginForm.getGrouptype())){
 						////如果是选择的是教育机构登录,则判断有幼儿园类型则设置为1.否则还是培训机构登录..

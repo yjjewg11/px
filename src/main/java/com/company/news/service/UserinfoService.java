@@ -1518,22 +1518,22 @@ public class UserinfoService extends AbstractService {
 			}
 		}
 		
-		//优先判断是否是老师登录
-		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
-				User.class, "loginname", loginname);
-
-		if (user == null) {
-		//3.老师不存在则家长登录
-			Parent parent = (Parent) this.nSimpleHibernateDao.getObjectByAttribute(
-					Parent.class, "loginname", loginname);
-			
-			if(parent==null){
-				responseMessage.setMessage("用户不存在!");
-				return null;
-			}
+		//优先判断是否是家长登录
+		Parent parent = (Parent) this.nSimpleHibernateDao.getObjectByAttribute(
+				Parent.class, "loginname", loginname);
+		
+		if(parent!=null){
+		
 			return loginBySnsByParent(parent, userLoginForm, model, request, responseMessage);
 		}
 		
+		//其次判断是否是老师登录
+		User user = (User) this.nSimpleHibernateDao.getObjectByAttribute(
+				User.class, "loginname", loginname);
+		if (user == null) {
+			responseMessage.setMessage("用户不存在!");
+			return null;
+		}
 		return loginBySnsByTeacher(user, userLoginForm, model, request, responseMessage);
 		
 	}

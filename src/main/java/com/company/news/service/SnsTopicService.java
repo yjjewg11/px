@@ -13,7 +13,6 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.HtmlUtils;
 
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
@@ -22,14 +21,14 @@ import com.company.news.commons.util.HTMLUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.NewMsgNumberIservice;
 import com.company.news.entity.SnsTopic;
+import com.company.news.entity.SnsTopicVoteItem;
+import com.company.news.entity.SnsTopicVoteItemOfUpdate;
 import com.company.news.interfaces.SessionUserInfoInterface;
-import com.company.news.jsonform.AnnouncementsJsonform;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
-import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.vo.DianzanListVO;
+import com.company.news.right.RightConstants;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -47,7 +46,8 @@ public class SnsTopicService extends AbstractService {
 	
 	@Autowired
 	private NewMsgNumberIservice newMsgNumberIservice;
-	
+	@Autowired
+	private SnsTopicVoteItemService snsTopicVoteItemService;
 	
 	
 	/**
@@ -76,17 +76,24 @@ public class SnsTopicService extends AbstractService {
 	 * @param description
 	 * @param responseMessage
 	 * @return
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	 * @throws Exception 
 	 */
 	public SnsTopic add(SnsTopicJsonform jsonform,
-			ResponseMessage responseMessage, HttpServletRequest request) throws IllegalAccessException, InvocationTargetException {
-		if(!valiateForm(jsonform,responseMessage))return null;
-		
+			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
 		SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
 		if(user==null){
 			return null;
 		}
+		
+		if(!valiateForm(jsonform,responseMessage))return null;
+		
+		if(SystemConstants.SnsTopic_section_id_Vote.equals(jsonform.getSection_id())){
+			if(jsonform.getItemList()==null||jsonform.getItemList().size()==0){
+				responseMessage.setMessage("投票类型,投票条目必填.");
+				return null;
+			}
+		}
+		
 		SnsTopic newEntity = new SnsTopic();
 		BeanUtils.copyProperties(newEntity, jsonform);
 		String[] strings=HTMLUtils.getSummaryAndImgByHTML(newEntity.getContent());
@@ -109,26 +116,55 @@ public class SnsTopicService extends AbstractService {
 		newEntity.setClick_count(0l);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
 		
+		if(SystemConstants.SnsTopic_section_id_Vote.equals(newEntity.getSection_id())){
+			snsTopicVoteItemService.update_SnsTopicVoteItem(newEntity.getUuid(), jsonform.getItemList());
+		}
+		
+		
 		newMsgNumberIservice.today_snsTopic_incrCountOfNewMsgNumber();
 		
 		PxRedisCache.setSnsTopicByExt_uuid(newEntity.getUuid(), 1l);
 		return newEntity;
 
 	}
+	
+	
 	public SnsTopic update(SnsTopicJsonform jsonform,
-			ResponseMessage responseMessage, HttpServletRequest request) throws IllegalAccessException, InvocationTargetException {
+			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
+		
+		SessionUserInfoInterface user=this.getSessionUser(request,responseMessage);
+		if(user==null){
+			return null;
+		}
+		
 		if(!valiateForm(jsonform,responseMessage))return null;
 
+
+		if(SystemConstants.SnsTopic_section_id_Vote.equals(jsonform.getSection_id())){
+			if(jsonform.getItemList()==null||jsonform.getItemList().size()==0){
+				responseMessage.setMessage("投票类型,投票条目必填.");
+				return null;
+			}
+		}
 		SnsTopic newEntity = (SnsTopic) this.nSimpleHibernateDao
 				.getObjectById(SnsTopic.class,
 						jsonform.getUuid());
 		
+		if(!user.getUuid().equals(newEntity.getCreate_useruuid())){
+			responseMessage.setMessage("不是作者不能修改.");
+			return null;
+		}
 		
 		BeanUtils.copyProperties(newEntity, jsonform);
 		String[] strings=HTMLUtils.getSummaryAndImgByHTML(newEntity.getContent());
 		newEntity.setSummary(strings[0]);
 		newEntity.setImguuids(strings[1]);
 		this.nSimpleHibernateDao.getHibernateTemplate().save(newEntity);
+		
+		if(SystemConstants.SnsTopic_section_id_Vote.equals(newEntity.getSection_id())){
+			snsTopicVoteItemService.update_SnsTopicVoteItem(newEntity.getUuid(), jsonform.getItemList());
+		}
+		
 		return newEntity;
 	}
 	
@@ -349,20 +385,21 @@ public class SnsTopicService extends AbstractService {
 				return announcements;
 		
 			}
-		public boolean delete(String uuid, ResponseMessage responseMessage) {
+		public boolean delete(String uuid, ResponseMessage responseMessage,HttpServletRequest request) {
 			if (StringUtils.isBlank(uuid)) {
-
 				responseMessage.setMessage("ID不能为空！");
 				return false;
 			}
-
-			if (uuid.indexOf(",") != -1) // 多ID
-			{
-				this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from SnsTopic where uuid in(?)",
-						uuid);
-			} else {
-				this.nSimpleHibernateDao.deleteObjectById(SnsTopic.class, uuid);
+			
+			SnsTopic newEntity = (SnsTopic) this.nSimpleHibernateDao
+					.getObjectById(SnsTopic.class,
+							uuid);
+			SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+			if(!user.getUuid().equals(newEntity.getCreate_useruuid())){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return false;
 			}
+			this.nSimpleHibernateDao.deleteObjectById(SnsTopic.class, uuid);
 
 			return true;
 		}
