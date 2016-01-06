@@ -1474,77 +1474,153 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  
  
  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 //——————————————————————————学生列表操作公共方法<绘制>——————————————————————————  
+ var Common_operate_rect = React.createClass({displayName: "Common_operate_rect", 
+ 	load_more_btn_id:"Sns_reply_reply_load_more_",
+ 	pageNo:1,
+ 	classnewsreply_list_div:"classnewsreply_list_div",
+ 	componentDidMount:function(){
+ 		this.refreshReplyList();
+ 	},
+ 	load_more_data:function(){ 
+ 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+    		var that=this;
+    		var callback=function(re_data){
+     			if(!re_data)return;
+     			if(re_data.data.length<re_data.pageSize){
+     				$("#"+that.load_more_btn_id).hide();
+     			}else{
+     				$("#"+that.load_more_btn_id).show();
+     			}
+     			that.pageNo++;
+     		}
+ 	var re_data=common_stutent_operate(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);		  
+ },
+ 	refreshReplyList:function(){
+ 		$("#"+this.classnewsreply_list_div).html("");
+ 		this.pageNo=1;
+ 		this.load_more_data();
+ 	},
 
- var Query_stutent_operate = React.createClass({displayName: "Query_stutent_operate",
-
- 		handleClick: function(m,studen_tuuid) {
- 			if(m=="pre"){
- 				common_stutent_operate(studen_tuuid,--g_student_operate_point);
- 				return;
- 			 }else if(m=="next"){
- 				common_stutent_operate(studen_tuuid,++g_student_operate_point);
- 				 return;
- 			 }
- 		},
- 		maxPageNo:0,
  render: function() {
- 	var pre_disabled=g_student_operate_point<2;
- 	
- 	if(g_student_operate_point==1){
- 		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
- 	}
- 	var next_disabled=g_student_operate_point>=this.maxPageNo;
-     return (
- 		  
+ 	this.load_more_btn_id="Sns_reply_reply_load_more_"+this.props.uuid;
+ 	this.classnewsreply_list_div="classnewsreply_list_div"+this.props.uuid;
+   return (
        React.createElement("div", null, 
- 	      React.createElement("form", {id: "operateGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-         React.createElement(AMR_Panel, null, 
-        React.createElement(AMR_ButtonToolbar, null, 
-       React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-      React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.props.studen_tuuid)}, "« 上一页"), 
-     React.createElement("label", null, g_student_operate_point, "\\", this.maxPageNo), 
-    React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next",this.props.studen_tuuid)}, "下一页 »")
-   )		
- 	)
-   )
- 	 ), 
-       React.createElement(AMR_Table, React.__spread({},  this.props), 
-         React.createElement("thead", null, 
-           React.createElement("tr", null, 
-             React.createElement("th", null, "修改人姓名"), 
-             React.createElement("th", null, "修改时间"), 
-             React.createElement("th", null, "具体操作")
-           )
-         ), 
-         React.createElement("tbody", null, 
-           this.props.events.map(function(event) {
-             return (React.createElement(Query_operate_byRight, {key: event.id, event: event}));
-           })
-         )
-       )
-       )
-     );
-   }
- });
-     
+        React.createElement("div", {id: this.classnewsreply_list_div}), 
+        React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")				 
+ 	  )
+   );
+ }
+ }); 
+
  /*  	
   * 学生列表操作详情表单上绘制详细内容;
   * */
- var Query_operate_byRight = React.createClass({displayName: "Query_operate_byRight", 
+ var Query_stutent_operate = React.createClass({displayName: "Query_stutent_operate", 
  	  render: function() {
- 	    var event = this.props.event;
+ 	    var event = this.props.events;
  	    var className = event.highlight ? 'am-active' :
- 	      event.disabled ? 'am-disabled' : '';
-       if(!event.status)event.status=0;
+   event.disabled ? 'am-disabled' : '';
  	    return (
- 	      React.createElement("tr", {className: className}, 
- 	        React.createElement("td", null, event.create_user), 
- 	        React.createElement("td", null, event.create_time), 
- 	        React.createElement("td", null, event.message)
- 	      ) 
- 	    );
- 	  }
- 	}); 
-
+ 	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
+ 		          React.createElement("tr", null, 
+ 		            React.createElement("th", null, "修改人姓名"), 
+ 		            React.createElement("th", null, "修改时间"), 
+ 		            React.createElement("th", null, "具体操作")
+ 		          ), 			 
+ 	    			  this.props.events.map(function(event) {
+ 	    			      return (
+ 	    					      React.createElement("tr", {className: className}, 
+ 	    				 	        React.createElement("td", null, event.create_user), 
+ 	    				 	        React.createElement("td", null, event.create_time), 
+ 	    				 	        React.createElement("td", null, event.message), "                   ") 
+ 	    			    		  )
+ 	    			         })	
+ 	    			  )		  
+ 	    	  );
+ }
+ }); 
  //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+ /*
+  * <重新登录>添加按钮详情绘制;
+  * @ajax_accounts_save：保存按钮调用
+  * @ajax_accounts_save：保存继续按钮
+  * 都在kd_service；
+  * */ 
+ var Common_load_pop= React.createClass({displayName: "Common_load_pop", 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	 handleChange: function(event) {
+		 var o=$('#login_form').serializeJson();
+		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
+		    this.setState(o);
+	  },
+	 handle_onKeyDown: function(e){
+		if(G_isKeyDown_enter(e)){
+			ajax_userinfo_login();
+			return false;
+	 }
+	},
+	handleChange_group_type_data:function(v){
+		 window.location.replace(v);
+	},
+  	 
+  render: function() {
+
+	  var o = this.state;
+		if(!o.grouptype)o.grouptype=3;
+   return (
+   		React.createElement("div", null, 
+ 		React.createElement("div", {className: "header"}, 
+		  React.createElement("div", {className: "am-g"}, 
+		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"})
+		  )
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
+		
+		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
+
+	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
+	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+
+	      React.createElement("div", {className: "am-cf"}, 
+	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
+	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
+	      )
+
+	      
+
+	    )
+	     )
+	   )
+   	         )
+   );
+  }
+  });

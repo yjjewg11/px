@@ -836,7 +836,8 @@ function menu_teachingplan_list_fn_byRight(classuuid) {
  * @跳转kd_service发服务器请求
  * */
 function menu_queryLeaderMsgByParents_message_fn_byRight() {
-	ajax_queryLeaderMsgByParents_message_byRight();
+	Queue.push(menu_queryLeaderMsgByParents_message_fn_byRight,"<园长信箱");
+	ajax_message_boss_div();
 };
 
 

@@ -828,21 +828,22 @@ function G_getHtmlTitle(url,callback){
 }
 
 
+
+
+
+
 /*/
  * 学生列表查看操作详情
  * */
-var g_student_operate_point=1;
-function common_stutent_operate(studen_tuuid,pageNo) {
-	Queue.push(function(){common_stutent_operate(studen_tuuid,pageNo);},"修改详情");
-	  if(!pageNo)pageNo=1;
-	 g_student_operate_point=pageNo;
-
+function common_stutent_operate(studen_tuuid,list_div,pageNo,callback) {
+	if(!pageNo)pageNo=1;
 		var url = hostUrl + "rest/operate/query.json";
 		$.ajax({          
 			type : "GET",  
 			url : url,
 			data:{studentuuid:studen_tuuid,pageNo:pageNo},
 			dataType : "json",
+			async: false,
 			success : function(data) {
  				if (data.ResMsg.status == "success") {
  	 				React.render(React.createElement( Query_stutent_operate,{
@@ -850,8 +851,10 @@ function common_stutent_operate(studen_tuuid,pageNo) {
  	  					data:data,
  	  					events: data.list.data,
  						responsive: true, bordered: true, striped :true,hover:true,striped:true
-					}),  G_get_div_body());
- 					
+					}), document.getElementById(list_div));
+ 	 				if(typeof callback=='function'){
+ 						callback(data.list);
+ 					}	
  				} else {
  					alert(data.ResMsg.message);
  				}

@@ -46,6 +46,10 @@ var Sns_Div = React.createClass({
   	handleClick: function(m) {
   		PxSnsService.btnclick_sns_snsTopic(m);
 },
+//创建话题点击按钮事件跳转sns_servise方法;
+	wulala: function() {
+		Modal_prompt.showLogin();
+},
 render: function() {
 	this.classnewsreply_list_div="snstopicList_"+this.props.snsKey
 	this.load_more_btn_id="load_more_"+this.props.snsKey;
@@ -60,7 +64,10 @@ render: function() {
 		}
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-	{toolbar} 		    
+	{toolbar} 	
+	  <AMR_ButtonToolbar>
+		 <AMR_Button amStyle="secondary" onClick={this.wulala.bind(this,3)} >弹出实验框</AMR_Button>
+		</AMR_ButtonToolbar>
 		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
 		  </div>
 		  

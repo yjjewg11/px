@@ -1,4 +1,50 @@
+/**
+Modal_prompt.show(React.createElement(sns_list_snsTopic_rect, {
+					events: null
+					},"title");
+Modal_prompt.showLogin();
+*/
+var Modal_prompt={
+	g_modal_prompt:"g_modal_prompt",
+	g_modal_prompt_hd:"g_modal_prompt_hd",
+	g_modal_prompt_bd:"g_modal_prompt_bd",
+	showLogin:function(){
+		Modal_prompt.show(React.createElement(Common_load_pop, {
+		events: null
+		}),"title");
+	},
+/**
 
+react_Element:React.createElement(sns_list_snsTopic_rect, {
+					events: data.list,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}
+
+
+	*/
+	show:function(react_Element,title,callback){
+		React.render(react_Element,  document.getElementById(Modal_prompt.g_modal_prompt_bd)); 	
+
+		$("#"+Modal_prompt.g_modal_prompt_hd).html(title);
+
+
+		  $("#"+Modal_prompt.g_modal_prompt).modal({
+				  relatedTarget: document.body,
+					  closeOnConfirm:false,
+				  onConfirm: function(e) {
+					  var model1=this;
+					 // this.relatedTarget.save_account(function(){model1.close()})
+					if(typeof callback=='function')callback(function(){model1.close()});
+					else model1.close();
+				  },
+				  onCancel: function(e) {
+					  
+				  }
+				});
+	}
+	
+
+};
 var PxSnsService=(function(){
 //——————————————————————————(大图标)话题—————————————————————————— 
 	

@@ -4102,14 +4102,77 @@ var G_Teachingplan_1day_byRight= React.createClass({
  * @send_useruuid:发送者ID；
  * @ajax_boss_message_list绑定事件然后开始绘制舞台；
  * */
+var Message_boss_Div_list = React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
+	componentWillReceiveProps:function(){
+		this.refresh_data();
+	},
+	componentDidMount:function(){
+		this.load_more_data();
+	},
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+		     var that=this;
+             var callback=function(re_data){
+ 			if(!re_data)return;
+ 			if(re_data.data.length<re_data.pageSize){
+ 				$("#"+that.load_more_btn_id).hide();
+ 			}else{
+ 				$("#"+that.load_more_btn_id).show();
+ 			}
+ 			that.pageNo++;
+ 		}
+        var re_data=ajax_queryLeaderMsgByParents_message_byRight(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);	
+	},
+	refresh_data:function(){
+//		classnewsreply_list_div 清除；
+//      load_more_data	重新绘制DIV；
+		this.forceUpdate();
+		this.pageNo=1;
+		$("#"+this.classnewsreply_list_div).html("");
+		this.load_more_data();
+		
+	},
+	//绘制不变的信息
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  <div className="am-list-news-hd am-cf">
+		   
+		  </div>
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">
+		   
+		    
+		  </div>
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		</div>
+		  
+			
+  );
+}
+});
+
+
+
+
 var Boss_student_tel_byRight =React.createClass({
 	render: function() {
-     var o =this.state;	
+	    var event = this.props.events;
+	    var className = event.highlight ? 'am-active' :
+    event.disabled ? 'am-disabled' : '';
 	 return (
 	 	<div>
 		 	  <G_px_help_List data={G_kd_help_msg.msg_help_list11}/>
 	 	    <ul className="am-list am-list-static am-list-border">
-	    	     {this.props.formdata.map(function(event) {
+	    	     {this.props.events.map(function(event) {
 	              return (
 	              <li className="am-comment">	
 	      	       <a href="javascript:void(0);" >
@@ -4154,11 +4217,11 @@ var Boss_student_tel2_byRight =React.createClass({
 * this.props.parentReact.forceUpdate();
 * */
 var Boss_message_stage_byRight = React.createClass({ 
-load_more_btn_id:"load_more_",
+load_more_btn_id:"load_more_boss_",
 pageNo:1,
-classnewsreply_list_div:"classnewsreply_list_div",
+classnewsreply_list_div:"classnewsreply_message_list_div",
 componentWillReceiveProps:function(){
-	this.load_more_data();
+	this.refresh_data();
 },
 componentDidMount:function(){
 	this.load_more_data();
@@ -4189,7 +4252,7 @@ refresh_data:function(){
 },
 render: function() {
 var parentThis=this;
-this.load_more_btn_id="load_more_"+this.props.uuid;
+this.load_more_btn_id="load_more_boss_"+this.props.uuid;
 return (
 	  <div>
 	   <div id={this.classnewsreply_list_div}>
@@ -5806,14 +5869,19 @@ render: function() {
   		 }
 
   	  },
+		//查看操作记录方法
+       	stutent_operate:function(uuid,pageNo){	
+		React.render(React.createElement(Common_operate_rect,
+ 		 		{uuid:uuid,
+			    pageNo:pageNo
+ 		 			}),  document.getElementById(this.div_reply_save_id));		
+	},	
   		render: function() {
   	     var o =this.state;
+		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
 		 if(!o.status)o.status=0;
   		 return (
   		 		<div>
-			  	 <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="secondary" onClick={common_stutent_operate.bind(this,o.uuid,o.pageNo)} >查看修改记录</AMR_Button>
- 		 	    </AMR_ButtonToolbar>
   			    <AMUIReact.List static border striped>
   			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
   				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
@@ -5837,9 +5905,12 @@ render: function() {
   			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
   			      <AMUIReact.ListItem>
   			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
-  			      </AMUIReact.ListItem>			      
-  			      
+  			      </AMUIReact.ListItem>			        			      
   			      </AMUIReact.List>
+			    <AMR_ButtonToolbar>
+ 		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+ 		 	    </AMR_ButtonToolbar>
+			    <div id={this.div_reply_save_id}>			</div>	
   		 	     </div> 
   		     );
   	        }
