@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.entity.Group4Q;
 import com.company.news.entity.SnsTopic;
 import com.company.news.entity.SnsTopicVoteItem;
 import com.company.news.entity.SnsTopicVoteItemOfUpdate;
@@ -200,6 +201,26 @@ public class SnsTopicVoteItemService extends AbstractService {
 		String insertsql="select item_uuid from sns_topic_voteitem_user where topic_uuid='"+DbUtils.safeToWhereString(topic_uuid)+"' and user_uuid='"+user.getUuid()+"'";
 		Object status=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).uniqueResult();
 		return status;
+	}
+	
+	/**
+	 * 获取投票的条目,null表示没投过.
+	 * @param snsDianzanJsonform
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public List queryByTopic_uuid(String topic_uuid) throws Exception {
+		if (StringUtils.isBlank(topic_uuid)) {
+			return null;
+		}
+		
+		String hql="from SnsTopicVoteItem where topic_uuid=:topic_uuid order by ind asc";
+		
+		   List list = this.nSimpleHibernateDao.createHqlQuery(hql)
+		    		.setString("topic_uuid", topic_uuid).list();
+		
+		return list;
 	}
 	@Override
 	public Class getEntityClass() {
