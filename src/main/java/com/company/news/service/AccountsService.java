@@ -364,5 +364,30 @@ public class AccountsService extends AbstractService {
 		
 		return student_list;
 	}
+	
+	
+	
+	/**
+	 * 统计一年每月的数据(根据分类)
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getAccountPerMonthOfYear(String groupuuid,String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		//class_name,news_count,dianzan_count,replay_count,read_sum_count
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		
+		String sql = "SELECT type,DATE_FORMAT(t1.accounts_time,'%m') as m,COUNT(1) as count_num,SUM(num) as sum_num from px_accounts t1 ";
+			sql+="  where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'" ;
+			
+			sql+="  and t1.accounts_time>="+DBUtil.stringToDateByDBType(begDateStr)+"  and t1.accounts_time<"+DBUtil.stringToDateByDBType(begDateStr);
+			sql+=" GROUP BY  type,DATE_FORMAT(t1.accounts_time,'%m') ORDER BY type,m";
+		Query q = s.createSQLQuery(sql);
+
+		return q.list();
+	}
+	
 
 }

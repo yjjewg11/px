@@ -18,6 +18,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.CountService;
 import com.company.news.service.SnsDianzanService;
@@ -330,6 +331,8 @@ try {
 							.addResponseMessageForModelMap(model);
 					SnsTopic a;
 					try {
+						
+						uuid=DBUtil.safeToWhereString(uuid);
 						a = snsTopicService.get(uuid);
 						if(a==null){
 							responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
@@ -358,6 +361,8 @@ try {
 						
 						if(SystemConstants.SnsTopic_section_id_Vote.equals(a.getSection_id())){
 							model.put("voteItem_uuid", snsTopicVoteItemService.getVoteItemUuid(uuid, user));
+							//投票观点的列表.
+							model.put("itemList", snsTopicVoteItemService.queryByTopic_uuid(uuid));
 						}
 						
 					} catch (Exception e) {
@@ -387,7 +392,9 @@ try {
 							.addResponseMessageForModelMap(model);
 
 					try {
-						boolean flag = snsTopicService.delete(request.getParameter("uuid"),
+						String uuid=request.getParameter("uuid");
+						uuid=DBUtil.safeToWhereString(uuid);
+						boolean flag = snsTopicService.delete(uuid,
 								responseMessage,request);
 						if (!flag)
 							return "";

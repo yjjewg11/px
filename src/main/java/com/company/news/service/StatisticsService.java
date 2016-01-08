@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.company.common.PxStringUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.entity.BaseDataList;
 import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
@@ -41,6 +42,9 @@ public class StatisticsService extends AbstractStatisticsService {
 	private ClassNewsService classNewsService;
 	@Autowired
 	private TeachingJudgeService teachingJudgeService;
+	
+	@Autowired
+	private AccountsService accountsService;
 
 
 
@@ -635,6 +639,131 @@ public class StatisticsService extends AbstractStatisticsService {
 		
 		vo.setSeries_data(psdvlist);
 		logger.debug("end 用户年龄统计");
+		return vo;
+
+	}
+	
+	
+
+	
+	/**
+	 * 获取学生年龄段统计 student sex Statistics
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getAccountPerMonthOfYear_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String groupuuid) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		logger.debug("begain 收费记录统计");
+
+//		List<PxStudent> list = pxStudentService.getStudentByGroup(group_uuid);
+		//age,sum(sex=0),sum(sex=1)
+		List<Object[]> datalist =accountsService.getAccountPerMonthOfYear(groupuuid, begDateStr, endDateStr);
+		logger.debug("getUserByGroupuuid 查询结束");
+		
+		
+		String axis_data = "";
+		
+		String sex_male_data = "";
+		String sex_female_data = "";
+		
+		int total_num=0;
+
+		int sex_male = 0;
+		int sex_female = 0;
+		DecimalFormat decimalFormat=new DecimalFormat("0"); 
+		 List<BaseDataList> accounts_type=CommonsCache.getBaseDataListByTypeuuid("KD_Accounts_type");
+		 Map<String,List> type_map=new HashMap();
+		 Map<String,Integer> type_map_sum=new HashMap();
+		 
+			List legend_data = new ArrayList();
+		//Y轴 数组 
+		for(int i=0;i<accounts_type.size();i++){
+			BaseDataList baseDataList=accounts_type.get(i);
+			
+			legend_data.add(baseDataList.getDatavalue());
+			
+			type_map_sum.put("type_count"+baseDataList.getDatakey(), 0);
+			type_map_sum.put("type_sum"+baseDataList.getDatakey(), 0);
+			List axis_data_count_List=new ArrayList(12);
+			List axis_data_sum_List=new ArrayList(12);
+			for(int j=1;j<=12;j++){
+				if(i==0)axis_data += ("\"" +j + "月\",");
+				axis_data_count_List.add(0);
+				axis_data_sum_List.add(0);
+				
+			}
+			//初始话,每月分类数据计数 设置为0.
+			type_map.put("type_count"+baseDataList.getDatakey(), axis_data_count_List);
+			//初始话,每月分类数据总数和 设置为0.
+			type_map.put("type_sum"+baseDataList.getDatakey(), axis_data_sum_List);
+		}
+		
+		//type,DATE_FORMAT(t1.accounts_time,'%m') as m,COUNT(1) as count_num,SUM(num) as sum_num
+		//0,1,2,3
+		for(int i=0;i<datalist.size();i++){
+			Object[] p=datalist.get(i);
+			//获取分类list
+			List type_count_list=type_map.get("type_count"+p[0]);
+			//第几月,设置数量.
+			type_count_list.set(Integer.valueOf(p[1]+"",10)-1, p[2]);
+			
+			//加总数
+			String type_count_key="type_count"+p[0];
+			Integer sum1=type_map_sum.get(type_count_key)+Integer.valueOf(p[2]+"");
+			type_map_sum.put(type_count_key, sum1);
+			
+			
+			//获取分类list
+			List type_sum_list=type_map.get("type_sum"+p[0]);
+			//第几月,设置数量.
+			type_sum_list.set(Integer.valueOf(p[1]+"",10)-1, p[3]);
+			
+			//加总数
+			String type_sum_key="type_sum"+p[0];
+			Integer type_sum_sum1=type_map_sum.get(type_sum_key)+Integer.valueOf(p[3]+"");
+			type_map_sum.put(type_sum_key,  type_sum_sum1);
+			
+		}
+		
+		total_num+=sex_male+sex_female;
+		
+		//Y轴 数组 12月
+		List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>(12);
+			
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("男");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(sex_male_data) + "]");
+
+			psdvlist.add(sdvo);
+
+			PieSeriesDataVo sdvo_p = new PieSeriesDataVo();
+			sdvo_p.setName("女");
+			sdvo_p.setData("[" + PxStringUtils.StringDecComma(sex_female_data) + "]");
+			psdvlist.add(sdvo_p);
+			
+			
+
+			Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(groupuuid, Group4QBaseInfo.class);
+			
+		
+		//组装数据
+		PieStatisticsVo vo = new PieStatisticsVo();
+		//Y轴 数组
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		vo.setTitle_text(g.getBrand_name() + " 学生年龄统计");
+		vo.setTitle_subtext("总计 " + total_num + " 人,男"+sex_male+"人,女"+sex_female+"人");
+	
+		//Y轴每组分类数据
+		vo.setLegend_data(legend_data);
+		//X轴具体数据
+		vo.setSeries_data(psdvlist);
+		logger.debug("end 收费记录统计");
 		return vo;
 
 	}

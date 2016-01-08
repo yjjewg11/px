@@ -241,7 +241,6 @@ var PXECharts_ajax={
 	 */
 	getStatisticsTypeList:function(){
 		var data=[];
-		var data=[];
 		data.push( {value: 'uss', label: '教师性别统计（按机构）'});
 		data.push( {value: 'uls', label: '教师活跃度统计（按机构）'});
 		data.push( {value: 'sss', label: '学生性别统计（按机构）'});

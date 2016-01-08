@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StatisticsService;
 import com.company.news.vo.ResponseMessage;
@@ -37,12 +38,20 @@ public class StatisticsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
+			
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 
 			if (type.toLowerCase().equals("uss"))// 用户性别统计
 			{
 				PieStatisticsVo vo = statisticsService.getUssBygroup(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -51,7 +60,7 @@ public class StatisticsController extends AbstractRESTController {
 			} else if (type.toLowerCase().equals("uls"))// 用户登陆统计
 			{
 				PieStatisticsVo vo = statisticsService.getUlsBygroup(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -60,7 +69,7 @@ public class StatisticsController extends AbstractRESTController {
 			} else if (type.toLowerCase().equals("sss"))// 学生性别统计
 			{
 				PieStatisticsVo vo = statisticsService.getSssBygroup(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -69,7 +78,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("css"))// 学生班级统计
 			{
 				PieStatisticsVo vo = statisticsService.getCssBygroup(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -78,7 +87,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("cns"))// 班级互动统计
 			{
 				PieStatisticsVo vo = statisticsService.getCnsBygroup(
-						responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+						responseMessage, begDateStr,endDateStr,groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -87,7 +96,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("cnts"))// 班级互动TOP
 			{
 				PieStatisticsVo vo = statisticsService.getCntsBygroup(
-						responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+						responseMessage, begDateStr,endDateStr,groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -96,7 +105,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("tjs"))// 教师评价统计
 			{
 				PieStatisticsVo vo = statisticsService.getTjsBygroup(
-						responseMessage, request.getParameter("begDateStr"),request.getParameter("endDateStr"),request.getParameter("groupuuid"));
+						responseMessage, begDateStr,endDateStr,groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -105,7 +114,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("pie_studentParentType"))// 学生家长注册类型比例统计
 			{
 				PieStatisticsVo vo = statisticsService.pie_studentParentType(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -139,10 +148,60 @@ public class StatisticsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 
 				PieStatisticsVo vo = statisticsService.getStudentAgeCountBygroup(
-						responseMessage, request.getParameter("groupuuid"));
+						responseMessage, groupuuid);
+
+				if (vo != null)
+					model.addAttribute(RestConstants.Return_G_entity, vo);
+				else
+					return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	
+
+	/**
+	 * 
+	 * 
+	 * 年龄段统计(按机构)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getAccountPerMonthOfYear_bar", method = RequestMethod.GET)
+	public String getAccountPerMonthOfYear_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+				PieStatisticsVo vo = statisticsService.getAccountPerMonthOfYear_bar(responseMessage, begDateStr, endDateStr, groupuuid);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
