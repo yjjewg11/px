@@ -1573,9 +1573,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
   * 都在kd_service；
   * */ 
  var Common_load_pop= React.createClass({displayName: "Common_load_pop", 
-	 getInitialState: function() {
-		    return this.props;
-		  },
+
 	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
@@ -1593,8 +1591,8 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
   	 
   render: function() {
 
-	  var o = this.state;
-		if(!o.grouptype)o.grouptype=3;
+    var loginname,password
+
    return (
    		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
@@ -1606,14 +1604,10 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
 		
 		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
+		 React.createElement("input", {type: "hidden", name: "grouptype", value: "3"}), 
+	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: loginname, onChange: this.handleChange}), 
+	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: password, onChange: this.handleChange})
 
-	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
-	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
-
-	      React.createElement("div", {className: "am-cf"}, 
-	        React.createElement("input", {id: "btn_login", onClick: ajax_userinfo_login, type: "button", name: "", value: "登 录", className: "am-btn am-btn-primary am-btn-sm am-fl"}), 
-	        React.createElement("input", {type: "button", onClick: menu_userinfo_updatePasswordBySms_fn, value: "忘记密码 ^_^? ", className: "am-btn am-btn-default am-btn-sm am-fr"})
-	      )
 
 	      
 

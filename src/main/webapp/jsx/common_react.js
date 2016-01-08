@@ -1573,9 +1573,7 @@ function G_status(){
   * 都在kd_service；
   * */ 
  var Common_load_pop= React.createClass({ 
-	 getInitialState: function() {
-		    return this.props;
-		  },
+
 	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
@@ -1593,8 +1591,8 @@ function G_status(){
   	 
   render: function() {
 
-	  var o = this.state;
-		if(!o.grouptype)o.grouptype=3;
+    var loginname,password
+
    return (
    		<div>
  		<div className="header">
@@ -1606,14 +1604,10 @@ function G_status(){
 		  <div className="am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm">
 		
 		 <form id="login_form" method="post" className="am-form" onKeyDown={this.handle_onKeyDown}>
+		 <input type="hidden" name="grouptype"  value="3"/>
+	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={loginname} onChange={this.handleChange}/>
+	      <PxInput icon="lock" type="password" name="password" id="password" value={password} onChange={this.handleChange}/>
 
-	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
-	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
-
-	      <div className="am-cf">
-	        <input id="btn_login" onClick={ajax_userinfo_login} type="button" name="" value="登 录" className="am-btn am-btn-primary am-btn-sm am-fl" />
-	        <input type="button" onClick={menu_userinfo_updatePasswordBySms_fn} value="忘记密码 ^_^? " className="am-btn am-btn-default am-btn-sm am-fr" />
-	      </div>
 
 	      
 
