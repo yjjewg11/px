@@ -74,7 +74,7 @@ var Modal_prompt={
 	},
 	showLogin:function(){
 		callback=function(){
-			this.ajax_userinfo_login();
+			Sns_userinfo_login();
 
 		if(Modal_prompt.modal1)Modal_prompt.modal1.close();
 		
@@ -116,7 +116,6 @@ react_Element:React.createElement(sns_list_snsTopic_rect, {
 };
 var PxSnsService=(function(){
 //——————————————————————————(大图标)话题—————————————————————————— 
-	
 /* 
  * <话题>分页栏总入口
  * */	
@@ -350,17 +349,22 @@ function ajax_sns_reply_save(callback,formid){
 	var opt={
 	 formName:formid,
 	 url:hostUrl + "rest/snsReply/save.json",
-	 cbFN:function(data){
-		 if (data.ResMsg.status == "success") {
-			 G_msg_pop(data.ResMsg.message);
-			 if(callback)callback();
-
-		} else {
-			alert(data.ResMsg.message);
-			G_resMsg_filter(data.ResMsg);
-		}
-	 }
-	 };
+	 success: function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				
+				 G_msg_pop(data.ResMsg.message);
+				
+				
+			}else if(data.ResMsg.status == "sessionTimeout") {
+				Modal_prompt.showLogin();
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+	}
+	};
 	 G_ajax_abs_save(opt);					   
 }	
 /*
@@ -379,9 +383,11 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
 					if(typeof dianzansave_callback=='function')dianzansave_callback(data);
-				} else {
+				} else if(data.ResMsg.status== "sessionTimeout") {
+					Modal_prompt.showLogin();
+				}else{
 					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);
+					G_resMsg_filter(data.ResMsg);	
 				}
 			},
 			error : G_ajax_error_fn

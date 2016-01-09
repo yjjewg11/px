@@ -3,6 +3,69 @@ function body_show(){
 		$("#div_widget_chooseUser").hide();
 		$("#div_widget_chooseCook").hide();
 	}
+//用户登陆
+function Sns_userinfo_login() {
+	
+	 var $btn = $("#btn_login");
+	  $btn.button('loading');
+	$.AMUI.progress.start();
+
+	
+	var formData=$('#login_form').serializeJson()
+	
+	if(formData.password.length!=32){
+		formData.password=$.md5(formData.password); 
+	}
+	
+	var url = hostUrl + "rest/userinfo/login.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : formData,
+		dataType : "json",
+		success : function(data) {
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				Store.clear();
+				//判断是否保存密码，如果保存则放入cookie，否则清除cookie
+				setCookie("bs_loginname", formData.loginname);
+				setCookie("bs_grouptype", formData.grouptype);
+				if($("#pw_checked")[0].checked){
+					setCookie("bs_password", formData.password);
+					setCookie("pw_checked", "checked");
+				} else {
+					setCookie("bs_password", ""); 
+					setCookie("pw_checked", "");
+				}
+				Store.setUserinfo(data.userinfo);
+				Store.setGroup(data.list);
+				PxRight.setUserRights(data.S_User_rights);
+				
+				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
+				
+				setCookie("bs_grouptype", data.S_type);
+				PxLazyM.loadJS_for( getCookie("bs_grouptype"));
+				G_msg_pop(data.ResMsg.message);
+				//menu_body_fn();
+				
+				
+			} else {
+				alert(data.ResMsg.message);
+			}
+		},
+		error : function( obj, textStatus, errorThrown ){
+			 $btn.button('reset');
+			$.AMUI.progress.done();
+			if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
+				alert("没连接上互联网.");
+			}else{
+				alert(obj.status+","+textStatus+"="+errorThrown);
+			}
+		}
+	});
+}	
 var SnsIndexPage=(function(){
 	/*
 	 * (标头)注销用户
@@ -121,7 +184,7 @@ var SnsIndexPage=(function(){
 		
 		
 	}
-	
+
 	
 	//SnsIndexPage.init();
 	//SnsIndexPage.user.name

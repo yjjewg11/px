@@ -34,6 +34,24 @@ $.AMUI.progress.start();
 	  if(opt.async===false){
 		  async=opt.async;
 	  }
+	  
+	  if(typeof opt.success!='function'){
+		  opt.success= function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					if(opt.cbFN){
+						opt.cbFN(data);
+					}else{
+						G_msg_pop(data.ResMsg.message);
+						Queue.doBackFN();
+					}
+					
+				} else {
+					alert(data.ResMsg.message);
+				}
+			}
+	  }
 	$.ajax({
 		type : "POST",
 		url : opt.url,
@@ -42,21 +60,7 @@ $.AMUI.progress.start();
 		dataType : "json",
 		contentType : false, 
 		async:async,
-		success : function(data) {
-			$.AMUI.progress.done();
-			// 登陆成功直接进入主页
-			if (data.ResMsg.status == "success") {
-				if(opt.cbFN){
-					opt.cbFN(data);
-				}else{
-					G_msg_pop(data.ResMsg.message);
-					Queue.doBackFN();
-				}
-				
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
+		success :opt.success,
 		error : G_ajax_error_fn
 	});
 }
@@ -94,6 +98,8 @@ function G_ajax_shouc_save(opt){
 						//Queue.doBackFN();
 					}
 					
+				}else if(data.ResMsg.status == "sessionTimeout"){
+					Modal_prompt.showLogin();
 				} else {
 					alert(data.ResMsg.message);
 				}
@@ -745,7 +751,9 @@ function common_check_illegal(type,uuid){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				 G_msg_pop("举报成功");
-			} else {
+			}else if(data.ResMsg.status == "sessionTimeout"){
+				Modal_prompt.showLogin();
+			}else {
 				alert(data.ResMsg.message);
 			}
 		},
@@ -880,8 +888,12 @@ function common_classnews_url(data){
 			url:data
 			}),G_get_div_second());
 };
-
-
-
+//登录失败跳转登录界面	
+function G_resMsg_filter(ResMsg){
+	if("sessionTimeout"==ResMsg.status){
+		//window.location = hostUrl + "login.html";
+		menu_userinfo_login_fn();
+	}
+}	
 
 
