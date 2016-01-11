@@ -892,12 +892,9 @@ function G_resMsg_filter(ResMsg){
 	}
 }	
 
-//sessionTimeout公用方法
+//sessionTimeout公用方法.
 function G_resMsg_Timeout(ResMsg){
-	if(ResMsg.status=="sessionTimeout"){
-		Modal_prompt.showLogin();
-	}else{
-		alert(ResMsg.message);
-		G_resMsg_filter(ResMsg);	
+	if("sessionTimeout"==ResMsg.status){
+		menu_userinfo_login_fn();
 	}
 }

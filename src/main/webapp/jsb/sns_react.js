@@ -2,6 +2,64 @@
 var Tabs=AMUIReact.Tabs;
 var replyEditor=null;
 var reply_callback_save=null;
+
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+ /*
+  * <重新登录>添加按钮详情绘制;
+  * @ajax_accounts_save：保存按钮调用
+  * @ajax_accounts_save：保存继续按钮
+  * 都在kd_service；
+  * */ 
+ var Common_load_pop= React.createClass({displayName: "Common_load_pop", 
+	 getInitialState: function() {
+		    return this.props;
+		  },
+	 handleChange: function(event) {
+		 var o=$('#login_form').serializeJson();
+		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
+		    this.setState(o);
+	  },
+	 handle_onKeyDown: function(e){
+		if(G_isKeyDown_enter(e)){
+			//ajax_userinfo_login();
+			return false;
+	 }
+	},
+	handleChange_group_type_data:function(v){
+		 window.location.replace(v);
+	},
+  	 
+  render: function() {
+
+	  var o = this.state;
+   return (
+   		React.createElement("div", null, 
+ 		React.createElement("div", {className: "header"}, 
+		  React.createElement("div", {className: "am-g"}, 
+		 React.createElement("img", {src: hostUrl+"i/denglulogo.png", width: "100px", height: "100px"})
+		  )
+		), 
+		React.createElement("div", {className: "am-g"}, 
+		  React.createElement("div", {className: "am-u-lg-6 am-u-md-8 am-u-sm-centered am-margin-top-sm"}, 
+		
+		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
+		 React.createElement("input", {type: "hidden", name: "grouptype", value: "3"}), 
+	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
+	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+ 	      React.createElement("label", {htmlFor: "pw_checked"}, 
+	        React.createElement("input", {id: "pw_checked", name: "pw_checked", type: "checkbox", checked: o.pw_checked=="checked"?"checked":"", onChange: this.handleChange}), 
+	        "记住密码"
+	      )
+
+	      
+
+	    )
+	     )
+	   )
+   	         )
+   );
+  }
+  });
 //——————————————————————————话题<绘制>—————————————————————  
 /* 
  * <话题>绘制舞台1.0

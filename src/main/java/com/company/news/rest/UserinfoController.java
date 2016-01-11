@@ -65,7 +65,8 @@ public class UserinfoController extends AbstractRESTController {
 					responseMessage);
 			if(user==null)return "";
 			this.putUserInfoReturnToModel(user,model, request);
-			
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			responseMessage.setMessage("登陆成功");
 			return "";
 		}
 		
