@@ -4276,7 +4276,7 @@ return (
 var Boss_message_save_byRight = React.createClass({ 
 classnewsreply_list_div:"classnewsreply_list_div",
 componentDidMount:function(){
-	$('#classnews_content_replay').xheditor(xhEditor_upImgOption_emot);
+	$('#Boss_content_replay').xheditor(xhEditor_upImgOption_emot);
 },
 	reply_boss_save_btn_click:function(){
 		var that=this.props.parentThis;

@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.SystemConstants;
 import com.company.news.entity.PushMessage;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.jsonform.PushMessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.PushMessageService;
 import com.company.news.vo.ResponseMessage;
 
@@ -29,6 +32,99 @@ public class PushMessageController extends AbstractRESTController {
 	@Autowired
 	private PushMessageService pushMessageService;
 
+	
+
+	/**
+	 * 
+	 * 发送版本更新消息给所有家长(ios版本)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateIOSParentVersion", method = RequestMethod.POST)
+	public String updateIOSParentVersion(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			//设置当前用户
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+			PushMessageJsonform pushMessageJsonform;
+			
+			// 请求消息体
+			String bodyJson = RestUtil.getJsonStringByRequest(request);
+			try {
+				pushMessageJsonform = (PushMessageJsonform) this.bodyJsonToFormObject(
+						bodyJson, PushMessageJsonform.class);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setMessage(error_bodyJsonToFormObject);
+				return "";
+			}
+			boolean flag=pushMessageService.updateIOSParentVersion(pushMessageJsonform,responseMessage, request);
+			
+					if (!flag)// 请求服务返回失败标示
+						return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+
+	/**
+	 * 
+	 *  发送版本更新消息给所有老师(ios版本)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateIOSTeacherVersion", method = RequestMethod.POST)
+	public String updateIOSTeacherVersion(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			//设置当前用户
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_announce_m,request)){
+				responseMessage.setMessage(RightConstants.Return_msg);
+				return "";
+			}
+			
+			PushMessageJsonform pushMessageJsonform;
+			
+			// 请求消息体
+			String bodyJson = RestUtil.getJsonStringByRequest(request);
+			try {
+				pushMessageJsonform = (PushMessageJsonform) this.bodyJsonToFormObject(
+						bodyJson, PushMessageJsonform.class);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setMessage(error_bodyJsonToFormObject);
+				return "";
+			}
+			boolean flag=pushMessageService.updateIOSTeacherVersion(pushMessageJsonform,responseMessage, request);
+			
+					if (!flag)// 请求服务返回失败标示
+						return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	
 	/**
 	 * 
@@ -187,4 +283,7 @@ public class PushMessageController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	
+	
 }
