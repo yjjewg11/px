@@ -1573,7 +1573,9 @@ function G_status(){
   * 都在kd_service；
   * */ 
  var Common_load_pop= React.createClass({ 
-
+	 getInitialState: function() {
+		    return this.props;
+		  },
 	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
@@ -1591,8 +1593,7 @@ function G_status(){
   	 
   render: function() {
 
-    var loginname,password
-
+	  var o = this.state;
    return (
    		<div>
  		<div className="header">
@@ -1605,9 +1606,12 @@ function G_status(){
 		
 		 <form id="login_form" method="post" className="am-form" onKeyDown={this.handle_onKeyDown}>
 		 <input type="hidden" name="grouptype"  value="3"/>
-	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={loginname} onChange={this.handleChange}/>
-	      <PxInput icon="lock" type="password" name="password" id="password" value={password} onChange={this.handleChange}/>
-
+	      <PxInput icon="mobile" type="text" name="loginname" id="loginname" value={o.loginname} onChange={this.handleChange}/>
+	      <PxInput icon="lock" type="password" name="password" id="password" value={o.password} onChange={this.handleChange}/>
+ 	      <label htmlFor="pw_checked">
+	        <input id="pw_checked" name="pw_checked" type="checkbox"  checked={o.pw_checked=="checked"?"checked":""} onChange={this.handleChange}/>
+	        记住密码
+	      </label>
 
 	      
 

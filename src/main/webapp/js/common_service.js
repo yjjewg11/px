@@ -98,10 +98,8 @@ function G_ajax_shouc_save(opt){
 						//Queue.doBackFN();
 					}
 					
-				}else if(data.ResMsg.status == "sessionTimeout"){
-					Modal_prompt.showLogin();
-				} else {
-					alert(data.ResMsg.message);
+				}else{
+					G_resMsg_Timeout(data.ResMsg)
 				}
 			},
 			error : G_ajax_error_fn
@@ -751,10 +749,8 @@ function common_check_illegal(type,uuid){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				 G_msg_pop("举报成功");
-			}else if(data.ResMsg.status == "sessionTimeout"){
-				Modal_prompt.showLogin();
-			}else {
-				alert(data.ResMsg.message);
+			}else{
+				G_resMsg_Timeout(data.ResMsg)
 			}
 		},
 		error : G_ajax_error_fn
@@ -896,4 +892,12 @@ function G_resMsg_filter(ResMsg){
 	}
 }	
 
-
+//sessionTimeout公用方法
+function G_resMsg_Timeout(ResMsg){
+	if(ResMsg.status=="sessionTimeout"){
+		Modal_prompt.showLogin();
+	}else{
+		alert(ResMsg.message);
+		G_resMsg_filter(ResMsg);	
+	}
+}

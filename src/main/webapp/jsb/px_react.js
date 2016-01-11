@@ -712,6 +712,7 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
+		 this.editor=editor;
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -737,6 +738,17 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 			 this.addShowImg(imgArr[i]);
 		 }		
 	},
+handleChange_url_cb:function(url_content){
+ this.editor.pasteText(url_content);
+
+  },
+handleChange_url:function(){
+    var tmp=$('#editClassnewsForm').serializeJson();
+	this.setState(tmp);
+	var thit=this;		 
+   G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
+	
+},
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
@@ -765,6 +777,8 @@ return (
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
 			  G_get_upload_img_Div(), 
+		  		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
+  		         React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
 		      React.createElement("button", {type: "button", onClick: ajax_classnews_save, className: "am-btn am-btn-primary"}, "提交")
 		    )
 	     )
@@ -927,15 +941,16 @@ return (
 		      ), 		     
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)}, "编辑"), 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除"), 
-		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, "分享")
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除")
 		     )		     
 		     ), 
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏")	
-		    	)
+				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	
+		       	React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
+	
+			 )
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
 			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
@@ -2303,15 +2318,16 @@ return (
            iframe, 
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)}, "编辑"), 
-		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除"), 
-		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, "分享")
+		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除")
 		     ), 	
 		    	React.createElement("footer", {className: "am-comment-footer"}, 
 		    	React.createElement("div", {className: "am-comment-actions"}, 
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
-		    	)
+				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+		    	React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
+
+			    )
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
 			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
@@ -3673,7 +3689,8 @@ return (
 	    	React.createElement("div", {className: "am-comment-actions"}, 
 	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 	    	React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-			React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+			React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+		    React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
 
 	    	)
 	    	), 
@@ -7873,15 +7890,14 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    		    title: obj.title, 
    		    meta: Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}, 
    			React.createElement("div", {dangerouslySetInnerHTML: {__html: obj.message}})
-   		     ), 
-   		     React.createElement(AMR_ButtonToolbar, null, 
-   		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, "分享")
    		     ), 	
    		    	React.createElement("footer", {className: "am-comment-footer"}, 
    		    	React.createElement("div", {className: "am-comment-actions"}, 
    		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
    		    	React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
+	            React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
+
    		    	)
    		    	), 
    		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
@@ -8416,13 +8432,14 @@ React.createElement("div", null,
    		     React.createElement(AMR_ButtonToolbar, null, 
    		     React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
    		     React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
-   		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
-   		     React.createElement(AMR_Button, {className: G_CallPhoneFN.canShareUrl()?"":"am-hide", amStyle: "primary", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, "分享")
+   		     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏")
    		     ), 	
    		    	React.createElement("footer", {className: "am-comment-footer"}, 
    		    	React.createElement("div", {className: "am-comment-actions"}, 
    		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-   		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报")
+   		    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,3,o.uuid)}, "举报"), 
+			    React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
+
    		    	)
    		    	), 
    		    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 

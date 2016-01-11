@@ -73,6 +73,9 @@ var Modal_prompt={
 		});
 	},
 	showLogin:function(){
+		var loginname = getCookie("bs_loginname");
+		var password = getCookie("bs_password");
+		var pw_checked = getCookie("pw_checked");
 		callback=function(){
 			Sns_userinfo_login();
 
@@ -80,9 +83,7 @@ var Modal_prompt={
 		
 		
 		};
-		Modal_prompt.show(React.createElement(Common_load_pop, {
-		events: null
-		}),"用户登录",callback);
+		Modal_prompt.show(React.createElement(Common_load_pop,{loginname:loginname,password:password,pw_checked:pw_checked}),"用户登录",callback);
 	},
 /**
 
@@ -223,7 +224,16 @@ function ajax_sns_snsTopic_save(){
      var opt={
              formName: "snsAnnouncementsForm",
          url:hostUrl + "rest/snsTopic/save.json",
-             cbFN:null
+    	 success: function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") { 				
+ 				 G_msg_pop(data.ResMsg.message); 	
+ 				 Queue.doBackFN();
+ 			}else{
+				G_resMsg_Timeout(data.ResMsg)
+			}
+ 	}
              };
  G_ajax_abs_save(opt);	
 		   
@@ -353,15 +363,11 @@ function ajax_sns_reply_save(callback,formid){
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
-				
 				 G_msg_pop(data.ResMsg.message);
+				 if(callback)callback();
 				
-				
-			}else if(data.ResMsg.status == "sessionTimeout") {
-				Modal_prompt.showLogin();
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
+			}else{
+				G_resMsg_Timeout(data.ResMsg)
 			}
 	}
 	};
@@ -383,11 +389,8 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
 					if(typeof dianzansave_callback=='function')dianzansave_callback(data);
-				} else if(data.ResMsg.status== "sessionTimeout") {
-					Modal_prompt.showLogin();
 				}else{
-					alert(data.ResMsg.message);
-					G_resMsg_filter(data.ResMsg);	
+					G_resMsg_Timeout(data.ResMsg)
 				}
 			},
 			error : G_ajax_error_fn
