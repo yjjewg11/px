@@ -1573,7 +1573,9 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
   * 都在kd_service；
   * */ 
  var Common_load_pop= React.createClass({displayName: "Common_load_pop", 
-
+	 getInitialState: function() {
+		    return this.props;
+		  },
 	 handleChange: function(event) {
 		 var o=$('#login_form').serializeJson();
 		 	o.pw_checked=$("#pw_checked").prop("checked")?"checked":"";
@@ -1591,8 +1593,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
   	 
   render: function() {
 
-    var loginname,password
-
+	  var o = this.state;
    return (
    		React.createElement("div", null, 
  		React.createElement("div", {className: "header"}, 
@@ -1605,9 +1606,12 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 		
 		 React.createElement("form", {id: "login_form", method: "post", className: "am-form", onKeyDown: this.handle_onKeyDown}, 
 		 React.createElement("input", {type: "hidden", name: "grouptype", value: "3"}), 
-	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: loginname, onChange: this.handleChange}), 
-	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: password, onChange: this.handleChange})
-
+	      React.createElement(PxInput, {icon: "mobile", type: "text", name: "loginname", id: "loginname", value: o.loginname, onChange: this.handleChange}), 
+	      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange}), 
+ 	      React.createElement("label", {htmlFor: "pw_checked"}, 
+	        React.createElement("input", {id: "pw_checked", name: "pw_checked", type: "checkbox", checked: o.pw_checked=="checked"?"checked":"", onChange: this.handleChange}), 
+	        "记住密码"
+	      )
 
 	      
 

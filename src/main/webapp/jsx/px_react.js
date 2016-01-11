@@ -712,6 +712,7 @@ var Classnews_edit = React.createClass({
 	  },
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
+		 this.editor=editor;
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -737,6 +738,17 @@ var Classnews_edit = React.createClass({
 			 this.addShowImg(imgArr[i]);
 		 }		
 	},
+handleChange_url_cb:function(url_content){
+ this.editor.pasteText(url_content);
+
+  },
+handleChange_url:function(){
+    var tmp=$('#editClassnewsForm').serializeJson();
+	this.setState(tmp);
+	var thit=this;		 
+   G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
+	
+},
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
@@ -765,6 +777,8 @@ return (
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
 			  {G_get_upload_img_Div()}
+		  		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
+  		         <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
 		      <button type="button"  onClick={ajax_classnews_save}  className="am-btn am-btn-primary">提交</button>
 		    </form>
 	     </div>
@@ -928,14 +942,15 @@ return (
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)} >编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)} >删除</AMR_Button> 
-		     <AMR_Button className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)} >分享</AMR_Button>
 		     </AMR_ButtonToolbar>		     
 		     </div>
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+obj.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 				<a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	
-		    	</div>
+		       	<a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
+	
+			 </div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={obj.uuid} type={0}  btn_dianzan={"btn_dianzan_"+obj.uuid}/>
 			  <Common_reply_list uuid={obj.uuid}  type={0}/>			 
@@ -2304,14 +2319,15 @@ return (
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)} >编辑</AMR_Button>
 		     <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)} >删除</AMR_Button> 
-		     <AMR_Button className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)} >分享</AMR_Button>
 		     </AMR_ButtonToolbar>	
 		    	<footer className="am-comment-footer">
 		    	<div className="am-comment-actions">
 		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+obj.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 				<a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	  
 				<a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,3,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
-		    	</div>
+		    	<a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
+
+			    </div>
 		    	</footer>
 		    	<Common_Dianzan_show_noAction uuid={obj.uuid} type={0}  btn_dianzan={"btn_dianzan_"+obj.uuid}/>
 			  <Common_reply_list uuid={obj.uuid}  type={0}/>			 
@@ -3674,6 +3690,7 @@ return (
 	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+obj.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 	    	<a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	  
 			<a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,3,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+		    <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
 
 	    	</div>
 	    	</footer>
@@ -7873,15 +7890,14 @@ var Class_EventsTable_byRight = React.createClass({
    		    title={obj.title}
    		    meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
    			<div dangerouslySetInnerHTML={{__html: obj.message}}></div>
-   		     </AMUIReact.Article>
-   		     <AMR_ButtonToolbar>
-   		     <AMR_Button className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)} >分享</AMR_Button>
-   		     </AMR_ButtonToolbar>	
+   		     </AMUIReact.Article>	
    		    	<footer className="am-comment-footer">
    		    	<div className="am-comment-actions">
    		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+obj.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
    		    	<a href="javascript:void(0);"  onClick={this.favorites_push.bind(this,obj)}><i className={obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}></i>{obj.isFavor?"收藏":"已收藏"}</a>	  
 				<a href="javascript:void(0);" className="am-fr"  onClick={common_check_illegal.bind(this,3,obj.uuid)}><i className={"am-icon-exclamation-circle px_font_size_click"}></i>举报</a>
+	            <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
+
    		    	</div>
    		    	</footer>
    		    	<Common_Dianzan_show_noAction uuid={obj.uuid} type={0}  btn_dianzan={"btn_dianzan_"+obj.uuid}/>
@@ -8417,12 +8433,13 @@ setProvCity:function(){
    		     <AMR_Button  amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
    		     <AMR_Button  amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
    		     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
-   		     <AMR_Button className={G_CallPhoneFN.canShareUrl()?"":"am-hide"}  amStyle="primary" onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)} >分享</AMR_Button>
    		     </AMR_ButtonToolbar>	
    		    	<footer className="am-comment-footer">
    		    	<div className="am-comment-actions">
    		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
    		    	<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,3,o.uuid)}>举报</a>
+			    <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
+
    		    	</div>
    		    	</footer>
    		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={0}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
