@@ -568,10 +568,8 @@ render: function() {
   		   <G_px_help_List data={G_kd_help_msg.msg_help_list6}/>
   		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
   		   <AMR_Panel>
-  		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
-  		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
-  			  </div> 
+  		   <AMR_ButtonToolbar>
+
   			  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
   			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
   			    </div> 
@@ -588,6 +586,12 @@ render: function() {
   				  </AMR_ButtonToolbar>
   				  </AMR_Panel>
   				  </form>
+  				  
+  				<AMR_ButtonToolbar>
+  		  		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+  	  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+  	  			  </div> 
+  	  			</AMR_ButtonToolbar>
   				  <div id="div_totalNumber" >总人数:0
   				  </div>	
   		    <div id={this.classnewsreply_list_div} >
