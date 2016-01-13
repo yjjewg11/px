@@ -181,7 +181,13 @@ window.JavaScriptCall={
 		注意JavaScriptCall 优先与isIos判断.
 };*/
 var G_CallPhoneFN={
-	
+		/**
+		 * 解决ios9 点击
+		 * G_CallPhoneFN.beforeCallPhone();
+		 */
+		beforeCallPhone:function(){		
+			document.activeElement.blur();
+		},
 		/**
 		 * 判断是否是手机app应用内嵌调用
 		 * @returns {Boolean}
@@ -244,7 +250,7 @@ var G_CallPhoneFN={
 			
 			
 			try{
-				
+				G_CallPhoneFN.beforeCallPhone();
 				if(window.JavaScriptCall){					
 					JavaScriptCall.setShareContent(title,content,pathurl,httpurl) ;					
 					return true;
@@ -277,7 +283,7 @@ var G_CallPhoneFN={
 			if(!pathurl)pathurl=G_share_logo;
 			try{
 				
-				
+				G_CallPhoneFN.beforeCallPhone();
 				if(window.JavaScriptCall){
 					if(!pathurl)pathurl=G_logo;
 					JavaScriptCall.openNewWindowUrl(title,content,pathurl,httpurl) ;					
@@ -317,6 +323,7 @@ var G_CallPhoneFN={
 		 */
 		hideLoadingDialog:function(){
 			try{
+				G_CallPhoneFN.beforeCallPhone();
 				if(window.JavaScriptCall){
 					JavaScriptCall.hideLoadingDialog();
 					return true;
@@ -332,14 +339,20 @@ var G_CallPhoneFN={
 		 * @returns {Boolean}
 		 */
 		selectImgPic:function(){
+			G_CallPhoneFN.beforeCallPhone();
 			try{
-				
-				
+				//解决ios,输入框弹出后,点击上传,飞掉bug.
+				if(browser.versions.iPhone&&JavaScriptCall.selectImgPic){
+					window.setTimeout(function(){JavaScriptCall.selectImgPic();},1000);
+					return true;
+					
+				}
 				if(window.JavaScriptCall){
 					JavaScriptCall.selectImgPic();
 					return true;
 				}
 				if(G_CallIosFN.isIos){
+					
 					G_CallIosFN.selectImgPic();
 					return true;
 				}
@@ -354,8 +367,12 @@ var G_CallPhoneFN={
 	 * @returns {Boolean}
 	 */
 	selectHeadPic:function(){
+		G_CallPhoneFN.beforeCallPhone();
 		try{
-		
+			if(browser.versions.iPhone&&JavaScriptCall.selectHeadPic){
+				window.setTimeout(function(){JavaScriptCall.selectHeadPic();},1000);
+				return true;
+			}
 			if(window.JavaScriptCall){
 				JavaScriptCall.selectHeadPic();
 				return true;
@@ -409,7 +426,7 @@ var G_CallPhoneFN={
 			
 		}catch(e){
 			  console.log('Exception:JavaScriptCall.selectHeadPic()=', e.message);
-		}
+		} 
 		console.log('window.JavaScriptCall==false');
 		return false;
 	},
@@ -491,6 +508,7 @@ var G_CallIosFN={
 	canShareUrl:false,
 	
 	shareobject:null,
+	
 	init:function(){
 		G_CallIosFN.isIos=true;
 		console.log('G_CallIosFN.isIos==true');

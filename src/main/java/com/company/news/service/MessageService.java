@@ -268,7 +268,7 @@ public class MessageService extends AbstractService {
 	 */
 	public PageQueryResult queryCountLeaderMsgByParents(String group_uuids,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type="+SystemConstants.Message_type_2;
+		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
 		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.

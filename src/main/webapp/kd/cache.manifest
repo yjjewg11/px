@@ -3,7 +3,7 @@ CACHE MANIFEST
 CACHE:
 
 http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css
-../css/css.merge.min.css
+../css/css.css?60113
 ../assets/js/px_amazeui.react.min.js
 
 http://libs.baidu.com/jquery/2.1.4/jquery.min.js

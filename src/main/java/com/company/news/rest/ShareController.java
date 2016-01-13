@@ -706,7 +706,7 @@ public class ShareController extends AbstractRESTController {
 					if(tmp_count==null)tmp_count=0l;
 					cacheCount=tmp_count+1;
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				PxRedisCache.setSnsTopicByExt_uuid(uuid, cacheCount);
 			}
