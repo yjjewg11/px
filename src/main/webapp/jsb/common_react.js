@@ -698,28 +698,35 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
    return (
 		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
 		   React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list10}), 
-		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
-		   React.createElement(AMR_Panel, null, 
-		   React.createElement(AMR_ButtonToolbar, {className: "am-cf am-margin-left-xs"}, 
-		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
-			  ), 
-			  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
-			    ), 
-			    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "edit")}, "修改")
-			    ), 
-				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
-				  ), 
-				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")
-					  )
-					  
-				  )
-				  )
-				  ), 
+	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
+	      React.createElement(AMR_Panel, null, 
+	      React.createElement(AMR_ButtonToolbar, null, 
+		   
+		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
+		    ), 
+		    
+		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "edit")}, "修改")
+		    ), 
+			  
+		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+			React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+			), 
+			    
+			React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+		    React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")
+		    )					  
+		  )
+		  )
+		  ), 
+				  
+			React.createElement(AMR_ButtonToolbar, null, 
+			   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+			   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
+			   )	
+			), 
+			
 				  React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
 				  ), 	
 		    React.createElement("div", {id: this.classnewsreply_list_div}

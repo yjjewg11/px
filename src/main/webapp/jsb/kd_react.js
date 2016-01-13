@@ -1488,14 +1488,15 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 
 		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 	          React.createElement(AMR_Button, {amStyle: "default", onClick: this.handleClick.bind(this, "next",this.props.groupuuid)}, "明天")	
-		   ), 
-
-		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-        	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid})
-           )
+		   )
 
           )
           ), 
+           React.createElement(AMR_ButtonToolbar, null, 
+			  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+        	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", btnWidth: "200", onChange: this.handleChange_selectgroup_uuid.bind(this), data: this.props.ch_group, btnStyle: "primary", value:  this.props.groupuuid})
+              )
+           ), 
 		dataShowDiv
 	   )
 	  );
@@ -1603,20 +1604,22 @@ var Class_student_tel =React.createClass({displayName: "Class_student_tel",
 			      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
 			          React.createElement(AMR_Panel, null, 
 	  			  	  React.createElement(AMR_ButtonToolbar, null, 
-	  			  	 React.createElement("div", {className: "am-fl"}, 
-			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.state.class_uuid})
-			    	  ), 
-			    	  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+			    	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 			    	  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入孩子姓名"})
 			    	  ), 
-			    	  React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+			    	  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 			    	  React.createElement("button", {type: "button", onClick: this.handleChange_selectgroup_uuid, className: "am-btn am-btn-secondary"}, "搜索")
-			    	  )			    	  
-			    	 		  
+			    	  )			    	  			    	 		  
 				      )
-                      )
- 
-				  ), 		        
+                      ), 
+
+                    React.createElement(AMR_ButtonToolbar, null, 
+ 	  			  	 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			    	  React.createElement(AMUIReact.Selected, {name: "class_uuid", placeholder: "班级选择", onChange: this.handleChange_class_uuid, btnWidth: "200", multiple: false, data: this.props.class_list, btnStyle: "primary", value: this.state.class_uuid})
+			    	  )
+				    )
+						
+				), 		        
 	  	  	       React.createElement("ul", {className: "am-list am-list-static am-list-border"}, 
 	  	  			this.props.formdata.map(function(event) {
 	  	  				var ListItem=null;
@@ -2085,36 +2088,42 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
 		var stutent_num=this.props.stutent_num;
 		if(!this.props.students)this.props.students=[];
 	  return (
-	  React.createElement("div", null, 	 
-		  React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list24}), 
-		  React.createElement(AMR_Panel, null, 
-			  React.createElement(AMR_Grid, {className: "doc-g"}, 
-		  	  React.createElement(AMR_ButtonToolbar, null, 
-		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-		  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
-		  	), 
-		    React.createElement("div", {className: "am-fl am-hide-sm am-margin-bottom-sm am-margin-left-xs"}, 
-     	     React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list2})
-     	    ), 
-		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-	  	    React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_down.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
-		  	), 
-		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name)}, "查看课程")
-		  	), 
-		  	React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+           
+	  React.createElement("div", null, 
+       React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list24}), 
+
+	     React.createElement(AMR_Panel, null, 
+		  React.createElement(AMR_ButtonToolbar, null, 
+		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.showTeachingplanClick.bind(this,o.uuid,o.name)}, "查看课程"), 
 		  	  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)}, "添加学生")
-		  	)
-		  	  
-		  	  ), 
-	  		    
-	  		   React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+             )
+            ), 
+		  
+		 React.createElement(AMR_ButtonToolbar, null, 
+	  		 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  	 React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "class_uuid", onChange: this.handleChange_selectgroup_uuid.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
+		  	 ), 
+		    
+		     React.createElement("div", {className: "am-fl am-hide-sm am-margin-bottom-sm am-margin-left-xs"}, 
+     	     React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "请在电脑上导出", onChange: this.handleClick_download, btnWidth: "200", multiple: false, data: this.props.down_list2})
+     	     ), 
+		  	
+			 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+	  	     React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_down.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
+		  	 )		 
+          ), 
+  		  
+			React.createElement(AMR_Panel, null, 
+  			  React.createElement(AMR_Grid, {className: "doc-g"}, 
+  			  React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
 			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
 			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", this.props.students.length)
-			  )
-		  ), 
+  			  )
+  		  ), 
+
+		  
 		 React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
           React.createElement("thead", null, 
             React.createElement("tr", null, 
@@ -2133,7 +2142,7 @@ var Class_students_show= React.createClass({displayName: "Class_students_show",
             })
           )
         )
-	    )
+	  )
 	  );
 	}
 	});
@@ -2655,9 +2664,6 @@ render: function() {
 	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
           React.createElement(AMR_Panel, null, 
 	      React.createElement(AMR_ButtonToolbar, null, 
-	      React.createElement("div", {className: "am-fl am-margin-bottom-sm"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
-		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 		  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "输入老师姓名"})
 		  ), 
@@ -2667,7 +2673,14 @@ render: function() {
 		  )
           )
 		  ), 
-		    
+		  
+		  React.createElement(AMR_ButtonToolbar, null, 
+		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
+		   )
+		  ), 
+
+		 
 		    React.createElement("div", {id: this.classnewsreply_list_div}
 			  ), 
 	
@@ -6033,7 +6046,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 
 		         )
 		          ), 
- React.createElement(AMR_ButtonToolbar, null, 
+
+                  React.createElement(AMR_ButtonToolbar, null, 
 	    		  React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
 	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
 	    		 ), 
@@ -6041,7 +6055,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 							    		 
 				React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
 	    		 )
- )
+               )
+
     		 ), 
     		 React.createElement("div", {className: "am-cf"})
     		 ), 

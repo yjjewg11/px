@@ -698,28 +698,35 @@ var Userinfo_EventsTable_div1 = React.createClass({
    return (
 		   <div data-am-widget="list_news" className="am-list-news am-list-news-default">		   
 		   <G_px_help_List data={G_px_help_msg.msg_px_help_list10}/>
-		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
-		   <AMR_Panel>
-		   <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
-		   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
-			  </div> 
-			  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
-			    </div> 
-			    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-			    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
-			    </div> 
-				  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
-				  </div>
-				    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
-					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
-					  </div>
-					  
-				  </AMR_ButtonToolbar>
-				  </AMR_Panel>
-				  </form>
+	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">		   
+	      <AMR_Panel>
+	      <AMR_ButtonToolbar>
+		   
+		    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
+		    </div> 
+		    
+		    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
+		    </div> 
+			  
+		    <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+			<input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+			</div>
+			    
+			<div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+		    <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
+		    </div>					  
+		  </AMR_ButtonToolbar>
+		  </AMR_Panel>
+		  </form>
+				  
+			<AMR_ButtonToolbar>  
+			   <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+			   <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+			   </div> 	
+			</AMR_ButtonToolbar>  
+			
 				  <div id="div_totalNumber" >总人数:0
 				  </div>	
 		    <div id={this.classnewsreply_list_div} >
