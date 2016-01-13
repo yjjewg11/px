@@ -1490,12 +1490,13 @@ var CookbookPlan_showByOneDay = React.createClass({
 	          <AMR_Button amStyle="default" onClick={this.handleClick.bind(this, "next",this.props.groupuuid)} >明天</AMR_Button>	
 		   </div>
 
-		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-        	  <AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />
-           </div>
-
           </AMR_ButtonToolbar>
           </AMR_Panel>
+           <AMR_ButtonToolbar>
+			  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+        	  <AMUIReact.Selected id ="selectgroup_uuid1" name= "group_uuid"  btnWidth= "200" onChange={this.handleChange_selectgroup_uuid.bind(this)} data={this.props.ch_group} btnStyle="primary" value={ this.props.groupuuid} />
+              </div>
+           </AMR_ButtonToolbar>
 		{dataShowDiv}
 	   </div>
 	  );
@@ -1603,20 +1604,22 @@ var Class_student_tel =React.createClass({
 			      <form id="editGroupForm" method="post" className="am-form">
 			          <AMR_Panel>
 	  			  	  <AMR_ButtonToolbar>
-	  			  	 <div className="am-fl">
-			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.state.class_uuid}/> 
-			    	  </div>  
-			    	  <div className="am-fl am-margin-left-xs">
+			    	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 			    	  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入孩子姓名"/>
 			    	  </div>  
-			    	  <div className="am-fl am-margin-left-xs">
+			    	  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 			    	  <button type="button"  onClick={this.handleChange_selectgroup_uuid}  className="am-btn am-btn-secondary">搜索</button>
-			    	  </div>			    	  
-			    	 		  
+			    	  </div>			    	  			    	 		  
 				      </AMR_ButtonToolbar>
                       </AMR_Panel>
- 
-				  </form>  		        
+
+                    <AMR_ButtonToolbar>
+ 	  			  	 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+			    	  <AMUIReact.Selected  name="class_uuid" placeholder="班级选择" onChange={this.handleChange_class_uuid} btnWidth="200"  multiple= {false} data={this.props.class_list} btnStyle="primary" value={this.state.class_uuid}/> 
+			    	  </div>  
+				    </AMR_ButtonToolbar>
+						
+				</form>  		        
 	  	  	       <ul className="am-list am-list-static am-list-border">
 	  	  			{this.props.formdata.map(function(event) {
 	  	  				var ListItem=null;
@@ -2085,36 +2088,42 @@ var Class_students_show= React.createClass({
 		var stutent_num=this.props.stutent_num;
 		if(!this.props.students)this.props.students=[];
 	  return (
-	  <div>	 
-		  <G_px_help_List data={G_kd_help_msg.msg_help_list24}/>
-		  <AMR_Panel>
-			  <AMR_Grid className="doc-g">
-		  	  <AMR_ButtonToolbar>
-		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
-		  	</div>
-		    <div className="am-fl am-hide-sm am-margin-bottom-sm am-margin-left-xs">
-     	     <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list2}/>   
-     	    </div>
-		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-	  	    <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_down.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
-		  	</div>  
-		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+           
+	  <div>
+       <G_px_help_List data={G_kd_help_msg.msg_help_list24}/>
+
+	     <AMR_Panel>
+		  <AMR_ButtonToolbar>
 		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.showTeachingplanClick.bind(this,o.uuid,o.name)} >查看课程</AMR_Button>
-		  	</div>
-		  	<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >添加学生</AMR_Button>
-		  	</div>
-		  	  
-		  	  </AMR_ButtonToolbar>
-	  		    
-	  		   <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
+		  	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"addstudent",o.groupuuid,o.uuid)} >添加学生</AMR_Button> 
+             </AMR_ButtonToolbar>
+            </AMR_Panel>
+		  
+		 <AMR_ButtonToolbar>
+	  		 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+		  	 <AMUIReact.Selected id="selectgroup_uuid1" name="class_uuid" onChange={this.handleChange_selectgroup_uuid.bind(this)} btnWidth="200" data={this.props.classList} btnStyle="primary" value={o.uuid} />
+		  	 </div>
+		    
+		     <div className="am-fl am-hide-sm am-margin-bottom-sm am-margin-left-xs">
+     	     <AMUIReact.Selected  btnStyle="secondary" placeholder="请在电脑上导出" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list2}/>   
+     	     </div>
+		  	
+			 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+	  	     <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_down.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
+		  	 </div> 		 
+          </AMR_ButtonToolbar>
+  		  
+			<AMR_Panel>
+  			  <AMR_Grid className="doc-g">
+  			  <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
 			    <AMR_Col className="am-hide-sm" sm={6} md={3} > 班级:{o.name}</AMR_Col>
 			    <AMR_Col sm={5} md={2} >班主任:{o.headTeacher_name}</AMR_Col>
 			    <AMR_Col sm={4} md={2}>老师:{o.teacher_name}</AMR_Col>
 			    <AMR_Col sm={3} md={2}>人数:{this.props.students.length}</AMR_Col>
-			  </AMR_Grid>
-		  </AMR_Panel>
+  			  </AMR_Grid>
+  		  </AMR_Panel>
+
+		  
 		 <AMR_Table  bordered className="am-table-striped am-table-hover am-text-nowrap" >  
           <thead> 
             <tr>
@@ -2133,7 +2142,7 @@ var Class_students_show= React.createClass({
             })}
           </tbody>
         </AMR_Table>
-	    </div>
+	  </div>
 	  );
 	}
 	});
@@ -2655,9 +2664,6 @@ render: function() {
 	      <form id="editGroupForm" method="post" className="am-form">
           <AMR_Panel>
 	      <AMR_ButtonToolbar>
-	      <div className="am-fl am-margin-bottom-sm">
-		  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"   data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
-		  </div>
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		  <input type="text" name="sutdent_name" id="sutdent_name" placeholder="输入老师姓名"/>
 		  </div>
@@ -2667,7 +2673,14 @@ render: function() {
 		  </AMR_ButtonToolbar>
           </AMR_Panel>  
 		  </form>     
-		    
+		  
+		  <AMR_ButtonToolbar>
+		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		   <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"   data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+		   </div>
+		  </AMR_ButtonToolbar>
+
+		 
 		    <div id={this.classnewsreply_list_div} >
 			  </div>
 	
@@ -3500,14 +3513,18 @@ var CookbookPlan_EventsTable_byRight = React.createClass({
     <G_px_help_List data={G_kd_help_msg.msg_help_list9}/>
     <AMR_Panel>
 	<AMR_ButtonToolbar>    
-    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-    <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-	</div>		
 	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "pre")} >上周</AMR_Button>
 	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "next")} >下周</AMR_Button>	
 	<AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add",null,this.props.group_uuid)} >添加</AMR_Button>
 	</AMR_ButtonToolbar>
     </AMR_Panel>
+
+    <AMR_ButtonToolbar>  
+	<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
+	</div>		
+	</AMR_ButtonToolbar>
+		
 	<div className="header">
 	  <h1>[{this.props.begDateStr} 到 {this.props.endDateStr}]</h1>
 	</div>
@@ -3861,16 +3878,26 @@ var Teachingplan_show7Day_byRight = React.createClass({
 		<div className="am-g" >
          <AMR_Panel>
 		 <AMR_ButtonToolbar>
-		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  >上周</AMR_Button>
-		<AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} >下周</AMR_Button>	
-        <div className="am-fl  am-margin-left-xs">
-	    <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.state.groupuuid}/> 
-		</div>
-	     <div className="am-fl  am-margin-left-xs">
-	     <AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
-		 </div>
+
+		  	<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "pre")}  >上周</AMR_Button>
+		    </div>
+
+		  	<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		    <AMR_Button amStyle="secondary" onClick={this.pageClick.bind(this, "next")} >下周</AMR_Button>	
+		    </div>
+
 	    </AMR_ButtonToolbar>
 	    </AMR_Panel>
+			        	
+		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	       <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={this.state.groupuuid}/> 
+		   </div>
+	     	
+		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	       <AMUIReact.Selected id ="selectclass_uuid" name= "class_uuid" onChange={this.handleChange_selectclass_uuid.bind(this)} btnWidth= "200" data={ this.state.classlist} btnStyle="primary" value={this.state.classuuid} />
+		   </div>
+
 	    </div>
 		<hr/>
 		<div className="am-g" id="div_detail">
@@ -4435,18 +4462,23 @@ render: function() {
   return (
   <div>
   <G_px_help_List data={G_kd_help_msg.msg_help_list12}/>
-  <AMR_Panel>
-  <AMR_ButtonToolbar>
-	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
-	  </div>
-	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
-	  </div>
+   <AMR_Panel>
+      <AMR_ButtonToolbar>
 	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.addClass_handleClick.bind(this,"add_class",this.props.group_uuid)} >创建班级</AMR_Button>
 	  <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,"edit_class")} >编辑班级</AMR_Button>
 	  </AMR_ButtonToolbar>
-	  </AMR_Panel>
+	</AMR_Panel>
+	  <AMR_ButtonToolbar>
+      
+      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />   
+	  </div>
+	  
+	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
+	  </div>
+
+	  </AMR_ButtonToolbar>
 	  <div>{"班级总数:"+this.props.events.length}</div>	
     <AMR_Table {...this.props}>  
       <thead> 
@@ -4596,7 +4628,12 @@ render: function() {
   	  <div>
        <AMR_Panel>
   	  <AMR_ButtonToolbar>
-  		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	      <AMR_Button amStyle="secondary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} >添加学生</AMR_Button>
+		    <AMR_Button amStyle="secondary" onClick={menu_teachingplan_list_fn_byRight.bind(this,o.uuid)} >查看课程</AMR_Button>
+  		  </AMR_ButtonToolbar>
+  		 </AMR_Panel>
+		  <AMR_ButtonToolbar>
+		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   		  <AMUIReact.Selected id="selectgroup_uuid" name= "group_uuid" onChange={this.handleChange_selectgroup.bind(this)} btnWidth= "200" data={this.props.groupList} btnStyle="primary" value={o.groupuuid}/> 
   		  </div>
 	      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -4605,10 +4642,7 @@ render: function() {
 		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
      	  <AMUIReact.Selected  btnStyle="secondary" placeholder="更多操作" onChange={this.handleClick_download.bind(this,o.groupuuid,o.uuid)} btnWidth="200"  multiple= {false} data={this.props.down_list}/>   
      	  </div>
-	      <AMR_Button amStyle="secondary" onClick={class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)} >添加学生</AMR_Button>
-		    <AMR_Button amStyle="secondary" onClick={menu_teachingplan_list_fn_byRight.bind(this,o.uuid)} >查看课程</AMR_Button>
-  		  </AMR_ButtonToolbar>
-  		 </AMR_Panel>
+		  </AMR_ButtonToolbar>
   		  <AMR_Panel>
   			  <AMR_Grid className="doc-g">
   			  <AMR_Col className="am-hide-sm" sm={6} md={3}> 学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMR_Col>
@@ -4995,36 +5029,58 @@ render: function() {
 			 if(!this.state.sum_num)this.state.sum_num=0;
       return (
       <div>
-		  <G_px_help_List data={G_kd_help_msg.msg_help_list22}/>
-             <AMR_Panel>
-		     <AMR_ButtonToolbar>
-    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
-          <AMR_Button amStyle="default" disabled="false" >第{this.state.pageNo}页</AMR_Button>
-    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
-    	  <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
-			</AMR_ButtonToolbar>
-         	  </AMR_Panel>
-				
+		 <G_px_help_List data={G_kd_help_msg.msg_help_list22}/>
 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
-			  <div className="am-fl  am-margin-left-xs">
-			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
-    	      </div>
-			   <div className="am-fl  am-margin-left-xs">
-    		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
-    		 </div>
-			 <div className="am-fl  am-margin-left-xs">
-			 <PxInput icon="calendar" type="text" size="10" maxLength="10" placeholder="YYYY-MM-DD" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
-	 		至<PxInput icon="calendar" type="text"  size="10"  maxLength="10" placeholder="YYYY-MM-DD" name="endDateStr"  value={queryForm.endDateStr} onChange={this.handleChange}/> 		   		
-	 		 </div>
-        <div className="am-fl  am-margin-left-xs">
-	    <PxInput type="text" name="title"  value={queryForm.invoice_num} onChange={this.handleChange} placeholder="内容、学生名、单据号、填写人"/> 
+           <AMR_Panel>
+		    <AMR_ButtonToolbar>
+		   
+	      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+          </div>	
+		  
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+          <AMR_Button amStyle="default" disabled="false" >第{this.state.pageNo}页</AMR_Button>
+          </div>	
+		
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    	  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
+          </div>
+			  
+   		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    	  <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
+		  </div>	
+		  
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	 	  <PxInput icon="calendar" type="text" size="10" maxLength="10" placeholder="YYYY-MM-DD" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 		   		
+	 	  </div>
+			  
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <PxInput icon="calendar" type="text"  size="10"  maxLength="10" placeholder="YYYY-MM-DD" name="endDateStr"  value={queryForm.endDateStr} onChange={this.handleChange}/> 		   		
+	 	  </div>
+		 </AMR_ButtonToolbar>
+        </AMR_Panel>
+		 <AMR_ButtonToolbar>
+			   
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+    	  </div>
+			   
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    	  <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
+    	  </div>
+         
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	      <PxInput type="text" name="title"  value={queryForm.invoice_num} onChange={this.handleChange} placeholder="内容、学生名、单据号、填写人"/> 
           </div> 
-		<AMR_Button amStyle="secondary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
-
+	    
+		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		  <AMR_Button amStyle="secondary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
+          </div> 
+    	   </AMR_ButtonToolbar>
+		    </AMUIReact.Form>
     	
-		</AMUIReact.Form>
-    	<h6>{"总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount}</h6>
-        <Accounts_EventsTable2_byRight{...this.props} events={this.state.list} />
+		  <h6>{"总金额:"+this.state.sum_num+"元.总条数:"+this.state.totalCount}</h6>
+         <Accounts_EventsTable2_byRight{...this.props} events={this.state.list} />
         </div>
       );
     }
@@ -5431,43 +5487,49 @@ render: function() {
 				year=1;
 			}
       return (
-      <div>
-		  <G_px_help_List data={G_kd_help_msg.msg_help_list23}/>
- 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
+
+       <div>
+	    <G_px_help_List data={G_kd_help_msg.msg_help_list23}/>
+ 		 <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 		  <AMR_Panel>
-		  <AMR_ButtonToolbar>
-		  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
-		    </div>	
-	      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
-            </div>	
-             <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-    		 <AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
-    	 	  </div>	
-
-
-		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		   <AMR_ButtonToolbar>
+          		   
+	          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上年</AMR_Button>	  
 			  </div>
-		       <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	    
+			  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+	 		  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下年</AMR_Button>	  
+              </div>
+	  		       
+			  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 	          <PxInput icon="calendar" type="text"  maxLength="74" size="4" placeholder="YYYY" name="begDateStr"  value={queryForm.begDateStr} onChange={this.handleChange}/> 	
 		      </div>
-		      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-	 		  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下年</AMR_Button>	  
+	  	     
+			  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			  <AMR_Button amStyle="secondary" onClick={this.ajax_list.bind(this)} >查询</AMR_Button>
+		      </div>	  
+	         </AMR_ButtonToolbar>
+		    </AMR_Panel>
 
- </div>
+		  <AMR_ButtonToolbar>
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		    </div>	
+	      
+		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
+            </div>	
+             
+			<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    		<AMUIReact.Selected name="type" value={queryForm.type} data={this.data_type_list} onChange={this.handleChange}  placeholder="所有" btnWidth="200"  multiple= {false}  btnStyle="primary"  />  	 
+    	 	</div>	
 
-		    
-		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			 <AMR_Button amStyle="secondary" onClick={this.ajax_list.bind(this)} >查询</AMR_Button>
-		     </div>
     	     </AMR_ButtonToolbar>
-             </AMR_Panel>
-		  </AMUIReact.Form>
-    	
-        <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">  
-          <thead> 
+   		    </AMUIReact.Form>
+
+    	      <AMR_Table   bordered className="am-table-striped am-table-hover am-text-nowrap">  
+              <thead> 
               <tr>
               <th>学生名</th>
 			  {this.add_monthArr.map(function(event_add,index) {
@@ -5786,17 +5848,16 @@ render: function() {
   	}
   	var next_disabled=g_student_query_point>=this.maxPageNo;
       return (
-  		  
         <div> 
           <G_px_help_List data={G_kd_help_msg.msg_help_list16}/>
   	      <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
           <AMR_Panel>
-         <AMR_ButtonToolbar>
-        <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-       <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)} >&laquo; 上一页</AMR_Button>
-      <label>{g_student_query_point}\{this.maxPageNo}</label> 
-     <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)} >下一页 &raquo;</AMR_Button>
-    </div>
+         <AMR_ButtonToolbar> 
+         <AMR_Button amStyle="secondary" disabled={pre_disabled} onClick={this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)} > 上一页</AMR_Button>
+		 <AMR_Button amStyle="default" disabled="false" >第{g_student_query_point}页</AMR_Button>
+         <AMR_Button amStyle="secondary" disabled={next_disabled} onClick={this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)} >下一页</AMR_Button>
+	     </AMR_ButtonToolbar>
+	     </AMR_Panel>
    	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_stutent_Selected} btnWidth="200"  placeholder="所有"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.group_uuid} />      
   	   </div>  	 
@@ -5809,9 +5870,7 @@ render: function() {
   	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   	   <button type="button"   onClick={this.btn_query_click}  className="am-btn am-btn-primary">搜索</button>
   	  </div>  	
-  	
-  	</AMR_ButtonToolbar>
-    </AMR_Panel>
+  
   	 </form>
         <AMR_Table {...this.props}>  
           <thead> 
@@ -5969,25 +6028,35 @@ render: function() {
              <G_px_help_List data={G_kd_help_msg.msg_help_list18}/>
     		 <form id="editEchartForm" method="post" className="am-form" action="javascript:void(0);">
     		 <div>
-	    		 <div className="am-u-lg-3 am-u-md-6">
-	    		 <AMUIReact.Selected inline name="type" value={o.type} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
-	    		 
-	    		 </div>
-				<div className="am-u-lg-3 am-u-md-6">
-							    		 
-				<AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
-	    		 </div>
-				 <div className="am-u-lg-2 am-u-md-4 am-u-sm-6">
-					    		 
+		          <AMR_Panel>
+                  <AMR_ButtonToolbar>
+				 <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs am-u-lg-3 am-u-sm-6">					    		 
 				 <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
 	    		 </div>
-				<div className="am-u-lg-2 am-u-md-4  am-u-sm-6">
+				 <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs am-u-lg-3 am-u-sm-6">
 			    <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
 	    		 
 	    		 </div>
-    		 	<div className="am-u-lg-2 am-u-md-4">
+    		 	 <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
   			  <button type="button"  className= "am-u-sm-2"  onClick={this.handleChange}  className="am-btn am-btn-secondary">查询</button>	  				
-  	  	</div>
+  	  	         </div>
+
+
+
+
+		         </AMR_ButtonToolbar>
+		          </AMR_Panel>
+
+                  <AMR_ButtonToolbar>
+	    		  <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
+	    		 <AMUIReact.Selected inline name="type" value={o.type} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 </div>
+				 <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
+							    		 
+				<AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+	    		 </div>
+               </AMR_ButtonToolbar>
+
     		 </div>
     		 <div className="am-cf"></div>
     		 </form>
@@ -6041,29 +6110,43 @@ render: function() {
   	  },
   render: function() { 
       return (
+
+
       <div>
 		  <G_px_help_List data={G_kd_help_msg.msg_help_list21}/>
   	  <hr/>	  
   	  <div className="am-form-group">
   		<form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">
-  		<AMR_ButtonToolbar>
-          <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
-  	  <AMUIReact.Selected  id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />     
-  	</div>
-  	<div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
-  	  <AMUIReact.Selected  id="selectgroup_uuid2" name="type" onChange={this.handleChange_type_Selected} btnWidth="200"  data={this.props.teachingjudge_typelist} btnStyle="primary" value={this.props.type} />
-  	  </div>
-  	</AMR_ButtonToolbar>
-  	  <div className="am-form-group am-margin-top-xs">
-  	  	<div className="am-u-lg-3 am-u-sm-6">
-  	  		<PxInput type="text"  name="sutdent_name" id="sutdent_name"     placeholder="姓名"/>      
-  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
-  			  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
-  			<div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
-  			  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-secondary">查询</button>	  				
-  	  	</div>
-  	  </div>
-     </div>
+
+          <AMR_Panel>
+		  <AMR_ButtonToolbar>
+              
+		  <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs am-u-lg-3 am-u-sm-6">	
+  	  	  <PxInput type="text"  name="sutdent_name" id="sutdent_name"     placeholder="姓名"/>   
+	      </div>
+
+	      <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs am-u-lg-3 am-u-sm-6">	
+  		  <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="begDateStr" id ="begDateStr" dateTime ={this.props.begDateStr}    onChange={this.handleChange}/>
+          </div> 		
+	 
+		  <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs am-u-lg-3 am-u-sm-6">		
+          <AMUIReact.DateTimeInput icon="calendar" format="YYYY-MM-DD" inline name="endDateStr" id="endDateStr" dateTime={this.props.endDateStr}    onChange={this.handleChange}/>
+  		  </div>	
+	          
+		  <div className= "am-f1 am-margin-bottom-sm am-margin-left-xs">
+  		  <button type="button"  className= "am-u-sm-2"  onClick={this.btn_teachingjudge_click}  className="am-btn am-btn-secondary">查询</button>	  				
+  	  	  </div>
+      </AMR_ButtonToolbar>
+  	 </AMR_Panel>
+
+
+   	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid1" name="group_uuid" onChange={this.handleChange_group_Selected} btnWidth="200" btnStyle="primary" data={this.props.group_list} value={this.props.group_uuid} />      
+  	   </div>  	 
+	 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  	  <AMUIReact.Selected  className= "am-fl" id="selectgroup_uuid2" name="type" onChange={this.handleChange_type_Selected} btnWidth="200" btnStyle="primary" data={this.props.teachingjudge_typelist} value={this.props.type} />      
+  	   </div> 
+
   	  </form>
   	  
   	  </div>	  
@@ -6200,22 +6283,30 @@ render: function() {
   	       <G_px_help_List data={G_kd_help_msg.msg_help_list8}/>
   		   <form id="editGroupForm" method="post" className="am-form" action="javascript:void(0);">	
 		   <AMR_Panel>	   
-  		   <AMR_ButtonToolbar>
-  		   <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
-  			  </div> 
+  		     <AMR_ButtonToolbar>
+
   				  <div className="am-fl  am-margin-bottom-sm am-margin-left-xs">
   				  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="姓名或手机号码"/>	  
   				  </div>
-  				    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  					  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
-  					  </div>
-  					 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-  					  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
-  					  </div>
-  					  </AMR_ButtonToolbar>
-			       </AMR_Panel>
-  				  </form>
+
+  				  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  				  <button type="button"  onClick={this.refresh_data.bind(this)}  className="am-btn am-btn-secondary">搜索</button>
+  				  </div>
+
+  			</AMR_ButtonToolbar>
+		   </AMR_Panel>
+  		  </form>
+		 <AMR_ButtonToolbar>
+
+		   	  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  			  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.refresh_data.bind(this)} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.state.groupuuid} />
+  			  </div> 
+		   		
+			  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+  			  <AMUIReact.Selected className="am-hide-sm" btnStyle="secondary" placeholder="下载表格到电脑" onChange={this.handleClick_download} btnWidth="200"  multiple= {false} data={this.props.down_list}  />
+  			  </div>
+
+		 </AMR_ButtonToolbar>
   				  <div id="div_totalNumber" >总人数:
   				  </div>	
   		    <div id={this.classnewsreply_list_div} >
@@ -7644,16 +7735,16 @@ render: function() {
 	{help}
 	  <AMR_Panel>
 <AMR_ButtonToolbar>
-	  <div className="am-fl  am-margin-left-xs">
+	 <div className="am-fl am-margin-bottom-sm  am-margin-left-xs">
 	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
 	  </div>
-	  <div className="am-fl  am-margin-left-xs">
+	  <div className="am-fl am-margin-bottom-sm  am-margin-left-xs">
 	  <AMR_Button amStyle="default" disabled="false" >共{obj.totalCount}条,第{obj.pageNo}页</AMR_Button>
 	  </div>
-	  <div className="am-fl  am-margin-left-xs">
+	  <div className="am-fl am-margin-bottom-sm  am-margin-left-xs">
 	<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
 	  </div>
-      <div className="am-fl  am-margin-left-xs">
+      <div className="am-fl am-margin-bottom-sm  am-margin-left-xs">
 	   <AMUIReact.Input name="cardid"  placeholder="姓名或卡号"   btnAfter={btnSearch}	 /> 
 	  </div>
   </AMR_ButtonToolbar>
@@ -8343,9 +8434,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
  		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
 		    <AMR_Panel>
 		    <AMR_ButtonToolbar>
-            <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
-		     </div>
+
 	          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			  <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上月</AMR_Button>	  
 			  </div>
@@ -8358,22 +8447,29 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		      <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <AMR_Button amStyle="primary" onClick={this.handleClick_query.bind(this)} >查询</AMR_Button>
 		      </div>
-		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+		     </AMR_ButtonToolbar>
+				  <AMR_ButtonToolbar>
+				  <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 		     <AMR_Button amStyle="default" disabled="false" >上班时间:</AMR_Button>
-			 </div>	  
+	              </div>
 		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			<PxInput  type="text"  maxLength="5" size="5" placeholder="08:00" name="morning"  value={queryForm.morning} onChange={this.handleChange}/>
 		    </div>
 		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <PxInput  type="text"  maxLength="5" size="5" placeholder="17:15" name="afternoon"  value={queryForm.afternoon} onChange={this.handleChange}/>
 		    </div>
-		    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-    	    <G_help_popo  msg={G_tip.attendance_listStatMonth}/> 
-			 </div>
+
 			 </AMR_ButtonToolbar>
 		     </AMR_Panel>
 		  </AMUIReact.Form>
-
+             <AMR_ButtonToolbar>
+			 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		     </div>
+			 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+    	    <G_help_popo  msg={G_tip.attendance_listStatMonth}/> 
+			 </div>
+             </AMR_ButtonToolbar>
 		 <h6>{"持卡人数:"+this.state.list.length}</h6>
     	<Attendance_listStatMonth_table yyyy_mm={queryForm.yyyy_mm}  list={this.state.list} morning={queryForm.morning} afternoon={queryForm.afternoon} />
       
@@ -8518,12 +8614,6 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		  <AMR_Panel>
 		  <AMR_ButtonToolbar>
 		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
-		     </div>
-		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
- 	        </div>
-		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
 			 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上月</AMR_Button>	  
 			 </div>
 		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
@@ -8538,6 +8628,14 @@ var Teachingplan_EventRow_byRight = React.createClass({
         	</AMR_ButtonToolbar>
 		    </AMR_Panel>
 		  </AMUIReact.Form>
+		   <AMR_ButtonToolbar>
+		  		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+		     </div>
+		     <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
+ 	        </div>
+		   </AMR_ButtonToolbar>
 		 <h6>{"持卡人数:"+this.state.list.length}</h6>
     	<Attendance_listStatMonth_table yyyy_mm={queryForm.yyyy_mm}  list={this.state.list}/>
       
