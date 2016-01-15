@@ -898,3 +898,42 @@ function G_resMsg_Timeout(ResMsg){
 		menu_userinfo_login_fn();
 	}
 }
+
+
+
+
+/*
+ * 学生详情服务器公共请求
+ * @服务器请求:POST rest/student/{uuid}.json;
+ * uuid:用户ID;
+ * type:1为学生列表学生详情  2我的班级学生详情
+ * */
+function G_class_students_look_info(uuid,ajaxYype,type){
+	Queue.push(function(){G_class_students_look_info(uuid,ajaxYype,type);},"学生详情");
+	$.AMUI.progress.start();
+	var url;
+	if(ajaxYype==1){
+		url = hostUrl + "rest/student/"+uuid+".json";
+	}else{
+		url = hostUrl + "rest/pxstudent/"+uuid+".json";
+	}
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				if(ajaxYype==1){
+					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());	
+				}else{
+					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());
+				}
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+};

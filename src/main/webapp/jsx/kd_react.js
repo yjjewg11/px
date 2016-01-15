@@ -2162,7 +2162,7 @@ var Class_students_show= React.createClass({
   	    return (
   	      <tr className={className} >
 			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={header_img}/></td>
-			<td><a href="javascript:void(0);" onClick={ajax_class_students_look_info.bind(this,event.uuid)}>{event.name}</a></td>			
+			<td><a href="javascript:void(0);" onClick={G_class_students_look_info.bind(this,event.uuid,1,2)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
@@ -2232,133 +2232,6 @@ var AMR_Col=AMUIReact.Col;
   }
  }); 
 
-/*我的班级中查看学生信息
- * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
- * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
- * <Common_mg_big_fn  imgsList={o.imgsList} />
- * */
-var Class_student_look_info =React.createClass({
-	 getInitialState: function() {
-		    return this.props.formdata;
-		  },
-	 handleChange: function(event) {
-		    this.setState($('#editClassStudentForm').serializeJson());
-	  },
-//	  componentDidMount:function(){
-//		  var imgGuid=this.state.headimg;
-//		 if(imgGuid){
-//			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-//			 G_img_down404("#img_head_image");
-//		 }
-//
-//	  },
-	  //加载绑定卡信息
-	  ajax_loadStudentbind_card:function(studentuuid){
-		  var that=this;
-		  that.last_apply_userid=null;
-		  $.AMUI.progress.start();
-		     var url = hostUrl + "rest/studentbind/queryByClassuuid.json?studentuuid="+studentuuid;
-		 	$.ajax({
-		 		type : "GET",
-		 		url : url,
-		 		dataType : "json",
-		 		 async: true,
-		 		success : function(data) {
-		 			$.AMUI.progress.done();
-		 			// 登陆成功直接进入主页
-		 			if (data.ResMsg.status == "success") {
-		 				$("#btn_cancelApply").hide();
-		 				var list=data.list;
-		 				var s="";
-		 				if(!list||list.length==0){
-		 					s="无";
-		 				}else{
-							//b2.studentuuid,b2.cardid,b2.userid,s1.name
-		 					for(var i=0;i<list.length;i++){
-		 						if(s)s+=",";
-		 						if(!list[i][1]){
-		 							list[i][1]="申请中";
-		 							$("#btn_cancelApply").show();//申请中可以取消
-		 							that.last_apply_userid=list[i][2];
-		 						}
-		 						s+=list[i][1]+"("+list[i][2]+")";
-		 					}
-		 				}
-		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
-		 			} else {
-		 				alert("加载数据失败："+data.ResMsg.message);
-		 			}
-		 		},
-		 		error :G_ajax_error_fn
-		 	});
-	  },
-	  btn_studentbind_apply:function(studentuuid){
-		  var that=this;
-		  ajax_studentbind_apply(studentuuid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
-	  btn_studentbind_cancelApply:function(studentuuid){
-		  var that=this;
-		  if(!that.last_apply_userid){
-			  alert("只能取消申请中的接送卡!");
-			  return;
-		  }
-		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
-			  that.ajax_loadStudentbind_card(studentuuid);
-			  
-		  });
-	  },
-	  componentDidMount:function(){
-		  $('.am-gallery').pureview();
-		  	this.ajax_loadStudentbind_card(this.state.uuid);
-		},
-		render: function() {
-	     var o =this.state;
-	     var imgGuid=o.headimg;
-	     var imglist=[imgGuid];
-		 if(!o.status)o.status=0;
-		 return (
-		 		<div>
-		 		
-		 		 <AMR_ButtonToolbar>
-		 	    <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
-		 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
-		 	  <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
-		 	 <G_help_popo   msg={G_tip.studentbind_app} />
-		 	  </AMR_ButtonToolbar>
-			    <AMUIReact.List static border striped>
-			      <Common_mg_big_fn  imgsList={imglist} />				  
-				  <br/>
-			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem id="input_studentbind_card">接送卡号:加载中...</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-
-                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
-			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
-			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel}/>
-			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}/>
-			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}/>
-			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel}/>
-			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel}/>
-			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel}/>
-			      <AMUIReact.ListItem>
-			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
-			      </AMUIReact.ListItem>			      
-			      
-			      </AMUIReact.List>
-		 	     </div> 
-		     );
-	        }
-		 });
 
 //一键拨号公用是否显示组件
 var Class_student_Tel_ListItem =React.createClass({
@@ -4186,6 +4059,7 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+	  	    <G_px_help_List data={G_kd_help_msg.msg_help_list11}/>
 		  <div className="am-list-news-hd am-cf">
 		   
 		  </div>
@@ -4213,7 +4087,6 @@ var Boss_student_tel_byRight =React.createClass({
     event.disabled ? 'am-disabled' : '';
 	 return (
 	 	<div>
-		 	  <G_px_help_List data={G_kd_help_msg.msg_help_list11}/>
 	 	    <ul className="am-list am-list-static am-list-border">
 	    	     {this.props.events.map(function(event) {
 	              return (
@@ -4240,7 +4113,6 @@ var Boss_student_tel2_byRight =React.createClass({
 	render: function() {
 	 return (
 			 <div className="am-g">
-		      <G_px_help_List data={G_kd_help_msg.msg_help_list11}/>
 			  <h1>园长信箱暂无信件！</h1>
 			  </div>
 	     );
@@ -5903,7 +5775,7 @@ render: function() {
    * */
   var Query_EventRow_byRight = React.createClass({ 
   	btn_students_list_click:function(uuid,nmae){
-  		ajax_class_students_look_info_byRight(uuid,nmae)
+  		G_class_students_look_info(uuid,1,1)
   	},
   	  render: function() {
   	    var event = this.props.event;
@@ -5926,70 +5798,6 @@ render: function() {
 
 
 
-
-  /*学生列表中查看学生信息
-   * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
-   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-   * 
-   * */
-  var Class_student_look_info_byRight =React.createClass({
-  	 getInitialState: function() {
-  		    return this.props.formdata;
-  		  },
-  	  componentDidMount:function(){
-  		  var imgGuid=this.state.headimg;
-  		 if(imgGuid){
-  			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-  			 G_img_down404("#img_head_image");
-  		 }
-
-  	  },
-		//查看操作记录方法
-       	stutent_operate:function(uuid,pageNo){	
-		React.render(React.createElement(Common_operate_rect,
- 		 		{uuid:uuid,
-			    pageNo:pageNo
- 		 			}),  document.getElementById(this.div_reply_save_id));		
-	},	
-  		render: function() {
-  	     var o =this.state;
-		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
-		 if(!o.status)o.status=0;
-  		 return (
-  		 		<div>
-  			    <AMUIReact.List static border striped>
-  			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
-  				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  				  <br/>
-  			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>			 
-  			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸电话:{o.ba_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爷爷电话:{o.ye_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>奶奶电话:{o.nai_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>外公电话:{o.waigong_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>外婆电话:{o.waipo_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
-  			      <AMUIReact.ListItem>
-  			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
-  			      </AMUIReact.ListItem>			        			      
-  			      </AMUIReact.List>
-			    <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
- 		 	    </AMR_ButtonToolbar>
-			    <div id={this.div_reply_save_id}>			</div>	
-  		 	     </div> 
-  		     );
-  	        }
-  		 });
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
   
   
