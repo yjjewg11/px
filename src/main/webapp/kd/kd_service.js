@@ -553,32 +553,32 @@ function ajax_class_save(){
             };
 G_ajax_abs_save(opt);
 }	
-/*
- * （主页）我的班级学生详情服务器请求
- * @服务器请求:POST rest/student/{uuid}.json;
- * uuid:用户ID;
- * @根据数据在 Kd_react做绘制处理 
- * */
-function ajax_class_students_look_info(uuid,title){
-	Queue.push(function(){ajax_class_students_look_info(uuid,title);},"学生详情");
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/"+uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), G_get_div_body());
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : G_ajax_error_fn
-	});
-};
+/*  方法已抽公用 代码屏蔽
+// * （主页）我的班级学生详情服务器请求
+// * @服务器请求:POST rest/student/{uuid}.json;
+// * uuid:用户ID;
+// * @根据数据在 Kd_react做绘制处理 
+// * */
+//function ajax_class_students_look_info(uuid,title){
+//	Queue.push(function(){ajax_class_students_look_info(uuid,title);},"学生详情");
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/student/"+uuid+".json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), G_get_div_body());
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : G_ajax_error_fn
+//	});
+//};
 
 /*
  * 我的班级修改学生详情按钮服务器请求
@@ -3126,33 +3126,33 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		});
  	};
 
- /*
-  *  <学生列表>界面下的二级界面学生详细信息
-  * @服务器请求:POST rest/student/{uuid}.json;
-  * uuid:用户ID;
-  * @根据数据在 Kd_react做绘制处理 
-  * */
- function ajax_class_students_look_info_byRight(uuid,title){
- 	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		dataType : "json",
- 		 async: true,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement( Class_student_look_info_byRight,{
- 					formdata:data.data
- 					}),G_get_div_second());
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
-		error :G_ajax_error_fn
- 	});
- };	
+ /*  方法已抽公用 代码屏蔽
+//  *  <学生列表>界面下的二级界面学生详细信息
+//  * @服务器请求:POST rest/student/{uuid}.json;
+//  * uuid:用户ID;
+//  * @根据数据在 Kd_react做绘制处理 
+//  * */
+// function ajax_class_students_look_info_byRight(uuid,title){
+// 	$.AMUI.progress.start();
+//     var url = hostUrl + "rest/student/"+uuid+".json";
+// 	$.ajax({
+// 		type : "GET",
+// 		url : url,
+// 		dataType : "json",
+// 		 async: true,
+// 		success : function(data) {
+// 			$.AMUI.progress.done();
+// 			if (data.ResMsg.status == "success") {
+// 				React.render(React.createElement( Class_student_look_info_byRight,{
+// 					formdata:data.data
+// 					}),G_get_div_second());
+// 			} else {
+// 				alert("加载数据失败："+data.ResMsg.message);
+// 			}
+// 		},
+//		error :G_ajax_error_fn
+// 	});
+// };	
 
 
 //——————————————————————————评价老师—————————————————————————— 

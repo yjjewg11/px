@@ -2959,33 +2959,33 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
  		});
  	};
 
- /*
-  *  <学生列表>界面下的二级界面学生详细信息
-  * @服务器请求:POST rest/student/{uuid}.json;
-  * uuid:用户ID;
-  * @根据数据在 Kd_react做绘制处理 
-  * */
- function ajax_class_students_look_info_byRight(uuid,title){
- 	$.AMUI.progress.start();
-     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		dataType : "json",
- 		 async: true,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement( Class_student_look_info_byRight,{
- 					formdata:data.data
- 					}), G_get_div_second());
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
-		error :G_ajax_error_fn
- 	});
- };	
+// /*方法已抽公用 代码屏蔽
+//  *  <学生列表>界面下的二级界面学生详细信息
+//  * @服务器请求:POST rest/student/{uuid}.json;
+//  * uuid:用户ID;
+//  * @根据数据在 Kd_react做绘制处理 
+//  * */
+// function ajax_class_students_look_info_byRight(uuid,title){
+// 	$.AMUI.progress.start();
+//     var url = hostUrl + "rest/pxstudent/"+uuid+".json";
+// 	$.ajax({
+// 		type : "GET",
+// 		url : url,
+// 		dataType : "json",
+// 		 async: true,
+// 		success : function(data) {
+// 			$.AMUI.progress.done();
+// 			if (data.ResMsg.status == "success") {
+// 				React.render(React.createElement( Class_student_look_info_byRight,{
+// 					formdata:data.data
+// 					}), G_get_div_second());
+// 			} else {
+// 				alert("加载数据失败："+data.ResMsg.message);
+// 			}
+// 		},
+//		error :G_ajax_error_fn
+// 	});
+// };	
 
 
 //——————————————————————————评价老师—————————————————————————— 
@@ -3696,31 +3696,31 @@ function btn_click_class_list(m,groupuuid,classuuid){
 
 
 
-//*********************我的班级模块-列表学生名字按钮相关代码********************* 
-/*
- * （主页）我的班级-学生列表名字按钮详情服务器请求
- * @服务器请求:POST rest/pxstudent/{uuid}.json;
- * */
-function ajax_class_students_look_info(uuid){
-	Queue.push(function(){ajax_class_students_look_info(uuid);},"学生详情");
-	$.AMUI.progress.start();
-    var url = hostUrl + "rest/pxstudent/"+uuid+".json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		 async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
-			} else {
-				alert("加载数据失败："+data.ResMsg.message);
-			}
-		},
-		error : G_ajax_error_fn
-	});
-};
+////*********************我的班级模块-列表学生名字按钮相关代码********************* 
+///*方法已抽公用 代码屏蔽
+// * （主页）我的班级-学生列表名字按钮详情服务器请求
+// * @服务器请求:POST rest/pxstudent/{uuid}.json;
+// * */
+//function ajax_class_students_look_info(uuid){
+//	Queue.push(function(){ajax_class_students_look_info(uuid);},"学生详情");
+//	$.AMUI.progress.start();
+//    var url = hostUrl + "rest/pxstudent/"+uuid+".json";
+//	$.ajax({
+//		type : "GET",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement( Class_student_look_info,{formdata:data.data}), document.getElementById('div_body'));
+//			} else {
+//				alert("加载数据失败："+data.ResMsg.message);
+//			}
+//		},
+//		error : G_ajax_error_fn
+//	});
+//};
 
 /*
  * 我的班级-学生列表名字-修改学生按钮详情按钮服务器请求

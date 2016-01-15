@@ -3765,6 +3765,7 @@ render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+	      <G_px_help_List data={G_px_help_msg.msg_px_help_list12}/>
 		  <div className="am-list-news-hd am-cf">
 		   
 		  </div>
@@ -3788,7 +3789,7 @@ var Boss_student_tel_byRight =React.createClass({
     event.disabled ? 'am-disabled' : '';
 	 return (
 	 	<div>
-		 	  <G_px_help_List data={G_px_help_msg.msg_px_help_list12}/>
+		 	  
 	 	    <ul className="am-list am-list-static am-list-border">
 	    	     {this.props.events.map(function(event) {
 	              return (
@@ -3815,7 +3816,6 @@ var Boss_student_tel2_byRight =React.createClass({
 	render: function() {
 	 return (
 			 <div className="am-g">
-		 		 <G_px_help_List data={G_px_help_msg.msg_px_help_list12}/>
 			  <h1>园长信箱暂无信件！</h1>
 			  </div>
 	     );
@@ -4070,8 +4070,12 @@ render: function() {
 /*
 * <班级管理>班级列表内容绘制;
 * */
-var Class_EventsTable_byRight = React.createClass({ 
+var Class_EventsTable_byRight = React.createClass({
+		 handleClick: function(m,event) {		 
+  		btn_click_class_list_byRight(m,event.groupuuid,event.uuid);
+	 },
 	  render: function() {
+		var that=this;
 	    var event = this.props.events;
 		var data_List=this.props.data_List;
 		var calss_number=(<div></div>);
@@ -4085,6 +4089,7 @@ var Class_EventsTable_byRight = React.createClass({
 		          {calss_number}
 	    	    <tr>
 	              <th>班级</th>
+                  <th>班级操作</th>
 				  <th>(学生数)</th>
 	              <th>管理员</th>
 	              <th>上课老师</th>
@@ -4105,7 +4110,8 @@ var Class_EventsTable_byRight = React.createClass({
 	    			      return (
 	    			    	      <tr className={className} >
 	    			    	        <td><a href="javascript:void(0);" onClick={react_ajax_class_students_manage_byRight.bind(this, event.uuid)}>{event.name}</a></td>
-	    			    	        <td>{event.student_count}</td>
+	    			    	        <td><AMR_Button amSize="xs"  amStyle="secondary" onClick={that.handleClick.bind(this,"edit_class",event)} >编辑班级</AMR_Button></td>
+						            <td>{event.student_count}</td>
 	    			    	        <td>{event.headTeacher_name}</td>
 	    			    	        <td>{event.teacher_name}</td>
 	    			    	        <td>{Store.getGroupNameByUuid(event.groupuuid)}</td>	
@@ -5139,7 +5145,7 @@ var Class_EventsTable_byRight = React.createClass({
    * */
   var Query_EventRow_byRight = React.createClass({ 
   	btn_students_list_click:function(uuid,nmae){
-  		ajax_class_students_look_info_byRight(uuid,nmae)
+  		G_class_students_look_info(uuid,2,1)
   	},
   	  render: function() {
   	    var event = this.props.event;
@@ -5159,73 +5165,6 @@ var Class_EventsTable_byRight = React.createClass({
   	  }
   	}); 
 
-
-
-
-  /*学生列表中查看学生信息
-   * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
-   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-   * 
-   * */
-  var Class_student_look_info_byRight =React.createClass({
-  	 getInitialState: function() {
-  		    return this.props.formdata;
-  		  },
-  	 handleChange: function(event) {
-  		    this.setState($('#editClassStudentForm').serializeJson());
-  	  },
-  	  componentDidMount:function(){
-  		  var imgGuid=this.state.headimg;
-  		 if(imgGuid){
-  			 $("#img_head_image").attr("src",G_imgPath+imgGuid); 
-  			 G_img_down404("#img_head_image");
-  		 }
-
-  	  },
-		//查看操作记录方法
-       	stutent_operate:function(uuid,pageNo){	
-		React.render(React.createElement(Common_operate_rect,
- 		 		{uuid:uuid,
-			    pageNo:pageNo
- 		 			}),  document.getElementById(this.div_reply_save_id));		
-	},	
-  		render: function() {
-  	     var o =this.state;
-		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
-  		 return (
-  		 		<div>
-  			    <AMUIReact.List static border striped>
-  			      <AMUIReact.ListItem>头像:</AMUIReact.ListItem>
-  				  <AMUIReact.Image  id="img_head_image"  src={G_def_headImgPath} className={"G_img_header"}/>
-  				  <br/>
-  			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈电话:{o.ma_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爸爸电话:{o.ba_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>爷爷电话:{o.ye_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>奶奶电话:{o.nai_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>外公电话:{o.waigong_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>外婆电话:{o.waipo_tel}</AMUIReact.ListItem>
-  			      <AMUIReact.ListItem>其他电话:{o.other_tel}</AMUIReact.ListItem>			      
-  			      <AMUIReact.ListItem>
-  			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
-  			      </AMUIReact.ListItem>			      
-  			    <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
- 		 	    </AMR_ButtonToolbar>
-			    <div id={this.div_reply_save_id}>			</div>	
-  			      </AMUIReact.List>
-  		 	     </div> 
-  		     );
-  	        }
-  		 });
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
   
   
@@ -7358,7 +7297,7 @@ var Class_EventsTable_byRight = React.createClass({
   	    return (
   	      <tr className={className} >
 			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={header_img}/></td>
-			<td><a href="javascript:void(0);" onClick={ajax_class_students_look_info.bind(this,event.uuid)}>{event.name}</a></td>			
+			<td><a href="javascript:void(0);" onClick={G_class_students_look_info.bind(this,event.uuid,2,2)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
   	        <td>{event.birthday}</td>
   	        <td>{event.idcard}</td>
@@ -7370,61 +7309,7 @@ var Class_EventsTable_byRight = React.createClass({
   	}); 	
 
 
-//*********************我的班级模块-列表学生名字按钮详情绘制相关代码********************* 
- /*我的班级模块-列表学生名字-详细信息
-  * Class_student_look_info@:此方法模板为单独查看每个学生详细信息但不能编辑；
-  * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-  * <Common_mg_big_fn  imgsList={o.imgsList} />
-  * */
- var Class_student_look_info =React.createClass({
- 	 getInitialState: function() {
- 		    return this.props.formdata;
- 		  },
- 	 handleChange: function(event) {
- 		    this.setState($('#editClassStudentForm').serializeJson());
- 	  },
- 	  componentDidMount:function(){
 
- 		},
- 		render: function() {
- 	     var o =this.state;
- 	     var imgGuid=o.headimg;
-		 if(!imgGuid)imgGuid=G_def_noImgPath;
- 	     var imglist=[imgGuid];
- 		 return (
- 		 		<div>
- 		 		
- 		 		 <AMR_ButtonToolbar>
- 		 	    <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
- 		 	    </AMR_ButtonToolbar>
- 			    <AMUIReact.List static border striped>
- 			      <Common_mg_big_fn  imgsList={imglist} />				  
- 				  <br/>
- 			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
- 			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
- 			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
- 			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
- 			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel}/>
- 			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
- 			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}/>
- 			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}/>
- 			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel}/>
- 			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel}/>
- 			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel}/>
- 			      <AMUIReact.ListItem>
- 			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
- 			      </AMUIReact.ListItem>			      
- 			      
- 			      </AMUIReact.List>
- 		 	     </div> 
- 		     );
- 	        }
- 		 });
 
  //我的班级模块-列表学生名字-详细信息一键拨号公用是否显示组件
  var Class_student_Tel_ListItem =React.createClass({

@@ -1577,3 +1577,220 @@ function G_status(){
  }
  }); 
  
+ /*幼儿园学生列表中查看学生信息绘制公用方法
+  * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
+  * 
+  * */
+ var Kd_commons_Class_student_look_info =React.createClass({
+ 	 getInitialState: function() {
+ 		    return this.props.formdata;
+ 		  },
+		//查看操作记录方法
+      	stutent_operate:function(uuid,pageNo){	
+		React.render(React.createElement(Common_operate_rect,
+		 		{uuid:uuid,
+			    pageNo:pageNo
+		   }),  document.getElementById(this.div_reply_save_id));		
+	},	
+	  //加载绑定卡信息
+	  ajax_loadStudentbind_card:function(studentuuid){
+		  var that=this;
+		  that.last_apply_userid=null;
+		  $.AMUI.progress.start();
+		     var url = hostUrl + "rest/studentbind/queryByClassuuid.json?studentuuid="+studentuuid;
+		 	$.ajax({
+		 		type : "GET",
+		 		url : url,
+		 		dataType : "json",
+		 		 async: true,
+		 		success : function(data) {
+		 			$.AMUI.progress.done();
+		 			// 登陆成功直接进入主页
+		 			if (data.ResMsg.status == "success") {
+		 				$("#btn_cancelApply").hide();
+		 				var list=data.list;
+		 				var s="";
+		 				if(!list||list.length==0){
+		 					s="无";
+		 				}else{
+							//b2.studentuuid,b2.cardid,b2.userid,s1.name
+		 					for(var i=0;i<list.length;i++){
+		 						if(s)s+=",";
+		 						if(!list[i][1]){
+		 							list[i][1]="申请中";
+		 							$("#btn_cancelApply").show();//申请中可以取消
+		 							that.last_apply_userid=list[i][2];
+		 						}
+		 						s+=list[i][1]+"("+list[i][2]+")";
+		 					}
+		 				}
+		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
+		 			} else {
+		 				alert("加载数据失败："+data.ResMsg.message);
+		 			}
+		 		},
+		 		error :G_ajax_error_fn
+		 	});
+	  },
+	  btn_studentbind_apply:function(studentuuid){
+		  var that=this;
+		  ajax_studentbind_apply(studentuuid,function(){
+			  that.ajax_loadStudentbind_card(studentuuid);
+			  
+		  });
+	  },
+	  btn_studentbind_cancelApply:function(studentuuid){
+		  var that=this;
+		  if(!that.last_apply_userid){
+			  alert("只能取消申请中的接送卡!");
+			  return;
+		  }
+		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
+			  that.ajax_loadStudentbind_card(studentuuid);
+			  
+		  });
+	  },
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		  	this.ajax_loadStudentbind_card(this.state.uuid);
+		},
+ 		render: function() {
+ 	     var o =this.state;
+		 if(!o.status)o.status=0;
+		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
+	     var imgGuid=o.headimg;
+	     var imglist=[imgGuid];
+	     var rect_info=(<div></div>);
+	     var btn_info=(<div></div>);
+	     if(this.props.type==2){
+	    	 rect_info=(		 		 
+	    		  <AMR_ButtonToolbar>
+		 	       <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
+			 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
+			 	   <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
+			 	   <G_help_popo   msg={G_tip.studentbind_app} />
+			 	  </AMR_ButtonToolbar>)
+	     }
+	     if(this.props.type==1){
+	    	 btn_info=(			    
+	    	    <AMR_ButtonToolbar>
+		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+		 	    </AMR_ButtonToolbar>); 
+	     }
+ 		 return (
+ 		 		<div>
+ 		 		{rect_info}
+			    <AMUIReact.List static border striped>
+			      <Common_mg_big_fn  imgsList={imglist} />				  
+				  <br/>
+			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem id="input_studentbind_card">接送卡号:加载中...</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
+
+                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
+			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel}/>
+			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}/>
+			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}/>
+			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel}/>
+			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel}/>
+			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel}/>
+			      <AMUIReact.ListItem>
+			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
+ 			      </AMUIReact.ListItem>			        			      
+ 			      </AMUIReact.List>
+ 			     {btn_info}
+			    <div id={this.div_reply_save_id}>			</div>	
+ 		 	     </div> 
+ 		     );
+ 	        }
+ 		 });
+ 
+ 
+ 
+ /*培训机构学生列表中查看学生信息绘制公用方法
+  * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
+  * 
+  * */
+ var Px_Commons_Class_student_look_info =React.createClass({
+ 	 getInitialState: function() {
+ 		    return this.props.formdata;
+ 		  },
+		//查看操作记录方法
+      	stutent_operate:function(uuid,pageNo){	
+		React.render(React.createElement(Common_operate_rect,
+		 		{uuid:uuid,
+			    pageNo:pageNo
+		   }),  document.getElementById(this.div_reply_save_id));		
+	},	
+	  btn_studentbind_apply:function(studentuuid){
+		  var that=this;
+		  ajax_studentbind_apply(studentuuid,function(){
+			  that.ajax_loadStudentbind_card(studentuuid);
+			  
+		  });
+	  },
+ 		render: function() {
+ 	     var o =this.state;
+		 if(!o.status)o.status=0;
+		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
+	     var imgGuid=o.headimg;
+	     var imglist=[imgGuid];
+	     var rect_info=(<div></div>);
+	     var btn_info=(<div></div>);
+	     if(this.props.type==2){
+	    	 rect_info=(		 		 
+	 		 		 <AMR_ButtonToolbar>
+	  		 	     <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
+	  		 	     </AMR_ButtonToolbar>); 
+	     }
+	     if(this.props.type==1){
+	    	 btn_info=(			    
+	    	    <AMR_ButtonToolbar>
+		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+		 	    </AMR_ButtonToolbar>); 
+	     }
+ 		 return (
+ 		 		<div>
+ 		 		{rect_info}
+			    <AMUIReact.List static border striped>
+			      <Common_mg_big_fn  imgsList={imglist} />				  
+				  <br/>
+			      <AMUIReact.ListItem icon="mobile">姓名:{o.name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
+
+                  <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
+			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
+			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel}/>
+			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
+			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}/>
+			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}/>
+			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel}/>
+			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel}/>
+			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel}/>
+			      <AMUIReact.ListItem>
+			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
+ 			      </AMUIReact.ListItem>			        			      
+ 			      </AMUIReact.List>
+ 			     {btn_info}
+			    <div id={this.div_reply_save_id}>			</div>	
+ 		 	     </div> 
+ 		     );
+ 	        }
+ 		 });
+ 
+ 
+ 
