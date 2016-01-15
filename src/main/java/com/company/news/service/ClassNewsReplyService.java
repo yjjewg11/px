@@ -116,13 +116,21 @@ public class ClassNewsReplyService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(String newsuuid, PaginationData pData) {
-		String hql = "from ClassNewsReply where  status =" + SystemConstants.Check_status_fabu;
-		if (StringUtils.isNotBlank(newsuuid))
-			hql += " and  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
+	public PageQueryResult query(String newsuuid, PaginationData pData,boolean isQueryAllStatus) {
+		String hql=null;
+		if(isQueryAllStatus){
+			 hql = "from ClassNewsReply ";
+			if (StringUtils.isNotBlank(newsuuid))
+				hql += " where  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
+		}else{
+			 hql = "from ClassNewsReply where  status =" + SystemConstants.Check_status_fabu;
+				if (StringUtils.isNotBlank(newsuuid))
+					hql += " and  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
+		}
 
-	
-
+		pData.setOrderFiled("create_time");
+		pData.setOrderType("desc");
+		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData);
 		List<ClassNewsReply> list = pageQueryResult.getData();
 
