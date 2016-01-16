@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
@@ -31,6 +30,8 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieSeriesDataVo;
@@ -187,11 +188,11 @@ public class ClassNewsService extends AbstractService {
 	 * @param list
 	 * @return
 	 */
-	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ,boolean isQueryAllStatus) {
 		
 		String uuids="";
 		for(Map o:list){
-			warpMap(o,user);
+			warpMap(o,user,isQueryAllStatus);
 			uuids+=o.get("uuid")+",";
 		}
 		
@@ -219,14 +220,19 @@ public class ClassNewsService extends AbstractService {
 //		
 //	}
 
-	private void warpMap(Map o, SessionUserInfoInterface user) {
+	private void warpMap(Map o, SessionUserInfoInterface user,boolean isQueryAllStatus) {
 		try {
 			//网页版本需要转为html显示.
 			o.put("content", MyUbbUtils.myUbbTohtml((String)o.get("content")));
 			o.put("imgsList", PxStringUtil.uuids_to_imgMiddleurlList((String)o.get("imgs")));
 			o.put("share_url", PxStringUtil.getClassNewsByUuid((String)o.get("uuid")));
 			
-			o.put("replyPage", this.getReplyPageList((String)o.get("uuid")));
+			
+			String cur_user_uuid="";
+			if(user!=null)cur_user_uuid=user.getUuid();
+			
+			o.put("replyPage", this.getReplyPageList((String)o.get("uuid"),cur_user_uuid,isQueryAllStatus));
+			
 			o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
 			if(o.get("count")==null)o.put("count","0");
 			
@@ -450,7 +456,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @param list
 	 * @return
 	 */
-	public ClassNews warpVo(ClassNews o,String cur_user_uuid){
+	public ClassNews warpVo(ClassNews o,String cur_user_uuid,boolean isQueryAllStatus){
 		try {
 			this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 			//网页版本需要转为html显示.
@@ -459,7 +465,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 			//o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 			o.setDianzan(classNewsReplyService.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
-			o.setReplyPage(this.getReplyPageList(o.getUuid()));
+			o.setReplyPage(this.getReplyPageList(o.getUuid(),cur_user_uuid,isQueryAllStatus));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -472,14 +478,27 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		 * 
 		 * @return
 		 */
-		private PageQueryResult getReplyPageList(String newsuuid) {
+		private PageQueryResult getReplyPageList(String newsuuid,String cur_user_uuid,boolean isQueryAllStatus) {
 			if (StringUtils.isBlank(newsuuid)) {
 				return new PageQueryResult();
 			}
 			
+			if (StringUtils.isBlank(newsuuid)) {
+				return new PageQueryResult();
+			}
+			
+			
 			PaginationData pData=new PaginationData();
 			pData.setPageSize(5);
-			String hql="from ClassNewsReply where  status ="+SystemConstants.Check_status_fabu +" and  newsuuid='"+DbUtils.safeToWhereString(newsuuid)+"'";
+			String hql=null;
+			if(isQueryAllStatus){
+				hql="from ClassNewsReply where    newsuuid='"+DbUtils.safeToWhereString(newsuuid)+"'";
+				
+			}else{
+				hql="from ClassNewsReply where   ( create_useruuid='"+cur_user_uuid+"' or status ="+SystemConstants.Check_status_fabu+")  and  newsuuid='"+DbUtils.safeToWhereString(newsuuid)+"'";
+				
+			}
+			
 			pData.setOrderFiled("create_time");
 			pData.setOrderType("desc");
 			
@@ -499,11 +518,11 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @param list
 	 * @return
 	 */
-	private List<ClassNews> warpVoList(List<ClassNews> list,String cur_user_uuid){
+	private List<ClassNews> warpVoList(List<ClassNews> list,String cur_user_uuid,boolean isQueryAllStatus){
 		
 		
 		for(ClassNews o:list){
-			warpVo(o,cur_user_uuid);
+			warpVo(o,cur_user_uuid,isQueryAllStatus);
 		}
 		return list;
 	}
@@ -564,7 +583,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @return
 	 * @throws Exception 
 	 */
-	public PageQueryResult getAllClassNews(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) throws Exception {
+	public PageQueryResult getAllClassNews(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData,HttpServletRequest request) throws Exception {
 		
 		String sqlwhere =" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
@@ -573,7 +592,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		
 		sqlwhere += " order by t1.create_time desc";
 
-		return listPageBySql(user,sqlwhere, pData);
+		return listPageBySql(user,sqlwhere, pData,request);
 	}
 	
 	/**OK
@@ -581,7 +600,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) {
+	public PageQueryResult query(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData,HttpServletRequest request) {
 		
 		
 
@@ -593,34 +612,42 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		}
 		
 		sqlwhere += " order by t1.create_time desc";
-	    return listPageBySql(user,sqlwhere, pData);
+	    return listPageBySql(user,sqlwhere, pData,request);
 
 	}	
 	/**OK
 	 */
 	public PageQueryResult listClassNewsByAdmin(String groups,SessionUserInfoInterface user,
-			PaginationData pData) {
-
-		String sqlwhere =" where t1.status=0  ";	
-		if (StringUtils.isNotBlank(groups))
-			sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+			PaginationData pData,HttpServletRequest request) {
+		//有权限,则查询所有的状态
+		String sqlwhere =" where t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
 			
 		sqlwhere += " order by t1.create_time desc";    
-	    return listPageBySql(user,sqlwhere, pData);
+	    return listPageBySql(user,sqlwhere, pData,request);
 	}	
 	public PageQueryResult listClassNewsByMygroup(String groups, SessionUserInfoInterface user,
-			PaginationData pData) {
-		String sqlwhere =" where t1.status=0  ";	
-		if (StringUtils.isNotBlank(groups))
-			sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
-	
+			PaginationData pData,HttpServletRequest request) {
+		String sqlwhere=null;
+		if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_classnew_m,request)||RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)||RightUtils.hasRightAnyGroup(RightConstants.PX_announce_m,request)){
+			//有权限,则查询所有的状态
+			if (StringUtils.isNotBlank(groups))
+					sqlwhere = " where  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+			
+		}else{
+			 sqlwhere =" where t1.status=0  ";	
+				if (StringUtils.isNotBlank(groups))
+					sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+		}
+		
+		
+		
 		
 		sqlwhere += " order by t1.create_time desc";
-	    return listPageBySql(user,sqlwhere, pData);
+	    return listPageBySql(user,sqlwhere, pData,request);
 	}	
 	
 	public PageQueryResult listClassNewsByAllgroup(SessionUserInfoInterface user,
-		String uuid,	PaginationData pData) {
+		String uuid,	PaginationData pData,HttpServletRequest request) {
 
 		String sqlwhere=" where t1.status=0   ";	
 		if (StringUtils.isNotBlank(uuid))
@@ -629,7 +656,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			sqlwhere += " and  t1.groupuuid not in ('group_wj1','group_wj2','group_px1')";
 		}
 		sqlwhere += " order by t1.create_time desc";
-	    return listPageBySql(user,sqlwhere, pData);
+	    return listPageBySql(user,sqlwhere, pData,request);
 	}	
 	
 	
@@ -644,13 +671,13 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	
 	
 	public PageQueryResult getAllClassNewsByWJ( SessionUserInfoInterface user,
-			PaginationData pData) {
+			PaginationData pData,HttpServletRequest request) {
 
 
 		String sqlwhere =" LEFT JOIN  px_count t3 on t1.uuid=t3.ext_uuid ";
 
 		sqlwhere += " order by t1.create_time desc";
-	    return listPageBySql(user,sqlwhere, pData);
+	    return listPageBySql(user,sqlwhere, pData,request);
 	}	
 
 
@@ -663,7 +690,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @return
 	 * @throws Exception 
 	 */
-	public PageQueryResult getClassNewsByMy(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData) throws Exception {
+	public PageQueryResult getClassNewsByMy(SessionUserInfoInterface user ,String type,String classuuid, PaginationData pData,HttpServletRequest request) throws Exception {
 		String sqlwhere =" where t1.status=0  ";	
 		if (StringUtils.isNotBlank(classuuid))
 			sqlwhere += " and  t1.classuuid in("+DBUtil.stringsToWhereInValue(classuuid)+")";
@@ -674,18 +701,15 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		}
 		
 		sqlwhere += " order by t1.create_time desc";
-		return listPageBySql(user,sqlwhere, pData);
+		return listPageBySql(user,sqlwhere, pData,request);
 	}	
 	
-	
-	
-
 
 	
 /*
  * 抽离的公用查询
  * */
-	private PageQueryResult listPageBySql(SessionUserInfoInterface user,String sqlwhere,PaginationData pData
+	private PageQueryResult listPageBySql(SessionUserInfoInterface user,String sqlwhere,PaginationData pData,HttpServletRequest request
 ) {
     	String selectSql="SELECT t1.url,t1.uuid,t1.classuuid,t1.create_user,t1.create_useruuid,t1.create_img,t1.create_time,t1.title,t1.content,t1.imgs,t1.groupuuid,t1.illegal,t1.illegal_time,t1.reply_time,t1.status,t1.update_time,t1.usertype,t1.group_name,t1.class_name";
 		selectSql+=" FROM px_classnews t1 ";
@@ -698,7 +722,14 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		List<Map> list=pageQueryResult.getData();	
-		this.warpMapList(list, user);
+		
+
+		boolean isQueryAllStatus=false;
+		if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_classnew_m,request)||RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)||RightUtils.hasRightAnyGroup(RightConstants.PX_announce_m,request)){
+			isQueryAllStatus=true;
+		}
+		
+		this.warpMapList(list, user,isQueryAllStatus);
 		return pageQueryResult;
 	}	
 	

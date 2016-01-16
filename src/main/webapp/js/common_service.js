@@ -524,7 +524,7 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan,dianzansave_callback)
 
 
 
-function commons_ajax_reply_list(newsuuid,list_div,pageNo,tempateClazz){
+function commons_ajax_reply_list(newsuuid,list_div,pageNo,tempateClazz,groupuuid){
 	if(!tempateClazz)tempateClazz=Common_Classnewsreply_listshow;
 	var re_data=null;
 	 if(!pageNo)pageNo=1;
@@ -541,6 +541,7 @@ function commons_ajax_reply_list(newsuuid,list_div,pageNo,tempateClazz){
 				React.render(React.createElement(tempateClazz, {
 					events: data.list,
 					newsuuid:newsuuid,
+					groupuuid:groupuuid,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
 				re_data=data.list;
@@ -674,33 +675,7 @@ function common_teacherDailyTask_status(status){
 	 return teacherDailyTask_status; 	
 }
 
-/*/check/disable.json?type=99&uuid=1
- * 禁止发布公共组件方法
- * */
-function common_check_disable(type,uuid){
-	
-	if(!confirm("确定要屏蔽吗?")){
-		return;
-	}
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/check/disable.json";
-	$.ajax({
-		type : "POST",
-		url : url,
-		data:{type:type,uuid:uuid},
-		dataType : "json",
-		async: true,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				 G_msg_pop("屏蔽成功");
-			} else {
-				alert(data.ResMsg.message);
-			}
-		},
-		error : G_ajax_error_fn
-	});
-}
+
 
 
 /*/check/disable.json?type=99&uuid=1

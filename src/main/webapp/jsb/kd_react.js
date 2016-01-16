@@ -367,15 +367,24 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			    	React.createElement("footer", {className: "am-comment-footer"}, 
 			    	React.createElement("div", {className: "am-comment-actions"}, 
 			    	GTimeShow.showByTime(o.create_time), 
-			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
-							 "|阅读"+o.count, 
-			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
+
+				
+
+     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}), "点赞"), 
+     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}), "评论"), 
+								 "|阅读"+o.count, 
+
+							React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid, status: o.status, groupuuid: o.groupuuid, add_class: "am-fr"}), 
+     			    	React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
+     			    
+
+
+
 			    	)
 			    	), 
 			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 99, btn_dianzan: "btn_dianzan_"+o.uuid}), 
 			    	React.createElement("ul", {className: "am-comments-list"}, 
-					  React.createElement(Classnews_reply_list, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid})
+					  React.createElement(Classnews_reply_list, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid, groupuuid: o.groupuuid})
 			    	)
 			     )
 			)
@@ -421,6 +430,7 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		React.render(React.createElement(Classnews_reply_list_listshow, {
 			events: this.state.replyPage,
 			newsuuid:this.props.uuid,
+			 groupuuid:this.props.groupuuid,
 			responsive: true, bordered: true, striped :true,hover:true,striped:true
 			}), document.getElementById(list_div));
 	},
@@ -430,7 +440,7 @@ var Classnews_reply_list = React.createClass({displayName: "Classnews_reply_list
 		if(re_data&& this.pageNo==1){
 			this.loadByFirst(this.classnewsreply_list_div+this.pageNo);
 		}else{
-			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow);
+			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow,this.props.groupuuid);
 			
 		}
 		if(!re_data)return;
@@ -485,13 +495,16 @@ return (
 * */
 var Classnews_reply_list_listshow = React.createClass({displayName: "Classnews_reply_list_listshow", 	
 render: function() {
+	var groupuuid=this.props.groupuuid;
 return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
+			
 		      return (
 		    		  React.createElement("li", {className: "am-cf"}, 
 		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
-				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}})
+				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), 
+				  React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, status: event.status, groupuuid: groupuuid}	)
 		    		  )
 		    		  )
 		  })
@@ -810,8 +823,8 @@ return (
 		    	React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))
 			    )
 		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
-			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
+		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
+			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
 		   )
 );
 }
@@ -943,8 +956,8 @@ var Teachingplan_showByOneDay = React.createClass({displayName: "Teachingplan_sh
 				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
 				    	)
 				    	), 
-				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
-					  React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
+				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 7, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+					  React.createElement(Common_reply_list, {uuid: o.uuid, type: 7})
 					) 
 		  )
 	  }else{
@@ -1466,9 +1479,9 @@ var CookbookPlan_showByOneDay = React.createClass({displayName: "CookbookPlan_sh
 			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}))
 			    	)
 			    	), 
-			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 0, btn_dianzan: "btn_dianzan_"+o.uuid}), 
+			    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 6, btn_dianzan: "btn_dianzan_"+o.uuid}), 
 				     
-			    	React.createElement(Common_reply_list, {uuid: o.uuid, type: 0})
+			    	React.createElement(Common_reply_list, {uuid: o.uuid, type: 6, groupuuid: o.groupuuid})
 				)
 			)
 		  )
@@ -1954,12 +1967,14 @@ return (
 		    	React.createElement("div", {className: "am-comment-actions"}, 
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
-				React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))
-		    	)
+				React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"})), 
+		    	React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 
+			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+				
+			 )
 		    	), 
-		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
-			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
+		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
+			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
 		   )
 );
 }
@@ -3317,7 +3332,7 @@ return (
 	     React.createElement(AMR_ButtonToolbar, null, 
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)}, "编辑"), 
 	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",obj.groupuuid,obj.uuid)}, "删除"), 
-	     React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid})
+	     React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid})
 	     )
 	     
 	     ), 
@@ -3325,12 +3340,14 @@ return (
 	    	React.createElement("div", {className: "am-comment-actions"}, 
 	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 	    	React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-			React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
-	        React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))	
+			 React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"})), 	
+			React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 	
+		 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+	       
 		 )
 	    	), 
-	    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
-		  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
+	    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
+		  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
 	   )
 );
 }
@@ -6726,17 +6743,18 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      			    	React.createElement("footer", {className: "am-comment-footer"}, 
      			    	React.createElement("div", {className: "am-comment-actions"}, 
      			    	GTimeShow.showByTime(o.create_time), 
-     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"}), "点赞"), 
+     			    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}), "评论"), 
 								 "|阅读"+o.count, 
-     			    	React.createElement("a", {href: "javascript:void(0);", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 
-     			    	React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid})
+						React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid, status: o.status, groupuuid: o.groupuuid, add_class: "am-fr"}), 
+     			    	React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
+     			    	
      			    	)
      			    	), 
      			    	
      			    	React.createElement(Common_Dianzan_show_noAction, {dianzan: o.dianzan, uuid: o.uuid, type: 99, btn_dianzan: "btn_dianzan_"+o.uuid}), 
      			    	React.createElement("ul", {className: "am-comments-list"}, 
-     					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid})
+     					  React.createElement(Classnews_reply_list_byRight, {replyPage: o.replyPage, uuid: o.uuid, type: 99, btn_reply: "btn_reply_"+o.uuid, groupuuid: o.groupuuid})
      			    	)
      			     )
      			)
@@ -6784,6 +6802,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      		React.render(React.createElement(Classnews_reply_list_listshow_byRight, {
      			events: this.state.replyPage,
      			newsuuid:this.props.uuid,
+				groupuuid:this.props.groupuuid,
      			responsive: true, bordered: true, striped :true,hover:true,striped:true
      			}), document.getElementById(list_div));
      	},
@@ -6793,7 +6812,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      		if(re_data&& this.pageNo==1){
 				this.loadByFirst(this.classnewsreply_list_div+this.pageNo);			
      		}else{
-     			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight);
+     			re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,Classnews_reply_list_listshow_byRight,this.props.groupuuid);
      		}
      		if(!re_data)return;
      		if(re_data.data.length<re_data.pageSize){
@@ -6844,14 +6863,16 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
      * 
      * */
      var Classnews_reply_list_listshow_byRight = React.createClass({displayName: "Classnews_reply_list_listshow_byRight", 	
+		 
      render: function() {
+		 var groupuuid=this.props.groupuuid;
      return (
      		  React.createElement("div", null, 
      		  this.props.events.data.map(function(event) {
      		      return (
      		    		  React.createElement("li", {className: "am-cf"}, 
      		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
-     				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid})
+     				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, status: event.status, groupuuid: groupuuid})
      		    		  )
      		    		  )
      		  })
@@ -8087,12 +8108,14 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
   		    	React.createElement("footer", {className: "am-comment-footer"}, 
   		    	React.createElement("div", {className: "am-comment-actions"}, 
 				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	  
-				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,3,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报"), 
-  		    	React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))
-			    )
+				React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"})), 
+				React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 
+				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
+  		    	
+			)
   		    	), 
-  		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: 0, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
-  			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: 0})			 
+  		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
+  			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
   		   )
   );
   }

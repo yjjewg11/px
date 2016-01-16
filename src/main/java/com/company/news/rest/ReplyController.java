@@ -15,6 +15,8 @@ import com.company.news.jsonform.ClassNewsReplyJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.RestUtil;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.service.ClassNewsReplyService;
 import com.company.news.vo.ResponseMessage;
 
@@ -91,7 +93,16 @@ public class ReplyController extends AbstractRESTController {
 			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			PaginationData pData=this.getPaginationDataByRequest(request);
 			pData.setPageSize(5);
-			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData);
+			
+			
+			boolean isQueryAllStatus=false;
+			if(RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)||RightUtils.hasRightAnyGroup(RightConstants.PX_announce_m,request)){
+				isQueryAllStatus=true;
+			}
+			
+			
+			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData,isQueryAllStatus);
+		
 			
 			classNewsReplyService.warpVoList(pageQueryResult.getData(), user);
 			

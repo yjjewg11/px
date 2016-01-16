@@ -1,3 +1,5 @@
+
+window.grouptype=3;
 function body_show(){
 		$("#div_body").show();
 		$("#div_widget_chooseUser").hide();

@@ -105,7 +105,7 @@ public class ClassNewsController extends AbstractRESTController {
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			PageQueryResult pageQueryResult = classNewsService.query(user,null,
-					request.getParameter("classuuid"), pData);
+					request.getParameter("classuuid"), pData,request);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -137,7 +137,7 @@ public class ClassNewsController extends AbstractRESTController {
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 			PageQueryResult pageQueryResult = classNewsService.getClassNewsByMy(user,type,
-					request.getParameter("classuuid"), pData);
+					request.getParameter("classuuid"), pData,request);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -187,7 +187,7 @@ public class ClassNewsController extends AbstractRESTController {
 			if(StringUtils.isNotBlank(groupuuid)){
 				groups=groupuuid;
 			}
-			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAdmin(groups,user, pData);
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAdmin(groups,user, pData,request);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -224,7 +224,7 @@ public class ClassNewsController extends AbstractRESTController {
 			SessionUserInfoInterface user = this.getUserInfoBySession(request);
 			pData.setPageSize(5);
 
-			PageQueryResult pageQueryResult = classNewsService.getAllClassNewsByWJ(user, pData);
+			PageQueryResult pageQueryResult = classNewsService.getAllClassNewsByWJ(user, pData,request);
 			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
@@ -270,7 +270,7 @@ public class ClassNewsController extends AbstractRESTController {
 			if(StringUtils.isNotBlank(groupuuid)){
 				groups=groupuuid;
 			}
-			PageQueryResult pageQueryResult = classNewsService.listClassNewsByMygroup(groups,user, pData);
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByMygroup(groups,user, pData,request);
 			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
@@ -399,7 +399,7 @@ public class ClassNewsController extends AbstractRESTController {
 				return "";
 			}
 			
-			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAllgroup(user,uuid,pData);
+			PageQueryResult pageQueryResult = classNewsService.listClassNewsByAllgroup(user,uuid,pData,request);
 
 			model.addAttribute(RestConstants.Return_ResponseMessage_list,
 					pageQueryResult);
