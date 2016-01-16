@@ -187,6 +187,7 @@ var sns_list_snsTopic_rect = React.createClass({
  * */    
 var Sns_snsTopic_add_edit = React.createClass({ 
  getInitialState: function() {
+	 this.props.formdata.input_count=0;
 	    return this.props.formdata;
 	  },
  handleChange: function(event) {
@@ -202,10 +203,70 @@ var Sns_snsTopic_add_edit = React.createClass({
       w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
             editor.pasteHTML( '<img width="100%" style="margin: 5px;"  src="'+imgurl+'"/>')
        });
+      
+      this.itemListObj.init(this.state.itemList);
 	 },
 	preview_fn:function(){
      G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
+       
+       /**
+        * this.itemListObj.getData();
+        *  itemListObj.init(list);
+        */
+       itemListObj:{
+    	   divId_addButton:"snstopic_itemList_addButton",
+    	   ind:0,
+    	   getData:function(){
+    		   
+    		   var itemList=[];
+    		   $("input[name='snstopic_itemList_item_title']").each(function(){
+    			  
+    			   var uuid_ind=this.title.split("_");
+    			   var o={"title":this.value,"ind":uuid_ind[1],"uuid":uuid_ind[0]};
+
+    			   itemList.push(o);
+    			  });
+    		   
+    		   return itemList;
+    	   },
+    	   
+    	   addItemDiv:function(o){
+    			$("#"+this.divId_addButton).append("<div id="+this.divId_addButton+o.ind+">加载中...</div>");
+				React.render(React.createElement(Sns_snsTopic_itemList_item,
+				 		{formdata:o,
+						delItem:this.delItem
+				 		}),  document.getElementById(this.divId_addButton+o.ind));	
+    		   
+    	   },
+    	   delItem:function(){
+    		   
+    		   
+    	   },
+    	   add_item:function(){
+    		   var o={"title":"","ind":++this.ind,"uuid":""};
+    		 this.addItemDiv(o);
+    		   
+    	   },
+    	   init:function(list){
+    		   this.dataList=list;
+    		   if(!this.dataList){
+    			   this.dataList=[];
+    			   
+    			  this.add_item();
+    			  this.add_item();
+    			   
+    		   }else{
+    			   this.ind=this.dataList.length;
+    		   }
+    		   console.log("this.dataList",this.dataList);
+    		   
+    		   for(var i=0;i<this.dataList.length;i++){
+       			this.addItemDiv(this.dataList[i]);
+    		   }
+    	   }
+    	   
+       },
 render: function() {
 var o = this.state;	
 if(!o.section_id)o.section_id="1";
@@ -238,12 +299,25 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 		       
 	    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 	   
+	    
+	
+	  </form>
+	    <div id={this.itemListObj.divId_addButton}>			</div>	
+	    <div >
+		    
+		    
+		    <button  type="button"  onClick={this.itemListObj.add_item.bind(this.itemListObj)}  className="am-btn am-btn-primary">添加</button>
+		  
+	    
+	    </div>
+	    
 	    <AMR_ButtonToolbar>
 	    {G_get_upload_img_Div()} 
 	    <button type="button"  onClick={PxSnsService.ajax_sns_snsTopic_save}  className="am-btn am-btn-primary">提交</button>
 	    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 	    </AMR_ButtonToolbar>
-	  </form>
+	  
+	  
     </div>
 
 	  <div  className="am-u-lg-6 am-u-sm-12 ">
@@ -254,6 +328,50 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
   );
 }
 }); 
+
+
+/*
+ * 1.0
+ * <话题>创建与编辑界面绘制；
+ * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * 
+ * {"title":"1","ind":"2","uuid":""}
+ * */    
+var Sns_snsTopic_itemList_item = React.createClass({ 
+ getInitialState: function() {
+	 var o = this.props.formdata;	
+	this.input_id="snstopic_itemList_item_title"+o.ind;
+	    return o;
+	  },
+ handleChange: function(event) {
+	 this.state.title=$("#"+this.input_id).val();
+	    this.setState(this.state);
+  },
+ 
+  componentDidMount:function(){
+    
+	 },
+render: function() {
+
+var o = this.state;	
+var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+//{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}
+//,{"title":"2","ind":"3","uuid":""}],"section_id":10,"title":"dd","uuid":""}
+  return (
+		  <div>
+	    	<label className={one_classDiv}>选项{o.ind}：</label>
+	    	<div className={two_classDiv}>
+	    	<PxInput type="text" title={o.uuid+"_"+o.ind} name="snstopic_itemList_item_title" id={this.input_id}  value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
+	      
+
+		    </div>
+	    	</div>
+  );
+}
+}); 
+//<button type="button"  onClick={ this.props.delItem.bind(this)}  className="am-btn am-btn-primary">删除</button>
+
 /* 
  * 1.0
 *<话题>Show详情绘制（内含:点赞、举报、回复等）
