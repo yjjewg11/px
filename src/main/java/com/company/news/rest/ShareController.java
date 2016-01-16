@@ -312,7 +312,7 @@ public class ShareController extends AbstractRESTController {
 				responseMessage.setMessage(ResponseMessageConstants.Data_deleted);
 				return "/404";
 			}
-			classNewsService.warpVo(a, null);
+			classNewsService.warpVo(a, null,false);
 //			PClass pClass=(PClass)CommonsCache.get(a.getClassuuid(), PClass.class);
 //			model.put("group",CommonsCache.get(pClass.getGroupuuid(), Group.class));
 //			model.put("pclass",CommonsCache.get(a.getClassuuid(), PClass.class));

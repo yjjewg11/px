@@ -10,25 +10,70 @@ var PxInput=AMUIReact.Input;
 
 /**
  * 全局模版-没有内容时显示
- * <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+ * <G_check_disable_div_byRight type={o.type} uuid={o.uuid} status={o.status}/>
  */
 var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disable_div_byRight",
-	  render: function() {
-			var right;
-			if(this.props.pxadmin==2){
+	rightFlag:false,
+	getInitialState: function() {
+		var right;
+	//	var tmp=window.grouptype;
+		//if(this.props.pxadmin)tmp=this.props.pxadmin;
+		
+			if(window.grouptype==2){
 				right="PX_announce_m";//培训机构屏蔽权限;
 			}else{
 				right="KD_announce_m";//幼儿园屏蔽权限;	
 			}
-			console.log("屏蔽权限:",right);
-		  if(G_user_hasRight(right)){
+			this.rightFlag=false;
+			if(this.props.groupuuid){
+				this.rightFlag=G_user_hasRightByGroupuuid(right,this.props.groupuuid);
+			}else{
+				this.rightFlag=G_user_hasRight(right);
+			}
+
+		return {status:this.props.status};
+	  },
+/*/check/disable.json?type=99&uuid=1
+ * 禁止发布公共组件方法
+ * */
+	ajax_check_disable:function(type,uuid){
+		if(this.state.status==2){
+			return;
+		}
+		if(!confirm("屏蔽后管理员和创建者可见,其他人不可见.确定要屏蔽吗?")){
+			return;
+		}
+		var that=this;
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/check/disable.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{type:type,uuid:uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop("屏蔽成功");
+					 that.setState({status:2});
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
+	  render: function() {
+			
+		  if(this.rightFlag){
+			  var bt_name=this.state.status==2?"已屏蔽":"屏蔽";
+			  var bt_class=this.state.status==2?" am-text-danger":" am-btn-danger";
 			  return (
-					  React.createElement("button", {className: "am-margin-left-lg am-btn-sm am-btn-danger ", onClick: common_check_disable.bind(this,this.props.type,this.props.uuid)}, "屏蔽")
+					  React.createElement("button", {className: "am-btn-sm  "+this.props.add_class+" "+bt_class, title: "屏蔽后管理员和创建者可见,其他人不可见.", onClick: this.ajax_check_disable.bind(this,this.props.type,this.props.uuid)}, bt_name)
 			    );
 		  }else{
-			  return (
-			    		React.createElement("div", null)
-			    );
+			  return null;
 		  }
 			 
 		  if(this.props.msg)msg=this.props.msg;
@@ -1290,6 +1335,7 @@ var common_img_big_show = React.createClass({displayName: "common_img_big_show",
 
 var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 	
 render: function() {
+		 var groupuuid=this.props.groupuuid;
   return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
@@ -1305,7 +1351,7 @@ render: function() {
 		    		      React.createElement("div", {className: "am-comment-meta"}, 
 		    		      	React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.create_user), "|", 
 		    		      		React.createElement("time", null, event.create_time), "|", 
-		    		      		React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid})
+		    		      		React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, status: event.status, groupuuid: groupuuid})
 		    		      )
 		    		    ), 
 		    		    React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 
@@ -1339,7 +1385,7 @@ var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 	},
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
-		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo);
+		var re_data=commons_ajax_reply_list(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,null,this.props.groupuuid);
 		if(re_data.data.length<re_data.pageSize){
 			$("#"+this.load_more_btn_id).hide();
 		}else{

@@ -619,20 +619,28 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 */
 	public PageQueryResult listClassNewsByAdmin(String groups,SessionUserInfoInterface user,
 			PaginationData pData,HttpServletRequest request) {
-
-		String sqlwhere =" where t1.status=0  ";	
-		if (StringUtils.isNotBlank(groups))
-			sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+		//有权限,则查询所有的状态
+		String sqlwhere =" where t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
 			
 		sqlwhere += " order by t1.create_time desc";    
 	    return listPageBySql(user,sqlwhere, pData,request);
 	}	
 	public PageQueryResult listClassNewsByMygroup(String groups, SessionUserInfoInterface user,
 			PaginationData pData,HttpServletRequest request) {
-		String sqlwhere =" where t1.status=0  ";	
-		if (StringUtils.isNotBlank(groups))
-			sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
-	
+		String sqlwhere=null;
+		if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_classnew_m,request)||RightUtils.hasRightAnyGroup(RightConstants.KD_announce_m,request)||RightUtils.hasRightAnyGroup(RightConstants.PX_announce_m,request)){
+			//有权限,则查询所有的状态
+			if (StringUtils.isNotBlank(groups))
+					sqlwhere = " where  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+			
+		}else{
+			 sqlwhere =" where t1.status=0  ";	
+				if (StringUtils.isNotBlank(groups))
+					sqlwhere += " and  t1.groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+		}
+		
+		
+		
 		
 		sqlwhere += " order by t1.create_time desc";
 	    return listPageBySql(user,sqlwhere, pData,request);

@@ -1,4 +1,4 @@
-
+window.grouptype=null;
 /**
  * 设置权限模块
  */
@@ -22,7 +22,9 @@ var PxLazyM=(function(){
 		//alert("loadJS_count="+__loadJS_count);
 		if(window.__loadJS_count==0){
 			$.AMUI.progress.done();
+			window.grouptype= getCookie("bs_grouptype");
 			menu_body_fn();
+			
 		}
 	}
 	
