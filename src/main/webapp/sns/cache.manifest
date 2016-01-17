@@ -4,7 +4,6 @@ CACHE:
 
 http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css
 ../w/cropbox/style.css
-../css/css.css?10111
 ../assets/js/px_amazeui.react.min.js
 
 http://libs.baidu.com/jquery/2.1.4/jquery.min.js
