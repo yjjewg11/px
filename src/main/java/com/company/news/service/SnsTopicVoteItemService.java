@@ -9,9 +9,7 @@ import net.sf.ezmorph.bean.MorphDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
-import com.company.news.entity.Group4Q;
 import com.company.news.entity.SnsTopic;
 import com.company.news.entity.SnsTopicVoteItem;
 import com.company.news.entity.SnsTopicVoteItemOfUpdate;

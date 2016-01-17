@@ -116,7 +116,14 @@ function sns_ajax_snsTopic_add_edit(uuid){
  *一个方法内直接传给服务器，服务器从表单取出需要的参数
  * */  	
 function ajax_sns_snsTopic_save(){
+	
+	var itemList=this.itemListObj.getData();
+	
+	 var  formObject = $('#snsAnnouncementsForm').serializeJson();
+	 formObject.itemList=itemList;
+	 
      var opt={
+    		 jsonString:JSON.stringify(formObject),
              formName: "snsAnnouncementsForm",
          url:hostUrl + "rest/snsTopic/save.json",
     	 success: function(data) {
