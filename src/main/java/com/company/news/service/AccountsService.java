@@ -21,7 +21,6 @@ import com.company.news.entity.Student;
 import com.company.news.jsonform.AccountsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
-import com.company.news.rest.RestConstants;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -378,16 +377,37 @@ public class AccountsService extends AbstractService {
 		//class_name,news_count,dianzan_count,replay_count,read_sum_count
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
-		
-		String sql = "SELECT type,DATE_FORMAT(t1.accounts_time,'%m') as m,COUNT(1) as count_num,SUM(num) as sum_num from px_accounts t1 ";
+		//type,Y-m,count_num,sum_num
+		String sql = "SELECT type,DATE_FORMAT(t1.accounts_time,'%m') as m,COUNT(DISTINCT studentuuid) as count_num,SUM(num) as sum_num from px_accounts t1 ";
 			sql+="  where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'" ;
 			
-			sql+="  and t1.accounts_time>="+DBUtil.stringToDateByDBType(begDateStr)+"  and t1.accounts_time<"+DBUtil.stringToDateByDBType(begDateStr);
+			sql+="  and t1.accounts_time>="+DBUtil.stringToDateByDBType(begDateStr)+"  and t1.accounts_time<"+DBUtil.stringToDateByDBType(endDateStr);
 			sql+=" GROUP BY  type,DATE_FORMAT(t1.accounts_time,'%m') ORDER BY type,m";
 		Query q = s.createSQLQuery(sql);
 
 		return q.list();
 	}
-	
+
+	/**
+	 * 统计一年每月的数据(根据分类)
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getAccountPerMonthOfYearOfType(String groupuuid,Integer type,String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		//Y-m,count_num,sum_num
+		String sql = "SELECT DATE_FORMAT(t1.accounts_time,'%Y-%m') as m,COUNT(1) as count_num,SUM(num) as sum_num from px_accounts t1 ";
+			sql+="  where  groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'" ;
+			sql+="  and t1.type="+type;
+			sql+="  and t1.accounts_time>="+DBUtil.stringToDateByDBType(begDateStr)+"  and t1.accounts_time<"+DBUtil.stringToDateByDBType(endDateStr);
+			sql+=" GROUP BY  DATE_FORMAT(t1.accounts_time,'%Y-%m') ORDER BY m";
+		Query q = s.createSQLQuery(sql);
+
+		return q.list();
+	}
 
 }

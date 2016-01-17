@@ -282,6 +282,12 @@ function login_affter_init(){
 	                   		    "title": "学生缴费记录",
 	                   		    "fn":menu_accounts_listForYear_byRight
 	                   		   
+	                   		  },
+	                         {
+	                   		    "link": "##",
+	                   		    "title": "缴费统计",
+	                   		    "fn":menu_accounts_statistics_list_fn_byRight
+	                   		   
 	                   		  }
 	                         ]
              
@@ -897,6 +903,35 @@ function menu_accounts_listForYear_byRight() {
 	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	 					}), document.getElementById('div_body'));
 	};
+
+
+
+/*
+ * (标头)统计
+ * @跳转kd_service发服务器请求
+ * */
+function menu_accounts_statistics_list_fn_byRight() {
+	Queue.push(menu_statistics_list_fn_byRight,"缴费统计");
+	
+	var  grouplist=Store.getGroupByRight("KD_accounts_m");			
+	var groupuuid;
+	var now=new Date();	
+	var begDateStr=G_getSchoolDate();
+	
+	if(!grouplist||grouplist.length==0){
+		groupuuid=null;
+	}else{
+		groupuuid=grouplist[0].uuid;
+	}
+
+
+	React.render(React.createElement(Account_ECharts_Div_byRight, {
+		begDateStr:begDateStr,
+		groupuuid:groupuuid,
+		statistics_type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
+		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
+		}), document.getElementById('div_body'));
+};
 
 /*
  * (标头)学生列表

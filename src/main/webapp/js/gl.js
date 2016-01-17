@@ -241,6 +241,32 @@ var G_week={
 		return G_week.getDateStr(d, t);
 	}
 };
+/**
+ * 根据当前时间,获取学期开始日期
+ * 2015-02-01
+ * 2015-09-01
+ * 
+ */
+function G_getSchoolDate() {
+	var d=new Date();
+	var cY=d.getFullYear();
+
+	var cM=d.getMonth() + 1;
+	d.setDate(1);	
+	if(cM<=2){//则返回上年9月.
+		d.setFullYear(cY-1);	
+		d.setMonth(9-1);	
+		
+	}else if(cM<9){//则返回今年年2月.
+		//d.setFullYear(cY);	
+		d.setMonth(2-1);	
+	}else if(cM>=9){//则返回今年年2月.
+		//d.setFullYear(cY);	
+		d.setMonth(9-1);	
+	}
+	
+	return d.format("yyyy-MM-dd");
+}
 
 /**
  * 加减月份

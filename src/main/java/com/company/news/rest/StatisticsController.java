@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.company.news.commons.util.DbUtils;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
@@ -194,14 +195,20 @@ public class StatisticsController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
+			
 			String groupuuid=request. getParameter("groupuuid");
 			String begDateStr=request. getParameter("begDateStr");
 			String endDateStr=request. getParameter("endDateStr");
+			String type=request. getParameter("type");
 			
-			groupuuid=DBUtil.safeToWhereString(groupuuid);
-			begDateStr=DBUtil.safeToWhereString(begDateStr);
-			endDateStr=DBUtil.safeToWhereString(endDateStr);
-				PieStatisticsVo vo = statisticsService.getAccountPerMonthOfYear_bar(responseMessage, begDateStr, endDateStr, groupuuid);
+			if(DbUtils.isSqlInjection(groupuuid, responseMessage))return "";
+			if(DbUtils.isSqlInjection(begDateStr, responseMessage))return "";
+			if(DbUtils.isSqlInjection(endDateStr, responseMessage))return "";
+			if(DbUtils.isSqlInjection(type, responseMessage))return "";
+			
+			
+			Integer  typeInt=Integer.valueOf(type);
+				PieStatisticsVo vo = statisticsService.getAccountPerMonthOfYearOfType_bar(responseMessage, begDateStr, endDateStr, groupuuid, typeInt);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);

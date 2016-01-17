@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.company.common.PxStringUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.BaseDataList;
 import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.PClass;
@@ -759,6 +760,98 @@ public class StatisticsService extends AbstractStatisticsService {
 		vo.setTitle_text(g.getBrand_name() + " 学生年龄统计");
 		vo.setTitle_subtext("总计 " + total_num + " 人,男"+sex_male+"人,女"+sex_female+"人");
 	
+		//Y轴每组分类数据
+		vo.setLegend_data(legend_data);
+		//X轴具体数据
+		vo.setSeries_data(psdvlist);
+		logger.debug("end 收费记录统计");
+		return vo;
+
+	}
+	
+	
+
+	
+	/**
+	 * 获取学生年龄段统计 student sex Statistics
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getAccountPerMonthOfYearOfType_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String groupuuid,Integer type) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		logger.debug("begain 收费记录统计");
+
+//		List<PxStudent> list = pxStudentService.getStudentByGroup(group_uuid);
+		
+		//Y-m,count_num,sum_num
+		List<Object[]> datalist =accountsService.getAccountPerMonthOfYearOfType(groupuuid,type, begDateStr, endDateStr);
+		logger.debug("getUserByGroupuuid 查询结束");
+		
+		
+		String y_data_axis = "";
+		
+		String x_data_count_num = "";
+		String x_data_sum_num = "";
+		
+		
+		int total_count_num=0;
+		Double total_sum_num=0d;
+		
+		
+		//Y-m,count_num,sum_num
+		for(int i=0;i<datalist.size();i++){
+			Object[] p=datalist.get(i);
+			
+			y_data_axis += ("\"" +p[0] + "\",");
+			
+			x_data_count_num +="\"" +p[1] + "\",";
+			x_data_sum_num +="\"" +p[2] + "\",";
+			
+			total_count_num+=Integer.valueOf(p[1].toString());
+			total_sum_num+=Double.valueOf(p[2].toString());
+			
+			
+		}
+		
+		//每月
+		String x_data_count_num_name="月笔数";
+		String x_data_sum_num_name="月金额";
+		List legend_data = new ArrayList();
+		legend_data.add(x_data_count_num_name);
+		legend_data.add(x_data_sum_num_name);
+		
+		//Y轴 数组 12月
+		List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
+			
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName(x_data_count_num_name);
+			sdvo.setData("[" + PxStringUtil.StringDecComma(x_data_count_num) + "]");
+
+			psdvlist.add(sdvo);
+
+			PieSeriesDataVo sdvo_p = new PieSeriesDataVo();
+			sdvo_p.setName(x_data_sum_num_name);
+			sdvo_p.setData("[" + PxStringUtil.StringDecComma(x_data_sum_num) + "]");
+			psdvlist.add(sdvo_p);
+
+			Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(groupuuid, Group4QBaseInfo.class);
+			
+			 List<BaseDataList> accounts_type=CommonsCache.getBaseDataListByTypeuuid("KD_Accounts_type");
+			 String typename=CommonsCache.getBaseDatavalue(type, accounts_type);
+		//组装数据
+		PieStatisticsVo vo = new PieStatisticsVo();
+		//Y轴 数组
+		vo.setyAxis_data("[" + PxStringUtil.StringDecComma(y_data_axis) + "]");
+
+		vo.setTitle_text(g.getBrand_name() +"-"+ typename);
+		
+		vo.setTitle_subtext("总笔数(笔):" + total_count_num + ",总金额(元):"+total_sum_num);
+		
 		//Y轴每组分类数据
 		vo.setLegend_data(legend_data);
 		//X轴具体数据
