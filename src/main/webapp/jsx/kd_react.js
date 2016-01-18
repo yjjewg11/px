@@ -1249,12 +1249,15 @@ var G_Teachingplan_1day= React.createClass({
 		  }
 		  var dianzan=(<div></div>);
 		  if(o.uuid){
+			  if(!o.count)o.count=0;
 			  dianzan=(
 					  <div>
 					  <footer className="am-comment-footer">
 				    	<div className="am-comment-actions">
 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 				    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+						<a href="javascript:void(0);"><i>{"阅读"+o.count}</i></a>
+						
 				    	</div>
 				    	</footer>
 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={7}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -1270,11 +1273,7 @@ var G_Teachingplan_1day= React.createClass({
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
-		  var count_text=(<div></div>);
-		  if(!o.count){
-		   count_text=(<p className="am-article-meta am-text-default text-align_center ">{"浏览次数"+o.count}</p>);
-		  
-		  }
+		 
 			return (
 					
 					<div className={cs}>
@@ -1298,8 +1297,7 @@ var G_Teachingplan_1day= React.createClass({
 				    		  </div>
 				    		</div>
 				    		<div className="am-g">
-				    		{dianzan}
-						    {count_text}
+				    		{dianzan}						 
 				    		</div>
 					  </div>
 					 
@@ -3904,12 +3902,15 @@ var G_Teachingplan_1day_byRight= React.createClass({
 //		  }
 		  var dianzan=(<div></div>);
 		  if(o.uuid){
+			    if(!o.count)o.count=0;
 			  dianzan=(
 					  <div>
 					  <footer className="am-comment-footer">
 				    	<div className="am-comment-actions">
 				    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
 				    	<a href="javascript:void(0);"><i id={"btn_reply_"+o.uuid} className="am-icon-reply px_font_size_click"></i></a>
+				  	<a href="javascript:void(0);"><i>{"阅读"+o.count}</i></a>
+					
 				    	</div>
 				    	</footer>
 				    	<Common_Dianzan_show_noAction uuid={o.uuid} type={7}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
@@ -3925,11 +3926,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
-		  var count_text=(<div></div>);
-		  if(!o.count){
-		   count_text=(<p className="am-article-meta am-text-default text-align_center ">{"浏览次数"+o.count}</p>);
-		  
-		  }
+		 
 			return (
 					
 					<div className={cs}>
@@ -3953,7 +3950,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 				    		</div>
 				    		<div className="am-g">
 				    		{dianzan}
-							{count_text}
+						
 				    		</div>
 					  </div>
 					 
