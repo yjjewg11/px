@@ -126,7 +126,7 @@ public class TeachingPlanService extends AbstractService {
 		if (StringUtils.isBlank(endDateStr)) {
 			return null;
 		}
-		String sql="select * from px_teachingplan where   t1.classuuid ='"+classuuid+"'";
+		String sql="select * from px_teachingplan where   classuuid ='"+classuuid+"'";
 		sql+=" and  plandate<="+DbUtils.stringToDateYMDByDBType(endDateStr);
 		sql+=" and   plandate >="+DbUtils.stringToDateYMDByDBType(begDateStr);
 		sql+="  order by plandate asc";

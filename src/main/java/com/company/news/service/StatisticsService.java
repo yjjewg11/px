@@ -268,10 +268,10 @@ public class StatisticsService extends AbstractStatisticsService {
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
 		vo.setTitle_text(g.getBrand_name() + " 互动统计(班级)["+begDateStr+"~"+endDateStr+"]");
-		vo.setTitle_subtext("总计 :" + list.size() + " 班,"+total_news_count+"互动,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		vo.setTitle_subtext("总计 :" + list.size() + " 班,"+total_news_count+"发布量,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
-		legend_data.add("互动量");
+		legend_data.add("发布量");
 		legend_data.add("点赞量");
 		legend_data.add("回复量");
 		legend_data.add("阅读量");
@@ -281,7 +281,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		{
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
-			sdvo.setName("互动量");
+			sdvo.setName("发布量");
 			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
 			plist.add(sdvo);
 		}
