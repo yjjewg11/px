@@ -224,7 +224,6 @@ var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_ed
     			  
     			   var uuid_ind=this.title.split("_");
     			   var o={"title":this.value,"ind":uuid_ind[1],"uuid":uuid_ind[0]};
-
     			   itemList.push(o);
     			  });
     		   
@@ -239,8 +238,8 @@ var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_ed
 				 		}),  document.getElementById(this.divId_addButton+o.ind));	
     		   
     	   },
-    	   delItem:function(){
-    		   
+    	   delItem:function(num){
+    		   console.log("num",num);
     		   
     	   },
     	   add_item:function(){
@@ -354,7 +353,7 @@ var   del_btn=(React.createElement("div", null));
 if(o.ind>2){
 	
 	del_btn=(
-			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this), className: "am-btn am-btn-primary"}, "删除")		
+			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o.ind), className: "am-btn am-btn-primary"}, "删除")		
 	)
 }
 //{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}

@@ -1270,6 +1270,11 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
+		  var count_text=(React.createElement("div", null));
+		  if(!o.count){
+		   count_text=(React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览次数"+o.count));
+		  
+		  }
 			return (
 					
 					React.createElement("div", {className: cs}, 
@@ -1293,7 +1298,8 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
-				    		dianzan
+				    		dianzan, 
+						    count_text
 				    		)
 					  )
 					 
@@ -3919,6 +3925,11 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
+		  var count_text=(React.createElement("div", null));
+		  if(!o.count){
+		   count_text=(React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览次数"+o.count));
+		  
+		  }
 			return (
 					
 					React.createElement("div", {className: cs}, 
@@ -3942,7 +3953,7 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
 				    		dianzan, 
-						      React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览"+o.count)
+							count_text
 				    		)
 					  )
 					 
