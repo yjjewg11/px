@@ -340,7 +340,32 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
 		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
 		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
-		sql+=" GROUP BY t0.classuuid";
+		sql+=" GROUP BY t0.classuuid order by news_count desc";
+		
+
+		Query q = s.createSQLQuery(sql);
+
+//		q.setMaxResults(10);
+		return q.list();
+	}
+	/**
+	 * 根据机构UUID,获取班级热门互动top
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getClassNewsCountsByTeacher(String groupuuid,String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="SELECT t0.name as user_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
+		sql+=" (select px_classnews.uuid,px_user.uuid as user_uuid,px_user.name from px_classnews   inner join px_user on px_classnews.create_useruuid=px_user.uuid";
+			sql+="  where   px_classnews.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
+			sql+=" and ( px_classnews.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";		
+			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
+		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
+		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
+		sql+=" GROUP BY t0.user_uuid order by news_count desc";
 		
 
 		Query q = s.createSQLQuery(sql);

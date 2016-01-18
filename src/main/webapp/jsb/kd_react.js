@@ -1249,12 +1249,15 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 		  }
 		  var dianzan=(React.createElement("div", null));
 		  if(o.uuid){
+			  if(!o.count)o.count=0;
 			  dianzan=(
 					  React.createElement("div", null, 
 					  React.createElement("footer", {className: "am-comment-footer"}, 
 				    	React.createElement("div", {className: "am-comment-actions"}, 
 				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}))
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+						React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", null, "阅读"+o.count))
+						
 				    	)
 				    	), 
 				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 7, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -1270,11 +1273,7 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
-		  var count_text=(React.createElement("div", null));
-		  if(!o.count){
-		   count_text=(React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览次数"+o.count));
-		  
-		  }
+		 
 			return (
 					
 					React.createElement("div", {className: cs}, 
@@ -1298,8 +1297,7 @@ var G_Teachingplan_1day= React.createClass({displayName: "G_Teachingplan_1day",
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
-				    		dianzan, 
-						    count_text
+				    		dianzan						 
 				    		)
 					  )
 					 
@@ -3904,12 +3902,15 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 //		  }
 		  var dianzan=(React.createElement("div", null));
 		  if(o.uuid){
+			    if(!o.count)o.count=0;
 			  dianzan=(
 					  React.createElement("div", null, 
 					  React.createElement("footer", {className: "am-comment-footer"}, 
 				    	React.createElement("div", {className: "am-comment-actions"}, 
 				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
-				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"}))
+				    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_reply_"+o.uuid, className: "am-icon-reply px_font_size_click"})), 
+				  	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", null, "阅读"+o.count))
+					
 				    	)
 				    	), 
 				    	React.createElement(Common_Dianzan_show_noAction, {uuid: o.uuid, type: 7, btn_dianzan: "btn_dianzan_"+o.uuid}), 
@@ -3925,11 +3926,7 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
-		  var count_text=(React.createElement("div", null));
-		  if(!o.count){
-		   count_text=(React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览次数"+o.count));
-		  
-		  }
+		 
 			return (
 					
 					React.createElement("div", {className: cs}, 
@@ -3952,8 +3949,8 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
-				    		dianzan, 
-							count_text
+				    		dianzan
+						
 				    		)
 					  )
 					 

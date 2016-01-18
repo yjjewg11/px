@@ -101,7 +101,7 @@ public class TeachingPlanController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil.addResponseMessageForModelMap(model);
 
-		List<Teachingplan> list = teachingPlanService.query(request.getParameter("begDateStr"),
+		List list = teachingPlanService.query(request.getParameter("begDateStr"),
 				request.getParameter("endDateStr"), request.getParameter("classuuid"));
 		model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 

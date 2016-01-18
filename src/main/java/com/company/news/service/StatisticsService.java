@@ -212,7 +212,7 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public PieStatisticsVo getCnsBygroup(ResponseMessage responseMessage,
+	public PieStatisticsVo getClassnewsByClass(ResponseMessage responseMessage,
 			String begDateStr, String endDateStr, String group_uuid) {
 		// 验证group合法性
 //		if (!validateGroup(group_uuid, responseMessage))
@@ -267,11 +267,11 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 互动发帖数统计("+list.size()+"班)");
-		vo.setTitle_subtext("总计 :" + list.size() + " 班,"+total_news_count+"互动,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		vo.setTitle_text(g.getBrand_name() + " 互动统计(班级)["+begDateStr+"~"+endDateStr+"]");
+		vo.setTitle_subtext("总计 :" + list.size() + " 班,"+total_news_count+"发布量,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
-		legend_data.add("互动量");
+		legend_data.add("发布量");
 		legend_data.add("点赞量");
 		legend_data.add("回复量");
 		legend_data.add("阅读量");
@@ -281,7 +281,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
 		{
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
-			sdvo.setName("互动量");
+			sdvo.setName("发布量");
 			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
 			plist.add(sdvo);
 		}
@@ -399,7 +399,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
 		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
-		vo.setTitle_text(g.getBrand_name() + " 教师评价统计");
+		vo.setTitle_text(g.getBrand_name() + " 教师评价(老师)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
 		// vo.setLegend_data("[\"班级互动热门TOP10\"]");
 		List legend_data = new ArrayList();
@@ -773,7 +773,7 @@ public class StatisticsService extends AbstractStatisticsService {
 
 	
 	/**
-	 * 获取学生年龄段统计 student sex Statistics
+	 * * 班级互动数量统计(按机构老师)
 	 * 
 	 * @param responseMessage
 	 * @return
@@ -848,7 +848,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		//Y轴 数组
 		vo.setyAxis_data("[" + PxStringUtil.StringDecComma(y_data_axis) + "]");
 
-		vo.setTitle_text(g.getBrand_name() +"-"+ typename);
+		vo.setTitle_text(g.getBrand_name() +"-"+ typename+"["+begDateStr+"~"+endDateStr+"]");
 		
 		vo.setTitle_subtext("总笔数(笔):" + total_count_num + ",总金额(元):"+total_sum_num);
 		
@@ -858,6 +858,416 @@ public class StatisticsService extends AbstractStatisticsService {
 		vo.setSeries_data(psdvlist);
 		logger.debug("end 收费记录统计");
 		return vo;
+
+	}
+	
+
+	/**
+	 * 获取班级互动活跃度（按时间） class news Statistics
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getClassnewsByTeacher_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		if (StringUtils.isBlank(begDateStr)) {
+			return null;
+		}
+
+		if (StringUtils.isBlank(endDateStr)) {
+			return null;
+		}
+
+		logger.debug("begain 班级互动发帖数统计");
+
+		//uuid,name
+		List<Object[]> list = classNewsService.getClassNewsCountsByTeacher(
+				group_uuid, begDateStr, endDateStr);
+		logger.debug("classService.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+	
+		String axis_data = "";
+		String axis_data_news_count = "";
+		String axis_data_dianzan_count = "";
+		String axis_data_replay_count = "";
+		String axis_data_read_sum_count = "";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Integer total_news_count=0;
+		Integer total_dianzan_count=0;
+		Integer total_replay_count=0;
+		Integer total_read_sum_count=0;
+		for (Object[] p : list) {
+			if(p[4]==null)p[4]=0;
+			
+			total_news_count+=Integer.valueOf(p[1].toString());
+			total_dianzan_count+=Integer.valueOf(p[2].toString());
+			total_replay_count+=Integer.valueOf(p[3].toString());
+			total_read_sum_count+=Integer.valueOf(p[4].toString());
+			
+			axis_data += ("\"" + p[0] + "\",");
+			axis_data_news_count += ("\"" + p[1] + "\",");
+			axis_data_dianzan_count += ("\"" + p[2] + "\",");
+			axis_data_replay_count += ("\"" + p[3] + "\",");
+			axis_data_read_sum_count += ("\"" + p[4] + "\",");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		vo.setTitle_text(g.getBrand_name() + "互动统计(老师)["+begDateStr+"~"+endDateStr+"]");
+		vo.setTitle_subtext("总计 :老师" + list.size() + "人数,"+total_news_count+"互动,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		// vo.setLegend_data("[\"互动发帖数\"]");
+		List legend_data = new ArrayList();
+		legend_data.add("互动量");
+		legend_data.add("点赞量");
+		legend_data.add("回复量");
+		legend_data.add("阅读量");
+		vo.setLegend_data(legend_data);
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("互动量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("点赞量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_dianzan_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("回复量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_replay_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("阅读量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_read_sum_count) + "]");
+			plist.add(sdvo);
+		}
+		vo.setSeries_data(plist);
+		logger.debug("end 互动发帖数统计");
+		return vo;
+
+
+	}
+	@Autowired
+	private AnnouncementsService announcementsService;
+	/**
+	 * 精品文章活跃度（按时间） class news Statistics
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getJingpinwenzhangByTeacher_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		if (StringUtils.isBlank(begDateStr)) {
+			return null;
+		}
+
+		if (StringUtils.isBlank(endDateStr)) {
+			return null;
+		}
+
+		logger.debug("begain 班级互动发帖数统计");
+
+		//uuid,name
+		List<Object[]> list = announcementsService.getAnnCountsByTeacher(
+				group_uuid, begDateStr, endDateStr,SystemConstants.common_type_jingpinwenzhang);
+		logger.debug("classService.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+	
+		String axis_data = "";
+		String axis_data_news_count = "";
+		String axis_data_dianzan_count = "";
+		String axis_data_replay_count = "";
+		String axis_data_read_sum_count = "";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Integer total_news_count=0;
+		Integer total_dianzan_count=0;
+		Integer total_replay_count=0;
+		Integer total_read_sum_count=0;
+		for (Object[] p : list) {
+			if(p[4]==null)p[4]=0;
+			
+			total_news_count+=Integer.valueOf(p[1].toString());
+			total_dianzan_count+=Integer.valueOf(p[2].toString());
+			total_replay_count+=Integer.valueOf(p[3].toString());
+			total_read_sum_count+=Integer.valueOf(p[4].toString());
+			
+			axis_data += ("\"" + p[0] + "\",");
+			axis_data_news_count += ("\"" + p[1] + "\",");
+			axis_data_dianzan_count += ("\"" + p[2] + "\",");
+			axis_data_replay_count += ("\"" + p[3] + "\",");
+			axis_data_read_sum_count += ("\"" + p[4] + "\",");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		vo.setTitle_text(g.getBrand_name() + " 精品文章统计(老师)["+begDateStr+"~"+endDateStr+"]");
+		vo.setTitle_subtext("总计 :老师" + list.size() + "人数,"+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		// vo.setLegend_data("[\"互动发帖数\"]");
+		List legend_data = new ArrayList();
+		legend_data.add("发布量");
+		legend_data.add("点赞量");
+		legend_data.add("回复量");
+		legend_data.add("阅读量");
+		vo.setLegend_data(legend_data);
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("发布量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("点赞量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_dianzan_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("回复量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_replay_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("阅读量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_read_sum_count) + "]");
+			plist.add(sdvo);
+		}
+		vo.setSeries_data(plist);
+		logger.debug("end 互动发帖数统计");
+		return vo;
+
+
+	}
+	
+	@Autowired
+	private TeachingPlanService teachingPlanService;
+	/**
+	 * 课程表统计
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getTeachingplanByClass_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		if (StringUtils.isBlank(begDateStr)) {
+			return null;
+		}
+
+		if (StringUtils.isBlank(endDateStr)) {
+			return null;
+		}
+
+		logger.debug("begain 班级互动发帖数统计");
+
+		//uuid,name
+		List<Object[]> list = teachingPlanService.getTeachingplanCountsByClass(
+				group_uuid, begDateStr, endDateStr,SystemConstants.Class_isdisable_0);
+		logger.debug("classService.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+	
+		String axis_data = "";
+		String axis_data_news_count = "";
+		String axis_data_dianzan_count = "";
+		String axis_data_replay_count = "";
+		String axis_data_read_sum_count = "";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Integer total_news_count=0;
+		Integer total_dianzan_count=0;
+		Integer total_replay_count=0;
+		Integer total_read_sum_count=0;
+		for (Object[] p : list) {
+			if(p[4]==null)p[4]=0;
+			
+			total_news_count+=Integer.valueOf(p[1].toString());
+			total_dianzan_count+=Integer.valueOf(p[2].toString());
+			total_replay_count+=Integer.valueOf(p[3].toString());
+			total_read_sum_count+=Integer.valueOf(p[4].toString());
+			
+			axis_data += ("\"" + p[0] + "\",");
+			axis_data_news_count += ("\"" + p[1] + "\",");
+			axis_data_dianzan_count += ("\"" + p[2] + "\",");
+			axis_data_replay_count += ("\"" + p[3] + "\",");
+			axis_data_read_sum_count += ("\"" + p[4] + "\",");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		vo.setTitle_text(g.getBrand_name() + " 课程表统计(班级)["+begDateStr+"~"+endDateStr+"]");
+		vo.setTitle_subtext("总计 :班级" + list.size() + ","+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		// vo.setLegend_data("[\"互动发帖数\"]");
+		List legend_data = new ArrayList();
+		legend_data.add("发布量");
+		legend_data.add("点赞量");
+		legend_data.add("回复量");
+		legend_data.add("阅读量");
+		vo.setLegend_data(legend_data);
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("发布量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("点赞量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_dianzan_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("回复量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_replay_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("阅读量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_read_sum_count) + "]");
+			plist.add(sdvo);
+		}
+		vo.setSeries_data(plist);
+		logger.debug("end 互动发帖数统计");
+		return vo;
+
+
+	}
+	
+	@Autowired
+	private CookbookPlanService cookbookPlanService;
+	/**
+	 * 课程表统计
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getCookbookPlanByMonth_bar(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		// 验证group合法性
+//		if (!validateGroup(group_uuid, responseMessage))
+//			return null;
+
+		if (StringUtils.isBlank(begDateStr)) {
+			return null;
+		}
+
+		if (StringUtils.isBlank(endDateStr)) {
+			return null;
+		}
+
+		logger.debug("begain 班级互动发帖数统计");
+
+		//uuid,name
+		List<Object[]> list = cookbookPlanService.getCookbookPlanByMonth_bar(
+				group_uuid, begDateStr, endDateStr);
+		logger.debug("classService.query 查询结束");
+
+		// 返回
+		PieStatisticsVo vo = new PieStatisticsVo();
+		// 需要获取机构名
+		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+	
+		String axis_data = "";
+		String axis_data_news_count = "";
+		String axis_data_dianzan_count = "";
+		String axis_data_replay_count = "";
+		String axis_data_read_sum_count = "";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Integer total_news_count=0;
+		Integer total_dianzan_count=0;
+		Integer total_replay_count=0;
+		Integer total_read_sum_count=0;
+		for (Object[] p : list) {
+			if(p[4]==null)p[4]=0;
+			
+			total_news_count+=Integer.valueOf(p[1].toString());
+			total_dianzan_count+=Integer.valueOf(p[2].toString());
+			total_replay_count+=Integer.valueOf(p[3].toString());
+			total_read_sum_count+=Integer.valueOf(p[4].toString());
+			
+			axis_data += ("\"" + p[0] + "\",");
+			axis_data_news_count += ("\"" + p[1] + "\",");
+			axis_data_dianzan_count += ("\"" + p[2] + "\",");
+			axis_data_replay_count += ("\"" + p[3] + "\",");
+			axis_data_read_sum_count += ("\"" + p[4] + "\",");
+		}
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		vo.setTitle_text(g.getBrand_name() + " 食谱统计["+begDateStr+"~"+endDateStr+"]");
+		vo.setTitle_subtext("总计 :" + list.size() + "个月,"+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
+		// vo.setLegend_data("[\"互动发帖数\"]");
+		List legend_data = new ArrayList();
+		legend_data.add("发布量");
+		legend_data.add("点赞量");
+		legend_data.add("回复量");
+		legend_data.add("阅读量");
+		vo.setLegend_data(legend_data);
+		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+		List<PieSeriesDataVo> plist = new ArrayList<PieSeriesDataVo>();
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("发布量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_news_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("点赞量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_dianzan_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("回复量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_replay_count) + "]");
+			plist.add(sdvo);
+		}
+		{
+			PieSeriesDataVo sdvo = new PieSeriesDataVo();
+			sdvo.setName("阅读量");
+			sdvo.setData("[" + PxStringUtils.StringDecComma(axis_data_read_sum_count) + "]");
+			plist.add(sdvo);
+		}
+		vo.setSeries_data(plist);
+		logger.debug("end 互动发帖数统计");
+		return vo;
+
 
 	}
 
