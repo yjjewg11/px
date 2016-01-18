@@ -1270,6 +1270,11 @@ var G_Teachingplan_1day= React.createClass({
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
+		  var count_text=(<div></div>);
+		  if(!o.count){
+		   count_text=(<p className="am-article-meta am-text-default text-align_center ">{"浏览次数"+o.count}</p>);
+		  
+		  }
 			return (
 					
 					<div className={cs}>
@@ -1294,6 +1299,7 @@ var G_Teachingplan_1day= React.createClass({
 				    		</div>
 				    		<div className="am-g">
 				    		{dianzan}
+						    {count_text}
 				    		</div>
 					  </div>
 					 
@@ -3919,6 +3925,11 @@ var G_Teachingplan_1day_byRight= React.createClass({
 		  if(o.plandate.indexOf( G_week.getDateStr(new Date(),0))>-1){
 			  cs="am-panel am-panel-warning";
 		  }
+		  var count_text=(<div></div>);
+		  if(!o.count){
+		   count_text=(<p className="am-article-meta am-text-default text-align_center ">{"浏览次数"+o.count}</p>);
+		  
+		  }
 			return (
 					
 					<div className={cs}>
@@ -3942,7 +3953,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 				    		</div>
 				    		<div className="am-g">
 				    		{dianzan}
-						      <p className="am-article-meta am-text-default text-align_center ">{"浏览"+o.count}</p>
+							{count_text}
 				    		</div>
 					  </div>
 					 
