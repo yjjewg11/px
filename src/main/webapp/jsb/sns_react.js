@@ -204,67 +204,12 @@ var Sns_snsTopic_add_edit = React.createClass({displayName: "Sns_snsTopic_add_ed
             editor.pasteHTML( '<img width="100%" style="margin: 5px;"  src="'+imgurl+'"/>')
        });
       
-      this.itemListObj.init(this.state.itemList);
+      SnsitemListObj.init(this.state.itemList);
 	 },
 	preview_fn:function(){
      G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
-       
-       /**
-        * this.itemListObj.getData();
-        *  itemListObj.init(list);
-        */
-       itemListObj:{
-    	   divId_addButton:"snstopic_itemList_addButton",
-    	   ind:0,
-    	   getData:function(){
-    		   
-    		   var itemList=[];
-    		   $("input[name='snstopic_itemList_item_title']").each(function(){
-    			  
-    			   var uuid_ind=this.title.split("_");
-    			   var o={"title":this.value,"ind":uuid_ind[1],"uuid":uuid_ind[0]};
-    			   itemList.push(o);
-    			  });
-    		   
-    		   return itemList;
-    	   },
-    	   
-    	   addItemDiv:function(o){
-    			$("#"+this.divId_addButton).append("<div id="+this.divId_addButton+o.ind+">加载中...</div>");
-				React.render(React.createElement(Sns_snsTopic_itemList_item,
-				 		{formdata:o,
-						delItem:this.delItem
-				 		}),  document.getElementById(this.divId_addButton+o.ind));	
-    		   
-    	   },
-    	   delItem:function(num){
-    		   console.log("num",num);
-    		   
-    	   },
-    	   add_item:function(){
-    		   var o={"title":"","ind":++this.ind,"uuid":""};
-    		 this.addItemDiv(o);
-    		   
-    	   },
-    	   init:function(list){
-    		   this.dataList=list;
-    		   if(!this.dataList){
-    			   this.dataList=[];
-    			   
-    			  this.add_item();
-    			  this.add_item();
-    			   
-    		   }else{
-    			   this.ind=this.dataList.length;
-    		   }
-    		   
-    		   for(var i=0;i<this.dataList.length;i++){
-       			this.addItemDiv(this.dataList[i]);
-    		   }
-    	   }
-    	   
-       },
+     
 render: function() {
 var o = this.state;	
 if(!o.section_id)o.section_id="1";
@@ -298,11 +243,11 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 	    React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 	   
 	    
-	    React.createElement("div", {id: this.itemListObj.divId_addButton}, "   "), 	
+	    React.createElement("div", {id: SnsitemListObj.divId_addButton}, "   "), 	
 	    React.createElement(AMR_ButtonToolbar, null, 
-	    React.createElement("button", {type: "button", onClick: this.itemListObj.add_item.bind(this.itemListObj), className: "am-btn am-btn-primary"}, "添加投票选项"), 
+	    React.createElement("button", {type: "button", onClick: SnsitemListObj.add_item.bind(SnsitemListObj), className: "am-btn am-btn-primary"}, "添加投票选项"), 
 	    G_get_upload_img_Div(), 
-	    React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_snsTopic_save, className: "am-btn am-btn-primary"}, "提交"), 
+	    React.createElement("button", {type: "button", onClick: PxSnsService.ajax_sns_snsTopic_save.bind(this), className: "am-btn am-btn-primary"}, "提交"), 
 	    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
 	    )
 	  )
@@ -321,6 +266,67 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 }); 
 
 
+/**
+ * this.SnsitemListObj.getData();
+ *  SnsitemListObj.init(list);
+ */
+var SnsitemListObj={
+	   divId_addButton:"snstopic_itemList_addButton",
+	   ind:0,
+	   getData:function(){
+		   
+		   var itemList=[];
+		   $("input[name='snstopic_itemList_item_title']").each(function(){
+			  
+			   var uuid_ind=this.title.split("_");
+			   var o={"title":this.value,"ind":uuid_ind[1],"uuid":uuid_ind[0]};
+			   itemList.push(o);
+			  });
+		   return itemList;
+	   },
+	   
+	   addItemDiv:function(o){
+		   var parentDivId=this.divId_addButton+o.ind;
+			$("#"+this.divId_addButton).append("<div id="+parentDivId+">加载中...</div>");
+			React.render(React.createElement(Sns_snsTopic_itemList_item,
+			 		{formdata:o,
+					parentDivId:parentDivId,
+					delItem:this.delItem
+			 		}),  document.getElementById(this.divId_addButton+o.ind));	
+		   
+	   },
+	   delItem:function(o,parentDivId){
+		   console.log("num",o);
+		   if(o.uuid){
+			   
+		   }else{
+			   $("#"+parentDivId).remove();
+		   }
+		   
+		   
+	   },
+	   add_item:function(){
+		   var o={"title":"","ind":++this.ind,"uuid":""};
+		 this.addItemDiv(o);
+		   
+	   },
+	   init:function(list){
+		   this.dataList=list;
+		   if(!this.dataList){
+			   this.dataList=[];
+			   this.ind=0;
+			  this.add_item();
+			  this.add_item();
+		   }else{
+			   this.ind=this.dataList.length;
+		   }
+		  
+		   for(var i=0;i<this.dataList.length;i++){
+			this.addItemDiv(this.dataList[i]);
+		   }
+	   }
+	   
+};
 /*
  * 1.0
  * <话题>创建与编辑界面绘制；
@@ -353,7 +359,7 @@ var   del_btn=(React.createElement("div", null));
 if(o.ind>2){
 	
 	del_btn=(
-			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o.ind), className: "am-btn am-btn-primary"}, "删除")		
+			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o,this.props.parentDivId), className: "am-btn am-btn-primary"}, "删除")		
 	)
 }
 //{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}

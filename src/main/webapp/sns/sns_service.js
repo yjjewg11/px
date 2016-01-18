@@ -117,7 +117,7 @@ function sns_ajax_snsTopic_add_edit(uuid){
  * */  	
 function ajax_sns_snsTopic_save(){
 	
-	var itemList=this.itemListObj.getData();
+	var itemList=SnsitemListObj.getData();
 	
 	 var  formObject = $('#snsAnnouncementsForm').serializeJson();
 	 formObject.itemList=itemList;
