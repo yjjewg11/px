@@ -259,7 +259,6 @@ var Sns_snsTopic_add_edit = React.createClass({
     		   }else{
     			   this.ind=this.dataList.length;
     		   }
-    		   console.log("this.dataList",this.dataList);
     		   
     		   for(var i=0;i<this.dataList.length;i++){
        			this.addItemDiv(this.dataList[i]);
@@ -275,10 +274,12 @@ var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
   return (
    <div>
+   
     <div className="header">
      <hr />
     </div>
-  	<div className="am-g">
+    
+
   	 <div className="am-u-lg-6 am-u-sm-12">  
   	  <form id="snsAnnouncementsForm" method="post" className="am-form">
   		<input type="hidden" name="uuid"  value={o.uuid}/>
@@ -295,27 +296,17 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
  		     <div className={two_classDiv}>
 		       <PxInput type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
 		        </div>
-		       
-		       
 	    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 	   
 	    
-	
-	  </form>
 	    <div id={this.itemListObj.divId_addButton}>			</div>	
-	    <div >
-		    
-		    
-		    <button  type="button"  onClick={this.itemListObj.add_item.bind(this.itemListObj)}  className="am-btn am-btn-primary">添加</button>
-		  
-	    
-	    </div>
-	    
 	    <AMR_ButtonToolbar>
+	    <button  type="button"  onClick={this.itemListObj.add_item.bind(this.itemListObj)}  className="am-btn am-btn-primary">添加投票选项</button>
 	    {G_get_upload_img_Div()} 
 	    <button type="button"  onClick={PxSnsService.ajax_sns_snsTopic_save}  className="am-btn am-btn-primary">提交</button>
 	    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 	    </AMR_ButtonToolbar>
+	  </form>
 	  
 	  
     </div>
@@ -323,7 +314,8 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 	  <div  className="am-u-lg-6 am-u-sm-12 ">
        <G_phone_iframe />
       </div>
-   </div>	   
+      
+   
   </div>
   );
 }
@@ -356,6 +348,15 @@ render: function() {
 var o = this.state;	
 var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+
+var   del_btn=(<div></div>);
+
+if(o.ind>2){
+	
+	del_btn=(
+			<button type="button"  onClick={ this.props.delItem.bind(this)}  className="am-btn am-btn-primary">删除</button>		
+	)
+}
 //{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}
 //,{"title":"2","ind":"3","uuid":""}],"section_id":10,"title":"dd","uuid":""}
   return (
@@ -363,15 +364,14 @@ var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 	    	<label className={one_classDiv}>选项{o.ind}：</label>
 	    	<div className={two_classDiv}>
 	    	<PxInput type="text" title={o.uuid+"_"+o.ind} name="snstopic_itemList_item_title" id={this.input_id}  value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
-	      
+	    	{del_btn}
 
 		    </div>
 	    	</div>
   );
 }
 }); 
-//<button type="button"  onClick={ this.props.delItem.bind(this)}  className="am-btn am-btn-primary">删除</button>
-
+//
 /* 
  * 1.0
 *<话题>Show详情绘制（内含:点赞、举报、回复等）

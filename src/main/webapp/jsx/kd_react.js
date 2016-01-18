@@ -3942,6 +3942,7 @@ var G_Teachingplan_1day_byRight= React.createClass({
 				    		</div>
 				    		<div className="am-g">
 				    		{dianzan}
+						      <p className="am-article-meta am-text-default text-align_center ">{"浏览"+o.count}</p>
 				    		</div>
 					  </div>
 					 
@@ -8444,7 +8445,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
 				groupuuid:nextProps.groupuuid
 			};			
 			 var obj= {
-				queryForm:queryForm,		
+				    queryForm:queryForm,		
 					classlist:G_selected_dataModelArray_byArray(classlist,"uuid","name"),
 				list: []
 			};
@@ -8516,14 +8517,10 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		 }
      },
 	handleChange_selectgroup: function(val){
-		this.state.queryForm.groupuuid=val;
-		var classlist=Store.getChooseClass(val);
-		var classuuid =null;
-		if(classlist&&classlist.length>0){
-			classuuid=classlist[0].uuid;
-		}
+	var classlist=Store.getChooseClass($("input[name='groupuuid']").val());
+		this.state.queryForm.groupuuid=$("input[name='groupuuid']").val();
+		this.state.queryForm.classuuid=$("input[name='classuuid']").val();
 		this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
-		this.state.queryForm.classuuid=classuuid;
 		this.ajax_list();
 		this.setState(this.state); 
 	},
@@ -8552,7 +8549,8 @@ var Teachingplan_EventRow_byRight = React.createClass({
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
-
+		console.log("list1",this.props.group_list);
+		console.log("list1",this.props.classlist);
 		 if (this.state.list== null ) this.state.list=[];
       return (
       <div>
@@ -8576,11 +8574,11 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		    </AMR_Panel>
 		  </AMUIReact.Form>
 		   <AMR_ButtonToolbar>
-		  		     <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
-			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary"  />	  
+	      <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
+			<AMUIReact.Selected  name="groupuuid" value={queryForm.groupuuid} onChange={this.handleChange_selectgroup} btnWidth="200"  data={this.props.group_list} btnStyle="primary"  />	  
 		     </div>
-		     <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
-			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
+		 <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
+			<AMUIReact.Selected  name= "classuuid" value={queryForm.classuuid} onChange={this.handleChange_selectgroup} btnWidth= "200" data={ this.state.classlist} btnStyle="primary"  />
  	        </div>
 		   </AMR_ButtonToolbar>
 		 <h6>{"持卡人数:"+this.state.list.length}</h6>

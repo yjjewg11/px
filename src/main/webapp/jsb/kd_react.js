@@ -3941,7 +3941,8 @@ var G_Teachingplan_1day_byRight= React.createClass({displayName: "G_Teachingplan
 				    		  )
 				    		), 
 				    		React.createElement("div", {className: "am-g"}, 
-				    		dianzan
+				    		dianzan, 
+						      React.createElement("p", {className: "am-article-meta am-text-default text-align_center "}, "浏览"+o.count)
 				    		)
 					  )
 					 
@@ -8444,7 +8445,7 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 				groupuuid:nextProps.groupuuid
 			};			
 			 var obj= {
-				queryForm:queryForm,		
+				    queryForm:queryForm,		
 					classlist:G_selected_dataModelArray_byArray(classlist,"uuid","name"),
 				list: []
 			};
@@ -8516,14 +8517,10 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 		 }
      },
 	handleChange_selectgroup: function(val){
-		this.state.queryForm.groupuuid=val;
-		var classlist=Store.getChooseClass(val);
-		var classuuid =null;
-		if(classlist&&classlist.length>0){
-			classuuid=classlist[0].uuid;
-		}
+	var classlist=Store.getChooseClass($("input[name='groupuuid']").val());
+		this.state.queryForm.groupuuid=$("input[name='groupuuid']").val();
+		this.state.queryForm.classuuid=$("input[name='classuuid']").val();
 		this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
-		this.state.queryForm.classuuid=classuuid;
 		this.ajax_list();
 		this.setState(this.state); 
 	},
@@ -8552,7 +8549,8 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
-
+		console.log("list1",this.props.group_list);
+		console.log("list1",this.props.classlist);
 		 if (this.state.list== null ) this.state.list=[];
       return (
       React.createElement("div", null, 
@@ -8576,11 +8574,11 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 		    )
 		  ), 
 		   React.createElement(AMR_ButtonToolbar, null, 
-		  		     React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})	  
+	      React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+			React.createElement(AMUIReact.Selected, {name: "groupuuid", value: queryForm.groupuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", data: this.props.group_list, btnStyle: "primary"})	  
 		     ), 
-		     React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-			React.createElement(AMUIReact.Selected, {name: "classuuid", value: queryForm.classuuid, onChange: this.handleChange, btnWidth: "200", data:  this.state.classlist, btnStyle: "primary"})
+		 React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+			React.createElement(AMUIReact.Selected, {name: "classuuid", value: queryForm.classuuid, onChange: this.handleChange_selectgroup, btnWidth: "200", data:  this.state.classlist, btnStyle: "primary"})
  	        )
 		   ), 
 		 React.createElement("h6", null, "持卡人数:"+this.state.list.length), 
