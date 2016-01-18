@@ -3,15 +3,19 @@ package com.company.news.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
@@ -22,11 +26,14 @@ import com.company.news.entity.Teachingplan;
 import com.company.news.entity.User;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.entity.UserGroupRelation;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
 import com.company.news.jsonform.TeachingPlanJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.vo.DianzanListVO;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -37,6 +44,8 @@ import com.company.news.vo.ResponseMessage;
 @Service
 public class TeachingPlanService extends AbstractService {
 	private static final String model_name = "教学计划模块";
+	@Autowired
+	private CountService countService;
 	/**
 	 * 增加班级
 	 * 
@@ -104,7 +113,7 @@ public class TeachingPlanService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<Teachingplan> query(String begDateStr, String endDateStr,
+	public List<Map> query(String begDateStr, String endDateStr,
 			String classuuid) {
 		if (StringUtils.isBlank(classuuid)) {
 			return null;
@@ -117,17 +126,48 @@ public class TeachingPlanService extends AbstractService {
 		if (StringUtils.isBlank(endDateStr)) {
 			return null;
 		}
-
-		Date begDate = TimeUtils.string2Timestamp(null, begDateStr);
-
-		Date endDate = TimeUtils.string2Timestamp(null, endDateStr);
-
-		return (List<Teachingplan>) this.nSimpleHibernateDao
-				.getHibernateTemplate()
-				.find("from Teachingplan where classuuid=? and plandate<=? and plandate >=?  order by plandate asc",
-						classuuid, endDate, begDate);
+		String sql="select * from px_teachingplan where   t1.classuuid ='"+classuuid+"'";
+		sql+=" and  plandate<="+DbUtils.stringToDateYMDByDBType(endDateStr);
+		sql+=" and   plandate >="+DbUtils.stringToDateYMDByDBType(begDateStr);
+		sql+="  order by plandate asc";
+		
+		Query  query =this.nSimpleHibernateDao.createSqlQuery(sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);	
+		List<Map> list=query.list();
+		warpMapList(list);
+		return list;
+	}
+	
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list) {
+		
+		String uuids="";
+		for(Map o:list){
+			warpMap(o);
+			uuids+=o.get("uuid")+",";
+		}
+		try {
+			Map countMap=countService.getCountByExt_uuids(uuids);
+			for(Map o:list){
+				o.put("count", countMap.get(o.get("uuid")));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 
+	private void warpMap(Map o) {
+	
+		
+	}
 	/**
 	 * 
 	 * @param uuid
@@ -177,6 +217,30 @@ public class TeachingPlanService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<Object[]> getTeachingplanCountsByClass(String groupuuid,
+			String begDateStr, String endDateStr,Integer isdisable) {
+		endDateStr+=" 23:59:59";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
+		sql+=" (select px_teachingplan.uuid,px_class.uuid as classuuid,px_class.name from  px_class  left join px_teachingplan on px_teachingplan.classuuid=px_class.uuid";
+			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
+			
+			sql+=" and (  px_teachingplan.plandate is NULL ";
+			sql+=" or( px_teachingplan.plandate<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_teachingplan.plandate>="+DBUtil.stringToDateByDBType(begDateStr)+")";
+			sql+=")";
+			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
+		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
+		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
+		sql+=" GROUP BY t0.classuuid order by news_count desc";
+		
+
+		Query q = s.createSQLQuery(sql);
+
+//		q.setMaxResults(10);
+		return q.list();
 	}
 
 }

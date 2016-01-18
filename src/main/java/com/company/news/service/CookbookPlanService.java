@@ -7,17 +7,21 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.Cookbook4Q;
 import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.User;
 import com.company.news.jsonform.CookbookPlanJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
 
@@ -257,6 +261,26 @@ public class CookbookPlanService extends AbstractService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+
+	public List<Object[]> getCookbookPlanByMonth_bar(String groupuuid,
+			String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="SELECT DATE_FORMAT(t0.plandate,'%Y-%m') as m,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
+		sql+=" px_cookbookplan t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
+		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
+		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
+		sql+="  where  t0.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
+		sql+=" and ( t0.plandate<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.plandate>="+DBUtil.stringToDateByDBType(begDateStr)+")";		
+		sql+=" GROUP BY m order by m asc";
+		
+
+		Query q = s.createSQLQuery(sql);
+
+//		q.setMaxResults(10);
+		return q.list();
 	}
 
 }

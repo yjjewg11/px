@@ -14,6 +14,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StatisticsService;
+import com.company.news.service.TeachingPlanService;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.statistics.PieStatisticsVo;
 
@@ -225,4 +226,191 @@ public class StatisticsController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * 班级互动数量统计(按机构老师)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getClassnewsByTeacher_bar", method = RequestMethod.GET)
+	public String getClassnewsByTeacher_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getClassnewsByTeacher_bar(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+
+	/**
+	 * 
+	 * 
+	 * 精品文章数量统计(按机构老师)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getJingpinwenzhangByTeacher_bar", method = RequestMethod.GET)
+	public String getJingpinwenzhangByTeacher_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getJingpinwenzhangByTeacher_bar(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+
+	/**
+	 * 
+	 * 
+	 * 精品文章数量统计(按机构老师)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeachingplanByClass_bar", method = RequestMethod.GET)
+	public String getTeachingplanByClass_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getTeachingplanByClass_bar(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 食谱统计(按机构老师)
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getCookbookPlanByMonth_bar", method = RequestMethod.GET)
+	public String getCookbookPlanByMonth_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getCookbookPlanByMonth_bar(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 }

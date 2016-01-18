@@ -248,8 +248,13 @@ var PXECharts_ajax={
 		//data.push( {value: 'cnts', label: '班级互动TOP10（按机构）'});
 		data.push( {value: 'css', label: '人数统计（按班级）'});
 		//data.push( {value: 'cps', label: '人数统计（按班级家长）'});		
-		data.push( {value: 'cns', label: '发帖互动统计（日期段）'});
+		data.push( {value: 'cns', label: '班级互动（班级日期段）'});
+		data.push( {value: 'getClassnewsByTeacher_bar', label: '班级互动（老师日期段）'});
 		data.push( {value: 'tjs', label: '教师评价统计（日期段）'});
+		data.push( {value: 'getJingpinwenzhangByTeacher_bar', label: '精品文章（老师日期段）'});
+		data.push( {value: 'getTeachingplanByClass_bar', label: '课程表（班级日期段）'});
+		data.push( {value: 'getCookbookPlanByMonth_bar', label: '食谱（日期段）'});
+		
 	
 		return data;
 	}
