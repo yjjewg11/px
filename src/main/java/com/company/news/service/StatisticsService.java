@@ -212,7 +212,7 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @param responseMessage
 	 * @return
 	 */
-	public PieStatisticsVo getCnsBygroup(ResponseMessage responseMessage,
+	public PieStatisticsVo getClassnewsByClass(ResponseMessage responseMessage,
 			String begDateStr, String endDateStr, String group_uuid) {
 		// 验证group合法性
 //		if (!validateGroup(group_uuid, responseMessage))
@@ -267,7 +267,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 互动发帖数统计("+list.size()+"班)");
+		vo.setTitle_text(g.getBrand_name() + " 互动统计(班级)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 :" + list.size() + " 班,"+total_news_count+"互动,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
@@ -399,7 +399,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		PieStatisticsVo vo = new PieStatisticsVo();
 		// 需要获取机构名
 		Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
-		vo.setTitle_text(g.getBrand_name() + " 教师评价统计");
+		vo.setTitle_text(g.getBrand_name() + " 教师评价(老师)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 " + list.size() + " 条");
 		// vo.setLegend_data("[\"班级互动热门TOP10\"]");
 		List legend_data = new ArrayList();
@@ -848,7 +848,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		//Y轴 数组
 		vo.setyAxis_data("[" + PxStringUtil.StringDecComma(y_data_axis) + "]");
 
-		vo.setTitle_text(g.getBrand_name() +"-"+ typename);
+		vo.setTitle_text(g.getBrand_name() +"-"+ typename+"["+begDateStr+"~"+endDateStr+"]");
 		
 		vo.setTitle_subtext("总笔数(笔):" + total_count_num + ",总金额(元):"+total_sum_num);
 		
@@ -920,7 +920,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 老师互动发帖数统计");
+		vo.setTitle_text(g.getBrand_name() + "互动统计(老师)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 :老师" + list.size() + "人数,"+total_news_count+"互动,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
@@ -1022,7 +1022,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 精品文章数统计");
+		vo.setTitle_text(g.getBrand_name() + " 精品文章统计(老师)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 :老师" + list.size() + "人数,"+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
@@ -1125,7 +1125,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 课程表统计");
+		vo.setTitle_text(g.getBrand_name() + " 课程表统计(班级)["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 :班级" + list.size() + ","+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();
@@ -1228,7 +1228,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		}
 		vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
 
-		vo.setTitle_text(g.getBrand_name() + " 食谱统计");
+		vo.setTitle_text(g.getBrand_name() + " 食谱统计["+begDateStr+"~"+endDateStr+"]");
 		vo.setTitle_subtext("总计 :" + list.size() + "个月,"+total_news_count+"发布,"+total_dianzan_count+"点赞,"+total_replay_count+"回复,"+total_read_sum_count+"阅读.");
 		// vo.setLegend_data("[\"互动发帖数\"]");
 		List legend_data = new ArrayList();

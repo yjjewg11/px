@@ -88,7 +88,7 @@ public class StatisticsController extends AbstractRESTController {
 					return "";
 			}else if (type.toLowerCase().equals("cns"))// 班级互动统计
 			{
-				PieStatisticsVo vo = statisticsService.getCnsBygroup(
+				PieStatisticsVo vo = statisticsService.getClassnewsByClass(
 						responseMessage, begDateStr,endDateStr,groupuuid);
 
 				if (vo != null)
