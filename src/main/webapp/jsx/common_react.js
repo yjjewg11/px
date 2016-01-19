@@ -1707,7 +1707,6 @@ function G_status(){
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(<div></div>);
-	     var btn_info=(<div></div>);
 	     if(this.props.type==2){
 	    	 rect_info=(		 		 
 	    		  <AMR_ButtonToolbar>
@@ -1716,12 +1715,6 @@ function G_status(){
 			 	   <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
 			 	   <G_help_popo   msg={G_tip.studentbind_app} />
 			 	  </AMR_ButtonToolbar>)
-	     }
-	     if(this.props.type==1){
-	    	 btn_info=(			    
-	    	    <AMR_ButtonToolbar>
-		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
-		 	    </AMR_ButtonToolbar>); 
 	     }
  		 return (
  		 		<div>
@@ -1752,7 +1745,9 @@ function G_status(){
 			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
  			      </AMUIReact.ListItem>			        			      
  			      </AMUIReact.List>
- 			     {btn_info}
+ 		    	    <AMR_ButtonToolbar>
+ 			 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+ 			 	    </AMR_ButtonToolbar>
 			    <div id={this.div_reply_save_id}>			</div>	
  		 	     </div> 
  		     );
@@ -1790,18 +1785,11 @@ function G_status(){
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(<div></div>);
-	     var btn_info=(<div></div>);
 	     if(this.props.type==2){
 	    	 rect_info=(		 		 
 	 		 		 <AMR_ButtonToolbar>
 	  		 	     <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
 	  		 	     </AMR_ButtonToolbar>); 
-	     }
-	     if(this.props.type==1){
-	    	 btn_info=(			    
-	    	    <AMR_ButtonToolbar>
-		 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
-		 	    </AMR_ButtonToolbar>); 
 	     }
  		 return (
  		 		<div>
@@ -1831,7 +1819,9 @@ function G_status(){
 			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
  			      </AMUIReact.ListItem>			        			      
  			      </AMUIReact.List>
- 			     {btn_info}
+ 		    	    <AMR_ButtonToolbar>
+ 			 	    <AMR_Button amStyle="secondary" onClick={this.stutent_operate.bind(this,o.uuid,o.pageNo)} >加载修改记录</AMR_Button>
+ 			 	    </AMR_ButtonToolbar>
 			    <div id={this.div_reply_save_id}>			</div>	
  		 	     </div> 
  		     );
