@@ -6657,7 +6657,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 
          return (
            React.createElement("tr", {className: className}, 
-           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event.uuid)}, event.name)), 
+           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event.uuid,1,2)}, event.name)), 
              React.createElement("td", null, event.cardID), 
 			  React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无", React.createElement(AMUIReact.Button, {onClick: ajax_ClassCard_info_byRight.bind(this,event.uuid), amStyle: "secondary"}, "详情"))
 
@@ -7367,7 +7367,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 
        return ( 
          React.createElement("tr", {className: className}, 
-           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event.uuid,1,1)}, event.name)), 
+           React.createElement("td", null, " ", React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event.uuid,1,2)}, event.name)), 
            React.createElement("td", null, event.cardID), 
            React.createElement("td", {className: event.qiandao?"":"px_color_red"}, event.qiandao?"已签到":"无", React.createElement(AMUIReact.Button, {onClick: ajax_ClassCard_info_byRight.bind(this,event.uuid), amStyle: "secondary"}, "详情"))
            ) 
@@ -7756,7 +7756,7 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	var table_th3=(React.createElement("a", {href: "javascript:void(0);"}, event[3]));
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
-		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: ajax_class_students_look_info.bind(this,event[0])}, event[3]));
+		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event[0],1,2)}, event[3]));
 	}
 	  return (
 	    React.createElement("tr", {className: className}, 

@@ -6657,7 +6657,7 @@ render: function() {
 
          return (
            <tr className={className} >
-           <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event.uuid)}  >{event.name}</a></td>
+           <td> <a href="javascript:void(0);"  onClick={G_class_students_look_info.bind(this,event.uuid,1,2)}  >{event.name}</a></td>
              <td>{event.cardID}</td>
 			  <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}<AMUIReact.Button onClick={ajax_ClassCard_info_byRight.bind(this,event.uuid)} amStyle="secondary">详情</AMUIReact.Button></td>
 
@@ -7367,7 +7367,7 @@ render: function() {
 
        return ( 
          <tr className={className} >
-           <td> <a href="javascript:void(0);"  onClick={G_class_students_look_info.bind(this,event.uuid,1,1)}  >{event.name}</a></td>
+           <td> <a href="javascript:void(0);"  onClick={G_class_students_look_info.bind(this,event.uuid,1,2)}  >{event.name}</a></td>
            <td>{event.cardID}</td>
            <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}<AMUIReact.Button onClick={ajax_ClassCard_info_byRight.bind(this,event.uuid)} amStyle="secondary">详情</AMUIReact.Button></td>
            </tr> 
@@ -7756,7 +7756,7 @@ var Studentbind_EventRow_byRight = React.createClass({
 	var table_th3=(<a href="javascript:void(0);"  >{event[3]}</a>);
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
-		table_th3=(<a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event[0])}  >{event[3]}</a>);
+		table_th3=(<a href="javascript:void(0);"  onClick={G_class_students_look_info.bind(this,event[0],1,2)}  >{event[3]}</a>);
 	}
 	  return (
 	    <tr className={className} >
