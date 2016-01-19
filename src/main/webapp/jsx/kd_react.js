@@ -7365,9 +7365,9 @@ render: function() {
        var className = event.highlight ? 'am-active' :
          event.disabled ? 'am-disabled' : '';
 
-       return (
+       return ( 
          <tr className={className} >
-           <td> <a href="javascript:void(0);"  onClick={ajax_class_students_look_info.bind(this,event.uuid)}  >{event.name}</a></td>
+           <td> <a href="javascript:void(0);"  onClick={G_class_students_look_info.bind(this,event.uuid,1,1)}  >{event.name}</a></td>
            <td>{event.cardID}</td>
            <td className={event.qiandao?"":"px_color_red"}>{event.qiandao?"已签到":"无"}<AMUIReact.Button onClick={ajax_ClassCard_info_byRight.bind(this,event.uuid)} amStyle="secondary">详情</AMUIReact.Button></td>
            </tr> 
