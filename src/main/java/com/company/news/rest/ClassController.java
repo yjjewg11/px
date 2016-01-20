@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.company.news.entity.PClass;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassRegJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -196,6 +197,9 @@ public class ClassController extends AbstractRESTController {
 		String uuid=request.getParameter("uuid");
 
 		try {
+			if(DBUtil.isSqlInjection(uuid, responseMessage)){
+				return "";
+			}
 			boolean flag = classService.updateDisable(uuid, responseMessage);
 			if (!flag)// 请求服务返回失败标示
 				return "";

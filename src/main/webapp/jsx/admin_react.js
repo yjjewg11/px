@@ -2859,19 +2859,40 @@ var Parent_EventsTable_div = React.createClass({
 		if(this.props.event)return this.props.event;
 	  },
 	  fire_fn:function(obj,level){
+			$.AMUI.progress.start();
+			var that=this;
+			var url = hostUrl + "rest/snsTopic/updateLevel.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data :{level:level,uuid:obj.uuid},
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						obj.level=level;
+						that.setState(obj);
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : G_ajax_error_fn
+			});		
+		},
+		setMainTopicToRedis:function(obj){
   		$.AMUI.progress.start();
   		var that=this;
-  		var url = hostUrl + "rest/snsTopic/updateLevel.json";
+  		var url = hostUrl + "rest/snsTopic/setMainTopicToRedis.json";
   		$.ajax({
-  			type : "GET",
+  			type : "POST",
   			url : url,
-  			data :{level:level,uuid:obj.uuid},
+  			data :{uuid:obj.uuid},
   			dataType : "json",
   			success : function(data) {
   				$.AMUI.progress.done();
   				if (data.ResMsg.status == "success") {
-                    obj.level=level;
-                    that.setState(obj);
+                   alert(data.ResMsg.message);
   				} else {
   					alert(data.ResMsg.message);
   					G_resMsg_filter(data.ResMsg);
@@ -2906,6 +2927,7 @@ var Parent_EventsTable_div = React.createClass({
   	      <td>{event.create_user}</td>
           <td> <AMR_ButtonToolbar>
 		  <AMR_Button  amStyle="secondary"  onClick={this.fire_fn.bind(this,event,bt_sns)}>{bt_snsNmae}</AMR_Button> 
+		    <AMR_Button  amStyle="secondary"  onClick={this.setMainTopicToRedis.bind(this,event)}>今日话题</AMR_Button> 
 	     </AMR_ButtonToolbar></td>
   	      <td>{sns_name}</td>
   	      <td>{event.illegal}</td>
