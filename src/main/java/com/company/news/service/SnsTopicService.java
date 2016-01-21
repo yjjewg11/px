@@ -416,5 +416,40 @@ public class SnsTopicService extends AbstractService {
 				
 				return true;
 		}
+		
+		
+		
+		/**
+		 * 设置发现,每日话题推荐1条.
+		 * @return
+		 */
+		public boolean setMainTopicToRedis(String uuid,ResponseMessage responseMessage) {
+			
+			
+			String sql=" SELECT t1.uuid,t1.title   FROM sns_topic t1  where t1.uuid='"+uuid+"'";
+			List<Map> list=this.nSimpleHibernateDao.queryListMapBySql(sql);
+			if(list!=null&&list.size()>0){
+				Map map=list.get(0);
+				return PxRedisCache.setObject(PxRedisCache.Key_Name_MainTopic, map);
+			}
+			return false;
+			
+		}
+
+		/**
+		 * 获取发现,每日话题推荐1条.
+		 * @return
+		 */
+		public Map getMainTopic(ResponseMessage responseMessage) {
+			
+			
+			//缓存有值优先处理
+			Map  obj=PxRedisCache.getObject(PxRedisCache.Key_Name_MainTopic,Map.class);
+			if(obj!=null){
+				return obj;
+			}
+			
+			return null;
+		}
 
 }

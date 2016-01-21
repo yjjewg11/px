@@ -19,6 +19,7 @@ import com.company.http.PxHttpSession;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.JavaLockUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -73,7 +74,6 @@ public class UserinfoService extends AbstractService {
 	public static final int USER_disable_2 = 2;// 注册用户带审核.
 	@Autowired
 	private SmsService smsService;
-
 	/**
 	 * 给用户添加默认学校
 	 * 
@@ -1358,11 +1358,16 @@ public class UserinfoService extends AbstractService {
 		if(StringUtils.isBlank(jessionid)){
 			return false;
 		}
+		
+		
+	
 		// 登录验证.验证失败则返回.
 		try {
+			//根据参数相同视为同一把锁.
+			Object lockObject=JavaLockUtils.getLockObj(jessionid);
 			User user = null;
 			HttpSession session = null;
-			synchronized (this) {
+			synchronized (lockObject) {
 				session=SessionListener.getSession(request);
 				// 同步加锁情况下,再次判断,防止多次创建session
 				if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
@@ -1420,6 +1425,8 @@ public class UserinfoService extends AbstractService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
+		}finally{
+        	JavaLockUtils.removeLockObj(jessionid);
 		}
 
 	}

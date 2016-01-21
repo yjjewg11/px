@@ -2108,6 +2108,14 @@ var Parent_EventsTable_div = React.createClass({
      *增加编辑与删除功能
      * */
     var Announcements_show_byRight = React.createClass({ 
+		//创建帮助管理点击按钮事件跳转kd_servise方法;
+     	handleClick: function(m,groupuuid,uuid) {
+     		btn_click_announce_helpbyRight(m,groupuuid,uuid);
+        }, 
+    	//收藏按钮方法;
+    	favorites_push: function(title,type,reluuid,url) {
+    		commons_ajax_favorites_push(title,type,reluuid,url);
+    	},
     render: function() {
     	  var o = this.props.data;
 
@@ -2133,6 +2141,14 @@ var Parent_EventsTable_div = React.createClass({
 
     	     
     	     </div>
+
+				  <AMR_ButtonToolbar>
+    	     <AMR_Button className="G_Edit_show" amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)} >编辑</AMR_Button>
+    	     <AMR_Button className="G_Edit_show" amStyle="danger" onClick={this.handleClick.bind(this, "del",o.groupuuid,o.uuid)} >删除</AMR_Button> 
+    	     <AMR_Button  amStyle="success" onClick={this.favorites_push.bind(this,o.title,o.type,o.uuid)} >收藏</AMR_Button> 
+    	     <G_check_disable_div_byRight type={o.type} uuid={o.uuid}/>
+    	     </AMR_ButtonToolbar>
+
     	    	<footer className="am-comment-footer">
     	    	<div className="am-comment-actions">
     	    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
@@ -2859,19 +2875,40 @@ var Parent_EventsTable_div = React.createClass({
 		if(this.props.event)return this.props.event;
 	  },
 	  fire_fn:function(obj,level){
+			$.AMUI.progress.start();
+			var that=this;
+			var url = hostUrl + "rest/snsTopic/updateLevel.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data :{level:level,uuid:obj.uuid},
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+					if (data.ResMsg.status == "success") {
+						obj.level=level;
+						that.setState(obj);
+					} else {
+						alert(data.ResMsg.message);
+						G_resMsg_filter(data.ResMsg);
+					}
+				},
+				error : G_ajax_error_fn
+			});		
+		},
+		setMainTopicToRedis:function(obj){
   		$.AMUI.progress.start();
   		var that=this;
-  		var url = hostUrl + "rest/snsTopic/updateLevel.json";
+  		var url = hostUrl + "rest/snsTopic/setMainTopicToRedis.json";
   		$.ajax({
-  			type : "GET",
+  			type : "POST",
   			url : url,
-  			data :{level:level,uuid:obj.uuid},
+  			data :{uuid:obj.uuid},
   			dataType : "json",
   			success : function(data) {
   				$.AMUI.progress.done();
   				if (data.ResMsg.status == "success") {
-                    obj.level=level;
-                    that.setState(obj);
+                   alert(data.ResMsg.message);
   				} else {
   					alert(data.ResMsg.message);
   					G_resMsg_filter(data.ResMsg);
@@ -2906,6 +2943,7 @@ var Parent_EventsTable_div = React.createClass({
   	      <td>{event.create_user}</td>
           <td> <AMR_ButtonToolbar>
 		  <AMR_Button  amStyle="secondary"  onClick={this.fire_fn.bind(this,event,bt_sns)}>{bt_snsNmae}</AMR_Button> 
+		    <AMR_Button  amStyle="secondary"  onClick={this.setMainTopicToRedis.bind(this,event)}>今日话题</AMR_Button> 
 	     </AMR_ButtonToolbar></td>
   	      <td>{sns_name}</td>
   	      <td>{event.illegal}</td>

@@ -41,6 +41,7 @@ public class SessionListener implements HttpSessionListener {
 	}
   
   private static HttpSession   getSessionFromCache(String jessionid){
+	  if(StringUtils.isBlank(jessionid))return null;
 	  //1优先取sessionMapBySessionid
 	  HttpSession	session=(HttpSession)sessionMapBySessionid.get(jessionid);
       if(session!=null)return session;
@@ -55,7 +56,7 @@ public class SessionListener implements HttpSessionListener {
    */
   public static HttpSession   getSession(HttpServletRequest request){
     //1.优先根据默认关系取
-    HttpSession session=request.getSession(false);;
+    HttpSession session=request.getSession(false);
     if(session!=null)return session;
     
     
@@ -75,7 +76,7 @@ public class SessionListener implements HttpSessionListener {
    }
     //从cookie中取sessionid
     JSESSIONID=UserInfoFilter.getJSESSIONIDCookies(request);
-    session=(HttpSession)SessionCache.getPxHttpSession(JSESSIONID);
+    session=getSessionFromCache(JSESSIONID);
     
     return session;
   }

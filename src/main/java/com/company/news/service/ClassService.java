@@ -331,6 +331,27 @@ public class ClassService extends AbstractClassService {
 
 	}
 
+	
+	/**
+	 * 结业
+	 * 
+	 * @param classuuid
+	 * @param responseMessage
+	 * @return
+	 */
+	@Override
+	public boolean updateDisable(String classuuid, ResponseMessage responseMessage) {
+		if (this.validateRequireByRegJsonform(classuuid, "classuuid",
+				responseMessage))
+			return false;
+		
+		PClass pClass=(PClass)this.nSimpleHibernateDao.getObject(getEntityClass(), classuuid);
+		pClass.setDisable_time(TimeUtils.getCurrentTimestamp());
+		pClass.setIsdisable(SystemConstants.Class_isdisable_1);
+		pClass.setName(TimeUtils.getCurrentTime("yyyy")+"届"+pClass.getName());
+
+		return true;
+	}
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub

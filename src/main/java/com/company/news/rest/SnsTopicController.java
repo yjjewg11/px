@@ -1,4 +1,6 @@
 package com.company.news.rest; 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +22,6 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
-import com.company.news.service.CountService;
 import com.company.news.service.SnsDianzanService;
 import com.company.news.service.SnsTopicService;
 import com.company.news.service.SnsTopicVoteItemService;
@@ -455,5 +456,54 @@ try {
 					}
 				}
 				
-		
+				/**
+				 * 设置每日话题
+				 * @param model
+				 * @param request
+				 * @return
+				 */
+				@RequestMapping(value = "/setMainTopicToRedis", method = RequestMethod.POST)
+				public String setMainTopicToRedis(ModelMap model, HttpServletRequest request) {
+					ResponseMessage responseMessage = RestUtil
+							.addResponseMessageForModelMap(model);
+					SnsTopic a;
+					try {
+						String uuid=request.getParameter("uuid");
+						if(DBUtil.isSqlInjection(uuid, responseMessage))return "";
+						snsTopicService.setMainTopicToRedis(uuid,responseMessage);
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+						responseMessage.setMessage(e.getMessage());
+						return "";
+					}
+					responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+					return "";
+				}	
+
+				/**
+				 * 设置每日话题
+				 * @param model
+				 * @param request
+				 * @return
+				 */
+				@RequestMapping(value = "/getMainTopic", method = RequestMethod.GET)
+				public String getMainTopic(ModelMap model, HttpServletRequest request) {
+					ResponseMessage responseMessage = RestUtil
+							.addResponseMessageForModelMap(model);
+					try {
+						Map map=snsTopicService.getMainTopic(responseMessage);
+						model.addAttribute(RestConstants.Return_G_entity,map);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+						responseMessage.setMessage(e.getMessage());
+						return "";
+					}
+					responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+					return "";
+				}	
 }

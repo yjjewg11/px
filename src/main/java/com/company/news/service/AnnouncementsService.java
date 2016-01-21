@@ -198,7 +198,6 @@ public class AnnouncementsService extends AbstractService {
 	public boolean update(AnnouncementsJsonform announcementsJsonform,
 			ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
 		
-		if(!valiateForm(announcementsJsonform,responseMessage))return false;
 		
 		boolean isRight=false;
 		if(SystemConstants.common_type_KDHelp==announcementsJsonform.getType().intValue()
@@ -212,6 +211,10 @@ public class AnnouncementsService extends AbstractService {
 			isRight=true;
 		
 		}
+		
+		if(!valiateForm(announcementsJsonform,responseMessage))return false;
+		
+		
 		Announcements announcements = (Announcements) this.nSimpleHibernateDao
 				.getObjectById(Announcements.class,
 						announcementsJsonform.getUuid());
