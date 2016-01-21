@@ -187,6 +187,7 @@ var sns_list_snsTopic_rect = React.createClass({
  * */    
 var Sns_snsTopic_add_edit = React.createClass({ 
  getInitialState: function() {
+	 this.props.formdata.itemList=this.props.itemList;
 	 this.props.formdata.input_count=0;
 	    return this.props.formdata;
 	  },
@@ -195,16 +196,21 @@ var Sns_snsTopic_add_edit = React.createClass({
   },
   handleChange_Select: function(val) {	
 		this.state.section_id=val;
+	      if(this.state.section_id==10){
+	      SnsitemListObj.init(this.state.itemList);
+	      }
 		this.setState(this.state);
 	  },
+	//绘制完并只执行一次  componentDidMount
   componentDidMount:function(){
      var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
      this.editor=editor;
       w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
             editor.pasteHTML( '<img width="100%" style="margin: 5px;"  src="'+imgurl+'"/>')
        });
-      
-      SnsitemListObj.init(this.state.itemList);
+      if(this.state.section_id==10){
+    	  SnsitemListObj.init(this.state.itemList);
+      }
 	 },
 	preview_fn:function(){
      G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
@@ -213,9 +219,16 @@ var Sns_snsTopic_add_edit = React.createClass({
 render: function() {
 var o = this.state;	
 if(!o.section_id)o.section_id="1";
+var sns_div_addbtn=(<div></div>);
 var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
+if(o.section_id==10){
+	sns_div_addbtn=(<AMR_ButtonToolbar>
+                  <button  type="button"  onClick={SnsitemListObj.add_item.bind(SnsitemListObj)}  className="am-btn am-btn-primary">添加投票选项</button>
+                   </AMR_ButtonToolbar>);
+};
+
   return (
    <div>
    
@@ -243,9 +256,9 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 	    <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 	   
 	    
-	    <div id={SnsitemListObj.divId_addButton}>			</div>	
+	    <div id={SnsitemListObj.divId_addButton}>			</div>
+	    {sns_div_addbtn}
 	    <AMR_ButtonToolbar>
-	    <button  type="button"  onClick={SnsitemListObj.add_item.bind(SnsitemListObj)}  className="am-btn am-btn-primary">添加投票选项</button>
 	    {G_get_upload_img_Div()} 
 	    <button type="button"  onClick={PxSnsService.ajax_sns_snsTopic_save.bind(this)}  className="am-btn am-btn-primary">提交</button>
 	    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
@@ -267,6 +280,7 @@ var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_typ
 
 
 /**
+ * 创建与编辑中针对投票绘制的抽离出的方法
  * this.SnsitemListObj.getData();
  *  SnsitemListObj.init(list);
  */
@@ -274,12 +288,13 @@ var SnsitemListObj={
 	   divId_addButton:"snstopic_itemList_addButton",
 	   ind:0,
 	   getData:function(){
-		   
+		   //点击保存组装表单;
 		   var itemList=[];
+		   var ind=0;
 		   $("input[name='snstopic_itemList_item_title']").each(function(){
 			  
 			   var uuid_ind=this.title.split("_");
-			   var o={"title":this.value,"ind":uuid_ind[1],"uuid":uuid_ind[0]};
+			   var o={"title":this.value,"ind":++ind,"uuid":uuid_ind[0]};
 			   itemList.push(o);
 			  });
 		   return itemList;
@@ -295,15 +310,37 @@ var SnsitemListObj={
 			 		}),  document.getElementById(this.divId_addButton+o.ind));	
 		   
 	   },
+
 	   delItem:function(o,parentDivId){
-		   console.log("num",o);
+		  	if(!confirm("确定要删除吗?")){
+		  		return;
+		  	  }
 		   if(o.uuid){
-			   
+	     		var url = hostUrl + "rest/snsTopicVoteItem/delete.json";
+	     		$.ajax({
+	     			type : "POST",
+	     			url : url,
+	     			data:{uuid:o.uuid},
+	     			dataType : "json",
+	     			success : function(data) {
+	     				if (data.ResMsg.status == "success") {
+	     				   $("#"+parentDivId).remove();
+	     				   var list=SnsitemListObj.getData();
+	     				   SnsitemListObj.init(list);
+	     				}  else {
+	     					alert("加载数据失败："+data.ResMsg.message);
+	     				}
+	     			},
+	     			error :G_ajax_error_fn
+	     		}); 
 		   }else{
+			   
 			   $("#"+parentDivId).remove();
+			   var list=SnsitemListObj.getData();
+			   SnsitemListObj.init(list);
 		   }
 		   
-		   
+			   
 	   },
 	   add_item:function(){
 		   var o={"title":"","ind":++this.ind,"uuid":""};
@@ -311,6 +348,7 @@ var SnsitemListObj={
 		   
 	   },
 	   init:function(list){
+		   $("#"+this.divId_addButton).html("");
 		   this.dataList=list;
 		   if(!this.dataList){
 			   this.dataList=[];
@@ -320,7 +358,6 @@ var SnsitemListObj={
 		   }else{
 			   this.ind=this.dataList.length;
 		   }
-		  
 		   for(var i=0;i<this.dataList.length;i++){
 			this.addItemDiv(this.dataList[i]);
 		   }
@@ -329,8 +366,7 @@ var SnsitemListObj={
 };
 /*
  * 1.0
- * <话题>创建与编辑界面绘制；
- * @w_img_upload_nocut:上传图片后发的请求刷新;
+ * <话题>投票选项绘制
  * 
  * {"title":"1","ind":"2","uuid":""}
  * */    
@@ -349,8 +385,8 @@ var Sns_snsTopic_itemList_item = React.createClass({
     
 	 },
 render: function() {
-
 var o = this.state;	
+console.log("o",o);
 var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 
@@ -390,15 +426,109 @@ var sns_snsTopicshow = React.createClass({
   handleClick: function(m,uuid) {
    PxSnsService.btnclick_sns_snsTopic(m,uuid);
    }, 
+   //show投票提交按钮
+ 	sns_toupiaobtn_handleClick: function(m) {	
+	 	var uuids=null;
+	 	var topic_uuid=m[0].topic_uuid;
+		 $($("input[name='table_checkbox']")).each(function(){			
+			 if(this.checked){
+				 if(uuids==null)uuids=this.value;
+				 else
+				 uuids+=','+this.value ;    //遍历被选中CheckBox元素的集合 得到Value值
+			 }
+			});
+		  if(!uuids){
+			  alert("请选择一个投票");
+			  return;
+		  }
+   		var url = hostUrl + "rest/snsTopicVoteItem/updateVote.json";
+ 		$.ajax({
+ 			type : "GET",
+ 			url : url,
+ 			data:{topic_uuid:topic_uuid,item_uuid:uuids},
+ 			dataType : "json",
+ 			success : function(data) {
+ 				if (data.ResMsg.status == "success") {
+ 				   $("#snsShow").html("");
+ 				  PxSnsService.ajax_sns_snsTopic_show(topic_uuid);
+ 				}  else {
+ 					alert("加载数据失败："+data.ResMsg.message);
+ 				}
+ 			},
+ 			error :G_ajax_error_fn
+ 		}); 
+ },
 render: function() {
   var o = this.props.data;
+  var that=this;
+  var count_people=0;
+  var itemList=this.props.itemList;
   var data={title:o.title,content:o.content,uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
- 
+  this.divId_SnsButton="SnsButton_box";
+  var box_rect=(<div></div>);
+  var toupiao_rect=(<div></div>);
+  for(var i=0;i<itemList.length;i++){
+	  count_people+=parseInt(itemList[i].vote_count);
+  }
+  if(o.section_id!=10){
+	  //普通话题绘制
+	   box_rect=(
+			  <div>
+		      <TabSnsTopicSelect uuid={o.uuid}  type={71} url={this.props.share_url} />		
+		 	  <Sns_ajax_reply_save uuid={o.uuid}  type={71}/>	  
+		      </div>
+	         );
+		  }else{
+		      //投票话题绘制
+			  if(this.props.voteItem_uuid){
+				  //已投票话题绘制
+				  toupiao_rect=(
+						  <div>				    
+				    	    <h3>(总投票人数：{count_people})投票结果:</h3>		    	   
+						       {this.props.itemList.map(function(event) {
+			  			         return ( <div>
+			  			    	         <h3>选项{event.ind}:{event.title}(投票人数{event.vote_count})</h3>
+			  			    	          </div>)
+			  			           })}
+						  </div>);
+		
+				   box_rect=(
+							  <div>
+						      <TabSnsTopicSelect uuid={o.uuid}  type={71} url={this.props.share_url} />		
+						 	  <Sns_ajax_reply_save uuid={o.uuid}  type={71}/>	  
+						      </div>);
+			  }else{
+				  //未投票话题绘制
+				  toupiao_rect=(
+					  <div>				    
+			    	    <h3>投票选项:</h3>
+			    	    <div className=" am-u-md-6 am-u-sm-12">
+				    		<form className="am-form" data-am-validator>
+					  {this.props.itemList.map(function(event) {
+		  			      return (
+		  			    	  <div>
+		  			    	    <label>
+		  			    	      <input type="radio" name="table_checkbox"  value={event.uuid}/> {event.title}
+		  			    	    </label>
+		  			    	    </div>  			    	     
+		  			    		  )
+		  			         })}
+				    	</form>
+				    	 </div>
+				    	 <div className=" am-u-md-6 am-u-sm-12">
+				    	   <AMR_ButtonToolbar>
+			               <AMR_Button type="submit" onClick={this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList)} className="am-btn am-btn-primary">提交</AMR_Button>
+			               </AMR_ButtonToolbar>
+			               </div>
+					  </div>
+					         );
+			  } 
+		  }
 return (
 
-  <div className="max_with_lg px_margin_div">
+  <div id="snsShow" className="max_with_lg px_margin_div">
 
 	  <article className="am-article px_margin_div">
   <div className="am-article-hd">
@@ -415,8 +545,13 @@ return (
   </div>
 
   <div className="am-article-bd "  dangerouslySetInnerHTML={{__html: o.content}}>
- 
   </div>
+  {toupiao_rect}
+ 
+
+
+
+
 </article>
 
 	  
@@ -426,12 +561,17 @@ return (
       </AMR_ButtonToolbar>	
 
          <Sns_comment_actions data={data} url={this.props.share_url}/>
-    	 <TabSnsTopicSelect uuid={o.uuid}  type={71} url={this.props.share_url} />		
-		<Sns_ajax_reply_save uuid={o.uuid}  type={71}/>
+         {box_rect}
     </div>
   );
  }
 }); 
+
+
+
+
+
+
 /*
  * 话题同意和不同意抽离方法
  * 功能：实现动态点击和双灰功能

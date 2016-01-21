@@ -49,7 +49,7 @@ public class SnsTopicVoteItemService extends AbstractService {
 				if(item!=null){
 					item.setTitle(m.get("title")+"");
 					item.setTopic_uuid(topic_uuid);
-					String ind=(String)m.get("ind");
+					String ind=m.get("ind")+"";
 				
 					if(StringUtils.isNumeric(ind)){
 						try {
@@ -72,7 +72,7 @@ public class SnsTopicVoteItemService extends AbstractService {
 				SnsTopicVoteItem item=new SnsTopicVoteItem();
 				item.setTitle(m.get("title")+"");
 				item.setTopic_uuid(topic_uuid);
-				String ind=(String)m.get("ind");
+				String ind=m.get("ind")+"";
 			
 				if(StringUtils.isNumeric(ind)){
 					try {
@@ -134,11 +134,8 @@ public class SnsTopicVoteItemService extends AbstractService {
 			responseMessage.setMessage("user_uuid不能为空！");
 			return false;
 		}
-		topic_uuid=DbUtils.safeToWhereString(topic_uuid);
-		item_uuid=DbUtils.safeToWhereString(item_uuid);
-		user_uuid=DbUtils.safeToWhereString(user_uuid);
-		
-		String insertsql="insert into sns_topic_voteitem_user(topic_uuid,item_uuid,user_uuid) values('"+topic_uuid+"','"+item_uuid+"',"+user_uuid+")";
+
+		String insertsql="insert into sns_topic_voteitem_user(topic_uuid,item_uuid,user_uuid) values('"+topic_uuid+"','"+item_uuid+"','"+user_uuid+"')";
 		try {
 			int flag=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(insertsql).executeUpdate();
 			String sql="update sns_topic_vote_item set vote_count=vote_count+1 where uuid='"+item_uuid+"'";

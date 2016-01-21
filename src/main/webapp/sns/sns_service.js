@@ -100,7 +100,8 @@ function sns_ajax_snsTopic_add_edit(uuid){
 	 	$.AMUI.progress.done();
 		 if (data.ResMsg.status == "success") {
 		 	React.render(React.createElement(Sns_snsTopic_add_edit,{
-		 		formdata:data.data
+		 		formdata:data.data,
+		 		itemList:data.itemList
 		 		}),G_get_div_body());
 	 	} else {
 			alert("加载数据失败："+data.ResMsg.message);
@@ -188,6 +189,8 @@ function ajax_sns_snsTopic_show(uuid){
 					canEdit:canEdit,
 					data:data.data,
 					isFavor:data.isFavor,
+					itemList:data.itemList,
+					voteItem_uuid:data.voteItem_uuid,
 					share_url:data.share_url,
 					count:data.count
 					}),G_get_div_second());

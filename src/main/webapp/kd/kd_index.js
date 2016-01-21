@@ -911,7 +911,7 @@ function menu_accounts_listForYear_byRight() {
  * @跳转kd_service发服务器请求
  * */
 function menu_accounts_statistics_list_fn_byRight() {
-	Queue.push(menu_statistics_list_fn_byRight,"缴费统计");
+	Queue.push(menu_accounts_statistics_list_fn_byRight,"缴费统计");
 	
 	var  grouplist=Store.getGroupByRight("KD_accounts_m");			
 	var groupuuid;
