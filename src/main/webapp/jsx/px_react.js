@@ -306,10 +306,6 @@ render: function() {
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
            <AMR_Panel>
 		  <AMUIReact.ButtonToolbar>
-      
-  	    <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
-     	<AMUIReact.Selected  btnStyle="secondary" id="selectclass_uuid" name="groupuuid" onChange={this.handleClick.bind(this,"oth")}  btnWidth="200"  value={hd_type} multiple= {false} data={this.props.btn_list}/>   
-     	</div>
 		    <AMUIReact.Button amStyle="secondary" onClick={this.handleClick.bind(this,"add")} >发布互动</AMUIReact.Button>
 
 		 
@@ -317,6 +313,11 @@ render: function() {
 		    <G_help_popo  msg={G_tip.Classnews}/> 
 		    </AMUIReact.ButtonToolbar>
              </AMR_Panel>
+
+  			<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+     		<AMUIReact.Selected  btnStyle="secondary" id="selectclass_uuid" name="groupuuid" onChange={this.handleClick.bind(this,"oth")}  btnWidth="200"  value={hd_type} multiple= {false} data={this.props.btn_list}/>   
+     		</div>
+
 		    <Div_MyClassnewStatistics />
 		  <hr/>	  
 		    
@@ -4464,10 +4465,10 @@ var Class_EventsTable_byRight = React.createClass({
       		<input type="hidden" name="uuid"  value={o.uuid}/>
       		     <input type="hidden" name="type"  value="1"/>
 		  <AMR_ButtonToolbar>
-      		 <div className="am-fl">	    
+      		 <div className="am-fl am-margin-bottom-sm am-margin-left-xs">    
       		  <AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={o.groupuuid} />          
 				</div> 
-				<div className="am-fl  am-margin-left-xs">
+				<div className="am-fl am-margin-bottom-sm am-margin-left-xs">
   		      <AMUIReact.Selected id="courseuuid" name="courseuuid" onChange={this.handleChange} btnWidth="200"  multiple= {false} data={course_list} btnStyle="primary" value={o.courseuuid} />          
        		  </div> 
 		  </AMR_ButtonToolbar>
@@ -6924,10 +6925,22 @@ var Class_EventsTable_byRight = React.createClass({
 		 <G_px_help_List data={G_px_help_msg.msg_px_help_list3}/>
 		 <AMR_Panel>
          <AMR_ButtonToolbar>
-	         <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.groupuuid)} >新增课程</AMR_Button>	
+		      
+	          <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+	         <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleChange_button.bind(this,o.groupuuid)} >新增课程</AMR_Button>
+			  </div>  
+
+			  <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 			 <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleClick.bind(this,"eitclass")} >修改</AMR_Button>
+              </div>
+
+              <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 			 <AMR_Button amSize="xs" amStyle="secondary" onClick={this.handleClick.bind(this,"addclass")} >复制课程</AMR_Button>
+              </div>
+
+              <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
 			 <AMR_Button amSize="xs" amStyle="danger" onClick={this.handleClick.bind(this,"delete")} >删除</AMR_Button>
+			  </div>	   
 		 </AMR_ButtonToolbar>
 		 </AMR_Panel>	
 		 <AMR_ButtonToolbar>

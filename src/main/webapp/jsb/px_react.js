@@ -306,10 +306,6 @@ render: function() {
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
            React.createElement(AMR_Panel, null, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
-      
-  	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-     	React.createElement(AMUIReact.Selected, {btnStyle: "secondary", id: "selectclass_uuid", name: "groupuuid", onChange: this.handleClick.bind(this,"oth"), btnWidth: "200", value: hd_type, multiple: false, data: this.props.btn_list})
-     	), 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"add")}, "发布互动"), 
 
 		 
@@ -317,6 +313,11 @@ render: function() {
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    )
              ), 
+
+  			React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+     		React.createElement(AMUIReact.Selected, {btnStyle: "secondary", id: "selectclass_uuid", name: "groupuuid", onChange: this.handleClick.bind(this,"oth"), btnWidth: "200", value: hd_type, multiple: false, data: this.props.btn_list})
+     		), 
+
 		    React.createElement(Div_MyClassnewStatistics, null), 
 		  React.createElement("hr", null), 	  
 		    
@@ -4464,10 +4465,10 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
       		React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
       		     React.createElement("input", {type: "hidden", name: "type", value: "1"}), 
 		  React.createElement(AMR_ButtonToolbar, null, 
-      		 React.createElement("div", {className: "am-fl"}, 	    
+      		 React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
       		  React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: o.groupuuid})
 				), 
-				React.createElement("div", {className: "am-fl  am-margin-left-xs"}, 
+				React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
   		      React.createElement(AMUIReact.Selected, {id: "courseuuid", name: "courseuuid", onChange: this.handleChange, btnWidth: "200", multiple: false, data: course_list, btnStyle: "primary", value: o.courseuuid})
        		  )
 		  ), 
@@ -6924,10 +6925,22 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
 		 React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list3}), 
 		 React.createElement(AMR_Panel, null, 
          React.createElement(AMR_ButtonToolbar, null, 
-	         React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.groupuuid)}, "新增课程"), 	
-			 React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"eitclass")}, "修改"), 
-			 React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addclass")}, "复制课程"), 
+		      
+	          React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+	         React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleChange_button.bind(this,o.groupuuid)}, "新增课程")
+			  ), 
+
+			  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			 React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"eitclass")}, "修改")
+              ), 
+
+              React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+			 React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,"addclass")}, "复制课程")
+              ), 
+
+              React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
 			 React.createElement(AMR_Button, {amSize: "xs", amStyle: "danger", onClick: this.handleClick.bind(this,"delete")}, "删除")
+			  )	   
 		 )
 		 ), 	
 		 React.createElement(AMR_ButtonToolbar, null, 

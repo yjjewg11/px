@@ -1707,7 +1707,6 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(React.createElement("div", null));
-	     var btn_info=(React.createElement("div", null));
 	     if(this.props.type==2){
 	    	 rect_info=(		 		 
 	    		  React.createElement(AMR_ButtonToolbar, null, 
@@ -1716,12 +1715,6 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			 	   React.createElement(AMR_Button, {amStyle: "warning", id: "btn_cancelApply", onClick: this.btn_studentbind_cancelApply.bind(this,o.uuid)}, "取消申请接送卡"), 
 			 	   React.createElement(G_help_popo, {msg: G_tip.studentbind_app})
 			 	  ))
-	     }
-	     if(this.props.type==1){
-	    	 btn_info=(			    
-	    	    React.createElement(AMR_ButtonToolbar, null, 
-		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
-		 	    )); 
 	     }
  		 return (
  		 		React.createElement("div", null, 
@@ -1752,7 +1745,9 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
  			      )			        			      
  			      ), 
- 			     btn_info, 
+ 		    	    React.createElement(AMR_ButtonToolbar, null, 
+ 			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
+ 			 	    ), 
 			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
  		 	     ) 
  		     );
@@ -1790,18 +1785,11 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(React.createElement("div", null));
-	     var btn_info=(React.createElement("div", null));
 	     if(this.props.type==2){
 	    	 rect_info=(		 		 
 	 		 		 React.createElement(AMR_ButtonToolbar, null, 
 	  		 	     React.createElement(AMR_Button, {amStyle: "secondary", onClick: ajax_myclass_students_edit.bind(this,o.uuid)}, "修改学生")
 	  		 	     )); 
-	     }
-	     if(this.props.type==1){
-	    	 btn_info=(			    
-	    	    React.createElement(AMR_ButtonToolbar, null, 
-		 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
-		 	    )); 
 	     }
  		 return (
  		 		React.createElement("div", null, 
@@ -1831,7 +1819,9 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
  			      )			        			      
  			      ), 
- 			     btn_info, 
+ 		    	    React.createElement(AMR_ButtonToolbar, null, 
+ 			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
+ 			 	    ), 
 			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
  		 	     ) 
  		     );

@@ -228,14 +228,14 @@ render: function() {
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 	      React.createElement(AMR_Panel, null, 
 		  React.createElement(AMUIReact.ButtonToolbar, null, 
-	    React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-     	React.createElement(AMUIReact.Selected, {btnStyle: "secondary", id: "selectclass_uuid", name: "groupuuid", onChange: this.handleClick.bind(this,"oth"), btnWidth: "200", value: hd_type, multiple: false, data: this.props.btn_list})
-     	), 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this,"add")}, "发布互动"), 
 		    React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.refresh_data.bind(this)}, "刷新"), 
 		    React.createElement(G_help_popo, {msg: G_tip.Classnews})
 		    )
             ), 
+	  	     React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+          	 React.createElement(AMUIReact.Selected, {btnStyle: "secondary", id: "selectclass_uuid", name: "groupuuid", onChange: this.handleClick.bind(this,"oth"), btnWidth: "200", value: hd_type, multiple: false, data: this.props.btn_list})
+     	     ), 
 		    React.createElement(Div_MyClassnewStatistics, null), 
 		  React.createElement("hr", null), 	  
 		    
@@ -1125,14 +1125,21 @@ var Teachingplan_show7Day = React.createClass({displayName: "Teachingplan_show7D
 		React.createElement("div", {className: "am-g"}, 
 		  React.createElement(AMR_Panel, null, 
 		 React.createElement(AMR_ButtonToolbar, null, 
-		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre")}, "上周"), 
-		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next")}, "下周"), 	
-         React.createElement("div", {className: "am-fl am-margin-left-xs"}, 
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "pre")}, "上周")
+           ), 
+
+         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.pageClick.bind(this, "next")}, "下周")	
+         )
+	    )
+		), 
+			         
+		 React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
 		React.createElement(AMUIReact.Selected, {id: "selectclass_uuid", name: "group_uuid", onChange: this.handleChange_selectclass_uuid.bind(this), btnWidth: "200", data:  this.state.classlist, btnStyle: "primary", value: this.state.classuuid})
 		)
-	    )
-		)
-	    ), 
+	    
+		 ), 
 		React.createElement("hr", null), 
 		React.createElement("div", {className: "am-g", id: "div_detail"}, 
 		
@@ -5707,9 +5714,10 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 		});
 	},
   	componentDidMount:function(){
+		  var that=this;
   		var tmp_fn=function(){
   			 var o=$('#editEchartForm').serializeJson();
-		 this.ajax(o);
+		that.ajax(o);
 	 };
 	 if(typeof(require)=="undefined"){
 		 var js="http://echarts.baidu.com/build/dist/echarts.js";
@@ -5728,50 +5736,42 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   render: function() {
 	  var o = this.state;
     return (
-    		React.createElement("div", null, 
-             React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list18}), 
-    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
-    		 React.createElement("div", null, 
-		          React.createElement(AMR_Panel, null, 
-                  React.createElement(AMR_ButtonToolbar, null, 
+      React.createElement("div", null, 
+		   React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list18}), 
+		  React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+           React.createElement(AMR_Panel, null, 
+		    React.createElement(AMR_ButtonToolbar, null, 
+		
+		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		   React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
+	 	   ), 
+			  
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+		  ), 
 
-			
-				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-md-3 am-u-sm-5"}, 
-							    		 
-				React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
-	    		 ), 
-					  React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-md-3 am-u-sm-5"}, 
-	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
-	    		 ), 
-				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs am-u-md-2 am-u-sm-5"}, 					    		 
-				 React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
-	    		 ), 
-				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs am-u-md-2 am-u-sm-5"}, 
-			    React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
-	    		 
-	    		 ), 
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+    	  React.createElement("button", {type: "button", onClick: this.handleChange, className: "am-btn am-btn-secondary"}, "查询")
+		  )
+			  
+		 )
+        ), 
+		 React.createElement(AMR_ButtonToolbar, null, 
+			   
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	      React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+    	  ), 
+			   
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+	      React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
+    	  )
+         
 
-    		 	 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-md-2"}, 
-  			  React.createElement("button", {type: "button", onClick: this.handleChange, className: "am-btn am-btn-secondary"}, "查询")	  				
-  	  	         )
-
-
-
-
-		         )
-		          ), 
-
-                  React.createElement(AMR_ButtonToolbar, null
-	    		
-               )
-
-    		 ), 
-    		 React.createElement("div", {className: "am-cf"})
-    		 ), 
-    		 
+    	   )
+		    ), 
+    	
     		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
   	    		)
-
   	    );
   	  }
   	}); 
@@ -8394,12 +8394,12 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 	          React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
 			  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月")	  
 			  ), 
-		       React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-	          React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})	
-		      ), 
 		      React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
 	 		  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月")	  
               ), 
+				  		       React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+	          React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})	
+		      ), 
 		      React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this)}, "查询")
 		      )
@@ -8570,11 +8570,11 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 			 React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上月")	  
 			 ), 
 		     React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-	         React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})		   		
-	 		 ), 
-		     React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
 	         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下月")	  
              ), 
+		  	 React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+	         React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "7", size: "7", placeholder: "YYYY", name: "yyyy_mm", value: queryForm.yyyy_mm, onChange: this.handleChange})		   		
+	 		 ), 
 		     React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
 			 React.createElement(AMR_Button, {amStyle: "primary", onClick: this.handleClick_query.bind(this)}, "查询")
 		     )
