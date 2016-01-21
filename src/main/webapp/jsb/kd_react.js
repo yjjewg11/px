@@ -5683,6 +5683,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   		    return o;
   		  },
 			  
+
 	/**
 	 * 选择不同统计条件是,请求数据.
 	 * @param data

@@ -5683,6 +5683,7 @@ render: function() {
   		    return o;
   		  },
 			  
+
 	/**
 	 * 选择不同统计条件是,请求数据.
 	 * @param data
