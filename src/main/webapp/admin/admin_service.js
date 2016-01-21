@@ -1198,7 +1198,7 @@ function react_ajax_announce_edit_helpbyRight(formdata,uuid){
 				React.render(React.createElement(Announcements_edit_helpbyRight,{
 					formdata:data.data,
 					group_list:G_selected_dataModelArray_byArray(Store.getAllGroup(),"uuid","brand_name")
-					}),document.getElementById('div_body'));
+					}),G_get_div_body());
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
@@ -1266,7 +1266,7 @@ function admin_announce_listByGroup_wjkj(type){
 		typelisg:G_getMsgProps().msg_list,
 		type:type,
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 	return;
 }; 
 /*
@@ -1334,7 +1334,7 @@ function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
 	  					events: data.list.data,
 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	  					
-	  				}), document.getElementById('div_body'));
+	  				}), G_get_div_body());
 					
 				} else {
 					alert(data.ResMsg.message);
@@ -1379,7 +1379,7 @@ function ajax_group_myList_wjkj(type,pageNo) {
   					data:data,
   					responsive: true, bordered: true, striped :true,hover:true,striped:true
   					
-  				}), document.getElementById('div_body'));
+  				}), G_get_div_body());
 				
 			} else {
 				alert(data.ResMsg.message);
@@ -1439,7 +1439,7 @@ function ajax_group_edit_byRight_wjkj(formdata){
 	  					data:data,
 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
 	  					
-	  				}), document.getElementById('div_body'));
+	  				}), G_get_div_body());
 					
 				} else {
 					alert(data.ResMsg.message);
@@ -1461,7 +1461,7 @@ function admin_sns_checklist_byRight(){
 		pageNo:1,
 		events: [],
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 	return;
 }; 
 /*
@@ -1489,7 +1489,7 @@ $.ajax({
 				share_url:data.share_url,
 				data:data.data,
 				count:data.count
-				}), document.getElementById('div_body'));
+				}), G_get_div_body());
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
 		}
@@ -1510,7 +1510,7 @@ function admin_snsReply_checklist_byRight(){
 		pageNo:1,
 		events: [],
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 	return;
 }; 
 
@@ -1525,7 +1525,7 @@ function admin_sns_finelist_byRight(){
 		pageNo:1,
 		events: [],
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 	return;
 }; 
 /*
@@ -1553,7 +1553,7 @@ $.ajax({
 				share_url:data.share_url,
 				data:data.data,
 				count:data.count
-				}), document.getElementById('div_body'));
+				}), G_get_div_body());
 		} else {
 			alert("加载数据失败："+data.ResMsg.message);
 		}

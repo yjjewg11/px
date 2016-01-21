@@ -2108,6 +2108,14 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
      *增加编辑与删除功能
      * */
     var Announcements_show_byRight = React.createClass({displayName: "Announcements_show_byRight", 
+		//创建帮助管理点击按钮事件跳转kd_servise方法;
+     	handleClick: function(m,groupuuid,uuid) {
+     		btn_click_announce_helpbyRight(m,groupuuid,uuid);
+        }, 
+    	//收藏按钮方法;
+    	favorites_push: function(title,type,reluuid,url) {
+    		commons_ajax_favorites_push(title,type,reluuid,url);
+    	},
     render: function() {
     	  var o = this.props.data;
 
@@ -2133,6 +2141,14 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 
     	     
     	     ), 
+
+				  React.createElement(AMR_ButtonToolbar, null, 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.groupuuid,o.uuid)}, "编辑"), 
+    	     React.createElement(AMR_Button, {className: "G_Edit_show", amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.groupuuid,o.uuid)}, "删除"), 
+    	     React.createElement(AMR_Button, {amStyle: "success", onClick: this.favorites_push.bind(this,o.title,o.type,o.uuid)}, "收藏"), 
+    	     React.createElement(G_check_disable_div_byRight, {type: o.type, uuid: o.uuid})
+    	     ), 
+
     	    	React.createElement("footer", {className: "am-comment-footer"}, 
     	    	React.createElement("div", {className: "am-comment-actions"}, 
     	    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+o.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
