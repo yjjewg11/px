@@ -386,7 +386,6 @@ var Sns_snsTopic_itemList_item = React.createClass({displayName: "Sns_snsTopic_i
 	 },
 render: function() {
 var o = this.state;	
-console.log("o",o);
 var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 
@@ -395,20 +394,25 @@ var   del_btn=(React.createElement("div", null));
 if(o.ind>2){
 	
 	del_btn=(
+			React.createElement(AMR_ButtonToolbar, null, 
 			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o,this.props.parentDivId), className: "am-btn am-btn-primary"}, "删除")		
+			)
 	)
 }
-//{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}
-//,{"title":"2","ind":"3","uuid":""}],"section_id":10,"title":"dd","uuid":""}
   return (
-		  React.createElement("div", null, 
-	    	React.createElement("label", {className: one_classDiv}, "选项", o.ind, "："), 
-	    	React.createElement("div", {className: two_classDiv}, 
+	   		
+
+	   
+	   		 React.createElement("div", null, 
+	   	         
+	    	React.createElement("label", null, "选项"+o.ind+":"), 
+
 	    	React.createElement(PxInput, {type: "text", title: o.uuid+"_"+o.ind, name: "snstopic_itemList_item_title", id: this.input_id, value: o.title, onChange: this.handleChange, maxLength: "128", placeholder: "不超过128位"}), 
 	    	del_btn
-
+	
 		    )
-	    	)
+	
+
   );
 }
 }); 
@@ -463,6 +467,7 @@ render: function() {
   var that=this;
   var count_people=0;
   var itemList=this.props.itemList;
+  if(!itemList)itemList=[];
   var data={title:o.title,content:o.content,uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
@@ -485,8 +490,10 @@ render: function() {
 			  if(this.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
-						  React.createElement("div", null, 				    
-				    	    React.createElement("h3", null, "(总投票人数：", count_people, ")投票结果:"), 		    	   
+						  React.createElement("div", null, 		
+						  
+				    	    React.createElement("h3", null, "(总投票人数：", count_people, ")投票结果:"), 	
+				    	    React.createElement("hr", null), 
 						       this.props.itemList.map(function(event) {
 			  			         return ( React.createElement("div", null, 
 			  			    	         React.createElement("h3", null, "选项", event.ind, ":", event.title, "(投票人数", event.vote_count, ")")
@@ -502,9 +509,10 @@ render: function() {
 			  }else{
 				  //未投票话题绘制
 				  toupiao_rect=(
-					  React.createElement("div", null, 				    
+					  React.createElement("div", null, 		
+					 
 			    	    React.createElement("h3", null, "投票选项:"), 
-			    	    React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
+			    	    React.createElement("hr", null), 
 				    		React.createElement("form", {className: "am-form", "data-am-validator": true}, 
 					  this.props.itemList.map(function(event) {
 		  			      return (
@@ -515,13 +523,12 @@ render: function() {
 		  			    	    )  			    	     
 		  			    		  )
 		  			         })
-				    	)
-				    	 ), 
-				    	 React.createElement("div", {className: " am-u-md-6 am-u-sm-12"}, 
+				    	), 
+
 				    	   React.createElement(AMR_ButtonToolbar, null, 
-			               React.createElement(AMR_Button, {type: "submit", onClick: this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList), className: "am-btn am-btn-primary"}, "提交")
+			               React.createElement(AMR_Button, {type: "submit", onClick: this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList), className: "am-btn am-btn-primary"}, "投票提交")
 			               )
-			               )
+			       
 					  )
 					         );
 			  } 
@@ -547,14 +554,14 @@ return (
   React.createElement("div", {className: "am-article-bd ", dangerouslySetInnerHTML: {__html: o.content}}
   ), 
   toupiao_rect
- 
+
 
 
 
 
 ), 
 
-	  
+React.createElement("hr", null), 
       React.createElement(AMR_ButtonToolbar, null, 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",o.uuid)}, "编辑"), 
        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "danger", onClick: this.handleClick.bind(this, "del",o.uuid)}, "删除")
@@ -1114,13 +1121,11 @@ var TabsSelect = React.createClass({displayName: "TabsSelect",
 		this.loadSnsTopicList(this.state.key);
 		},
 	  handleSelect: function(key) {
-	    //console.log('你点击了：', key);
 		  
 	  this.loadSnsTopicList(key);
 
 	  },
 	  loadSnsTopicList: function(key) {
-		    //console.log('你点击了：', key);
 		    var divid;
 		    if(key=="1"){
 		    	divid="topiclist_div_1";

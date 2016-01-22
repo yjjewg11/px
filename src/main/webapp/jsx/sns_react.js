@@ -386,7 +386,6 @@ var Sns_snsTopic_itemList_item = React.createClass({
 	 },
 render: function() {
 var o = this.state;	
-console.log("o",o);
 var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 
@@ -395,20 +394,25 @@ var   del_btn=(<div></div>);
 if(o.ind>2){
 	
 	del_btn=(
+			<AMR_ButtonToolbar>
 			<button type="button"  onClick={ this.props.delItem.bind(this,o,this.props.parentDivId)}  className="am-btn am-btn-primary">删除</button>		
+			</AMR_ButtonToolbar>
 	)
 }
-//{"content":"aaa","itemList":[{"title":"1","ind":"2","uuid":""}
-//,{"title":"2","ind":"3","uuid":""}],"section_id":10,"title":"dd","uuid":""}
   return (
-		  <div>
-	    	<label className={one_classDiv}>选项{o.ind}：</label>
-	    	<div className={two_classDiv}>
+	   		
+
+	   
+	   		 <div >   
+	   	         
+	    	<label>{"选项"+o.ind+":"}</label>
+
 	    	<PxInput type="text" title={o.uuid+"_"+o.ind} name="snstopic_itemList_item_title" id={this.input_id}  value={o.title} onChange={this.handleChange} maxLength="128"   placeholder="不超过128位"/>
 	    	{del_btn}
-
+	
 		    </div>
-	    	</div>
+	
+
   );
 }
 }); 
@@ -463,6 +467,7 @@ render: function() {
   var that=this;
   var count_people=0;
   var itemList=this.props.itemList;
+  if(!itemList)itemList=[];
   var data={title:o.title,content:o.content,uuid:o.uuid,status:this.props.dianZan,yes_count:o.yes_count,no_count:o.no_count,isFavor:this.props.isFavor};
   var edit_btn_className="G_Edit_hide";
   if(this.props.canEdit)edit_btn_className="G_Edit_show";
@@ -485,8 +490,10 @@ render: function() {
 			  if(this.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
-						  <div>				    
-				    	    <h3>(总投票人数：{count_people})投票结果:</h3>		    	   
+						  <div>		
+						  
+				    	    <h3>(总投票人数：{count_people})投票结果:</h3>	
+				    	    <hr />
 						       {this.props.itemList.map(function(event) {
 			  			         return ( <div>
 			  			    	         <h3>选项{event.ind}:{event.title}(投票人数{event.vote_count})</h3>
@@ -502,9 +509,10 @@ render: function() {
 			  }else{
 				  //未投票话题绘制
 				  toupiao_rect=(
-					  <div>				    
+					  <div>		
+					 
 			    	    <h3>投票选项:</h3>
-			    	    <div className=" am-u-md-6 am-u-sm-12">
+			    	    <hr />
 				    		<form className="am-form" data-am-validator>
 					  {this.props.itemList.map(function(event) {
 		  			      return (
@@ -516,12 +524,11 @@ render: function() {
 		  			    		  )
 		  			         })}
 				    	</form>
-				    	 </div>
-				    	 <div className=" am-u-md-6 am-u-sm-12">
+
 				    	   <AMR_ButtonToolbar>
-			               <AMR_Button type="submit" onClick={this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList)} className="am-btn am-btn-primary">提交</AMR_Button>
+			               <AMR_Button type="submit" onClick={this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList)} className="am-btn am-btn-primary">投票提交</AMR_Button>
 			               </AMR_ButtonToolbar>
-			               </div>
+			       
 					  </div>
 					         );
 			  } 
@@ -547,14 +554,14 @@ return (
   <div className="am-article-bd "  dangerouslySetInnerHTML={{__html: o.content}}>
   </div>
   {toupiao_rect}
- 
+
 
 
 
 
 </article>
 
-	  
+<hr />
       <AMR_ButtonToolbar>
        <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",o.uuid)} >编辑</AMR_Button>
        <AMR_Button className={edit_btn_className} amStyle="danger" onClick={this.handleClick.bind(this, "del",o.uuid)} >删除</AMR_Button> 
@@ -1114,13 +1121,11 @@ var TabsSelect = React.createClass({
 		this.loadSnsTopicList(this.state.key);
 		},
 	  handleSelect: function(key) {
-	    //console.log('你点击了：', key);
 		  
 	  this.loadSnsTopicList(key);
 
 	  },
 	  loadSnsTopicList: function(key) {
-		    //console.log('你点击了：', key);
 		    var divid;
 		    if(key=="1"){
 		    	divid="topiclist_div_1";
