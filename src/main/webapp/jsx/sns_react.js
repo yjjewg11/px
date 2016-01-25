@@ -225,7 +225,7 @@ var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
 if(o.section_id==10){
 	sns_div_addbtn=(<AMR_ButtonToolbar>
-                  <button  type="button"  onClick={SnsitemListObj.add_item.bind(SnsitemListObj)}  className="am-btn am-btn-primary">添加投票选项</button>
+                  <button  type="button"  onClick={SnsitemListObj.add_item.bind(SnsitemListObj)}  className="am-btn am-btn-primary am-margin-top-sm">添加投票选项</button>
                    </AMR_ButtonToolbar>);
 };
 
@@ -390,12 +390,11 @@ var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 
 var   del_btn=(<div></div>);
-
 if(o.ind>2){
 	
 	del_btn=(
 			<AMR_ButtonToolbar>
-			<button type="button"  onClick={ this.props.delItem.bind(this,o,this.props.parentDivId)}  className="am-btn am-btn-primary">删除</button>		
+			<button type="button"  onClick={ this.props.delItem.bind(this,o,this.props.parentDivId)}  className="am-btn am-btn-danger">删除</button>		
 			</AMR_ButtonToolbar>
 	)
 }
@@ -490,16 +489,23 @@ render: function() {
 			  if(this.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
-						  <div>		
-						  
-				    	    <h3>(总投票人数：{count_people})投票结果:</h3>	
+						  <pre className="am-margin-sm">		
+					
+					     <h2 className="am-text-warning">投票:</h2>
+					      <hr />	
+				    	    <p>{"已投票|"+count_people+"已投:"}</p>	
 				    	    <hr />
 						       {this.props.itemList.map(function(event) {
+								var progress_width=Math.round(event.vote_count/count_people*100);//取整
 			  			         return ( <div>
-			  			    	         <h3>选项{event.ind}:{event.title}(投票人数{event.vote_count})</h3>
+			  			    	         <h3>选项{event.ind}:{event.title}</h3>
+										<div className="am-progress px_position_relative_parent">
+											  <div className="am-progress-bar am-progress-bar-warning" style={{width:progress_width+"%"}}></div>
+									   <div className="px_position_relative_child">{progress_width+"%("+event.vote_count+"人)"}</div>
+											</div>
 			  			    	          </div>)
 			  			           })}
-						  </div>);
+						  </pre>);
 		
 				   box_rect=(
 							  <div>
@@ -509,16 +515,15 @@ render: function() {
 			  }else{
 				  //未投票话题绘制
 				  toupiao_rect=(
-					  <div>		
-					 
-			    	    <h3>投票选项:</h3>
+					 <pre className="am-margin-sm">		
+			    	      <h2 className="am-text-warning">投票:</h2>
 			    	    <hr />
 				    		<form className="am-form" data-am-validator>
 					  {this.props.itemList.map(function(event) {
 		  			      return (
 		  			    	  <div>
 		  			    	    <label>
-		  			    	      <input type="radio" name="table_checkbox"  value={event.uuid}/> {event.title}
+		  			    	      <input type="radio" name="table_checkbox"  value={event.uuid}/> 选项{event.ind}:{event.title}
 		  			    	    </label>
 		  			    	    </div>  			    	     
 		  			    		  )
@@ -529,7 +534,7 @@ render: function() {
 			               <AMR_Button type="submit" onClick={this.sns_toupiaobtn_handleClick.bind(this,this.props.itemList)} className="am-btn am-btn-primary">投票提交</AMR_Button>
 			               </AMR_ButtonToolbar>
 			       
-					  </div>
+					  </pre>
 					         );
 			  } 
 		  }

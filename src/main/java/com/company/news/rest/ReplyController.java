@@ -14,6 +14,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.ClassNewsReplyJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -133,7 +134,12 @@ public class ReplyController extends AbstractRESTController {
 				.addResponseMessageForModelMap(model);
 
 		try {
-			boolean flag = classNewsReplyService.delete(request.getParameter("uuid"),
+			
+			String uuid=request.getParameter("uuid");
+			if(DBUtil.isSqlInjection(uuid, responseMessage))return "";
+			SessionUserInfoInterface parent=this.getUserInfoBySession(request);
+			
+			boolean flag = classNewsReplyService.delete(parent,request.getParameter("uuid"),
 					responseMessage);
 			if (!flag)
 				return "";

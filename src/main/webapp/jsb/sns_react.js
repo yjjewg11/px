@@ -225,7 +225,7 @@ var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 var snsTopic_data=G_selected_dataModelArray_byArray(Vo.getTypeList("snstopic_type"),"key","val");
 if(o.section_id==10){
 	sns_div_addbtn=(React.createElement(AMR_ButtonToolbar, null, 
-                  React.createElement("button", {type: "button", onClick: SnsitemListObj.add_item.bind(SnsitemListObj), className: "am-btn am-btn-primary"}, "添加投票选项")
+                  React.createElement("button", {type: "button", onClick: SnsitemListObj.add_item.bind(SnsitemListObj), className: "am-btn am-btn-primary am-margin-top-sm"}, "添加投票选项")
                    ));
 };
 
@@ -390,12 +390,11 @@ var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 
 var   del_btn=(React.createElement("div", null));
-
 if(o.ind>2){
 	
 	del_btn=(
 			React.createElement(AMR_ButtonToolbar, null, 
-			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o,this.props.parentDivId), className: "am-btn am-btn-primary"}, "删除")		
+			React.createElement("button", {type: "button", onClick:  this.props.delItem.bind(this,o,this.props.parentDivId), className: "am-btn am-btn-danger"}, "删除")		
 			)
 	)
 }
@@ -490,13 +489,20 @@ render: function() {
 			  if(this.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
-						  React.createElement("div", null, 		
-						  
-				    	    React.createElement("h3", null, "(总投票人数：", count_people, ")投票结果:"), 	
+						  React.createElement("pre", {className: "am-margin-sm"}, 		
+					
+					     React.createElement("h2", {className: "am-text-warning"}, "投票:"), 
+					      React.createElement("hr", null), 	
+				    	    React.createElement("p", null, "已投票|"+count_people+"已投:"), 	
 				    	    React.createElement("hr", null), 
 						       this.props.itemList.map(function(event) {
+								var progress_width=Math.round(event.vote_count/count_people*100);//取整
 			  			         return ( React.createElement("div", null, 
-			  			    	         React.createElement("h3", null, "选项", event.ind, ":", event.title, "(投票人数", event.vote_count, ")")
+			  			    	         React.createElement("h3", null, "选项", event.ind, ":", event.title), 
+										React.createElement("div", {className: "am-progress px_position_relative_parent"}, 
+											  React.createElement("div", {className: "am-progress-bar am-progress-bar-warning", style: {width:progress_width+"%"}}), 
+									   React.createElement("div", {className: "px_position_relative_child"}, progress_width+"%("+event.vote_count+"人)")
+											)
 			  			    	          ))
 			  			           })
 						  ));
@@ -509,16 +515,15 @@ render: function() {
 			  }else{
 				  //未投票话题绘制
 				  toupiao_rect=(
-					  React.createElement("div", null, 		
-					 
-			    	    React.createElement("h3", null, "投票选项:"), 
+					 React.createElement("pre", {className: "am-margin-sm"}, 		
+			    	      React.createElement("h2", {className: "am-text-warning"}, "投票:"), 
 			    	    React.createElement("hr", null), 
 				    		React.createElement("form", {className: "am-form", "data-am-validator": true}, 
 					  this.props.itemList.map(function(event) {
 		  			      return (
 		  			    	  React.createElement("div", null, 
 		  			    	    React.createElement("label", null, 
-		  			    	      React.createElement("input", {type: "radio", name: "table_checkbox", value: event.uuid}), " ", event.title
+		  			    	      React.createElement("input", {type: "radio", name: "table_checkbox", value: event.uuid}), " 选项", event.ind, ":", event.title
 		  			    	    )
 		  			    	    )  			    	     
 		  			    		  )

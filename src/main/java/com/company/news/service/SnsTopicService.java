@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.ezmorph.bean.MorphDynaBean;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -91,6 +93,14 @@ public class SnsTopicService extends AbstractService {
 			if(jsonform.getItemList()==null||jsonform.getItemList().size()==0){
 				responseMessage.setMessage("投票类型,投票条目必填.");
 				return null;
+			}
+			List<MorphDynaBean> tmpList=jsonform.getItemList();
+			for(MorphDynaBean  m:tmpList){
+				if(StringUtils.isBlank((String)m.get("title"))){
+					responseMessage.setMessage("投票内容不能为空！");
+					return null;
+				}
+				
 			}
 		}
 		

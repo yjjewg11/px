@@ -6,9 +6,8 @@ function body_show(){
 		$("#div_widget_chooseCook").hide();
 	}
 
-
-//sessionTimeout公用方法
-function G_resMsg_Timeout(ResMsg){
+//sessionTimeout公用方法,话题特殊处理，独立模式，弹出登录窗口。老师模式跳转登录窗口
+function G_resMsg_Timeout_sns(ResMsg){
 	if(ResMsg.status=="sessionTimeout"){
 		Modal_prompt.showLogin();
 	}else{

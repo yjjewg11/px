@@ -137,30 +137,32 @@ public class ClassNewsReplyService extends AbstractService {
 		return pageQueryResult;
 
 	}
-
 	/**
 	 * 删除 支持多个，用逗号分隔
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage) {
+	public boolean delete(SessionUserInfoInterface parent,String uuid, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
-
-		if (uuid.indexOf(",") != -1) // 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate("delete from ClassNewsReply where uuid in(?)",
-					uuid);
-		} else {
-			this.nSimpleHibernateDao.deleteObjectById(ClassNewsReply.class, uuid);
+		ClassNewsReply obj=(ClassNewsReply)this.nSimpleHibernateDao.getObject(ClassNewsReply.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("对象不存在！");
+			return false;
 		}
+		if(!parent.getUuid().equals(obj.getCreate_useruuid())){
+			responseMessage.setMessage("无权删除!");
+			return false;
+		}
+		this.nSimpleHibernateDao.delete(obj);
 
 		return true;
 	}
-
+	
+	
 	public ClassNewsReply get(String uuid) throws Exception {
 		return (ClassNewsReply) this.nSimpleHibernateDao.getObjectById(ClassNewsReply.class, uuid);
 	}

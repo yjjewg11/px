@@ -1,11 +1,10 @@
 
-//sessionTimeout公用方法
-function G_resMsg_Timeout(ResMsg){
+//sessionTimeout公用方法,话题特殊处理，独立模式，弹出登录窗口。老师模式跳转登录窗口
+function G_resMsg_Timeout_sns(ResMsg){
 	if(ResMsg.status=="sessionTimeout"){
-		Modal_prompt.showLogin();
+		G_resMsg_Timeout();
 	}else{
-		alert(ResMsg.message);
-		G_resMsg_filter(ResMsg);	
+		alert(ResMsg.message);		
 	}
 }
 
@@ -134,7 +133,7 @@ function ajax_sns_snsTopic_save(){
  				 G_msg_pop(data.ResMsg.message); 	
  				 Queue.doBackFN();
  			}else{
-				G_resMsg_Timeout(data.ResMsg)
+				G_resMsg_Timeout_sns(data.ResMsg)
 			}
  	}
              };
@@ -160,7 +159,7 @@ function sns_ajax_snsTopic_delete(uuid){
   			if (data.ResMsg.status == "success") {
   				Queue.doBackFN();
   			}else{
-				G_resMsg_Timeout(data.ResMsg)
+				G_resMsg_Timeout_sns(data.ResMsg)
 			}
   		},
   		error :G_ajax_error_fn
@@ -272,7 +271,7 @@ function ajax_sns_reply_save(callback,formid){
 				 if(callback)callback();
 				
 			}else{
-				G_resMsg_Timeout(data.ResMsg)
+				G_resMsg_Timeout_sns(data.ResMsg)
 			}
 	}
 	};
@@ -295,7 +294,7 @@ function ajax_sns_dianzan(url,uuid,dianzansave_callback){
 				if (data.ResMsg.status == "success") {
 					if(typeof dianzansave_callback=='function')dianzansave_callback(data);
 				}else{
-					G_resMsg_Timeout(data.ResMsg)
+					G_resMsg_Timeout_sns(data.ResMsg)
 				}
 			},
 			error : G_ajax_error_fn
