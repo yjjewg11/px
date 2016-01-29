@@ -88,7 +88,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
+//				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -118,7 +118,7 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
+//				new PxRedisCacheImpl().synAllCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -148,9 +148,9 @@ public class WenjieAdminController extends AbstractRESTController {
 				return "";
 			}
 			try {
-				PxRedisCacheImpl dd=new PxRedisCacheImpl();
-				dd.getPx_count().synCountRedisToDb();
-				dd.getSns_topic().synCountRedisToDb();
+//				PxRedisCacheImpl dd=new PxRedisCacheImpl();
+//				dd.getPx_count().synCountRedisToDb();
+//				dd.getSns_topic().synCountRedisToDb();
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
@@ -180,10 +180,46 @@ public class WenjieAdminController extends AbstractRESTController {
 			}
 			try {
 				
-				PxRedisCacheImpl dd=new PxRedisCacheImpl();
-				dd.getPx_count().synAllCountRedisToDb();
-				dd.getSns_topic().synAllCountRedisToDb();
+//				PxRedisCacheImpl dd=new PxRedisCacheImpl();
+//				dd.getPx_count().synAllCountRedisToDb();
+//				dd.getSns_topic().synAllCountRedisToDb();
+//				
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
+		
+		
+		/**
+		 * 刷新所有用户信息到redis
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/readAllUserToRedis", method = RequestMethod.GET)
+		public String readAllUserToRedis(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			
+			if(!RightUtils.isAdmin(request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("redisToDb is not admin!");
+				return "";
+			}
+			try {
 				
+				wenjieAdminService.readAllParentToRedis(responseMessage);
+//				wenjieAdminService.readAllUserToRedis(responseMessage);
+//				PxRedisCacheImpl dd=new PxRedisCacheImpl();
+//				dd.getPx_count().synAllCountRedisToDb();
+//				dd.getSns_topic().synAllCountRedisToDb();
+//				
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {

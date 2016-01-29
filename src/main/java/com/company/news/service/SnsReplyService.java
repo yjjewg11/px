@@ -1,5 +1,8 @@
 package com.company.news.service;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.ClassNews;
@@ -66,8 +70,8 @@ public class SnsReplyService extends AbstractService {
 		
 		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
 		cn.setCreate_useruuid(user.getUuid());
-		cn.setCreate_user(user.getName());
-		cn.setCreate_img(user.getImg());
+//		cn.setCreate_user(user.getName());
+//		cn.setCreate_img(user.getImg());
 		cn.setReply_count(0L);
 		cn.setYes_count(0L);
 		cn.setNo_count(0L);
@@ -127,7 +131,8 @@ public class SnsReplyService extends AbstractService {
 			return new PageQueryResult();
 		}
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.no_count,t1.status";
+		//t1.create_useruuid,t1.create_user,t1.create_img
+		String sql=" SELECT t1.uuid,t1.content,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.no_count,t1.status";
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status=0 ";
 		if(StringUtils.isNotBlank(reply_uuid)){
@@ -153,10 +158,26 @@ public class SnsReplyService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		
+		
+		this.warpMapList(pageQueryResult.getData(), null);
 		//当前用户点赞情况.
 		snsDianzanService.warpReluuidsMapList(pageQueryResult.getData(), request);
 
 		return pageQueryResult;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
+		if(list.size()==0)return list;
+		//从缓存中获取用户资料,包装用户名和头像.
+		UserRedisCache.warpListMapByUserCache(list, "create_useruuid", "create_user", "create_img");
+		//t1.create_useruuid,t1.create_user,t1.create_img
+		
+		return list;
 	}
 
 	/**
@@ -170,7 +191,8 @@ public class SnsReplyService extends AbstractService {
 			HttpServletRequest request) {
 
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		String sql=" SELECT t1.uuid,t1.topic_uuid,t1.content,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.illegal,t1.illegal_time,t1.yes_count,t1.no_count,t1.status";
+		//t1.create_user,t1.create_img,
+		String sql=" SELECT t1.uuid,t1.topic_uuid,t1.content,t1.create_time,t1.create_useruuid,t1.reply_count,t1.illegal,t1.illegal_time,t1.yes_count,t1.no_count,t1.status";
 		sql+=" FROM sns_reply t1 ";
 		sql+=" where t1.status="+SystemConstants.Check_status_fabu ;
 		sql+=" and t1.illegal>0 ";
@@ -180,6 +202,7 @@ public class SnsReplyService extends AbstractService {
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
 		
+		this.warpMapList(pageQueryResult.getData(), null);
 		//当前用户点赞情况.
 		snsDianzanService.warpReluuidsMapList(pageQueryResult.getData(), request);
 

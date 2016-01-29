@@ -1,6 +1,8 @@
 package com.company.news.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
@@ -15,6 +18,9 @@ import com.company.news.entity.Parent;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
+import com.company.news.json.JSONUtils;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -36,6 +42,98 @@ public class WenjieAdminService extends AbstractService {
 
 	@Autowired
 	private PxStudentService pxStudentService;
+	
+	
+
+	/**
+	 * 同步老师数据到redis
+	 * @param responseMessage
+	 * @throws Exception
+	 */
+	public void readAllUserToRedis(ResponseMessage responseMessage) throws Exception {
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);
+		pData.setPageNo(1);
+			String selectsql="select uuid,loginname as l,name as n,img as i";
+				String fromsql=" from px_user order by create_time asc";
+				String countSql="select count(1) "+fromsql;
+				
+
+				boolean isDo=true;
+				do{
+					PageQueryResult page=this.nSimpleHibernateDao.findMapByPageForSqlTotal(selectsql+fromsql, countSql, pData);
+					List<Map> list=page.getData();
+					if(pData.getPageNo()<2){
+						logger.warn("getTotalCount="+page.getTotalCount());
+						
+					}
+					logger.warn("page.getPageNo()="+pData.getPageNo());
+					if(list.size()<pData.getPageSize()){//最后一页
+						isDo=false;
+					}
+					
+					if(list.size()>0){//
+						Map map=new HashMap();
+						for(Map o:list){
+							String uuid=(String)o.get("uuid");
+							o.remove("uuid");
+							o.put("f", SystemConstants.PushMsgDevice_type_1);
+							String json=JSONUtils.getJsonString(o);
+							map.put(uuid, json);
+						}
+						
+						UserRedisCache.setUserCache( map);
+						
+					}
+					pData.setPageNo(pData.getPageNo()+1);
+				}while(isDo);
+				
+	}
+	
+
+	/**
+	 * 同步老师数据到redis
+	 * @param responseMessage
+	 * @throws Exception
+	 */
+	public void readAllParentToRedis(ResponseMessage responseMessage) throws Exception {
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);
+		pData.setPageNo(1);
+			String selectsql="select uuid,loginname as l,name as n,img as i";
+				String fromsql=" from px_parent order by create_time asc";
+				String countSql="select count(1) "+fromsql;
+				
+				boolean isDo=true;
+				do{
+					PageQueryResult page=this.nSimpleHibernateDao.findMapByPageForSqlTotal(selectsql+fromsql, countSql, pData);
+					List<Map> list=page.getData();
+					if(pData.getPageNo()<2){
+						logger.warn("getTotalCount="+page.getTotalCount());
+						
+					}
+					logger.warn("page.getPageNo()="+pData.getPageNo());
+					if(list.size()<pData.getPageSize()){//最后一页
+						isDo=false;
+					}
+					
+					if(list.size()>0){//
+						Map map=new HashMap();
+						for(Map o:list){
+							String uuid=(String)o.get("uuid");
+							o.remove("uuid");
+							o.put("f", SystemConstants.PushMsgDevice_type_0);
+							String json=JSONUtils.getJsonString(o);
+							map.put(uuid, json);
+						}
+						
+						UserRedisCache.setUserCache( map);
+						
+					}
+					pData.setPageNo(pData.getPageNo()+1);
+				}while(isDo);
+				
+	}
 	
 	/**
 	 * 刷新学生与家长关系表

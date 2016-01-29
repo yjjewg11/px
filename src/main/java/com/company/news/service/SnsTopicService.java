@@ -1,6 +1,5 @@
 package com.company.news.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +18,12 @@ import org.springframework.stereotype.Service;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.PxRedisCache;
+import com.company.news.cache.UserCache;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.HTMLUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.NewMsgNumberIservice;
 import com.company.news.entity.SnsTopic;
-import com.company.news.entity.SnsTopicVoteItem;
-import com.company.news.entity.SnsTopicVoteItemOfUpdate;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.SnsTopicJsonform;
 import com.company.news.query.PageQueryResult;
@@ -211,7 +210,8 @@ public class SnsTopicService extends AbstractService {
 	
 	private PageQueryResult listPageBySql(String sqlwhere,PaginationData pData,
 			HttpServletRequest request) {
-		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.click_count ";
+		//t1.create_useruuid,t1.create_user,t1.create_img,
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.click_count ";
 		selectSql+=" FROM sns_topic t1 ";
 		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
@@ -260,8 +260,8 @@ public class SnsTopicService extends AbstractService {
 		
 		
 		
-		
-		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.create_user,t1.create_img,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.illegal_time,t1.illegal,t1.click_count ";
+		//t1.create_useruuid,t1.create_user,t1.create_img,
+		String selectSql=" SELECT t1.uuid,t1.title,t1.create_time,t1.create_useruuid,t1.reply_count,t1.yes_count,t1.status,t1.no_count,t1.level,t1.summary,t1.imguuids,t1.illegal_time,t1.illegal,t1.click_count ";
 		selectSql+=" FROM sns_topic t1 ";
 		String sql=selectSql+sqlwhere;
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
@@ -333,16 +333,19 @@ public class SnsTopicService extends AbstractService {
 	 * @return
 	 */
 	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
-		
+		if(list.size()==0)return list;
 		for(Map o:list){
 			warpMap(o);
 		}
+		//从缓存中获取用户资料,包装用户名和头像.
+		UserRedisCache.warpListMapByUserCache(list, "create_useruuid", "create_user", "create_img");
+		//t1.create_useruuid,t1.create_user,t1.create_img
 		
 		return list;
 	}
 	private void warpMap(Map o) {
 		o.put("imgList", PxStringUtil.uuids_to_imgSmallUrlurlList((String)o.get("imguuids")));
-		o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
+//		o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
 		
 	}
 	public boolean updateDianzan(SessionUserInfoInterface user,String uuid,
@@ -390,9 +393,15 @@ public class SnsTopicService extends AbstractService {
 		return true;
 	}
 		public SnsTopic get(String uuid) {
-				SnsTopic announcements = (SnsTopic) this.nSimpleHibernateDao
-						.getObjectById(SnsTopic.class, uuid);		
-				return announcements;
+				SnsTopic obj = (SnsTopic) this.nSimpleHibernateDao
+						.getObjectById(SnsTopic.class, uuid);
+				
+				UserCache userCache=UserRedisCache.getUserCache(obj.getCreate_useruuid());
+				if(userCache!=null){
+					obj.setCreate_user(userCache.getN());
+					obj.setCreate_img(PxStringUtil.imgSmallUrlByUuid(userCache.getI()));
+				}
+				return obj;
 		
 			}
 		public boolean delete(String uuid, ResponseMessage responseMessage,HttpServletRequest request) {

@@ -18,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import com.company.http.PxHttpSession;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.JavaLockUtils;
 import com.company.news.commons.util.PxStringUtil;
@@ -190,7 +191,7 @@ public class UserinfoService extends AbstractService {
 //				}
 //			}
 //		}
-
+		UserRedisCache.setUserCacheByTeacher(user);
 		
 		return true;
 	}
@@ -312,7 +313,7 @@ public class UserinfoService extends AbstractService {
 			this.nSimpleHibernateDao.getHibernateTemplate().save(
 					userGroupRelation);
 		}
-
+		UserRedisCache.setUserCacheByTeacher(user);
 		return true;
 	}
 
@@ -377,26 +378,27 @@ public class UserinfoService extends AbstractService {
 	 */
 	public void relUpdate_updateSessionUserInfoInterface(
 			SessionUserInfoInterface user) {
-
+		UserRedisCache.setUserCacheByTeacher(user);
+//		return;
 		int count = 0;
-
-		
-		//更新话题表
-				count = this.nSimpleHibernateDao
-						.getHibernateTemplate()
-						.bulkUpdate(
-								"update SnsTopic set create_user=?,create_img=? where create_useruuid =?",
-								user.getName(), user.getImg(), user.getUuid());
-
-				this.logger.info("update ClassNewsReply count=" + count);
-				
-				count = this.nSimpleHibernateDao
-						.getHibernateTemplate()
-						.bulkUpdate(
-								"update SnsReply set create_user=?,create_img=? where create_useruuid =?",
-								user.getName(), user.getImg(), user.getUuid());
-
-				this.logger.info("update ClassNewsReply count=" + count);
+//
+//		
+//		//更新话题表
+//				count = this.nSimpleHibernateDao
+//						.getHibernateTemplate()
+//						.bulkUpdate(
+//								"update SnsTopic set create_user=?,create_img=? where create_useruuid =?",
+//								user.getName(), user.getImg(), user.getUuid());
+//
+//				this.logger.info("update ClassNewsReply count=" + count);
+//				
+//				count = this.nSimpleHibernateDao
+//						.getHibernateTemplate()
+//						.bulkUpdate(
+//								"update SnsReply set create_user=?,create_img=? where create_useruuid =?",
+//								user.getName(), user.getImg(), user.getUuid());
+//
+//				this.logger.info("update ClassNewsReply count=" + count);
 		//更新互动表
 		count = this.nSimpleHibernateDao
 				.getHibernateTemplate()
