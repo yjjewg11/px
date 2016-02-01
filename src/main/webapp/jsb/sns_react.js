@@ -486,7 +486,7 @@ render: function() {
 	         );
 		  }else{
 		      //投票话题绘制
-			  if(this.props.voteItem_uuid){
+			  if(that.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
 						  React.createElement("pre", {className: "am-margin-sm"}, 		
@@ -496,9 +496,17 @@ render: function() {
 				    	    React.createElement("p", null, "已投票|"+count_people+"已投:"), 	
 				    	    React.createElement("hr", null), 
 						       this.props.itemList.map(function(event) {
+
+								var myVote=null;
+								if(that.props.voteItem_uuid==event.uuid){
+									myVote=(
+										React.createElement("span", {className: "am-text-danger"}, "(我投)")
+										)
+										;
+								}
 								var progress_width=Math.round(event.vote_count/count_people*100);//取整
 			  			         return ( React.createElement("div", null, 
-			  			    	         React.createElement("h3", null, "选项", event.ind, ":", event.title), 
+			  			    	         React.createElement("h3", null, " ", myVote, " 选项", event.ind, ":", event.title), 
 										React.createElement("div", {className: "am-progress px_position_relative_parent"}, 
 											  React.createElement("div", {className: "am-progress-bar am-progress-bar-warning", style: {width:progress_width+"%"}}), 
 									   React.createElement("div", {className: "px_position_relative_child"}, progress_width+"%("+event.vote_count+"人)")

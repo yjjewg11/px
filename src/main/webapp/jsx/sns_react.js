@@ -486,7 +486,7 @@ render: function() {
 	         );
 		  }else{
 		      //投票话题绘制
-			  if(this.props.voteItem_uuid){
+			  if(that.props.voteItem_uuid){
 				  //已投票话题绘制
 				  toupiao_rect=(
 						  <pre className="am-margin-sm">		
@@ -496,9 +496,17 @@ render: function() {
 				    	    <p>{"已投票|"+count_people+"已投:"}</p>	
 				    	    <hr />
 						       {this.props.itemList.map(function(event) {
+
+								var myVote=null;
+								if(that.props.voteItem_uuid==event.uuid){
+									myVote=(
+										<span className="am-text-danger">(我投)</span>
+										)
+										;
+								}
 								var progress_width=Math.round(event.vote_count/count_people*100);//取整
 			  			         return ( <div>
-			  			    	         <h3>选项{event.ind}:{event.title}</h3>
+			  			    	         <h3> {myVote} 选项{event.ind}:{event.title}</h3>
 										<div className="am-progress px_position_relative_parent">
 											  <div className="am-progress-bar am-progress-bar-warning" style={{width:progress_width+"%"}}></div>
 									   <div className="px_position_relative_child">{progress_width+"%("+event.vote_count+"人)"}</div>
