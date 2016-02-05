@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
@@ -111,29 +112,34 @@ public class ClassNewsReplyService extends AbstractService {
 		return true;
 	}
 
+	
+	
+	
+	String SelectSql=" SELECT t1.uuid,t1.newsuuid,t1.content,t1.create_time,t1.create_useruuid,t1.status ";
+	
 	/**
 	 * 查询所有班级
 	 * 
 	 * @return
 	 */
 	public PageQueryResult query(String newsuuid, PaginationData pData,boolean isQueryAllStatus) {
-		String hql=null;
+		String sql=SelectSql;
 		if(isQueryAllStatus){
-			 hql = "from ClassNewsReply ";
+			 sql += "from px_classnewsreply t1";
 			if (StringUtils.isNotBlank(newsuuid))
-				hql += " where  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
+				sql += " where  t1.newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
 		}else{
-			 hql = "from ClassNewsReply where  status =" + SystemConstants.Check_status_fabu;
+			 sql += "from px_classnewsreply where   t1.status =" + SystemConstants.Check_status_fabu;
 				if (StringUtils.isNotBlank(newsuuid))
-					hql += " and  newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
+					sql += " and   t1.newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
 		}
 
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 		
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData);
-		List<ClassNewsReply> list = pageQueryResult.getData();
-
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(sql, pData);
+//		List<ClassNewsReply> list = pageQueryResult.getData();
+		this.warpMapList(pageQueryResult.getData(), null);
 		return pageQueryResult;
 
 	}
@@ -171,6 +177,36 @@ public class ClassNewsReplyService extends AbstractService {
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return ClassNews.class;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
+		if(list.size()==0)return list;
+		//从缓存中获取用户资料,包装用户名和头像.
+		UserRedisCache.warpListMapByUserCache(list, "create_useruuid", "create_user", "create_img");
+		//t1.create_useruuid,t1.create_user,t1.create_img
+		for(Map o:list){
+			warpMap(o);
+		}
+		return list;
+	}
+	/**
+	 * vo输出转换
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private Map warpMap(Map o) {
+		try {
+			o.put("content",(MyUbbUtils.myUbbTohtml((String)o.get("content"))));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return o;
 	}
 
 	/**

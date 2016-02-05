@@ -215,7 +215,7 @@ public class WenjieAdminController extends AbstractRESTController {
 			try {
 				
 				wenjieAdminService.readAllParentToRedis(responseMessage);
-//				wenjieAdminService.readAllUserToRedis(responseMessage);
+				wenjieAdminService.readAllUserToRedis(responseMessage);
 //				PxRedisCacheImpl dd=new PxRedisCacheImpl();
 //				dd.getPx_count().synAllCountRedisToDb();
 //				dd.getSns_topic().synAllCountRedisToDb();

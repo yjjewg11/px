@@ -3,6 +3,7 @@ package com.company.news.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
@@ -92,6 +94,8 @@ public class MessageService extends AbstractService {
 		
 		return true;
 	}
+	
+	static final String  SelectSql=" SELECT t1.uuid,t1.send_useruuid,t1.title,t1.type,t1.isread,t1.message,t1.group_uuid,t1.revice_useruuid ";
 	/**
 	 * 查询所有通知
 	 * 
@@ -99,7 +103,7 @@ public class MessageService extends AbstractService {
 	 */
 	public PageQueryResult query(String type, String useruuid,PaginationData pData) {
 
-		String hql = "from Message where isdelete=" + announcements_isdelete_no;
+		String hql = SelectSql+" from px_message t1 where isdelete=" + announcements_isdelete_no;
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		if (StringUtils.isNotBlank(useruuid))
@@ -108,9 +112,8 @@ public class MessageService extends AbstractService {
 		pData.setOrderType("desc");
 		
 		
-		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
-		warpVoList(pageQueryResult.getData());
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(hql, pData);
+		warpMapList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	/**
@@ -123,7 +126,7 @@ public class MessageService extends AbstractService {
 		
 		useruuid=DbUtils.safeToWhereString(useruuid);
 		parentuuid=DbUtils.safeToWhereString(parentuuid);
-		String hql = "from Message where isdelete=" + announcements_isdelete_no;
+		String hql = SelectSql+" from px_message t1 where isdelete=" + announcements_isdelete_no;
 			hql += " and type=1" ;
 			hql += " and (" ;
 				hql += "  (revice_useruuid='" + useruuid + "' and send_useruuid='" + parentuuid + "')";//家长发给我的.
@@ -132,9 +135,9 @@ public class MessageService extends AbstractService {
 			pData.setOrderFiled("create_time");
 			pData.setOrderType("desc");
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-				.findByPaginationToHqlNoTotal(hql, pData);
+				.findMapByPageForSqlNoTotal(hql, pData);
 		
-		warpVoList(pageQueryResult.getData());
+		warpMapList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	
@@ -212,7 +215,7 @@ public class MessageService extends AbstractService {
 	}
 	public PageQueryResult queryByParentAndLeader(String group_uuid,
 			String parent_uuid, PaginationData pData) {
-		String hql = "from Message where isdelete=" + announcements_isdelete_no;
+		String hql = SelectSql+" from px_message t1 where isdelete=" + announcements_isdelete_no;
 		hql += " and type=2" ;
 		hql += " and (" ;
 			hql += "  (revice_useruuid='" + group_uuid + "' and send_useruuid='" + parent_uuid + "')";//家长发给我的.
@@ -221,8 +224,8 @@ public class MessageService extends AbstractService {
 		pData.setOrderFiled("create_time");
 		pData.setOrderType("desc");
 	PageQueryResult pageQueryResult = this.nSimpleHibernateDao
-			.findByPaginationToHqlNoTotal(hql, pData);
-	this.warpVoList(pageQueryResult.getData());
+			.findMapByPageForSqlNoTotal(hql, pData);
+	this.warpMapList(pageQueryResult.getData());
 	return pageQueryResult;
 	}
 	
@@ -236,27 +239,38 @@ public class MessageService extends AbstractService {
 	 */
 	public List queryCountMsgByParents(String useruuid,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as create_time from px_message where type= "+SystemConstants.Message_type_1;
+		String sql="select revice_useruuid,send_useruuid,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type= "+SystemConstants.Message_type_1;
 		sql += " and (" ;
 		sql += "  revice_useruuid ='" + DbUtils.safeToWhereString(useruuid) + "'";//家长发给我的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
 		sql += " order by create_time desc";
-		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
-		List relList=new ArrayList();
-		for(Object[] o:list){
-			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
-			vo.setRevice_useruuid(o[0]+"");
-			vo.setRevice_user(o[1]+"");
-			vo.setSend_useruuid(o[2]+"");
-			vo.setSend_user(o[3]+"");
-			vo.setCount(o[4]+"");
-			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
-			relList.add(vo);
-		}
+		
+		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Query  query =session.createSQLQuery(sql);
+		
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
 		
-	return relList;
+		List<Map> list=query.list();
+		UserRedisCache.warpListMapByUserCache(list, "send_useruuid", "send_user", null);
+		UserRedisCache.warpListMapByUserCache(list, "revice_useruuid", "revice_user", null);
+		
+		
+//		List relList=new ArrayList();
+//		for(Object[] o:list){
+//			GourpLeaderMsgVO vo=new GourpLeaderMsgVO();
+//			vo.setRevice_useruuid(o[0]+"");
+//			vo.setRevice_user(o[1]+"");
+//			vo.setSend_useruuid(o[2]+"");
+//			vo.setSend_user(o[3]+"");
+//			vo.setCount(o[4]+"");
+//			vo.setLast_time(TimeUtils.getDateTimeString((Date)o[5]));
+//			relList.add(vo);
+//		}
+		
+		
+	return list;
 	}
 	
 	/**
@@ -268,7 +282,7 @@ public class MessageService extends AbstractService {
 	 */
 	public PageQueryResult queryCountLeaderMsgByParents(String group_uuids,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,revice_user,send_useruuid,send_user,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type="+SystemConstants.Message_type_2;
+		String sql="select revice_useruuid,send_useruuid,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
 		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
@@ -293,11 +307,37 @@ public class MessageService extends AbstractService {
 		
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
-
+		
+		List list=pageQueryResult.getData();
+		UserRedisCache.warpListMapByUserCache(list, "send_useruuid", "send_user", null);
+		UserRedisCache.warpListMapByUserCache(list, "revice_useruuid", "revice_user", null);
 		
 		return pageQueryResult;
 	}
 	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public Map warpVo(Map o){
+		o.put("message",(MyUbbUtils.myUbbTohtml((String)o.get("message"))));
+		return o;
+	}
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	public List<Map> warpMapList(List<Map> list){
+		
+		UserRedisCache.warpListMapByUserCache(list, "send_useruuid", "send_user", "send_userimg");
+		UserRedisCache.warpListMapByUserCache(list, "revice_useruuid", "revice_user", null);
+		for(Map o:list){
+			warpVo(o);
+		}
+		return list;
+	}
 	/**
 	 * vo输出转换
 	 * @param list

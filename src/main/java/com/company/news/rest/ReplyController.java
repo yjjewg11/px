@@ -105,7 +105,6 @@ public class ReplyController extends AbstractRESTController {
 			PageQueryResult pageQueryResult = classNewsReplyService.query(request.getParameter("newsuuid"), pData,isQueryAllStatus);
 		
 			
-			classNewsReplyService.warpVoList(pageQueryResult.getData(), user);
 			
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
