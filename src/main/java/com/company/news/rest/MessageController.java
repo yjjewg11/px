@@ -218,7 +218,7 @@ public class MessageController extends AbstractRESTController {
 			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String parent_uuid=request.getParameter("uuid");
 			if(StringUtils.isBlank(parent_uuid)){
-				responseMessage.setMessage("参数必填:uuid");
+				responseMessage.setMessage("parent_uuid参数必填:uuid");
 				return "";
 			}
 			PaginationData pData = this.getPaginationDataByRequest(request);

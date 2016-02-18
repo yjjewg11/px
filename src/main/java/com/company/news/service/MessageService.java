@@ -95,7 +95,7 @@ public class MessageService extends AbstractService {
 		return true;
 	}
 	
-	static final String  SelectSql=" SELECT t1.uuid,t1.send_useruuid,t1.title,t1.type,t1.isread,t1.message,t1.group_uuid,t1.revice_useruuid ";
+	static final String  SelectSql=" SELECT t1.uuid,t1.create_time,t1.send_useruuid,t1.title,t1.type,t1.isread,t1.message,t1.group_uuid,t1.revice_useruuid,t1.revice_user,t1.send_user,t1.send_userimg ";
 	/**
 	 * 查询所有通知
 	 * 
@@ -108,8 +108,7 @@ public class MessageService extends AbstractService {
 			hql += " and type=" + type;
 		if (StringUtils.isNotBlank(useruuid))
 			hql += " and revice_useruuid='" + DbUtils.safeToWhereString(useruuid) + "'";
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
+		hql += " order by create_time desc" ;
 		
 		
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(hql, pData);
@@ -132,8 +131,7 @@ public class MessageService extends AbstractService {
 				hql += "  (revice_useruuid='" + useruuid + "' and send_useruuid='" + parentuuid + "')";//家长发给我的.
 				hql += " or (send_useruuid='" + useruuid + "' and revice_useruuid='" + parentuuid + "')";//我发给家长的.
 			hql += "  )" ;
-			pData.setOrderFiled("create_time");
-			pData.setOrderType("desc");
+			hql += " order by create_time desc" ;
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 				.findMapByPageForSqlNoTotal(hql, pData);
 		
@@ -221,8 +219,7 @@ public class MessageService extends AbstractService {
 			hql += "  (revice_useruuid='" + group_uuid + "' and send_useruuid='" + parent_uuid + "')";//家长发给我的.
 			hql += " or (send_useruuid='" + group_uuid + "' and revice_useruuid='" + parent_uuid + "')";//我发给家长的.
 		hql += "  )" ;
-		pData.setOrderFiled("create_time");
-		pData.setOrderType("desc");
+		hql += " order by create_time desc" ;
 	PageQueryResult pageQueryResult = this.nSimpleHibernateDao
 			.findMapByPageForSqlNoTotal(hql, pData);
 	this.warpMapList(pageQueryResult.getData());
@@ -239,7 +236,7 @@ public class MessageService extends AbstractService {
 	 */
 	public List queryCountMsgByParents(String useruuid,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,send_useruuid,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type= "+SystemConstants.Message_type_1;
+		String sql="select revice_useruuid,send_useruuid,revice_user,send_user,send_userimg,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type= "+SystemConstants.Message_type_1;
 		sql += " and (" ;
 		sql += "  revice_useruuid ='" + DbUtils.safeToWhereString(useruuid) + "'";//家长发给我的.
 		sql += "  )" ;
@@ -282,7 +279,7 @@ public class MessageService extends AbstractService {
 	 */
 	public PageQueryResult queryCountLeaderMsgByParents(String group_uuids,
 			 PaginationData pData) {
-		String sql="select revice_useruuid,send_useruuid,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type="+SystemConstants.Message_type_2;
+		String sql="select revice_useruuid,send_useruuid,revice_user,send_user,send_userimg,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type="+SystemConstants.Message_type_2;
 		sql += " and (" ;
 		sql += "  revice_useruuid in(" + DBUtil.stringsToWhereInValue(group_uuids) + ")";//家长发给我的.
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
@@ -321,6 +318,8 @@ public class MessageService extends AbstractService {
 	 * @return
 	 */
 	public Map warpVo(Map o){
+		
+		o.put("send_userimg",(PxStringUtil.imgSmallUrlByUuid((String)o.get("send_userimg"))));
 		o.put("message",(MyUbbUtils.myUbbTohtml((String)o.get("message"))));
 		return o;
 	}
