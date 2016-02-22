@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +14,14 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
+import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
 import com.company.news.entity.Group;
@@ -87,8 +92,31 @@ public class TeachingPlanService extends AbstractService {
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(
 				teachingplan);
 
+		
+		
+		  String msg=teachingPlanJsonform.getPlandateStr()+"课程表";
+			
+			Map map=new HashMap();
+			map.put("uuid", teachingplan.getUuid());
+	    	map.put("classuuid",teachingplan.getClassuuid());
+	    	map.put("title",msg);
+			JobDetails job=new JobDetails("teachingPlanService","sendPushMessage",map);
+			MQUtils.publish(job);
+			
 		return teachingplan;
 	}
+	
+	 @Autowired
+		public PushMsgIservice pushMsgIservice;
+
+		public void sendPushMessage(Map<String,String> map) throws Exception{
+			String uuid=map.get("uuid");
+			String classuuid=map.get("classuuid");
+			String title=map.get("title");
+			pushMsgIservice.pushMsgToParentByClass(SystemConstants.common_type_jiaoxuejihua,uuid,classuuid,title);
+			
+		}
+
 
 	/**
 	 * 

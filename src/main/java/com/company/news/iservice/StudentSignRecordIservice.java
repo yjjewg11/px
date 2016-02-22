@@ -1,19 +1,26 @@
 package com.company.news.iservice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.DoorRecord;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4QBaseInfo;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.StudentSignRecord;
+import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.StudentBindService;
 
 
@@ -51,9 +58,33 @@ public class StudentSignRecordIservice {
 				  obj.setStudentuuid(studentBind.getStudentuuid());
 				  obj.setSign_name(studentBind.getName());
 				  this.nSimpleHibernateDao.save(obj);
+				  
+				  String msg=obj.getSign_name()+"-"+obj.getGroupname()+"-"+TimeUtils.getDateString(obj.getSign_time(),TimeUtils.HH_mm_ss_FORMAT);
+					
+					Map map=new HashMap();
+			    	map.put("uuid", obj.getUuid());
+			    	map.put("groupuuid",obj.getGroupuuid());
+			    	map.put("title",msg);
+					JobDetails job=new JobDetails("studentSignRecordIservice","sendPushMessage",map);
+					MQUtils.publish(job);
+					
+					
 			  }
 		  }
 		  
 	  }
+	  @Autowired
+		public PushMsgIservice pushMsgIservice;
+
+		public void sendPushMessage(Map<String,String> map) throws Exception{
+			String uuid=map.get("uuid");
+			String groupuuid=map.get("groupuuid");
+			String title=map.get("title");
+			pushMsgIservice.pushMsgToParentByStudent(SystemConstants.common_type_signrecord, uuid, groupuuid, title);
+			
+		}
+
+	  
+	  
 	  
 }

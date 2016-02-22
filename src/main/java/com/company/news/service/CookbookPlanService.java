@@ -3,7 +3,9 @@ package com.company.news.service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -12,14 +14,16 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.Cookbook4Q;
 import com.company.news.entity.CookbookPlan;
-import com.company.news.entity.User;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
@@ -64,9 +68,12 @@ public class CookbookPlanService extends AbstractService {
 		CookbookPlan cookbookPlan = this.getByPlandateAndGroupuuid(plandate,
 				cookbookPlanJsonform.getGroupuuid());
 		String uuid=null;
-		if (cookbookPlan == null)
+		boolean isNew=false;
+		if (cookbookPlan == null){
+			isNew=true;
 			cookbookPlan = new CookbookPlan();
-		else{
+		}else{
+			isNew=false;
 			uuid=cookbookPlan.getUuid();
 		}
 		BeanUtils.copyProperties(cookbookPlan, cookbookPlanJsonform);
@@ -76,7 +83,26 @@ public class CookbookPlanService extends AbstractService {
 		this.nSimpleHibernateDao.getHibernateTemplate().saveOrUpdate(
 				cookbookPlan);
 
+		if(isNew){
+			Map map=new HashMap();
+	    	map.put("uuid", cookbookPlan.getUuid());
+	    	map.put("groupuuid", cookbookPlan.getGroupuuid());
+	    	map.put("title",cookbookPlanJsonform.getPlandateStr()+"食谱");
+			JobDetails job=new JobDetails("cookbookPlanService","sendPushMessage",map);
+			MQUtils.publish(job);
+		}
+		
 		return true;
+	}
+	@Autowired
+	public PushMsgIservice pushMsgIservice;
+	
+	public void sendPushMessage(Map<String,String> map) throws Exception{
+		String uuid=map.get("uuid");
+		String groupuuid=map.get("groupuuid");
+		String title=map.get("title");
+		pushMsgIservice.pushMsgToAll_to_parent(SystemConstants.common_type_shipu,uuid,groupuuid,title);
+
 	}
 
 	/**

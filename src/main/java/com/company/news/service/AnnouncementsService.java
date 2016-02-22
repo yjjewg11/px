@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
@@ -142,13 +145,15 @@ public class AnnouncementsService extends AbstractService {
 		
 		if(SystemConstants.Check_status_fabu.equals(announcements.getStatus())){
 			
-			if (announcements.getType().intValue() == SystemConstants.common_type_gonggao ) {//全校公告
-				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-				pushMsgIservice.pushMsgToAll_to_parent(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			}else if (announcements.getType().intValue() == SystemConstants.common_type_neibutongzhi ) {//老师公告
-				pushMsgIservice.pushMsgToAll_to_teacher(announcements.getType().intValue(),announcements.getUuid(),announcements.getGroupuuid(),announcements.getTitle());
-			}
 			
+			Map map=new HashMap();
+	    	map.put("uuid", announcements.getUuid());
+	    	map.put("groupuuid",announcements.getGroupuuid());
+	    	map.put("title",announcements.getTitle());
+	    	map.put("type",announcements.getType()+"");
+			JobDetails job=new JobDetails("announcementsService","sendPushMessage",map);
+			MQUtils.publish(job);
+	
 			
 			//优惠活动计数
 			if(SystemConstants.common_type_pxbenefit==announcementsJsonform.getType().intValue()){
@@ -186,6 +191,24 @@ public class AnnouncementsService extends AbstractService {
 		
 		return true;
 	}
+	
+	
+	public void sendPushMessage(Map<String,String> map) throws Exception{
+		String uuid=map.get("uuid");
+		String groupuuid=map.get("groupuuid");
+		String title=map.get("title");
+		String type=map.get("type");
+		int typeint=Integer.parseInt(type);
+
+		if (typeint == SystemConstants.common_type_gonggao ) {//全校公告
+			pushMsgIservice.pushMsgToAll_to_parent(typeint,uuid,groupuuid,title);
+			pushMsgIservice.pushMsgToAll_to_teacher(typeint,uuid,groupuuid,title);
+			
+		}else if (typeint  == SystemConstants.common_type_neibutongzhi ) {//老师公告
+			pushMsgIservice.pushMsgToAll_to_teacher(typeint,uuid,groupuuid,title);
+		}
+	}
+
 
 	/**
 	 * 增加机构,

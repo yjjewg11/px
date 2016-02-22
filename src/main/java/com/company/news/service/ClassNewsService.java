@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +16,14 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.AbstractClass;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.ClassNewsReply;
@@ -110,42 +114,54 @@ public class ClassNewsService extends AbstractService {
 			// 有事务管理，统一在Controller调用时处理异常
 			PxStringUtil.addCreateUser(user, cn);
 			this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
-
-			
 			//初始话计数
 					countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
+					
+					String msg=cn.getContent();
+					if(StringUtils.isBlank(msg)){
+						msg="班级互动";
+					}
+					
+
+					
+					Map map=new HashMap();
+			    	map.put("uuid", cn.getUuid());
+			    	map.put("classuuid",cn.getClassuuid());
+			    	map.put("title",msg);
+					
+					
+					if(SessionListener.isPXLogin(request)){
+						JobDetails job=new JobDetails("classNewsService","sendPushMessagePxClass",map);
+						MQUtils.publish(job);
+					}else{
+						JobDetails job=new JobDetails("classNewsService","sendPushMessage",map);
+						MQUtils.publish(job);
+					}
+					
 		}
-//		System.out.println(classuuidArray); 
-////		if(pClass==null){
-////			responseMessage.setMessage("选择的班级不存在");
-////			return false;
-////		}
-//		
-//
-//		
-//		ClassNews cn = new ClassNews();
-//
-//		BeanUtils.copyProperties(cn, classNewsJsonform);
-//		cn.setGroupuuid(pClass.getGroupuuid());
-//		cn.setGroup_name(nSimpleHibernateDao.getGroupName(pClass.getGroupuuid()));
-//		cn.setClass_name(pClass.getName());
-//		cn.setCreate_time(TimeUtils.getCurrentTimestamp());
-////		cn.setUpdate_time(TimeUtils.getCurrentTimestamp());
-////		cn.setReply_time(TimeUtils.getCurrentTimestamp());
-//		cn.setUsertype(USER_type_default);
-//		cn.setStatus(SystemConstants.Check_status_fabu);
-//		cn.setIllegal(0l);
-//		
-//		// 有事务管理，统一在Controller调用时处理异常
-//		PxStringUtil.addCreateUser(user, cn);
-//		this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
-//
-//		
-//		//初始话计数
-//				countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
+		
+		
+		
 		return true;
 	}
+	@Autowired
+	public PushMsgIservice pushMsgIservice;
 
+	public void sendPushMessagePxClass(Map<String,String> map) throws Exception{
+		String uuid=map.get("uuid");
+		String classuuid=map.get("classuuid");
+		String title=map.get("title");
+		pushMsgIservice.pushMsgToParentByPxClass(SystemConstants.common_type_hudong,uuid,classuuid,title);
+	}
+	
+
+	public void sendPushMessage(Map<String,String> map) throws Exception{
+		String uuid=map.get("uuid");
+		String classuuid=map.get("classuuid");
+		String title=map.get("title");
+		pushMsgIservice.pushMsgToParentByClass(SystemConstants.common_type_hudong,uuid,classuuid,title);
+	}
+	
 	/**
 	 * 更新班级
 	 * 

@@ -2,13 +2,21 @@ package com.company.news.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
+import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.core.iservice.PushMsgIservice;
+import com.company.news.entity.PxClass;
 import com.company.news.entity.PxTeachingplan;
 import com.company.news.entity.User;
 import com.company.news.jsonform.PxTeachingPlanJsonform;
@@ -52,9 +60,36 @@ public class PxTeachingPlanService extends AbstractService {
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
 
+		PxClass obj = (PxClass) nSimpleHibernateDao.getObject(PxClass.class,
+				pxTeachingplan.getClassuuid());
+		if(obj!=null){
+			 String msg=obj.getName()+" 课程更新:"+pxTeachingplan.getName()+" 时间:"+pxTeachingPlanJsonform.getPlandateStr();
+			 if(StringUtils.isNotBlank(pxTeachingplan.getAddress())) msg +=" 地点:"+pxTeachingplan.getAddress();
+				
+				Map map=new HashMap();
+				map.put("uuid", pxTeachingplan.getClassuuid());
+		    	map.put("classuuid",pxTeachingplan.getClassuuid());
+		    	map.put("title",msg);
+				JobDetails job=new JobDetails("pxTeachingPlanService","sendPushMessage",map);
+				MQUtils.publish(job);
+		}
+		 
+		
 		return true;
 	}
 	
+	
+
+	 @Autowired
+		public PushMsgIservice pushMsgIservice;
+
+		public void sendPushMessage(Map<String,String> map) throws Exception{
+			String uuid=map.get("uuid");
+			String classuuid=map.get("classuuid");
+			String title=map.get("title");
+			pushMsgIservice.pushMsgToParentByPxClass(SystemConstants.common_type_pxteachingPlan,uuid,classuuid,title);
+			
+		}
 	/**
 	 * 增加教学计划,根据周期行时间.
 	 * 
@@ -122,7 +157,7 @@ public class PxTeachingPlanService extends AbstractService {
         //举例,week=3
         int week = aCalendar.get(Calendar.DAY_OF_WEEK)-1;
         int i=0;
-        
+        int count=0;
 		while(i<per_num){
 			if(step<1)break;
 			for(int k=0;k<step;k++){
@@ -147,7 +182,26 @@ public class PxTeachingPlanService extends AbstractService {
 				// 有事务管理，统一在Controller调用时处理异常
 				this.nSimpleHibernateDao.getHibernateTemplate().save(pxTeachingplan);
 				
+				count++;
+				
 			}
+		}
+		
+		
+		
+
+		PxClass obj = (PxClass) nSimpleHibernateDao.getObject(PxClass.class,
+				pxTeachingPlanJsonform.getClassuuid());
+		if(obj!=null){
+			 String msg=obj.getName()+" 课程更新:"+pxTeachingPlanJsonform.getName();
+			 if(StringUtils.isNotBlank(pxTeachingPlanJsonform.getAddress())) msg +=" 地点:"+pxTeachingPlanJsonform.getAddress();
+				
+				Map map=new HashMap();
+				map.put("uuid", pxTeachingPlanJsonform.getClassuuid());
+		    	map.put("classuuid",pxTeachingPlanJsonform.getClassuuid());
+		    	map.put("title",msg);
+				JobDetails job=new JobDetails("pxTeachingPlanService","sendPushMessage",map);
+				MQUtils.publish(job);
 		}
 		return true;
 	}
