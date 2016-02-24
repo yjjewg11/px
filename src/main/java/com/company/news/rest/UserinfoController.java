@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.User;
@@ -34,10 +35,10 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.RightService;
 import com.company.news.service.UserinfoService;
+import com.company.news.session.UserOfSession;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.UserInfoReturn;
 import com.company.web.listener.SessionListener;
-import com.company.web.session.UserOfSession;
 
 @Controller
 @RequestMapping(value = "/userinfo")
@@ -347,6 +348,7 @@ public class UserinfoController extends AbstractRESTController {
 			if (session != null) {
 				// UserInfo
 				// userInfo=(UserInfo)session.getAttribute(RestConstants.Session_UserInfo);
+				SessionUserRedisCache.remove(session.getId());
 				session.invalidate();
 			}
 
@@ -388,7 +390,7 @@ public class UserinfoController extends AbstractRESTController {
 				if(StringUtils.isNotBlank(grouptype)){
 					String loginType=SessionListener.getLoginTypeBySession(request);
 					if(!grouptype.equals(loginType)){//不等,表示切换 到其他模块.重新家长session的属性.
-						userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+						userinfoService.putSession(grouptype, SessionListener.getSession(request), (UserOfSession)this.getUserInfoBySession(request), request);
 					}
 				}
 				

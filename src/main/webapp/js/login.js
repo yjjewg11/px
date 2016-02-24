@@ -179,7 +179,7 @@ function ajax_userinfo_login() {
 				Store.setUserinfo(data.userinfo);
 				Store.setGroup(data.list);
 				PxRight.setUserRights(data.S_User_rights);
-				
+				 
 				G_CallPhoneFN.jsessionToPhone(data.JSESSIONID);
 				
 				setCookie("bs_grouptype", data.S_type);

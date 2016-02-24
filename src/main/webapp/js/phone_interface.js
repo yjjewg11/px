@@ -439,6 +439,12 @@ var G_CallPhoneFN={
 			
 			if(window.JavaScriptCall){
 				JavaScriptCall.jsessionToPhone(sessionid);
+				try{//新版本才支持
+					var userinfo=Store.getUserinfo();
+					if(userinfo)JavaScriptCall.jsessionToPhoneTel(userinfo.loginname);
+				}catch(e){
+				}
+				
 				return true;
 			}
 			if(G_CallIosFN.isIos){
@@ -635,6 +641,7 @@ var G_CallIosFN={
 	 * ios/sessionid/C483CC4E6FECB6F6267591D624704A86
 	 */
 	jsessionToPhone:function(sessionid){
+	
 		try{
 			G_CallIosFN.iosIfr.src = "ios/sessionid/"+sessionid;    
 			return true;
@@ -646,6 +653,7 @@ var G_CallIosFN={
 		try{
 			if(window.JavaScriptCall){
 				JavaScriptCall.jsessionToPhone(sessionid);
+				
 				return true;
 			}
 		}catch(e){

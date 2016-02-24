@@ -18,9 +18,9 @@ import org.springframework.ui.ModelMap;
 import com.company.http.PxHttpSession;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
+import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
-import com.company.news.commons.util.JavaLockUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Group;
 import com.company.news.entity.PClass;
@@ -45,12 +45,12 @@ import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
+import com.company.news.session.UserOfSession;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.news.vo.TeacherPhone;
 import com.company.plugin.security.LoginLimit;
 import com.company.web.listener.SessionListener;
-import com.company.web.session.UserOfSession;
 
 /**
  * 
@@ -577,6 +577,8 @@ public class UserinfoService extends AbstractService {
 		}
 
 		HttpSession session = request.getSession(true);
+		
+		
 		// 更新登陆日期,最近一次登陆日期
 		String sql = "update px_user set count=count+1,last_login_time=login_time,login_time=now(),login_type="
 				+ userLoginForm.getGrouptype()
@@ -1360,53 +1362,47 @@ public class UserinfoService extends AbstractService {
 		if(StringUtils.isBlank(jessionid)){
 			return false;
 		}
-		
-		
-	
 		// 登录验证.验证失败则返回.
 		try {
 			//根据参数相同视为同一把锁.
-			Object lockObject=JavaLockUtils.getLockObj(jessionid);
-			User user = null;
+//			Object lockObject=JavaLockUtils.getLockObj(jessionid);
+//			User user = null;
 			HttpSession session = null;
-			synchronized (lockObject) {
+//			synchronized (lockObject) 
+			{
 				session=SessionListener.getSession(request);
 				// 同步加锁情况下,再次判断,防止多次创建session
 				if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
 					return true;
 				}
-				
-				//优先判断家长.在判断老师
-				{
 					// 请求服务返回失败标示
-					
-					Parent parent= getParentBySessionid(jessionid);
-					if (parent!=null ){//家长或老师都没找到则退出.
+					UserOfSession userOfSession =SessionUserRedisCache.getUserOfSessionBySessionid(jessionid);
+				
+					if (userOfSession==null){//家长或老师都没找到则退出.
+						return false;
+					}
+//					//优先判断家长.在判断老师.家长直接加载话题模块
+					if (Integer.valueOf(SystemConstants.Session_User_Login_Type_Parent).equals(userOfSession.getF()) ){//家长或老师都没找到则退出.
 						session = new PxHttpSession(jessionid);
 						SessionListener.putSessionByJSESSIONID(session);
-						putSessionForSns(SystemConstants.Group_type_3.toString(),session,parent, SystemConstants.Session_User_Login_Type_Parent,request);
+						putSessionForSns(SystemConstants.Group_type_3.toString(),session,userOfSession,request);
 						return true;
 					}
-					
-				}
-				
-				
-				//判断是否是老师
-				user = getUserBySessionid(jessionid);
-				if (user == null){
-					return false;
-				}
-				
-				session = new PxHttpSession(jessionid);
-				SessionListener.putSessionByJSESSIONID(session);
-				UserOfSession userOfSession = new UserOfSession();
-				try {
-					BeanUtils.copyProperties(userOfSession, user);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				String logintype = user.getLogin_type() == null ? "1" : user
-						.getLogin_type().toString();
+//				//判断是否是老师
+//				user = getUserBySessionid(jessionid);
+//				if (user == null){
+//					return false;
+//				}
+//				
+//				session = new PxHttpSession(jessionid);
+//				SessionListener.putSessionByJSESSIONID(session);
+//				UserOfSession userOfSession = new UserOfSession();
+//				try {
+//					BeanUtils.copyProperties(userOfSession, user);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+				String logintype = userOfSession.getLoginType().toString();
 				// 设置session数据
 				this.putSession(logintype, session, userOfSession, request);
 
@@ -1427,9 +1423,10 @@ public class UserinfoService extends AbstractService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}finally{
-        	JavaLockUtils.removeLockObj(jessionid);
 		}
+//		finally{
+////        	JavaLockUtils.removeLockObj(jessionid);
+//		}
 
 	}
 
@@ -1441,7 +1438,7 @@ public class UserinfoService extends AbstractService {
 	 * @throws Exception
 	 */
 	public void putSession(String grouptype, HttpSession session,
-			SessionUserInfoInterface user, HttpServletRequest request)
+			UserOfSession user, HttpServletRequest request)
 			throws Exception {
 		if (StringUtils.isBlank(grouptype))
 			grouptype = SystemConstants.Group_type_1.toString();
@@ -1472,6 +1469,10 @@ public class UserinfoService extends AbstractService {
 			boolean isAdmin = isAdmin(user.getUuid());
 			session.setAttribute(RestConstants.Session_isAdmin, isAdmin);
 		}
+		
+		user.setLoginType(grouptype);
+		SessionUserRedisCache.set(session.getId(), user);
+		
 	}
 
 	public PageQueryResult getUserByByPagewjkj(PaginationData pData) {
@@ -1712,6 +1713,9 @@ public class UserinfoService extends AbstractService {
 	 */
 	public UserOfSession putSessionForSns(String grouptype, HttpSession session,
 			SessionUserInfoInterface user,String userType, HttpServletRequest request){
+
+		//redis 缓存sessionid
+	
 		
 				UserOfSession userOfSession = new UserOfSession();
 				try {
@@ -1721,12 +1725,37 @@ public class UserinfoService extends AbstractService {
 				}
 				SessionListener.putSessionByJSESSIONID(session);
 		
+				//缓存
+				userOfSession.setLoginType(grouptype);
+				SessionUserRedisCache.set(session.getId(), userOfSession);
+				
+				//0:表示老师,1：表示家长.2:禁用
+				
 				//设置session数据
 				session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
 				// 4.session添加-用户类型.
 				session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
 				// 4.session添加-用户登录类型.
 				session.setAttribute(RestConstants.User_TYPE, userType);
+				
+				return userOfSession;
+	}
+	/**
+	 * sns模式下面,放入session数据.
+	 * @param grouptype
+	 * @param session
+	 * @param user
+	 * @param userType
+	 * @param request
+	 */
+	public UserOfSession putSessionForSns(String grouptype, HttpSession session,UserOfSession userOfSession, HttpServletRequest request){
+		
+				//设置session数据
+				session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
+				// 4.session添加-用户类型.
+				session.setAttribute(RestConstants.LOGIN_TYPE, grouptype);
+				// 4.session添加-用户登录类型.
+				session.setAttribute(RestConstants.User_TYPE, userOfSession.getF());
 				
 				return userOfSession;
 	}

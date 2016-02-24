@@ -25,6 +25,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.CountService;
 import com.company.news.service.GroupService;
 import com.company.news.service.UserinfoService;
+import com.company.news.session.UserOfSession;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -121,7 +122,7 @@ public class GroupController extends AbstractRESTController {
 						.getUserInfoBySession(request).getUuid());
 				String grouptype=groupRegJsonform.getType()+"";
 				if(StringUtils.isBlank(grouptype))grouptype="1";
-				userinfoService.putSession(grouptype, SessionListener.getSession(request), this.getUserInfoBySession(request), request);
+				userinfoService.putSession(grouptype, SessionListener.getSession(request), (UserOfSession)this.getUserInfoBySession(request), request);
 			}
 
 			else
