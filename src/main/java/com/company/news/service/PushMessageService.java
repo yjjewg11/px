@@ -157,26 +157,26 @@ public class PushMessageService extends AbstractService {
 	public boolean updateIOSParentVersion(
 			PushMessageJsonform pushMessageJsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
-		
-		String hql = "select distinct user_uuid from PushMsgDevice where  device_type='ios'";
-			hql += " and type="+SystemConstants.PushMsgDevice_type_0;
-			
-			List<String> list= (List<String>)this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
-		  for(String o:list){
-			  PushMessage pushMessage=new PushMessage();
-			  pushMessage.setGroup_uuid(null);
-			  pushMessage.setRevice_useruuid(o);
-			  pushMessage.setType(SystemConstants.common_type_html);
-			  pushMessage.setRel_uuid(pushMessageJsonform.getRel_uuid());
-			  pushMessage.setTitle(pushMessageJsonform.getTitle());
-			  pushMessage.setMessage(pushMessageJsonform.getMessage());
-			  pushMessage.setUrl(pushMessageJsonform.getUrl());
-			  pushMessage.setCreate_time(TimeUtils.getCurrentTimestamp());
-			  pushMessage.setIsread(0);
-			  this.nSimpleHibernateDao.save(pushMessage);
-		  }
-		  
-		  pushMsgIservice.pushMsg_to_all_ios_parent_app(pushMessageJsonform.getTitle(), pushMessageJsonform.getMessage());
+//		
+//		String hql = "select distinct user_uuid from PushMsgDevice where  device_type='ios'";
+//			hql += " and type="+SystemConstants.PushMsgDevice_type_0;
+//			
+//			List<String> list= (List<String>)this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+//		  for(String o:list){
+//			  PushMessage pushMessage=new PushMessage();
+//			  pushMessage.setGroup_uuid(null);
+//			  pushMessage.setRevice_useruuid(o);
+//			  pushMessage.setType(SystemConstants.common_type_html);
+//			  pushMessage.setRel_uuid(pushMessageJsonform.getRel_uuid());
+//			  pushMessage.setTitle(pushMessageJsonform.getTitle());
+//			  pushMessage.setMessage(pushMessageJsonform.getMessage());
+//			  pushMessage.setUrl(pushMessageJsonform.getUrl());
+//			  pushMessage.setCreate_time(TimeUtils.getCurrentTimestamp());
+//			  pushMessage.setIsread(0);
+//			  this.nSimpleHibernateDao.save(pushMessage);
+//		  }
+//		  
+//		  pushMsgIservice.pushMsg_to_all_ios_parent_app(pushMessageJsonform.getTitle(), pushMessageJsonform.getMessage());
 		
 		
 		return true;
@@ -187,26 +187,26 @@ public class PushMessageService extends AbstractService {
 	public boolean updateIOSTeacherVersion(
 			PushMessageJsonform pushMessageJsonform,
 			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
-		
-		String hql = "select distinct user_uuid from PushMsgDevice where  device_type='ios'";
-			hql += " and type="+SystemConstants.PushMsgDevice_type_1;
-			
-			List<String> list= (List<String>)this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
-		  for(String o:list){
-			  PushMessage pushMessage=new PushMessage();
-			  pushMessage.setGroup_uuid(null);
-			  pushMessage.setRevice_useruuid(o);
-			  pushMessage.setType(SystemConstants.common_type_html);
-			  pushMessage.setRel_uuid(pushMessageJsonform.getRel_uuid());
-			  pushMessage.setTitle(pushMessageJsonform.getTitle());
-			  pushMessage.setMessage(pushMessageJsonform.getMessage());
-			  pushMessage.setUrl(pushMessageJsonform.getUrl());
-			  pushMessage.setCreate_time(TimeUtils.getCurrentTimestamp());
-			  pushMessage.setIsread(0);
-			  this.nSimpleHibernateDao.save(pushMessage);
-		  }
-		  
-		  pushMsgIservice.pushMsg_to_all_ios_teacher_app(pushMessageJsonform.getTitle(), pushMessageJsonform.getMessage());
+//		
+//		String hql = "select distinct user_uuid from PushMsgDevice where  device_type='ios'";
+//			hql += " and type="+SystemConstants.PushMsgDevice_type_1;
+//			
+//			List<String> list= (List<String>)this.nSimpleHibernateDao.getHibernateTemplate().find(hql);
+//		  for(String o:list){
+//			  PushMessage pushMessage=new PushMessage();
+//			  pushMessage.setGroup_uuid(null);
+//			  pushMessage.setRevice_useruuid(o);
+//			  pushMessage.setType(SystemConstants.common_type_html);
+//			  pushMessage.setRel_uuid(pushMessageJsonform.getRel_uuid());
+//			  pushMessage.setTitle(pushMessageJsonform.getTitle());
+//			  pushMessage.setMessage(pushMessageJsonform.getMessage());
+//			  pushMessage.setUrl(pushMessageJsonform.getUrl());
+//			  pushMessage.setCreate_time(TimeUtils.getCurrentTimestamp());
+//			  pushMessage.setIsread(0);
+//			  this.nSimpleHibernateDao.save(pushMessage);
+//		  }
+//		  
+//		  pushMsgIservice.pushMsg_to_all_ios_teacher_app(pushMessageJsonform.getTitle(), pushMessageJsonform.getMessage());
 		
 		
 		return true;

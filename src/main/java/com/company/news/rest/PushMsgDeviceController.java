@@ -58,7 +58,7 @@ public class PushMsgDeviceController extends AbstractRESTController {
 		}
 		//设置当前用户
 		SessionUserInfoInterface user=this.getUserInfoBySession(request);
-		jsonform.setUser_uuid(user.getUuid());
+//		jsonform.setUser_uuid(user.getUuid());
 		if(jsonform.getStatus()==null){
 			jsonform.setStatus(0);
 		}
@@ -71,7 +71,7 @@ public class PushMsgDeviceController extends AbstractRESTController {
 			return "";
 		}
 		//监听所有我关联的组织
-		jsonform.setGroup_uuid(this.getMyGroupUuidsBySession(request));
+//		jsonform.setGroup_uuid(this.getMyGroupUuidsBySession(request));
 		try {
 			boolean flag;
 			    flag = pushMsgDeviceService.save(jsonform, responseMessage,request);

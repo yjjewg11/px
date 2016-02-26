@@ -211,8 +211,8 @@ public class StudentService extends AbstractStudentService {
 			
 //			responseMessage.setMessage("操作成功");
 			//关联班级的学生,离校  去掉关联班级
-			if(!SystemConstants.Data_null.equals(student.getClassuuid())&&SystemConstants.Student_status_leaveSchool.equals(student.getStatus())){
-				student.setClassuuid(SystemConstants.Data_null);
+			if(!SystemConstants.DB_String_unrelated_Value.equals(student.getClassuuid())&&SystemConstants.Student_status_leaveSchool.equals(student.getStatus())){
+				student.setClassuuid(SystemConstants.DB_String_unrelated_Value);
 				student.setLeave_time(TimeUtils.getCurrentTimestamp());
 //				responseMessage.setMessage("操作成功,该生离校已从班级移除.");
 			}
