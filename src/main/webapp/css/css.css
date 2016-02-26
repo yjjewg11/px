@@ -122,15 +122,13 @@ z-index: 9999;
     cursor: pointer;
     margin-top: 5px;
     border:1px solid #FFFFFF;
-     width: 134px; height: 122px;
+     width: 138px; height: 125px;
      text-align: center;
     }
     .G_ch_cook_item img{width: 134px;height: 100px;}
   
     .G_ch_cook_item_checked{
-    float: left;margin-left: 15px;position:relative;cursor: pointer;
-    margin-top: 5px;border:1px solid #FF0033; width: 134px; height: 122px;
-    text-align: center;
+  			border:2px solid #FF0033; 
     }
        .G_ch_cook_item_checked img{width: 134px;height: 100px;}
        
@@ -142,7 +140,8 @@ z-index: 9999;
 	
 .G_cookplan_Img{width:135px; height:100px; position:relative; margin:15px 5px 10px 0px; float:left;}
 .G_cookplan_Img_img{width: 134px;height: 100px;}
-.G_cookplan_Img_close{position:absolute; top:0px; right:0px;cursor: pointer;}
+.G_cookplan_Img_close{position:absolute; top:0px; right:2px;cursor: pointer;}
+.G_cookplan_Img_close img{width: 21px;height: 21px;}
 
 .px_reply_comment_bd{
 	overflow: hidden;

@@ -59,14 +59,18 @@ public class StudentSignRecordIservice {
 				  obj.setSign_name(studentBind.getName());
 				  this.nSimpleHibernateDao.save(obj);
 				  
-				  String msg=obj.getSign_name()+"-"+obj.getGroupname()+"-"+TimeUtils.getDateString(obj.getSign_time(),TimeUtils.HH_mm_ss_FORMAT);
-					
-					Map map=new HashMap();
-			    	map.put("uuid", obj.getUuid());
-			    	map.put("groupuuid",obj.getGroupuuid());
-			    	map.put("title",msg);
-					JobDetails job=new JobDetails("studentSignRecordIservice","sendPushMessage",map);
-					MQUtils.publish(job);
+				  //只有当天的数据才发送推送
+				  if(TimeUtils.getDateString(obj.getSign_time(),TimeUtils.YYYY_MM_DD_FORMAT).equals(TimeUtils.getCurrentTime(TimeUtils.YYYY_MM_DD_FORMAT))){
+					  String msg=obj.getSign_name()+"-"+obj.getGroupname()+"-"+TimeUtils.getDateString(obj.getSign_time(),TimeUtils.HH_mm_ss_FORMAT);
+						
+						Map map=new HashMap();
+				    	map.put("uuid", obj.getUuid());
+				    	map.put("groupuuid",obj.getGroupuuid());
+				    	map.put("title",msg);
+						JobDetails job=new JobDetails("studentSignRecordIservice","sendPushMessage",map);
+						MQUtils.publish(job);
+				  }
+				
 					
 					
 			  }

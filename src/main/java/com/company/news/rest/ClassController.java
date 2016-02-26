@@ -180,6 +180,30 @@ public class ClassController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	public String get2(ModelMap model, HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PClass c;
+		try {
+			
+					String uuid = request.getParameter("uuid");
+					if (DBUtil.isSqlInjection(uuid, responseMessage)) {
+						return "";
+					}
+			c = classService.get(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,c);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 	
 	/**
 	 * 结业

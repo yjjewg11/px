@@ -180,6 +180,28 @@ public class PxStudentController extends AbstractRESTController {
 	}
 	
 
+
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	public String get2( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PxStudent s;
+		try {
+			String uuid = request.getParameter("uuid");
+			s = pxStudentService.get(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity, s);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	public String get(@PathVariable String uuid, ModelMap model,
 			HttpServletRequest request) {

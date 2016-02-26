@@ -1370,20 +1370,29 @@ public class UserinfoService extends AbstractService {
 			HttpSession session = null;
 //			synchronized (lockObject) 
 			{
-				session=SessionListener.getSession(request);
-				// 同步加锁情况下,再次判断,防止多次创建session
-				if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
-					return true;
-				}
+				
 					// 请求服务返回失败标示
 					UserOfSession userOfSession =SessionUserRedisCache.getUserOfSessionBySessionid(jessionid);
 				
 					if (userOfSession==null){//家长或老师都没找到则退出.
 						return false;
 					}
+					
+					
+					session=SessionListener.getSession(request);
+					// 同步加锁情况下,再次判断,防止多次创建session
+					if (session != null&&session.getAttribute(RestConstants.Session_UserInfo)!=null) {
+						return true;
+					}
+					
+					session = new PxHttpSession(jessionid);
+					SessionListener.putSessionByJSESSIONID(session);
+					//设置session数据
+					session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
+					
 //					//优先判断家长.在判断老师.家长直接加载话题模块
 					if (Integer.valueOf(SystemConstants.Session_User_Login_Type_Parent).equals(userOfSession.getF()) ){//家长或老师都没找到则退出.
-						session = new PxHttpSession(jessionid);
+					
 						SessionListener.putSessionByJSESSIONID(session);
 						putSessionForSns(SystemConstants.Group_type_3.toString(),session,userOfSession,request);
 						return true;
@@ -1394,7 +1403,6 @@ public class UserinfoService extends AbstractService {
 //					return false;
 //				}
 //				
-//				session = new PxHttpSession(jessionid);
 //				SessionListener.putSessionByJSESSIONID(session);
 //				UserOfSession userOfSession = new UserOfSession();
 //				try {

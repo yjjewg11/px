@@ -77,7 +77,7 @@ public class WenjieAdminService extends AbstractService {
 						for(Map o:list){
 							String uuid=(String)o.get("uuid");
 							o.remove("uuid");
-							o.put("f", SystemConstants.PushMsgDevice_type_1);
+							o.put("f", SystemConstants.Session_User_Login_Type_Teacher);
 							String json=JSONUtils.getJsonString(o);
 							map.put(uuid, json);
 						}
@@ -122,7 +122,7 @@ public class WenjieAdminService extends AbstractService {
 						for(Map o:list){
 							String uuid=(String)o.get("uuid");
 							o.remove("uuid");
-							o.put("f", SystemConstants.PushMsgDevice_type_0);
+							o.put("f", SystemConstants.Session_User_Login_Type_Parent);
 							String json=JSONUtils.getJsonString(o);
 							map.put(uuid, json);
 						}

@@ -3536,6 +3536,8 @@ render: function() {
 	  } else {
 		  plandateStr_div = React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", name: "plandateStr", id: "plandateStr", dateTime: o.plandate, showTimePicker: false, onChange: this.handleChange})
 	  }
+			//选择食谱,根据幼儿园uuid过滤.
+		  w_ch_cook.groupuuid=o.groupuuid;
 	  return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
@@ -4497,64 +4499,157 @@ render: function() {
   var AMR_Grid=AMUIReact.Grid;
   var AMR_Col=AMUIReact.Col;
   var Class_students_manage_byRight = React.createClass({displayName: "Class_students_manage_byRight",
-	   getDefaultProps: function() {
+
+	 componentWillReceiveProps: function(nextProps) {    
+             this.setState(this.getStateByPropes(nextProps));
+     },
+	getInitialState: function() {         
+		 return this.getStateByPropes(this.props);
+	 },
+	getStateByPropes:function(nextProps){
+		
+        var classList=Store.getChooseClass(nextProps.groupuuid);
+		
+               var queryForm={
+				
+					classuuid:nextProps.classuuid,
+                    groupuuid:nextProps.groupuuid
+               };
+               var obj= {
+				   	 classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
+				     formdata:{},
+                    queryForm:queryForm,
+                    list: []
+               };
+               return obj;
+     },
+	getDefaultProps: function() {
 	 var data = [
 	            {value: 'edit_class', label: '编辑班级'},
 	            {value: 'delete', label: '删除空班级'}
 	          ];
+
+	 
 	    return {
-	      down_list: data
-	    };
+			 groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),			
+			  down_list: data
+			};
 	  },
   	 componentDidMount:function(){
   			 G_img_down404();
+			   this.ajax_list();
   	  },
+	 ajax_callback:function(list,formdata){
+		  if (list== null ) this.state.list=[];
+		   else
+			this.state.list=list;
+
+			this.state.formdata=formdata;
+			this.setState(this.state);
+	   },
+     ajax_list:function(){
+               var queryForm=this.state.queryForm;            
+	if(!queryForm.classuuid){
+		alert("请选择班级");
+	return;
+		}
+			 var formdata={};
+     var url = hostUrl + "rest/class/get.json";
+ 	$.ajax({
+ 		type : "GET",
+ 		url : url,
+		data :{uuid:queryForm.classuuid},
+ 		dataType : "json",
+ 		 async: false,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			if (data.ResMsg.status == "success") {
+ 				formdata=data.data;
+ 			} else {
+ 				alert("加载数据失败："+data.ResMsg.message);
+ 			}
+ 		},
+		error :G_ajax_error_fn
+ 	});
+ 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+queryForm.classuuid;
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			 async: false,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					students=data.list;
+					students_number=data.list.length;
+				} else {
+					alert("加载数据失败："+data.ResMsg.message);
+				}
+			},
+			error :G_ajax_error_fn
+		});
+ 	this.ajax_callback(students,formdata);
+    },
+	handleChange: function(v) {
+		   var queryForm=$('#queryForm').serializeJson();
+		   this.state.queryForm=queryForm;
+		this.ajax_list();
+   },
   	handleClick: function(m,groupuuid,uuid) {		 
   		btn_click_class_list_byRight(m,groupuuid,uuid);
 	 },
 	 handleChange_selectgroup: function(val) {
+		 var classList=Store.getChooseClass(val);
 		 var class_uuid;
-		 if(Store.getChooseClass(val).length>0){
-			 class_uuid=Store.getChooseClass(val)[0].uuid; 
+		 if(classList.length>0){
+			 class_uuid=classList[0].uuid; 
 		 }else{
 			 class_uuid="";
 		 }
+		 var queryForm=$('#queryForm').serializeJson();
+		   this.state.queryForm=queryForm;
+
+		 this.state.classList=G_selected_dataModelArray_byArray(classList,"uuid" ,"name");
+		 this.state.queryForm.classuuid=class_uuid;
+		this.ajax_list();
 		},		 
       handleClick_download: function(groupuuid,uuid,val) {
          btn_click_class_list_byRight(val,groupuuid,uuid);
       },
-	 handleChange_selectclass: function(val) {		 
-		 btn_click_class_kuang_byRight(val)
-	 },	 
+	
   	render: function() {
-  		var o=this.props.formdata;
-  		if(!this.props.students)this.props.students=[];
+		 var queryForm=this.state.queryForm;
+  		var o=this.state.formdata;
+  		if(!this.state.list)this.state.list=[];
   	  return (
   	  React.createElement("div", null, 
        React.createElement(AMR_Panel, null, 
   	  React.createElement(AMR_ButtonToolbar, null, 
-	      React.createElement(AMR_Button, {amStyle: "secondary", onClick: class_students_manage_onClick_byRight.bind(this, "add",this.props.formdata.uuid)}, "添加学生"), 
+	      React.createElement(AMR_Button, {amStyle: "secondary", onClick: class_students_manage_onClick_byRight.bind(this, "add",o.uuid)}, "添加学生"), 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: menu_teachingplan_list_fn_byRight.bind(this,o.uuid)}, "查看课程")
   		  )
   		 ), 
+		    React.createElement(AMUIReact.Form, {id: "queryForm", inline: true}, 
 		  React.createElement(AMR_ButtonToolbar, null, 
+		  
 		   React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-  		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: o.groupuuid})
+  		  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "groupuuid", onChange: this.handleChange_selectgroup.bind(this), btnWidth: "200", data: this.props.groupList, btnStyle: "primary", value: queryForm.groupuuid})
   		  ), 
 	      React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
-		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid2", name: "class_uuid", onChange: this.handleChange_selectclass.bind(this), btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: o.uuid})
+		  React.createElement(AMUIReact.Selected, {id: "selectclass_uuid2", name: "classuuid", onChange: this.handleChange.bind(this), btnWidth: "200", data: this.state.classList, btnStyle: "primary", value: queryForm.classuuid})
   		  ), 
 		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
      	  React.createElement(AMUIReact.Selected, {btnStyle: "secondary", placeholder: "更多操作", onChange: this.handleClick_download.bind(this,o.groupuuid,o.uuid), btnWidth: "200", multiple: false, data: this.props.down_list})
      	  )
-		  ), 
+		  )
+		          ), 
   		  React.createElement(AMR_Panel, null, 
   			  React.createElement(AMR_Grid, {className: "doc-g"}, 
   			  React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 学校:", Store.getGroupNameByUuid(o.groupuuid)), 
 			    React.createElement(AMR_Col, {className: "am-hide-sm", sm: 6, md: 3}, " 班级:", o.name), 
 			    React.createElement(AMR_Col, {sm: 5, md: 2}, "班主任:", o.headTeacher_name), 
 			    React.createElement(AMR_Col, {sm: 4, md: 2}, "老师:", o.teacher_name), 
-			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", this.props.students.length)
+			    React.createElement(AMR_Col, {sm: 3, md: 2}, "人数:", this.state.list.length)
   			  )
   		  ), 
   		 		React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
@@ -4571,7 +4666,7 @@ render: function() {
             )
           ), 
           React.createElement("tbody", null, 
-            this.props.students.map(function(event) {
+            this.state.list.map(function(event) {
               return (React.createElement(Query_class_Students_EventRow_byRight, {key: event.id, event: event}));
             })
           )
@@ -5787,106 +5882,164 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
    * */
   var Query_stutent_list_byRight = React.createClass({displayName: "Query_stutent_list_byRight",
 		getInitialState: function() {
-			var classList=Store.getChooseClass(this.props.group_uuid);
-			var class_uuid =null;
-			if(classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
-			var o={
-					group_uuid:this.props.group_uuid,
-					class_uuid:class_uuid,
-					maxPageNo:0,
-					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
-			}
-			return o;
+			return this.getStateByPropes(this.props); 
 		  },
-	   componentWillReceiveProps: function(nextProps) {
-		   var classList=Store.getChooseClass(nextProps.group_uuid);
-			var class_uuid =nextProps.class_uuid;
-			if(!class_uuid&&classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
-			var o={
-					group_uuid:nextProps.group_uuid,
-					class_uuid:class_uuid,
-					class_list:G_selected_dataModelArray_byArray(classList,"uuid","name")
-			}
-		   this.setState(o);
-		},
+		getStateByPropes:function(nextProps){
+			var classList=Store.getChooseClass(nextProps.group_uuid);
+				classList=G_selected_dataModelArray_byArray(classList,"uuid","name");
+			classList.unshift({value:"",label:"所有"});
+			var status_list= G_selected_dataModelArray_byArray(Vo.getTypeList("student_status"),"key","val");
+			status_list.unshift({value:"",label:"所有"});
+			nextProps.status_list=status_list;
+			nextProps.group_list.unshift({value:"",label:"所有"});
+		   var queryForm={
+				status:"",
+				classuuid:"",
+				name:"",
+				groupuuid:nextProps.group_uuid
+		   };
+		   var obj= {
+				queryForm:queryForm,
+				pageNo:1,
+				classList:classList,
+				type:nextProps.type,
+				list: []
+		   };
+		   return obj;
+	  },
 		
-  	handleChange_stutent_Selected: function() {
-  		var group_uuid=$("input[name='group_uuid']").val();
-  		  if(group_uuid=="0"){
-  			  group_uuid="";
-  		  }
-	  		var class_uuid=$("input[name='class_uuid']").val();
-		  if(class_uuid=="1"){
-			  class_uuid="";
-		  }
-  		  ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val());
+		
+	   componentWillReceiveProps: function(nextProps) {
+		 
+		   this.setState(this.getStateByPropes(nextProps));
+		},
+	handleChange_selectgroup: function(val) {
+	this.state.groupuuid=val;
+	var classlist=Store.getChooseClass(val);
+	
+	this.state.classList=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+	this.state.classList.unshift({value:"",label:"所有"});
+	this.handleChange();
+},
+  	handleChange: function() {
+
+		   var queryForm=$('#queryForm').serializeJson();
+               this.state.queryForm=queryForm;
+              this.setState(this.state);
+
   	  }, 
-  	 
-  		btn_query_click:function(){
-  			this.handleChange_stutent_Selected();
-  		},
-  		handleClick: function(m,groupuuid,classuuid) {
-  	  		var group_uuid=$("input[name='group_uuid']").val();
-    		  if(group_uuid=="0"){
-    			  group_uuid="";
-    		  }
-  	  		var class_uuid=$("input[name='class_uuid']").val();
-  		  if(class_uuid=="1"){
-  			  class_uuid="";
-  		  }
-  			if(m=="pre"){
-  				ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val(),--g_student_query_point);
-  				return;
-  			 }else if(m=="next"){
-  				ajax_student_query_byRight(group_uuid,class_uuid,$('#sutdent_name').val(),++g_student_query_point);
-  				 return;
-  			 }
-  		},
-  		maxPageNo:0,
+  	 pageClick: function(m) {
+              var obj=this.state;
+              if(m=="pre"){
+                   
+                   if(obj.pageNo<2){
+                        G_msg_pop("第一页了");
+                        return;
+                   }
+                   obj.pageNo=obj.pageNo-1;
+                   this.ajax_list(obj);
+                   return;
+              }else if(m=="next"){
+                   if(!obj.list||obj.list.length==0){
+                        G_msg_pop("最后一页了");
+                        return ;
+                   }
+                   obj.pageNo=obj.pageNo+1;
+                   
+                   this.ajax_list(obj);
+                   return;
+              }
+         },
+         handleClick_query: function(m) {
+              this.state.pageNo=1;
+               this.ajax_list();
+           },
+		componentDidMount: function() {
+          this.ajax_list(); 
+       },
+		ajax_list:function(){
+               var queryForm=this.state.queryForm;
+               queryForm.pageNo=this.state.pageNo;
+
+              $.AMUI.progress.start();
+              var that=this;
+              var url = hostUrl + "rest/student/querybyRight.json";
+              $.ajax({
+                   type : "GET",
+                   url : url,
+                   data :queryForm,
+                   dataType : "json",
+                   //async: false,//必须同步执行
+                   success : function(data) {
+                        $.AMUI.progress.done();
+                        if (data.ResMsg.status == "success") {
+                            that.ajax_callback( data.list);     
+                        } else {
+                             alert(data.ResMsg.message);
+                             G_resMsg_filter(data.ResMsg);
+                        }
+                   },
+                   error : G_ajax_error_fn
+              });
+              
+         },
+		ajax_callback:function(list){
+              if (list== null ) this.state.list=[];
+               else
+                this.state.list=list.data;
+
+               if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
+                this.setState(this.state);
+           },
+  		
   render: function() {
-  	this.props.group_list.unshift({value:"",label:"所有"});
-  	this.state.class_list.unshift({value:"",label:"所有"});
-  	if(this.state.group_uuid==""){			
-  		this.state.group_uuid="0";
-  	};
-  	if(this.state.class_uuid==""){			
-  		this.state.class_uuid="1";
-  	};
-  	var pre_disabled=g_student_query_point<2;
+  
+
+	   var queryForm=this.state.queryForm;
+               if(!this.state.totalCount)this.state.totalCount=0;
+               if(!this.state.sum_num)this.state.sum_num=0;
+
   	
-  	if(g_student_query_point==1){
-  		this.maxPageNo=Math.floor(this.props.data.list.totalCount/this.props.data.list.pageSize)+1;
-  	}
-  	var next_disabled=g_student_query_point>=this.maxPageNo;
       return (
         React.createElement("div", null, 
           React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list16}), 
-  	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+  	     
           React.createElement(AMR_Panel, null, 
          React.createElement(AMR_ButtonToolbar, null, 
-         React.createElement(AMR_Button, {amStyle: "secondary", disabled: pre_disabled, onClick: this.handleClick.bind(this,"pre",this.state.group_uuid,this.state.class_uuid)}, " 上一页"), 
-		 React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", g_student_query_point, "页"), 
-         React.createElement(AMR_Button, {amStyle: "secondary", disabled: next_disabled, onClick: this.handleClick.bind(this,"next",this.state.group_uuid,this.state.class_uuid)}, "下一页")
+        
+           React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+           React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
+          ), 
+            
+            React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+				 React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "共", this.state.totalCount, "条,第", this.state.pageNo, "页")
+   
+          ), 
+          
+            React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+           React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")
+          )
 	     )
 	     ), 
+
+ React.createElement("form", {id: "queryForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
    	 React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", placeholder: "所有", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.group_uuid})
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", name: "groupuuid", onChange: this.handleChange_selectgroup, btnWidth: "200", placeholder: "所有", multiple: false, data: this.props.group_list, btnStyle: "primary", value: queryForm.groupuuid})
   	   ), 	 
   	    React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-  	   React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "class_uuid", onChange: this.handleChange_stutent_Selected, btnWidth: "200", placeholder: "所有", multiple: false, data: this.state.class_list, btnStyle: "primary", value: this.state.class_uuid})
+  	   React.createElement(AMUIReact.Selected, {className: "am-fl", name: "classuuid", onChange: this.handleChange, btnWidth: "200", placeholder: "所有", multiple: false, data: this.state.classList, btnStyle: "primary", value: queryForm.classuuid})
+  	  ), 
+		   React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+  	   React.createElement(AMUIReact.Selected, {className: "am-fl", name: "status", onChange: this.handleChange, btnWidth: "200", placeholder: "所有", multiple: false, data: this.props.status_list, btnStyle: "primary", value: queryForm.status})
   	  ), 
   	   React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-  	    React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"})	  
-  	     ), 
+  	    React.createElement("input", {type: "text", name: "name", value: queryForm.name, onChange: this.handleChange, placeholder: "学生姓名"})	  
+  	     )
+), 
   	    React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
-  	   React.createElement("button", {type: "button", onClick: this.btn_query_click, className: "am-btn am-btn-primary"}, "搜索")
-  	  )	
+  	   React.createElement("button", {type: "button", onClick: this.handleClick_query, className: "am-btn am-btn-primary"}, "搜索")
+  	  ), 	
   
-  	 ), 
         React.createElement(AMR_Table, React.__spread({},  this.props), 
           React.createElement("thead", null, 
             React.createElement("tr", null, 
@@ -5900,8 +6053,8 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
             )
           ), 
           React.createElement("tbody", null, 
-            this.props.events.map(function(event) {
-              return (React.createElement(Query_EventRow_byRight, {key: event.id, event: event}));
+            this.state.list.map(function(event) {
+              return (React.createElement(Query_EventRow_byRight, {key: event.uuid, event: event}));
             })
           )
         )

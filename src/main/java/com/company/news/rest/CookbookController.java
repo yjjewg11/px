@@ -21,6 +21,7 @@ import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.jsonform.CookbookJsonform;
 import com.company.news.jsonform.CookbookPlanJsonform;
 import com.company.news.jsonform.GroupRegJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -91,11 +92,21 @@ public class CookbookController extends AbstractRESTController {
 	public String list(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		if (StringUtils.isNotBlank(request.getParameter("type")))
+		
+		
+		String type=request.getParameter("type");
+		if(DBUtil.isSqlInjection(type, responseMessage))return "";
+		String groupuuid=request.getParameter("groupuuid");
+		if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+		
+		if(StringUtils.isNotBlank(groupuuid)){
+			groupuuid=RightUtils.getRightGroups(RightConstants.KD_cookbookplan_m, request);
+		}
+		if (StringUtils.isNotBlank(type))
 
 		{
-			List<Cookbook> list = cookbookService.query(Integer
-					.parseInt(request.getParameter("type")),request.getParameter("groupuuid"));
+			List list = cookbookService.query(Integer
+					.parseInt(type),groupuuid);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		}
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
@@ -114,14 +125,15 @@ public class CookbookController extends AbstractRESTController {
 		// 返回消息体
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
-		
-		if(!RightUtils.hasRightAnyGroup(RightConstants.AD_basedata_del,request)){
+		String uuid=request.getParameter("uuid");
+		if(DBUtil.isSqlInjection(uuid, responseMessage))return "";
+		String groups=RightUtils.getRightGroups(RightConstants.KD_cookbookplan_m, request);
+		if(StringUtils.isBlank(groups)){
             responseMessage.setMessage( RightConstants.Return_msg );
             return "";
 		}
 		try {
-			boolean flag = cookbookService.delete(request.getParameter("uuid"),
+			boolean flag = cookbookService.delete(uuid,groups,
 					responseMessage);
 			if (!flag)
 				return "";

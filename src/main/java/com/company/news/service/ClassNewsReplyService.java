@@ -124,12 +124,12 @@ public class ClassNewsReplyService extends AbstractService {
 	 */
 	public PageQueryResult query(String newsuuid, PaginationData pData,boolean isQueryAllStatus) {
 		String sql=SelectSql;
+		 sql += "from px_classnewsreply t1";
 		if(isQueryAllStatus){
-			 sql += "from px_classnewsreply t1";
 			if (StringUtils.isNotBlank(newsuuid))
 				sql += " where  t1.newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
 		}else{
-			 sql += "from px_classnewsreply where   t1.status =" + SystemConstants.Check_status_fabu;
+			 sql += " where   t1.status =" + SystemConstants.Check_status_fabu;
 				if (StringUtils.isNotBlank(newsuuid))
 					sql += " and   t1.newsuuid='" + DbUtils.safeToWhereString(newsuuid) + "'";
 		}

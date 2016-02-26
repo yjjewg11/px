@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -11,6 +12,7 @@ import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.User;
 import com.company.news.jsonform.CookbookJsonform;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -57,6 +59,7 @@ public class CookbookService extends AbstractService {
 		Cookbook cb = new Cookbook();
 
 		BeanUtils.copyProperties(cb, cookbook);
+		cb.setStatus(0);
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(cb);
 
@@ -68,17 +71,31 @@ public class CookbookService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<Cookbook> query(Integer type,String groupuuid) {
+	public List<Map> query(Integer type,String groupuuid) {
 		if (type==null)
 			return null;
-		String hql="";
+		String wheregroup="";
 		if(StringUtils.isNotBlank(groupuuid))
-			hql+=" and (groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' or groupuuid='')";
-		List<Cookbook> list= (List<Cookbook>) this.nSimpleHibernateDao
-					.getHibernateTemplate().find("from Cookbook where type=?"+hql+" order by convert(name, 'gbk')",
-							type);
-		warpVoList(list);
+			wheregroup+=" and groupuuid in("+DBUtil.stringsToWhereInValue(groupuuid)+")";
+//		List<Cookbook> list= (List<Cookbook>) this.nSimpleHibernateDao
+//					.getHibernateTemplate().find("from Cookbook where status=0 and type=? "+hql+" order by convert(name, 'gbk')",
+//							type);
+		String sql="SELECT uuid,name,img from px_cookbook where status=0 and type= "+type+wheregroup+" order by CONVERT( name USING gbk)";
+		List<Map> list=this.nSimpleHibernateDao.queryListMapBySql(sql);
+		warpMapList(list);
 		
+		return list;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List<Map> warpMapList(List<Map> list){
+		for(Map o:list){
+			o.put("img", PxStringUtil.imgSmallUrlByUuid((String)o.get("img")));
+		}
 		return list;
 	}
 	/**
@@ -107,24 +124,24 @@ public class CookbookService extends AbstractService {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage) {
+	public boolean delete(String uuid,String groups, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
 
-		if (uuid.indexOf(",") != -1)// 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Cookbook where uuid in(?)", uuid);
+		//rel_uuid,create_useruuid
+		String insertsql="update px_cookbook set  status=9  where uuid in("+DBUtil.stringsToWhereInValue(uuid)+") and groupuuid in("+DBUtil.stringsToWhereInValue(groups)+")";
+		int count=this.nSimpleHibernateDao.createSqlQuery(insertsql).executeUpdate();
+		
+		
+		
+		if(count>0)
+			return true;
+		responseMessage.setMessage("无权删除");
 
-		} else {
-			this.nSimpleHibernateDao.deleteObjectById(Cookbook.class, uuid);
-
-		}
-
-		return true;
+		return false;
 	}
 
 	@Override

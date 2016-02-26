@@ -1628,7 +1628,10 @@ function G_status(){
   * 
   * */
  var Kd_commons_Class_student_look_info =React.createClass({
+	 isRight:false,
  	 getInitialState: function() {
+			
+			this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
@@ -1707,7 +1710,7 @@ function G_status(){
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(<div></div>);
-	     if(this.props.type==2){
+	     if(this.isRight||this.props.type==2){
 	    	 rect_info=(		 		 
 	    		  <AMR_ButtonToolbar>
 		 	       <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
@@ -1726,6 +1729,8 @@ function G_status(){
 			      <AMUIReact.ListItem id="input_studentbind_card">接送卡号:加载中...</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>昵称:{o.nickname}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>性别:{Vo.get("sex_"+o.sex)}</AMUIReact.ListItem>
+					 <AMUIReact.ListItem>学校:{Store.getGroupNameByUuid(o.groupuuid)}</AMUIReact.ListItem>
+					<AMUIReact.ListItem>班级:{Store.getClassNameByUuid(o.classuuid)}</AMUIReact.ListItem>
 
                   <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>

@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.company.http.PxHttpSession;
 import com.company.news.SystemConstants;
 import com.company.news.cache.SessionCache;
+import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.RestConstants;
 import com.company.web.filter.UserInfoFilter;
@@ -89,7 +90,13 @@ public class SessionListener implements HttpSessionListener {
   public static SessionUserInfoInterface   getUserInfoBySession(HttpServletRequest request){
     HttpSession session =SessionListener.getSession(request);
     if(session==null)return null;
-    return (SessionUserInfoInterface)session.getAttribute(RestConstants.Session_UserInfo);
+    SessionUserInfoInterface user= (SessionUserInfoInterface)session.getAttribute(RestConstants.Session_UserInfo);
+    if(user==null){
+    	logger.warn("user is null.sessionid="+session.getId());
+    	return SessionUserRedisCache.getUserOfSessionBySessionid(session.getId());
+    }
+    
+    return user;
   }
   
 

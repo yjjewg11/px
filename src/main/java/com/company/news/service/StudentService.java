@@ -30,7 +30,10 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -110,6 +113,59 @@ public class StudentService extends AbstractStudentService {
 		return true;
 	}
 
+	
+	/*
+	 * 
+	 * 判断是否是学生老师
+	 */
+	public boolean isStudentTeacher(String user_uuids, String classuuid) {
+		String hql = "select uuid from UserClassRelation where  classuuid=? and useruuid in("
+				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
+		if (list.size() > 0)
+			return true;
+		return false;
+	}
+	/*
+	 * 
+	 * 判断是否是培训学生老师
+	 */
+	public boolean isStudentPxTeacher(String user_uuids, String classuuid) {
+		String hql = "select uuid from UserPxCourseRelation where  classuuid=? and useruuid in("
+				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
+		if (list.size() > 0)
+			return true;
+		return false;
+	}
+	
+	public boolean isHasRightToDo(Student student, ResponseMessage responseMessage, HttpServletRequest request){
+		boolean flag = false;
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		String right=RightConstants.KD_student_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_student_m;
+		}
+		
+		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
+		
+
+		flag = RightUtils.hasRight(student.getGroupuuid(),
+				right, request);
+		if(flag)return flag;
+		
+		if(SessionListener.isPXLogin(request)){
+			flag = this.isStudentPxTeacher(user.getUuid(),
+					student.getClassuuid());
+		}else{
+			flag = this.isStudentTeacher(user.getUuid(),
+					student.getClassuuid());
+		}
+			
+		
+		return flag;
+	}
+	
 	/**
 	 * 修改
 	 * 
@@ -119,21 +175,30 @@ public class StudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public boolean update(StudentJsonform studentJsonform, ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
-
 		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class, studentJsonform.getUuid());
+	
+		boolean flag = isHasRightToDo(student, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		
+		if(!flag){
+			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能修改.");
+			return false;
+		}
+	
 
-		Student old_student = new Student();
-		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
-		BeanUtils.copyProperties(old_student, student);
+//		Student old_student = new Student();
+//		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
+//		BeanUtils.copyProperties(old_student, student);
 		studentJsonform.setHeadimg(PxStringUtil.imgUrlToUuid(studentJsonform.getHeadimg()));
 		if (student != null) {
 			BeanUtils.copyProperties(student, studentJsonform);
 			// 设置不能被修改的字段
-			student.setUuid(old_student.getUuid());
-			// student.setName(old_student.getName());
-			student.setClassuuid(old_student.getClassuuid());
-			student.setGroupuuid(old_student.getGroupuuid());
-			student.setCreate_time(old_student.getCreate_time());
+//			student.setUuid(old_student.getUuid());
+//			// student.setName(old_student.getName());
+//			student.setClassuuid(old_student.getClassuuid());
+//			student.setGroupuuid(old_student.getGroupuuid());
+//			student.setCreate_time(old_student.getCreate_time());
 			// 格式纠正
 			student.setBirthday(TimeUtils.getDateFormatString(student.getBirthday()));
 			student.setBa_tel(PxStringUtil.repairCellphone(student.getBa_tel()));
@@ -143,11 +208,20 @@ public class StudentService extends AbstractStudentService {
 			student.setWaigong_tel(PxStringUtil.repairCellphone(student.getWaigong_tel()));
 			student.setOther_tel(PxStringUtil.repairCellphone(student.getOther_tel()));
 			student.setWaipo_tel(PxStringUtil.repairCellphone(student.getWaipo_tel()));
+			
+//			responseMessage.setMessage("操作成功");
+			//关联班级的学生,离校  去掉关联班级
+			if(!SystemConstants.Data_null.equals(student.getClassuuid())&&SystemConstants.Student_status_leaveSchool.equals(student.getStatus())){
+				student.setClassuuid(SystemConstants.Data_null);
+				student.setLeave_time(TimeUtils.getCurrentTimestamp());
+//				responseMessage.setMessage("操作成功,该生离校已从班级移除.");
+			}
+			
+			
 			// 有事务管理，统一在Controller调用时处理异常
 			this.nSimpleHibernateDao.getHibernateTemplate().update(student);
 
-			
-			
+		
 			this.updateAllStudentContactRealationByStudent(student);
 			 List xueliList=CommonsCache.getBaseDataListByTypeuuid("student_status");
 			String student_status= CommonsCache.getBaseDatavalue(student.getStatus(), xueliList);
@@ -366,6 +440,20 @@ public class StudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public PageQueryResult queryByPage(String groupuuid, String classuuid, String name, PaginationData pData) {
+		return this.queryByPage(groupuuid, classuuid, name, null, pData);
+	}
+
+	
+
+	/**
+	 * 
+	 * @param groupuuid
+	 * @param classuuid
+	 * @param name
+	 * @param pData
+	 * @return
+	 */
+	public PageQueryResult queryByPage(String groupuuid, String classuuid, String name,String status, PaginationData pData) {
 		String hql = "from Student where 1=1";
 		if (StringUtils.isNotBlank(groupuuid))
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
@@ -373,9 +461,10 @@ public class StudentService extends AbstractStudentService {
 			hql += " and  classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		if (StringUtils.isNotBlank(name))
 			hql += " and  name  like '%" + name + "%' ";
-
+		
+		if (StringUtils.isNotBlank(status))
+			hql += " and  status  ="+status;
 		hql += " order by groupuuid,classuuid, convert(name, 'gbk') ";
-
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPaginationToHql(hql, pData);
 		this.warpVoList(pageQueryResult.getData());
 
@@ -401,6 +490,15 @@ public class StudentService extends AbstractStudentService {
 			responseMessage.setMessage("异常数据,该学生不存在!");
 			return false;
 		}
+
+		boolean flag = isHasRightToDo(student, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		
+		if(!flag){
+			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能修改.");
+			return false;
+		}
 		
 		PClass cl = (PClass) CommonsCache.get(classuuid, PClass.class);
 		
@@ -412,7 +510,7 @@ public class StudentService extends AbstractStudentService {
 
 		student.setClassuuid(classuuid);
 		student.setGroupuuid(cl.getGroupuuid());
-
+		student.setStatus(SystemConstants.Student_status_InSchool);
 	
 		this.nSimpleHibernateDao.getHibernateTemplate().save(student);
 		this.relUpdate_studentChangeClass(student);

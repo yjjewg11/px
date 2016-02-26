@@ -888,9 +888,9 @@ function G_class_students_look_info(uuid,ajaxYype,type){
 	$.AMUI.progress.start();
 	var url;
 	if(ajaxYype==1){
-		url = hostUrl + "rest/student/"+uuid+".json";
+		url = hostUrl + "rest/student/get.json?uuid="+uuid;
 	}else{
-		url = hostUrl + "rest/pxstudent/"+uuid+".json";
+		url = hostUrl + "rest/pxstudent/get.json?uuid="+uuid;
 	}
 	$.ajax({
 		type : "GET",

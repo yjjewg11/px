@@ -116,11 +116,18 @@ public class ClassNewsService extends AbstractService {
 			this.nSimpleHibernateDao.getHibernateTemplate().save(cn);
 			//初始话计数
 					countService.add(cn.getUuid(), SystemConstants.common_type_hudong);
-					
+					String hasImg="";
+					if(StringUtils.isNotBlank(cn.getImgs())){
+						hasImg="[有图]";
+					}
+					//某某说:[有图]哈哈
 					String msg=cn.getContent();
 					if(StringUtils.isBlank(msg)){
-						msg="班级互动";
+						msg=user.getName()+"说:"+hasImg+"班级互动";
+					}else{
+						msg=user.getName()+"说:"+hasImg+msg;
 					}
+					
 					
 
 					
@@ -248,8 +255,9 @@ public class ClassNewsService extends AbstractService {
 			
 			String cur_user_uuid="";
 			if(user!=null)cur_user_uuid=user.getUuid();
-			
-			o.put("replyPage", this.getReplyPageList((String)o.get("uuid"),cur_user_uuid,isQueryAllStatus));
+			PaginationData pData=new PaginationData();
+			pData.setPageSize(5);
+			o.put("replyPage", this.classNewsReplyService.query((String)o.get("uuid"), pData, isQueryAllStatus));
 			
 			o.put("create_img", PxStringUtil.imgSmallUrlByUuid((String)o.get("create_img")));
 			if(o.get("count")==null)o.put("count","0");
@@ -508,7 +516,9 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 			o.setShare_url(PxStringUtil.getClassNewsByUuid(o.getUuid()));
 			//o.setCount(countService.count(o.getUuid(), SystemConstants.common_type_hudong));
 			o.setDianzan(classNewsReplyService.getDianzanDianzanListVO(o.getUuid(), cur_user_uuid));
-			o.setReplyPage(this.getReplyPageList(o.getUuid(),cur_user_uuid,isQueryAllStatus));
+			PaginationData pData=new PaginationData();
+			pData.setPageSize(5);
+			o.setReplyPage(this.classNewsReplyService.query(o.getUuid(), pData, isQueryAllStatus));
 			o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -521,6 +531,7 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 		 * 
 		 * @return
 		 */
+	@Deprecated
 		private PageQueryResult getReplyPageList(String newsuuid,String cur_user_uuid,boolean isQueryAllStatus) {
 			if (StringUtils.isBlank(newsuuid)) {
 				return new PageQueryResult();
@@ -552,7 +563,11 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 				this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 				o.setContent(MyUbbUtils.myUbbTohtml(o.getContent()));
 				o.setCreate_img(PxStringUtil.imgSmallUrlByUuid(o.getCreate_img()));
+				
+				
 			}
+			
+			
 			return pageQueryResult;
 					
 		}

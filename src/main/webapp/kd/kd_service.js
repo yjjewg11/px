@@ -114,7 +114,7 @@ function ajax_userinfo_login() {
   			$.AMUI.progress.done();
   			// 登陆成功直接进入主页
   			if (data.ResMsg.status == "success") {
-  				alert(data.ResMsg.message);
+  				G_msg_pop(data.ResMsg.message);
   				if(typeof callback=='function')callback();
   			} else {
   				alert("加载数据失败："+data.ResMsg.message);
@@ -586,7 +586,7 @@ G_ajax_abs_save(opt);
  function ajax_myclass_students_edit(uuid){
  	Queue.push(function(){ajax_myclass_students_edit(uuid);},"编辑学生");
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
+     var url = hostUrl + "rest/student/get.json?uuid="+uuid;
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2825,59 +2825,20 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  *   跳转学生详情绘制界面；
  * */
  function react_ajax_class_students_manage_byRight(uuid){
- 	$.AMUI.progress.start();
- 	var formdata={};
-     var url = hostUrl + "rest/class/"+uuid+".json";
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		dataType : "json",
- 		 async: false,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				formdata=data.data;
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
-		error :G_ajax_error_fn
- 	});
- 	//var students=null;
- 	url=hostUrl + "rest/student/getStudentByClassuuid.json?classuuid="+uuid;
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		dataType : "json",
- 		 async: false,
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				students=data.list;
- 				students_number=data.list.length;
- 			} else {
- 				alert("加载数据失败："+data.ResMsg.message);
- 			}
- 		},
-		error :G_ajax_error_fn
- 	});
+ 
  	Queue.push(function(){react_ajax_class_students_manage_byRight(uuid);},"班级详情");
-
+ 	
+ 	var classObj=Store.getClassByUuid(uuid);
+ 	var groupuuid=window.G_mygroup_choose;
+ 	if(classObj)groupuuid=classObj.groupuuid;
  	React.render(React.createElement(Class_students_manage_byRight,{
- 		students:students,
- 		formdata:formdata,
- 		groupList:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_class_m"),"uuid","brand_name"),
-		classList:G_selected_dataModelArray_byArray(Store.getChooseClass(formdata.groupuuid),"uuid","name"),
- 		students:students}), G_get_div_body());
+ 		groupuuid:groupuuid,
+		classuuid:uuid}), G_get_div_body());
  };
 
  
 
  
- //下拉框选择后方法
- function  btn_click_class_kuang_byRight(classuuid){
-	 react_ajax_class_students_manage_byRight(classuuid);
-	 };
 
  
  /*  
@@ -2904,7 +2865,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	}
  	Queue.push(function(){ajax_class_students_edit_byRight(formdata,uuid);},"编辑学生");
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/student/"+uuid+".json";
+     var url = hostUrl + "rest/student/get.json?uuid="+uuid;
  	$.ajax({
  		type : "GET",
  		url : url,
@@ -2936,7 +2897,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
              cbFN:function(data){
              	G_msg_pop(data.ResMsg.message);
              	Store.setClassStudentsList(data.uuid,null);
- 				react_ajax_class_students_manage_byRight(objectForm.classuuid);
+             	Queue.doBackFN();
+ 				//react_ajax_class_students_manage_byRight(objectForm.classuuid);
              }
              };
  G_ajax_abs_save(opt);
@@ -2992,47 +2954,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   			error :G_ajax_error_fn
   	 	});
   	 }; 
-//—————————————————————————————————收支记录—————————————————————————
- /*
-  * <收支记录>服务器请求
-  * @请求数据成功后执行Accounts_EventsTable方法绘制
-  * 在kd_react
-  * */
- function ajax_accounts_listByGroup_byRight(groupuuid) {
-	var grouplist= Store.getGroupByRight("KD_accounts_m");
-	if(!grouplist||grouplist.length==0){
-		alert("没有权限!");
-		return "";
-	}
-	if(!groupuuid){
-		groupuuid=grouplist[0].uuid;
-	}
- 	Queue.push(function(){ajax_accounts_listByGroup_byRight(groupuuid);},"收支记录");
- 	$.AMUI.progress.start();
- 	var url = hostUrl + "rest/accounts/list.json?groupuuid="+groupuuid;
- 	$.ajax({
- 		type : "GET",
- 		url : url,
- 		data : "",
- 		dataType : "json",
- 		success : function(data) {
- 			$.AMUI.progress.done();
- 			if (data.ResMsg.status == "success") {
- 				React.render(React.createElement(Accounts_EventsTable_byRight, {
- 					group_uuid:groupuuid,
- 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
- 					events: data.list,
- 					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), G_get_div_body());
- 				
- 			} else {
- 				alert(data.ResMsg.message);
- 				G_resMsg_filter(data.ResMsg);
- 			}
- 		},
-		error :G_ajax_error_fn
- 	});
- };	  
+
  /*
   * <收支记录>添加按钮事件处理
   * @调用ajax_accounts_edit
@@ -3085,46 +3007,6 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  }	  
 
 
-//——————————————————————————学生列表—————————————————————————— 
- /*
-  * <学生列表>（获取用户列表服务器请求）；
-  * 各属性置空开始，方便后面的的机构、班级、名字搜索；
-  * */
- var g_student_query_point=1;
- function ajax_student_query_byRight(groupuuid,classuuid,name,pageNo) {
- 	Queue.push(function(){ajax_student_query_byRight(groupuuid,classuuid,name,pageNo);},"学生列表");
- 	  if(!groupuuid)groupuuid="";
- 	  if(!classuuid)classuuid="";
- 	 if(!name)name="";
- 	  if(!pageNo)pageNo=1;
- 	 g_student_query_point=pageNo;
- 		$.AMUI.progress.start();
- 		var url = hostUrl + "rest/student/querybyRight.json?groupuuid="+groupuuid+"&classuuid="+classuuid+"&name="+name+"&pageNo="+pageNo;
- 		$.ajax({          
- 			type : "GET",  
- 			url : url,
- 			dataType : "json",
- 			success : function(data) {
- 				$.AMUI.progress.done();
- 				if (data.ResMsg.status == "success") {
- 	  				React.render(React.createElement(Query_stutent_list_byRight, {
- 	  					group_uuid:groupuuid,
- 	  					class_uuid:classuuid,
- 	  					name:name,
- 	  					group_list:G_selected_dataModelArray_byArray(Store.getGroupByRight("KD_student_allquery"),"uuid","brand_name"),
- 	  					data:data,
- 	  					events: data.list.data,
- 	  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 	  					
- 	  				}), G_get_div_body());
- 					
- 				} else {
- 					alert(data.ResMsg.message);
- 				}
- 			},
- 			error :G_ajax_error_fn
- 		});
- 	};
 
  /*  方法已抽公用 代码屏蔽
 //  *  <学生列表>界面下的二级界面学生详细信息

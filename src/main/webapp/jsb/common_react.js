@@ -1628,7 +1628,10 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
   * 
   * */
  var Kd_commons_Class_student_look_info =React.createClass({displayName: "Kd_commons_Class_student_look_info",
+	 isRight:false,
  	 getInitialState: function() {
+			
+			this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
@@ -1707,7 +1710,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
 	     var rect_info=(React.createElement("div", null));
-	     if(this.props.type==2){
+	     if(this.isRight||this.props.type==2){
 	    	 rect_info=(		 		 
 	    		  React.createElement(AMR_ButtonToolbar, null, 
 		 	       React.createElement(AMR_Button, {amStyle: "secondary", onClick: ajax_myclass_students_edit.bind(this,o.uuid)}, "修改学生"), 
@@ -1726,6 +1729,8 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement(AMUIReact.ListItem, {id: "input_studentbind_card"}, "接送卡号:加载中..."), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
+					 React.createElement(AMUIReact.ListItem, null, "学校:", Store.getGroupNameByUuid(o.groupuuid)), 
+					React.createElement(AMUIReact.ListItem, null, "班级:", Store.getClassNameByUuid(o.classuuid)), 
 
                   React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status)), 
 			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 

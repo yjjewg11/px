@@ -516,7 +516,7 @@ function menu_dohome(){
                                 
                     	  ];
 	}
-	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), document.getElementById('div_body'));
+	React.render(React.createElement(Div_body_index,{sm:3,md:4,lg:6,themes:'bordered',data:div_Gallery_data}), G_get_div_body());
 }
 
 
@@ -556,7 +556,7 @@ function menu_userinfo_logout_fn(){
  */
 function menu_hellp_fn(){
 	Queue.push(menu_hellp_fn,"帮助文档");
-	React.render(React.createElement(Help_txt), document.getElementById('div_body'));
+	React.render(React.createElement(Help_txt), G_get_div_body());
 }
 
 
@@ -606,7 +606,7 @@ function menu_teachingplan_dayShow_fn() {
 	React.render(React.createElement(Teachingplan_show7Day, {
 			classuuid:G_myCurClassuuid,
 			classlist:G_selected_dataModelArray_byArray(myclasslist,"uuid","name")
-			}), document.getElementById('div_body'));
+			}), G_get_div_body());
 	return;
 //---------------------------------------------------------------------------------		
 	var classList=Store.getMyClassList();
@@ -732,7 +732,7 @@ function menu_class_sign_today_fn() {
 	//	events:formdata,
 		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
 		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 };
 
 
@@ -819,7 +819,7 @@ function menu_teachingplan_list_fn_byRight(classuuid) {
 		    classuuid:classuuid,
 		    groupuuid:groupuuid,
 		    groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name")
-			}), document.getElementById('div_body'));
+			}), G_get_div_body());
 	return;
 //---------------------------------------------------------------------------------	
 	var groupList=Store.getGroupByRight("KD_teachingplan_m");
@@ -835,7 +835,7 @@ function menu_teachingplan_list_fn_byRight(classuuid) {
 		groupuuid:groupuuid,
 		groupList:G_selected_dataModelArray_byArray(groupList,"uuid","brand_name"),
 		responsive: true, bordered: true, striped :true,hover:true,striped:true
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 };
 /*
  * (标头)<园长信箱>
@@ -880,8 +880,11 @@ var grouplist= Store.getGroupByRight("KD_accounts_m");
  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
  					
  					responsive: true, bordered: true, striped :true,hover:true,striped:true
- 					}), document.getElementById('div_body'));
+ 					}), G_get_div_body());
 };
+
+
+
 /*
  * (标头)收支管理
 //学生缴费记录
@@ -901,7 +904,7 @@ function menu_accounts_listForYear_byRight() {
 	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 	 					
 	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-	 					}), document.getElementById('div_body'));
+	 					}), G_get_div_body());
 	};
 
 
@@ -930,7 +933,7 @@ function menu_accounts_statistics_list_fn_byRight() {
 		groupuuid:groupuuid,
 		statistics_type_list:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Accounts_type"),"key","val"),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 };
 
 /*
@@ -938,7 +941,26 @@ function menu_accounts_statistics_list_fn_byRight() {
  * @跳转kd_service发服务器请求
  * */
 function menu_query_list_fn_byRight() {
-	ajax_student_query_byRight();
+Queue.push(menu_query_list_fn_byRight,"学生列表");
+	
+	var  grouplist=Store.getGroupByRight("KD_student_allquery");			
+	var groupuuid;
+	var begDateStr=G_getSchoolDate();
+	
+	if(!grouplist||grouplist.length==0){
+		groupuuid=null;
+	}else{
+		groupuuid=grouplist[0].uuid;
+	}
+	
+	React.render(React.createElement(Query_stutent_list_byRight, {
+			group_uuid:groupuuid,
+			group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
+			responsive: true, bordered: true, striped :true,hover:true,striped:true
+			
+		}), G_get_div_body());
+
+
 };
 
 ///*
@@ -975,7 +997,7 @@ function menu_statistics_list_fn_byRight() {
 		groupuuid:groupuuid,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 };
 
 /*
@@ -1020,7 +1042,7 @@ function menu_class_sign_today_fn_byRight() {
 		groupuuid:groupuuid,
 		classList:G_selected_dataModelArray_byArray(classList,"uuid" ,"name"),
 		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 };
 
 /**
@@ -1045,7 +1067,7 @@ function menu_studentbind_byRight(){
 		groupuuid:G_mygroup_choose,		
 		type:1,		
 		classuuid:G_myclass_choose
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 }
 
 function menu_studentbind_teacher_byRight(){
@@ -1065,7 +1087,7 @@ function menu_studentbind_teacher_byRight(){
 		grouplist:G_selected_dataModelArray_byArray(grouplist,"uuid" ,"brand_name"),
 		groupuuid:G_mygroup_choose,		
 		type:0
-		}), document.getElementById('div_body'));
+		}), G_get_div_body());
 }
 
 
@@ -1091,7 +1113,7 @@ function menu_Attendance_listStatMonthByTeacher_byRight() {
 	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 	 					
 	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-	 					}), document.getElementById('div_body'));
+	 					}), G_get_div_body());
 	};
 
 function menu_Attendance_listStatMonthByStudent_byRight() {
@@ -1116,5 +1138,5 @@ function menu_Attendance_listStatMonthByStudent_byRight() {
 	 					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
 	 					
 	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
-	 					}), document.getElementById('div_body'));
+	 					}), G_get_div_body());
 	};

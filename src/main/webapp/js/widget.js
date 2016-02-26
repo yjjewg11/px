@@ -78,7 +78,7 @@ var w_ch_cookAddImg={
 				alert("error:w_ch_cookAddImg.uuid is null!");
 				return;
 			}
-			var objectForm={name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type};
+			var objectForm={name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type,groupuuid:w_ch_cookAddImg.groupuuid};
 			 var jsonString=JSON.stringify(objectForm);
 		    var url = hostUrl + "rest/cookbook/save.json";
 			$.ajax({
@@ -145,6 +145,7 @@ var w_ch_cookAddImg={
 }
 //end cook add img
 //chooseCook
+//w_ch_cook.open();
 var w_ch_cook={
 	div_id:"div_widget_chooseCook",
 	div_body:"div_body",
@@ -172,6 +173,7 @@ var w_ch_cook={
 	open:function(callbackFN,checkeduuids){
 		w_ch_cook.callbackFN=callbackFN;
 		w_ch_cook.checkeduuids=checkeduuids;
+		//w_ch_cook.groupuuid=groupuuid;
 		w_ch_cook.show();
 		
 	},	
@@ -193,6 +195,7 @@ var w_ch_cook={
 		React.render(React.createElement(ChooseCook_Widget, {
 			handleClick:w_ch_cook.handleClick,
 			checkeduuids:w_ch_cook.checkeduuids,
+			groupuuid:w_ch_cook.groupuuid,
 			responsive: true, bordered: true, striped :true,hover:true,striped:true
 			}), document.getElementById(w_ch_cook.div_id));
 		$("#"+this.div_body).hide();
