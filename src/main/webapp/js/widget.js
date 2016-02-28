@@ -78,7 +78,9 @@ var w_ch_cookAddImg={
 				alert("error:w_ch_cookAddImg.uuid is null!");
 				return;
 			}
-			var objectForm={name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type,groupuuid:w_ch_cookAddImg.groupuuid};
+			//上传时,总数传用户点击选择的学校uuid
+			var groupuuid=w_ch_cook.groupuuid;
+			var objectForm={name:$("#cook_name").val(),img:w_ch_cookAddImg.uuid,type:w_ch_cookAddImg.type,groupuuid:groupuuid};
 			 var jsonString=JSON.stringify(objectForm);
 		    var url = hostUrl + "rest/cookbook/save.json";
 			$.ajax({
@@ -94,6 +96,7 @@ var w_ch_cookAddImg={
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
 						Store.setChooseCook(objectForm.type,null);//
+						Store.setChooseCook(objectForm.type+groupuuid,null);//
 						if(w_ch_cookAddImg.callbackFN){
 							
 							w_ch_cookAddImg.callbackFN();

@@ -21,6 +21,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -160,7 +161,12 @@ public class MessageController extends AbstractRESTController {
 
 		try {
 			PaginationData pData = this.getPaginationDataByRequest(request);
-			PageQueryResult pageQueryResult= messageService.query(request.getParameter("type"),request.getParameter("useruuid"),pData);
+			
+			String type=request.getParameter("type");
+			if(DBUtil.isSqlInjection(type, responseMessage))return "";
+			String useruuid=request.getParameter("useruuid");
+			if(DBUtil.isSqlInjection(useruuid, responseMessage))return "";
+			PageQueryResult pageQueryResult= messageService.query(type,useruuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
@@ -217,6 +223,9 @@ public class MessageController extends AbstractRESTController {
 			//设置当前用户
 			SessionUserInfoInterface user=this.getUserInfoBySession(request);
 			String parent_uuid=request.getParameter("uuid");
+			
+			if(DBUtil.isSqlInjection(parent_uuid, responseMessage))return "";
+			
 			if(StringUtils.isBlank(parent_uuid)){
 				responseMessage.setMessage("parent_uuid参数必填:uuid");
 				return "";

@@ -1,7 +1,5 @@
 package com.company.news.service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,21 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.news.SystemConstants;
-import com.company.news.cache.CommonsCache;
+import com.company.news.cache.UserCache;
 import com.company.news.cache.redis.UserRedisCache;
-import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.MyUbbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.core.iservice.PushMsgIservice;
 import com.company.news.entity.Message;
-import com.company.news.entity.Parent;
 import com.company.news.entity.User;
 import com.company.news.jsonform.MessageJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.vo.GourpLeaderMsgVO;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -65,30 +60,32 @@ public class MessageService extends AbstractService {
 			return false;
 		}
 
-		Parent user = (Parent) CommonsCache.get(messageJsonform.getRevice_useruuid(),Parent.class);
+//		Parent user = (Parent) CommonsCache.get(messageJsonform.getRevice_useruuid(),Parent.class);
+		UserCache user=UserRedisCache.getUserCache(messageJsonform.getRevice_useruuid());
+		
 		if (user == null) {
 			responseMessage.setMessage("user 不存在！");
 			return false;
 		}
-		messageJsonform.setRevice_user(user.getName());
-
+		
 		Message message = new Message();
 
 		BeanUtils.copyProperties(message, messageJsonform);
-
+		
+		message.setRevice_user(user.getN());
 		message.setCreate_time(TimeUtils.getCurrentTimestamp());
 		message.setIsread(announcements_isread_no);
 		message.setIsdelete(announcements_isdelete_no);
-		message.setSend_userimg(user.getImg());
+		message.setSend_userimg(user.getI());
 		
 		
 		// 有事务管理，统一在Controller调用时处理异常
 		this.nSimpleHibernateDao.getHibernateTemplate().save(message);
-		String msg_title=message.getSend_user();
+		String msg_title=message.getSend_user()+"说:"+message.getMessage();
 		if(SystemConstants.Message_type_1.equals(message.getType())){
-			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageTeaher, message.getSend_useruuid(), user.getUuid(), msg_title);
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageTeaher, message.getSend_useruuid(), message.getRevice_useruuid(), msg_title);
 		}else{
-			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageKD, message.getSend_useruuid(), user.getUuid(),msg_title);
+			pushMsgIservice.pushMsg_to_parent(SystemConstants.common_type_messageKD, message.getSend_useruuid(),  message.getRevice_useruuid(),msg_title);
 			
 		}
 		
@@ -107,7 +104,7 @@ public class MessageService extends AbstractService {
 		if (StringUtils.isNotBlank(type))
 			hql += " and type=" + type;
 		if (StringUtils.isNotBlank(useruuid))
-			hql += " and revice_useruuid='" + DbUtils.safeToWhereString(useruuid) + "'";
+			hql += " and revice_useruuid='" +useruuid + "'";
 		hql += " order by create_time desc" ;
 		
 		
@@ -123,8 +120,6 @@ public class MessageService extends AbstractService {
 	public PageQueryResult queryMessageByTeacher(String useruuid,String parentuuid,PaginationData pData) {
 		
 		
-		useruuid=DbUtils.safeToWhereString(useruuid);
-		parentuuid=DbUtils.safeToWhereString(parentuuid);
 		String hql = SelectSql+" from px_message t1 where isdelete=" + announcements_isdelete_no;
 			hql += " and type=1" ;
 			hql += " and (" ;
@@ -238,10 +233,10 @@ public class MessageService extends AbstractService {
 			 PaginationData pData) {
 		String sql="select revice_useruuid,send_useruuid,revice_user,send_user,send_userimg,count(revice_useruuid) as count,max(create_time) as last_time from px_message where type= "+SystemConstants.Message_type_1;
 		sql += " and (" ;
-		sql += "  revice_useruuid ='" + DbUtils.safeToWhereString(useruuid) + "'";//家长发给我的.
+		sql += "  revice_useruuid ='" +useruuid + "'";//家长发给我的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
-		sql += " order by create_time desc";
+		sql += " order by last_time desc";
 		
 		Session session=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		Query  query =session.createSQLQuery(sql);
@@ -285,7 +280,7 @@ public class MessageService extends AbstractService {
 //		sql += " or send_useruuid in (" + DBUtil.stringsToWhereInValue(group_uuids) + " )";//我发给家长的.
 		sql += "  )" ;
 		sql+="GROUP BY revice_useruuid,send_useruuid";
-		sql += " order by create_time desc";
+		sql += " order by last_time desc";
 //		List<Object[]> list=this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession().createSQLQuery(sql).list();
 //		List relList=new ArrayList();
 //		for(Object[] o:list){
@@ -304,11 +299,7 @@ public class MessageService extends AbstractService {
 		
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForSqlNoTotal(query, pData);
-		
-		List list=pageQueryResult.getData();
-		UserRedisCache.warpListMapByUserCache(list, "send_useruuid", "send_user", null);
-		UserRedisCache.warpListMapByUserCache(list, "revice_useruuid", "revice_user", null);
-		
+		warpMapList(pageQueryResult.getData());
 		return pageQueryResult;
 	}
 	

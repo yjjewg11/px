@@ -271,7 +271,9 @@ function ajax_State_style(type,reluuid,group_uuid,num){
 		   ajax_parentContactByMyStudent_message_list(reluuid,"家长通讯");   //家长通讯录信息(未验证功能);
 	       break;
 	case 12:  
-		ajax_boss_message_list_byRight(group_uuid,reluuid); //园长信箱(未验证功能);
+		
+		menu_queryLeaderMsgByParents_message_fn_byRight();
+//		ajax_boss_message_list_byRight(group_uuid,reluuid); //园长信箱(未验证功能);
 //	 	@revice_useruuid:收件人ID------group_uuid;
 //	 	@send_useruuid:发送者ID--------reluuid;
 	       break;
