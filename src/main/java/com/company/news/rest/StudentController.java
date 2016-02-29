@@ -231,7 +231,7 @@ public class StudentController extends AbstractRESTController {
 		try {
 
 			PaginationData pData = this.getPaginationDataByRequest(request);
-
+			pData.setPageSize(50);
 			String groupuuid = request.getParameter("groupuuid");
 			if (DBUtil.isSqlInjection(groupuuid, responseMessage)) {
 				return "";
@@ -413,6 +413,12 @@ public class StudentController extends AbstractRESTController {
 			} else if ("doorrecord_apply".equals(xlsname)) {
 				SessionUserInfoInterface user = this
 						.getUserInfoBySession(request);
+				
+				//自动生成
+				 studentService
+					.update_doorrecord_userid_Of_Student(classuuid,
+							groupuuid, uuid, xlsname, user);
+			
 				List<Object[]> list = studentService
 						.queryFor_doorrecord_apply_OutExcel(classuuid,
 								groupuuid, uuid, xlsname, user);
@@ -421,6 +427,7 @@ public class StudentController extends AbstractRESTController {
 			} else if ("doorrecord_teacher".equals(xlsname)) {
 				SessionUserInfoInterface user = this
 						.getUserInfoBySession(request);
+				
 				List<Object[]> list = studentService
 						.update_and_queryFor_doorrecord_teacher_OutExcel(
 								classuuid, groupuuid, uuid, null, user);
@@ -429,6 +436,13 @@ public class StudentController extends AbstractRESTController {
 			} else if ("doorrecord_apply_teacher".equals(xlsname)) {
 				SessionUserInfoInterface user = this
 						.getUserInfoBySession(request);
+				
+				//自动生成
+				 studentService
+					.update_doorrecord_userid_Of_teacher(classuuid,
+							groupuuid, uuid, xlsname, user);
+			
+				 
 				List<Object[]> list = studentService
 						.queryFor_doorrecord_apply_teacher_OutExcel(classuuid,
 								groupuuid, uuid, xlsname, user);

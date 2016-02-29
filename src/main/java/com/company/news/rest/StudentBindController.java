@@ -17,6 +17,7 @@ import com.company.news.entity.StudentBind;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StudentBindService;
 import com.company.news.vo.ResponseMessage;
@@ -104,8 +105,15 @@ public class StudentBindController extends AbstractRESTController {
 			String cardid =request.getParameter("cardid");
 			String type =request.getParameter("type");
 			
-			PaginationData pData = this.getPaginationDataByRequest(request);
+			if(DBUtil.isSqlInjection(classuuid, responseMessage))return "";
+			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+			if(DBUtil.isSqlInjection(studentuuid, responseMessage))return "";
+			if(DBUtil.isSqlInjection(otherWhere, responseMessage))return "";
+			if(DBUtil.isSqlInjection(cardid, responseMessage))return "";
+			if(DBUtil.isSqlInjection(type, responseMessage))return "";
 			
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			pData.setPageSize(50);
 			PageQueryResult list=null;
 			if(SystemConstants.StudentBind_type_0.toString().equals(type)){
 				list = studentBindService.queryForTeacher(groupuuid,studentuuid,cardid,otherWhere,pData);

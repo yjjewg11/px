@@ -5006,7 +5006,9 @@ render: function() {
     		 }
     	},
     	handleClick_query: function(m) {
+			this.handleChange();
     		this.state.pageNo=1;
+			
 			 this.ajax_list();
     	  },
     	  handleChange_selectgroup_uuid: function(val){

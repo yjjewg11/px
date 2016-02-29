@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -9,12 +10,12 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.company.news.cache.CommonsCache;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
-import com.company.news.commons.util.MyUbbUtils;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.Message;
 import com.company.news.entity.TeacherJudge;
 import com.company.news.entity.User4Q;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 
 /**
@@ -32,7 +33,7 @@ public class TeachingJudgeService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List<TeacherJudge> query(String groupuuid, String type,
+	public List query(String groupuuid, String type,
 			String date_start, String date_end) {
 
 		if (StringUtils.isBlank(date_start)) {
@@ -54,8 +55,27 @@ public class TeachingJudgeService extends AbstractService {
 		 * LinkedList<TeachingJudgeVo>();
 		 */
 
-		List<TeacherJudge> tlist = this.queryTeacherJudgeByGroupuuid(groupuuid,
-				date_start, date_end);
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+//		String sql = "select {t0.*} from px_teacherjudge {t0},px_usergrouprelation t1 where {t0}.teacheruuid=t1.useruuid ";
+//		sql += " and t1.groupuuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
+//		sql += " and {t0}.create_time between '" + DbUtils.safeToWhereString(date_start) + "' and '"
+//				+ DbUtils.safeToWhereString(date_end) + "'";
+
+		String sql = "select t0.* from px_teacherjudge t0,px_usergrouprelation t1 where t0.teacheruuid=t1.useruuid ";
+		sql += " and t1.groupuuid='" + DBUtil.safeToWhereString(groupuuid) + "'";
+		
+		sql += " and t0.create_time>="+DBUtil.stringToDateYMDByDBType(date_start);
+		sql += " and t0.create_time<="+DBUtil.stringToDateYMD23_59_59ByDBType(date_end);
+
+		 PaginationData pData=new PaginationData();
+		 pData.setPageSize(1000);
+		 
+		 PageQueryResult resutlt=this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(sql, pData);
+		List list= resutlt.getData();
+//		return this.warpVoList(q.list());
+		this.warpMapList(list);
+		
 		/*
 		 * Map<String, TeacherJudge> mappedTeacherJudge = new HashMap<String,
 		 * TeacherJudge>(); for (TeacherJudge teacherJudge : tlist) {
@@ -68,49 +88,41 @@ public class TeachingJudgeService extends AbstractService {
 		 * teachingJudgeVos.add(vo); }
 		 */
 
-		return tlist;
+		return list;
 
 	}
+
+	
 
 	/**
-	 * 查询指定机构的某月教师评价
-	 * 
+	 * vo输出转换
+	 * @param list
 	 * @return
 	 */
-	private List<TeacherJudge> queryTeacherJudgeByGroupuuid(String groupuuid,
-			String date_start, String date_end) {
-
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-				.getSessionFactory().openSession();
-		String sql = "select {t0.*} from px_teacherjudge {t0},px_usergrouprelation t1 where {t0}.teacheruuid=t1.useruuid ";
-		sql += " and t1.groupuuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
-		sql += " and {t0}.create_time between '" + DbUtils.safeToWhereString(date_start) + "' and '"
-				+ DbUtils.safeToWhereString(date_end) + "'";
-
-		Query q = s.createSQLQuery(sql).addEntity("t0", TeacherJudge.class);
-		return this.warpVoList(q.list());
+	private List warpMapList(List<Map> list) {
+		UserRedisCache.warpListMapByUserCache(list, "teacheruuid", "teacher_name", null);
+		return list;
 	}
-
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
 		return TeacherJudge.class;
 	}
 
-	/**
-	 * vo输出转换
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public TeacherJudge warpVo(TeacherJudge o) {
-		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
-		User4Q user = (User4Q) CommonsCache.get(o.getTeacheruuid(),
-				User4Q.class);
-		if (user != null)
-			o.setTeacher_name(user.getName());
-		return o;
-	}
+//	/**
+//	 * vo输出转换
+//	 * 
+//	 * @param list
+//	 * @return
+//	 */
+//	public TeacherJudge warpVo(TeacherJudge o) {
+//		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
+//		User4Q user = (User4Q) CommonsCache.get(o.getTeacheruuid(),
+//				User4Q.class);
+//		if (user != null)
+//			o.setTeacher_name(user.getName());
+//		return o;
+//	}
 
 	/**
 	 * 教师评价统计
@@ -134,18 +146,18 @@ public class TeachingJudgeService extends AbstractService {
 		return q.list();
 	}
 
-	/**
-	 * vo输出转换
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public List<TeacherJudge> warpVoList(List<TeacherJudge> list) {
-		for (TeacherJudge o : list) {
-			warpVo(o);
-		}
-		return list;
-	}
+//	/**
+//	 * vo输出转换
+//	 * 
+//	 * @param list
+//	 * @return
+//	 */
+//	public List<TeacherJudge> warpVoList(List<TeacherJudge> list) {
+//		for (TeacherJudge o : list) {
+//			warpVo(o);
+//		}
+//		return list;
+//	}
 
 	@Override
 	public String getEntityModelName() {

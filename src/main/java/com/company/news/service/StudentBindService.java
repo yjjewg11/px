@@ -464,7 +464,7 @@ public class StudentBindService extends AbstractService {
 			 startUserid=Long.valueOf(maxUserid+"");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 			 
 			 return startUserid;

@@ -545,6 +545,67 @@ public class StudentService extends AbstractStudentService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
+	
+	/**
+	 * 查询出没有申请号的学生,生成申请号.用于制作门禁卡导出.(保证每个学生至少一个)
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @param otherWhere
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public synchronized List<Object[]>  update_doorrecord_userid_Of_Student(String classuuid,
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
+		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
+		sql+=" where b2.cardid is null and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		if (StringUtils.isNotBlank(classuuid))
+			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		if ("doorrecord_apply".equals(otherWhere))
+			sql += " and  b2.cardid is null ";
+		
+		sql += "order by s1.classuuid,CONVERT( s1.name USING gbk)";
+		
+//原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
+		List<Object[]> list = s.createSQLQuery(sql).list();
+		
+		 Long startUserid=studentBindService.getMax_userid(groupuuid);
+		 for(Object[] obj:list){
+			if(obj[2]==null){//用户编号 空,需要生成.
+				StudentBind b2=null;
+				if(obj[11]!=null){
+					b2=(StudentBind)this.nSimpleHibernateDao.getObjectById(StudentBind.class, obj[11].toString());
+				}
+				if(b2==null){
+					 b2=new StudentBind();
+				}
+				
+				b2.setStudentuuid(obj[9]+"");
+				if(StringUtils.isBlank(b2.getStudentuuid())){
+					throw new Exception("学生uuid不能为空");
+				}
+				b2.setUserid((++startUserid)+"");
+				b2.setCard_factory(null);
+				b2.setCreate_user(user.getName());
+				b2.setCreate_useruuid(user.getUuid());
+				b2.setGroupuuid(obj[10]+"");
+				b2.setName(obj[3]+"");
+				b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+				b2.setType(1);//学生卡
+				this.nSimpleHibernateDao.save(b2);
+				
+				//获取新新生成的userid
+				obj[2]=b2.getUserid();
+			}
+		}
+		return list;
+	}
 
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
@@ -617,6 +678,71 @@ public class StudentService extends AbstractStudentService {
 //原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
 		List<Object[]> list = s.createSQLQuery(sql).list();
 		
+		return list;
+	}
+	
+
+	/**
+	 * 查询出没有申请号的老师,生成申请号.用于制作门禁卡导出.
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @param otherWhere
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public synchronized List<Object[]>  update_doorrecord_userid_Of_teacher(String classuuid,
+			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
+		
+		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,p4.groupuuid,b2.uuid as binduuid ";
+		sql+=" from px_user s1  left  join  px_studentbind b2   on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_0;
+		
+		sql+="  left  join  px_usergrouprelation p4   on  s1.uuid=p4.useruuid ";
+		sql+="left join px_group c3  on  c3.uuid=p4.groupuuid ";
+		
+		sql+=" where b2.userid is null and p4.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+	
+		if (StringUtils.isNotBlank(uuid))
+			sql += "   s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		if ("doorrecord_apply".equals(otherWhere))
+			sql += " and  b2.cardid is null ";
+		
+		sql += "order by CONVERT( b2.name USING gbk)";
+		
+//原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
+		List<Object[]> list = nSimpleHibernateDao.createSQLQuery(sql).list();
+		
+		 Long startUserid=studentBindService.getMax_userid(groupuuid);
+		 for(Object[] obj:list){
+			if(obj[2]==null){//用户编号 空,需要生成.
+				StudentBind b2=null;
+				if(obj[11]!=null){
+					b2=(StudentBind)this.nSimpleHibernateDao.getObjectById(StudentBind.class, obj[11].toString());
+				}
+				if(b2==null){
+					 b2=new StudentBind();
+				}
+				
+				b2.setStudentuuid(obj[9]+"");
+				if(StringUtils.isBlank(b2.getStudentuuid())){
+					continue;
+				//	throw new Exception("学生uuid不能为空");
+				}
+				b2.setUserid((++startUserid)+"");
+				b2.setCard_factory(null);
+				b2.setCreate_user(user.getName());
+				b2.setCreate_useruuid(user.getUuid());
+				b2.setGroupuuid(obj[10]+"");
+				b2.setName(obj[3]+"");
+				b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+				b2.setType(0);//学生卡
+				this.nSimpleHibernateDao.save(b2);
+				
+				//获取新新生成的userid
+				obj[2]=b2.getUserid();
+			}
+		}
 		return list;
 	}
 	

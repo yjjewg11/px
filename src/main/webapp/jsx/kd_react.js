@@ -5006,7 +5006,9 @@ render: function() {
     		 }
     	},
     	handleClick_query: function(m) {
+			this.handleChange();
     		this.state.pageNo=1;
+			
 			 this.ajax_list();
     	  },
     	  handleChange_selectgroup_uuid: function(val){
@@ -6261,7 +6263,7 @@ render: function() {
               <th>满意度</th>
               <th>评价详情</th>
               <th>评价人</th>
-              <th>评价时间</th>
+              <th>评价时间</th> 
             </tr> 
           </thead>
           <tbody>
