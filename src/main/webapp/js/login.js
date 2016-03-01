@@ -17,10 +17,10 @@ var PxRight={
 //PxLazyM=(function(){return {}})();
 var PxLazyM=(function(){
 	//懒加载回调
-	function loadJS_for_kd_callback(){
-		window.__loadJS_count--;
-		//alert("loadJS_count="+__loadJS_count);
-		if(window.__loadJS_count==0){
+	function loadJS_for_kd_callback(s){
+		window.__loadJS_Array.push(s);
+		
+		if(window.__loadJS_Array.length==window.__loadJS_count){
 			$.AMUI.progress.done();
 			window.grouptype= getCookie("bs_grouptype");
 			menu_body_fn();
@@ -42,9 +42,11 @@ var PxLazyM=(function(){
 		if(!ver)ver="1107";
 		//所有加载完成才执行回调.
 		window.__loadJS_count=jsArr.length;
+		window.__loadJS_Array=[];
 		$.AMUI.progress.start();
 		for(var i=0;i<jsArr.length;i++){
-			loadJS(jsArr[i]+"?"+ver,callback);
+			var s=jsArr[i]+"?"+ver;
+			loadJS(s,function(){loadJS_for_kd_callback(s)});
 		}
 		
 	};

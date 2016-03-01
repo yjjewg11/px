@@ -2622,6 +2622,34 @@ function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
   	});
   };
   
+
+  /*
+   *(公告)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+   *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+   * */  	  
+  function ajax_pxstudent_delete(uuid){	 
+  	if(!confirm("确定要删除该学生吗?")){
+  		return;
+  	}
+    	$.AMUI.progress.start();
+        var url = hostUrl + "rest/pxstudent/delete.json?uuid="+uuid;
+  	$.ajax({
+  		type : "POST",
+  		url : url,
+  		dataType : "json",
+  		 async: true,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				Queue.doBackFN();
+  			} else {
+  				alert(data.ResMsg.message);
+  			}
+  		},
+  		error :G_ajax_error_fn
+  	});
+  };  
   /*
    *（标头）班级管理-班级详情-列表学生详情编辑换班级按钮 服务器请求
    * */

@@ -354,7 +354,7 @@ public class StudentBindService extends AbstractService {
 		String sql = "";
 		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
 	//	sql+=" where b2.cardid is not null ";
-		sql+=" where  b2.userid is not null and   b2.type="+SystemConstants.StudentBind_type_1;
+		sql+=" where  s1.status=0 and b2.userid is not null and   b2.type="+SystemConstants.StudentBind_type_1;
 		if (StringUtils.isNotBlank(groupuuid))
 			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
