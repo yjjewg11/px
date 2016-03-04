@@ -630,7 +630,7 @@ public class PxStudentService extends AbstractStudentService {
 		
 		
 		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
-		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class,uuid);
+		PxStudent student = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class,uuid);
 		
 		boolean flag = isHasRightToDo(student, responseMessage, request);
 		// 如果 是更新,只有班主任和管理员可以进行修改,
