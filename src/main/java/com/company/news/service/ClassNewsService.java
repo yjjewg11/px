@@ -355,18 +355,19 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	public List getClassNewsCountsByClass(String groupuuid,String begDateStr, String endDateStr,Integer isdisable) {
 		endDateStr+=" 23:59:59";
 		//class_name,news_count,dianzan_count,replay_count,read_sum_count
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
-		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from  px_class  left join px_classnews on px_classnews.classuuid=px_class.uuid";
+		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from px_class as px_class  left join " ;
+		sql+=	"(select uuid,classuuid from px_classnews";
+				sql+=	"	where  groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' " ;
+						sql+=" and   px_classnews.create_time<= "+DBUtil.stringToDateByDBType(endDateStr);
+						sql+=" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr) ;
+						sql+=	") as px_classnews on px_classnews.classuuid=px_class.uuid";
 			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
-			
-			sql+=" and (  px_classnews.create_time is NULL ";
-			sql+=" or( px_classnews.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";
-			sql+=")";
 			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
 		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
 		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
-		sql+=" GROUP BY t0.classuuid order by news_count desc";
+		sql+=" GROUP BY t0.classuuid";
 		
 
 		Query q = s.createSQLQuery(sql);
@@ -410,14 +411,15 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	public List getClassNewsCountsByPxClass(String groupuuid,String begDateStr, String endDateStr,Integer isdisable) {
 		endDateStr+=" 23:59:59";
 		//class_name,news_count,dianzan_count,replay_count,read_sum_count
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
-		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from px_pxclass as px_class  left join px_classnews on px_classnews.classuuid=px_class.uuid";
+		sql+=" (select px_classnews.uuid,px_class.uuid as classuuid,px_class.name from px_pxclass as px_class  left join " ;
+		sql+=	"(select uuid,classuuid from px_classnews";
+				sql+=	"	where  groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' " ;
+						sql+=" and   px_classnews.create_time<= "+DBUtil.stringToDateByDBType(endDateStr);
+						sql+=" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr) ;
+						sql+=	") as px_classnews on px_classnews.classuuid=px_class.uuid";
 			sql+="  where px_class.isdisable="+isdisable+" and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
-			
-			sql+=" and (  px_classnews.create_time is NULL ";
-			sql+=" or( px_classnews.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_classnews.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";
-			sql+=")";
 			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
 		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
 		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";

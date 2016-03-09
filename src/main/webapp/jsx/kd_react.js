@@ -2309,11 +2309,22 @@ var Class_student_Tel_ListItem =React.createClass({
   	},
   render: function() {
   	  var o = this.state;
+
+	  var calss_btn_className="G_Edit_show am-btn am-btn-secondary";
+	  if(!o.uuid){
+		  calss_btn_className="G_Edit_hide";
+	  }
+
   	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
   	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 	  if(!o.status)o.status=0;
    return (
 		   <form id="editClassStudentForm" method="post" className="am-form">
+	    <AMR_ButtonToolbar>
+				   <button type="button" className={calss_btn_className}  onClick={btn_ajax_student_changeClass_byRight.bind(this,o.groupuuid,o.uuid)} >换班级</button>
+			 	
+			 </AMR_ButtonToolbar>
+
 		   <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="classuuid"  value={o.classuuid}/>
@@ -4692,7 +4703,7 @@ render: function() {
   	    return (
   	      <tr className={className} >
 			<td> <AMUIReact.Image id="img_head_image" width="28" height="28" src={header_img}/></td>
-			<td><a href="javascript:void(0);" onClick={ajax_class_students_edit_byRight.bind(this,null,event.uuid)}>{event.name}</a></td>			
+			<td><a href="javascript:void(0);" onClick={G_class_students_look_info.bind(this,event.uuid,1,2)}>{event.name}</a></td>			
   	        <td>{event.sex=="0"?"男":"女"}</td>
 			<td>{Vo.get("student_status_"+event.status)}</td>
   	        <td>{event.birthday}</td>
@@ -4709,12 +4720,7 @@ render: function() {
  * */
   var Class_student_edit_byRight = React.createClass({ 
 	  	
-	  btn_ajax_classStudent_admin_byRight: function(groupuuid,studentuuid) {
-		  var callbackFN=function(classuuid){
-			  ajax_student_changeClass(classuuid,studentuuid);
-		  }
-		w_ch_class.open(callbackFN,groupuuid);
-	  	  },
+	
   	 getInitialState: function() {
   		    return this.props.formdata;
   		  },
@@ -4750,9 +4756,12 @@ render: function() {
    return (
 		   
 		   <div>
+			     <AMR_ButtonToolbar>
+				   <button type="button" className={calss_btn_className}  onClick={btn_ajax_student_changeClass_byRight.bind(this,o.groupuuid,o.uuid)} >换班级</button>
+			 	
+			 	  </AMR_ButtonToolbar>
 		   <div className="am-cf am-margin-top-sm">
-		   <button type="button" className={calss_btn_className}  onClick={this.btn_ajax_classStudent_admin_byRight.bind(this,o.groupuuid,o.uuid)} >换班级</button>
-			 
+		 
 		   </div>
 		   <form id="editClassStudentForm" method="post" className="am-form">
 		     <PxInput type="hidden" name="headimg" id="headimg"  value={o.headimg}  onChange={this.handleChange} />
@@ -7676,11 +7685,9 @@ var Studentbind_EventsTable_byRight = React.createClass({
 	
 		getStateByPropes:function(nextProps){
 		  
-		var classList=Store.getChooseClass(nextProps.groupuuid);
-			var classuuid =null;
-			if(classList&&classList.length>0){
-				classuuid=classList[0].uuid;
-			}
+			var classList=Store.getChooseClass(nextProps.groupuuid);
+			var classuuid ="";
+		
 			var down_list = [  	                  
   	                  {value: 'doorrecord' , label: '导出接送卡表' },
 				     {value: 'doorrecord_apply' , label: '导出申请接送卡' }
@@ -7696,7 +7703,7 @@ var Studentbind_EventsTable_byRight = React.createClass({
 				     {value: 'doorrecord_apply_teacher' , label: '导出申请门禁卡' }
   	                ];
 			}
-
+			
 		  var obj= {
 			    	groupuuid:nextProps.groupuuid,
 			    	pageNo:1,
@@ -7707,9 +7714,18 @@ var Studentbind_EventsTable_byRight = React.createClass({
 					cardid:"",
 					otherWherelist: otherWherelist,
 					down_list:down_list,
+					new_count:0,
 			    	list: []
 			    };
 					obj.classList.unshift({value:"",label:"所有"});
+
+
+		   if(window.G_studentbind_otherWhere){
+					obj.otherWhere=window.G_studentbind_otherWhere;
+			}
+			if(window.G_myclass_choose){
+					obj.classuuid=window.G_myclass_choose;
+			}					
 			return obj;
 		},
 	getInitialState: function() {		
@@ -7750,6 +7766,7 @@ var Studentbind_EventsTable_byRight = React.createClass({
 					obj.list=data.list.data;
 					if(!obj.pageNo||obj.pageNo==1){
 						that.state.totalCount=data.list.totalCount;
+						that.state.new_count=data.new_count;
 					}
 				    that.ajax_callback( data.list.data );     
 				} else {
@@ -7840,6 +7857,10 @@ render: function() {
 	  }else{
     help=(<G_px_help_List data={G_kd_help_msg.msg_help_list15}/>);
 	}
+	var new_countDiv=null;
+	if(this.state.new_count>0){
+			new_countDiv=(<h3>新生自动申请门禁卡数量:</h3>);
+		}
   return (
   <div>
 	{help}
@@ -7876,7 +7897,7 @@ render: function() {
     </div>
 </AMR_ButtonToolbar>	  
 
-
+{new_countDiv}
 	  
     <AMR_Table {...this.props}>  
    <thead> 

@@ -609,8 +609,17 @@ G_ajax_abs_save(opt);
  	});
  };
 
-
-
+/**
+ * 换班级
+ * @param groupuuid
+ * @param studentuuid
+ */
+ function btn_ajax_student_changeClass_byRight(groupuuid,studentuuid) {
+	  var callbackFN=function(classuuid){
+		  ajax_student_changeClass(classuuid,studentuuid);
+	  }
+		w_ch_class.open(callbackFN,groupuuid);
+}
 //——————————————————————————(大图标)班级互动——————————————————————————   
 /*
  * <班级互动>先绘制舞台div搭建加载更多按钮功能模板 以及静态数据
@@ -2888,6 +2897,35 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	});
  };
 
+ 
+ /*
+  *(公告)<校园公告><老师公告><精品文章><招生计划>删除按钮服务请求；
+  *@ajax_announce_listByGroup：删除成功后调用发布消息方法刷新;
+  * */  	  
+ function ajax_student_delete(uuid){	 
+ 	if(!confirm("确定要删除该学生吗?")){
+ 		return;
+ 	}
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/student/delete.json?uuid="+uuid;
+ 	$.ajax({
+ 		type : "POST",
+ 		url : url,
+ 		dataType : "json",
+ 		 async: true,
+ 		success : function(data) {
+ 			$.AMUI.progress.done();
+ 			// 登陆成功直接进入主页
+ 			if (data.ResMsg.status == "success") {
+ 				Queue.doBackFN();
+ 			} else {
+ 				alert(data.ResMsg.message);
+ 			}
+ 		},
+ 		error :G_ajax_error_fn
+ 	});
+ };  
+	  
  /*
   * （标头）<班级管理>添加与编辑学生 提交按钮 服务器请求
   * */

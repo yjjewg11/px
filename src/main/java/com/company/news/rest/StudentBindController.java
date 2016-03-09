@@ -20,6 +20,7 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.StudentBindService;
+import com.company.news.service.StudentService;
 import com.company.news.vo.ResponseMessage;
 
 @Controller
@@ -112,14 +113,27 @@ public class StudentBindController extends AbstractRESTController {
 			if(DBUtil.isSqlInjection(cardid, responseMessage))return "";
 			if(DBUtil.isSqlInjection(type, responseMessage))return "";
 			
+			SessionUserInfoInterface user = this
+					.getUserInfoBySession(request);
+			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			pData.setPageSize(50);
 			PageQueryResult list=null;
+			
+			Integer new_count=0;
 			if(SystemConstants.StudentBind_type_0.toString().equals(type)){
+				 
+				new_count=studentService
+					.update_doorrecord_userid_Of_teacher(classuuid,
+							groupuuid, studentuuid, "", user);
 				list = studentBindService.queryForTeacher(groupuuid,studentuuid,cardid,otherWhere,pData);
 			}else{
+				new_count=studentService.update_doorrecord_userid_Of_Student(classuuid, groupuuid, studentuuid, otherWhere, user);
 				list = studentBindService.queryForStudents(classuuid,groupuuid,studentuuid,cardid,otherWhere,pData);
 			}
+			
+			//新生自动创建门禁卡申请号数:
+			model.addAttribute("new_count", list);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -131,7 +145,8 @@ public class StudentBindController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
-
+	@Autowired
+	private StudentService studentService;
 	/**
 	 * 查询一个班级的孩子所有卡数据
 	 * 

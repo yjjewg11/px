@@ -7,8 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,6 +18,7 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.FPFamilyMembers;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
@@ -114,57 +113,6 @@ public class StudentService extends AbstractStudentService {
 	}
 
 	
-	/*
-	 * 
-	 * 判断是否是学生老师
-	 */
-	public boolean isStudentTeacher(String user_uuids, String classuuid) {
-		String hql = "select uuid from UserClassRelation where  classuuid=? and useruuid in("
-				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
-		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
-		if (list.size() > 0)
-			return true;
-		return false;
-	}
-	/*
-	 * 
-	 * 判断是否是培训学生老师
-	 */
-	public boolean isStudentPxTeacher(String user_uuids, String classuuid) {
-		String hql = "select uuid from UserPxCourseRelation where  classuuid=? and useruuid in("
-				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
-		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
-		if (list.size() > 0)
-			return true;
-		return false;
-	}
-	
-	public boolean isHasRightToDo(Student student, ResponseMessage responseMessage, HttpServletRequest request){
-		boolean flag = false;
-		// 如果 是更新,只有班主任和管理员可以进行修改,
-		String right=RightConstants.KD_student_m;
-		if(SessionListener.isPXLogin(request)){
-			right=RightConstants.PX_student_m;
-		}
-		
-		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
-		
-
-		flag = RightUtils.hasRight(student.getGroupuuid(),
-				right, request);
-		if(flag)return flag;
-		
-		if(SessionListener.isPXLogin(request)){
-			flag = this.isStudentPxTeacher(user.getUuid(),
-					student.getClassuuid());
-		}else{
-			flag = this.isStudentTeacher(user.getUuid(),
-					student.getClassuuid());
-		}
-			
-		
-		return flag;
-	}
 	
 	/**
 	 * 修改
@@ -332,7 +280,19 @@ public class StudentService extends AbstractStudentService {
 			return null;
 		this.nSimpleHibernateDao.getHibernateTemplate().evict(o);
 		warpVo(o);
+		
 		return o;
+	}
+	
+	/**
+	 * 查询关联学生的家长.
+	 * @param uuid
+	 * @return
+	 */
+	public List<Map> getStudentcontactrealationList(String uuid) {
+		String sql="select parent_uuid,tel,type from px_studentcontactrealation where student_uuid='"+uuid+"'";
+		 return this.nSimpleHibernateDao.queryListMapBySql(sql);
+		
 	}
 
 	/**
@@ -545,24 +505,24 @@ public class StudentService extends AbstractStudentService {
 		// TODO Auto-generated method stub
 		return this.model_name;
 	}
-	
+
 	/**
-	 * 查询出没有申请号的学生,生成申请号.用于制作门禁卡导出.(保证每个学生至少一个)
+	 * * 查询出没有申请号的学生,生成申请号.用于制作门禁卡导出.(保证每个学生至少一个)
 	 * @param classuuid
 	 * @param groupuuid
 	 * @param uuid
 	 * @param otherWhere
 	 * @param user
-	 * @return
+	 * @return 新加数量
 	 * @throws Exception
 	 */
-	public synchronized List<Object[]>  update_doorrecord_userid_Of_Student(String classuuid,
+	public synchronized Integer  update_doorrecord_userid_Of_Student(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
-		sql+=" where b2.cardid is null and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql+=" where s1.status=0 and b2.userid is null and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		if (StringUtils.isNotBlank(uuid))
@@ -570,10 +530,11 @@ public class StudentService extends AbstractStudentService {
 		if ("doorrecord_apply".equals(otherWhere))
 			sql += " and  b2.cardid is null ";
 		
-		sql += "order by s1.classuuid,CONVERT( s1.name USING gbk)";
+//		sql += "order by s1.classuuid,CONVERT( s1.name USING gbk)";
 		
 //原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
 		List<Object[]> list = s.createSQLQuery(sql).list();
+		if(list.isEmpty())return 0;
 		
 		 Long startUserid=studentBindService.getMax_userid(groupuuid);
 		 for(Object[] obj:list){
@@ -604,7 +565,7 @@ public class StudentService extends AbstractStudentService {
 				obj[2]=b2.getUserid();
 			}
 		}
-		return list;
+		return list.size();
 	}
 
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_OutExcel(String classuuid,
@@ -613,7 +574,7 @@ public class StudentService extends AbstractStudentService {
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
-		sql+=" where  s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql+=" where  s1.status=0 and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		if (StringUtils.isNotBlank(uuid))
@@ -664,7 +625,7 @@ public class StudentService extends AbstractStudentService {
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
-		sql+=" where  b2.userid is not null and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql+=" where s1.status=0 and b2.userid is not null and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		if (StringUtils.isNotBlank(uuid))
@@ -692,7 +653,7 @@ public class StudentService extends AbstractStudentService {
 	 * @return
 	 * @throws Exception
 	 */
-	public synchronized List<Object[]>  update_doorrecord_userid_Of_teacher(String classuuid,
+	public synchronized Integer  update_doorrecord_userid_Of_teacher(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,p4.groupuuid,b2.uuid as binduuid ";
@@ -708,11 +669,12 @@ public class StudentService extends AbstractStudentService {
 		if ("doorrecord_apply".equals(otherWhere))
 			sql += " and  b2.cardid is null ";
 		
-		sql += "order by CONVERT( b2.name USING gbk)";
+		
+//		sql += "order by CONVERT( b2.name USING gbk)";
 		
 //原始卡号 	用户卡号	用户编号	用户名	部门名称	性别	身份证号	出生日期	家庭住址	[邮编	 联系电话	入学日期	有效期]固定空.
 		List<Object[]> list = nSimpleHibernateDao.createSQLQuery(sql).list();
-		
+		if(list.isEmpty())return 0;
 		 Long startUserid=studentBindService.getMax_userid(groupuuid);
 		 for(Object[] obj:list){
 			if(obj[2]==null){//用户编号 空,需要生成.
@@ -743,7 +705,7 @@ public class StudentService extends AbstractStudentService {
 				obj[2]=b2.getUserid();
 			}
 		}
-		return list;
+		return list.size();
 	}
 	
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_teacher_OutExcel(String classuuid,
@@ -834,7 +796,7 @@ public class StudentService extends AbstractStudentService {
 		
 		String sql = "select c3.name as class_name,s1.name,s1.sex,s1.birthday ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid ";
-		sql+=" where s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		sql+=" where s1.status=0 and s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
 			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
 		if (StringUtils.isNotBlank(uuid))
@@ -875,5 +837,35 @@ public class StudentService extends AbstractStudentService {
 
 		return list;
 	}
+	
+	/**
+	 * 删除 支持多个，用逗号分隔
+	 * 
+	 * @param uuid
+	 */
+	public boolean delete(HttpServletRequest request,String uuid, ResponseMessage responseMessage) {
+		
+		
+		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class,uuid);
+		
+		boolean flag = isHasRightToDo(student, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		
+		if(!flag){
+			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能删除.");
+			return false;
+		}
+		
+		//删除学生关联信息
+		String delete_studentcontactrealation="delete from px_studentcontactrealation where student_uuid='"+uuid+"'";
+		this.nSimpleHibernateDao.createSQLQuery(delete_studentcontactrealation).executeUpdate();
+		//需要删除相关表. 
+		//need_code
+		this.nSimpleHibernateDao.delete(student);
+		return true;
+	}
+
 
 }

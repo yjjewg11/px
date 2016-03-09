@@ -1713,10 +1713,12 @@ function G_status(){
 	     if(this.isRight||this.props.type==2){
 	    	 rect_info=(		 		 
 	    		  <AMR_ButtonToolbar>
-		 	       <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
+				    <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
 			 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
 			 	   <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
-			 	   <G_help_popo   msg={G_tip.studentbind_app} />
+					 <AMR_Button amStyle="danger" onClick={ajax_student_delete.bind(this,o.uuid)} >删除</AMR_Button>
+		 	   	
+				 <G_help_popo   msg={G_tip.studentbind_app} />
 			 	  </AMR_ButtonToolbar>)
 	     }
  		 return (
@@ -1794,6 +1796,8 @@ function G_status(){
 	    	 rect_info=(		 		 
 	 		 		 <AMR_ButtonToolbar>
 	  		 	     <AMR_Button amStyle="secondary" onClick={ajax_myclass_students_edit.bind(this,o.uuid)} >修改学生</AMR_Button>
+					  <AMR_Button amStyle="danger" onClick={ajax_pxstudent_delete.bind(this,o.uuid)} >删除</AMR_Button>
+		 	   	
 	  		 	     </AMR_ButtonToolbar>); 
 	     }
  		 return (

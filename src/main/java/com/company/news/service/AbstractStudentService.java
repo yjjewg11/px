@@ -2,6 +2,8 @@ package com.company.news.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.company.news.SystemConstants;
@@ -11,14 +13,72 @@ import com.company.news.entity.AbstractStudentContactRealation;
 import com.company.news.entity.Parent;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.PxStudentContactRealation;
+import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
+import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
+import com.company.news.right.RightConstants;
+import com.company.news.right.RightUtils;
 import com.company.news.validate.CommonsValidate;
+import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 public class AbstractStudentService extends AbstractService {
 	@Autowired
 	private UserinfoService userinfoService;
 
+	/*
+	 * 
+	 * 判断是否是学生老师
+	 */
+	public boolean isStudentTeacher(String user_uuids, String classuuid) {
+		String hql = "select uuid from UserClassRelation where  classuuid=? and useruuid in("
+				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
+		if (list.size() > 0)
+			return true;
+		return false;
+	}
+	/*
+	 * 
+	 * 判断是否是培训学生老师
+	 */
+	public boolean isStudentPxTeacher(String user_uuids, String classuuid) {
+		String hql = "select uuid from UserPxCourseRelation where  classuuid=? and useruuid in("
+				+ DBUtil.stringsToWhereInValue(user_uuids) + ")";
+		List list = this.nSimpleHibernateDao.getHibernateTemplate().find(hql, classuuid);
+		if (list.size() > 0)
+			return true;
+		return false;
+	}
+	
+	public boolean isHasRightToDo(AbstractStudent student, ResponseMessage responseMessage, HttpServletRequest request){
+		boolean flag = false;
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		String right=RightConstants.KD_student_m;
+		if(SessionListener.isPXLogin(request)){
+			right=RightConstants.PX_student_m;
+		}
+		
+		SessionUserInfoInterface user=this.getSessionUser(request, responseMessage);
+		
+
+		flag = RightUtils.hasRight(student.getGroupuuid(),
+				right, request);
+		if(flag)return flag;
+		
+		if(SessionListener.isPXLogin(request)){
+			flag = this.isStudentPxTeacher(user.getUuid(),
+					student.getClassuuid());
+		}else{
+			flag = this.isStudentTeacher(user.getUuid(),
+					student.getClassuuid());
+		}
+			
+		
+		return flag;
+	}
 	protected void updateAllStudentContactRealationByStudent(AbstractStudent student) throws Exception {
 		// 添加学生关联联系人表
 		this.updateStudentContactRealation(student,

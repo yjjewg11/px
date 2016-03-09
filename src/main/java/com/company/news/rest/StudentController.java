@@ -320,6 +320,7 @@ public class StudentController extends AbstractRESTController {
 			}
 			
 			s = studentService.get(uuid);
+//			List<Map> list=studentService.getStudentcontactrealationList(uuid);
 			if (s == null) {
 				responseMessage.setMessage("学生资料不存在.uuid=" + uuid);
 				return "";
@@ -562,4 +563,39 @@ public class StudentController extends AbstractRESTController {
 		return "";
 	}
 
+	/**
+	 * 班级删除
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String delete(ModelMap model, HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			String uuid=request.getParameter("uuid");
+			if(DBUtil.isSqlInjection(uuid, responseMessage)){
+				return "";
+			}
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			
+			boolean flag = studentService.delete(request,uuid
+					,responseMessage);
+			if (!flag)
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("操作成功");
+		return "";
+	}
 }

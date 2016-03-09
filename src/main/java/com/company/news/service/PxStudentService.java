@@ -25,12 +25,14 @@ import com.company.news.entity.PxCourseCache;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.PxStudentPXClassRelation;
 import com.company.news.entity.Student;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.PxStudentJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -210,6 +212,14 @@ public class PxStudentService extends AbstractStudentService {
 
 		PxStudent pxStudent = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class, pxstudentJsonform.getUuid());
 
+		boolean flag = isHasRightToDo(pxStudent, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		
+		if(!flag){
+			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能修改.");
+			return false;
+		}
 		PxStudent old_student = new PxStudent();
 		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 		BeanUtils.copyProperties(old_student, pxStudent);
@@ -610,6 +620,34 @@ public class PxStudentService extends AbstractStudentService {
 	public String getEntityModelName() {
 		// TODO Auto-generated method stub
 		return this.model_name;
+	}
+	/**
+	 * 删除 支持多个，用逗号分隔
+	 * 
+	 * @param uuid
+	 */
+	public boolean delete(HttpServletRequest request,String uuid, ResponseMessage responseMessage) {
+		
+		
+		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+		PxStudent student = (PxStudent) this.nSimpleHibernateDao.getObjectById(PxStudent.class,uuid);
+		
+		boolean flag = isHasRightToDo(student, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		
+		
+		if(!flag){
+			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能删除.");
+			return false;
+		}
+		
+		//删除学生关联信息
+		String delete_studentcontactrealation="delete from px_pxstudentcontactrealation where student_uuid='"+uuid+"'";
+		this.nSimpleHibernateDao.createSQLQuery(delete_studentcontactrealation).executeUpdate();
+		//需要删除相关表. 
+		//need_code
+		this.nSimpleHibernateDao.delete(student);
+		return true;
 	}
 
 }
