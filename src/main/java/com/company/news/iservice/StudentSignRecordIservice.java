@@ -65,7 +65,7 @@ public class StudentSignRecordIservice {
 						
 						Map map=new HashMap();
 				    	map.put("uuid", obj.getUuid());
-				    	map.put("groupuuid",obj.getGroupuuid());
+				    	map.put("studentuuid",obj.getStudentuuid());
 				    	map.put("title",msg);
 						JobDetails job=new JobDetails("studentSignRecordIservice","sendPushMessage",map);
 						MQUtils.publish(job);
@@ -82,9 +82,11 @@ public class StudentSignRecordIservice {
 
 		public void sendPushMessage(Map<String,String> map) throws Exception{
 			String uuid=map.get("uuid");
-			String groupuuid=map.get("groupuuid");
+			String studentuuid=map.get("studentuuid");
 			String title=map.get("title");
-			pushMsgIservice.pushMsgToParentByStudent(SystemConstants.common_type_signrecord, uuid, groupuuid, title);
+			if(studentuuid==null)return;
+			
+			pushMsgIservice.pushMsgToParentByStudent(SystemConstants.common_type_signrecord, uuid, studentuuid, title);
 			
 		}
 
