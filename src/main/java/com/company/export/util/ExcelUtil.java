@@ -14,6 +14,7 @@ import jxl.Workbook;
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
 import jxl.write.Label;
+import jxl.write.NumberFormats;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -58,6 +59,29 @@ public class ExcelUtil {
 		WritableFont wf = new WritableFont(WritableFont.createFont("宋体"), 12,
 				WritableFont.NO_BOLD);
 		WritableCellFormat cf = new WritableCellFormat(wf);
+		try {
+		cf.setAlignment(jxl.format.Alignment.CENTRE);
+		cf.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);// 单元格的内容垂直方向居中
+		cf.setBorder(Border.ALL, BorderLineStyle.THIN);
+		} catch (WriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}// 单元格中的内容水平方向居中
+		return cf;
+	}
+	
+	/**
+	 * 获得默认表格设置(
+	 * ……此处省略字体对齐等 //数字强制文本   //下面代码插入以零开头的纯数字文本“000222” 
+	 *   //sheet.addCell(new Label(33, rowNo,"000222", fromart));   
+	 *   //虽然前面三个零会显示，但当我们双击单元格以后，前面的零会消失！！ //解决办法：
+	 *   WritableCellFormat kodoFromart = new WritableCellFormat(NumberFormats.TEXT);
+	 * @return
+	 */
+	private static  WritableCellFormat getTextWritableFontForBody(){
+		WritableFont wf = new WritableFont(WritableFont.createFont("宋体"), 12,
+				WritableFont.NO_BOLD);
+		WritableCellFormat cf = new WritableCellFormat(wf,NumberFormats.TEXT);
 		try {
 		cf.setAlignment(jxl.format.Alignment.CENTRE);
 		cf.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);// 单元格的内容垂直方向居中
@@ -635,7 +659,7 @@ public class ExcelUtil {
 				sheet.addCell(new Label(12, 0, "有效期", cf));
 				
 				Integer index=1;
-				 cf=getWritableFontForBody();
+				 cf=getTextWritableFontForBody();
 				 
 				 List sexList=CommonsCache.getBaseDataListByTypeuuid("sex");
 				for (Object[] s : list) {
