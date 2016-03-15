@@ -1723,6 +1723,7 @@ function G_status(){
 	     }
  		 return (
  		 		<div>
+ 		 		<hr/>
  		 		{rect_info}
 			    <AMUIReact.List static border striped>
 			      <Common_mg_big_fn  imgsList={imglist} />				  

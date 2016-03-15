@@ -1723,6 +1723,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     }
  		 return (
  		 		React.createElement("div", null, 
+ 		 		React.createElement("hr", null), 
  		 		rect_info, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
 			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
