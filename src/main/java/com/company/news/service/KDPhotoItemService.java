@@ -54,7 +54,7 @@ public class KDPhotoItemService extends AbstractService {
 	}
 
 	
-	String Selectsql=" SELECT t1.uuid,t1.family_uuid,t1.photo_time,t1.create_useruuid,t1.path,t1.address,t1.note,t1.phone_type,t1.create_time";
+	String Selectsql=" SELECT t1.uuid,t1.class_uuid,t1.photo_time,t1.create_useruuid,t1.path,t1.address,t1.note,t1.phone_type,t1.create_time";
 	String SqlFrom=" FROM kd_photo_item t1 ";
 
 
@@ -63,14 +63,14 @@ public class KDPhotoItemService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(SessionUserInfoInterface user ,String family_uuid, String user_uuid,PaginationData pData) {
+	public PageQueryResult query(SessionUserInfoInterface user ,String class_uuid, String user_uuid,PaginationData pData) {
 		String selectsql=Selectsql;
 		String sql=SqlFrom;
 		
-		 if (StringUtils.isNotBlank(family_uuid)) {//根据家庭uuid查询
-			sql += " where   t1.family_uuid ='"+DBUtil.safeToWhereString(family_uuid)+"'";
+		 if (StringUtils.isNotBlank(class_uuid)) {//根据家庭uuid查询
+			sql += " where   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
 		}else if (StringUtils.isNotBlank(user_uuid)) {//查询用户关联家庭照片.或者自己上传的
-			sql += " LEFT JOIN  fp_family_members t2 on  t2.family_uuid=t1.family_uuid ";
+			sql += " LEFT JOIN  fp_family_members t2 on  t2.class_uuid=t1.class_uuid ";
 			sql += " where t1.create_useruuid='"+DBUtil.safeToWhereString(user_uuid)+"' or  t2.user_uuid ='"+DBUtil.safeToWhereString(user_uuid)+"'";
 		}
 		////使用创建时间做分页显示,beforeTime 取 2016-01-15 13:13 之前的数据.按照创建时间排倒序

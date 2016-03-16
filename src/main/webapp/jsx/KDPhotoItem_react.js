@@ -1,21 +1,42 @@
-var KDPhotoItem=function(){
+var KDPhotoItem=function(classuuid){
 			
 		var module={
 			group_uuid:null,
 			query:function(){
-				var group_uuid=Store.getGroup();
-				var classArry=Store.getChooseClass(group_uuid);
-				var class_uuid;
-				if(!classArry||classArry.length==0){
-					class_uuid=null;
-				}else{
-					class_uuid=classList[0].uuid;
+				var group_List=Store.getGroup();
+				if(!this.group_uuid){
+					this.group_uuid=group_List[0].uuid;
 				}
-				React.render(React.createElement(Query_photo_rect,{
-						groupuuid:group_uuid,
-						classList:G_selected_dataModelArray_byArray(classArry,"uuid","brand_name"),
-						classuuid:class_uuid
-						}), G_get_div_body());
+				var classArry=Store.getChooseClass(this.group_uuid);
+				var class_uuid;
+				if(!classuuid){
+					if(!classArry||classArry.length==0){
+						classuuid=null;
+					}else{
+						classuuid=classArry[0].uuid;
+					}
+				}
+				console.log("逆天",classArry,classuuid); 
+				var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
+				$.ajax({
+					type : "GET",
+					url : url,
+					data : {class_uuid:classuuid},
+					dataType : "json",
+					success : function(data) {
+			  			if (data.ResMsg.status == "success") {
+							React.render(React.createElement(Query_photo_rect,{
+								groupuuid:this.group_uuid,
+								classList:G_selected_dataModelArray_byArray(classArry,"uuid","brand_name"),
+								classuuid:classuuid
+								}), G_get_div_body());
+			  			} else {
+			  				alert("加载数据失败："+data.ResMsg.message);
+			  			}
+			  		},
+					error :G_ajax_error_fn
+				});
+
 			}				
 		}
 /*
@@ -52,10 +73,27 @@ render: function() {
     );
   }
 });
-    
-var Img_photo_rect = React.createClass({
-	 handleClick: function() {
 
+var Img_photo_rect = React.createClass({
+ajax_list_Click:function(data){
+	var url = hostUrl + "rest/kDPhotoItem/upload.json";
+	$.ajax({
+		type : "POST",
+		url : url,
+		dataType : "json",
+		success : function(data) {
+  			if (data.ResMsg.status == "success") {
+  				menu_photo_fn(data.classuuid);
+  			} else {
+  				alert("加载数据失败："+data.ResMsg.message);
+  			}
+  		},
+		error :G_ajax_error_fn
+	});
+	
+},
+buttion_black_Click: function(data) {
+		 menu_photo_fn(data.classuuid);
 },	
 imgDivNum:0,
 getNewImgDiv:function(){
@@ -88,12 +126,13 @@ componentDidMount:function(){
 	 }		
 },
 render: function() {	
+	var data=this.props;
     return (
     		<div>
     		<hr/>
     		<AMR_ButtonToolbar>
-      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind()} >确定上传</AMR_Button>
-      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind()} >返回</AMR_Button>
+      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.ajax_list_Click.bind(this)} >确定上传</AMR_Button>
+      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,data)} >返回</AMR_Button>
       		</AMR_ButtonToolbar>
             <h4>
             图片预览：
