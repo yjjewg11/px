@@ -19,14 +19,18 @@ public class StartServer {
 	
 	public static  void init(){
 		//启动发布与订阅
-		MQUtils.initPubClient(MQConstants.QueueName_PxTask);
+		
+		String queueName=ProjectProperties.getProperty("mq.queueName", MQConstants.QueueName_PxTask);
+		
+		//初始化发布队列
+		MQUtils.initPubClient(queueName);
 		
 		String enable=ProjectProperties.getProperty("mq.subscribe", "true");
 		if(enable.equals("true")){
-			MQUtils.startSubscribeClient(MQConstants.QueueName_PxTask);
-			logger.info("start mq.subscribe.queueName="+MQConstants.QueueName_PxTask);
+			MQUtils.startSubscribeClient(queueName);
+			logger.info("start mq.subscribe.queueName="+queueName);
 		}else{
-			logger.info("no use mq.subscribe.queueName="+MQConstants.QueueName_PxTask);
+			logger.info("no use mq.subscribe.queueName="+queueName);
 		}
 	
 	}
