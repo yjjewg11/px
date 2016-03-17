@@ -59,6 +59,7 @@ public class KDPhotoItemController extends AbstractRESTController {
 //			String photo_time=request.getParameter("photo_time");
 //			String address=request.getParameter("address");
 //			String note=request.getParameter("note");
+			
 			KDPhotoItem uploadFile = kDPhotoItemService.uploadImg(form, file,
 					responseMessage, request);
 			if (uploadFile == null)

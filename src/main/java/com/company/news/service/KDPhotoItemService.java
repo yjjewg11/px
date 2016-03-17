@@ -312,7 +312,10 @@ public class KDPhotoItemService extends AbstractService {
 		}
 		
 		String extension=FilenameUtils.getExtension(file.getOriginalFilename());
-		
+		if(this.validateRequireByRegJsonform(form.getGroup_uuid(), "学校", responseMessage))
+		{
+			return null;
+		}
 	
 		
 		KDPhotoItem uploadFile = new KDPhotoItem();
