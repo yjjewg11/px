@@ -718,9 +718,9 @@ function menu_body_fn (){
  * (首页)班级相册
  * @ photo
  * */
-function menu_photo_fn(classuuid) {
+function menu_photo_fn(classuuid,pageNo) {
 	Queue.push(menu_photo_fn,"班级相册");
-	KDPhotoItem.query(classuuid);
+	KDPhotoItem.query(classuuid,pageNo);
 };
 
 /*

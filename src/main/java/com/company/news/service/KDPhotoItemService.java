@@ -1,5 +1,7 @@
 package com.company.news.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -13,17 +15,21 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import sun.misc.BASE64Decoder;
+
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.UserCache;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.commons.util.UploadFileUtils;
 import com.company.news.commons.util.upload.DiskIUploadFile;
 import com.company.news.commons.util.upload.IUploadFile;
 import com.company.news.commons.util.upload.OssIUploadFile;
 import com.company.news.entity.FPPhotoItemOfUpdate;
 import com.company.news.entity.KDPhotoItem;
+import com.company.news.entity.UploadFile;
 import com.company.news.form.KDPhotoItemForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.FPPhotoItemJsonform;
@@ -302,7 +308,87 @@ public class KDPhotoItemService extends AbstractService {
 		return null;
 	}
 
+	/**
+	 * 上载附件
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 *             base64='data:image/png;base64,iVBORw0KG...'
+	 */
+	public KDPhotoItem uploadImg(KDPhotoItemForm form,String base64, 
+			ResponseMessage responseMessage, HttpServletRequest request,
+			SessionUserInfoInterface user) throws Exception {
+		String contentType = null;
+		if (StringUtils.isEmpty(base64)) {
+			responseMessage.setMessage("上传内容是空的！");
+			return null;
+		}
+		
+		byte[] b = null;
+		if (base64 != null) {
+			try {
+				String tmpbase64 = base64.substring(base64.indexOf(";base64,")
+						+ ";base64,".length());
+				contentType = base64.substring("data:".length(),
+						base64.indexOf(";base64,"));
+				// extension=contentType.substring("image/".length());
+	
+				BASE64Decoder decoder = new BASE64Decoder();
+				
+				b = decoder.decodeBuffer(tmpbase64);
+			} catch (Exception e) {
+				e.printStackTrace();
+				responseMessage.setMessage("解析错误：" + e.getMessage());
+				return null;
+			}
+		}
 
+		// 过滤文件大小等
+		if (!UploadFileUtils.fileFilter(responseMessage, b.length)) {
+			return null;
+		}
+
+
+		KDPhotoItem uploadFile = new KDPhotoItem();
+
+		
+		BeanUtils.copyProperties(uploadFile, form);
+		
+		uploadFile.setFile_size(Long.valueOf(b.length));
+		uploadFile.setCreate_useruuid(user.getUuid());
+		uploadFile.setCreate_time(TimeUtils.getCurrentTimestamp());
+		uploadFile.setUpdate_time(TimeUtils.getCurrentTimestamp());
+		uploadFile.setPhoto_time(TimeUtils.string2Timestamp(TimeUtils.DEFAULTFORMAT, form.getPhoto_time()));
+
+			
+		if(uploadFile.getPhoto_time()==null){//如果上传拍照时间,不正确或为null,则设置为拍照时间.
+			uploadFile.setPhoto_time(uploadFile.getCreate_time());
+		}
+		this.nSimpleHibernateDao.getHibernateTemplate().save(uploadFile);
+		
+		//2016/uuid.png
+		
+		String filePath ="fp/"+TimeUtils.getCurrentTime("yyyy")+"/"+uploadFile.getUuid()+".png";
+		
+		uploadFile.setPath(filePath);
+		
+		
+		
+		InputStream  imgInputStream=new ByteArrayInputStream(b);
+		String groupuuid=request.getParameter("groupuuid");
+		
+	
+		// 上传文件
+		if (iUploadFile.uploadFile(imgInputStream, filePath, 0)) {
+		
+			return uploadFile;
+		} else {
+			responseMessage.setMessage("上传文件失败");
+			return null;
+		}
+	}
 	public KDPhotoItem uploadImg(KDPhotoItemForm form, CommonsMultipartFile file,
 			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
 		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.KDPhotoItem;
+import com.company.news.entity.UploadFile;
 import com.company.news.form.KDPhotoItemForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.query.PageQueryResult;
@@ -37,7 +38,44 @@ public class KDPhotoItemController extends AbstractRESTController {
 	@Autowired
 	private KDPhotoItemService kDPhotoItemService;
 
-	
+
+	/**
+	 * 上传我的头像
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/uploadBase64", method = RequestMethod.POST)
+	public String upload(@RequestParam("base64") String base64,
+			KDPhotoItemForm form, ModelMap model,
+			HttpServletRequest request) {
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		try {
+			KDPhotoItem uploadFile = kDPhotoItemService.uploadImg(form,base64,
+					responseMessage, request,
+					this.getUserInfoBySession(request));
+			if (uploadFile == null)
+				return "";
+
+			model.addAttribute(RestConstants.Return_G_entity, uploadFile);
+			model.addAttribute(RestConstants.Return_G_imgUrl,
+					PxStringUtil.imgUrlByUuid(uploadFile.getUuid()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("上传成功");
+		return "";
+	}
+
 
 	/**
 	 * 上传我的头像
