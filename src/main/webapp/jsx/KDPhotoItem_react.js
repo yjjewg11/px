@@ -1,4 +1,4 @@
-var KDPhotoItem=function(classuuid,pageNo){
+var KDPhotoItem=function(groupuuid,classuuid,pageNo){
 	var fpPhotoUploadTask={
 			
 			cropper:null,
@@ -99,14 +99,19 @@ var KDPhotoItem=function(classuuid,pageNo){
 			}
 	};
 		var module={
-			group_uuid:null,
-			query:function(classuuid,pageNo){
-				var group_List=Store.getGroup();
-				if(!this.group_uuid){
-					this.group_uuid=group_List[0].uuid;
-				}
-				var classArry=Store.getChooseClass(this.group_uuid);
+			query:function(groupuuid,classuuid,pageNo){
 				var class_uuid;
+				var group_uuid;
+				var group_List=Store.getGroup();
+					if(!groupuuid){
+						group_uuid=group_List[0].uuid;
+					}else{
+						group_uuid=groupuuid;
+					  }
+					
+
+				var classArry=Store.getChooseClass(group_uuid);
+				
 				if(!pageNo)pageNo=1;
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
@@ -126,8 +131,9 @@ var KDPhotoItem=function(classuuid,pageNo){
 			  			if (data.ResMsg.status == "success") {
 							React.render(React.createElement(Query_photo_rect,{
 								formdata: data,
-								groupuuid:that.group_uuid,
+								groupuuid:group_uuid,
 								pageNo:pageNo,
+								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 								class_uuid:classuuid
 								}), G_get_div_body());
@@ -157,10 +163,16 @@ var Query_photo_rect = React.createClass({
 	    return obj;
 	   
 	  },
-	 handleChange_selectgrou_uuid:function(val){ 
+	 handleChange_selectClass:function(val){ 
 		  this.state.class_uuid=val;
 		  this.setState(this.state);
-		 menu_photo_fn(val,this.state.pageNo);
+		  menu_photo_fn(this.state.groupuuid,val,this.state.pageNo);
+	 },
+	 handleChange_selectGroup:function(val){ 
+		  this.state.groupuuid=val;
+		  this.state.class_uuid=null;
+		  this.setState(this.state);
+		 menu_photo_fn(val,this.state.class_uuid,this.state.pageNo);
 	 },
 	 handleClick: function(obj) {
 			React.render(React.createElement(Img_photo_rect,{
@@ -176,7 +188,7 @@ var Query_photo_rect = React.createClass({
 				 return;
 			 }
 			 obj.pageNo=obj.pageNo-1;
-			 menu_photo_fn(obj.class_uuid,obj.pageNo);
+			 menu_photo_fn(obj.groupuuid,obj.class_uuid,obj.pageNo);
 			 return;
 		 }else if(m=="next"){
 			 if(!obj.list||obj.list.length<obj.pageSize){
@@ -185,7 +197,7 @@ var Query_photo_rect = React.createClass({
 			 }
 			 obj.pageNo=obj.pageNo+1;
 			
-			 menu_photo_fn(obj.class_uuid,obj.pageNo);
+			 menu_photo_fn(obj.groupuuid,obj.class_uuid,obj.pageNo);
 			 return;
 		 }
 	},
@@ -208,9 +220,16 @@ render: function() {
      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
     		</AMR_ButtonToolbar>
     		</AMR_Panel>
-    		<div className="am-form-group">
-    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange_selectgrou_uuid} btnWidth="200"  data={this.props.classList} btnStyle="primary" value={obj.class_uuid} />    		            
+    		
+   		 <AMR_ButtonToolbar>
+  		 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectGroup} btnWidth="200"  data={this.props.group_List} btnStyle="primary" value={obj.groupuuid} />    		            
     		 </div> 
+    		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange_selectClass} btnWidth="200"  data={this.props.classList} btnStyle="primary" value={obj.class_uuid} />    		            
+    		 </div> 
+    		</AMR_ButtonToolbar>
+    		
             {imglist.map(function(event) {
            	 return (
            		<AMUIReact.Image  className="am-show"  id="img_image" thumbnail width="120" height="120" src={event.path}/>           	 
@@ -223,7 +242,7 @@ render: function() {
 });
 var Img_photo_rect = React.createClass({
 buttion_black_Click: function(o) {
-		 menu_photo_fn(o.class_uuid,o.pageNo);
+		 menu_photo_fn(o.groupuuid,o.class_uuid,o.pageNo);
 },	
 imgDivNum:0,
 getNewImgDiv:function(){
