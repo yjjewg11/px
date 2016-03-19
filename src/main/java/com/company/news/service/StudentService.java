@@ -133,7 +133,7 @@ public class StudentService extends AbstractStudentService {
 			responseMessage.setMessage("没有学生管理权限,或者不是该学生的老师不能修改.");
 			return false;
 		}
-	
+		Integer oldStatus=student.getStatus();
 
 //		Student old_student = new Student();
 //		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
@@ -159,10 +159,16 @@ public class StudentService extends AbstractStudentService {
 			
 //			responseMessage.setMessage("操作成功");
 			//关联班级的学生,离校  去掉关联班级
-			if(!SystemConstants.DB_String_unrelated_Value.equals(student.getClassuuid())&&SystemConstants.Student_status_leaveSchool.equals(student.getStatus())){
-				student.setClassuuid(SystemConstants.DB_String_unrelated_Value);
-				student.setLeave_time(TimeUtils.getCurrentTimestamp());
-//				responseMessage.setMessage("操作成功,该生离校已从班级移除.");
+			
+			if(SystemConstants.Student_status_InSchool.equals(oldStatus)){//如果变更数据
+				
+				if(SystemConstants.Student_status_leaveSchool.equals(student.getStatus())){//离校,移除班级.
+					student.setClassuuid(SystemConstants.DB_String_unrelated_Value);
+					student.setLeave_time(TimeUtils.getCurrentTimestamp());
+				}else if(SystemConstants.Student_status_finishSchool.equals(student.getStatus())){//毕业,设置为离校日期.
+					student.setLeave_time(TimeUtils.getCurrentTimestamp());
+				}
+				
 			}
 			
 			
@@ -383,13 +389,133 @@ public class StudentService extends AbstractStudentService {
 	 * @param type
 	 * @return
 	 */
+	public List getNewStudentCountByGroup(String groupuuid ,	String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		Session s = this.nSimpleHibernateDao.getSession();
+		String sql="select count(t0.uuid),t0.classuuid from px_student t0  ";
+		sql+="  where  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+		sql+=" and ( t0.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";		
+		sql+=" group by t0.classuuid";
+		
+
+		Query q = s.createSQLQuery(sql); 
+
+//		q.setMaxResults(10);
+		return q.list();
+	}
+
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getNewParentCountByGroup(String groupuuid,	String begDateStr, String endDateStr) {
+
+		endDateStr+=" 23:59:59";
+		Session s = this.nSimpleHibernateDao.getSession();
+//		String sql="select t0.uuid from px_student t0  ";
+//		sql+="  where  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+//		sql+=" and ( t0.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";		
+//		
+//		
+//		String sql1="select count(parent_uuid),class_uuid from px_studentcontactrealation where  parent_uuid is not null and student_uuid in("+sql+") group by class_uuid";
+//
+//		
+		String sql="select count(t1.parent_uuid),t0.classuuid from px_studentcontactrealation t1 left join  px_student t0 on t1.student_uuid=t0.uuid ";
+		sql+="  where t1.parent_uuid is not null and  t0.status=0 and  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+		sql+=" and ( t0.create_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.create_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";	
+		sql+="  group by t0.classuuid";
+		
+		
+		return s.createSQLQuery(sql).list(); 
+		
+	}
+	
+	
+
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getLeaveStudentCountByGroup(String groupuuid ,	String begDateStr, String endDateStr) {
+		endDateStr+=" 23:59:59";
+		Session s =  this.nSimpleHibernateDao.getSession();
+		String sql="select count(t0.uuid),t0. classuuid from px_student t0  ";
+		sql+="  where  (t0.status=1 or t0.status=2) and  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+		sql+=" and ( t0.leave_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.leave_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";		
+		sql+=" group by t0.classuuid";
+		
+
+		Query q = s.createSQLQuery(sql); 
+
+//		q.setMaxResults(10);
+		return q.list();
+	}
+
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getLeaveParentCountByGroup(String groupuuid,	String begDateStr, String endDateStr) {
+
+		endDateStr+=" 23:59:59";
+		Session s = this.nSimpleHibernateDao.getSession();
+//		String sql="select t0.uuid from px_student t0  ";
+//		sql+="  where  (t0.status=1 or t0.status=2) and  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+//		sql+=" and ( t0.leave_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.leave_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";	
+//		
+		String sql="select count(t1.parent_uuid),t0.classuuid from px_studentcontactrealation t1 left join  px_student t0 on t1.student_uuid=t0.uuid ";
+		sql+="  where t1.parent_uuid is not null and (t0.status=1 or t0.status=2) and  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+		sql+=" and ( t0.leave_time<="+DBUtil.stringToDateByDBType(endDateStr)+" and t0.leave_time>="+DBUtil.stringToDateByDBType(begDateStr)+")";	
+		sql+="  group by t0.classuuid";
+		return s.createSQLQuery(sql).list(); 
+		
+	}
+	
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
 	public List getStudentCountByGroup(String groupuuid) {
 
 		List list = (List) this.nSimpleHibernateDao.getHibernateTemplate()
-				.find("select count(uuid),classuuid from Student  where groupuuid=? group by classuuid)", groupuuid);
+				.find("select count(uuid),classuuid from Student  where status=0 and groupuuid=? group by classuuid)", groupuuid);
 
 		return list;
 	}
+
+	/**
+	 * 根据机构UUID,获取绑定该学生
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getParentCountByGroup(String groupuuid) {
+
+		Session s = this.nSimpleHibernateDao.getSession();
+//		
+		String sql="select count(t1.parent_uuid),t0.classuuid from px_studentcontactrealation t1 left join  px_student t0 on t1.student_uuid=t0.uuid ";
+		sql+="  where t1.parent_uuid is not null and  t0.status=0 and  t0.groupuuid='"+DBUtil.safeToWhereString(groupuuid)+"' ";
+		sql+="  group by t0.classuuid";
+		
+		
+		return s.createSQLQuery(sql).list(); 
+		
+	}
+	
+	
 
 	/**
 	 * 
@@ -518,7 +644,7 @@ public class StudentService extends AbstractStudentService {
 	 */
 	public synchronized Integer  update_doorrecord_userid_Of_Student(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
@@ -570,7 +696,7 @@ public class StudentService extends AbstractStudentService {
 
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
@@ -621,7 +747,7 @@ public class StudentService extends AbstractStudentService {
 	
 	public synchronized List<Object[]>  queryFor_doorrecord_apply_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.name as class_name,s1.sex,s1.idcard,s1.birthday,s1.address,s1.uuid,s1.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid left join px_studentbind b2 on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_1;
@@ -710,7 +836,7 @@ public class StudentService extends AbstractStudentService {
 	
 	public synchronized List<Object[]>  update_and_queryFor_doorrecord_teacher_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,s1.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,p4.groupuuid,b2.uuid as binduuid ";
 		sql+=" from px_user s1  left  join  px_studentbind b2   on  s1.uuid=b2.studentuuid and b2.type="+SystemConstants.StudentBind_type_0;
@@ -765,7 +891,7 @@ public class StudentService extends AbstractStudentService {
 	
 	public synchronized List<Object[]>  queryFor_doorrecord_apply_teacher_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select b2.card_factory,b2.cardid,b2.userid,b2.name,c3.brand_name as brand_name,s1.sex,'' as idcard,'' as birthday,'' as address,s1.uuid,b2.groupuuid,b2.uuid as binduuid ";
 		
@@ -792,7 +918,7 @@ public class StudentService extends AbstractStudentService {
 
 	public synchronized List<Map>  queryFor_students_age_OutExcel(String classuuid,
 			String groupuuid,String uuid,String otherWhere,SessionUserInfoInterface user) throws Exception {
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		Session s = this.nSimpleHibernateDao.getSession();
 		
 		String sql = "select c3.name as class_name,s1.name,s1.sex,s1.birthday ";
 		sql+=" from px_student s1  left join px_class c3 on s1.classuuid=c3.uuid ";

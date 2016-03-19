@@ -150,7 +150,7 @@ public class StatisticsService extends AbstractStatisticsService {
 		List<Object[]> slist = studentService
 				.getStudentCountByGroup(group_uuid);
 		// 根据机构ID获取家长人数
-		List<Object[]> plist = parentService.getParentCountByGroup(group_uuid);
+		List<Object[]> plist = studentService.getParentCountByGroup(group_uuid);
 		List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
 		
 		
@@ -1269,6 +1269,186 @@ public class StatisticsService extends AbstractStatisticsService {
 		return vo;
 
 
+	}
+	
+	/**
+	 * 新人统计
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getClassNewStudentNumber(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		
+		// 验证group合法性
+				if (!validateGroup(group_uuid, responseMessage))
+					return null;
+
+				logger.debug("begain 班级学生人数统计");
+
+				List<PClass> list = classService.query(group_uuid);
+				logger.debug("classService.query 查询结束");
+
+				// 返回
+				PieStatisticsVo vo = new PieStatisticsVo();
+				// 需要获取机构名
+				Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+				
+				String axis_data = "";
+				for (PClass p : list) {
+					axis_data += ("\"" + p.getName() + "\",");
+				}
+				vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+				// 根据机构ID获取班级人数
+				List<Object[]> slist = studentService
+						.getNewStudentCountByGroup(group_uuid,begDateStr,endDateStr);
+				// 根据机构ID获取家长人数
+				List<Object[]> plist = studentService.getNewParentCountByGroup(group_uuid,begDateStr,endDateStr);
+				List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
+				
+				
+				int parentCount=0;
+				int studentCount=0;
+				if (slist != null && slist.size() > 0) {
+					// 学生人数
+					Map m = new HashMap<String, Integer>();
+					for (Object[] o : slist) {
+						m.put(o[1], o[0]);
+						studentCount+=Integer.valueOf(o[0].toString());
+					}
+					// 家长人数
+					Map pm = new HashMap<String, Integer>();
+					for (Object[] o : plist) {
+						pm.put(o[1], o[0]);
+						parentCount+=Integer.valueOf(o[0].toString());
+					}
+
+					String ps_p_data = "";
+					String ps_data = "";
+					for (PClass p : list) {
+						ps_data += ((m.get(p.getUuid()) == null ? 0 : m
+								.get(p.getUuid())) + ",");
+						ps_p_data += ((pm.get(p.getUuid()) == null ? 0 : pm.get(p
+								.getUuid())) + ",");
+					}
+
+					PieSeriesDataVo sdvo = new PieSeriesDataVo();
+					sdvo.setName("学生人数");
+					sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
+
+					psdvlist.add(sdvo);
+
+					PieSeriesDataVo sdvo_p = new PieSeriesDataVo();
+					sdvo_p.setName("家长人数");
+					sdvo_p.setData("[" + PxStringUtils.StringDecComma(ps_p_data) + "]");
+
+					psdvlist.add(sdvo_p);
+
+				}
+				vo.setTitle_text(g.getBrand_name() + "班级新生人数统计"+"["+begDateStr+"~"+endDateStr+"]");
+				vo.setTitle_subtext("总计 " + list.size() + " 班,总新生数"+studentCount+"人,总新生家长数"+parentCount+"人");
+				List legend_data = new ArrayList();
+				legend_data.add("学生人数");
+				legend_data.add("家长人数");
+
+				vo.setLegend_data(legend_data);
+				
+				vo.setSeries_data(psdvlist);
+				logger.debug("end 用户性别统计");
+				return vo;
+	}
+	
+	/**
+	 * 离校统计
+	 * 
+	 * @param responseMessage
+	 * @return
+	 */
+	public PieStatisticsVo getClassLeaveStudentNumber(ResponseMessage responseMessage,
+			String begDateStr, String endDateStr, String group_uuid) {
+		
+		// 验证group合法性
+				if (!validateGroup(group_uuid, responseMessage))
+					return null;
+
+				logger.debug("begain 班级学生人数统计");
+
+				List<PClass> list = classService.query(group_uuid);
+				PClass dd=new PClass();
+				dd.setName("离校学生");
+				dd.setUuid(SystemConstants.DB_String_unrelated_Value);
+				list.add(dd);
+				logger.debug("classService.query 查询结束");
+
+				// 返回
+				PieStatisticsVo vo = new PieStatisticsVo();
+				// 需要获取机构名
+				Group4QBaseInfo g = (Group4QBaseInfo) CommonsCache.get(group_uuid, Group4QBaseInfo.class);
+				
+				String axis_data = "";
+				for (PClass p : list) {
+					axis_data += ("\"" + p.getName() + "\",");
+				}
+				vo.setyAxis_data("[" + PxStringUtils.StringDecComma(axis_data) + "]");
+
+				// 根据机构ID获取班级人数
+				List<Object[]> slist = studentService
+						.getLeaveStudentCountByGroup(group_uuid,begDateStr,endDateStr);
+				// 根据机构ID获取家长人数
+				List<Object[]> plist = studentService.getLeaveParentCountByGroup(group_uuid,begDateStr,endDateStr);
+				List<PieSeriesDataVo> psdvlist = new ArrayList<PieSeriesDataVo>();
+				
+				
+				int parentCount=0;
+				int studentCount=0;
+				if (slist != null && slist.size() > 0) {
+					// 学生人数
+					Map m = new HashMap<String, Integer>();
+					for (Object[] o : slist) {
+						m.put(o[1], o[0]);
+						studentCount+=Integer.valueOf(o[0].toString());
+					}
+					// 家长人数
+					Map pm = new HashMap<String, Integer>();
+					for (Object[] o : plist) {
+						pm.put(o[1], o[0]);
+						parentCount+=Integer.valueOf(o[0].toString());
+					}
+
+					String ps_p_data = "";
+					String ps_data = "";
+					for (PClass p : list) {
+						ps_data += ((m.get(p.getUuid()) == null ? 0 : m
+								.get(p.getUuid())) + ",");
+						ps_p_data += ((pm.get(p.getUuid()) == null ? 0 : pm.get(p
+								.getUuid())) + ",");
+					}
+
+					PieSeriesDataVo sdvo = new PieSeriesDataVo();
+					sdvo.setName("学生人数");
+					sdvo.setData("[" + PxStringUtils.StringDecComma(ps_data) + "]");
+
+					psdvlist.add(sdvo);
+
+					PieSeriesDataVo sdvo_p = new PieSeriesDataVo();
+					sdvo_p.setName("家长人数");
+					sdvo_p.setData("[" + PxStringUtils.StringDecComma(ps_p_data) + "]");
+
+					psdvlist.add(sdvo_p);
+
+				}
+				vo.setTitle_text(g.getBrand_name() + " 毕业离校人数统计"+"["+begDateStr+"~"+endDateStr+"]");
+				vo.setTitle_subtext("总计 " + list.size() + " 班,学生人数"+studentCount+"人,家长数"+parentCount+"人");
+				List legend_data = new ArrayList();
+				legend_data.add("学生人数");
+				legend_data.add("家长人数");
+
+				vo.setLegend_data(legend_data);
+				
+				vo.setSeries_data(psdvlist);
+				logger.debug("end 用户性别统计");
+				return vo;
 	}
 
 }
