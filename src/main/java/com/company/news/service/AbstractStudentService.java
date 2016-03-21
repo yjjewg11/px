@@ -13,7 +13,6 @@ import com.company.news.entity.AbstractStudentContactRealation;
 import com.company.news.entity.Parent;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.PxStudentContactRealation;
-import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.rest.util.DBUtil;
@@ -111,8 +110,22 @@ public class AbstractStudentService extends AbstractService {
 		
 		
 		tel=PxStringUtil.repairCellphone(tel);
-		AbstractStudentContactRealation studentContactRealation = this
-				.getStudentContactRealationBy(student, type);
+		
+		List<AbstractStudentContactRealation> list= this
+				.getStudentContactRealationListBy(student, type);
+		
+		AbstractStudentContactRealation studentContactRealation=null;
+		if(list.size()>0){
+			studentContactRealation=(AbstractStudentContactRealation)list.get(0);
+			
+			//删除多余关联关心
+			for(int i=1;i<list.size();i++){
+				nSimpleHibernateDao.delete(list.get(i));
+			}
+		}
+		
+//		AbstractStudentContactRealation studentContactRealation = this
+//				.getStudentContactRealationBy(student, type);
 		
 		//默认需要更新关系表
 		boolean isUpdateStudentContactRealation=true; 
@@ -134,6 +147,7 @@ public class AbstractStudentService extends AbstractService {
 			}
 			// 一样则表示不变,直接返回.
 			if (tel.equals(studentContactRealation.getTel())
+					&&student.getClassuuid().equals(studentContactRealation.getClass_uuid())
 					&& student.getName().equals(
 							studentContactRealation.getStudent_name())) {
 				isUpdateStudentContactRealation=false;
@@ -252,6 +266,26 @@ public class AbstractStudentService extends AbstractService {
 			return (AbstractStudentContactRealation) list.get(0);
 		}
 		return null;
+	}
+	/**
+	 * 获取
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	private List<AbstractStudentContactRealation> getStudentContactRealationListBy(
+			AbstractStudent student, Integer type) {
+		String hqlTableName="StudentContactRealation";
+		if(student instanceof PxStudent){
+			hqlTableName="PxStudentContactRealation";
+		}
+		List<AbstractStudentContactRealation> list = (List<AbstractStudentContactRealation>) this.nSimpleHibernateDao
+				.getHibernateTemplate()
+				.find("from "+hqlTableName+" where student_uuid=? and type=?",
+						student.getUuid(), type);
+	
+		return list;
 	}
 	/**
 	 * 获取

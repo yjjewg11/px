@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,13 @@ import com.company.news.SystemConstants;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.PClass;
 import com.company.news.entity.User;
+import com.company.news.entity.User4Q;
 import com.company.news.entity.UserClassRelation;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.ClassRegJsonform;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -184,14 +187,31 @@ public class ClassService extends AbstractClassService {
 	 * @return
 	 */
 	public List<PClass> query(String groupuuid) {
-		String hql=null;
-		if (StringUtils.isBlank(groupuuid))
-			hql="from PClass  order by groupuuid, convert(name, 'gbk') ";
-		else
-			hql="from PClass where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' order by  convert(name, 'gbk') ";
+		
 		PaginationData pData=new PaginationData();
 		pData.setPageSize(100);//防止大数据
-		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_class {t1} ";
+		if (StringUtils.isNotBlank(groupuuid)) {
+			sql += " where {t1}.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(groupuuid) + ")";
+			sql += " order by CONVERT( {t1}.name USING gbk)";
+		}else{
+			sql += " order by {t1}.groupuuid,CONVERT( {t1}.name USING gbk)";
+		}
+		
+		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
+
+		List l= this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData).getData();
+//		
+//		String hql=null;
+//		if (StringUtils.isBlank(groupuuid))
+//			hql="from PClass  order by groupuuid, convert(name, 'gbk') ";
+//		else
+//			hql="from PClass where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' order by  convert(name, 'gbk') ";
+//		
+//		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
 		return l;
@@ -206,8 +226,22 @@ public class ClassService extends AbstractClassService {
 	public List queryClassByUseruuid(String useruuid) {
 		PaginationData pData=new PaginationData();
 		pData.setPageSize(100);//防止大数据
-		String hql="from PClass where uuid in (select classuuid from UserClassRelation where   useruuid='"+DbUtils.safeToWhereString(useruuid)+"') order by convert(name, 'gbk')";
-		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
+		
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_class {t1} ";
+		sql += " where {t1}.uuid in("
+				+ "select classuuid from px_userclassrelation where   useruuid='"+DbUtils.safeToWhereString(useruuid)+ "')";
+		sql += " order by CONVERT( {t1}.name USING gbk)";
+		
+		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
+
+		List l= this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData).getData();
+//		
+//		
+//		String hql="from PClass where uuid in (select classuuid from UserClassRelation where   useruuid='"+DbUtils.safeToWhereString(useruuid)+"') order by convert(name, 'gbk')";
+//		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
 		return l;

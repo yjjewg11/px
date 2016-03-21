@@ -413,4 +413,97 @@ public class StatisticsController extends AbstractRESTController {
 		return "";
 	}
 	
+	/**
+	 * 
+	 * 
+	 * 新生人数统计
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getClassNewStudentNumber_bar", method = RequestMethod.GET)
+	public String getClassNewStudentNumber( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getClassNewStudentNumber(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
+
+	/**
+	 * 
+	 * 
+	 * 新生人数统计
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/getClassLeaveStudentNumber_bar", method = RequestMethod.GET)
+	public String getClassLeaveStudentNumber_bar( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		try {
+			String groupuuid=request. getParameter("groupuuid");
+			String begDateStr=request. getParameter("begDateStr");
+			String endDateStr=request. getParameter("endDateStr");
+			
+			groupuuid=DBUtil.safeToWhereString(groupuuid);
+			begDateStr=DBUtil.safeToWhereString(begDateStr);
+			endDateStr=DBUtil.safeToWhereString(endDateStr);
+			
+			SessionUserInfoInterface user = this.getUserInfoBySession(request);
+
+			
+			PieStatisticsVo vo = statisticsService.getClassLeaveStudentNumber(
+					responseMessage, begDateStr,endDateStr,groupuuid);
+
+			if (vo != null)
+				model.addAttribute(RestConstants.Return_G_entity, vo);
+			else
+				return "";
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器错误:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	
 }
