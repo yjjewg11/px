@@ -63,7 +63,7 @@ public class PushMsgDeviceService extends AbstractService {
 		
 		//删除多余无效的.
 		if(list.size()>1){
-			for(int i=1;i<list.size();i++){
+			for(int i=list.size()-1;i>0;i--){
 				this.nSimpleHibernateDao.delete(list.get(i));
 			}
 		}
