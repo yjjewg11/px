@@ -355,7 +355,7 @@ public class UploadFileService extends AbstractService {
 	 * 
 	 * @throws Exception
 	 */
-	private boolean getStream(String filePath, HttpServletResponse response,
+	static public boolean getStream(String filePath, HttpServletResponse response,
 			String contentType) throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getStreamInfo(ActionMapping, ActionForm, HttpServletRequest, HttpServletResponse) - start");
@@ -373,7 +373,7 @@ public class UploadFileService extends AbstractService {
 		response.setContentType("application/octet-stream");
 		response.setHeader("Content-Disposition", "attachment; filename="
 				+ fileName);
-		this.logger.info("Down file path:" + filePath);
+		logger.info("Down file path:" + filePath);
 		if (SmbFileUtil.isSmbFileFormat(filePath)) {
 			SmbFile file = null;
 			file = new SmbFile(filePath);
@@ -384,7 +384,7 @@ public class UploadFileService extends AbstractService {
 				file = new SmbFile(filePath);
 			}
 			if (!file.exists()) {
-				this.logger.error("down file is not exsist!path=" + filePath);
+			logger.error("down file is not exsist!path=" + filePath);
 				return false;
 			}
 			// 获取文件输入流
@@ -414,7 +414,7 @@ public class UploadFileService extends AbstractService {
 				file = new File(filePath);
 			}
 			if (!file.exists()) {
-				this.logger.error("down file is not exsist!path=" + filePath);
+				logger.error("down file is not exsist!path=" + filePath);
 				return false;
 			}
 			// 获取文件输入流

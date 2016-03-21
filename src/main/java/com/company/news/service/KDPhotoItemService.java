@@ -194,7 +194,7 @@ public class KDPhotoItemService extends AbstractService {
 	
 	private void warpMap(Map o, SessionUserInfoInterface user) {
 		try {
-			o.put("path", PxStringUtil.imgFPPhotoUrlByRelativePath_sub((String)o.get("path")));
+			o.put("path", PxStringUtil.imgUrlByRelativePath_sub((String)o.get("path"),"108h"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

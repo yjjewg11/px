@@ -71,13 +71,17 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo){
 			},
 			ajax_uploadByphone:function(base64){
 				$.AMUI.progress.start(); 
+				  formObject = $('#KdPhotoForm').serializeJson();
+					formObject.base64=base64;
+		//,{groupuuid:fpPhotoUploadTask.groupuuid,classuuid:null,base64:base64},
+
 				var url = hostUrl + "rest/kDPhotoItem/uploadBase64.json";
 				$.ajax({
 					type : "POST",
 					url : url,
 					timeout : 0, 
 					dataType : "json",
-					data:{groupuuid:fpPhotoUploadTask.groupuuid,classuuid:null,base64:base64},
+					data:formObject,
 					 async: true,
 					success : function(data) {
 						$.AMUI.progress.done();
@@ -132,7 +136,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo){
 							React.render(React.createElement(Query_photo_rect,{
 								formdata: data,
 								groupuuid:group_uuid,
-								pageNo:pageNo,
+								pageNo:data.list.pageNo,
 								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 								class_uuid:classuuid
@@ -179,8 +183,11 @@ var Query_photo_rect = React.createClass({
 				formdata:obj
 				}), G_get_div_body());
  },	
-	pageClick: function(m) {
+	pageClick: function(m,data) {
 		 var obj=this.state;
+		 var list=data.list.data;
+		 var pageSize=data.list.pageSize;
+
 		 if(m=="pre"){
 			
 			 if(obj.pageNo<2){
@@ -191,7 +198,7 @@ var Query_photo_rect = React.createClass({
 			 menu_photo_fn(obj.groupuuid,obj.class_uuid,obj.pageNo);
 			 return;
 		 }else if(m=="next"){
-			 if(!obj.list||obj.list.length<obj.pageSize){
+			 if(!list||list.length<pageSize){
 				 G_msg_pop("最后一页了");
 				 return ;
 			 }
@@ -213,9 +220,9 @@ render: function() {
     		<AMR_Panel>
     		<AMR_ButtonToolbar>
     		
-    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre",o)} >上一页</AMR_Button>
     		  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
-    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>	
+    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",o)} >下一页</AMR_Button>	
     	   
      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
     		</AMR_ButtonToolbar>
@@ -289,7 +296,8 @@ render: function() {
     		  <form id="KdPhotoForm" method="post" className="am-form">
 
     		  <input type="hidden" name="group_uuid"  value={o.groupuuid}/>
-      		   <AMR_ButtonToolbar>
+    		  <input type="hidden" name="class_uuid"  value={o.class_uuid}/> 
+    		  <AMR_ButtonToolbar>
       		    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >返回</AMR_Button>
       		   </AMR_ButtonToolbar>
 

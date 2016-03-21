@@ -3,6 +3,7 @@ package com.company.news.rest;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.company.news.ContentTypeConstants;
+import com.company.news.ProjectProperties;
+import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.KDPhotoItem;
@@ -25,6 +29,7 @@ import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.KDPhotoItemService;
+import com.company.news.service.UploadFileService;
 import com.company.news.vo.ResponseMessage;
 /**
  * 家庭照片o
@@ -62,7 +67,7 @@ public class KDPhotoItemController extends AbstractRESTController {
 
 			model.addAttribute(RestConstants.Return_G_entity, uploadFile);
 			model.addAttribute(RestConstants.Return_G_imgUrl,
-					PxStringUtil.imgUrlByUuid(uploadFile.getUuid()));
+					PxStringUtil.imgUrlByRelativePath_sub(uploadFile.getPath(),"108h"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,7 +110,7 @@ public class KDPhotoItemController extends AbstractRESTController {
 
 			model.addAttribute(RestConstants.Return_G_entity, uploadFile);
 			model.addAttribute(RestConstants.Return_G_imgUrl,
-					PxStringUtil.imgUrlByUuid(uploadFile.getUuid()));
+					PxStringUtil.imgUrlByRelativePath_sub(uploadFile.getPath(),"108h"));
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -431,6 +436,49 @@ public class KDPhotoItemController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	
+
+	@RequestMapping(value = "/down/fp/2016/{path}", method = RequestMethod.GET)
+	public String down_path(@PathVariable String path,ModelMap model, HttpServletRequest request
+			,HttpServletResponse response
+			) {
+		
+		path="fp/2016/"+path;
+		System.out.print("path=path="+path);
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+
+		if (UploadFileService.uploadfiletype.equals("oss")) {
+		
+		} else {
+
+			String uploadPath = ProjectProperties.getProperty("UploadFilePath",
+					"c:/px_upload/");
+			String filePath = uploadPath + path;
+			
+			boolean result=true;
+			try {
+				result = UploadFileService.getStream(filePath, response, ContentTypeConstants.Image_png);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (!result) {
+				
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			}
+			return null;
+		}
+		
+		
+		
+		return path;
+
+
+}
 	
 
 
