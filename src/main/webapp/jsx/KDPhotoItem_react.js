@@ -211,7 +211,13 @@ var Query_photo_rect = React.createClass({
 render: function() {	
 	 var obj=this.state
 	var o=this.props.formdata;
-	var imglist=o.list.data;
+	var imgarry=o.list.data;
+	var imgphotoList=[];
+	
+	for(var i=0;i<imgarry.length;i++){
+		imgphotoList.push(imgarry[i].path);
+	    }
+	console.log("测试LIGS",imgphotoList);
     return (
     		<div>
     		<div className="header">
@@ -229,20 +235,19 @@ render: function() {
     		</AMR_Panel>
     		
    		 <AMR_ButtonToolbar>
-  		 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+  		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
     		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectGroup} btnWidth="200"  data={this.props.group_List} btnStyle="primary" value={obj.groupuuid} />    		            
     		 </div> 
+    		
     		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
     		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange_selectClass} btnWidth="200"  data={this.props.classList} btnStyle="primary" value={obj.class_uuid} />    		            
     		 </div> 
     		</AMR_ButtonToolbar>
-    		
-            {imglist.map(function(event) {
-           	 return (
-           		<AMUIReact.Image  className="am-show"  id="img_image" thumbnail width="120" height="120" src={event.path}/>           	 
-           	 )
-           })}  
-    	
+    
+
+			    <div className="am-comment-bd">
+			    	<Common_mg_big_fn  imgsList={imgphotoList} />
+			    </div>
 		  </div>
     );
   }

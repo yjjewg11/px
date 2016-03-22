@@ -211,7 +211,13 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 render: function() {	
 	 var obj=this.state
 	var o=this.props.formdata;
-	var imglist=o.list.data;
+	var imgarry=o.list.data;
+	var imgphotoList=[];
+	
+	for(var i=0;i<imgarry.length;i++){
+		imgphotoList.push(imgarry[i].path);
+	    }
+	console.log("测试LIGS",imgphotoList);
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -229,20 +235,19 @@ render: function() {
     		), 
     		
    		 React.createElement(AMR_ButtonToolbar, null, 
-  		 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+  		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
     		React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange_selectGroup, btnWidth: "200", data: this.props.group_List, btnStyle: "primary", value: obj.groupuuid})		            
     		 ), 
+    		
     		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
     		React.createElement(AMUIReact.Selected, {id: "classuuid", name: "classuuid", placeholder: "班级切换", onChange: this.handleChange_selectClass, btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: obj.class_uuid})		            
     		 )
     		), 
-    		
-            imglist.map(function(event) {
-           	 return (
-           		React.createElement(AMUIReact.Image, {className: "am-show", id: "img_image", thumbnail: true, width: "120", height: "120", src: event.path})           	 
-           	 )
-           })
-    	
+    
+
+			    React.createElement("div", {className: "am-comment-bd"}, 
+			    	React.createElement(Common_mg_big_fn, {imgsList: imgphotoList})
+			    )
 		  )
     );
   }
