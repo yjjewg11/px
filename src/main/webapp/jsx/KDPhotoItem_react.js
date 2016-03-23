@@ -218,6 +218,7 @@ render: function() {
 		imgphotoList.push(imgarry[i].path);
 	    }
 	console.log("测试LIGS",imgphotoList);
+    console.log("测试：imgphotoList数组",imgphotoList); 
     return (
     		<div>
     		<div className="header">
@@ -312,7 +313,6 @@ render: function() {
     	      <AMR_Input type= "file" label="" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" multiple />
 
     	   </div>
-    	   
     	   </div>    		
     		
 

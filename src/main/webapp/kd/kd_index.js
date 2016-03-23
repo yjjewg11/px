@@ -456,7 +456,7 @@ function menu_dohome(){
 	                                  "title": "今日签到"
 	                                },
 			                    	  {
-			                    		  "img": hostUrlCDN+"i/qiandao.png",
+			                    		  "img": hostUrlCDN+"i/banjixiangce.png",
 		                                  "link": "javascript:menu_photo_fn()",
 		                                  "title": "班级相册"
 		                                },

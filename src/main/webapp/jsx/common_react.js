@@ -1281,12 +1281,16 @@ render: function() {
 /*
  * 图片绘制公共模板（点击可看原图）
  * */
+//$('.am-gallery').pureview();  
 var  Common_mg_big_fn  = React.createClass({
-
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
   render: function() {
 			  if (!this.props.imgsList){
 				  return;
-			  };		  		   
+			  };		
+			  console.log("sc",this.props.imgsList);
 			    return (
 		      <div>
 		      <ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
