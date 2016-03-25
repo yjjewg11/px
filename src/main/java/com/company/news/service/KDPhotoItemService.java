@@ -253,10 +253,8 @@ public class KDPhotoItemService extends AbstractService {
 		//need_code
 		iUploadFile.deleteFile(dbobj.getPath());
 		
-		
-		dbobj.setStatus(SystemConstants.FPPhotoItem_Status_delete);
-		dbobj.setUpdate_time(TimeUtils.getCurrentTimestamp());
-		this.nSimpleHibernateDao.save(dbobj);
+
+		this.nSimpleHibernateDao.delete(dbobj);
 		return true;
 	}
 

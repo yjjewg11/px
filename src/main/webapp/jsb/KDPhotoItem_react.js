@@ -1,4 +1,4 @@
-var KDPhotoItem=function(groupuuid,classuuid,pageNo){
+var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 	var fpPhotoUploadTask={
 			
 			cropper:null,
@@ -103,7 +103,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo){
 			}
 	};
 		var module={
-			query:function(groupuuid,classuuid,pageNo){
+			query:function(groupuuid,classuuid,pageNo,type){
 				var class_uuid;
 				var group_uuid;
 				var group_List=Store.getGroup();
@@ -137,6 +137,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo){
 								formdata: data,
 								groupuuid:group_uuid,
 								pageNo:data.list.pageNo,
+								type:type,
 								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 								class_uuid:classuuid
@@ -212,13 +213,19 @@ render: function() {
 	 var obj=this.state
 	var o=this.props.formdata;
 	var imgarry=o.list.data;
+	imgarry.pageNo=o.list.pageNo;
+
 	var imgphotoList=[];
-	
+	var bgobj;
 	for(var i=0;i<imgarry.length;i++){
-		imgphotoList.push(imgarry[i].path);
+		 bgobj={path:null,groupuuid:null,class_uuid:null,uuid:null,pageNo:null};
+		 bgobj.path=imgarry[i].path;
+		 bgobj.groupuuid=obj.groupuuid;
+		 bgobj.class_uuid=obj.class_uuid;
+		 bgobj.uuid=imgarry[i].uuid;
+		 bgobj.pageNo=obj.pageNo;
+		 imgphotoList.push(bgobj);
 	    }
-	console.log("测试LIGS",imgphotoList);
-    console.log("测试：imgphotoList数组",imgphotoList); 
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -247,8 +254,9 @@ render: function() {
     
 
 			    React.createElement("div", {className: "am-comment-bd"}, 
-			    	React.createElement(Common_mg_big_fn, {imgsList: imgphotoList})
-			    )
+			    	React.createElement(Common_mg_Class_big_fn, {imgsList: imgphotoList, type: this.props.type})
+			  
+			   )
 		  )
     );
   }

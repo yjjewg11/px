@@ -335,6 +335,7 @@ var Classnews_show = React.createClass({
 		},
 	render: function() {		  
 		  var  o = this.props.event;
+		  g_classnews_groupuuid=o.groupuuid
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)o.create_img=G_def_headImgPath;		 
 		  
@@ -625,8 +626,14 @@ handleChange_url:function(){
 	this.setState(tmp);
 	var thit=this;		 
    G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
-	
 },
+
+bg_Class_fn:function(o){
+	var calssuuid=o;
+	console.log("o",calssuuid);
+	//g_classnews_groupuuid
+  menu_photo_fn(g_classnews_groupuuid,null,1,0)
+  },
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
@@ -648,6 +655,8 @@ return (
 		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
+	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this,o)} >班级相册</AMR_Button>
+
 			  {G_get_upload_img_Div()}
 			  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		         <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
