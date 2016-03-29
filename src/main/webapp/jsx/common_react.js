@@ -1319,6 +1319,33 @@ var  Common_mg_big_fn  = React.createClass({
  * */
 //$('.am-gallery').pureview();  
 var  Common_mg_Class_big_fn  = React.createClass({
+	 buttion_ok : function(event) {
+		 console.log("3444event",event);
+//			var groupuuid=event.groupuuid;
+//			var class_uuid=event.class_uuid;
+//			var uuid=event.uuid;
+//			var pageNo=event.pageNo;
+//		  	$.AMUI.progress.start();
+//		      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
+//			$.ajax({
+//				type : "POST",
+//				url : url,
+//				dataType : "json",
+//				 async: true,
+//				success : function(data) {
+//					$.AMUI.progress.done();
+//					// 登陆成功直接进入主页
+//					if (data.ResMsg.status == "success") {
+//						
+//						$('#Common_mg_Class_big_fn_item_'+uuid).remove();
+//					//	menu_photo_fn(groupuuid,class_uuid,pageNo);
+//					} else {
+//						alert(data.ResMsg.message);
+//					}
+//				},
+//				error :G_ajax_error_fn
+//			});
+},
 	 handleClick: function(event) {
 			if(!confirm("确定要删除吗?")){
 				return;
@@ -1347,10 +1374,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 				},
 				error :G_ajax_error_fn
 			});
-  },	
-  componentDidMount:function(){
-	  $('.am-gallery').pureview();
-	},
+  },		
   render: function() {
 	  var that=this
 	  var edit_btn_className;
@@ -1376,7 +1400,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 			     		    <img src={o} alt=""  data-rel={imgArr[0]}/>
                           </a>
 			     	<div className="am-fl am-margin-bottom-xs am-margin-left-xs">
-			        <AMR_Button  className={edit_btn_className}  amStyle="secondary" onClick={that.handleClick.bind(this,o)} >选择照片</AMR_Button>
+			        <AMR_Button  className={edit_btn_className}  amStyle="secondary" onClick={that.buttion_ok.bind(this,event)} >选择照片</AMR_Button>
 			        </div>
 			        <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
 			        <AMR_Button   amStyle="secondary" onClick={that.handleClick.bind(this,event)} >删除照片</AMR_Button>
@@ -1385,7 +1409,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 	        		 </li>
 			        	)
 			      })}
-			    </ul>	   
+			    </ul>
 			  </div>
 			    )
           }

@@ -130,6 +130,7 @@ w_img_upload_nocut={
 		 */
 		do_lrz:function(){
 			var file=w_img_upload_nocut.upload_files_arr.pop();
+			console.log("w_img_upload_nocut.upload_files_arr",file);
 			if(!file)return;
 			 lrz(file, {
 		            before: function() {
@@ -178,8 +179,7 @@ w_img_upload_nocut={
 					//支持多 图片上传
 					for(var i=0;i<this.files.length;i++){
 						w_img_upload_nocut.upload_files_arr.push(this.files[i]);
-					}
-					
+					}					
 					w_img_upload_nocut.do_lrz();
 			
 				
@@ -188,6 +188,7 @@ w_img_upload_nocut={
 		},
 		ajax_uploadByphone:function(base64){
 			$.AMUI.progress.start();
+			console.log("测试一下看看运行没有")
 		    var url = hostUrl + "rest/uploadFile/uploadBase64.json";
 			$.ajax({
 				type : "POST",

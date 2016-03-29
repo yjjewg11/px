@@ -576,6 +576,7 @@ var ClassNews_Img_canDel = React.createClass({
 var Classnews_edit = React.createClass({ 
 	selectclass_uuid_val:null,
 	 getInitialState: function() {
+
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
@@ -607,9 +608,10 @@ var Classnews_edit = React.createClass({
 		 //已经有的图片,显示出来.		 
 		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
 			  ////data.data.uuid,data.imgUrl
+			  console.log("URL",imgurl)
 			 that.addShowImg(imgurl);
 			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
-		  });		 
+		  });		
 		//已经有的图片,显示出来.
 		 if(!$('#imgs').val())return;
 		 var imgArr=$('#imgs').val().split(",");
@@ -627,18 +629,45 @@ handleChange_url:function(){
 	var thit=this;		 
    G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
 },
-
-bg_Class_fn:function(o){
-	var calssuuid=o;
-	console.log("o",calssuuid);
-	//g_classnews_groupuuid
-  menu_photo_fn(g_classnews_groupuuid,null,1,0)
+classnewsreply_list_div:"am-list-news-hd",
+bg_Class_fn:function(list_div){
+		var group_List=Store.getGroup();
+	    var classArry=Store.getChooseClass(g_classnews_groupuuid);
+		var Class_uuid=$("input[name='classuuid']").val();
+					var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
+				var that=this;
+				$.ajax({
+					type : "GET",
+					url : url,
+					data : {class_uuid:Class_uuid,pageNo:1},
+					dataType : "json",
+					success : function(data) {
+			  			if (data.ResMsg.status == "success") {
+							React.render(React.createElement(KDPhotoItem.Query_photo_rect,{
+								formdata: data,
+								groupuuid:g_classnews_groupuuid,
+								pageNo:data.list.pageNo,
+								type:1,
+								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
+								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
+								class_uuid:Class_uuid
+								}), document.getElementById(list_div));
+			  			} else {
+			  				alert("加载数据失败："+data.ResMsg.message);
+			  			}
+			  		},
+					error :G_ajax_error_fn
+				});
+  //menu_photo_fn(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1)
   },
+	 //  var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
+//var url= "http://localhost:8080/px-rest/rest/uploadFile/getImgFile?uuid=60eb14b1-4fd5-41df-aa8a-03144a161334"
+   		var that=this;
 return (
 		<div>
 		<div className="header">
@@ -655,7 +684,7 @@ return (
 		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
-	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this,o)} >班级相册</AMR_Button>
+	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this,this.classnewsreply_list_div)} >班级相册</AMR_Button>
 
 			  {G_get_upload_img_Div()}
 			  <label htmlFor="name">分享链接(链接和内容选填一个):</label>

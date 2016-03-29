@@ -209,6 +209,9 @@ var Query_photo_rect = React.createClass({
 			 return;
 		 }
 	},
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
 render: function() {	
 	 var obj=this.state
 	var o=this.props.formdata;
