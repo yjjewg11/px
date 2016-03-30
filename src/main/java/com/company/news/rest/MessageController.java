@@ -269,11 +269,16 @@ public class MessageController extends AbstractRESTController {
 				responseMessage.setMessage("参数必填:group_uuid");
 				return "";
 			}
-			String groupUuids=this.getMyGroupUuidsBySession(request);
-			if(groupUuids==null||!groupUuids.contains(group_uuid)){
-				responseMessage.setMessage("非法参数,不是该幼儿园的老师:group_uuid"+group_uuid);
-				return "";
+			
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_announce_m, request)){
+				
+				if(RightUtils.hasRight(group_uuid,RightConstants.KD_Leader_Msg_m, request)){
+					responseMessage.setMessage("没有该权限,不能查看");
+					return "";
+				}
 			}
+			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			PageQueryResult pageQueryResult= messageService.queryByParentAndLeader(group_uuid,parent_uuid,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);

@@ -1144,6 +1144,7 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 				          React.createElement("tr", null, 
 				            React.createElement("th", null, "帐号"), 
 				            React.createElement("th", null, "姓名"), 
+					 React.createElement("th", null, "操作"), 
 				            React.createElement("th", null, "电话"), 
 				            React.createElement("th", null, "状态"), 
 				            React.createElement("th", null, "登录时间"), 
@@ -1152,8 +1153,11 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 			    			  this.props.events.map(function(event) {
 			    			      return (
 			    					      React.createElement("tr", {className: className}, 
-			    				   	        React.createElement("td", null, event.loginname), 
+									         React.createElement("td", null, event.loginname), 
+									   
 			    				   	        React.createElement("td", null, event.name), 
+												   React.createElement("td", null, React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.uuid,"group_wjd",event.name), amStyle: "success"}, "@查看信息")
+			    				   	   ), 
 			    				   	        React.createElement("td", null, event.tel), 
 			    				   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
 			    				   	        React.createElement("td", null, event.login_time), 
@@ -1164,6 +1168,144 @@ var Parent_EventsTable_div = React.createClass({displayName: "Parent_EventsTable
 			    	  );
 		}
   	});   
+
+
+	
+/* 
+* <园长信箱>绘制舞台
+* @ajax_message_queryByParent：园长信箱2层详情界面服务器请求‘
+* @逻辑：绘制一个Div 每次点击加载更多按钮事把 新的一个Div添加到舞台上；
+* @我要发信息 加载更多等模板和按钮在此处添加上舞台 和DIV<信息>分离开；
+* @revice_useruuid:收件人ID；
+* @send_useruuid:发送者ID；
+* @Boss_message_save我要保存模板
+* this.forceUpdate()强制刷新页面；
+* this.props.parentReact.forceUpdate();
+* */
+var Boss_message_stage_byRight = React.createClass({displayName: "Boss_message_stage_byRight", 
+load_more_btn_id:"load_more_boss_",
+pageNo:1,
+classnewsreply_list_div:"classnewsreply_message_list_div",
+componentWillReceiveProps:function(){
+	this.refresh_data();
+},
+componentDidMount:function(){
+	this.load_more_data();
+},
+load_more_data:function(){
+	$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+	var re_data=ajax_boss_message_list_byRight(this.props.send_useruuid,this.props.revice_useruuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+},
+refresh_data:function(){
+//	classnewsreply_list_div 清除；
+//  load_more_data	重新绘制DIV；
+	this.forceUpdate();
+	this.pageNo=1;
+	$("#"+this.classnewsreply_list_div).html("");
+	this.load_more_data();
+	
+},
+render: function() {
+var parentThis=this;
+this.load_more_btn_id="load_more_boss_"+this.props.uuid;
+return (
+	  React.createElement("div", null, 
+	   React.createElement("div", {id: this.classnewsreply_list_div}
+	   
+	   ), 
+		React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
+		React.createElement(Boss_message_save_byRight, {parentThis: parentThis, send_useruuid: this.props.send_useruuid, revice_useruuid: this.props.revice_useruuid})
+		)
+		
+);
+}
+}); 
+/*
+*<园长信箱>发送信息模板
+*@ajax_boss_message_save：发送信息服务器请求；
+* @revice_useruuid:收件人ID；
+* @send_useruuid:发送者ID；
+* 此处因园长回信息所以参数ID相反；
+* */
+var Boss_message_save_byRight = React.createClass({displayName: "Boss_message_save_byRight", 
+classnewsreply_list_div:"classnewsreply_list_div",
+componentDidMount:function(){
+	$('#Boss_content_replay').xheditor(xhEditor_upImgOption_emot);
+},
+	reply_boss_save_btn_click:function(){
+		var that=this.props.parentThis;
+		ajax_boss_message_save_byRight(function(){
+			$("#Boss_content_replay").val("");
+			that.refresh_data();		
+		})
+	},
+render: function() {
+return (
+	   React.createElement("form", {id: "BosseditForm", method: "post", className: "am-form"}, 
+	   React.createElement("input", {type: "hidden", name: "revice_useruuid", value: this.props.send_useruuid}), 
+		React.createElement("input", {type: "hidden", name: "send_useruuid", value: this.props.revice_useruuid}), 			
+		React.createElement(AMR_Input, {id: "Boss_content_replay", type: "textarea", rows: "10", label: "信息发送", placeholder: "填写内容", name: "message"}), 
+	      React.createElement("button", {type: "button", onClick: this.reply_boss_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "发送")		      
+	    )	   
+);
+}
+}); 
+
+
+
+/* <园长信箱>2层发信息详情界面绘制；
+* @send_user：信息者名字；
+* @message：信息内容；
+* @am-comment-flip:默认头像 加了靠右边 不加靠左;
+* */
+var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({displayName: "Message_queryLeaderMsgByParents_listpage_byRight",	 
+	render: function() {
+			var revice_useruuid=this.props.revice_useruuid;
+		  return (				  
+				  React.createElement("ul", {className: "am-comments-list "}, 
+				  this.props.events.data.map(function(event) {
+					  var class1="am-comment am-comment-flip am-comment-secondary";
+					  if(revice_useruuid==event.send_useruuid){
+						  class1="am-comment";
+					  }
+				      return (
+				    		  React.createElement("li", {className: class1}, 
+				    		  	React.createElement("a", {href: "javascript:void(0);"}, 
+				    		  	 React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
+				    		  		), 
+				    		  		 React.createElement("div", {className: "am-comment-main"}, 
+				    		  		 React.createElement("header", {className: "am-comment-hd"}, 
+				    		  	      React.createElement("div", {className: "am-comment-meta"}, 
+				    		  	        React.createElement("a", {href: "#link-to-user", className: "am-comment-author"}, event.send_user), 
+				    		  	        "发送于 ", React.createElement("time", null, event.create_time)
+				    		  	      )
+				    		  	    ), 
+				    		  	  React.createElement("div", {className: "am-comment-bd"}, 
+				    		  	 React.createElement("div", {dangerouslySetInnerHTML: {__html:event.message}})
+				    		  	 )
+				    		  	    )
+							  )
+							  )
+				  })				  
+				)
+				 
+		  );
+		}
+})
+//±±±±±±±±±±±±±±±±±±±±±±±±±±±
+
+
 //userinfo end
   //——————————————————————————班级互动<绘制>——————————————————————————
     /* 

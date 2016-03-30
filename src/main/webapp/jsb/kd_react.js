@@ -4140,7 +4140,7 @@ var Boss_student_tel_byRight =React.createClass({displayName: "Boss_student_tel_
 	      	       React.createElement("a", {href: "javascript:void(0);"}, 
 	   	          React.createElement("img", {src: G_getHeadImg(event.send_userimg), alt: "", className: "am-comment-avatar", width: "48", height: "48"})
 	      	     ), 
-	      	   React.createElement("span", {className: "am-comment-author"}, event.send_user, " "), "家长来信", event.count, "条,最后来信时间:", event.last_time, 
+	      	   event.revice_user, "收到", React.createElement("span", {className: "am-comment-author"}, event.send_user, " "), "家长来信", event.count, "条,最后来信时间:", event.last_time, 
 	           React.createElement(AMR_ButtonToolbar, null, 		            
 	         React.createElement(AMUIReact.Button, {onClick: ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user), amStyle: "success"}, "@查看信息")
 	        )

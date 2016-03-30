@@ -4140,7 +4140,7 @@ var Boss_student_tel_byRight =React.createClass({
 	      	       <a href="javascript:void(0);" >
 	   	          <img src={G_getHeadImg(event.send_userimg)} alt="" className="am-comment-avatar" width="48" height="48"/>
 	      	     </a>
-	      	   <span className="am-comment-author">{event.send_user} </span>家长来信{event.count}条,最后来信时间:{event.last_time}
+	      	   {event.revice_user}收到<span className="am-comment-author">{event.send_user} </span>家长来信{event.count}条,最后来信时间:{event.last_time}
 	           <AMR_ButtonToolbar>		            
 	         <AMUIReact.Button  onClick={ajax_my_boss_stage_byRight.bind(this,event.send_useruuid,event.revice_useruuid,event.send_user)} amStyle="success">@查看信息</AMUIReact.Button>
 	        </AMR_ButtonToolbar>
