@@ -1,4 +1,69 @@
 var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
+	var module={
+			callback:null,
+			queryForSelect:function(groupuuid,classuuid,pageNo,type,callback){
+				var class_uuid;
+				var group_uuid;
+				module.callback=callback;
+				var group_List=Store.getGroup();
+					if(!groupuuid){
+						group_uuid=group_List[0].uuid;
+					}else{
+						group_uuid=groupuuid;
+					  }
+					
+
+				var classArry=Store.getChooseClass(group_uuid);
+				
+				if(!pageNo)pageNo=1;
+				if(!classuuid){
+					if(!classArry||classArry.length==0){
+						classuuid=null;
+					}else{
+						classuuid=classArry[0].uuid;
+					}
+				}
+				React.render(React.createElement(Query_photo_rect,{
+					groupuuid:group_uuid,
+					type:type,
+					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
+					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
+					
+					class_uuid:classuuid
+					}), G_get_div_second());
+			}	,
+			query:function(groupuuid,classuuid,pageNo,type){
+				var class_uuid;
+				var group_uuid;
+				var group_List=Store.getGroup();
+					if(!groupuuid){
+						group_uuid=group_List[0].uuid;
+					}else{
+						group_uuid=groupuuid;
+					  }
+					
+
+				var classArry=Store.getChooseClass(group_uuid);
+				
+				if(!pageNo)pageNo=1;
+				if(!classuuid){
+					if(!classArry||classArry.length==0){
+						classuuid=null;
+					}else{
+						classuuid=classArry[0].uuid;
+					}
+				}
+				React.render(React.createElement(Query_photo_rect,{
+					groupuuid:group_uuid,
+					type:type,
+					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
+					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
+					class_uuid:classuuid
+					}), G_get_div_body());
+
+			}				
+		}
+	
 	var fpPhotoUploadTask={
 			
 			cropper:null,
@@ -102,56 +167,102 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				
 			}
 	};
-		var module={
-			query:function(groupuuid,classuuid,pageNo,type){
-				var class_uuid;
-				var group_uuid;
-				var group_List=Store.getGroup();
-					if(!groupuuid){
-						group_uuid=group_List[0].uuid;
-					}else{
-						group_uuid=groupuuid;
-					  }
-					
-
-				var classArry=Store.getChooseClass(group_uuid);
-				
-				if(!pageNo)pageNo=1;
-				if(!classuuid){
-					if(!classArry||classArry.length==0){
-						classuuid=null;
-					}else{
-						classuuid=classArry[0].uuid;
-					}
+		
+ var KDPhotoItem_Img_canDel = React.createClass({displayName: "KDPhotoItem_Img_canDel",
+ 		deleteImg:function(divid){
+ 			$("#"+divid).remove();
+ 		},			
+ 	  render: function() {
+ 		 return (
+           		React.createElement("div", {className: "G_cookplan_Img"}, 
+ 	 	       			React.createElement("img", {name: "KDPhotoItem_Img_select", className: "G_cookplan_Img_img", src: this.props.url, alt: "图片不存在"}), 
+ 	 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this,this.props.parentDivId)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"}))
+ 	 	       		)		
+           	)
+ 	  }
+ 	});
+		
+		
+		
+		
+	var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_big_fn",
+		buttion_select : function(event) {
+					var divid="Common_mg_Class_big_fn_"+event.uuid;
+			  $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+			  React.render(React.createElement(KDPhotoItem_Img_canDel, {
+					url: event.path,parentDivId:divid
+					}), document.getElementById(divid));  
+	         
+	},
+		 handleClick: function(event) {
+				if(!confirm("确定要删除吗?")){
+					return;
 				}
-				var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
-				var that=this;
+				var groupuuid=event.groupuuid;
+				var class_uuid=event.class_uuid;
+				var uuid=event.uuid;
+				var pageNo=event.pageNo;
+			  	$.AMUI.progress.start();
+			      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
 				$.ajax({
-					type : "GET",
+					type : "POST",
 					url : url,
-					data : {class_uuid:classuuid,pageNo:pageNo},
 					dataType : "json",
+					 async: true,
 					success : function(data) {
-			  			if (data.ResMsg.status == "success") {
-							React.render(React.createElement(Query_photo_rect,{
-								formdata: data,
-								groupuuid:group_uuid,
-								pageNo:data.list.pageNo,
-								type:type,
-								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
-								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
-								class_uuid:classuuid
-								}), G_get_div_body());
-			  			} else {
-			  				alert("加载数据失败："+data.ResMsg.message);
-			  			}
-			  		},
+						$.AMUI.progress.done();
+						// 登陆成功直接进入主页
+						if (data.ResMsg.status == "success") {
+							
+							$('#Common_mg_Class_big_fn_item_'+uuid).remove();
+						//	menu_photo_fn(groupuuid,class_uuid,pageNo);
+						} else {
+							alert(data.ResMsg.message);
+						}
+					},
 					error :G_ajax_error_fn
 				});
-
-			}				
-		}
-/*
+	  },		
+	  render: function() {
+		  var that=this
+		  var edit_btn_className;
+				  if (!this.props.imgsList){
+					  return;
+				  };
+			if(this.props.state.type==1){
+				edit_btn_className="G_Edit_show";
+			   }else{
+				edit_btn_className="G_Edit_hide";
+			}	  
+				    return (
+			      React.createElement("div", null, 
+			      React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
+				   
+				    this.props.imgsList.map(function(event) {
+				    	 var  o = event.path;
+						  var  imgArr=o?o.split("@"):"";
+				        return (
+				       	  React.createElement("li", {id: "Common_mg_Class_big_fn_item_"+ event.uuid}, 			     			
+				     	    React.createElement("div", {className: "am-gallery-item"}, 
+				     		  React.createElement("a", {href: imgArr[0], title: ""}, 
+				     		    React.createElement("img", {src: o, alt: "", "data-rel": imgArr[0]})
+	                          ), 
+				     	React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+				        React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "secondary", onClick: that.buttion_select.bind(this,event)}, "选择照片")
+				        ), 
+				        React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+				        React.createElement(AMR_Button, {amStyle: "secondary", onClick: that.handleClick.bind(this,event)}, "删除照片")
+				        )
+				     		)	   
+		        		 )
+				        	)
+				      })
+				    )
+				  )
+				    )
+	          }
+	        }); 		
+	/*
  * 学生列表服务器请求后绘制处理方法；
  * @</select>下拉多选框;
  * @handleChange_stutent_Selected:学校查询；
@@ -159,36 +270,71 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
  * @btn_query_click:名字查找；
  * */
 var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
+	
+	getStateByPropes:function(nextProps){
+
+	
+		var queryForm={
+				groupuuid:this.props.groupuuid,		    	
+		    	class_uuid:this.props.class_uuid
+		};
+		 var obj= {
+			queryForm:queryForm,
+			pageNo:1,
+			type:nextProps.type,
+			show_list:[],
+			list: []
+		};
+		return obj;
+	},
+	   componentWillReceiveProps: function(nextProps) {	
+		   this.setState(this.getStateByPropes(nextProps));
+	},
 	getInitialState: function() {
-		var obj= {
-		    	groupuuid:this.props.groupuuid,		    	
-		    	class_uuid:this.props.class_uuid,
-		    	pageNo:this.props.pageNo
-		    };
-	    return obj;
+	
+	       return this.getStateByPropes(this.props);;
 	   
 	  },
-	 handleChange_selectClass:function(val){ 
-		  this.state.class_uuid=val;
-		  this.setState(this.state);
-		  menu_photo_fn(this.state.groupuuid,val,this.state.pageNo);
-	 },
-	 handleChange_selectGroup:function(val){ 
-		  this.state.groupuuid=val;
-		  this.state.class_uuid=null;
-		  this.setState(this.state);
-		 menu_photo_fn(val,this.state.class_uuid,this.state.pageNo);
+	  handleChange_selectgroup: function(val){
+			var classlist=Store.getChooseClass($("input[name='groupuuid']").val());
+				this.state.queryForm.groupuuid=$("input[name='groupuuid']").val();
+				this.state.queryForm.classuuid=$("input[name='class_uuid']").val();
+				this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+				this.ajax_list();
+				this.setState(this.state); 
+			},
+	 handleChange:function(val){ 
+		 
+			var queryForm=$('#queryForm').serializeJson();
+			this.state.queryForm=queryForm;
+		    this.setState(this.state);
+			 this.ajax_list();
+		
 	 },
 	 handleClick: function(obj) {
 			React.render(React.createElement(Img_photo_rect,{
 				formdata:obj
 				}), G_get_div_body());
  },	
+
+	  handleClick_selectbtn: function(obj) {
+		  var selectedArr=[];
+		  
+		  
+		  var imgs="";
+		  $("img[name='KDPhotoItem_Img_select']").each(function(){
+			  selectedArr.push($(this).attr("src"));
+			});	  
+		//  $('#imgs').val(imgs); 
+			if(module.callback){
+				module.callback(selectedArr);
+			}
+			G_get_div_body();
+
+ },	
+ 
 	pageClick: function(m,data) {
 		 var obj=this.state;
-		 var list=data.list.data;
-		 var pageSize=data.list.pageSize;
-
 		 if(m=="pre"){
 			
 			 if(obj.pageNo<2){
@@ -196,77 +342,148 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 				 return;
 			 }
 			 obj.pageNo=obj.pageNo-1;
-			 menu_photo_fn(obj.groupuuid,obj.class_uuid,obj.pageNo);
+			 this.ajax_list(obj);
 			 return;
 		 }else if(m=="next"){
-			 if(!list||list.length<pageSize){
+			 if(!data||data.length<obj.pageSize){
 				 G_msg_pop("最后一页了");
 				 return ;
 			 }
 			 obj.pageNo=obj.pageNo+1;
 			
-			 menu_photo_fn(obj.groupuuid,obj.class_uuid,obj.pageNo);
+			 this.ajax_list(obj);
 			 return;
 		 }
 	},
+	handleClick_query: function(m) {
+		//this.handleChange();
+		this.state.pageNo=1;
+		
+		 this.ajax_list();
+	  },
+	ajax_callback:function(list){
+		 if (list== null ) this.state.list=[];
+		 else
+		  this.state.list=list.data;
+		  this.state.pageSize=list.pageSize;
+		if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
+		  this.setState(this.state);
+	  },
+	ajax_list:function(){
+		var queryForm=this.state.queryForm;
+		queryForm.pageNo=this.state.pageNo;
+
+		$.AMUI.progress.start();
+		var that=this;
+		var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data :queryForm,
+			dataType : "json",
+			//async: false,//必须同步执行
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+				    that.ajax_callback( data.list );     
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+		
+	},
+	
 	  componentDidMount:function(){
+		  
+		  this.ajax_list(); 
 		  $('.am-gallery').pureview();
 		},
+		handle_onKeyDown: function(e){
+	          if(G_isKeyDown_enter(e)){
+	               this.handleClick_query();
+	               return false;
+			 }
+	          
+		},
 render: function() {	
-	 var obj=this.state
-	var o=this.props.formdata;
-	var imgarry=o.list.data;
-	imgarry.pageNo=o.list.pageNo;
-
+	var edit_btn_className;
+	var selectbtn_btn_className;
+	var queryForm=this.state.queryForm;
+	 var obj=this.state;
+	//var o=this.props.formdata;
+	var imgarry=this.state.list;
+	imgarry.pageNo=this.state.pageNo;
 	var imgphotoList=[];
 	var bgobj;
 	for(var i=0;i<imgarry.length;i++){
 		 bgobj={path:null,groupuuid:null,class_uuid:null,uuid:null,pageNo:null};
 		 bgobj.path=imgarry[i].path;
-		 bgobj.groupuuid=obj.groupuuid;
-		 bgobj.class_uuid=obj.class_uuid;
+		 bgobj.groupuuid=obj.queryForm.groupuuid;
+		 bgobj.class_uuid=obj.queryForm.class_uuid;
 		 bgobj.uuid=imgarry[i].uuid;
 		 bgobj.pageNo=obj.pageNo;
 		 imgphotoList.push(bgobj);
 	    }
+	if(obj.type==1){
+		edit_btn_className="G_Edit_hide";
+		selectbtn_btn_className="G_Edit_show";
+	   }else{
+		edit_btn_className="G_Edit_show";
+		selectbtn_btn_className="G_Edit_hide";
+	}	 
     return (
+
+
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
   		     React.createElement("hr", null)
   		    ), 
     		React.createElement(AMR_Panel, null, 
+    		
     		React.createElement(AMR_ButtonToolbar, null, 
     		
-    		React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre",o)}, "上一页"), 
+    		React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre",imgphotoList)}, "上一页"), 
     		  React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", obj.pageNo, "页"), 
-    		React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next",o)}, "下一页"), 	
+    		React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next",imgphotoList)}, "下一页"), 	
     	   
-     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,obj)}, "上传照片")
-    		)
+     		React.createElement(AMR_Button, {className: edit_btn_className, amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,obj)}, "上传照片")
+     		)
     		), 
-    		
+    		 React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
    		 React.createElement(AMR_ButtonToolbar, null, 
   		    React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-    		React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange_selectGroup, btnWidth: "200", data: this.props.group_List, btnStyle: "primary", value: obj.groupuuid})		            
+    		React.createElement(AMUIReact.Selected, {id: "groupuuid", name: "groupuuid", onChange: this.handleChange_selectgroup, btnWidth: "200", data: this.props.group_List, btnStyle: "primary", value: queryForm.groupuuid})		            
     		 ), 
     		
     		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-    		React.createElement(AMUIReact.Selected, {id: "classuuid", name: "classuuid", placeholder: "班级切换", onChange: this.handleChange_selectClass, btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: obj.class_uuid})		            
+    		React.createElement(AMUIReact.Selected, {id: "classuuid", name: "classuuid", placeholder: "班级切换", onChange: this.handleChange, btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: queryForm.class_uuid})		            
     		 )
-    		), 
+    		)
     
+    	    ), 
+    	    
 
 			    React.createElement("div", {className: "am-comment-bd"}, 
-			    	React.createElement(Common_mg_Class_big_fn, {imgsList: imgphotoList, type: this.props.type})
+			    	React.createElement(Common_mg_Class_big_fn, {imgsList: imgphotoList, state: this.state})
 			  
-			   )
+			   ), 
+				    React.createElement("div", {id: "abc"}, 
+				    React.createElement("legend", null), 
+		  			React.createElement(AMR_ButtonToolbar, null, 
+					React.createElement(AMR_Button, {className: selectbtn_btn_className, amSize: "xs", amStyle: "secondary", onClick: this.handleClick_selectbtn.bind(this,obj)}, "确认照片选择")
+					)
+		  		    )
+
 		  )
     );
   }
 });
 var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
 buttion_black_Click: function(o) {
-		 menu_photo_fn(o.groupuuid,o.class_uuid,o.pageNo);
+	module.query(o.queryForm.groupuuid,o.queryForm.class_uuid,o.pageNo,o.type)
 },	
 imgDivNum:0,
 getNewImgDiv:function(){
@@ -312,8 +529,8 @@ render: function() {
       
     		  React.createElement("form", {id: "KdPhotoForm", method: "post", className: "am-form"}, 
 
-    		  React.createElement("input", {type: "hidden", name: "group_uuid", value: o.groupuuid}), 
-    		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.class_uuid}), 
+    		  React.createElement("input", {type: "hidden", name: "group_uuid", value: o.queryForm.groupuuid}), 
+    		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.queryForm.class_uuid}), 
     		  React.createElement(AMR_ButtonToolbar, null, 
       		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "返回")
       		   )

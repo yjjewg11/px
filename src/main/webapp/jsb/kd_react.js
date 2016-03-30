@@ -629,38 +629,18 @@ handleChange_url:function(){
 	var thit=this;		 
    G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
 },
-classnewsreply_list_div:"am-list-news-hd",
-bg_Class_fn:function(list_div){
-		var group_List=Store.getGroup();
-	    var classArry=Store.getChooseClass(g_classnews_groupuuid);
-		var Class_uuid=$("input[name='classuuid']").val();
-					var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
-				var that=this;
-				$.ajax({
-					type : "GET",
-					url : url,
-					data : {class_uuid:Class_uuid,pageNo:1},
-					dataType : "json",
-					success : function(data) {
-			  			if (data.ResMsg.status == "success") {
-							React.render(React.createElement(KDPhotoItem.Query_photo_rect,{
-								formdata: data,
-								groupuuid:g_classnews_groupuuid,
-								pageNo:data.list.pageNo,
-								type:1,
-								group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
-								classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
-								class_uuid:Class_uuid
-								}), document.getElementById(list_div));
-			  			} else {
-			  				alert("加载数据失败："+data.ResMsg.message);
-			  			}
-			  		},
-					error :G_ajax_error_fn
-				});
-  //menu_photo_fn(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1)
+bg_Class_fn:function(){
+	var that=this;
+	var callback=function(imgArr){
+		 for(var i=0;i<imgArr.length;i++){
+			 that.addShowImg(imgArr[i]);
+		 }		
+	}
+	    KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,callback);
+	//	KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,selectImgArr,callback);
+
   },
-	 //  var re_data=ajax_help_px_list(this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
+	
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
@@ -684,7 +664,7 @@ return (
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-	     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this,this.classnewsreply_list_div)}, "班级相册"), 
+	     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "班级相册"), 
 
 			  G_get_upload_img_Div(), 
 			  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
@@ -2309,8 +2289,6 @@ var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_T
 	    
 		 return (
 				 React.createElement(AMUIReact.ListItem, null, this.props.name, ":", this.props.tel, React.createElement("a", {className: this.props.tel?"":"am-hide", href: "tel:"+this.props.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话")))
-			      
-			     
 		     );
 	        }
 		 });
