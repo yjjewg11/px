@@ -325,7 +325,6 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 		  $("img[name='KDPhotoItem_Img_select']").each(function(){
 			  selectedArr.push($(this).attr("src"));
 			});	  
-		//  $('#imgs').val(imgs); 
 			if(module.callback){
 				module.callback(selectedArr);
 			}

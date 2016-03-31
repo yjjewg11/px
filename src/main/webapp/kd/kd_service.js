@@ -743,11 +743,11 @@ function ajax_classnews_edit(m,formdata){
 function ajax_classnews_save(){	
 	  var imgs="";
 	  $(".G_cookplan_Img_img").each(function(){
-		  imgs+=","+$(this).attr("src");
+		  imgs+=$(this).attr("src")+",";
 		});	  
+	  imgs=imgs.substring(0,imgs.length-1)
 	  $('#imgs').val(imgs);
-	  
-	  
+
 	  var obj = $('#editClassnewsForm').serializeJson();
 	  if(!obj.imgs&&!obj.content){
 		  G_msg_pop("图片或内容至少填写一项.");

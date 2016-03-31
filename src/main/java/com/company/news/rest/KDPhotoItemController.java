@@ -143,10 +143,16 @@ public class KDPhotoItemController extends AbstractRESTController {
 		
 		try {
 			
+			String groupuuid=request.getParameter("groupuuid");
+			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+			
 			String class_uuid=request.getParameter("class_uuid");
-		//	String photo_time=request.getParameter("photo_time");
 			if(DBUtil.isSqlInjection(class_uuid, responseMessage))return "";
-			PageQueryResult pageQueryResult= kDPhotoItemService.query(user,class_uuid,user.getUuid(),pData);
+			
+
+			
+			
+			PageQueryResult pageQueryResult= kDPhotoItemService.query(user,groupuuid,class_uuid,user.getUuid(),pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

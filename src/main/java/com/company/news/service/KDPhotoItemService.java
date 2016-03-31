@@ -69,12 +69,16 @@ public class KDPhotoItemService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(SessionUserInfoInterface user ,String class_uuid, String user_uuid,PaginationData pData) {
+	public PageQueryResult query(SessionUserInfoInterface user ,String groupuuid,String class_uuid, String user_uuid,PaginationData pData) {
 		String selectsql=Selectsql;
-		String sql=SqlFrom;
+		String sql=SqlFrom+" where 1=1 ";
+		
+		 if (StringUtils.isNotBlank(groupuuid)) {//根据家庭uuid查询
+			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(groupuuid)+"'";
+		}
 		
 		 if (StringUtils.isNotBlank(class_uuid)) {//根据家庭uuid查询
-			sql += " where   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
+			sql += " and   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
 		}
 		////使用创建时间做分页显示,beforeTime 取 2016-01-15 13:13 之前的数据.按照创建时间排倒序
 		 if(StringUtils.isNotBlank(pData.getMaxTime())){
