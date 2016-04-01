@@ -517,8 +517,13 @@ componentDidMount:function(){
 		 this.addShowImg(imgArr[i]);
 	 }		
 },
+handleChange: function(event) {
+    this.setState($('#KdPhotoForm').serializeJson());
+},
 render: function() {	
 	var o=this.props.formdata;
+	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
     return (
     		<div>
     		<div className="header">
@@ -533,7 +538,10 @@ render: function() {
     		  <AMR_ButtonToolbar>
       		    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >返回</AMR_Button>
       		   </AMR_ButtonToolbar>
-
+    	       <label className={one_classDiv}>标签:</label>
+   		     <div className={two_classDiv}>
+  		       <PxInput type="text" name="label" id="label" value={o.label} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
+  		        </div>
     		  </form>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>

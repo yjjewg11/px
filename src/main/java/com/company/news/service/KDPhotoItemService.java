@@ -60,7 +60,7 @@ public class KDPhotoItemService extends AbstractService {
 	}
 
 	
-	String Selectsql=" SELECT t1.uuid,t1.class_uuid,t1.photo_time,t1.create_useruuid,t1.path,t1.address,t1.note,t1.phone_type,t1.create_time";
+	String Selectsql=" SELECT t1.uuid,t1.class_uuid,t1.label,t1.photo_time,t1.create_useruuid,t1.path,t1.address,t1.note,t1.phone_type,t1.create_time";
 	String SqlFrom=" FROM kd_photo_item t1 ";
 
 
@@ -69,16 +69,20 @@ public class KDPhotoItemService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public PageQueryResult query(SessionUserInfoInterface user ,String groupuuid,String class_uuid, String user_uuid,PaginationData pData) {
+	public PageQueryResult query(SessionUserInfoInterface user ,String groupuuid,String class_uuid, String label,String user_uuid,PaginationData pData) {
 		String selectsql=Selectsql;
 		String sql=SqlFrom+" where 1=1 ";
 		
-		 if (StringUtils.isNotBlank(groupuuid)) {//根据家庭uuid查询
+		 if (StringUtils.isNotBlank(groupuuid)) {//根据学校uuid查询
 			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(groupuuid)+"'";
 		}
 		
-		 if (StringUtils.isNotBlank(class_uuid)) {//根据家庭uuid查询
+		 if (StringUtils.isNotBlank(class_uuid)) {//根据班级uuid查询
 			sql += " and   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
+		}
+		 
+		 if (StringUtils.isNotBlank(label)) {//根据标签查询
+			sql += " and   t1.label ='"+DBUtil.safeToWhereString(label)+"'";
 		}
 		////使用创建时间做分页显示,beforeTime 取 2016-01-15 13:13 之前的数据.按照创建时间排倒序
 		 if(StringUtils.isNotBlank(pData.getMaxTime())){
@@ -462,6 +466,29 @@ public class KDPhotoItemService extends AbstractService {
 	}
 	
 
+	/**
+	 * 查询所有通知
+	 * 
+	 * @return
+	 */
+	public List queryLabel(SessionUserInfoInterface user ,String groupuuid,String class_uuid) {
+		String selectsql=Selectsql;
+		String sql="SELECT DISTINCT label FROM kd_photo_item t1 where 1=1 ";
+		
+		 if (StringUtils.isNotBlank(groupuuid)) {//根据学校uuid查询
+			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(groupuuid)+"'";
+		}
+		
+		 if (StringUtils.isNotBlank(class_uuid)) {//根据班级uuid查询
+			sql += " and   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
+		}
+		 sql += " order by t1.label desc";
+
+		Query  query =this.nSimpleHibernateDao.createSQLQuery(selectsql+sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+            return query.list();
+	}
 
 	@Override
 	public String getEntityModelName() {

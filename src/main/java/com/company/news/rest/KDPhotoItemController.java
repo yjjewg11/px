@@ -1,5 +1,6 @@
 package com.company.news.rest;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -149,10 +150,12 @@ public class KDPhotoItemController extends AbstractRESTController {
 			String class_uuid=request.getParameter("class_uuid");
 			if(DBUtil.isSqlInjection(class_uuid, responseMessage))return "";
 			
+			String label=request.getParameter("label");
+			if(DBUtil.isSqlInjection(label, responseMessage))return "";
 
 			
 			
-			PageQueryResult pageQueryResult= kDPhotoItemService.query(user,groupuuid,class_uuid,user.getUuid(),pData);
+			PageQueryResult pageQueryResult= kDPhotoItemService.query(user,groupuuid,class_uuid,label,user.getUuid(),pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {
@@ -485,7 +488,43 @@ public class KDPhotoItemController extends AbstractRESTController {
 
 
 }
-	
+	/**
+	 * 
+	 * 查询我关联的所有家庭的相片.
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryLabel", method = RequestMethod.GET)
+	public String queryLabel(ModelMap model, HttpServletRequest request) {
+		model.clear();
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
+		
+		try {
+			
+			String groupuuid=request.getParameter("groupuuid");
+			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+			
+			String class_uuid=request.getParameter("class_uuid");
+			if(DBUtil.isSqlInjection(class_uuid, responseMessage))return "";
+			
+
+			
+			List pageQueryResult= kDPhotoItemService.queryLabel(user,groupuuid,class_uuid);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
 
 
 }

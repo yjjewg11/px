@@ -517,8 +517,13 @@ componentDidMount:function(){
 		 this.addShowImg(imgArr[i]);
 	 }		
 },
+handleChange: function(event) {
+    this.setState($('#KdPhotoForm').serializeJson());
+},
 render: function() {	
 	var o=this.props.formdata;
+	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -532,8 +537,11 @@ render: function() {
     		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.queryForm.class_uuid}), 
     		  React.createElement(AMR_ButtonToolbar, null, 
       		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "返回")
-      		   )
-
+      		   ), 
+    	       React.createElement("label", {className: one_classDiv}, "标签:"), 
+   		     React.createElement("div", {className: two_classDiv}, 
+  		       React.createElement(PxInput, {type: "text", name: "label", id: "label", value: o.label, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
+  		        )
     		  ), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
