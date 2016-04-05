@@ -471,12 +471,12 @@ public class KDPhotoItemService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List queryLabel(SessionUserInfoInterface user ,String groupuuid,String class_uuid) {
-		String selectsql=Selectsql;
+	public List queryLabel(SessionUserInfoInterface user ,String group_uuid,String class_uuid) {
+		//String selectsql=Selectsql;
 		String sql="SELECT DISTINCT label FROM kd_photo_item t1 where 1=1 ";
 		
-		 if (StringUtils.isNotBlank(groupuuid)) {//根据学校uuid查询
-			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(groupuuid)+"'";
+		 if (StringUtils.isNotBlank(group_uuid)) {//根据学校uuid查询
+			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(group_uuid)+"'";
 		}
 		
 		 if (StringUtils.isNotBlank(class_uuid)) {//根据班级uuid查询
@@ -484,7 +484,7 @@ public class KDPhotoItemService extends AbstractService {
 		}
 		 sql += " order by t1.label desc";
 
-		Query  query =this.nSimpleHibernateDao.createSQLQuery(selectsql+sql);
+		Query  query =this.nSimpleHibernateDao.createSQLQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
             return query.list();

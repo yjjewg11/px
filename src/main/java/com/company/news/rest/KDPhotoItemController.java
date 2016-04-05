@@ -505,15 +505,15 @@ public class KDPhotoItemController extends AbstractRESTController {
 		
 		try {
 			
-			String groupuuid=request.getParameter("groupuuid");
-			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+			String group_uuid=request.getParameter("group_uuid");
+			if(DBUtil.isSqlInjection(group_uuid, responseMessage))return "";
 			
 			String class_uuid=request.getParameter("class_uuid");
 			if(DBUtil.isSqlInjection(class_uuid, responseMessage))return "";
 			
 
 			
-			List pageQueryResult= kDPhotoItemService.queryLabel(user,groupuuid,class_uuid);
+			List pageQueryResult= kDPhotoItemService.queryLabel(user,group_uuid,class_uuid);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		} catch (Exception e) {

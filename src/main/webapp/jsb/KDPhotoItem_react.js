@@ -4,6 +4,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 			queryForSelect:function(groupuuid,classuuid,pageNo,type,callback){
 				var class_uuid;
 				var group_uuid;
+				var label;
 				module.callback=callback;
 				var group_List=Store.getGroup();
 					if(!groupuuid){
@@ -14,7 +15,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 					
 
 				var classArry=Store.getChooseClass(group_uuid);
-				
+				if(!label)label="";
 				if(!pageNo)pageNo=1;
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
@@ -26,6 +27,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				React.render(React.createElement(Query_photo_rect,{
 					groupuuid:group_uuid,
 					type:type,
+					label:label,
 					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 					
@@ -35,6 +37,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 			query:function(groupuuid,classuuid,pageNo,type){
 				var class_uuid;
 				var group_uuid;
+				var label;
 				var group_List=Store.getGroup();
 					if(!groupuuid){
 						group_uuid=group_List[0].uuid;
@@ -45,6 +48,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 
 				var classArry=Store.getChooseClass(group_uuid);
 				
+				if(!label)label="";
 				if(!pageNo)pageNo=1;
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
@@ -55,6 +59,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				}
 				React.render(React.createElement(Query_photo_rect,{
 					groupuuid:group_uuid,
+					label:label,
 					type:type,
 					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
@@ -270,16 +275,38 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
  * @btn_query_click:名字查找；
  * */
 var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
-	
+	getInitialState: function() {
+	       return this.getStateByPropes(this.props); 
+	  },
 	getStateByPropes:function(nextProps){
-
-	
+		var labelArry=[];
+        //取出标签
+		var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {group_uuid:this.props.groupuuid,class_uuid:this.props.class_uuid},
+			dataType : "json",
+			async: false,
+			success : function(data) {
+				if (data.ResMsg.status == "success") {
+					labelArry=data.list;
+					labelArry.push({value:"",label:'所有'});
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
 		var queryForm={
-				groupuuid:this.props.groupuuid,		    	
+				groupuuid:this.props.groupuuid,	
+				label:this.props.label,
 		    	class_uuid:this.props.class_uuid
 		};
 		 var obj= {
 			queryForm:queryForm,
+			label_list:labelArry,
 			pageNo:1,
 			type:nextProps.type,
 			show_list:[],
@@ -290,11 +317,6 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 	   componentWillReceiveProps: function(nextProps) {	
 		   this.setState(this.getStateByPropes(nextProps));
 	},
-	getInitialState: function() {
-	
-	       return this.getStateByPropes(this.props);;
-	   
-	  },
 	  handleChange_selectgroup: function(val){
 			var classlist=Store.getChooseClass($("input[name='groupuuid']").val());
 				this.state.queryForm.groupuuid=$("input[name='groupuuid']").val();
@@ -370,8 +392,10 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 	  },
 	ajax_list:function(){
 		var queryForm=this.state.queryForm;
+		if(queryForm.label=="所有"){
+			queryForm.label="";
+		}
 		queryForm.pageNo=this.state.pageNo;
-
 		$.AMUI.progress.start();
 		var that=this;
 		var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
@@ -412,11 +436,21 @@ render: function() {
 	var selectbtn_btn_className;
 	var queryForm=this.state.queryForm;
 	 var obj=this.state;
-	//var o=this.props.formdata;
 	var imgarry=this.state.list;
 	imgarry.pageNo=this.state.pageNo;
 	var imgphotoList=[];
 	var bgobj;
+	var label_obj;
+	var arry_label=[]
+	for(var i=0;i<obj.label_list.length;i++){
+         if(obj.label_list[i].label){
+        	 label_obj={value:null,label:null}
+        	 label_obj.value=obj.label_list[i].label;
+        	 label_obj.label=obj.label_list[i].label;
+        	 arry_label.push(label_obj);
+         }
+	    }
+	this.state.label_list=arry_label;
 	for(var i=0;i<imgarry.length;i++){
 		 bgobj={path:null,groupuuid:null,class_uuid:null,uuid:null,pageNo:null};
 		 bgobj.path=imgarry[i].path;
@@ -459,6 +493,10 @@ render: function() {
     		
     		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
     		React.createElement(AMUIReact.Selected, {id: "classuuid", name: "classuuid", placeholder: "班级切换", onChange: this.handleChange, btnWidth: "200", data: this.props.classList, btnStyle: "primary", value: queryForm.class_uuid})		            
+    		 ), 
+    		
+    		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+    		React.createElement(AMUIReact.Selected, {id: "label", name: "label", placeholder: "标签切换", onChange: this.handleChange, btnWidth: "200", data: arry_label, btnStyle: "primary", value: queryForm.label})		            
     		 )
     		)
     
