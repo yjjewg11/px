@@ -68,7 +68,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 
 			}				
 		}
-	
+
 	var fpPhotoUploadTask={
 			
 			cropper:null,
@@ -190,83 +190,87 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 		
 		
 		
-	var  Common_mg_Class_big_fn  = React.createClass({
-		buttion_select : function(event) {
-					var divid="Common_mg_Class_big_fn_"+event.uuid;
-			  $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
-			  React.render(React.createElement(KDPhotoItem_Img_canDel, {
+var  Common_mg_Class_big_fn  = React.createClass({
+  buttion_select : function(event) {
+	var divid="Common_mg_Class_big_fn_"+event.uuid;
+		 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+	     React.render(React.createElement(KDPhotoItem_Img_canDel, {
 					url: event.path,parentDivId:divid
 					}), document.getElementById(divid));  
 	         
-	},
-		 handleClick: function(event) {
-				if(!confirm("确定要删除吗?")){
-					return;
-				}
-				var groupuuid=event.groupuuid;
-				var class_uuid=event.class_uuid;
-				var uuid=event.uuid;
-				var pageNo=event.pageNo;
-			  	$.AMUI.progress.start();
-			      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
-				$.ajax({
-					type : "POST",
-					url : url,
-					dataType : "json",
-					 async: true,
-					success : function(data) {
-						$.AMUI.progress.done();
-						// 登陆成功直接进入主页
-						if (data.ResMsg.status == "success") {
-							
-							$('#Common_mg_Class_big_fn_item_'+uuid).remove();
-						//	menu_photo_fn(groupuuid,class_uuid,pageNo);
-						} else {
-							alert(data.ResMsg.message);
-						}
-					},
-					error :G_ajax_error_fn
-				});
-	  },		
-	  render: function() {
-		  var that=this
-		  var edit_btn_className;
-				  if (!this.props.imgsList){
-					  return;
-				  };
-			if(this.props.state.type==1){
-				edit_btn_className="G_Edit_show";
-			   }else{
-				edit_btn_className="G_Edit_hide";
-			}	  
-				    return (
-			      <div>
-			      <ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
-				   
-				    {this.props.imgsList.map(function(event) {
-				    	 var  o = event.path;
-						  var  imgArr=o?o.split("@"):"";
-				        return (
-				       	  <li id={"Common_mg_Class_big_fn_item_"+ event.uuid}>			     			
-				     	    <div className="am-gallery-item">
-				     		  <a href={imgArr[0]} title="">
-				     		    <img src={o} alt=""  data-rel={imgArr[0]}/>
-	                          </a>
-				     	<div className="am-fl am-margin-bottom-xs am-margin-left-xs">
-				        <AMR_Button  className={edit_btn_className}  amStyle="secondary" onClick={that.buttion_select.bind(this,event)} >选择照片</AMR_Button>
-				        </div>
-				        <div className="am-fl am-margin-bottom-xs am-margin-left-xs">
-				        <AMR_Button   amStyle="secondary" onClick={that.handleClick.bind(this,event)} >删除照片</AMR_Button>
-				        </div>
-				     		</div>	   
-		        		 </li>
-				        	)
-				      })}
-				    </ul>
-				  </div>
-				    )
-	          }
-	        }); 		
+	      },
+ handleClick: function(Obj) {
+
+		if(!confirm("确定要删除吗?")){
+			return;
+		}
+		var groupuuid=Obj.groupuuid;
+		var class_uuid=Obj.class_uuid;
+		var uuid=Obj.uuid;
+		var pageNo=Obj.pageNo;
+	  	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
+		$.ajax({
+			type : "POST",
+			url : url,
+			dataType : "json",
+			 async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					
+					$('#Common_mg_Class_big_fn_item_'+uuid).remove();
+				//	menu_photo_fn(groupuuid,class_uuid,pageNo);
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				rror :G_ajax_error_fn
+			});
+  },		
+  render: function() {
+	  var that=this
+	  var edit_btn_className;
+			  if (!this.props.imgsList){
+				  return;
+			  };
+		if(this.props.state.type==1){
+			edit_btn_className="G_Edit_show";
+		   }else{
+			edit_btn_className="G_Edit_hide";
+		}	  
+return (
+   <div>
+	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
+	   {this.props.imgsList.map(function(event) {
+    	var  o = event.path;
+		var  imgArr=o?o.split("@"):"";
+	return (
+		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className="G_class_phtoto_Img">			     			
+		  <div className="am-gallery-item">
+			   <a href={imgArr[0]} title="">
+			    <img src={o} alt=""  data-rel={imgArr[0]}/>
+			    </a>
+   
+     	  </div>	
+  	  
+	 	    
+	    <div className="G_class_phtoto_Img_select  am-fl am-margin-bottom-xs am-margin-left-xs">
+		 <AMR_Button  className={edit_btn_className}  amStyle="secondary" onClick={that.buttion_select.bind(this,event)} >选择照片</AMR_Button>
+		</div>
+		
+      <div className="G_class_phtoto_Img_close  am-fl am-margin-bottom-xs am-margin-left-xs">
+       <AMR_Button    onClick={that.handleClick.bind(this,event)} >X</AMR_Button>
+      </div>
+	     </li>	        		 
+        	)
+      })}
+    </ul>
+  </div>
+			    )
+          }
+        }); 		
 	/*
  * 学生列表服务器请求后绘制处理方法；
  * @</select>下拉多选框;
@@ -503,18 +507,24 @@ render: function() {
     	    </AMUIReact.Form>
     	    
 
-			    <div className="am-comment-bd">
-			    	<Common_mg_Class_big_fn  imgsList={imgphotoList}  state={this.state}/>
-			  
-			   </div>
-				    <div id="abc">
-				    <legend></legend> 
-		  			<AMR_ButtonToolbar>
-					<AMR_Button className={selectbtn_btn_className} amSize="xs"  amStyle="secondary" onClick={this.handleClick_selectbtn.bind(this,obj)} >确认照片选择</AMR_Button>
-					</AMR_ButtonToolbar>
-		  		    </div>
+		    <div className="am-comment-bd">
+		     <Common_mg_Class_big_fn  imgsList={imgphotoList}  state={this.state}/>  
+		    </div>
+			    	
+	    	<legend></legend> 
+	    	<AMR_ButtonToolbar>
+    		 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre",imgphotoList)} >上一页</AMR_Button>
+    		  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
+    		 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
+    		</AMR_ButtonToolbar>
+    		
+		    <div id="abc">				    
+  			 <AMR_ButtonToolbar>
+			  <AMR_Button className={selectbtn_btn_className} amSize="xs"  amStyle="secondary" onClick={this.handleClick_selectbtn.bind(this,obj)} >确认照片选择</AMR_Button>
+			 </AMR_ButtonToolbar>
+  		    </div>
 
-		  </div>
+		   </div>
     );
   }
 });
