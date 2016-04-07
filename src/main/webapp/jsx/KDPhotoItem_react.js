@@ -192,13 +192,19 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 		
 var  Common_mg_Class_big_fn  = React.createClass({
   buttion_select : function(event) {
-	var divid="Common_mg_Class_big_fn_"+event.uuid;
-		 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+	  
+	  var chckbox=$("#Common_mg_Class_big_fn_item_checkbox"+event.uuid);
+	  var divid="Common_mg_Class_big_fn_"+event.uuid;
+	  if(chckbox.prop("checked")){		  			
+			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
 	     React.render(React.createElement(KDPhotoItem_Img_canDel, {
 					url: event.path,parentDivId:divid
-					}), document.getElementById(divid));  
-	         
-	      },
+					}), document.getElementById(divid));  		         
+	      }else{
+		  $('#'+divid).remove();
+	  }
+	}
+,
  handleClick: function(Obj) {
 
 		if(!confirm("确定要删除吗?")){
@@ -255,9 +261,8 @@ return (
    
      	  </div>	
   	  
-	 	    
-	    <div className="G_class_phtoto_Img_select  am-fl am-margin-bottom-xs am-margin-left-xs">
-		 <AMR_Button  className={edit_btn_className}  amStyle="secondary" onClick={that.buttion_select.bind(this,event)} >选择照片</AMR_Button>
+	    <div className="G_class_phtoto_Img_select">
+    	 <input id={"Common_mg_Class_big_fn_item_checkbox"+ event.uuid} type="checkbox" className={edit_btn_className} onClick={that.buttion_select.bind(this,event)} name="table_checkbox" />   
 		</div>
 		
       <div className="G_class_phtoto_Img_close  am-fl am-margin-bottom-xs am-margin-left-xs">
