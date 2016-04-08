@@ -456,8 +456,8 @@ public class StudentBindService extends AbstractService {
 	 */
 	public Long getMax_userid(String groupuuid) {
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
-		
-		 Object maxUserid= s.createSQLQuery("select max(userid) from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
+		// max(  CONVERT(userid,SIGNED )) 修复字符串超过1000,max 不正确bug.
+		 Object maxUserid= s.createSQLQuery("select  max(  CONVERT(userid,SIGNED ))  from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
 			//从100开始.防止100内,留自定义
 		 Long startUserid=100l;
 		 try {

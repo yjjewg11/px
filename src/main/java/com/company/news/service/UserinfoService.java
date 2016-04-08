@@ -815,7 +815,7 @@ public class UserinfoService extends AbstractService {
 		}
 
 		sql += "order by CONVERT( {t1}.name USING gbk)";
-		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", User4Q.class);
+		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", User4QBaseInfo.class);
 
 		return this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData);
 	}
