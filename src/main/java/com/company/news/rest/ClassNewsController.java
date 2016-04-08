@@ -66,7 +66,7 @@ public class ClassNewsController extends AbstractRESTController {
 		SessionUserInfoInterface user = this.getUserInfoBySession(request);
 		//转换特定格式.
 		classNewsJsonform.setContent(MyUbbUtils.htmlToMyUbb(classNewsJsonform.getContent()));
-		classNewsJsonform.setImgs(PxStringUtil.imgUrlToUuid(classNewsJsonform.getImgs()));
+		//classNewsJsonform.setImgs(PxStringUtil.imgUrlToUuid(classNewsJsonform.getImgs()));
 		try {
 			boolean flag;
 			if (StringUtils.isEmpty(classNewsJsonform.getUuid()))

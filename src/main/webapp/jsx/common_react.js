@@ -1281,12 +1281,16 @@ render: function() {
 /*
  * 图片绘制公共模板（点击可看原图）
  * */
+//$('.am-gallery').pureview();  
 var  Common_mg_big_fn  = React.createClass({
-
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
   render: function() {
+	  var that=this
 			  if (!this.props.imgsList){
 				  return;
-			  };		  		   
+			  };		
 			    return (
 		      <div>
 		      <ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
@@ -1310,6 +1314,10 @@ var  Common_mg_big_fn  = React.createClass({
           }
         }); 
 
+/*
+ * 班级相册特殊图标绘制（点击可看原图）
+ * */
+//$('.am-gallery').pureview();  
 
 /*
  * 图片绘制公共模板 绘制多张图片
@@ -1723,6 +1731,7 @@ function G_status(){
 	     }
  		 return (
  		 		<div>
+ 		 		<hr/>
  		 		{rect_info}
 			    <AMUIReact.List static border striped>
 			      <Common_mg_big_fn  imgsList={imglist} />				  

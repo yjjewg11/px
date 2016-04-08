@@ -335,6 +335,7 @@ var Classnews_show = React.createClass({
 		},
 	render: function() {		  
 		  var  o = this.props.event;
+		  g_classnews_groupuuid=o.groupuuid
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)o.create_img=G_def_headImgPath;		 
 		  
@@ -575,6 +576,7 @@ var ClassNews_Img_canDel = React.createClass({
 var Classnews_edit = React.createClass({ 
 	selectclass_uuid_val:null,
 	 getInitialState: function() {
+
 		    return this.props.formdata;
 		  },
 	 handleChange: function(event) {
@@ -606,9 +608,10 @@ var Classnews_edit = React.createClass({
 		 //已经有的图片,显示出来.		 
 		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
 			  ////data.data.uuid,data.imgUrl
+			  console.log("URL",imgurl)
 			 that.addShowImg(imgurl);
 			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
-		  });		 
+		  });		
 		//已经有的图片,显示出来.
 		 if(!$('#imgs').val())return;
 		 var imgArr=$('#imgs').val().split(",");
@@ -625,13 +628,26 @@ handleChange_url:function(){
 	this.setState(tmp);
 	var thit=this;		 
    G_getHtmlTitle(tmp.url,function(url_content){thit.handleChange_url_cb(url_content)});
-	
 },
+bg_Class_fn:function(){
+	var that=this;
+	var callback=function(imgArr){
+		 for(var i=0;i<imgArr.length;i++){
+			 that.addShowImg(imgArr[i]);
+		 }		
+	}
+	    KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,callback);
+	//	KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,selectImgArr,callback);
+
+  },
+	
 render: function() {
 	  var o = this.state;
 	  if(this.props.mycalsslist.length>0){
 		 if(!o.classuuid) o.classuuid=this.props.mycalsslist[0].value;
 	  }
+//var url= "http://localhost:8080/px-rest/rest/uploadFile/getImgFile?uuid=60eb14b1-4fd5-41df-aa8a-03144a161334"
+   		var that=this;
 return (
 		<div>
 		<div className="header">
@@ -648,6 +664,8 @@ return (
 		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
+	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >班级相册</AMR_Button>
+
 			  {G_get_upload_img_Div()}
 			  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		         <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
@@ -2271,8 +2289,6 @@ var Class_student_Tel_ListItem =React.createClass({
 	    
 		 return (
 				 <AMUIReact.ListItem>{this.props.name}:{this.props.tel}<a className={this.props.tel?"":"am-hide"} href={"tel:"+this.props.tel}><AMUIReact.Button amStyle="success">电话</AMUIReact.Button></a></AMUIReact.ListItem>
-			      
-			     
 		     );
 	        }
 		 });

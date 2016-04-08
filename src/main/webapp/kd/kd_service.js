@@ -709,6 +709,33 @@ function ajax_classnews_edit(m,formdata){
 			}), G_get_div_body());
 	}
 };
+// function ajax_help_px_list(list_div,pageNo,callback) {
+//	 	$.AMUI.progress.start();
+//	 	var url = hostUrl + "rest/share/articleList.json";
+//	 	$.ajax({
+//	 		type : "GET",
+//	 		url : url,
+//	   		data : {type:91,pageNo:pageNo},
+//	 		dataType : "json",
+//	 		async: false,
+//	 		success : function(data) {
+//	 			$.AMUI.progress.done();
+//	 			if (data.ResMsg.status == "success") {
+//	 				React.render(React.createElement(Px_helplist_div, {
+//	 					events: data.list,
+//	 					responsive: true, bordered: true, striped :true,hover:true,striped:true
+//	 					}), document.getElementById(list_div));
+//	 				if(typeof callback=='function'){
+//						callback(data.list);
+//					}
+//	 			} else {
+//	 				alert(data.ResMsg.message);
+//	 				G_resMsg_filter(data.ResMsg);
+//	 			}
+//	 		},
+//	 		error :G_ajax_error_fn
+//	 	});
+//	 };
 /*
  * <班级互动>添加与编辑提交按钮服务器请求
  * @Form表单发给服务器，服务器自己取需要的参数；
@@ -716,11 +743,11 @@ function ajax_classnews_edit(m,formdata){
 function ajax_classnews_save(){	
 	  var imgs="";
 	  $(".G_cookplan_Img_img").each(function(){
-		  imgs+=","+$(this).attr("src");
+		  imgs+=$(this).attr("src")+",";
 		});	  
+	  imgs=imgs.substring(0,imgs.length-1)
 	  $('#imgs').val(imgs);
-	  
-	  
+
 	  var obj = $('#editClassnewsForm').serializeJson();
 	  if(!obj.imgs&&!obj.content){
 		  G_msg_pop("图片或内容至少填写一项.");

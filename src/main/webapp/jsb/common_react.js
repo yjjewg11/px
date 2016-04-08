@@ -1281,12 +1281,16 @@ render: function() {
 /*
  * 图片绘制公共模板（点击可看原图）
  * */
+//$('.am-gallery').pureview();  
 var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
-
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
   render: function() {
+	  var that=this
 			  if (!this.props.imgsList){
 				  return;
-			  };		  		   
+			  };		
 			    return (
 		      React.createElement("div", null, 
 		      React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
@@ -1310,6 +1314,10 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
           }
         }); 
 
+/*
+ * 班级相册特殊图标绘制（点击可看原图）
+ * */
+//$('.am-gallery').pureview();  
 
 /*
  * 图片绘制公共模板 绘制多张图片
@@ -1723,6 +1731,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     }
  		 return (
  		 		React.createElement("div", null, 
+ 		 		React.createElement("hr", null), 
  		 		rect_info, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
 			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  

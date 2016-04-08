@@ -455,6 +455,11 @@ function menu_dohome(){
 	                                  "link": "javascript:menu_class_sign_today_fn()",
 	                                  "title": "今日签到"
 	                                },
+			                    	  {
+			                    		  "img": hostUrlCDN+"i/banjixiangce.png",
+		                                  "link": "javascript:menu_photo_fn()",
+		                                  "title": "班级相册"
+		                                },
 //	                                {
 //	    	                    	    "img": hostUrlCDN+"i/banji.png",
 //	    	                    	    "link": "javascript:menu_mystudents_list_fn()",
@@ -568,6 +573,7 @@ function menu_hellp_fn(){
  * @ajax_classnews_list:我的班级服务请求
  * 在kd_service;
  * */
+var g_classnews_groupuuid="";
 function menu_classnewsbyMy_list_fn() {
 	var myclasslist=Store.getMyClassList();
 	var type="1";
@@ -709,6 +715,14 @@ function menu_body_fn (){
 	//MessageTimer.start();
 }
 
+/*
+ * (首页)班级相册
+ * @ photo
+ * */
+function menu_photo_fn() {
+	Queue.push(menu_photo_fn,"班级相册");
+	KDPhotoItem.query();
+};
 
 /*
  * （首页）刷卡记录；
