@@ -1,6 +1,10 @@
 var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 	var module={
 			callback:null,
+			//KDPhotoItem.ajax_uploadByphone('');
+			ajax_uploadByphone(base64){
+				fpPhotoUploadTask.ajax_uploadByphone(base64);
+			},
 			queryForSelect:function(groupuuid,classuuid,pageNo,type,callback){
 				var class_uuid;
 				var group_uuid;
@@ -120,10 +124,12 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				fpPhotoUploadTask.upload_files_arr=[];
 				fpPhotoUploadTask.groupuuid=null;//清空
 				fpPhotoUploadTask.callbackFN=callbackFN;
-				if(G_CallPhoneFN.isPhoneApp()){
+				//if(G_CallPhoneFN.isPhoneApp()){
+					
+				if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
 					$(fileId).bind("click", function(){
 						//优先调用手机
-		            	G_CallPhoneFN.selectImgPic();
+						G_CallPhoneFN.selectImgForCallBack( "KDPhotoItem.ajax_uploadByphone", "0", "500");
 					});
 					return;
 				}
@@ -283,6 +289,7 @@ return (
  * @handleChange_class_Selected::班级查询；
  * @btn_query_click:名字查找；
  * */
+var G_queryLabel_List=[];
 var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 	getInitialState: function() {
 	       return this.getStateByPropes(this.props); 
@@ -300,7 +307,13 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 			success : function(data) {
 				if (data.ResMsg.status == "success") {
 					labelArry=data.list;
+					console.log("1111111111unshift()",data.list);
+
+					console.log("2222222222",data.list);
 					labelArry.push({value:"",label:'所有'});
+					//G_queryLabel_List=data.list; unshift()
+					G_queryLabel_List = labelArry.slice(0, -1)
+					console.log("4444444444",G_queryLabel_List);
 				} else {
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
@@ -444,7 +457,7 @@ render: function() {
 	var edit_btn_className;
 	var selectbtn_btn_className;
 	var queryForm=this.state.queryForm;
-	 var obj=this.state;
+	var obj=this.state;
 	var imgarry=this.state.list;
 	imgarry.pageNo=this.state.pageNo;
 	var imgphotoList=[];
@@ -573,10 +586,18 @@ componentDidMount:function(){
 handleChange: function(event) {
     this.setState($('#KdPhotoForm').serializeJson());
 },
+
 render: function() {	
 	var o=this.props.formdata;
 	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	console.log("33333333",G_queryLabel_List);
+	
+		var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
+		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
+			G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload"}, "上传图片")
+		}
+	
     return (
     		React.createElement("div", null, 
     		React.createElement("div", {className: "header"}, 
@@ -598,8 +619,9 @@ render: function() {
     		  ), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-    	      React.createElement(AMR_Input, {type: "file", label: "", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
-
+		      G_upload_img_Div, 
+    	      React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "1111")
+      		  
     	   )
     	   )    		
     		

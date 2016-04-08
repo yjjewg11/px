@@ -147,7 +147,7 @@ public class KDPhotoItemController extends AbstractRESTController {
 			String groupuuid=request.getParameter("groupuuid");
 			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
 			
-			String class_uuid=request.getParameter("class_uuid");
+			String class_uuid=request.getParameter("classuuid");
 			if(DBUtil.isSqlInjection(class_uuid, responseMessage))return "";
 			
 			String label=request.getParameter("label");

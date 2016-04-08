@@ -181,6 +181,41 @@ window.JavaScriptCall={
 		注意JavaScriptCall 优先与isIos判断.
 };*/
 var G_CallPhoneFN={
+		
+		
+		/**
+		 * 调用选择上传图片的回调
+		 * callback:回调方法。
+		 * maxCount：最大限度。 0不限制。
+		 * quality：（单位k）。压缩到多少k内。
+		 * @returns {Boolean}
+		 */
+		selectImgForCallBack:function( callback, maxConut, quality){
+			G_CallPhoneFN.beforeCallPhone();
+			try{
+				//解决ios,输入框弹出后,点击上传,飞掉bug.
+				if(browser.versions.iPhone&&JavaScriptCall.selectImgForCallBack){
+					window.setTimeout(function(){JavaScriptCall.selectImgForCallBack( callback, maxConut, quality);},1000);
+					return true;
+					
+				}
+				
+				
+				if(window.JavaScriptCall){
+					JavaScriptCall.selectImgForCallBack( callback, maxConut, quality);
+					return true;
+				}
+				if(G_CallIosFN.isIos){
+					
+					G_CallIosFN.selectImgForCallBack( callback, maxConut, quality);
+					return true;
+				}
+			}catch(e){
+				  console.log('Exception:JavaScriptCall.selectImgPic()=', e.message);
+			}
+			console.log('window.selectImgPic==false');
+			return false;
+		},
 		/**
 		 * 解决ios9 点击
 		 * G_CallPhoneFN.beforeCallPhone();
