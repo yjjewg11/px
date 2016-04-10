@@ -307,13 +307,8 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 			success : function(data) {
 				if (data.ResMsg.status == "success") {
 					labelArry=data.list;
-					console.log("1111111111unshift()",data.list);
-
-					console.log("2222222222",data.list);
 					labelArry.push({value:"",label:'所有'});
-					//G_queryLabel_List=data.list; unshift()
 					G_queryLabel_List = labelArry.slice(0, -1)
-					console.log("4444444444",G_queryLabel_List);
 				} else {
 					alert(data.ResMsg.message);
 					G_resMsg_filter(data.ResMsg);
@@ -547,6 +542,18 @@ render: function() {
   }
 });
 var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
+ getInitialState: function() {
+	 var label_obj;
+		for(var i=0;i<G_queryLabel_List.length;i++){
+	         if(G_queryLabel_List[i].label){
+	        	 label_obj={value:null,label:null}
+	        	 label_obj.value=G_queryLabel_List[i].label;
+	        	 label_obj.label=G_queryLabel_List[i].label;
+	        	 this.props.formdata.show_list.push(label_obj);
+	         }
+	        }
+	    return this.props.formdata;
+	  },
 buttion_black_Click: function(o) {
 	module.query(o.queryForm.groupuuid,o.queryForm.class_uuid,o.pageNo,o.type)
 },	
@@ -583,15 +590,22 @@ componentDidMount:function(){
 		 this.addShowImg(imgArr[i]);
 	 }		
 },
-handleChange: function(event) {
+handleChange: function() {
+	var label_txt=$("input[name='label']").val();
+	this.state.queryForm.label=label_txt;
+	this.setState(this.state);
     this.setState($('#KdPhotoForm').serializeJson());
 },
+handleChange_label:function(val){ 
+	this.state.queryForm.label=val;
+	this.setState(this.state);
+	this.setState($('#KdPhotoForm').serializeJson());
 
+},
 render: function() {	
-	var o=this.props.formdata;
+	var o=this.state;
 	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-	console.log("33333333",G_queryLabel_List);
 	
 		var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
 		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
@@ -608,20 +622,21 @@ render: function() {
     		  React.createElement("form", {id: "KdPhotoForm", method: "post", className: "am-form"}, 
 
     		  React.createElement("input", {type: "hidden", name: "group_uuid", value: o.queryForm.groupuuid}), 
-    		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.queryForm.class_uuid}), 
+    		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.queryForm.classuuid}), 
     		  React.createElement(AMR_ButtonToolbar, null, 
-      		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "返回")
-      		   ), 
+      		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "返回"), 
+        		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+        		React.createElement(AMUIReact.Selected, {id: "label_Selected", name: "label_Selected", placeholder: "标签切换", onChange: this.handleChange_label, btnWidth: "200", data: o.show_list, btnStyle: "primary", value: o.queryForm.label})		            
+        		 )
+      		    ), 
     	       React.createElement("label", {className: one_classDiv}, "标签:"), 
    		     React.createElement("div", {className: two_classDiv}, 
-  		       React.createElement(PxInput, {type: "text", name: "label", id: "label", value: o.label, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
+  		       React.createElement(PxInput, {type: "text", name: "label", id: "label", value: o.queryForm.label, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
   		        )
     		  ), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-		      G_upload_img_Div, 
-    	      React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "1111")
-      		  
+		      G_upload_img_Div		  
     	   )
     	   )    		
     		
