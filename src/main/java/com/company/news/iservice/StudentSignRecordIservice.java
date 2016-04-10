@@ -1,5 +1,6 @@
 package com.company.news.iservice;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import com.company.news.service.StudentBindService;
 @Service
 public class StudentSignRecordIservice {
 	  protected static Logger logger = LoggerFactory.getLogger(StudentSignRecordIservice.class);
+	  static long sendTimeLimit=1000*60*60*2;//2小时内才推送
 	  @Autowired
 	  @Qualifier("NSimpleHibernateDao")
 	  protected NSimpleHibernateDao nSimpleHibernateDao;
@@ -57,11 +59,15 @@ public class StudentSignRecordIservice {
 			 
 				  obj.setStudentuuid(studentBind.getStudentuuid());
 				  obj.setSign_name(studentBind.getName());
+				  obj.setCreatetime(TimeUtils.getCurrentTimestamp());
 				  this.nSimpleHibernateDao.save(obj);
 				  
 				  //只有当天的数据才发送推送
-				  if(TimeUtils.getDateString(obj.getSign_time(),TimeUtils.YYYY_MM_DD_FORMAT).equals(TimeUtils.getCurrentTime(TimeUtils.YYYY_MM_DD_FORMAT))){
-					  String msg=obj.getSign_name()+"-"+obj.getGroupname()+"-"+TimeUtils.getDateString(obj.getSign_time(),TimeUtils.HH_mm_ss_FORMAT);
+				 
+				  
+//				  if(TimeUtils.getDateString(obj.getSign_time(),TimeUtils.YYYY_MM_DD_FORMAT).equals(TimeUtils.getCurrentTime(TimeUtils.YYYY_MM_DD_FORMAT))){
+				if( obj.getCreatetime().getTime()-obj.getSign_time().getTime()<1000*60*60*2){
+				  String msg=obj.getSign_name()+"-"+obj.getGroupname()+"-"+TimeUtils.getDateString(obj.getSign_time(),TimeUtils.HH_mm_ss_FORMAT);
 						
 						Map map=new HashMap();
 				    	map.put("uuid", obj.getUuid());
