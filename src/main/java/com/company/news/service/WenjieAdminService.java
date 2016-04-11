@@ -4,23 +4,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.common.HttpRequestUtils;
 import com.company.news.SystemConstants;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DistanceUtil;
 import com.company.news.commons.util.PxStringUtil;
+import com.company.news.commons.util.RandomNumberGenerator;
 import com.company.news.entity.Group;
 import com.company.news.entity.Parent;
 import com.company.news.entity.PxStudent;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentContactRealation;
+import com.company.news.entity.TelSmsCode;
 import com.company.news.json.JSONUtils;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.MD5Until;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
@@ -384,6 +392,68 @@ public class WenjieAdminService extends AbstractService {
 		
 		nSimpleHibernateDao.save(studentContactRealation);
 		return studentContactRealation;
+	}
+
+	/**
+	 * 1
+	 * @param tel
+	 * @param password
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public String update_parentRegSmsdb(String tel,String password,ResponseMessage responseMessage) throws Exception {
+		
+	
+		
+		TelSmsCode smsdb = (TelSmsCode) this.nSimpleHibernateDao
+				.getObjectByAttribute(TelSmsCode.class, "tel", tel);
+		if (smsdb == null) {
+			smsdb = new TelSmsCode();
+		}
+		smsdb.setTel(tel);
+		smsdb.setCreatetime(TimeUtils.getCurrentTimestamp());
+		smsdb.setType(1);
+		// 4位随机数
+		smsdb.setCode(RandomNumberGenerator.getRandomInt(4));
+		nSimpleHibernateDao.save(smsdb);
+		nSimpleHibernateDao.getHibernateTemplate().flush();
+	
+		return smsdb.getCode();
+		
+		
+	}
+	
+	/**
+	 * 2
+	 * @param tel
+	 * @param password
+	 * @param smscode
+	 * @param responseMessage
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean update_parentReg(String tel,String password,String smscode,ResponseMessage responseMessage) throws Exception {
+
+		
+		String url="http://jz.wenjienet.com/px-mobile/rest/userinfo/reg.json";
+
+		JSONObject jsonParam=new JSONObject();
+		jsonParam.put("tel",tel);
+		jsonParam.put("password", MD5Until.getMD5String(password));
+		jsonParam.put("smscode",smscode);
+		JSONObject relJson=HttpRequestUtils.httpPost(url, jsonParam, false);
+		
+		JSONObject resMsg=relJson.getJSONObject(RestConstants.Return_ResponseMessage);
+		
+		if(RestConstants.Return_ResponseMessage_success.equals(resMsg.get("status"))){
+			return true;
+		}else{
+			responseMessage.setMessage(resMsg.getString("message"));
+			return false;
+		}
+		
+		
 	}
 
 	@Override

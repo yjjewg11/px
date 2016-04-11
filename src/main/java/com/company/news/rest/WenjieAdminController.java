@@ -2,6 +2,7 @@ package com.company.news.rest;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +17,7 @@ import com.company.news.right.RightUtils;
 import com.company.news.service.CountService;
 import com.company.news.service.SynPxRedisToDbImplService;
 import com.company.news.service.WenjieAdminService;
+import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -220,6 +222,57 @@ public class WenjieAdminController extends AbstractRESTController {
 //				dd.getPx_count().synAllCountRedisToDb();
 //				dd.getSns_topic().synAllCountRedisToDb();
 //				
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
+		
+		
+		/**
+		 * 同步昨天以前的数据到数据库
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/parentReg", method = RequestMethod.POST)
+		public String parentReg(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_user_m, request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("parentReg is not admin!");
+				return "";
+			}
+			try {
+				
+				String tel=request.getParameter("tel");
+				String password=request.getParameter("password");
+				if (!CommonsValidate.checkCellphone(tel)) {
+					responseMessage.setMessage("电话号码格式不正确！");
+					return "";
+				}
+				if (StringUtils.isBlank(password)) {
+					responseMessage.setMessage("密码不能为空");
+					return "";
+				}
+				
+				String code=wenjieAdminService.update_parentRegSmsdb(tel, password, responseMessage);
+				if(StringUtils.isBlank(code)){
+					responseMessage.setMessage("验证码不能为空");
+					return "";
+				}
+				boolean flag=wenjieAdminService.update_parentReg(tel, password, code, responseMessage);
+				if(!flag){
+					return "";
+				}
+//				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
