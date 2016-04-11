@@ -1561,3 +1561,78 @@ $.ajax({
 	error :G_ajax_error_fn
 	});
 }; 
+
+
+	  /* (园长信箱)创建舞台
+	     * 因有加载更多功能，创建舞台，用于装载更多 message的Div放置在舞台上；
+	     *@Boss_message_list准备开始绘制舞台  
+	 	* @revice_useruuid:收件人ID；
+	 	* @send_useruuid:发送者ID；
+	 	* @send_user:发送者姓名
+	     * */
+	    function ajax_my_boss_stage_byRight(send_useruuid,revice_useruuid,send_user){
+	 		React.render(React.createElement( Boss_message_stage_byRight,{send_useruuid:send_useruuid,revice_useruuid:revice_useruuid}), G_get_div_second());
+	 	   };
+
+		     
+	   /*(园长信箱)(服务器请求)-我要发送信息
+  * @opt：高级封装做处理 直接把表单和URL地址送进去
+  * @formName:表单信息
+  * @直接传给服务器，服务器根据自己需要的从form表单取参数；
+  * */  
+ function ajax_boss_message_save_byRight(callback,formid){
+ 	if(!formid)formid="BosseditForm";
+ 	var opt={
+ 	 formName:formid,
+ 	 url:hostUrl + "rest/message/saveLeaderToParent.json",
+ 	 cbFN:function(data){
+ 		 if (data.ResMsg.status == "success") {
+ 			 G_msg_pop(data.ResMsg.message);
+ 			 if(callback)callback();
+
+ 		} else {
+ 			alert(data.ResMsg.message);
+ 			G_resMsg_filter(data.ResMsg);
+ 		}
+ 	 }
+ 	 };
+ 	 G_ajax_abs_save(opt);
+ }
+ 
+  /* (园长信箱)(服务器请求)-绘制每一个Div信息放置在舞台上；
+   * @revice_useruuid:收件人ID；
+   * @send_useruuid:发送者ID；
+   * */
+  function ajax_boss_message_list_byRight(revice_useruuid,send_useruuid,list_div,pageNo,callback){
+	   if(!pageNo)pageNo=1;
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/message/queryByParentAndLeader.json";
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+  		data : {group_uuid:send_useruuid,parent_uuid:revice_useruuid,pageNo:pageNo},
+  		dataType : "json",
+  		 async: false,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			// 登陆成功直接进入主页
+  			if (data.ResMsg.status == "success") {
+  				React.render(React.createElement(Message_queryLeaderMsgByParents_listpage_byRight, {
+					events: data.list,
+					send_useruuid:send_useruuid,
+					revice_useruuid:revice_useruuid,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
+
+				
+  			} else {
+  				alert("加载数据失败："+data.ResMsg.message);
+  			}
+  		},
+		error :G_ajax_error_fn
+	   	});
+	      };

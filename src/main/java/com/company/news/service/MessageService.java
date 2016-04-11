@@ -71,6 +71,9 @@ public class MessageService extends AbstractService {
 		Message message = new Message();
 
 		BeanUtils.copyProperties(message, messageJsonform);
+		if(SystemConstants.Group_uuid_wjd.equals(messageJsonform.getSend_useruuid())){
+			messageJsonform.setSend_user("问界科技");
+		}
 		
 		message.setRevice_user(user.getN());
 		message.setCreate_time(TimeUtils.getCurrentTimestamp());
