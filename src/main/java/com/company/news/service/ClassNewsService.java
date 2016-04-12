@@ -459,23 +459,19 @@ LEFT JOIN px_count t1 on t4.uuid=t1.ext_uuid
 	 * @param uuid
 	 */
 	public boolean delete(String uuid, ResponseMessage responseMessage) {
+		
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
-
-		if (uuid.indexOf(",") != -1)// 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from ClassNews where uuid in(?)", uuid);
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from ClassNewsReply where newsuuid in(?)", uuid);
-		} else {
-			this.nSimpleHibernateDao.deleteObjectById(ClassNews.class, uuid);
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from ClassNewsReply where newsuuid =?", uuid);
+		ClassNews obj=(ClassNews)this.nSimpleHibernateDao.getObject(ClassNews.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("对象不存在！");
+			return false;
 		}
+
+		this.nSimpleHibernateDao.delete(obj);
 
 		return true;
 	}

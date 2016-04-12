@@ -200,7 +200,7 @@ var Classnews_Div_list = React.createClass({
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		this.forceUpdate();
+//		this.forceUpdate();
 		this.pageNo=1;
 		try{G_clear_pureview();}catch(e){};
 		
@@ -333,12 +333,43 @@ var Classnews_show = React.createClass({
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
 		},
+		ajax_btn_delete:function(event){
+		if(!confirm("确定删除该互动吗?")){
+			return;
+		}	
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/classnews/delete.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{uuid:event.uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop("互动删除成功");
+				$('#ClassNews_hudong_'+event.uuid).remove();
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
 	render: function() {		  
 		  var  o = this.props.event;
+		  var myuuid=Store.getUserinfo().uuid;
+		  var delete_btn_className;
 		  g_classnews_groupuuid=o.groupuuid
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)o.create_img=G_def_headImgPath;		 
+		  if(!o.create_img)o.create_img=G_def_headImgPath;		
 		  
+		  	if(myuuid== o.create_useruuid){
+					delete_btn_className="G_Edit_show";
+				   }else{
+					delete_btn_className="G_Edit_hide";
+				  }	
 		   
 			  var contentDiv=( <div dangerouslySetInnerHTML={{__html:o.content}}></div>);
 
@@ -347,7 +378,7 @@ var Classnews_show = React.createClass({
 			  }
 
 	  return (
-			  <div>
+			  <div id={"ClassNews_hudong_"+o.uuid}>
 			  <article className="am-comment am-margin-xs">
 			  <a href="javascript:void(0);">
 			    <img src={o.create_img}  className="am-comment-avatar" width="48" height="48"/>
@@ -377,7 +408,8 @@ var Classnews_show = React.createClass({
 
 							<G_check_disable_div_byRight type={99} uuid={o.uuid}  status={o.status} groupuuid={o.groupuuid} add_class="am-fr"/>
      			    	<a href="javascript:void(0);" className="am-fr" onClick={common_check_illegal.bind(this,99,o.uuid)}>举报</a>
-     			    
+     			    <button  className={"am-btn-sm am-btn-danger "+delete_btn_className} onClick={this.ajax_btn_delete.bind(this,o)} >删除互动</button>  
+
 
 
 
@@ -494,18 +526,52 @@ return (
 * 把评论模板插入空Div里面
 * 
 * */
-var Classnews_reply_list_listshow = React.createClass({ 	
+var Classnews_reply_list_listshow = React.createClass({
+		ajax_btn_delete:function(event){
+		if(!confirm("确定删除该评论吗?")){
+			return;
+		}	
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/reply/delete.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{uuid:event.uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop("评论删除成功");
+				$('#ClassNews_pinglun_'+event.uuid).remove();
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
 render: function() {
 	var groupuuid=this.props.groupuuid;
+	var myuuid=Store.getUserinfo().uuid;
+	var that=this;
+
 return (
 		  <div>
 		  {this.props.events.data.map(function(event) {
-			
+	          var delete_btn_className;
+				if(myuuid==event.create_useruuid){
+					delete_btn_className="G_Edit_show";
+				   }else{
+					delete_btn_className="G_Edit_hide";
+				  }	 
 		      return (
-		    		  <li className="am-cf">
+		    		  <li id={"ClassNews_pinglun_"+event.uuid} className="am-cf">
 		    		  <span className="am-comment-author am-fl">{event.create_user+":"}</span>
 				        <span className="am-fl" dangerouslySetInnerHTML={{__html:event.content}}></span>
 				  <G_check_disable_div_byRight type={98} uuid={event.uuid}  status={event.status} groupuuid={groupuuid}	/>
+					  <button  className={"am-btn-sm am-btn-danger "+delete_btn_className} onClick={that.ajax_btn_delete.bind(this,event)} >删除</button>  
+
 		    		  </li>
 		    		  )
 		  })}

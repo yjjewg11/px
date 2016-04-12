@@ -65,13 +65,13 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 		});
 	},
 	  render: function() {
-			
 		  if(this.rightFlag){
 			  var bt_name=this.state.status==2?"已屏蔽":"屏蔽";
 			  var bt_class=this.state.status==2?" am-text-danger":" am-btn-danger";
 			  return (
-					  React.createElement("button", {className: "am-btn-sm  "+this.props.add_class+" "+bt_class, title: "屏蔽后管理员和创建者可见,其他人不可见.", onClick: this.ajax_check_disable.bind(this,this.props.type,this.props.uuid)}, bt_name)
-			    );
+				React.createElement("button", {className: "am-btn-sm  "+this.props.add_class+" "+bt_class, title: "屏蔽后管理员和创建者可见,其他人不可见.", onClick: this.ajax_check_disable.bind(this,this.props.type,this.props.uuid)}, bt_name)
+						
+		  );
 		  }else{
 			  return null;
 		  }

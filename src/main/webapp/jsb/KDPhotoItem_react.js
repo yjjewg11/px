@@ -232,7 +232,7 @@ var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
 					
-					$('#Common_mg_Class_big_fn_item_'+uuid).remove();
+					$('#Common_mg_Class_big_fn_item_'+uuid).hide();
 				//	menu_photo_fn(groupuuid,class_uuid,pageNo);
 					} else {
 						alert(data.ResMsg.message);
@@ -271,7 +271,7 @@ return (
     	 React.createElement("input", {id: "Common_mg_Class_big_fn_item_checkbox"+ event.uuid, type: "checkbox", className: edit_btn_className, onClick: that.buttion_select.bind(this,event), name: "table_checkbox"})
 		), 
 		
-      React.createElement("div", {className: "G_class_phtoto_Img_close  am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+      React.createElement("div", {className: "G_class_phtoto_Img_close"}, 
        React.createElement(AMR_Button, {onClick: that.handleClick.bind(this,event)}, "X")
       )
 	     )	        		 

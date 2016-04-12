@@ -200,7 +200,7 @@ var Classnews_Div_list = React.createClass({displayName: "Classnews_Div_list",
 	refresh_data:function(){
 //		classnewsreply_list_div 清除；
 //      load_more_data	重新绘制DIV；
-		this.forceUpdate();
+//		this.forceUpdate();
 		this.pageNo=1;
 		try{G_clear_pureview();}catch(e){};
 		
@@ -333,12 +333,43 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
 		},
+		ajax_btn_delete:function(event){
+		if(!confirm("确定删除该互动吗?")){
+			return;
+		}	
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/classnews/delete.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{uuid:event.uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop("互动删除成功");
+				$('#ClassNews_hudong_'+event.uuid).remove();
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
 	render: function() {		  
 		  var  o = this.props.event;
+		  var myuuid=Store.getUserinfo().uuid;
+		  var delete_btn_className;
 		  g_classnews_groupuuid=o.groupuuid
 		  if(!o.imgsList)o.imgsList=[];
-		  if(!o.create_img)o.create_img=G_def_headImgPath;		 
+		  if(!o.create_img)o.create_img=G_def_headImgPath;		
 		  
+		  	if(myuuid== o.create_useruuid){
+					delete_btn_className="G_Edit_show";
+				   }else{
+					delete_btn_className="G_Edit_hide";
+				  }	
 		   
 			  var contentDiv=( React.createElement("div", {dangerouslySetInnerHTML: {__html:o.content}}));
 
@@ -347,7 +378,7 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 			  }
 
 	  return (
-			  React.createElement("div", null, 
+			  React.createElement("div", {id: "ClassNews_hudong_"+o.uuid}, 
 			  React.createElement("article", {className: "am-comment am-margin-xs"}, 
 			  React.createElement("a", {href: "javascript:void(0);"}, 
 			    React.createElement("img", {src: o.create_img, className: "am-comment-avatar", width: "48", height: "48"})
@@ -376,8 +407,9 @@ var Classnews_show = React.createClass({displayName: "Classnews_show",
 								 "|阅读"+o.count, 
 
 							React.createElement(G_check_disable_div_byRight, {type: 99, uuid: o.uuid, status: o.status, groupuuid: o.groupuuid, add_class: "am-fr"}), 
-     			    	React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报")
-     			    
+     			    	React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,99,o.uuid)}, "举报"), 
+     			    React.createElement("button", {className: "am-btn-sm am-btn-danger "+delete_btn_className, onClick: this.ajax_btn_delete.bind(this,o)}, "删除互动")
+
 
 
 
@@ -494,18 +526,52 @@ return (
 * 把评论模板插入空Div里面
 * 
 * */
-var Classnews_reply_list_listshow = React.createClass({displayName: "Classnews_reply_list_listshow", 	
+var Classnews_reply_list_listshow = React.createClass({displayName: "Classnews_reply_list_listshow",
+		ajax_btn_delete:function(event){
+		if(!confirm("确定删除该评论吗?")){
+			return;
+		}	
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/reply/delete.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{uuid:event.uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop("评论删除成功");
+				$('#ClassNews_pinglun_'+event.uuid).remove();
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
 render: function() {
 	var groupuuid=this.props.groupuuid;
+	var myuuid=Store.getUserinfo().uuid;
+	var that=this;
+
 return (
 		  React.createElement("div", null, 
 		  this.props.events.data.map(function(event) {
-			
+	          var delete_btn_className;
+				if(myuuid==event.create_useruuid){
+					delete_btn_className="G_Edit_show";
+				   }else{
+					delete_btn_className="G_Edit_hide";
+				  }	 
 		      return (
-		    		  React.createElement("li", {className: "am-cf"}, 
+		    		  React.createElement("li", {id: "ClassNews_pinglun_"+event.uuid, className: "am-cf"}, 
 		    		  React.createElement("span", {className: "am-comment-author am-fl"}, event.create_user+":"), 
 				        React.createElement("span", {className: "am-fl", dangerouslySetInnerHTML: {__html:event.content}}), 
-				  React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, status: event.status, groupuuid: groupuuid}	)
+				  React.createElement(G_check_disable_div_byRight, {type: 98, uuid: event.uuid, status: event.status, groupuuid: groupuuid}	), 
+					  React.createElement("button", {className: "am-btn-sm am-btn-danger "+delete_btn_className, onClick: that.ajax_btn_delete.bind(this,event)}, "删除")
+
 		    		  )
 		    		  )
 		  })

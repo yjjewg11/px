@@ -248,7 +248,10 @@ public class KDPhotoItemService extends AbstractService {
 		
 		KDPhotoItem dbobj = (KDPhotoItem) this.nSimpleHibernateDao.getObjectById(
 				KDPhotoItem.class, uuid);
-		
+		if(dbobj==null){
+			responseMessage.setMessage("对象不存在！");
+			return false;
+		}
 		if(!user.getUuid().equals(dbobj.getCreate_useruuid())){
 			responseMessage.setMessage("只有创建人,才能删除");
 			return false;

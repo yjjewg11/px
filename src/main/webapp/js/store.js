@@ -337,6 +337,10 @@ var Store={
 	setGroup:function(v){
 		this.map["Group"]=v;
 	},
+	/**
+	 * 
+	 * userinfo={uuid:"",name:""}
+	 */
 	getUserinfo:function(){
 		 if(this.map["userinfo"])return this.map["userinfo"];
 		 store_ajax_getUserinfo();
