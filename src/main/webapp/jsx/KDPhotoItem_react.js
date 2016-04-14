@@ -39,109 +39,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
 			}				
 		}
 
-	var fpPhotoUploadTask={
-			
-			cropper:null,
-			callbackFN:null,
-			type:4,
-			base64:null,
-			groupuuid:null,//用于添加水印时填值
-			
-			//客户端压缩图片
-			/**
-			 * lrz_callback:压缩完成后,回调函数.
-			 */
-			do_lrz:function(){
-				var file=fpPhotoUploadTask.upload_files_arr.pop();
-				if(!file)return;
-				 lrz(file, {
-			            before: function() {
-			                console.log('压缩开始');
-			            },
-			            fail: function(err) {
-			                console.error(err);
-			            },
-			            always: function() {
-			                console.log('压缩结束');
-			            },
-			            done: function (results) {
-			            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
-			            console.log(results);
-			            /*
-			            var data = {
-			                    base64: results.base64,
-			                    size: results.base64.length // 校验用，防止未完整接收
-			                };*/
-				            if(results&&results.base64){
-				            	
-				            	fpPhotoUploadTask.ajax_uploadByphone(results.base64);
-				            }
-			            }
-			            });//end done fn
-			},
-			upload_files_arr:[],
-			/**
-			*加水印调用
-			1.绑定上传图片.fpPhotoUploadTask.bind_onchange(fileId,callbackFN)
-	2.传入学校uuid,后台判断是否加水印.fpPhotoUploadTask.groupuuid=null;
-			*/
-			
-			bind_onchange:function(fileId,callbackFN){
-				fpPhotoUploadTask.upload_files_arr=[];
-				fpPhotoUploadTask.groupuuid=null;//清空
-				fpPhotoUploadTask.callbackFN=callbackFN;
-				//if(G_CallPhoneFN.isPhoneApp()){
-					
-				if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
-					$(fileId).bind("click", function(){
-						//优先调用手机
-						G_CallPhoneFN.selectImgForCallBack( "KDPhotoItem.ajax_uploadByphone", "0", "500");
-					});
-					return;
-				}
-				$(fileId).bind("change", function(){
-						//支持多 图片上传
-						for(var i=0;i<this.files.length;i++){
-							fpPhotoUploadTask.upload_files_arr.push(this.files[i]);
-						}
-						
-						fpPhotoUploadTask.do_lrz();
-				
-					
-					
-				  });//end change
-			},
-			ajax_uploadByphone:function(base64){
-				$.AMUI.progress.start(); 
-				  formObject = $('#KdPhotoForm').serializeJson();
-					formObject.base64=base64;
-				var url = hostUrl + "rest/kDPhotoItem/uploadBase64.json";
-				$.ajax({
-					type : "POST",
-					url : url,
-					timeout : 0, 
-					dataType : "json",
-					data:formObject,
-					 async: true,
-					success : function(data) {
-						$.AMUI.progress.done();
-						// 登陆成功直接进入主页
-						if (data.ResMsg.status == "success") {
-							if(fpPhotoUploadTask.callbackFN){
-								//data.data.uuid,data.imgUrl
-								//fpPhotoUploadTask.callbackFN(data);
-								fpPhotoUploadTask.callbackFN(data.imgUrl,data.data.uuid);
-								fpPhotoUploadTask.do_lrz();
-							}
-						} else {
-							alert(data.ResMsg.message);
-						}
-					},
-					error :G_ajax_error_fn
-				});
-				
-			}
-	};
+
 			
 		
 /*
@@ -453,9 +351,127 @@ render: function() {
     );
   }
 });
+
+
+var fpPhotoUploadTask={
+		
+		cropper:null,
+		callbackFN:null,
+		type:4,
+		base64:null,
+		groupuuid:null,//用于添加水印时填值
+		
+		//客户端压缩图片
+		/**
+		 * lrz_callback:压缩完成后,回调函数.
+		 */
+		do_lrz:function(){
+			var progress_width;
+			var file=fpPhotoUploadTask.upload_files_arr.pop();
+			progress_width=Math.round(G_img_Photo/G_img_number*100);
+			G_that.state.num=progress_width;
+			G_that.setState(G_that.state);
+			if(!file)return;
+			 lrz(file, {
+		            before: function() {
+		                console.log('压缩开始');
+		            },
+		            fail: function(err) {
+		                console.error(err);
+		            },
+		            always: function() {
+		                console.log('压缩结束');
+		            },
+		            done: function (results) {
+		            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+		            console.log(results);
+		            /*
+		            var data = {
+		                    base64: results.base64,
+		                    size: results.base64.length // 校验用，防止未完整接收
+		                };*/
+			            if(results&&results.base64){			            	
+			            	fpPhotoUploadTask.ajax_uploadByphone(results.base64);
+			            }
+		            }
+		            });//end done fn
+		},
+		upload_files_arr:[],
+		/**
+		*加水印调用
+		1.绑定上传图片.fpPhotoUploadTask.bind_onchange(fileId,callbackFN)
+2.传入学校uuid,后台判断是否加水印.fpPhotoUploadTask.groupuuid=null;
+		*/
+		
+		bind_onchange:function(fileId,callbackFN){
+			fpPhotoUploadTask.upload_files_arr=[];
+			fpPhotoUploadTask.groupuuid=null;//清空
+			fpPhotoUploadTask.callbackFN=callbackFN;
+			//if(G_CallPhoneFN.isPhoneApp()){
+				
+			if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
+				$(fileId).bind("click", function(){
+					//优先调用手机
+					G_CallPhoneFN.selectImgForCallBack( "KDPhotoItem.ajax_uploadByphone", "0", "500");
+				});
+				return;
+			}
+			$(fileId).bind("change", function(){
+				console.log("初始上传")
+				G_img_Photo=0;
+				G_img_number=0;
+				progress_width=0;
+			var progress_width=Math.round(G_img_Photo/G_img_number*100);
+			G_that.state.num=progress_width;
+			G_that.setState(G_that.state);
+				G_img_number=this.files.length;
+					//支持多 图片上传
+					for(var i=0;i<this.files.length;i++){
+						fpPhotoUploadTask.upload_files_arr.push(this.files[i]);
+					}
+     				fpPhotoUploadTask.do_lrz();
+			
+				
+				
+			  });//end change
+		},
+
+		ajax_uploadByphone:function(base64){
+			$.AMUI.progress.start(); 
+			  formObject = $('#KdPhotoForm').serializeJson();
+				formObject.base64=base64;
+			var url = hostUrl + "rest/kDPhotoItem/uploadBase64.json";
+			$.ajax({
+				type : "POST",
+				url : url,
+				timeout : 0, 
+				dataType : "json",
+				data:formObject,
+				 async: true,
+				success : function(data) {
+					$.AMUI.progress.done();
+					// 登陆成功直接进入主页
+					if (data.ResMsg.status == "success") {
+						G_img_Photo=G_img_Photo+1;
+						if(fpPhotoUploadTask.callbackFN){
+							fpPhotoUploadTask.callbackFN(data.imgUrl,data.data.uuid);
+							fpPhotoUploadTask.do_lrz();
+						}
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				error :G_ajax_error_fn
+			});
+			
+		}
+};
 /*
  *上传照片功能
  * */
+G_img_number=null;
+G_img_Photo=0;
+G_that=null;
 var Img_photo_rect = React.createClass({
  getInitialState: function() {
 	 var label_obj;
@@ -488,13 +504,10 @@ upload_files_arr:[],
 componentDidMount:function(){
 	 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 	 this.editor=editor;
-	// fpPhotoUploadTask.bind_onchange("#file_img_upload",function(imgurl){
-	 var that=this;		 
+	 var that=this;		
 	 //已经有的图片,显示出来.		 
 	 fpPhotoUploadTask.bind_onchange("#file_img_upload",function(imgurl,uuid){
-		  ////data.data.uuid,data.imgUrl
-		 that.addShowImg(imgurl);
-		// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
+		 that.addShowImg(imgurl);		
 	  });	
 	 
 	 fpPhotoUploadTask.groupuuid=this.props.formdata.groupuuid;
@@ -519,14 +532,13 @@ handleChange_label:function(val){
 },
 render: function() {	
 	var o=this.state;
+	G_that=this
 	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-	
 		var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" multiple />
 		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
 			G_upload_img_Div=<AMR_Button    amStyle="primary"  id="file_img_upload" >上传图片</AMR_Button>
 		}
-	
     return (
     		<div>
     		<div className="header">
@@ -549,6 +561,10 @@ render: function() {
   		       <PxInput type="text" name="label" id="label" value={o.queryForm.label} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
   		        </div>
     		  </form>
+    		  <label>图片上传进度:</label>
+    		  <div>
+    		    <AMUIReact.Progress now={o.num} label={o.num+"%"} />
+    		  </div>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
 		      {G_upload_img_Div} 		  
