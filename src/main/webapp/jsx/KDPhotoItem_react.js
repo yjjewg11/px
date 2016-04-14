@@ -1,45 +1,12 @@
-var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
+var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
 	var module={
 			callback:null,
-			//KDPhotoItem.ajax_uploadByphone('');
 			ajax_uploadByphone(base64){
 				fpPhotoUploadTask.ajax_uploadByphone(base64);
 			},
-			queryForSelect:function(groupuuid,classuuid,pageNo,type,callback){
-				var class_uuid;
-				var group_uuid;
-				var label;
-				module.callback=callback;
-				var group_List=Store.getGroup();
-					if(!groupuuid){
-						group_uuid=group_List[0].uuid;
-					}else{
-						group_uuid=groupuuid;
-					  }
-					
-
-				var classArry=Store.getChooseClass(group_uuid);
-				if(!label)label="";
-				if(!pageNo)pageNo=1;
-				if(!classuuid){
-					if(!classArry||classArry.length==0){
-						classuuid=null;
-					}else{
-						classuuid=classArry[0].uuid;
-					}
-				}
-				React.render(React.createElement(Query_photo_rect,{
-					groupuuid:group_uuid,
-					type:type,
-					label:label,
-					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
-					
-					class_uuid:classuuid
-					}), G_get_div_second());
-			}	,
-			query:function(groupuuid,classuuid,pageNo,type){
-				var class_uuid;
+			//闭包方法入口
+			query:function(groupuuid,classuuid,pageNo){
+				var classuuid;
 				var group_uuid;
 				var label;
 				var group_List=Store.getGroup();
@@ -64,10 +31,9 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				React.render(React.createElement(Query_photo_rect,{
 					groupuuid:group_uuid,
 					label:label,
-					type:type,
 					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
-					class_uuid:classuuid
+					classuuid:classuuid
 					}), G_get_div_body());
 
 			}				
@@ -149,8 +115,6 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				$.AMUI.progress.start(); 
 				  formObject = $('#KdPhotoForm').serializeJson();
 					formObject.base64=base64;
-		//,{groupuuid:fpPhotoUploadTask.groupuuid,classuuid:null,base64:base64},
-
 				var url = hostUrl + "rest/kDPhotoItem/uploadBase64.json";
 				$.ajax({
 					type : "POST",
@@ -178,46 +142,19 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo,type ){
 				
 			}
 	};
+			
 		
- var KDPhotoItem_Img_canDel = React.createClass({
- 		deleteImg:function(divid){
- 			$("#"+divid).remove();
- 		},			
- 	  render: function() {
- 		 return (
-           		<div className="G_cookplan_Img" >
- 	 	       			<img  name="KDPhotoItem_Img_select"  className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
- 	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
- 	 	       		</div>		
-           	)
- 	  }
- 	});
-		
-		
-		
-		
+/*
+ * 对单张图片的处理方法;
+ * */		
 var  Common_mg_Class_big_fn  = React.createClass({
-  buttion_select : function(event) {
-	  
-	  var chckbox=$("#Common_mg_Class_big_fn_item_checkbox"+event.uuid);
-	  var divid="Common_mg_Class_big_fn_"+event.uuid;
-	  if(chckbox.prop("checked")){		  			
-			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
-	     React.render(React.createElement(KDPhotoItem_Img_canDel, {
-					url: event.path,parentDivId:divid
-					}), document.getElementById(divid));  		         
-	      }else{
-		  $('#'+divid).remove();
-	  }
-	}
-,
  handleClick: function(Obj) {
 
 		if(!confirm("确定要删除吗?")){
 			return;
 		}
 		var groupuuid=Obj.groupuuid;
-		var class_uuid=Obj.class_uuid;
+		var classuuid=Obj.classuuid;
 		var uuid=Obj.uuid;
 		var pageNo=Obj.pageNo;
 	  	$.AMUI.progress.start();
@@ -246,12 +183,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
-			  };
-		if(this.props.state.type==1){
-			edit_btn_className="G_Edit_show";
-		   }else{
-			edit_btn_className="G_Edit_hide";
-		}	  
+			  };  
 return (
    <div>
 	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
@@ -266,10 +198,6 @@ return (
 			    </a>
    
      	  </div>	
-  	  
-	    <div className="G_class_phtoto_Img_select">
-    	 <input id={"Common_mg_Class_big_fn_item_checkbox"+ event.uuid} type="checkbox" className={edit_btn_className} onClick={that.buttion_select.bind(this,event)} name="table_checkbox" />   
-		</div>
 		
       <div className="G_class_phtoto_Img_close">
        <AMR_Button    onClick={that.handleClick.bind(this,event)} >X</AMR_Button>
@@ -301,7 +229,7 @@ var Query_photo_rect = React.createClass({
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {group_uuid:this.props.groupuuid,class_uuid:this.props.class_uuid},
+			data : {group_uuid:this.props.groupuuid,class_uuid:this.props.classuuid},
 			dataType : "json",
 			async: false,
 			success : function(data) {
@@ -319,13 +247,13 @@ var Query_photo_rect = React.createClass({
 		var queryForm={
 				groupuuid:this.props.groupuuid,	
 				label:this.props.label,
-		    	class_uuid:this.props.class_uuid
+				classuuid:this.props.classuuid
 		};
 		 var obj= {
+		    classList:this.props.classList,	 
 			queryForm:queryForm,
 			label_list:labelArry,
 			pageNo:1,
-			type:nextProps.type,
 			show_list:[],
 			list: []
 		};
@@ -334,20 +262,30 @@ var Query_photo_rect = React.createClass({
 	   componentWillReceiveProps: function(nextProps) {	
 		   this.setState(this.getStateByPropes(nextProps));
 	},
-	  handleChange_selectgroup: function(val){
-			var classlist=Store.getChooseClass($("input[name='groupuuid']").val());
-				this.state.queryForm.groupuuid=$("input[name='groupuuid']").val();
-				this.state.queryForm.classuuid=$("input[name='class_uuid']").val();
-				this.state.classlist=G_selected_dataModelArray_byArray(classlist,"uuid","name");
+	  handleChange_selectgroup: function(val){	
+		  var   classArry,classuuid;		  
+		        classArry=Store.getChooseClass(val);
+		        classuuid=$("input[name='class_uuid']").val();
+
+				if(!classuuid){
+					if(!classArry||classArry.length==0){
+						classuuid=null;
+					}else{
+						classuuid=classArry[0].uuid;
+					}
+				} 
+				this.state.queryForm.groupuuid=val;
+				this.state.queryForm.classuuid=classuuid;
+				this.state.classList=G_selected_dataModelArray_byArray(classArry,"uuid","name");
 				this.ajax_list();
 				this.setState(this.state); 
 			},
 	 handleChange:function(val){ 
 		 
-			var queryForm=$('#queryForm').serializeJson();
+	    var queryForm=$('#queryForm').serializeJson();
 			this.state.queryForm=queryForm;
 		    this.setState(this.state);
-			 this.ajax_list();
+			this.ajax_list();
 		
 	 },
 	 handleClick: function(obj) {
@@ -355,22 +293,6 @@ var Query_photo_rect = React.createClass({
 				formdata:obj
 				}), G_get_div_body());
  },	
-
-	  handleClick_selectbtn: function(obj) {
-		  var selectedArr=[];
-		  
-		  
-		  var imgs="";
-		  $("img[name='KDPhotoItem_Img_select']").each(function(){
-			  selectedArr.push($(this).attr("src"));
-			});	  
-			if(module.callback){
-				module.callback(selectedArr);
-			}
-			G_get_div_body();
-
- },	
- 
 	pageClick: function(m,data) {
 		 var obj=this.state;
 		 if(m=="pre"){
@@ -409,6 +331,7 @@ var Query_photo_rect = React.createClass({
 	  },
 	ajax_list:function(){
 		var queryForm=this.state.queryForm;
+	     
 		if(queryForm.label=="所有"){
 			queryForm.label="";
 		}
@@ -469,21 +392,14 @@ render: function() {
 	    }
 	this.state.label_list=arry_label;
 	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,groupuuid:null,class_uuid:null,uuid:null,pageNo:null};
+		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null};
 		 bgobj.path=imgarry[i].path;
 		 bgobj.groupuuid=obj.queryForm.groupuuid;
-		 bgobj.class_uuid=obj.queryForm.class_uuid;
+		 bgobj.classuuid=obj.queryForm.classuuid;
 		 bgobj.uuid=imgarry[i].uuid;
 		 bgobj.pageNo=obj.pageNo;
 		 imgphotoList.push(bgobj);
 	    }
-	if(obj.type==1){
-		edit_btn_className="G_Edit_hide";
-		selectbtn_btn_className="G_Edit_show";
-	   }else{
-		edit_btn_className="G_Edit_show";
-		selectbtn_btn_className="G_Edit_hide";
-	}	 
     return (
 
 
@@ -499,7 +415,7 @@ render: function() {
     		  <AMR_Button amStyle="default" disabled="false" >第{obj.pageNo}页</AMR_Button>
     		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
     	   
-     		<AMR_Button className={edit_btn_className}  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
+     		<AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
      		</AMR_ButtonToolbar>
     		</AMR_Panel>
     		 <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
@@ -509,7 +425,7 @@ render: function() {
     		 </div> 
     		
     		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={this.props.classList} btnStyle="primary" value={queryForm.class_uuid} />    		            
+    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={obj.classList} btnStyle="primary" value={queryForm.classuuid} />    		            
     		 </div> 
     		
     		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
@@ -531,16 +447,15 @@ render: function() {
     		 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
     		</AMR_ButtonToolbar>
     		
-		    <div id="abc">				    
-  			 <AMR_ButtonToolbar>
-			  <AMR_Button className={selectbtn_btn_className} amSize="xs"  amStyle="secondary" onClick={this.handleClick_selectbtn.bind(this,obj)} >确认照片选择</AMR_Button>
-			 </AMR_ButtonToolbar>
-  		    </div>
+
 
 		   </div>
     );
   }
 });
+/*
+ *上传照片功能
+ * */
 var Img_photo_rect = React.createClass({
  getInitialState: function() {
 	 var label_obj;
@@ -555,7 +470,7 @@ var Img_photo_rect = React.createClass({
 	    return this.props.formdata;
 	  },
 buttion_black_Click: function(o) {
-	module.query(o.queryForm.groupuuid,o.queryForm.class_uuid,o.pageNo,o.type)
+	module.query(o.queryForm.groupuuid,o.queryForm.classuuid,o.pageNo)
 },	
 imgDivNum:0,
 getNewImgDiv:function(){

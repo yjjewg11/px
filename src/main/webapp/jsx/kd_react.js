@@ -702,8 +702,7 @@ bg_Class_fn:function(){
 			 that.addShowImg(imgArr[i]);
 		 }		
 	}
-	    KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,callback);
-	//	KDPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,1,selectImgArr,callback);
+	    KDClassNewPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,callback);
 
   },
 	
