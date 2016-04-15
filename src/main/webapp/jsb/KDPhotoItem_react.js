@@ -46,7 +46,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
  * 对单张图片的处理方法;
  * */		
 var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_big_fn",
- handleClick: function(Obj) {
+ handleClick: function(Obj,KDitemthis) {
 
 		if(!confirm("确定要删除吗?")){
 			return;
@@ -66,8 +66,9 @@ var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
-					
-					$('#Common_mg_Class_big_fn_item_'+uuid).hide();
+					//因隐藏图片会导致翻页数据库错乱所以此处用刷新法
+					 KDitemthis.ajax_list();
+					//$('#Common_mg_Class_big_fn_item_'+uuid).hide();
 				//	menu_photo_fn(groupuuid,class_uuid,pageNo);
 					} else {
 						alert(data.ResMsg.message);
@@ -78,6 +79,7 @@ var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_
   },		
   render: function() {
 	  var that=this
+	  var KDitemthis=this.props.Penthat;
 	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
@@ -98,7 +100,7 @@ return (
      	  ), 	
 		
       React.createElement("div", {className: "G_class_phtoto_Img_close"}, 
-       React.createElement(AMR_Button, {onClick: that.handleClick.bind(this,event)}, "X")
+       React.createElement(AMR_Button, {onClick: that.handleClick.bind(this,event,KDitemthis)}, "X")
       )
 	     )	        		 
         	)
@@ -272,6 +274,7 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 render: function() {	
 	var edit_btn_className;
 	var selectbtn_btn_className;
+	var Penthat=this;
 	var queryForm=this.state.queryForm;
 	var obj=this.state;
 	var imgarry=this.state.list;
@@ -335,7 +338,7 @@ render: function() {
     	    
 
 		    React.createElement("div", {className: "am-comment-bd"}, 
-		     React.createElement(Common_mg_Class_big_fn, {imgsList: imgphotoList, state: this.state})
+		     React.createElement(Common_mg_Class_big_fn, {imgsList: imgphotoList, Penthat: Penthat, state: this.state})
 		    ), 
 			    	
 	    	React.createElement("legend", null), 
@@ -369,6 +372,7 @@ var fpPhotoUploadTask={
 			var progress_width;
 			var file=fpPhotoUploadTask.upload_files_arr.pop();
 			progress_width=Math.round(G_img_Photo/G_img_number*100);
+			G_that.state.photoNum=G_img_Photo;
 			G_that.state.num=progress_width;
 			G_that.setState(G_that.state);
 			if(!file)return;
@@ -422,6 +426,7 @@ var fpPhotoUploadTask={
 				G_img_number=0;
 				progress_width=0;
 			var progress_width=Math.round(G_img_Photo/G_img_number*100);
+			G_that.state.photoNum=G_img_Photo;
 			G_that.state.num=progress_width;
 			G_that.setState(G_that.state);
 				G_img_number=this.files.length;
@@ -483,6 +488,8 @@ var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
 	        	 this.props.formdata.show_list.push(label_obj);
 	         }
 	        }
+		this.props.formdata.div_list=[];
+        this.props.formdata.show_list.push({value:"添加新标签",label:"添加新标签"});
 	    return this.props.formdata;
 	  },
 buttion_black_Click: function(o) {
@@ -493,11 +500,13 @@ getNewImgDiv:function(){
 	  this.imgDivNum++;
 	return "Classnews_edit_"+this.imgDivNum;  
 },	  
-addShowImg:function(url){
+addShowImg:function(url,uuid){
 	  var divid=this.getNewImgDiv();
-	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");		 	
-	  React.render(React.createElement(ClassNews_Img_canDel, {
-			url: url,parentDivId:divid
+	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
+		this.state.div_list.push({parentDivId:divid})
+		this.setState(this.state);
+	  React.render(React.createElement(KDphoto_Img_canDel, {
+			url: url,parentDivId:divid,uuid:uuid
 			}), document.getElementById(divid));  
 },
 upload_files_arr:[],
@@ -507,7 +516,7 @@ componentDidMount:function(){
 	 var that=this;		
 	 //已经有的图片,显示出来.		 
 	 fpPhotoUploadTask.bind_onchange("#file_img_upload",function(imgurl,uuid){
-		 that.addShowImg(imgurl);		
+		 that.addShowImg(imgurl,uuid);		
 	  });	
 	 
 	 fpPhotoUploadTask.groupuuid=this.props.formdata.groupuuid;
@@ -525,54 +534,124 @@ handleChange: function() {
     this.setState($('#KdPhotoForm').serializeJson());
 },
 handleChange_label:function(val){ 
+	if(val=="添加新标签"){
+		this.disp_prompt()
+		return;
+	}
 	this.state.queryForm.label=val;
 	this.setState(this.state);
 	this.setState($('#KdPhotoForm').serializeJson());
 
 },
+disp_prompt:function(){
+var name=prompt("自定义标签","")
+if (name!=null && name!="")
+  {
+	this.state.queryForm.label=name;
+	this.state.show_list.push({value:name,label:name});
+	this.setState(this.state);
+	this.setState($('#KdPhotoForm').serializeJson());
+  }
+},
+buttion_LestGo: function() {
+	 for(var i=0;i<this.state.div_list.length;i++){
+		 $("#"+this.state.div_list[i].parentDivId).remove();
+	 }			
+this.state.div_list=[];	
+this.state.show_list=[];
+this.state.num=0;
+this.state.photoNum=0;
+this.state.queryForm.label="";
+this.props.formdata.div_list=[];
+this.props.formdata.show_list.push({value:"添加新标签",label:"添加新标签"});
+this.setState(this.props.formdata);
+},	
 render: function() {	
 	var o=this.state;
 	G_that=this
+	console.log("this.state.state;",this.state);
 	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
-		var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
+		var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片：", id: "file_img_upload", accept: "image/*", capture: "camera", multiple: true})
 		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
 			G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload"}, "上传图片")
 		}
+	if(!o.num)o.num=0;
+	if(!o.photoNum)o.photoNum=0;
     return (
-    		React.createElement("div", null, 
+    		React.createElement("div", {id: "KdPhotoForm_list_div"}, 
     		React.createElement("div", {className: "header"}, 
     		  React.createElement("hr", null)
     		), 
-    		React.createElement("div", {className: "am-g"}, 
+  		    React.createElement("div", {className: "am-g  am-u-md-6 am-u-sm-12"}, 
       
     		  React.createElement("form", {id: "KdPhotoForm", method: "post", className: "am-form"}, 
 
     		  React.createElement("input", {type: "hidden", name: "group_uuid", value: o.queryForm.groupuuid}), 
     		  React.createElement("input", {type: "hidden", name: "class_uuid", value: o.queryForm.classuuid}), 
     		  React.createElement(AMR_ButtonToolbar, null, 
-      		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "返回"), 
         		React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
         		React.createElement(AMUIReact.Selected, {id: "label_Selected", name: "label_Selected", placeholder: "标签切换", onChange: this.handleChange_label, btnWidth: "200", data: o.show_list, btnStyle: "primary", value: o.queryForm.label})		            
         		 )
       		    ), 
+	    
     	       React.createElement("label", {className: one_classDiv}, "标签:"), 
    		     React.createElement("div", {className: two_classDiv}, 
   		       React.createElement(PxInput, {type: "text", name: "label", id: "label", value: o.queryForm.label, onChange: this.handleChange, maxLength: "45", placeholder: "不超过45位"})
   		        )
     		  ), 
-    		  React.createElement("label", null, "图片上传进度:"), 
+    		  
+    		  React.createElement("label", null, "图片上传进度:已完成"+o.photoNum+"张"), 
     		  React.createElement("div", null, 
-    		    React.createElement(AMUIReact.Progress, {now: o.num, label: o.num+"%"})
+    		    React.createElement(AMUIReact.Progress, {now: o.num, label: "已传"+o.photoNum+"张"})
     		  ), 
+    		    
+    		    
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-		      G_upload_img_Div		  
-    	   )
-    	   )    		
-    		
+		      G_upload_img_Div, 
+		      React.createElement(AMR_ButtonToolbar, null, 
+    		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "确定"), 
+    		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_LestGo.bind(this)}, "继续上传")
+    		  )
+    		    
+    		    )
+    	   )    	
 
     );
+  }
+});
+//绘制上传照片后预览照片绘制
+var KDphoto_Img_canDel = React.createClass({displayName: "KDphoto_Img_canDel",
+	deleteImg:function(divid,uuid){
+	  	$.AMUI.progress.start();
+	      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
+		$.ajax({
+			type : "POST",
+			url : url,
+			dataType : "json",
+			 async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				// 登陆成功直接进入主页
+				if (data.ResMsg.status == "success") {
+					$("#"+divid).remove();
+					} else {
+						alert(data.ResMsg.message);
+					}
+				},
+				rror :G_ajax_error_fn
+			});
+	},			
+  render: function() {
+		var Photo_uuid=this.props.uuid;
+
+	 return (
+      		React.createElement("div", {className: "G_cookplan_Img"}, 
+ 	       			React.createElement("img", {className: "G_cookplan_Img_img", src: this.props.url, alt: "图片不存在"}), 
+ 	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this,this.props.parentDivId,Photo_uuid)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"}))
+ 	       		)		
+      	)
   }
 });
 	return module;	

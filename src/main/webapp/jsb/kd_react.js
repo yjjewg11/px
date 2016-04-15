@@ -729,8 +729,10 @@ return (
 		      React.createElement(AMR_Input, {id: "classnews_content", type: "textarea", rows: "8", label: "内容:", placeholder: "填写内容", name: "content", value: o.content, onChange: this.handleChange}), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
-	     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "班级相册"), 
-
+		       React.createElement("label", null, "班级相册图片："), 
+	            React.createElement(AMR_ButtonToolbar, null, 
+	     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "浏览...")
+                ), 
 			  G_get_upload_img_Div(), 
 			  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
   		         React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 

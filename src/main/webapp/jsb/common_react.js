@@ -83,7 +83,7 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 	  }
 	  }); 
 var G_get_upload_img_Div=function(){
-	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片", id: "file_img_upload", help: "选择图片", accept: "image/*", capture: "camera", multiple: true})
+	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "本地上传图片：", id: "file_img_upload", accept: "image/*", capture: "camera", multiple: true})
 	if(G_CallPhoneFN.isPhoneApp()){
 		G_upload_img_Div=React.createElement(AMR_Button, {amStyle: "primary", id: "file_img_upload"}, "上传图片")
 	}

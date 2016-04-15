@@ -83,7 +83,7 @@ var G_check_disable_div_byRight = React.createClass({
 	  }
 	  }); 
 var G_get_upload_img_Div=function(){
-	var G_upload_img_Div=<AMR_Input type= "file" label="上传图片" id="file_img_upload" help= "选择图片" accept="image/*" capture= "camera" multiple />
+	var G_upload_img_Div=<AMR_Input type= "file" label="本地上传图片：" id="file_img_upload" accept="image/*" capture= "camera" multiple />
 	if(G_CallPhoneFN.isPhoneApp()){
 		G_upload_img_Div=<AMR_Button  amStyle="primary"  id="file_img_upload" >上传图片</AMR_Button>
 	}

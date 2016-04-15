@@ -729,8 +729,10 @@ return (
 		      <AMR_Input id="classnews_content" type="textarea" rows="8" label="内容:" placeholder="填写内容" name="content" value={o.content} onChange={this.handleChange}/>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
-	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >班级相册</AMR_Button>
-
+		       <label>班级相册图片：</label>
+	            <AMR_ButtonToolbar>
+	     		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
+                </AMR_ButtonToolbar>
 			  {G_get_upload_img_Div()}
 			  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		         <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
