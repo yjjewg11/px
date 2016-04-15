@@ -374,6 +374,7 @@ var fpPhotoUploadTask={
 			progress_width=Math.round(G_img_Photo/G_img_number*100);
 			G_that.state.photoNum=G_img_Photo;
 			G_that.state.num=progress_width;
+			G_that.state.btn_Letgo=true;
 			G_that.setState(G_that.state);
 			if(!file)return;
 			 lrz(file, {
@@ -435,9 +436,7 @@ var fpPhotoUploadTask={
 						fpPhotoUploadTask.upload_files_arr.push(this.files[i]);
 					}
      				fpPhotoUploadTask.do_lrz();
-			
-				
-				
+
 			  });//end change
 		},
 
@@ -488,6 +487,7 @@ var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
 	        	 this.props.formdata.show_list.push(label_obj);
 	         }
 	        }
+		this.props.formdata.btn_Letgo=false;
 		this.props.formdata.div_list=[];
         this.props.formdata.show_list.push({value:"添加新标签",label:"添加新标签"});
 	    return this.props.formdata;
@@ -563,13 +563,13 @@ this.state.num=0;
 this.state.photoNum=0;
 this.state.queryForm.label="";
 this.props.formdata.div_list=[];
-this.props.formdata.show_list.push({value:"添加新标签",label:"添加新标签"});
+this.props.formdata.btn_Letgo=false;
 this.setState(this.props.formdata);
 },	
 render: function() {	
 	var o=this.state;
+	var buttion_LestGo_className;
 	G_that=this
-	console.log("this.state.state;",this.state);
 	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
 	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
 		var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "上传图片：", id: "file_img_upload", accept: "image/*", capture: "camera", multiple: true})
@@ -578,6 +578,11 @@ render: function() {
 		}
 	if(!o.num)o.num=0;
 	if(!o.photoNum)o.photoNum=0;
+  	if(o.btn_Letgo==false){
+  		buttion_LestGo_className="G_Edit_hide";
+	   }else{
+		buttion_LestGo_className="G_Edit_show";
+	  }	
     return (
     		React.createElement("div", {id: "KdPhotoForm_list_div"}, 
     		React.createElement("div", {className: "header"}, 
@@ -612,7 +617,7 @@ render: function() {
 		      G_upload_img_Div, 
 		      React.createElement(AMR_ButtonToolbar, null, 
     		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "确定"), 
-    		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_LestGo.bind(this)}, "继续上传")
+    		    React.createElement(AMR_Button, {amSize: "xs", className: buttion_LestGo_className, amStyle: "secondary", onClick: this.buttion_LestGo.bind(this)}, "继续上传")
     		  )
     		    
     		    )
