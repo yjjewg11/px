@@ -2,10 +2,12 @@
  * Store.getCurGroup();//获取当前组织
  * 
  * Store.getGroup();//获取当前组织列表
- *  Store.getGroupNoGroup_wjd();
-	 * 获取幼儿园列表,排除云代理学校.
+ *  Store.getGroupNoGroup_wjd();//获取我当前幼儿园列表,排除云代理学校.
  * Store.getAllGroup();//获取当前组织列表
-*Store.getGroupNameByUuid(uuid);//
+ *Store.getGroupNameByUuid(groupuuid);//根据学校UUID查找名字
+ *Store.getClassNameByUuid(classuuid);//根据班级UUID查找名字
+ *Store.getMyByClassList(groupuuid)//根据学校UUID查找我相关联我的班级数组
+ *
 *Store.getMyGroupByUuid(uuid);
  * Store.getUserinfo();//获取当前用户
  * Store.getUserRights();//获取当前班级
@@ -18,7 +20,7 @@
  * Store.getCurGroupByRight(rightname)//获取当前学校当前
  * Store.getGroupByRight(rightname);获取有权限的学校列表;
  * Store.getRoleList(type);获取角色列表;type:1 幼儿园
- * 
+ * StgetGroupBymyclassList(classuuid);//根据班级UUID查找学校UUID;
  * 
  * Store.clear();
  * 
@@ -131,6 +133,41 @@ var Store={
 			 store_ajax_MyClass_toStroe();
 			 if(this.map[key])return this.map[key];
 		 return [];
+	},
+	//根据学校UUID查找我相关联我的班级数组
+	getMyByClassList:function(groupuuid){
+		
+		var key="MyClass";
+		var arry;
+		var myclass_list=[]
+		  if(this.map[key]){
+			  arry=this.map[key];
+		  }else{
+			  store_ajax_MyClass_toStroe();
+			  arry=this.map[key];
+		  }
+
+		for(var i=0;i<arry.length;i++){
+			if(groupuuid==arry[i].groupuuid)
+				myclass_list.push(arry[i]);
+		}
+		return myclass_list;
+
+	},
+	//根据班级UUID查找学校UUID
+	getGroupBymyclassList:function(classuuid){
+		  var key="MyClass";
+		  var ary
+		  if(this.map[key]){
+			  ary=this.map[key];
+		  }else{
+			  store_ajax_MyClass_toStroe();
+			  ary=this.map[key];
+		  }
+			for(var i=0;i<ary.length;i++){
+				if(classuuid==ary[i].uuid)return ary[i].groupuuid;
+			}
+
 	},
 	setMyClassList:function(v){
 		this.map["MyClass"]=v;

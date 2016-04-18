@@ -361,7 +361,6 @@ var Classnews_show = React.createClass({
 		  var  o = this.props.event;
 		  var myuuid=Store.getUserinfo().uuid;
 		  var delete_btn_className;
-		  g_classnews_groupuuid=o.groupuuid
 		  if(!o.imgsList)o.imgsList=[];
 		  if(!o.create_img)o.create_img=G_def_headImgPath;		
 		  
@@ -702,7 +701,9 @@ bg_Class_fn:function(){
 			 that.addShowImg(imgArr[i]);
 		 }		
 	}
-	    KDClassNewPhotoItem.queryForSelect(g_classnews_groupuuid,$("input[name='classuuid']").val(),1,callback);
+
+		var groupuuid=Store.getGroupBymyclassList(this.state.classuuid);
+	    KDClassNewPhotoItem.queryForSelect(groupuuid,this.state.classuuid,1,callback);
 
   },
 	

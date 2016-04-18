@@ -9,25 +9,30 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
 				var classuuid;
 				var group_uuid;
 				var label;
-				var group_List=Store.getGroup();
-					if(!groupuuid){
-						group_uuid=group_List[0].uuid;
-					}else{
-						group_uuid=groupuuid;
-					  }
-					
+				var group_List=Store.getGroupNoGroup_wjd();
+				if(!G_photo_groupuuid){
+					group_uuid=group_List[0].uuid;
+				}else{
+					group_uuid=G_photo_groupuuid;//本地记录学校UUID
+				}
 
-				var classArry=Store.getChooseClass(group_uuid);
-				
+
+				var classArry=Store.getMyByClassList(group_uuid);
+ 
 				if(!label)label="";
 				if(!pageNo)pageNo=1;
-				if(!classuuid){
+				
+				
+				if(!G_photo_classuuid){
 					if(!classArry||classArry.length==0){
 						classuuid=null;
 					}else{
 						classuuid=classArry[0].uuid;
 					}
-				}
+				}else{
+					classuuid=G_photo_classuuid;//本地记录班级UUID
+				} 
+
 				React.render(React.createElement(Query_photo_rect,{
 					groupuuid:group_uuid,
 					label:label,
@@ -89,6 +94,8 @@ return (
 	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
 	   {this.props.imgsList.map(function(event) {
     	var  o = event.path;
+    	var label_text = event.label;
+    	if(!label_text)label_text="无";
 		var  imgArr=o?o.split("@"):"";
 	return (
 		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className="G_class_phtoto_Img">			     			
@@ -96,7 +103,7 @@ return (
 			   <a href={imgArr[0]} title="">
 			    <img src={o} alt=""  data-rel={imgArr[0]}/>
 			    </a>
-   
+			    <label>{"标签：【"+label_text+"】"}</label>
      	  </div>	
 		
       <div className="G_class_phtoto_Img_close">
@@ -164,8 +171,7 @@ var Query_photo_rect = React.createClass({
 	},
 	  handleChange_selectgroup: function(val){	
 		  var   classArry,classuuid;		  
-		        classArry=Store.getChooseClass(val);
-		        classuuid=$("input[name='class_uuid']").val();
+		        classArry=Store.getMyByClassList(val);
 
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
@@ -174,14 +180,16 @@ var Query_photo_rect = React.createClass({
 						classuuid=classArry[0].uuid;
 					}
 				} 
+				G_photo_groupuuid=val;
+				G_photo_classuuid=classuuid;
 				this.state.queryForm.groupuuid=val;
 				this.state.queryForm.classuuid=classuuid;
 				this.state.classList=G_selected_dataModelArray_byArray(classArry,"uuid","name");
 				this.ajax_list();
 				this.setState(this.state); 
 			},
-	 handleChange:function(val){ 
-		 
+	 handleChange:function(val){
+		 G_photo_classuuid=$("input[name='classuuid']").val();
 	    var queryForm=$('#queryForm').serializeJson();
 			this.state.queryForm=queryForm;
 		    this.setState(this.state);
@@ -292,17 +300,19 @@ render: function() {
          }
 	    }
 	this.state.label_list=arry_label;
+
+	//imgphotoList绘制图片方法在用
 	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null};
+		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null,label:null};
 		 bgobj.path=imgarry[i].path;
 		 bgobj.groupuuid=obj.queryForm.groupuuid;
 		 bgobj.classuuid=obj.queryForm.classuuid;
 		 bgobj.uuid=imgarry[i].uuid;
 		 bgobj.pageNo=obj.pageNo;
+		 bgobj.label=imgarry[i].label;
 		 imgphotoList.push(bgobj);
 	    }
-    return (
-
+    return (    		
 
     		<div>
     		<div className="header">
@@ -317,6 +327,8 @@ render: function() {
     		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
     	   
      		<AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
+     		<AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >查询所有班级</AMR_Button>
+
      		</AMR_ButtonToolbar>
     		</AMR_Panel>
     		 <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
@@ -373,6 +385,7 @@ var fpPhotoUploadTask={
 			var file=fpPhotoUploadTask.upload_files_arr.pop();
 			progress_width=Math.round(G_img_Photo/G_img_number*100);
 			G_that.state.photoNum=G_img_Photo;
+			G_that.state.photoAllNum=G_img_number;
 			G_that.state.num=progress_width;
 			G_that.state.btn_Letgo=true;
 			G_that.setState(G_that.state);
@@ -428,6 +441,7 @@ var fpPhotoUploadTask={
 				progress_width=0;
 			var progress_width=Math.round(G_img_Photo/G_img_number*100);
 			G_that.state.photoNum=G_img_Photo;
+			G_that.state.photoAllNum=G_img_number;
 			G_that.state.num=progress_width;
 			G_that.setState(G_that.state);
 				G_img_number=this.files.length;
@@ -527,13 +541,8 @@ componentDidMount:function(){
 		 this.addShowImg(imgArr[i]);
 	 }		
 },
-handleChange: function() {
-	var label_txt=$("input[name='label']").val();
-	this.state.queryForm.label=label_txt;
-	this.setState(this.state);
-    this.setState($('#KdPhotoForm').serializeJson());
-},
-handleChange_label:function(val){ 
+
+handleChange_label:function(val){
 	if(val=="添加新标签"){
 		this.disp_prompt()
 		return;
@@ -544,7 +553,8 @@ handleChange_label:function(val){
 
 },
 disp_prompt:function(){
-var name=prompt("自定义标签","")
+var name=prompt("自定义标签(最多45位)","")
+
 if (name!=null && name!="")
   {
 	this.state.queryForm.label=name;
@@ -561,6 +571,7 @@ this.state.div_list=[];
 this.state.show_list=[];
 this.state.num=0;
 this.state.photoNum=0;
+this.state.photoAllNum=0;
 this.state.queryForm.label="";
 this.props.formdata.div_list=[];
 this.props.formdata.btn_Letgo=false;
@@ -569,15 +580,19 @@ this.setState(this.props.formdata);
 render: function() {	
 	var o=this.state;
 	var buttion_LestGo_className;
+	var groupName=Store.getGroupNameByUuid(o.queryForm.groupuuid);
+	var className=Store.getClassNameByUuid(o.queryForm.classuuid)
+
 	G_that=this
-	var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
-	var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+
 		var G_upload_img_Div=<AMR_Input type= "file" label="上传图片：" id="file_img_upload" accept="image/*" capture= "camera" multiple />
 		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
 			G_upload_img_Div=<AMR_Button    amStyle="primary"  id="file_img_upload" >上传图片</AMR_Button>
 		}
 	if(!o.num)o.num=0;
 	if(!o.photoNum)o.photoNum=0;
+	if(!o.photoAllNum)o.photoAllNum=0;
+	
   	if(o.btn_Letgo==false){
   		buttion_LestGo_className="G_Edit_hide";
 	   }else{
@@ -596,22 +611,22 @@ render: function() {
     		  <input type="hidden" name="class_uuid"  value={o.queryForm.classuuid}/> 
     		  <AMR_ButtonToolbar>
         		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-        		<AMUIReact.Selected id="label_Selected" name="label_Selected" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={o.show_list} btnStyle="primary" value={o.queryForm.label} />    		            
+        		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={o.show_list} btnStyle="primary" value={o.queryForm.label} />    		            
         		 </div> 
       		    </AMR_ButtonToolbar>
-	    
-    	       <label className={one_classDiv}>标签:</label>
-   		     <div className={two_classDiv}>
-  		       <PxInput type="text" name="label" id="label" value={o.queryForm.label} onChange={this.handleChange} maxLength="45"   placeholder="不超过45位"/>
-  		        </div>
+
+  		        
+  		      <label>{"标签："+o.queryForm.label}</label><br/> 
     		  </form>
-    		  
-    		  <label>{"图片上传进度:已完成"+o.photoNum+"张"}</label>
+
+      		  <label>{"学校："+groupName}</label><br/>
+      		  <label>{"班级："+className}</label><br/>
+    		  <label>{"图片上传进度:已完成"+o.photoNum+"/"+o.photoAllNum+"张"}</label>
     		  <div>
     		    <AMUIReact.Progress now={o.num} label={"已传"+o.photoNum+"张"} />
     		  </div>
     		    
-    		    
+    	
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
 		      {G_upload_img_Div} 

@@ -2,34 +2,40 @@ var KDClassNewPhotoItem=function(groupuuid,classuuid,pageNo){
 	var module={
 			callback:null,
 			queryForSelect:function(groupuuid,classuuid,pageNo,callback){
-				var classuuid;
+				var class_uuid;
 				var group_uuid;
 				var label;
 				module.callback=callback;
 				var group_List=Store.getGroup();
-					if(!groupuuid){
-						group_uuid=group_List[0].uuid;
-					}else{
-						group_uuid=groupuuid;
-					  }
-					
-				var classArry=Store.getChooseClass(group_uuid);
 				if(!label)label="";
 				if(!pageNo)pageNo=1;
+
+					
+				if(!groupuuid){
+					group_uuid=group_List[0].uuid;
+				}else{
+					group_uuid=groupuuid;
+				} 
+
+				var classArry=Store.getChooseClass(group_uuid);
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
-						classuuid=null;
+						class_uuid=null;
 					}else{
-						classuuid=classArry[0].uuid;
+						class_uuid=classArry[0].uuid;
 					}
-				}
+				}else{
+					class_uuid=classuuid;
+				} 
+
+				
 				React.render(React.createElement(Query_photo_rect,{
 					groupuuid:group_uuid,
 					label:label,
 					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
 					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 					
-					classuuid:classuuid
+					classuuid:class_uuid
 					}), G_get_div_second());
 			}				
 		};
@@ -84,11 +90,14 @@ return (
 	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
 	   {this.props.imgsList.map(function(event) {
     	var  o = event.path;
+    	var label_text = event.label;
+    	if(!label_text)label_text="无";
 	return (
 			
 		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} title={event.uuid}  className={"G_class_phtoto_Img am-gallery-item G_ch_cook_item "+className} onClick={that.div_onClick.bind(this,"Common_mg_Class_big_fn_item_"+event.uuid,event)}>			     						    
 	      <img  src={o}/>
-	     </li>	
+	      <label>{"标签：【"+label_text+"】"}</label>
+	      </li>	
 	      
         	)
       })}
@@ -152,7 +161,7 @@ var Query_photo_rect = React.createClass({
 	  handleChange_selectgroup: function(val){	
 		  var   classArry,classuuid;		  
 		        classArry=Store.getChooseClass(val);
-		        classuuid=$("input[name='class_uuid']").val();
+
 
 				if(!classuuid){
 					if(!classArry||classArry.length==0){
@@ -161,6 +170,7 @@ var Query_photo_rect = React.createClass({
 						classuuid=classArry[0].uuid;
 					}
 				} 
+
 				this.state.queryForm.groupuuid=val;
 				this.state.queryForm.classuuid=classuuid;
 				this.state.classList=G_selected_dataModelArray_byArray(classArry,"uuid","name");
@@ -168,7 +178,7 @@ var Query_photo_rect = React.createClass({
 				this.setState(this.state); 
 			},
 	 handleChange:function(val){ 
-		 
+
 	    var queryForm=$('#queryForm').serializeJson();
 			this.state.queryForm=queryForm;
 		    this.setState(this.state);
@@ -256,6 +266,12 @@ var Query_photo_rect = React.createClass({
 		
 	},
 	
+	//空班级跳转方法
+	btn_classPhtotItem:function(){
+		G_photo_groupuuid=this.state.queryForm.groupuuid;
+		G_photo_classuuid=this.state.queryForm.classuuid;
+		KDPhotoItem.query();
+	  },
 	  componentDidMount:function(){
 		  
 		  this.ajax_list(); 
@@ -276,8 +292,7 @@ render: function() {
 	var imgarry=this.state.list;
 	imgarry.pageNo=this.state.pageNo;
 	var imgphotoList=[];
-	var bgobj;
-	var label_obj;
+	var bgobj,label_obj,photoClassName;
 	var arry_label=[]
 	for(var i=0;i<obj.label_list.length;i++){
          if(obj.label_list[i].label){
@@ -289,14 +304,21 @@ render: function() {
 	    }
 	this.state.label_list=arry_label;
 	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null};
+		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null,label:null};
 		 bgobj.path=imgarry[i].path;
 		 bgobj.groupuuid=obj.queryForm.groupuuid;
 		 bgobj.classuuid=obj.queryForm.classuuid;
 		 bgobj.uuid=imgarry[i].uuid;
 		 bgobj.pageNo=obj.pageNo;
+		 bgobj.label=imgarry[i].label;
 		 imgphotoList.push(bgobj);
 	    }
+	if(imgphotoList.length==0){
+		photoClassName="G_Edit_show";
+	  }else{
+		photoClassName="G_Edit_hide";
+	 }
+
     return (
 
 
@@ -331,7 +353,14 @@ render: function() {
     
     	    </AMUIReact.Form>
     	    
-
+    	    <div className={photoClassName}>
+    	       <label>{"该班级相册暂未上传照片，请跳转班级相册上传新照片"}</label>
+    	       <AMR_ButtonToolbar>
+			   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.btn_classPhtotItem.bind(this)} >跳转班级相册</AMR_Button>
+			   </AMR_ButtonToolbar>
+			  </div>
+			  
+			  
 		    <div className="am-comment-bd">
 		     <Common_mg_Class_big_fn  imgsList={imgphotoList}  state={this.state}/>  
 		    </div>

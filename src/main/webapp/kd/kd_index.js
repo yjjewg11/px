@@ -573,7 +573,8 @@ function menu_hellp_fn(){
  * @ajax_classnews_list:我的班级服务请求
  * 在kd_service;
  * */
-var g_classnews_groupuuid="";
+//G_ClassNewsphoto_groupuuid=null;
+//G_ClassNewsphoto_classuuid=null;
 function menu_classnewsbyMy_list_fn() {
 	var myclasslist=Store.getMyClassList();
 	var type="1";
@@ -719,6 +720,8 @@ function menu_body_fn (){
  * (首页)班级相册
  * @ photo
  * */
+G_photo_groupuuid=null;
+G_photo_classuuid=null;
 function menu_photo_fn() {
 	Queue.push(menu_photo_fn,"班级相册");
 	KDPhotoItem.query();
