@@ -140,6 +140,19 @@ z-index: 9999;
 .G_class_phtoto_Img_close{position:absolute; top:0px; right:2px;cursor: pointer;}
 .G_class_phtoto_Img_select{position:absolute; top:2px; right:200px;cursor: pointer;}
 .G_class_phtoto_Img_close_img{width: 21px;height: 21px;}			
+.G_ch_classNews_item{
+    float: left;
+    position:relative;
+    cursor: pointer;
+    margin-top: 5px;
+    border:1px solid #FFFFFF;
+     width: 138px; height: 125px;
+     text-align: center;
+    }	
+    .G_ch_classNews_item_checked{
+  			border:1px solid #FF0033; 
+    }	
+	
 			
 	
 .G_cookplan_Img{width:135px; height:100px; position:relative; margin:15px 5px 10px 0px; float:left;}

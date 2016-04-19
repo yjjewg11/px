@@ -690,8 +690,27 @@ window.GTimeShow={
 		return  document.getElementById(div_body);
 	}
 
- 
- 
+
+ //公用算总页数方法
+ function G_get_pageSize_number(pageSize,totalCount){
+		var number;
+		var A=totalCount%pageSize;
+		
+		var B=Math.round(totalCount/pageSize);
+       if(totalCount<=pageSize){
+    	   number=1;
+       }else{
+    	   if(A<5){
+    	   number=B+1;
+    	   }else if(A==0){
+    	   number=A;    
+    	   }else{
+    	   number=B;    
+    	   }    	   
+       }
+
+       return number
+	} 
  
  
 GTimeShow.init();
