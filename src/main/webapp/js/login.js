@@ -39,7 +39,7 @@ var PxLazyM=(function(){
 		}
 		
 		var ver=PxConfig.ver;
-		if(!ver)ver="1107";
+		if(!ver)ver="60419";
 		//所有加载完成才执行回调.
 		window.__loadJS_count=jsArr.length;
 		window.__loadJS_Array=[];
