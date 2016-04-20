@@ -421,18 +421,12 @@ function menu_dohome(){
 		                    	    "link": "javascript:menu_classnewsbyMy_list_fn();",
 		                    	    "title": "班级互动"
 		                    	  },
-			                   	  { 
-			                    	    "img": hostUrlCDN+"i/meirirenwu.png",
-			                    	    "link": "javascript:menu_teacherDailyTask_fn()",
-			                    	    "title": "每日任务"
-			                    	  },
-			                    	   
-			                    	  {
-			                    	    "img": hostUrlCDN+"i/sns.png",
-			                    	    "link": "javascript:PxSns.list_init()",
-			                    	    "title": "话题"
-			                    	  },
-			                    	  
+			                   	 
+		                    	  {
+		                    		  "img": hostUrlCDN+"i/banjixiangce.png",
+	                                  "link": "javascript:menu_photo_fn()",
+	                                  "title": "班级相册"
+	                                },
 		                    	  {
 			                    	    "img": hostUrlCDN+"i/kechengbiao.png",
 			                    	    "link": "javascript:menu_teachingplan_dayShow_fn();",
@@ -455,11 +449,7 @@ function menu_dohome(){
 	                                  "link": "javascript:menu_class_sign_today_fn()",
 	                                  "title": "今日签到"
 	                                },
-			                    	  {
-			                    		  "img": hostUrlCDN+"i/banjixiangce.png",
-		                                  "link": "javascript:menu_photo_fn()",
-		                                  "title": "班级相册"
-		                                },
+			                    	 
 //	                                {
 //	    	                    	    "img": hostUrlCDN+"i/banji.png",
 //	    	                    	    "link": "javascript:menu_mystudents_list_fn()",
@@ -481,20 +471,30 @@ function menu_dohome(){
 			                    	    "link": "javascript:menu_cookbookPlan_dayShow_fn();",
 			                    	    "title": "今日食谱"
 			                    	  },
-		                    	 
-		                    	
+			                    	  {
+			                    		  "img": hostUrlCDN+"i/jpwz.png",
+		                                  "link": "javascript:menu_article_list_fn()",
+		                                  "title": "精品文章"
+		                                },
+
+			                    	  { 
+				                    	    "img": hostUrlCDN+"i/meirirenwu.png",
+				                    	    "link": "javascript:menu_teacherDailyTask_fn()",
+				                    	    "title": "每日任务"
+				                    	  },
+				                    	   
+				                    	  {
+				                    	    "img": hostUrlCDN+"i/sns.png",
+				                    	    "link": "javascript:PxSns.list_init()",
+				                    	    "title": "话题"
+				                    	  },
 //		                    	  {
 //	                    	    "img": hostUrlCDN+"i/qiandao.png",
 //	                    	    "link": "###",
 //	                    	    "title": "签到(未)"
 //	                    	  },
 	                    	
-		                    	  {
-		                    		  "img": hostUrlCDN+"i/jpwz.png",
-	                                  "link": "javascript:menu_article_list_fn()",
-	                                  "title": "精品文章"
-	                                },
-
+		                    	
 	  		                 
 			                      {
 		                    	    "img": hostUrlCDN+"i/shoucang.png",
