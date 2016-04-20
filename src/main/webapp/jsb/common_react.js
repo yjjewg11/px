@@ -1323,6 +1323,9 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
  * 图片绘制公共模板 绘制多张图片
  * */
 var common_img_big_show = React.createClass({displayName: "common_img_big_show", 
+	  componentDidMount:function(){
+		  $('.am-gallery').pureview();
+		},
 	render: function() {		  
 		  var  o = this.props.event;
 		  var  imgArr=o.split("@");

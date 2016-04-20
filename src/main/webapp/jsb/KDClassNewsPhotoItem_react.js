@@ -117,33 +117,13 @@ return (
  * */
 var G_queryLabel_List=[];
 var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
-//数据初始化	
+//数据初始化1	
  getInitialState: function() {
        return this.getStateByPropes(this.props); 
   },
-//取出标签列表	  
+//数据初始化2	
  getStateByPropes:function(nextProps){
-	var labelArry=[];
-    //取出标签
-	var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data : {group_uuid:this.props.groupuuid,class_uuid:this.props.classuuid},
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			if (data.ResMsg.status == "success") {
-				labelArry=data.list;
-				labelArry.push({value:"",label:'所有'});
-				G_queryLabel_List = labelArry.slice(0, -1)
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : G_ajax_error_fn
-	});
+	 var labelArry=this.query_Label();
 	var queryForm={
 			groupuuid:this.props.groupuuid,	
 			label:this.props.label,
@@ -169,18 +149,55 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
  componentDidMount:function(){		  
 	this.ajax_list(); 
  }, 
-//form表单方法1	 
+//初始化请求服务器数据一次ajax_list()1;
  handle_onKeyDown: function(e){
   if(G_isKeyDown_enter(e)){
     this.handleClick_query();
     return false;
   }       
  },
-//form表单方法2 
+//初始化请求服务器数据一次ajax_list()2;
  handleClick_query: function(m) {
     this.state.pageNo=1;
 	this.ajax_list();
  },
+//取标签公用服务请求
+ query_Label: function(groupuuid,classuuid) {
+	 var group_uuid,class_uuid;
+	 if(!groupuuid){
+		 group_uuid=this.props.groupuuid;
+	 }else{
+		 group_uuid=this.state.queryForm.groupuuid;
+	 }
+	 if(!classuuid){
+		 class_uuid=this.props.classuuid;
+	 }else{
+		 class_uuid=this.state.queryForm.classuuid;
+	 }
+		var labelArry=[];
+	    //取出标签
+		var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {group_uuid:group_uuid,class_uuid:class_uuid},
+			dataType : "json",
+			async: false,
+			success : function(data) {
+				if (data.ResMsg.status == "success") {
+					labelArry=data.list;
+					labelArry.push({value:"",label:'所有'});
+					G_queryLabel_List = labelArry.slice(0, -1)
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+		
+		return labelArry
+ },  
 //切换学校、班级、标签、等后请求服务器方法	 
  ajax_list:function(){
 	var queryForm=this.state.queryForm;
@@ -212,6 +229,8 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
   }, 
 //请求服务器数据后刷新舞台回调方法;    
  ajax_callback:function(list){
+	 var labelArry=this.query_Label(this.state.queryForm.groupuuid,this.state.queryForm.classuuid);
+	 this.state.label_list=labelArry;	 
   if (list== null ) this.state.list=[];
    else
 	  this.state.list=list.data;
@@ -235,19 +254,34 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 			}
 		} 
 
+		this.state.pageNo=1;
 		this.state.queryForm.groupuuid=val;
 		this.state.queryForm.classuuid=classuuid;
 		this.state.classList=G_selected_dataModelArray_byArray(classArry,"uuid","name");
 		this.ajax_list();
-		this.setState(this.state); 
   }, 
-//班级切换和标签切换方法	 
- handleChange:function(val){ 
- var queryForm=$('#queryForm').serializeJson();
-	 this.state.queryForm=queryForm;
-     this.setState(this.state);
-	 this.ajax_list();			
-  }, 
+//标签切换方法		
+  handleChange_label:function(val){
+		if(this.state.query_My_All_list==1){
+			 G_photo_classuuid=$("input[name='classuuid']").val();
+		}
+
+    var queryForm=$('#queryForm').serializeJson();
+        this.state.pageNo=1;
+		this.state.queryForm=queryForm;
+		this.ajax_list();		
+  },	  
+//班级切换方法		
+  handleChange:function(val){
+		if(this.state.query_My_All_list==1){
+			 G_photo_classuuid=$("input[name='classuuid']").val();
+		}
+
+        this.state.pageNo=1;
+        this.state.queryForm.label="";
+        this.state.queryForm.classuuid=val;
+		this.ajax_list();		
+  },
 //确认照片选择方法;
   handleClick_selectbtn: function(obj) {
    var selectedArr=[];	  
@@ -262,7 +296,9 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
  },	
 //翻页方法	 
  pageClick: function(m,data) {
-  var obj=this.state;
+     var obj=this.state;
+	 var number1=obj.totalCount%obj.pageSize;
+	 var number2=Math.round(obj.totalCount/obj.pageSize);
    if(m=="pre"){			
     if(obj.pageNo<2){
 	  G_msg_pop("第一页了");
@@ -275,7 +311,10 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 	 if(!data||data.length<obj.pageSize){
 	  G_msg_pop("最后一页了");
 	  return ;
-	  }
+	  }else if(obj.pageNo==number2&&number1==0){
+			 G_msg_pop("最后一页了");
+			 return ;
+		 }
 	 obj.pageNo=obj.pageNo+1;		
 	  this.ajax_list(obj);
 	  return;
@@ -312,6 +351,7 @@ btn_classPhtotItem:function(){
 	    this.state.queryForm.groupuuid=group_uuid;
 	    this.state.queryForm.classuuid=class_uuid;
 		this.state.query_My_All_list=2;
+		this.state.pageNo=1;
 		this.ajax_list();
 		
   },
@@ -335,10 +375,11 @@ btn_classPhtotItem:function(){
 	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
 	    
 	    this.state.groupList=groupArry;
-	    this.state.classList=classArry;
+	    this.state.classList=classArry;	    
 	    this.state.queryForm.groupuuid=group_uuid;
 	    this.state.queryForm.classuuid=class_uuid;
 		this.state.query_My_All_list=1;
+		this.state.pageNo=1;
 		this.ajax_list();
   },  
   
@@ -409,7 +450,7 @@ render: function() {
     		  btn_all_my
      		)
     	   ), 
-    		
+    	   React.createElement("label", null, "图片总数："+obj.totalCount+"张"), 
     	React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
    		   React.createElement(AMR_ButtonToolbar, null, 
   		      React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
@@ -419,7 +460,7 @@ render: function() {
     		   React.createElement(AMUIReact.Selected, {id: "classuuid", name: "classuuid", placeholder: "班级切换", onChange: this.handleChange, btnWidth: "200", data: obj.classList, btnStyle: "primary", value: queryForm.classuuid})		            
     		  ), 		
     		  React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-    		   React.createElement(AMUIReact.Selected, {id: "label", name: "label", placeholder: "标签切换", onChange: this.handleChange, btnWidth: "200", data: arry_label, btnStyle: "primary", value: queryForm.label})		            
+    		   React.createElement(AMUIReact.Selected, {id: "label", name: "label", placeholder: "标签切换", onChange: this.handleChange_label, btnWidth: "200", data: arry_label, btnStyle: "primary", value: queryForm.label})		            
     		  )
     		)
     	), 

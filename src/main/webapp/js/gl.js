@@ -695,20 +695,20 @@ window.GTimeShow={
  function G_get_pageSize_number(pageSize,totalCount){
 		var number;
 		var A=totalCount%pageSize;
-		
+		    console.log(pageSize,totalCount);
 		var B=Math.round(totalCount/pageSize);
-       if(totalCount<=pageSize){
+		  console.log("totalCount%pageSize:",A);
+		  console.log("Math.round(totalCount/pageSize):",B);
+       if(totalCount<=pageSize||!totalCount||!pageSize){
     	   number=1;
        }else{
-    	   if(A<5){
-    	   number=B+1;
-    	   }else if(A==0){
-    	   number=A;    
+         if(A<5&&A>0){
+    		   number=B+1; 
     	   }else{
     	   number=B;    
     	   }    	   
        }
-
+           console.log("number:",number);
        return number
 	} 
  
