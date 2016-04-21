@@ -3346,6 +3346,20 @@ var Announcements_edit_byRight = React.createClass({
 		   preview_fn:function(){
           G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
+bg_Class_fn:function(){
+    	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
+	     this.editor=editor;
+     var callback=function(imgArr){
+		 console.log("11111",imgArr[0]);
+          for(var i=0;i<imgArr.length;i++){
+             editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+          }          
+     }
+
+          var groupuuid=Store.getGroupBymyclassList(this.state.classuuid);
+         KDClassNewPhotoItem.queryForSelect(groupuuid,this.state.classuuid,1,callback);
+
+  },
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -3379,7 +3393,11 @@ return (
 		  <br/>
             {url}
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
-		{G_get_upload_img_Div()} 
+		      <label>班级相册图片：</label>
+                 <AMR_ButtonToolbar>
+                    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
+                </AMR_ButtonToolbar>
+		  {G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
 			    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 		  </form>

@@ -64,7 +64,7 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
  },
 //数据初始化2
  getStateByPropes:function(nextProps){
-	 var labelArry=this.query_Label();
+	var labelArry=this.query_Label();
 	var queryForm={
 			groupuuid:this.props.groupuuid,	
 			label:this.props.label,
@@ -92,14 +92,14 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
      $('.am-gallery').pureview();
   },
 
-//初始化请求服务器数据一次ajax_list()1;	
+//监听如果是回车键直接ajax_list()查询1;	
  handle_onKeyDown: function(e){
    if(G_isKeyDown_enter(e)){
    this.handleClick_query();
    return false;
    }      
   },	 
-//初始化请求服务器数据一次ajax_list()2;
+//监听如果是回车键直接ajax_list()查询2;
  handleClick_query: function(m) {
 	this.state.pageNo=1;	
 	 this.ajax_list();
@@ -328,29 +328,27 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 		this.ajax_list();
   },  
 render: function() {	
-//query_My_All_list:1显示查询所有，2显示查询我的班级;	
-	var edit_btn_className,selectbtn_btn_className,bgobj,label_obj;
+    //query_My_All_list:1显示查询所有，2显示查询我的班级;
+	//btn_query_My_className:	显示-查询所有按钮；
+	//btn_query_All_className:	显示-查询我的班级；
+	var bgobj,label_obj,btn_query_My_className,btn_query_All_className;
 	var Penthat=this;
 	var queryForm=this.state.queryForm;
 	var obj=this.state;
 	var imgarry=this.state.list;
 	var imgphotoList=[];
 	var arry_label=[];
-	var btn_all_my=(React.createElement("div", null));
-	
-	if(obj.query_My_All_list==1){
-	 btn_all_my=(
-	  React.createElement(AMR_ButtonToolbar, null, 
-		React.createElement(AMR_Button, {className: "am-margin-top", amStyle: "secondary", onClick: this.All_group_class.bind(this)}, "查询所有班级")
-      ) );	
-	}else{
-     btn_all_my=(
-      React.createElement(AMR_ButtonToolbar, null, 
-	   React.createElement(AMR_Button, {className: "am-margin-top", amStyle: "secondary", onClick: this.My_group_class.bind(this)}, "查询我的班级")
-	  ) );		
-	}
-	
 	imgarry.pageNo=this.state.pageNo;
+	
+  	if(obj.query_My_All_list== 1){
+		btn_query_All_className="G_Edit_show";
+		btn_query_My_className="G_Edit_hide";
+	   }else{
+		btn_query_All_className="G_Edit_hide";
+		btn_query_My_className="G_Edit_show";
+	  }	
+
+	//标签数组下拉框在用;
 	for(var i=0;i<obj.label_list.length;i++){
          if(obj.label_list[i].label){
         	 label_obj={value:null,label:null}
@@ -363,12 +361,9 @@ render: function() {
 
 	//imgphotoList绘制图片方法在用
 	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,groupuuid:null,classuuid:null,uuid:null,pageNo:null,label:null};
+		 bgobj={path:null,uuid:null,label:null};
 		 bgobj.path=imgarry[i].path;
-		 bgobj.groupuuid=obj.queryForm.groupuuid;
-		 bgobj.classuuid=obj.queryForm.classuuid;
 		 bgobj.uuid=imgarry[i].uuid;
-		 bgobj.pageNo=obj.pageNo;
 		 bgobj.label=imgarry[i].label;
 		 imgphotoList.push(bgobj);
 	    }
@@ -388,8 +383,9 @@ render: function() {
     		React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next",imgphotoList)}, "下一页"), 	
     	   
      		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.handleClick.bind(this,obj)}, "上传照片"), 
+    		React.createElement(AMR_Button, {className: btn_query_All_className, amStyle: "secondary", onClick: this.All_group_class.bind(this)}, "查询所有班级"), 
+    		React.createElement(AMR_Button, {className: btn_query_My_className, amStyle: "secondary", onClick: this.My_group_class.bind(this)}, "查询我的班级")
 
-			btn_all_my
 			)
 
     		), 
@@ -446,10 +442,7 @@ var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_
 		if(!confirm("确定要删除吗?")){
 			return;
 		}
-		var groupuuid=Obj.groupuuid;
-		var classuuid=Obj.classuuid;
 		var uuid=Obj.uuid;
-		var pageNo=Obj.pageNo;
 	  	$.AMUI.progress.start();
 	      var url = hostUrl + "rest/kDPhotoItem/delete.json?uuid="+uuid;
 		$.ajax({
@@ -475,7 +468,6 @@ var  Common_mg_Class_big_fn  = React.createClass({displayName: "Common_mg_Class_
   render: function() {
 	  var that=this
 	  var KDitemthis=this.props.Penthat;
-	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
 			  };  
@@ -946,7 +938,6 @@ var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Cla
 	},
   render: function() {
 	  var that=this
-	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
 			  };  
@@ -1255,7 +1246,7 @@ btn_classPhtotItem:function(){
   },  
   
 render: function() {	
-	var edit_btn_className,selectbtn_btn_className,photoClassName,bgobj,label_obj;
+	var photoClassName,bgobj,label_obj;
 	var queryForm=this.state.queryForm;
 	var obj=this.state;
 	var imgarry=this.state.list;

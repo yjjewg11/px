@@ -30,7 +30,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
 					classuuid=G_photo_classuuid;//本地记录班级UUID
 				} 
 
-				React.render(React.createElement(Query_photo_rect,{
+				React.render(React.createElement(Query_photo_div,{
 					groupuuid:group_uuid,
 					label:label,
 					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
@@ -40,13 +40,7 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
 
 			}				
 		}
-
-
 	
-	
-	
-	
-			
 /*
  * 学生列表服务器请求后绘制处理方法；
  * @</select>下拉多选框;
@@ -55,13 +49,12 @@ var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
  * @btn_query_click:名字查找；
  * */
 var G_queryLabel_List=[];
-var Query_photo_rect = React.createClass({
+var Query_photo_div =  React.createClass({ 
+	load_more_btn_id:"load_more_",
+	pageNo:1,
+	classnewsreply_list_div:"am-list-news-bd",
  //数据初始化
  getInitialState: function() {
-  return this.getStateByPropes(this.props); 
- },
-//数据初始化2
- getStateByPropes:function(nextProps){
 	var labelArry=this.query_Label();
 	var queryForm={
 			groupuuid:this.props.groupuuid,	
@@ -79,108 +72,157 @@ var Query_photo_rect = React.createClass({
 		list: []
 	};
 	return obj;
- },	
-//数据
- componentWillReceiveProps: function(nextProps) {	
-	 this.setState(this.getStateByPropes(nextProps));
-  },
-//数据
- componentDidMount:function(){	  
-     this.ajax_list(); 
-     $('.am-gallery').pureview();
-  },
-
-//监听如果是回车键直接ajax_list()查询1;	
- handle_onKeyDown: function(e){
-   if(G_isKeyDown_enter(e)){
-   this.handleClick_query();
-   return false;
-   }      
-  },	 
-//监听如果是回车键直接ajax_list()查询2;
- handleClick_query: function(m) {
-	this.state.pageNo=1;	
-	 this.ajax_list();
-  },
+ },
 //取标签公用服务请求
-  query_Label: function(groupuuid,classuuid) {
- 	 var group_uuid,class_uuid;
- 	 if(!groupuuid){
- 		 group_uuid=this.props.groupuuid;
- 	 }else{
- 		 group_uuid=this.state.queryForm.groupuuid;
- 	 }
- 	 if(!classuuid){
- 		 class_uuid=this.props.classuuid;
- 	 }else{
- 		 class_uuid=this.state.queryForm.classuuid;
- 	 }
- 		var labelArry=[];
- 	    //取出标签
- 		var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
- 		$.ajax({
- 			type : "GET",
- 			url : url,
- 			data : {group_uuid:group_uuid,class_uuid:class_uuid},
- 			dataType : "json",
- 			async: false,
- 			success : function(data) {
- 				if (data.ResMsg.status == "success") {
- 					labelArry=data.list;
- 					labelArry.push({value:"",label:'所有'});
- 					G_queryLabel_List = labelArry.slice(0, -1)
- 				} else {
- 					alert(data.ResMsg.message);
- 					G_resMsg_filter(data.ResMsg);
- 				}
- 			},
- 			error : G_ajax_error_fn
- 		});
- 		
- 		return labelArry
-  },  
-//切换学校、班级、标签、等后请求服务器方法	
-  ajax_list:function(){
-	var queryForm=this.state.queryForm;
-     
-	if(queryForm.label=="所有"){
-		queryForm.label="";
-	}
-	queryForm.pageNo=this.state.pageNo;
-	$.AMUI.progress.start();
-	var that=this;
-	var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		data :queryForm,
-		dataType : "json",
-		//async: false,//必须同步执行
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-			    that.ajax_callback( data.list );     
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error : G_ajax_error_fn
-	});
-	
+ query_Label: function(groupuuid,classuuid) {
+	 var group_uuid,class_uuid;
+	 var labelArry=[];
+	 if(!groupuuid){
+		 group_uuid=this.props.groupuuid;
+	 }else{
+		 group_uuid=this.state.queryForm.groupuuid;
+	 }
+	 if(!classuuid){
+		 class_uuid=this.props.classuuid;
+	 }else{
+		 class_uuid=this.state.queryForm.classuuid;
+	 }	
+	    //取出标签
+		var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			data : {group_uuid:group_uuid,class_uuid:class_uuid},
+			dataType : "json",
+			async: false,
+			success : function(data) {
+				if (data.ResMsg.status == "success") {
+					labelArry=data.list;
+					labelArry.push({value:"",label:'所有'});
+					G_queryLabel_List = labelArry.slice(0, -1)
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error : G_ajax_error_fn
+		});		
+		return labelArry
+ },  
+componentWillReceiveProps:function(){
+	this.load_more_data();
+},
+componentDidMount:function(){
+	this.load_more_data();
+},
+//监听如果是回车键直接ajax_list()查询1;	
+handle_onKeyDown: function(e){
+  if(G_isKeyDown_enter(e)){
+  this.handleClick_query();
+  return false;
+  }      
+ },	 
+//监听如果是回车键直接ajax_list()查询2;
+handleClick_query: function(m) {
+	this.state.pageNo=1;	
+	 this.refresh_data();
+ },
+	//逻辑：首先创建一个“<div>” 然后把div和 pageNo 
+	//当参数ajax_announce_Mylist（）这个方法内，做服务器请求，后台会根据设置传回部分数组暂时
+	//re_data.data.length<re_data.pageSize 表示隐藏加载更多按钮 因为可以全部显示完毕
+	load_more_data:function(){
+		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
+   		var that=this;
+   		var callback=function(re_data){
+    			if(!re_data)return;
+    			var number1=that.state.totalCount%that.state.pageSize;
+    			var number2=Math.round(that.state.totalCount/that.state.pageSize);
+
+    			if(re_data.data.length<re_data.pageSize){
+    				$("#"+that.load_more_btn_id).hide();
+    			}else if(that.state.pageNo==number2&&number1==0){
+    				$("#"+that.load_more_btn_id).hide();   	
+    			 }else{
+    				$("#"+that.load_more_btn_id).show();
+    			}
+    			that.pageNo++;
+    		}
+	var re_data=ajax_list(this.classnewsreply_list_div+this.pageNo,this.state.queryForm,this.pageNo,this,callback);
+	 this.setState(this.state);
+	},
+ refresh_data:function(){
+//classnewsreply_list_div 清除；
+//load_more_data	重新绘制DIV；
+
+var labelArry=this.query_Label(this.state.queryForm.groupuuid,this.state.queryForm.classuuid);
+this.state.label_list=labelArry;		
+ this.pageNo=1;
+ $("#"+this.classnewsreply_list_div).html("");
+ this.load_more_data();
+
+ },
+//上传照片方法		
+  handleClick: function(obj) {
+		React.render(React.createElement(Img_photo_rect,{
+			formdata:obj
+			}), G_get_div_body());
   },
-  
-//请求服务器数据后刷新舞台回调方法;  
- ajax_callback:function(list){
-	 var labelArry=this.query_Label(this.state.queryForm.groupuuid,this.state.queryForm.classuuid);
-	 this.state.label_list=labelArry;
-  if (list== null ) this.state.list=[];
-   else
-	  this.state.list=list.data;
-	  this.state.pageSize=list.pageSize;
-  if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
-	  this.setState(this.state);
-  },  
+//查看所有学校与班级		
+  All_group_class: function() {
+		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
+		 
+		//取得学校数据（所有）
+		groupList=Store.getGroupNoGroup_wjd();
+		if(!group_uuid)group_uuid=groupList[0].uuid;
+		groupArry=G_selected_dataModelArray_byArray(groupList,"uuid","brand_name");
+		
+		//取得班级数据（所有）
+		classList=Store.getChooseClass(group_uuid);
+		if(!classList||classList.length==0){
+			class_uuid=null;
+		}else{
+			class_uuid=classList[0].uuid;	
+		}
+	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
+	    
+	    this.state.pageNo=1;
+	    this.state.groupList=groupArry;
+	    this.state.classList=classArry;
+	    this.state.queryForm.label="";
+	    this.state.queryForm.groupuuid=group_uuid;
+	    this.state.queryForm.classuuid=class_uuid;
+		this.state.query_My_All_list=2;		
+		this.refresh_data();
+		
+  },
+//查看我的学校与班级		
+  My_group_class: function() {
+		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
+		 
+		//取得学校数据（所有）
+		groupList=Store.getGroup();
+		if(!group_uuid)group_uuid=groupList[0].uuid;
+		groupArry=G_selected_dataModelArray_byArray(groupList,"uuid","brand_name");
+		
+		
+		//取得班级数据（所有）
+		classList=Store.getMyByClassList(group_uuid);
+		if(!classList||classList.length==0){
+			class_uuid=null;
+		}else{
+			class_uuid=classList[0].uuid;	
+		}
+	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
+	    
+	    this.state.pageNo=1;
+	    this.state.groupList=groupArry;
+	    this.state.classList=classArry;
+	    this.state.queryForm.label="";
+	    this.state.queryForm.groupuuid=group_uuid;
+	    this.state.queryForm.classuuid=class_uuid;
+		this.state.query_My_All_list=1;
+		this.refresh_data();
+  }, 
 //学校切换方法;		
   handleChange_selectgroup: function(val){	
   var   classArry,classuuid;	
@@ -210,19 +252,8 @@ var Query_photo_rect = React.createClass({
 		this.state.queryForm.groupuuid=val;
 		this.state.queryForm.classuuid=classuuid;
 		this.state.classList=G_selected_dataModelArray_byArray(classArry,"uuid","name");
-	    this.ajax_list();
-  },	
-//标签切换方法		
-  handleChange_label:function(val){
-		if(this.state.query_My_All_list==1){
-			 G_photo_classuuid=$("input[name='classuuid']").val();
-		}
-
-    var queryForm=$('#queryForm').serializeJson();
-        this.state.pageNo=1;
-		this.state.queryForm=queryForm;
-		this.ajax_list();		
-  },	  
+	    this.refresh_data();
+  },
 //班级切换方法		
   handleChange:function(val){
 		if(this.state.query_My_All_list==1){
@@ -232,123 +263,40 @@ var Query_photo_rect = React.createClass({
         this.state.pageNo=1;
         this.state.queryForm.label="";
         this.state.queryForm.classuuid=val;
-		this.ajax_list();		
-  },		
-//上传照片方法		
-  handleClick: function(obj) {
-		React.render(React.createElement(Img_photo_rect,{
-			formdata:obj
-			}), G_get_div_body());
-  },				
-//翻页方法	 
-  pageClick: function(m,data) {
-	 var obj=this.state;
-	 var number1=obj.totalCount%obj.pageSize;
-	 var number2=Math.round(obj.totalCount/obj.pageSize);
-	 if(m=="pre"){	
-		 if(obj.pageNo<2){
-			 G_msg_pop("第一页了");
-			 return;
-		 }
-		 obj.pageNo=obj.pageNo-1;
-		 this.ajax_list(obj);
-		 return;
-	  }else if(m=="next"){
-		 if(!data||data.length<obj.pageSize){
-			 G_msg_pop("最后一页了");
-			 return ;
-		 }else if(obj.pageNo==number2&&number1==0){
-			 G_msg_pop("最后一页了");
-			 return ;
-		 }
-		 obj.pageNo=obj.pageNo+1;
-		
-		 this.ajax_list(obj);
-		 return;
-	  }
-  },
-
-  
-//查看所有学校与班级		
-  All_group_class: function() {
-		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
-		 
-		//取得学校数据（所有）
-		groupList=Store.getGroupNoGroup_wjd();
-		if(!group_uuid)group_uuid=groupList[0].uuid;
-		groupArry=G_selected_dataModelArray_byArray(groupList,"uuid","brand_name");
-		
-		//取得班级数据（所有）
-		classList=Store.getChooseClass(group_uuid);
-		if(!classList||classList.length==0){
-			class_uuid=null;
-		}else{
-			class_uuid=classList[0].uuid;	
-		}
-	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
-	    
-	    this.state.pageNo=1;
-	    this.state.groupList=groupArry;
-	    this.state.classList=classArry;
-	    this.state.queryForm.label="";
-	    this.state.queryForm.groupuuid=group_uuid;
-	    this.state.queryForm.classuuid=class_uuid;
-		this.state.query_My_All_list=2;
-		this.ajax_list();
-		
-  },
-//查看我的学校与班级		
-  My_group_class: function() {
-		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
-		 
-		//取得学校数据（所有）
-		groupList=Store.getGroup();
-		if(!group_uuid)group_uuid=groupList[0].uuid;
-		groupArry=G_selected_dataModelArray_byArray(groupList,"uuid","brand_name");
-		
-		
-		//取得班级数据（所有）
-		classList=Store.getMyByClassList(group_uuid);
-		if(!classList||classList.length==0){
-			class_uuid=null;
-		}else{
-			class_uuid=classList[0].uuid;	
-		}
-	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
-	    
-	    this.state.pageNo=1;
-	    this.state.groupList=groupArry;
-	    this.state.classList=classArry;
-	    this.state.queryForm.label="";
-	    this.state.queryForm.groupuuid=group_uuid;
-	    this.state.queryForm.classuuid=class_uuid;
-		this.state.query_My_All_list=1;
-		this.ajax_list();
+		this.refresh_data();		
   },  
-render: function() {	
+//标签切换方法		
+  handleChange_label:function(val){
+		if(this.state.query_My_All_list==1){
+			 G_photo_classuuid=$("input[name='classuuid']").val();
+		}
+
+    var queryForm=$('#queryForm').serializeJson();
+        this.state.pageNo=1;
+		this.state.queryForm=queryForm;
+		this.refresh_data();		
+  },  
+render: function() {
+	this.load_more_btn_id="load_more_"+this.props.uuid;
 //query_My_All_list:1显示查询所有，2显示查询我的班级;	
-	var edit_btn_className,selectbtn_btn_className,bgobj,label_obj;
+//btn_query_My_className:	显示-查询所有按钮；
+//btn_query_All_className:	显示-查询我的班级；
+	
+	var bgobj,label_obj,btn_query_My_className,btn_query_All_className;
 	var Penthat=this;
 	var queryForm=this.state.queryForm;
 	var obj=this.state;
-	var imgarry=this.state.list;
-	var imgphotoList=[];
 	var arry_label=[];
-	var btn_all_my=(<div></div>);
-	
-	if(obj.query_My_All_list==1){
-	 btn_all_my=(
-	  <AMR_ButtonToolbar> 
-		<AMR_Button className="am-margin-top" amStyle="secondary" onClick={this.All_group_class.bind(this)} >查询所有班级</AMR_Button>
-      </AMR_ButtonToolbar> );	
-	}else{
-     btn_all_my=(
-      <AMR_ButtonToolbar> 
-	   <AMR_Button className="am-margin-top" amStyle="secondary" onClick={this.My_group_class.bind(this)} >查询我的班级</AMR_Button>
-	  </AMR_ButtonToolbar> );		
-	}
+
+  	if(obj.query_My_All_list== 1){
+  		btn_query_All_className="G_Edit_show";
+  		btn_query_My_className="G_Edit_hide";
+	   }else{
+		btn_query_All_className="G_Edit_hide";
+		btn_query_My_className="G_Edit_show";
+	  }	
+
 	//标签数组下拉框在用;
-	imgarry.pageNo=this.state.pageNo;
 	for(var i=0;i<obj.label_list.length;i++){
          if(obj.label_list[i].label){
         	 label_obj={value:null,label:null}
@@ -358,6 +306,111 @@ render: function() {
          }
 	    }
 	this.state.label_list=arry_label;
+  return (			
+		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
+		  <AMR_Panel>
+		   <AMR_ButtonToolbar>
+    		 <AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
+    		 <AMR_Button className={btn_query_All_className} amStyle="secondary" onClick={this.All_group_class.bind(this)} >查询所有班级</AMR_Button>
+    		 <AMR_Button className={btn_query_My_className} amStyle="secondary" onClick={this.My_group_class.bind(this)} >查询我的班级</AMR_Button>
+    		</AMR_ButtonToolbar>
+		  </AMR_Panel> 
+		  <label>{"图片总数："+this.state.totalCount+"张"}</label>
+		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
+	   	   <AMR_ButtonToolbar>
+	  		   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+	    		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectgroup} btnWidth="200"  data={obj.groupList} btnStyle="primary" value={queryForm.groupuuid} />    		            
+	    	   </div> 
+	    		
+	    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+	    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={obj.classList} btnStyle="primary" value={queryForm.classuuid} />    		            
+	    	   </div> 
+	    		
+	    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+	    		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={arry_label} btnStyle="primary" value={queryForm.label} />    		            
+	    	   </div> 
+	     </AMR_ButtonToolbar>
+	    </AMUIReact.Form>
+	    
+		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  </div>
+		  
+		  <div className="am-list-news-ft">
+		    <a className="am-list-news-more am-btn am-btn-default " id={this.load_more_btn_id} onClick={this.load_more_data.bind(this)}>查看更多 &raquo;</a>
+		  </div>
+		  
+		  
+		  
+		</div>
+		  
+			
+  );
+}
+});
+/*
+ * 请求相册服务器数据
+ * 
+ * */
+ var  ajax_list=function(list_div,queryForm,pageNo,that,callback) {
+	 queryForm.pageNo=pageNo;
+	if(queryForm.label=="所有"){
+		queryForm.label="";
+	}
+	$.AMUI.progress.start();
+	var url = hostUrl + "rest/kDPhotoItem/queryMy.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+  		data : queryForm,
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				  that.state.list=data.list.data;
+				  that.state.pageSize=data.list.pageSize;
+			  if(pageNo=="1")that.state.totalCount=data.list.totalCount;
+				React.render(React.createElement(Query_photo_rect, {
+					events: data.list,
+					Propsthat:that,
+					responsive: true, bordered: true, striped :true,hover:true,striped:true
+					}), document.getElementById(list_div));
+ 				if(typeof callback=='function'){
+					callback(data.list);
+				}
+			} else {
+				alert(data.ResMsg.message);
+				G_resMsg_filter(data.ResMsg);
+			}
+		},
+		error :G_ajax_error_fn
+	});
+};
+
+
+
+
+/*
+ * 根据相册请求数据绘制相册图片;
+ * */
+var Query_photo_rect = React.createClass({
+ //数据初始化
+ getInitialState: function() {
+  return this.props.events; 
+ },
+//数据
+ componentWillReceiveProps: function(nextProps) {	
+	 this.setState(this.getStateByPropes(nextProps));
+  },
+//数据
+ componentDidMount:function(){	  
+     $('.am-gallery').pureview();
+  },
+	render: function() {	
+	var bgobj,label_obj;
+	var imgarry=this.state.data;
+	var imgphotoList=[];
+	var arry_label=[];
 
 	//imgphotoList绘制图片方法在用
 	for(var i=0;i<imgarry.length;i++){
@@ -367,70 +420,14 @@ render: function() {
 		 bgobj.label=imgarry[i].label;
 		 imgphotoList.push(bgobj);
 	    }
-	var number=G_get_pageSize_number(this.state.pageSize,this.state.totalCount);
 
-    return (    		
-
-    		<div>
-    		<div className="header">
-  		     <hr />
-  		    </div>
-    		<AMR_Panel>
-    		
-    		<AMR_ButtonToolbar>    		
-    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre",imgphotoList)} >上一页</AMR_Button>
-    		  <AMR_Button amStyle="default" disabled="false" >{"第"+obj.pageNo+"/"+number+"页"}</AMR_Button>
-    		<AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
-    	   
-     		<AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
-
-			{btn_all_my}
-			</AMR_ButtonToolbar>
-
-    		</AMR_Panel>
-   		 <label>{"图片总数："+obj.totalCount+"张"}</label>
-    <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
-   		 <AMR_ButtonToolbar>
-  		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-    		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectgroup} btnWidth="200"  data={obj.groupList} btnStyle="primary" value={queryForm.groupuuid} />    		            
-    		 </div> 
-    		
-    		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={obj.classList} btnStyle="primary" value={queryForm.classuuid} />    		            
-    		 </div> 
-    		
-    		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-    		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={arry_label} btnStyle="primary" value={queryForm.label} />    		            
-    		 </div> 
-    		</AMR_ButtonToolbar>
-
-    </AMUIReact.Form>
-    	    
-
+	    return (    		
 		    <div className="am-comment-bd">
-		     <Common_mg_Class_big_fn  imgsList={imgphotoList}  Penthat={Penthat} state={this.state}/>  
+		     <Common_mg_Class_big_fn  imgsList={imgphotoList}  Penthat={this.props.Propsthat} />  
 		    </div>
-			    	
-	    	<legend></legend> 
-	    	<AMR_ButtonToolbar>
-    		 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre",imgphotoList)} >上一页</AMR_Button>
-    		  <AMR_Button amStyle="default" disabled="false" >{"第"+obj.pageNo+"/"+number+"页"}</AMR_Button>
-    		 <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next",imgphotoList)} >下一页</AMR_Button>	
-    		</AMR_ButtonToolbar>
-    		
-
-
-		   </div>
-    );
-  }
-});
-
-
-
-
-
-
-
+	    );
+	  }
+	});
 
 /*
  * 对单张图片的处理方法;
@@ -454,9 +451,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
 					//因隐藏图片会导致翻页数据库错乱所以此处用刷新法
-					 KDitemthis.ajax_list();
-					//$('#Common_mg_Class_big_fn_item_'+uuid).hide();
-				//	menu_photo_fn(groupuuid,class_uuid,pageNo);
+					 KDitemthis.refresh_data();
 					} else {
 						alert(data.ResMsg.message);
 					}
@@ -467,7 +462,6 @@ var  Common_mg_Class_big_fn  = React.createClass({
   render: function() {
 	  var that=this
 	  var KDitemthis=this.props.Penthat;
-	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
 			  };  
@@ -776,6 +770,7 @@ render: function() {
     );
   }
 });
+
 //绘制上传照片后预览照片绘制
 var KDphoto_Img_canDel = React.createClass({
 	deleteImg:function(divid,uuid){
@@ -809,5 +804,9 @@ var KDphoto_Img_canDel = React.createClass({
       	)
   }
 });
+
+
+
+
 	return module;	
 }();
