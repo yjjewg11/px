@@ -215,7 +215,18 @@ var Sns_snsTopic_add_edit = React.createClass({
 	preview_fn:function(){
      G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
-     
+   //班级相册选择方法    
+   bg_Class_fn:function(){
+	     var that=this;
+	     var editor=this.editor;
+	     var callback=function(imgArr){
+	          for(var i=0;i<imgArr.length;i++){
+	           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+          }          
+     }
+         KDClassNewPhotoItem.queryForSelect(null,null,1,callback);
+
+  },    
 render: function() {
 var o = this.state;	
 if(!o.section_id)o.section_id="1";
@@ -228,7 +239,6 @@ if(o.section_id==10){
                   <button  type="button"  onClick={SnsitemListObj.add_item.bind(SnsitemListObj)}  className="am-btn am-btn-primary am-margin-top-sm">添加投票选项</button>
                    </AMR_ButtonToolbar>);
 };
-
   return (
    <div>
    
@@ -259,6 +269,10 @@ if(o.section_id==10){
 	    <div id={SnsitemListObj.divId_addButton}>			</div>
 	    {sns_div_addbtn}
 	    <AMR_ButtonToolbar>
+        <label>班级相册图片：</label>
+        <AMR_ButtonToolbar>
+        <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
+        </AMR_ButtonToolbar>
 	    {G_get_upload_img_Div()} 
 	    <button type="button"  onClick={PxSnsService.ajax_sns_snsTopic_save.bind(this)}  className="am-btn am-btn-primary">提交</button>
 	    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>

@@ -2112,6 +2112,17 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 		   preview_fn:function(){
           G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
+bg_Class_fn:function(){
+     var that=this;
+     var editor=this.editor;
+     var callback=function(imgArr){
+          for(var i=0;i<imgArr.length;i++){
+           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+          }          
+     }
+         KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);
+
+  },
 render: function() {
 	 var o = this.state;
 	
@@ -2136,7 +2147,11 @@ render: function() {
   		  React.createElement("label", {htmlFor: "name"}, "分享链接(链接和内容选填一个):"), 
   		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxLength: "256", placeholder: "可直接使用外部内容的链接地址显示"}), 
   		  React.createElement(AMR_Input, {id: "announce_message", type: "textarea", rows: "10", label: "内容:", placeholder: "填写内容", name: "message", value: o.message, onChange: this.handleChange}), 
- 		G_get_upload_img_Div(), 
+ 	        React.createElement("label", null, "班级相册图片："), 
+            React.createElement(AMR_ButtonToolbar, null, 
+            React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "浏览...")
+            ), 
+		  G_get_upload_img_Div(), 
   		  React.createElement("button", {type: "button", onClick: ajax_good_save, className: "am-btn am-btn-primary"}, "提交"), 
 			    React.createElement("button", {type: "button", onClick: this.preview_fn.bind(this), className: "am-btn am-btn-primary"}, "预览")
   		  )
@@ -3347,17 +3362,14 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
           G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
 bg_Class_fn:function(){
-    	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
-	     this.editor=editor;
+	var that=this;
+	var editor=this.editor;
      var callback=function(imgArr){
-		 console.log("11111",imgArr[0]);
           for(var i=0;i<imgArr.length;i++){
-             editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
           }          
      }
-
-          var groupuuid=Store.getGroupBymyclassList(this.state.classuuid);
-         KDClassNewPhotoItem.queryForSelect(groupuuid,this.state.classuuid,1,callback);
+         KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);
 
   },
 render: function() {

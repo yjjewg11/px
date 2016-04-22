@@ -474,7 +474,7 @@ return (
     	if(!label_text)label_text="无";
 		var  imgArr=o?o.split("@"):"";
 	return (
-		 React.createElement("li", {id: "Common_mg_Class_big_fn_item_"+ event.uuid, className: "G_class_phtoto_Img"}, 			     			
+		 React.createElement("li", {id: "Common_mg_Class_big_fn_item_"+ event.uuid, className: "G_class_phtoto_Img G_ch_classNews_item"}, 			     			
 		  React.createElement("div", {className: "am-gallery-item"}, 
 			   React.createElement("a", {href: imgArr[0], title: ""}, 
 			    React.createElement("img", {src: o, alt: "", "data-rel": imgArr[0]})

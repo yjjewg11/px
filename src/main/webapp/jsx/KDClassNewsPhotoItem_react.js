@@ -168,10 +168,13 @@ this.state.label_list=labelArry;
 	    $("img[name='KDClassNewsPhotoItem_Img_select']").each(function(){
 		  selectedArr.push($(this).attr("src"));
 		 });	  
+
+
+		 	G_get_div_body();
 	if(module.callback){
 	  module.callback(selectedArr);
 	  }
-	G_get_div_body();
+
 },	
 //空班级跳转方法
 btn_classPhtotItem:function(){

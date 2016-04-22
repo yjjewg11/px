@@ -474,7 +474,7 @@ return (
     	if(!label_text)label_text="无";
 		var  imgArr=o?o.split("@"):"";
 	return (
-		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className="G_class_phtoto_Img">			     			
+		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className="G_class_phtoto_Img G_ch_classNews_item">			     			
 		  <div className="am-gallery-item">
 			   <a href={imgArr[0]} title="">
 			    <img src={o} alt=""  data-rel={imgArr[0]}/>
