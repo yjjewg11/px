@@ -655,7 +655,7 @@ var fpPhotoUploadTask={
 					$.AMUI.progress.done();
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
-						if(!G_img_Photo)=G_img_Photo=0;
+						if(!G_img_Photo)G_img_Photo=0;
 						G_img_Photo=G_img_Photo+1;
 						
 						var progress_width=Math.round(G_img_Photo/G_img_number*100);
