@@ -1,40 +1,25 @@
-var KDPhotoItem=function(groupuuid,classuuid,pageNo ){
+var KDPhotoItem=function( ){
 	var module={
 			callback:null,
-			ajax_uploadByphone(base64){
+			ajax_uploadByphone(base64,total){
+				try{
+					if(total){
+						G_img_number=parseInt(total);
+					}
+				}catch(e){
+					
+				}
+				
 				fpPhotoUploadTask.ajax_uploadByphone(base64);
 			},
 			//闭包方法入口
-			query:function(groupuuid,classuuid,pageNo){
-				var classuuid,group_uuid,label;
+			query:function(groupuuid,classuuid,label){
+				
 				if(!label)label="";
-				if(!pageNo)pageNo=1;
 				
-				
-				var group_List=Store.getGroup();
-				if(!G_photo_groupuuid){
-					group_uuid=group_List[0].uuid;
-				}else{
-					group_uuid=G_photo_groupuuid;//本地记录学校UUID
-				}
-
-
-				var classArry=Store.getMyByClassList(group_uuid);				
-				if(!G_photo_classuuid){
-					if(!classArry||classArry.length==0){
-						classuuid=null;
-					}else{
-						classuuid=classArry[0].uuid;
-					}
-				}else{
-					classuuid=G_photo_classuuid;//本地记录班级UUID
-				} 
-
 				React.render(React.createElement(Query_photo_div,{
-					groupuuid:group_uuid,
+					groupuuid:groupuuid,
 					label:label,
-					group_List:G_selected_dataModelArray_byArray(group_List,"uuid","brand_name"),
-					classList:G_selected_dataModelArray_byArray(classArry,"uuid","name"),
 					classuuid:classuuid
 					}), G_get_div_body());
 
@@ -54,17 +39,76 @@ var Query_photo_div =  React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-news-bd",
  //数据初始化
- getInitialState: function() {
-	var labelArry=this.query_Label();
+	
+	 getInitialState: function() {
+		 
+		 return this.getPropsState(this.props);
+	 },
+ getPropsState: function() {
+	 
+	 var groupuuid=this.props.groupuuid;
+	 var classuuid=this.props.classuuid;
+	 
+		var G_photo_query_My_All_list=$.AMUI.store.get("G_photo_query_My_All_list");
+		if(!G_photo_query_My_All_list)G_photo_query_My_All_list=1;
+		var group_List=null;
+		
+		var classArry=null;
+
+		if(!groupuuid){
+			groupuuid=$.AMUI.store.get("G_photo_groupuuid");
+		}
+	
+		if(G_photo_query_My_All_list==1){
+			group_List=Store.getGroupNoGroup_wjd();
+		
+		}else{
+			 group_List=Store.getGroup();
+		
+		}
+		
+
+		if(!groupuuid){
+			groupuuid=group_List[0].uuid;
+		}
+		
+		if(G_photo_query_My_All_list==1){
+			
+			classArry=Store.getMyByClassList(groupuuid);
+		}else{
+			
+			classArry=Store.getChooseClass(groupuuid);
+		}
+		
+		groupArry=G_selected_dataModelArray_byArray(group_List,"uuid","brand_name");
+	
+		classArry=G_selected_dataModelArray_byArray(classArry,"uuid","name")
+		if(!classuuid){
+			classuuid=$.AMUI.store.get("G_photo_classuuid");
+		}
+		if(!classuuid){
+			if(!classArry||classArry.length==0){
+				classuuid=null;
+			}else{
+				classuuid=classArry[0].uuid;
+			}
+		} 
+		
+		var label=this.props.label;
+		if(!label)label="";
+		else label+="";
 	var queryForm={
-			groupuuid:this.props.groupuuid,	
-			label:this.props.label,
-			classuuid:this.props.classuuid
+			groupuuid:groupuuid,	
+			label:label,
+			classuuid:classuuid
 	};
+	var labelArry=this.query_Label(groupuuid,classuuid);
+	
+
 	 var obj= {
-		query_My_All_list:1,	 
-		groupList:this.props.group_List,	 
-	    classList:this.props.classList,	 
+		query_My_All_list:G_photo_query_My_All_list,	 
+		groupList:groupArry,	 
+	    classList:classArry,	 
 		queryForm:queryForm,
 		label_list:labelArry,
 		pageNo:1,
@@ -75,24 +119,20 @@ var Query_photo_div =  React.createClass({
  },
 //取标签公用服务请求
  query_Label: function(groupuuid,classuuid) {
-	 var group_uuid,class_uuid;
+	
 	 var labelArry=[];
 	 if(!groupuuid){
-		 group_uuid=this.props.groupuuid;
-	 }else{
-		 group_uuid=this.state.queryForm.groupuuid;
+		 groupuuid=this.props.groupuuid;
 	 }
 	 if(!classuuid){
-		 class_uuid=this.props.classuuid;
-	 }else{
-		 class_uuid=this.state.queryForm.classuuid;
+		 classuuid=this.props.classuuid;
 	 }	
 	    //取出标签
 		var url = hostUrl + "rest/kDPhotoItem/queryLabel.json";
 		$.ajax({
 			type : "GET",
 			url : url,
-			data : {group_uuid:group_uuid,class_uuid:class_uuid},
+			data : {group_uuid:groupuuid,class_uuid:classuuid},
 			dataType : "json",
 			async: false,
 			success : function(data) {
@@ -109,8 +149,10 @@ var Query_photo_div =  React.createClass({
 		});		
 		return labelArry
  },  
-componentWillReceiveProps:function(){
-	this.load_more_data();
+componentWillReceiveProps:function(props){
+	var obj=this.getPropsState(props);
+	this.setState(obj);
+
 },
 componentDidMount:function(){
 	this.load_more_data();
@@ -185,13 +227,17 @@ this.state.label_list=labelArry;
 		}
 	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
 	    
+	    var G_photo_query_My_All_list=2;
+
+	 $.AMUI.store.set("G_photo_query_My_All_list", G_photo_query_My_All_list);
+
 	    this.state.pageNo=1;
 	    this.state.groupList=groupArry;
 	    this.state.classList=classArry;
 	    this.state.queryForm.label="";
 	    this.state.queryForm.groupuuid=group_uuid;
 	    this.state.queryForm.classuuid=class_uuid;
-		this.state.query_My_All_list=2;		
+		this.state.query_My_All_list=G_photo_query_My_All_list;		
 		this.refresh_data();
 		
   },
@@ -213,14 +259,16 @@ this.state.label_list=labelArry;
 			class_uuid=classList[0].uuid;	
 		}
 	    classArry=G_selected_dataModelArray_byArray(classList,"uuid","name")
-	    
+	        var G_photo_query_My_All_list=1;
+
+	 $.AMUI.store.set("G_photo_query_My_All_list", G_photo_query_My_All_list);
 	    this.state.pageNo=1;
 	    this.state.groupList=groupArry;
 	    this.state.classList=classArry;
 	    this.state.queryForm.label="";
 	    this.state.queryForm.groupuuid=group_uuid;
 	    this.state.queryForm.classuuid=class_uuid;
-		this.state.query_My_All_list=1;
+		this.state.query_My_All_list=G_photo_query_My_All_list;
 		this.refresh_data();
   }, 
 //学校切换方法;		
@@ -242,11 +290,9 @@ this.state.label_list=labelArry;
 			}
 		} 
 
-		if(this.state.query_My_All_list==1){
-			G_photo_groupuuid=val;
-			G_photo_classuuid=classuuid;
-		}
-
+		
+		G_photo_groupuuid=val;
+		 $.AMUI.store.set("G_photo_groupuuid", val);
 		this.state.pageNo=1;
 		this.state.queryForm.label="";
 		this.state.queryForm.groupuuid=val;
@@ -256,10 +302,10 @@ this.state.label_list=labelArry;
   },
 //班级切换方法		
   handleChange:function(val){
-		if(this.state.query_My_All_list==1){
+		
 			 G_photo_classuuid=$("input[name='classuuid']").val();
-		}
-
+	
+		 $.AMUI.store.set("G_photo_classuuid", G_photo_classuuid);
         this.state.pageNo=1;
         this.state.queryForm.label="";
         this.state.queryForm.classuuid=val;
@@ -267,9 +313,10 @@ this.state.label_list=labelArry;
   },  
 //标签切换方法		
   handleChange_label:function(val){
-		if(this.state.query_My_All_list==1){
-			 G_photo_classuuid=$("input[name='classuuid']").val();
-		}
+		
+		 G_photo_classuuid=$("input[name='classuuid']").val();
+			
+		 $.AMUI.store.set("G_photo_classuuid", G_photo_classuuid);
 
     var queryForm=$('#queryForm').serializeJson();
         this.state.pageNo=1;
@@ -413,17 +460,17 @@ var Query_photo_rect = React.createClass({
 	var arry_label=[];
 
 	//imgphotoList绘制图片方法在用
-	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,uuid:null,label:null};
-		 bgobj.path=imgarry[i].path;
-		 bgobj.uuid=imgarry[i].uuid;
-		 bgobj.label=imgarry[i].label;
-		 imgphotoList.push(bgobj);
-	    }
+//	for(var i=0;i<imgarry.length;i++){
+//		 bgobj={path:null,uuid:null,label:null};
+//		 bgobj.path=imgarry[i].path;
+//		 bgobj.uuid=imgarry[i].uuid;
+//		 bgobj.label=imgarry[i].label;
+//		 imgphotoList.push(bgobj);
+//	    }
 
 	    return (    		
 		    <div className="am-comment-bd">
-		     <Common_mg_Class_big_fn  imgsList={imgphotoList}  Penthat={this.props.Propsthat} />  
+		     <Common_mg_Class_big_fn  imgsList={imgarry}  Penthat={this.props.Propsthat} />  
 		    </div>
 	    );
 	  }
@@ -467,23 +514,38 @@ var  Common_mg_Class_big_fn  = React.createClass({
 			  };  
 return (
    <div>
-	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
+	<ul  className="am-gallery am-avg-sm-4 am-avg-md-6 am-avg-lg-12 am-gallery-imgbordered">
 	   {this.props.imgsList.map(function(event) {
     	var  o = event.path;
     	var label_text = event.label;
-    	if(!label_text)label_text="无";
+    	var label_className="";
+    	if(!label_text){
+    		label_className="G_Edit_hide";
+    	}
 		var  imgArr=o?o.split("@"):"";
+	 	if(o.btn_Letgo==false){
+	  		
+		   }else{
+			buttion_LestGo_className="G_Edit_show";
+		  }	
 	return (
 		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className="G_class_phtoto_Img G_ch_classNews_item">			     			
 		  <div className="am-gallery-item">
 			   <a href={imgArr[0]} title="">
 			    <img src={o} alt=""  data-rel={imgArr[0]}/>
 			    </a>
-			    <label>{"标签：【"+label_text+"】"}</label>
-     	  </div>	
+			    
+
+			 
+			    <span className={"G_class_phtoto_label "+label_className}>{label_text}</span>
 		
-      <div className="G_class_phtoto_Img_close">
-       <AMR_Button    onClick={that.handleClick.bind(this,event,KDitemthis)} >X</AMR_Button>
+				<div className="am-comment-actions">
+					{event.create_user}|{GTimeShow.showByTime(event.create_time)}
+				</div>
+     	  </div>	 
+		
+      <div className="G_class_phtoto_Img_close"  onClick={that.handleClick.bind(this,event,KDitemthis)}>
+       
       </div>
 	     </li>	        		 
         	)
@@ -510,14 +572,9 @@ var fpPhotoUploadTask={
 		 * lrz_callback:压缩完成后,回调函数.
 		 */
 		do_lrz:function(){
-			var progress_width;
+			
 			var file=fpPhotoUploadTask.upload_files_arr.pop();
-			progress_width=Math.round(G_img_Photo/G_img_number*100);
-			G_that.state.photoNum=G_img_Photo;
-			G_that.state.photoAllNum=G_img_number;
-			G_that.state.num=progress_width;
-			G_that.state.btn_Letgo=true;
-			G_that.setState(G_that.state);
+			
 			if(!file)return;
 			 lrz(file, {
 		            before: function() {
@@ -568,11 +625,7 @@ var fpPhotoUploadTask={
 				G_img_Photo=0;
 				G_img_number=0;
 				progress_width=0;
-			var progress_width=Math.round(G_img_Photo/G_img_number*100);
-			G_that.state.photoNum=G_img_Photo;
-			G_that.state.photoAllNum=G_img_number;
-			G_that.state.num=progress_width;
-			G_that.setState(G_that.state);
+			
 				G_img_number=this.files.length;
 					//支持多 图片上传
 					for(var i=0;i<this.files.length;i++){
@@ -585,6 +638,9 @@ var fpPhotoUploadTask={
 
 		ajax_uploadByphone:function(base64){
 			$.AMUI.progress.start(); 
+			
+		
+			
 			  formObject = $('#KdPhotoForm').serializeJson();
 				formObject.base64=base64;
 			var url = hostUrl + "rest/kDPhotoItem/uploadBase64.json";
@@ -599,11 +655,21 @@ var fpPhotoUploadTask={
 					$.AMUI.progress.done();
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
+						if(!G_img_Photo)=G_img_Photo=0;
 						G_img_Photo=G_img_Photo+1;
+						
+						var progress_width=Math.round(G_img_Photo/G_img_number*100);
+						G_that.state.photoNum=G_img_Photo;
+						G_that.state.photoAllNum=G_img_number;
+						G_that.state.num=progress_width;
+						G_that.state.btn_Letgo=true;
+						G_that.setState(G_that.state);
+						
 						if(fpPhotoUploadTask.callbackFN){
 							fpPhotoUploadTask.callbackFN(data.imgUrl,data.data.uuid);
-							fpPhotoUploadTask.do_lrz();
+						
 						}
+						fpPhotoUploadTask.do_lrz();
 					} else {
 						alert(data.ResMsg.message);
 					}
@@ -636,7 +702,7 @@ var Img_photo_rect = React.createClass({
 	    return this.props.formdata;
 	  },
 buttion_black_Click: function(o) {
-	module.query(o.queryForm.groupuuid,o.queryForm.classuuid,o.pageNo)
+	module.query(o.queryForm.groupuuid,o.queryForm.classuuid,o.queryForm.label)
 },	
 imgDivNum:0,
 getNewImgDiv:function(){
@@ -712,7 +778,7 @@ render: function() {
 	var groupName=Store.getGroupNameByUuid(o.queryForm.groupuuid);
 	var className=Store.getClassNameByUuid(o.queryForm.classuuid)
 
-	G_that=this
+	G_that=this;
 
 		var G_upload_img_Div=<AMR_Input type= "file" label="上传图片：" id="file_img_upload" accept="image/*" capture= "camera" multiple />
 		if(window.JavaScriptCall&&window.JavaScriptCall.selectImgForCallBack){
@@ -732,7 +798,7 @@ render: function() {
     		<div className="header">
     		  <hr />
     		</div>
-  		    <div className="am-g  am-u-md-6 am-u-sm-12">
+  		    <div className="am-g">
       
     		  <form id="KdPhotoForm" method="post" className="am-form">
 
@@ -760,8 +826,8 @@ render: function() {
 		      <div className="cls"></div>
 		      {G_upload_img_Div} 
 		      <AMR_ButtonToolbar>
-    		    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >保存并返回</AMR_Button>
-    		    <AMR_Button amSize="xs"  className={buttion_LestGo_className} amStyle="secondary" onClick={this.buttion_LestGo.bind(this)} >保存继续上传</AMR_Button>
+    		    <AMR_Button amSize="xs"   disabled={o.photoNum<o.photoAllNum}  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >确认返回</AMR_Button>
+    		    <AMR_Button amSize="xs"  disabled={o.photoNum<o.photoAllNum}   className={buttion_LestGo_className} amStyle="secondary" onClick={this.buttion_LestGo.bind(this)} >继续上传</AMR_Button>
     		  </AMR_ButtonToolbar>
     		    
     		    </div>

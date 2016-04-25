@@ -271,13 +271,13 @@ public class MessageController extends AbstractRESTController {
 			}
 			
 			
-			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_announce_m, request)){
-				
-				if(!RightUtils.hasRight(group_uuid,RightConstants.KD_Leader_Msg_m, request)){
-					responseMessage.setMessage("没有该权限,不能查看");
-					return "";
-				}
-			}
+//			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,RightConstants.AD_announce_m, request)){
+//				
+//				if(!RightUtils.hasRight(group_uuid,RightConstants.KD_Leader_Msg_m, request)){
+//					responseMessage.setMessage("没有该权限,不能查看");
+//					return "";
+//				}
+//			}
 			
 			PaginationData pData = this.getPaginationDataByRequest(request);
 			PageQueryResult pageQueryResult= messageService.queryByParentAndLeader(group_uuid,parent_uuid,pData);
