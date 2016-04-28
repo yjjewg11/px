@@ -1,11 +1,13 @@
 package com.company.news.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -25,6 +27,7 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.cache.PxRedisCache;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.FPPhotoUtil;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.dao.NSimpleHibernateDao;
 import com.company.news.entity.Announcements;
@@ -32,6 +35,7 @@ import com.company.news.entity.BaseDataList;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
+import com.company.news.entity.FPMovie;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PxCourse;
@@ -43,6 +47,7 @@ import com.company.news.rest.util.TimeUtils;
 import com.company.news.service.AnnouncementsService;
 import com.company.news.service.ClassNewsService;
 import com.company.news.service.CountService;
+import com.company.news.service.KDPhotoItemService;
 import com.company.news.vo.ResponseMessage;
 
 /**
@@ -727,4 +732,41 @@ public class ShareController extends AbstractRESTController {
 		return "/getSnsTopic";
 	}
 	
+	@Autowired
+	private KDPhotoItemService kDPhotoItemService;
+	
+		@RequestMapping("/getKDMovie")  
+	    public void getFPMovie(ModelMap model, HttpServletRequest request,HttpServletResponse response,PaginationData pData) {  
+	       try {  
+	    	   model.clear();
+	    	   ResponseMessage responseMessage = RestUtil
+	   				.addResponseMessageForModelMap(model);
+	    	   
+	    	  // String jsonpCallback = request.getParameter("jsonpCallback");//客户端请求参数  
+	    	   String movie_uuid = request.getParameter("kdmovie_uuid");//客户端请求参数  
+		    	  
+	    	   
+	    	   FPMovie fPMovie= (FPMovie)this.nSimpleHibernateDao.getObject(FPMovie.class, movie_uuid);
+	    	   if(fPMovie==null){
+	    		   responseMessage.setMessage("动态相册不存在！");
+	    		   HttpRequestUtils.responseJSONP(model, response, "getFPMovie");
+	    		   return;
+	    	   }
+	    	   
+	    	   
+	    	   this.nSimpleHibernateDao.getHibernateTemplate().evict(fPMovie);
+	    	   pData.setPageSize(1000);
+	    	   PageQueryResult pageQueryResult=  kDPhotoItemService.queryForMoviePhoto_uuids(fPMovie.getPhoto_uuids(), pData, model);
+	    	   fPMovie.setPhoto_uuids(null);
+	    	   fPMovie.setHerald(FPPhotoUtil.imgUrlByUuid_sub(fPMovie.getHerald()));
+	    	   model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+	    	   model.addAttribute(RestConstants.Return_G_entity,fPMovie);
+	    	   
+	    	   
+	    	   responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+	    	 HttpRequestUtils.responseJSONP(model, response, "getFPMovie");
+	      } catch (IOException e) {  
+	       e.printStackTrace();  
+	      }  
+	    }  
 }

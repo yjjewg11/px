@@ -52,7 +52,7 @@ var G_queryLabel_List=[];
 var Query_photo_div =  React.createClass({ 
 	load_more_btn_id:"load_more_",
 	pageNo:1,
-	classnewsreply_list_div:"am-list-news-bd",
+	classnewsreply_list_div:"am-list-newsPhoto-bd",
  //数据初始化
  getInitialState: function() {
 	var labelArry=this.query_Label();
@@ -163,14 +163,16 @@ this.state.label_list=labelArry;
  },
 //确认照片选择方法;
  handleClick_selectbtn: function(obj) {
-  var selectedArr=[];	  
+  var selectedArr=[];
   var imgs="";
 	    $("img[name='KDClassNewsPhotoItem_Img_select']").each(function(){
-		  selectedArr.push($(this).attr("src"));
+	    	  var selected_obj={src:null,uuid:null};
+	    	selected_obj.src=$(this).attr("src");
+	    	selected_obj.uuid=$(this).attr("id");	    	
+		    selectedArr.push(selected_obj);
 		 });	  
 
-
-		 	G_get_div_body();
+	  G_get_div_body();
 	if(module.callback){
 	  module.callback(selectedArr);
 	  }
@@ -327,7 +329,6 @@ render: function() {
 	  }else{
 		photoClassName="G_Edit_hide";
 	 }
-	console.log("this.state",this.state); 
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMR_Panel>
@@ -360,7 +361,7 @@ render: function() {
 		   </AMR_ButtonToolbar>
 		  </div>
 
-		  <div  id={this.classnewsreply_list_div} className="am-list-news-bd">		   		    
+		  <div  id={this.classnewsreply_list_div} className="am-list-newsPhoto-bd">		   		    
 		  </div>
 		  
 		  <div className="am-list-news-ft">
@@ -471,7 +472,9 @@ var  Common_mg_Classnew_big_fn  = React.createClass({
 			tr.addClass("G_ch_classNews_item_checked");
 			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
 		     React.render(React.createElement(KDClassNewsPhotoItem_Img_canDel, {
-						url: event.path,parentDivId:divid,trid:trid
+						url: event.path,
+						parentDivId:divid,trid:trid,
+						event:event
 						}), document.getElementById(divid));  	
 		} 
 
@@ -483,7 +486,6 @@ var  Common_mg_Classnew_big_fn  = React.createClass({
 				  return;
 			  };  
 	  var is_Checked=false;
-		//if(that.props.checkeduuids)is_Checked=that.props.checkeduuids.indexOf(event.uuid)>-1;
   	  var className = is_Checked ? 'G_ch_classNews_item_checked' :'';
 			  
 return (
@@ -495,7 +497,7 @@ return (
     	if(!label_text)label_text="无";
 	return (
 			
-		 <li id={"Common_mg_Class_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "+className}  title={event.uuid}  onClick={that.div_onClick.bind(this,"Common_mg_Class_big_fn_item_"+event.uuid,event)}>			     						    
+		 <li id={"Common_mg_ClassNew_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "+className}  title={event.uuid}  onClick={that.div_onClick.bind(this,"Common_mg_ClassNew_big_fn_item_"+event.uuid,event)}>			     						    
 		  <div className="am-gallery-item">
 		   <img  src={o}/>
 	        <label>{"标签：【"+label_text+"】"}</label>
@@ -513,14 +515,13 @@ return (
 var KDClassNewsPhotoItem_Img_canDel = React.createClass({
 		deleteImg:function(divid,trid){
 			var tr=$("#"+trid);
-			console.log("tr",tr);
 			$("#"+divid).remove();
 			tr.removeClass("G_ch_classNews_item_checked");
 		},			
 	  render: function() {
 		 return (
           		<div className="G_cookplan_Img" >
-	 	       			<img  name="KDClassNewsPhotoItem_Img_select"  className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
+	 	       			<img  name="KDClassNewsPhotoItem_Img_select"  className="G_cookplan_Img_img" id={this.props.event.uuid}  src={this.props.url} alt="图片不存在" />
 	 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId,this.props.trid)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
 	 	       		</div>		
           	)

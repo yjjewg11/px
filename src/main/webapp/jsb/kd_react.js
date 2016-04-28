@@ -698,7 +698,7 @@ bg_Class_fn:function(){
 	var that=this;
 	var callback=function(imgArr){
 		 for(var i=0;i<imgArr.length;i++){
-			 that.addShowImg(imgArr[i]);
+			 that.addShowImg(imgArr[i].src);
 		 }		
 	}
 
@@ -2116,8 +2116,9 @@ bg_Class_fn:function(){
      var that=this;
      var editor=this.editor;
      var callback=function(imgArr){
+		 
           for(var i=0;i<imgArr.length;i++){
-           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i].src+'"/>')
           }          
      }
          KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);
@@ -3366,7 +3367,8 @@ bg_Class_fn:function(){
 	var editor=this.editor;
      var callback=function(imgArr){
           for(var i=0;i<imgArr.length;i++){
-           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i]+'"/>')
+			  console.log("测试人才",imgArr);
+           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i].src+'"/>')
           }          
      }
          KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);

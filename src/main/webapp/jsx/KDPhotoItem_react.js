@@ -276,6 +276,11 @@ this.state.label_list=labelArry;
 		this.state.queryForm=queryForm;
 		this.refresh_data();		
   },  
+//精品相册方法	
+  phtot_Click: function(obj) {
+	  KDPhoto_play_move.queryForPayMove(obj);
+	//KDPhoto_play_move.queryForPayMove(obj.queryForm.groupuuid,obj.queryForm.classuuid,1);	  
+  },  
 render: function() {
 	this.load_more_btn_id="load_more_"+this.props.uuid;
 //query_My_All_list:1显示查询所有，2显示查询我的班级;	
@@ -310,6 +315,7 @@ render: function() {
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 		  <AMR_Panel>
 		   <AMR_ButtonToolbar>
+  		     <AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.phtot_Click.bind(this,obj)} >精品相册</AMR_Button>
     		 <AMR_Button  amSize="xs"  amStyle="secondary" onClick={this.handleClick.bind(this,obj)} >上传照片</AMR_Button>
     		 <AMR_Button className={btn_query_All_className} amStyle="secondary" onClick={this.All_group_class.bind(this)} >查询所有班级</AMR_Button>
     		 <AMR_Button className={btn_query_My_className} amStyle="secondary" onClick={this.My_group_class.bind(this)} >查询我的班级</AMR_Button>
@@ -451,6 +457,7 @@ var  Common_mg_Class_big_fn  = React.createClass({
 				// 登陆成功直接进入主页
 				if (data.ResMsg.status == "success") {
 					//因隐藏图片会导致翻页数据库错乱所以此处用刷新法
+					//$('#Common_mg_Class_big_fn_item_'+uuid).hide();
 					 KDitemthis.refresh_data();
 					} else {
 						alert(data.ResMsg.message);

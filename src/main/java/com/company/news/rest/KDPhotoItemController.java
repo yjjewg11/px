@@ -526,5 +526,39 @@ public class KDPhotoItemController extends AbstractRESTController {
 		return "";
 	}
 
+	
+	/**
+	 * 
+	 * 查询我关联的所有家庭的相片.
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryForMoviePhoto_uuids", method = RequestMethod.GET)
+	public String queryForMoviePhoto_uuids(ModelMap model, HttpServletRequest request,PaginationData pData) {
+		model.clear();
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		
+		try {
+			
+			String photo_uuids=request.getParameter("photo_uuids");
+			if(DBUtil.isSqlInjection(photo_uuids, responseMessage))return "";
+			
+			
+			
+			PageQueryResult pageQueryResult= kDPhotoItemService.queryForMoviePhoto_uuids(photo_uuids,pData,model);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
 
 }

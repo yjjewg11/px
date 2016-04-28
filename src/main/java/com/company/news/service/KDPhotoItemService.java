@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import sun.misc.BASE64Decoder;
@@ -491,6 +492,48 @@ public class KDPhotoItemService extends AbstractService {
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
             return query.list();
+	}
+	
+	
+
+	/**
+	 * 查询增量更新
+	 * 
+	 * @return
+	 */
+	public PageQueryResult queryForMoviePhoto_uuids(String photo_uuids,PaginationData pData,ModelMap model) {
+		
+		
+		
+		String selectsql=" SELECT t1.path,t1.address,t1.note ";
+		
+		String sqlFrom=SqlFrom;
+		sqlFrom += " where  t1.uuid in("+DBUtil.stringsToWhereInValue(photo_uuids)+")";
+		
+		
+		String sql=sqlFrom;
+		
+		////使用创建时间做分页显示,beforeTime 取 2016-01-15 13:13 之前的数据.按照创建时间排倒序
+		 if(StringUtils.isNotBlank(pData.getMaxTime())){
+				sql += " and   t1.create_time <"+DBUtil.queryDateStringToDateByDBType(pData.getMaxTime());
+		}
+		 sql += " order by t1.create_time asc";
+		 
+		Query  query =this.nSimpleHibernateDao.createSqlQuery(selectsql+sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		String countsql="select count(*) "+sql;
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query,countsql, pData);
+		List<Map> list=pageQueryResult.getData();
+		
+		for(Map o:list){
+			try {
+				o.put("path", PxStringUtil.imgUrlByRelativePath_sub((String)o.get("path"),"@640w"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//返回最后一条的数据。
+		return pageQueryResult;
 	}
 
 	@Override
