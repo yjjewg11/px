@@ -137,9 +137,21 @@ z-index: 9999;
     
 .G_class_phtoto_Img{width:135px; height:100px; position:relative;float:left;}
 .G_class_phtoto_Img_img{width: 134px;height: 100px;}
-.G_class_phtoto_Img_close{position:absolute; top:0px; right:2px;cursor: pointer;}
+.G_class_phtoto_Img_close{width: 21px;height: 21px;position:absolute; top:0px; right:2px;cursor: pointer;background:url(../i/close.png) no-repeat; }
 .G_class_phtoto_Img_select{position:absolute; top:2px; right:200px;cursor: pointer;}
-.G_class_phtoto_Img_close_img{width: 21px;height: 21px;}			
+.G_class_phtoto_Img_close_img{width: 21px;height: 21px;}
+.G_class_phtoto_label{
+	display: inline-block;
+min-width: 10px;
+padding: .25em .625em;
+font-size: 1.2rem;
+font-weight: 700;
+color: #fff;
+line-height: 1;
+vertical-align: baseline;
+text-align: center;
+background-color: #5eb95e;
+}
 .G_ch_classNews_item{
     float: left;
     position:relative;
