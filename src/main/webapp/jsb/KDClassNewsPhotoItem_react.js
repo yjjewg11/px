@@ -173,6 +173,7 @@ this.state.label_list=labelArry;
 		 });	  
 
 	  G_get_div_body();
+	  G_photo_urlsSelectArry=[];
 	if(module.callback){
 	  module.callback(selectedArr);
 	  }
@@ -460,6 +461,28 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 	});
 
 var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Classnew_big_fn",
+	//精品相册动态选择
+	componentDidMount:function(){
+		  if(G_photo_urlsSelectArry.length!=0){
+			  var imglist=this.props.imgsList;
+			  for(var i=0;i<imglist.length;i++){
+				  if(imglist[i].OK==true){
+					  var trid="Common_mg_ClassNew_big_fn_item_"+imglist[i].uuid;
+					  var divid="Common_mg_Class_big_fn_"+imglist[i].uuid;
+					  var tr=$("#"+trid);
+						tr.addClass("G_ch_classNews_item_checked");
+						 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+					     React.render(React.createElement(KDClassNewsPhotoItem_Img_canDel, {
+									url: imglist[i].path,
+									parentDivId:divid,trid:trid,
+									event:imglist[i]
+									}), document.getElementById(divid));  	
+					} 
+				  }
+			  }
+		  
+
+	},
 	//红框框样式点击方法;
 	div_onClick:function(trid,event){
 		var tr=$("#"+trid);
@@ -468,6 +491,16 @@ var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Cla
 		if(tr.attr("class").indexOf("G_ch_classNews_item_checked")>=0){ 
 			tr.removeClass("G_ch_classNews_item_checked");		
 			  $('#'+divid).remove();
+			  
+			  if(G_photo_urlsSelectArry.length!=0){
+				  var List=[];
+				  for(var i=0;i<G_photo_urlsSelectArry.length;i++){  
+					  if(G_photo_urlsSelectArry[i]!=event.uuid){
+						  List.push(G_photo_urlsSelectArry[i]);
+					  }					  
+				  }
+				  G_photo_urlsSelectArry=List;
+				  }
 		}else{ 
 			tr.addClass("G_ch_classNews_item_checked");
 			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
@@ -481,10 +514,14 @@ var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Cla
 	},
   render: function() {
 	  var that=this
+	  console.log("G_photo_urlsSelectArry",G_photo_urlsSelectArry);
+
 	  var edit_btn_className;
 			  if (!this.props.imgsList){
 				  return;
 			  };  
+			  
+	  
 	  var is_Checked=false;
   	  var className = is_Checked ? 'G_ch_classNews_item_checked' :'';
 			  
@@ -492,6 +529,14 @@ return (
    React.createElement("div", null, 
 	React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
 	   this.props.imgsList.map(function(event) {
+		   
+		  if(G_photo_urlsSelectArry.length!=0){
+			  for(var i=0;i<G_photo_urlsSelectArry.length;i++){
+				  if(event.uuid==G_photo_urlsSelectArry[i]){
+					  event.OK=true;
+				  }
+			  }
+		  }	
     	var  o = event.path;
     	var label_text = event.label;
     	if(!label_text)label_text="无";

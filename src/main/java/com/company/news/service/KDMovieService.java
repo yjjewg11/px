@@ -186,7 +186,7 @@ public class KDMovieService extends AbstractService {
 	 */
 	public Map get(String uuid) throws Exception {
 		
-		String sql= " SELECT t1.template_key,t1.uuid,t1.create_time,t1.title,t1.herald,t1.photo_count,t1.create_useruuid,t1.status,t1.photo_uuids  FROM px_movie t1   where   t1.uuid ='"+uuid+"'";
+		String sql= " SELECT t1.template_key,t1.uuid,t1.create_time,t1.title,t1.herald,t1.photo_count,t1.create_useruuid,t1.status,t1.photo_uuids  FROM kd_movie t1   where   t1.uuid ='"+uuid+"'";
 		
 		Query  query =this.nSimpleHibernateDao.createSqlQuery(sql);
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
@@ -207,8 +207,8 @@ public class KDMovieService extends AbstractService {
 		return null;
 	}
 
-	String Selectsql=" SELECT t1.uuid, date_format(t1.create_time,'%Y-%m-%d') as create_time,t1.title,t1.herald,t1.photo_count,t1.create_useruuid,t1.status ";
-	String SqlFrom=" FROM px_movie t1 ";
+	String Selectsql=" SELECT t1.uuid, date_format(t1.create_time,'%Y-%m-%d') as create_time,t1.title,t1.herald,t1.mp3,t1.template_key,t1.photo_uuids,t1.photo_count,t1.create_useruuid,t1.status ";
+	String SqlFrom=" FROM kd_movie t1 ";
 
 	/**
 	 * 查询相册

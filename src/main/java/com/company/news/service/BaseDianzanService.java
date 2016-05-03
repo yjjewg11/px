@@ -190,6 +190,8 @@ public  class BaseDianzanService extends AbstractService {
 	static{
 		tableNameMap.put(SystemConstants.common_type_FPPhotoItem, "px_base_dianzan_21");
 		tableNameMap.put(SystemConstants.common_type_FPMovie,"px_base_dianzan_22");
+		tableNameMap.put(SystemConstants.common_type_KDPhotoItem ,"px_base_dianzan_23");
+		tableNameMap.put(SystemConstants.common_type_KDMovie,"px_base_dianzan_24");
 	}
 	public String getTableNameByType(Integer type) {
 		//insert into px_base_dianzan_21(rel_uuid,create_useruuid,create_time) 

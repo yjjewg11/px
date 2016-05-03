@@ -505,7 +505,7 @@ public class KDPhotoItemService extends AbstractService {
 		
 		
 		
-		String selectsql=" SELECT t1.path,t1.address,t1.note ";
+		String selectsql=" SELECT t1.uuid,t1.path,t1.address,t1.note ";
 		
 		String sqlFrom=SqlFrom;
 		sqlFrom += " where  t1.uuid in("+DBUtil.stringsToWhereInValue(photo_uuids)+")";

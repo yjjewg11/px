@@ -8,7 +8,7 @@ var KDPhoto_play_move=function(obj){
 		}
 //----------------------------------------精品相册绘制界面---1层---------------------------
 	
-/*
+/* Phathat.refresh_data
  * 精品相册绘制
  * */
 var Query_photo_div =  React.createClass({ 
@@ -16,6 +16,7 @@ var Query_photo_div =  React.createClass({
 	pageNo:1,
 	classnewsreply_list_div:"am-list-playMovePhoto-bd",
  getInitialState: function() {
+	 this.props.formdata.query_My_All_list=1;
 		return this.props.formdata;
 	 },	
 componentWillReceiveProps:function(){
@@ -52,6 +53,17 @@ componentDidMount:function(){
  },
 //制作相册;
  handleClick_PlayMove: function(obj) {
+     KDPhoto_play_move={
+				Mp3Arry:[],
+				imgArry:[],
+				Mp3Name:null,
+				Mp3uuid:null,
+				btn_Letgo:false,
+				formdata:null,
+				photo_uuids:null,
+				title:null,
+				tenokate:null
+		           }
   queryPlayMove(obj)
 
 },	
@@ -74,7 +86,6 @@ render: function() {
 
 	var photoClassName,btn_query_My_className,btn_query_All_className;
 	var obj=this.state;
-
   	if(obj.query_My_All_list== 1){
   		btn_query_All_className="G_Edit_show";
   		btn_query_My_className="G_Edit_hide";
@@ -142,6 +153,7 @@ render: function() {
 			    that.state.list=data.list.data;
 				React.render(React.createElement(Query_photo_rect, {
 					events: data.list,
+					obj:that.state,
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById(list_div));
  				if(typeof callback=='function'){
@@ -179,11 +191,11 @@ var Query_photo_rect = React.createClass({
 	render: function() {	
 	var bgobj,label_obj;
 	var imgarry=this.state.data;
-
+       
 
 	    return (    		
 		    <div className="am-comment-bd">
-		     <Common_mg_Classnew_big_fn  imgsList={imgarry}   />  
+		     <Common_mg_Classnew_big_fn  imgsList={imgarry} obj={this.props.obj}  />  
 		    </div>
 	    );
 	  }
@@ -191,22 +203,43 @@ var Query_photo_rect = React.createClass({
 
 var  Common_mg_Classnew_big_fn  = React.createClass({
 	//红框框样式点击方法;
-	div_onClick:function(){
-		
-		alert("这个逻辑还没写，直接跳到编辑界面")
-//		var tr=$("#"+trid);
-//		var divid="Common_mg_Class_big_fn_"+event.uuid;
-//		
-//		if(tr.attr("class").indexOf("G_ch_classNews_item_checked")>=0){ 
-//			tr.removeClass("G_ch_classNews_item_checked");		
-//			  $('#'+divid).remove();
-//		}else{ 
-//			tr.addClass("G_ch_classNews_item_checked");
-//			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
-//		     React.render(React.createElement(KDClassNewsPhotoItem_Img_canDel, {
-//						url: event.path,parentDivId:divid,trid:trid
-//						}), document.getElementById(divid));  	
-//		} 
+	div_onClick:function(event){
+		var Mp3_uuid,Mp3_Name;
+		var Mp3Arry=query_Mp3();
+		 var imgs=queryMoviePhoto_uuids(event.photo_uuids);	//根据uuid字符串服务器请求取得照片地址 数组 	 
+
+		if(!event.mp3){
+			if(!Mp3Arry||Mp3Arry.length==0){
+				Mp3_uuid=null;
+				Mp3_Name="";
+			}else{
+				Mp3_uuid=Mp3Arry[0].path;
+				Mp3_Name=Mp3Arry[0].title;
+			}
+			
+		}else{
+			for(var i=0;i<Mp3Arry.length;i++){
+			  if(event.mp3==Mp3Arry[i].path){           //编辑模式下 图片
+					Mp3_uuid=Mp3Arry[i].path;
+					Mp3_Name=Mp3Arry[i].title;
+			  }					
+			}			
+		}
+		var tenokate_List=tenokate_fpmove().data;
+		for(var i=0;i<tenokate_List.length;i++){
+			  if(event.template_key==tenokate_List[i].key){           //编辑模式下模板;					
+				  KDPhoto_play_move.tenokate=tenokate_List[i]
+			  }					
+			}	
+
+		 KDPhoto_play_move.imgArry=imgs;
+		 KDPhoto_play_move.herald=event.herald
+		 KDPhoto_play_move.formdata=this.props.obj;
+		 KDPhoto_play_move.Mp3Arry=G_selected_dataModelArray_byArray(Mp3Arry,"path","title");
+		 KDPhoto_play_move.Mp3uuid=Mp3_uuid;
+		 KDPhoto_play_move.Mp3Name=Mp3_Name;
+		 KDPhoto_play_move.title=event.title;
+		React.render(React.createElement(Img_photo_rect), G_get_div_body());	
 
 	},
   render: function() {
@@ -225,7 +258,7 @@ return (
     	if(!title)title="无";
 	return (
 			
-		 <li id={"Common_mg_ClassNew_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "}   onClick={that.div_onClick.bind(this)}>			     						    
+		 <li id={"Common_mg_ClassNew_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "}   onClick={that.div_onClick.bind(this,event)}>			     						    
 		  <div className="am-gallery-item">
 		   <img  src={o}/>
 	        <label>{"标题："+title+"【"+time_text+"】"}</label>
@@ -254,7 +287,7 @@ return (
 //----------------------------------------精品相册制作-----2层-------------------------
 
 //精品相册新建与编辑入口
-var queryPlayMove=function(obj,Mp3uuid){
+var queryPlayMove=function(obj){
 	var Mp3_uuid,Mp3_Name;
 	var Mp3Arry=query_Mp3();
 	
@@ -269,12 +302,7 @@ var queryPlayMove=function(obj,Mp3uuid){
 	 KDPhoto_play_move.Mp3Arry=G_selected_dataModelArray_byArray(Mp3Arry,"path","title");
 	 KDPhoto_play_move.Mp3uuid=Mp3_uuid;
 	 KDPhoto_play_move.Mp3Name=Mp3_Name;
-	React.render(React.createElement(Img_photo_rect,{
-		formdata:obj,
-		Mp3Arry: KDPhoto_play_move.Mp3Arry,
-		Mp3uuid:Mp3_uuid,
-		Mp3Name:Mp3_Name,
-		}), G_get_div_body());
+	React.render(React.createElement(Img_photo_rect), G_get_div_body());
 
 }				
 
@@ -285,56 +313,85 @@ var queryPlayMove=function(obj,Mp3uuid){
  * */
 var Img_photo_rect = React.createClass({
  getInitialState: function() {
+
 			return KDPhoto_play_move;
 	  },
-	  
+//保存返回	  
 buttion_black_Click: function(o) {
-	module.queryForPayMove(o)
+	  var imgs="";
+	  $(".G_cookplan_Img_img").each(function(){
+		  imgs+=$(this).attr("src")+",";
+		});	  
+	  imgs=imgs.substring(0,imgs.length-1)
+	  $('#photo_uuids').val(imgs);
+
+	  var obj = $('#KdPhotoForm').serializeJson();
+	  if(!obj.photo_uuids){
+		  G_msg_pop("图片或内容至少填写一项.");
+		  return;
+		  
+	  }
+	var opt={
+			 formName:"KdPhotoForm",
+			 url:hostUrl + "rest/kdMovie/save.json",
+			 cbFN:null
+			 };
+	G_ajax_abs_save(opt);
+	
+	
+//	React.render(React.createElement(Query_photo_div,{				
+//		formdata:o.formdata
+//		}), G_get_div_second());	
 },	
-imgDivNum:0,
-getNewImgDiv:function(){
-	  this.imgDivNum++;
-	return "Classnews_edit_"+this.imgDivNum;  
-},	  
-addShowImg:function(url,uuid,i){
-	console.log("uuid",i);
-	  var divid=this.getNewImgDiv();
+	  
+addShowImg:function(url,uuid){
+	var prx_divid="Img_photo_rect_";
+	  var divid=prx_divid+uuid;  
 	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
-		this.state.div_list.push({parentDivId:divid})
-		this.state.imgArry.push(url);
+
 		this.setState(this.state);
 	  React.render(React.createElement(KDphoto_Img_canDel, {
-			url: url,parentDivId:divid,uuid:uuid
+		  prx_divid:prx_divid,
+			url: url,uuid:uuid
 			}), document.getElementById(divid));  
 },
-upload_files_arr:[],
-componentDidMount:function(){
-	 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
-	 this.editor=editor;
-	// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
-	 var that=this;		 
-	 //已经有的图片,显示出来.		 
-	  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
-		 that.addShowImg(imgurl);
-		
-	  });		
+componentDidMount:function(){	
 	//已经有的图片,显示出来.
-	 if(!$('#imgs').val())return;
-	 var imgArr=$('#imgs').val().split(",");
-	 for(var i=0;i<imgArr.length;i++){
-		 this.addShowImg(imgArr[i]);
+	var imgArry=KDPhoto_play_move.imgArry;
+	 if(imgArry.length==0)return;
+	 for(var i=0;i<imgArry.length;i++){
+		 this.addShowImg(imgArry[i].path,imgArry[i].uuid);
 	 }		
+
 },
+//选择照片绘制
 bg_Class_fn:function(){
 	var that=this;
-	var callback=function(imgArr){	
-		that.state.photo_uuids=stringArry(imgArr);
-		 for(var i=0;i<imgArr.length;i++){
-			 that.addShowImg(imgArr[i].src,imgArr[i].uuid,i);
+	var callback=function(imgArry){	
+		 $("#show_imgList").html("");
+		// console.log("imgArry",imgArry);
+		var calback_uuids=[];
+		var uuids;
+		//that.state.photo_uuids=stringArry(imgArry);
+		//根据回调取得选择的图骗数组并且抽出其中的UUID
+		 for(var i=0;i<imgArry.length;i++){			 
+			 calback_uuids.push(imgArry[i].uuid);//数组 UUID
 		 }		
+		 uuids=stringArry(calback_uuids);	//将UUID数组转成字符串;	 
+		 var imgs=queryMoviePhoto_uuids(uuids);	//根据uuid字符串服务器请求取得照片地址 数组 	 
+		 for(var i=0;i<imgs.length;i++){
+			 that.addShowImg(imgs[i].path,imgs[i].uuid);
+		   }		   
 	}
-
+	
+	
+//记录已选择的
+	var img_arry=KDPhoto_play_move.imgArry;
+	for(var i=0;i<img_arry.length;i++){
+		G_photo_urlsSelectArry.push(img_arry[i].uuid);
+	}
 		var groupuuid=Store.getGroupBymyclassList(this.state.formdata.classuuid);
+		 $("#show_imgList").html("");	
 	    KDClassNewPhotoItem.queryForSelect(groupuuid,this.state.formdata.classuuid,1,callback);
 
   },
@@ -344,14 +401,16 @@ handleChange:function(){
 	this.setState($('#KdPhotoForm').serializeJson());
 
 },
-buttion_LestGo: function() {
-	 for(var i=0;i<this.state.div_list.length;i++){
-		 $("#"+this.state.div_list[i].parentDivId).remove();
-	 }			
-this.state.div_list=[];	
-this.state.btn_Letgo=false;
-this.setState(this.props.formdata);
-},	
+//buttion_LestGo: function() {
+	
+	
+//	 for(var i=0;i<this.state.div_list.length;i++){
+//		 $("#"+this.state.div_list[i]).remove();
+//	 }			
+//this.state.div_list=[];	
+//this.state.btn_Letgo=false;
+//this.setState(this.props.formdata);
+//},	
 //MP3切换方法;		
 handleChange_selectMp3: function(val){	
 	var List=[];
@@ -365,28 +424,12 @@ handleChange_selectMp3: function(val){
 	this.setState(this.state);
 },
 //选择模板
-buttion_fpmove: function(){	
-	$.AMUI.progress.start();
-	var url = hostUrl + "rest/fPMovieTemplate/query.json";
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "json",
-		async: false,
-		success : function(data) {
-			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-				React.render(React.createElement(Img_fPMovieTemplate_rect, {
-					evens:data.list,
-					responsive: true, bordered: true, striped :true,hover:true,striped:true
-				}), G_get_div_body());
-			} else {
-				alert(data.ResMsg.message);
-				G_resMsg_filter(data.ResMsg);
-			}
-		},
-		error :G_ajax_error_fn
-	});
+buttion_fpmove: function(){		
+	var tenokate_List=tenokate_fpmove();
+	
+	React.render(React.createElement(Img_fPMovieTemplate_rect, {
+		evens:tenokate_List
+	}), G_get_div_body());
 },
 
 render: function() {	
@@ -394,12 +437,12 @@ render: function() {
 	var buttion_LestGo_className;
     var tenokate=(<div></div>)
 	KDPhoto_play_move=this.state;
-	
   	if(o.btn_Letgo==false){
   		buttion_LestGo_className="G_Edit_hide";
 	   }else{
 		buttion_LestGo_className="G_Edit_show";
 	  }	
+
   	if(!o.tenokate){
   		tenokate=(<div><label>背景模板：未选择</label><br/></div>);
 	   }else{
@@ -408,8 +451,11 @@ render: function() {
   		 <img src={o.tenokate.herald} />
 		</div>);
 	  }	
-  	console.log("测试1",this.state);
-  	console.log("测试222",KDPhoto_play_move);
+  	console.log("o",o)
+  	if(!o.herald)o.herald="";
+  	if(!o.tenokate)o.tenokate="";
+  	if(!o.Mp3uuid)o.Mp3uuid="";
+  	if(!o.photo_uuids)o.photo_uuids="";
     return (
     		<div id="KdPhotoForm_list_div">
     		<div className="header">
@@ -427,9 +473,14 @@ render: function() {
 
 
 	      <label>标题：</label><br/> 
+	      
+	      
 		  <form id="KdPhotoForm" method="post" className="am-form">
-		  <input type="hidden" name="photo_uuids"  value={o.photo_uuids}/>
-  		  <input type="hidden" name="mp3"  value={o.Mp3uuid}/>
+		  <input type="hidden" name="photo_count"  value={o.imgArry.length}/>
+		  <input type="hidden" name="herald"  value={o.herald}/>
+		  <input type="hidden" name="template_key"  value={o.tenokate.key}/>
+		  <input type="hidden" name="photo_uuids" id="photo_uuids"  value={o.photo_uuids}/>
+		  <input type="hidden" name="mp3"  value={o.Mp3uuid}/>
 		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="256" />		
 
 		  
@@ -452,7 +503,6 @@ render: function() {
      		  
      	  <AMR_ButtonToolbar>	  
      		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >保存并返回</AMR_Button>
-		    <AMR_Button amSize="xs"  className={buttion_LestGo_className} amStyle="secondary" onClick={this.buttion_LestGo.bind(this)} >保存继续上传</AMR_Button>
 		  </AMR_ButtonToolbar>
     		    
 		    </div>
@@ -462,87 +512,52 @@ render: function() {
   }
 });
 
+
+
+
 //绘制上传照片后预览照片XX等按钮绘制 
-//var KDphoto_Img_canDel = React.createClass({
-//	deleteImg:function(divid){
-//		$("#"+divid).remove();
-//	},			
-//  render: function() {
-//
-//	 return (
-//      		<div  className="G_cookplan_Img" >
-// 	       			<img className="G_cookplan_Img_img"  src={this.props.url} alt="图片不存在" />
-// 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
-// 	       		</div>		
-//      	)
-//  }
-//});
-
-
 var KDphoto_Img_canDel = React.createClass({
  //删除XX按钮方法
- deleteImg:function(divid){
-	$("#"+divid).remove();
+ deleteImg:function(){
+ var url=this.props.url;
+ var uuid=this.props.uuid;
+ var new_imgArry=[];
+
+ var prx_divid=this.props.prx_divid;
+ $("#"+prx_divid+uuid).remove();
+var arr=KDPhoto_play_move.imgArry;
+
+ for(var i=0;i<arr.length;i++){
+	if(uuid!= arr[i].uuid){
+		new_imgArry.push(arr[i]);		
+	}	 
+ }
+ KDPhoto_play_move.imgArry=new_imgArry;
  },	
 //封面点击选择方案 
  div_onClick:function(trid){
-//	this.is_Checked=true;
-//	objfPMovieTemplate=event;
 var name="封面";
 	showDiv(trid,name);
+	KDPhoto_play_move.herald=this.props.url;
  },	
+ componentDidMount:function(){
+	 if(KDPhoto_play_move.herald==this.props.url){
+			var name="封面";
+			showDiv("Common_fPMovieTemplate_"+this.props.uuid,name);
+		 }	
+}, 
   render: function() {
 var url=this.props.url;
 var uuid=this.props.uuid;
+
 	 return (
-      		<div id={"Common_fPMovieTemplate_"+uuid} title={uuid} onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img" >
+      		<div id={"Common_fPMovieTemplate_"+uuid}  onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img" >
  	       			<img  className="G_cookplan_Img_img"  src={url} alt="图片不存在" />
- 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this,this.props.parentDivId)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
+ 	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
  	       		</div>		
       	)
   }
 });
-
-
-//	div_onClick:function(trid,event){
-//		this.is_Checked=true;
-//		objfPMovieTemplate=event;
-//		showDiv(trid);
-//	},	
-//	//确认模板按钮
-//	buttion_black_Click:function(){
-//		if(this.is_Checked==false){
-//			 G_msg_pop("请选择一个模板");	
-//			 return
-//		}
-//		KDPhoto_play_move.tenokate=objfPMovieTemplate;
-//		React.render(React.createElement(Img_photo_rect), G_get_div_body());
-//	},		
-//		
-//	  render: function() {
-//		  var that=this
-//				  if (!this.props.imgsList){
-//					  return;
-//				  };  
-//		this.is_Checked=false;
-//		var objfPMovieTemplate;		  
-//	return (
-//	   <div>
-//		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this)} >确认该模板</AMR_Button>
-//
-//		<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
-//		   {this.props.imgsList.map(function(event) {
-//	    	var  o = event.herald;
-//	    	var title_text = event.title;
-//	    	if(!title_text)title_text="无";
-//	  
-//		return (
-//				<li id={"Common_fPMovieTemplate_fn_item_"+ event.key} className={"G_class_phtoto_Img  G_ch_classNews_item "}  title={event.key}  onClick={that.div_onClick.bind(this,"Common_fPMovieTemplate_fn_item_"+event.key,event)}>		     			
-//
-//
-//
-//
-//
 
 
 
@@ -596,7 +611,12 @@ buttion_black_Click:function(){
 	KDPhoto_play_move.tenokate=objfPMovieTemplate;
 	React.render(React.createElement(Img_photo_rect), G_get_div_body());
 },		
-	
+componentDidMount:function(){
+//	 if(KDPhoto_play_move.herald==this.props.url){
+//			var name="封面";
+//			showDiv("Common_fPMovieTemplate_"+this.props.uuid,name);
+//		 }	
+}, 	
   render: function() {
 	  var that=this
 			  if (!this.props.imgsList){
@@ -644,16 +664,70 @@ return (
 //公用数据集合 
 var KDPhoto_play_move={
 		Mp3Arry:[],
-		div_list:[],
 		imgArry:[],
 		Mp3Name:null,
 		Mp3uuid:null,
 		btn_Letgo:false,
 		formdata:null,
-		photo_uuids:null,
-		title:null,
-		tenokate:null
+		herald:null,
+		photo_uuids:null, //照片UUID
+		title:null,      //标题
+		//uuids:null,
+		tenokate:null    //模板
            }
+//根据uuid取出图标地址服务请求公用方法 
+var	queryMoviePhoto_uuids= function(photo_uuids) {
+
+ 	    //取出mp3
+ 		var url = hostUrl + "rest/kDPhotoItem/queryForMoviePhoto_uuids.json";
+ 		$.ajax({
+ 			type : "GET",
+ 			url : url,
+ 			dataType : "json",
+ 			data:{photo_uuids:photo_uuids},
+ 			async: false,
+ 			success : function(data) {
+ 				if (data.ResMsg.status == "success") {
+ 					MoveArry=data.list.data;
+ 					KDPhoto_play_move.imgArry=MoveArry;
+
+ 				} else {
+ 					alert(data.ResMsg.message);
+ 					G_resMsg_filter(data.ResMsg);
+ 				}
+ 			},
+ 			error : G_ajax_error_fn
+ 		});		
+ 		return KDPhoto_play_move.imgArry
+  };
+
+  
+  
+//取出所有模板公用方法
+var tenokate_fpmove= function(){	
+	var tenokate_List=[];
+  	$.AMUI.progress.start();
+  	var url = hostUrl + "rest/fPMovieTemplate/query.json";
+  	$.ajax({
+  		type : "GET",
+  		url : url,
+  		dataType : "json",
+  		async: false,
+  		success : function(data) {
+  			$.AMUI.progress.done();
+  			if (data.ResMsg.status == "success") {
+  				tenokate_List=data.list;
+  			} else {
+  				alert(data.ResMsg.message);
+  				G_resMsg_filter(data.ResMsg);
+  			}
+  		},
+  		error :G_ajax_error_fn
+  	});
+  	return tenokate_List
+  }
+  
+ 
 //取mp3公用服务请求公用方法 
 var	query_Mp3= function() {
  	 var Mp3Arry=[];

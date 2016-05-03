@@ -722,6 +722,7 @@ function menu_body_fn (){
  * */
 G_photo_groupuuid=null;
 G_photo_classuuid=null;
+G_photo_urlsSelectArry=[];
 function menu_photo_fn() {
 	Queue.push(menu_photo_fn,"班级相册");
 	KDPhotoItem.query();

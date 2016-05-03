@@ -21,7 +21,7 @@ import com.company.news.vo.ResponseMessage;
  */
 @Controller
 @RequestMapping(value = "/fPMovieTemplate")
-public class KPMovieTemplateController extends AbstractRESTController {
+public class KDMovieTemplateController extends AbstractRESTController {
 
 	@Autowired
 	private KDMovieTemplateService kPMovieTemplateService;
