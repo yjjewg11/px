@@ -66,6 +66,7 @@ public class KDMovieService extends AbstractService {
 			KDMovie dbobj = new KDMovie();
 			BeanUtils.copyProperties(dbobj, jsonform);
 			dbobj.setCreate_useruuid(user.getUuid());
+			dbobj.setCreate_time(TimeUtils.getCurrentTimestamp());
 			//修复修改保存时,没有保存图片数量.
 			dbobj.setPhoto_count(Long.valueOf(StringUtils.countMatches(jsonform.getPhoto_uuids(), ",")));
 			

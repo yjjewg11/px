@@ -54,6 +54,7 @@ componentDidMount:function(){
 //制作相册;
  handleClick_PlayMove: function(obj) {
      KDPhoto_play_move={
+    		    uuid:"",    //区分新建与编辑 相册的UUID
 				Mp3Arry:[],
 				imgArry:[],
 				Mp3Name:null,
@@ -231,7 +232,7 @@ var  Common_mg_Classnew_big_fn  = React.createClass({
 				  KDPhoto_play_move.tenokate=tenokate_List[i]
 			  }					
 			}	
-
+         KDPhoto_play_move.uuid=event.uuid;
 		 KDPhoto_play_move.imgArry=imgs;
 		 KDPhoto_play_move.herald=event.herald
 		 KDPhoto_play_move.formdata=this.props.obj;
@@ -320,7 +321,7 @@ var Img_photo_rect = React.createClass({
 buttion_black_Click: function(o) {
 	  var imgs="";
 	  $(".G_cookplan_Img_img").each(function(){
-		  imgs+=$(this).attr("src")+",";
+		  imgs+=$(this).attr("id")+",";
 		});	  
 	  imgs=imgs.substring(0,imgs.length-1)
 	  $('#photo_uuids').val(imgs);
@@ -330,29 +331,30 @@ buttion_black_Click: function(o) {
 		  G_msg_pop("图片或内容至少填写一项.");
 		  return;
 		  
-	  }
+	  }  
+  
 	var opt={
 			 formName:"KdPhotoForm",
 			 url:hostUrl + "rest/kdMovie/save.json",
 			 cbFN:null
 			 };
-	G_ajax_abs_save(opt);
-	
-	
-//	React.render(React.createElement(Query_photo_div,{				
-//		formdata:o.formdata
-//		}), G_get_div_second());	
+	G_ajax_shouc_save(opt);
+
+	React.render(React.createElement(Query_photo_div,{				
+		formdata:o.formdata
+	}), document.getElementById('div_body'));
 },	
 	  
 addShowImg:function(url,uuid){
 	var prx_divid="Img_photo_rect_";
-	  var divid=prx_divid+uuid;  
+	var that=this;
+	var divid=prx_divid+uuid;  
 	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
 
 		this.setState(this.state);
 	  React.render(React.createElement(KDphoto_Img_canDel, {
 		  prx_divid:prx_divid,
-			url: url,uuid:uuid
+			url: url,uuid:uuid,paThat:that,
 			}), document.getElementById(divid));  
 },
 componentDidMount:function(){	
@@ -369,10 +371,8 @@ bg_Class_fn:function(){
 	var that=this;
 	var callback=function(imgArry){	
 		 $("#show_imgList").html("");
-		// console.log("imgArry",imgArry);
 		var calback_uuids=[];
 		var uuids;
-		//that.state.photo_uuids=stringArry(imgArry);
 		//根据回调取得选择的图骗数组并且抽出其中的UUID
 		 for(var i=0;i<imgArry.length;i++){			 
 			 calback_uuids.push(imgArry[i].uuid);//数组 UUID
@@ -451,7 +451,7 @@ render: function() {
   		 <img src={o.tenokate.herald} />
 		</div>);
 	  }	
-  	console.log("o",o)
+
   	if(!o.herald)o.herald="";
   	if(!o.tenokate)o.tenokate="";
   	if(!o.Mp3uuid)o.Mp3uuid="";
@@ -477,6 +477,7 @@ render: function() {
 	      
 		  <form id="KdPhotoForm" method="post" className="am-form">
 		  <input type="hidden" name="photo_count"  value={o.imgArry.length}/>
+		  <input type="hidden" name="uuid"  value={o.uuid}/>
 		  <input type="hidden" name="herald"  value={o.herald}/>
 		  <input type="hidden" name="template_key"  value={o.tenokate.key}/>
 		  <input type="hidden" name="photo_uuids" id="photo_uuids"  value={o.photo_uuids}/>
@@ -536,9 +537,11 @@ var arr=KDPhoto_play_move.imgArry;
  },	
 //封面点击选择方案 
  div_onClick:function(trid){
+var that=this.props.paThat;
 var name="封面";
 	showDiv(trid,name);
 	KDPhoto_play_move.herald=this.props.url;
+	that.setState(that.state);
  },	
  componentDidMount:function(){
 	 if(KDPhoto_play_move.herald==this.props.url){
@@ -552,7 +555,7 @@ var uuid=this.props.uuid;
 
 	 return (
       		<div id={"Common_fPMovieTemplate_"+uuid}  onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img" >
- 	       			<img  className="G_cookplan_Img_img"  src={url} alt="图片不存在" />
+ 	       			<img  id ={uuid} className="G_cookplan_Img_img"  src={url} alt="图片不存在" />
  	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
  	       		</div>		
       	)
@@ -609,15 +612,21 @@ buttion_black_Click:function(){
 		 return
 	}
 	KDPhoto_play_move.tenokate=objfPMovieTemplate;
-	React.render(React.createElement(Img_photo_rect), G_get_div_body());
+	React.render(React.createElement(Img_photo_rect), G_get_div_body()) 
 },		
 componentDidMount:function(){
-//	 if(KDPhoto_play_move.herald==this.props.url){
-//			var name="封面";
-//			showDiv("Common_fPMovieTemplate_"+this.props.uuid,name);
-//		 }	
+	var imgsList=this.props.imgsList;
+ for(var i=0;i<imgsList.length;i++){
+	 if(KDPhoto_play_move.tenokate.key==imgsList[i].key){
+			this.is_Checked=true;
+			objfPMovieTemplate=imgsList[i];
+			var name="已选择该模板";
+			showDiv("Common_fPMovieTemplate_fn_item_"+objfPMovieTemplate.key,name);
+	 }	 
+ }
 }, 	
   render: function() {
+
 	  var that=this
 			  if (!this.props.imgsList){
 				  return;
@@ -663,6 +672,7 @@ return (
 //----------------------------------------抽离出来的公用方法------------------------------
 //公用数据集合 
 var KDPhoto_play_move={
+		uuid:"",    //区分新建与编辑 相册的UUID
 		Mp3Arry:[],
 		imgArry:[],
 		Mp3Name:null,

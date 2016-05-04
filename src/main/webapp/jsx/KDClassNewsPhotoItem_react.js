@@ -514,7 +514,6 @@ var  Common_mg_Classnew_big_fn  = React.createClass({
 	},
   render: function() {
 	  var that=this
-	  console.log("G_photo_urlsSelectArry",G_photo_urlsSelectArry);
 
 	  var edit_btn_className;
 			  if (!this.props.imgsList){
