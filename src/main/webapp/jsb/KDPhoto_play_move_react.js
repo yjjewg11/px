@@ -3,7 +3,7 @@ var KDPhoto_play_move=function(obj){
 			queryForPayMove:function(obj){
 				React.render(React.createElement(Query_photo_div,{				
 					formdata:obj
-					}), G_get_div_second());
+					}), G_get_div_body());
 			}				
 		}
 //----------------------------------------精品相册绘制界面---1层---------------------------
@@ -78,7 +78,11 @@ componentDidMount:function(){
 	this.state.query_My_All_list=1;		
 	this.refresh_data();
   }, 
-  
+//切换到班级相册  
+  phtot_class_Click: function() {
+	  KDPhotoItem.query();
+	  }, 
+	  
 render: function() {
 	this.load_more_btn_id="load_playMove_more_"+this.props.uuid;
 //query_My_All_list:1显示查询所有，2显示查询我的;	
@@ -102,6 +106,13 @@ render: function() {
 	 }
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
+		  
+		   React.createElement(AMR_Panel, null, 
+		    React.createElement(AMR_ButtonToolbar, null, 
+		     React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.phtot_class_Click.bind(this,obj)}, "班级相册")
+  		    )
+		   ), 
+		   
 		  React.createElement(AMR_Panel, null, 
 		   React.createElement(AMR_ButtonToolbar, null, 		    
     		 React.createElement(AMR_Button, {className: btn_query_All_className, amStyle: "secondary", onClick: this.All_group_class.bind(this)}, "查询所有精品相册"), 
@@ -204,8 +215,7 @@ var Query_photo_rect = React.createClass({displayName: "Query_photo_rect",
 var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Classnew_big_fn",	
 	//红框框样式点击方法;
 	div_onClick:function(event){
-//	       console.log("event",event);
-//	       console.log("Store.getUserinfo()",Store.getUserinfo());
+
 	 var create_useruuid,useruuid,Mp3_uuid,Mp3_Name; 
 	 var Mp3Arry=query_Mp3();
 	 var imgs=queryMoviePhoto_uuids(event.photo_uuids);	//根据uuid字符串服务器请求取得照片地址 数组 	
@@ -281,9 +291,34 @@ var  Common_mg_Classnew_big_fn  = React.createClass({displayName: "Common_mg_Cla
     }	
 
 },
+//预览精品相册
+Look_img_photo: function(obj) {
+	var uuid=obj.uuid;
+  	$.AMUI.progress.start();
+      var url = hostUrl + "rest/kdMovie/get.json?uuid="+uuid;
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "json",
+		 async: true,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Photo_move_div,{				
+					share_url:data.share_url
+				}), G_get_div_second());
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			rror :G_ajax_error_fn
+		});	
 
+},
   render: function() {
 	  var that=this
+	  var useruuid=Store.getUserinfo().uuid;
 			  if (!this.props.imgsList){
 				  return;
 			  };  
@@ -292,17 +327,33 @@ return (
    React.createElement("div", null, 
 	React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
 	   this.props.imgsList.map(function(event) {
+		var  btn_name;   
     	var  o = event.herald;
     	var time_text = event.create_time;
     	var title= event.title;
+	    var create_useruuid=event.create_useruuid;
     	if(!title)title="无";
+    	if(create_useruuid==useruuid){
+    		btn_name="编辑";
+    	}else{
+    	    btn_name="查看";
+    		
+    	}
+    	
 	return (
 			
-		 React.createElement("li", {id: "Common_mg_ClassNew_big_fn_item_"+ event.uuid, className: "G_class_phtoto_Img  G_ch_classNews_item ", onClick: that.div_onClick.bind(this,event)}, 			     						    
+		 React.createElement("li", {id: "Common_mg_ClassNew_big_fn_item_"+ event.uuid, className: "G_class_phtoto_Img  G_ch_classNews_item "}, 			     						    
 		  React.createElement("div", {className: "am-gallery-item"}, 
 		   React.createElement("img", {src: o}), 
-	        React.createElement("label", null, "标题："+title+"【"+time_text+"】")
-	       )
+		   React.createElement("label", null, "相册名称："+title+"【"+time_text+"】"), 
+		   
+			  React.createElement("br", null), 
+	      React.createElement(AMR_ButtonToolbar, null, 	
+     	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: that.Look_img_photo.bind(this,event)}, "预览"), 
+     	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: that.div_onClick.bind(this,event)}, btn_name)
+     	  )
+     	   
+		   )
 	      )		      
         	)
       })
@@ -319,6 +370,29 @@ return (
 
 
 
+
+
+
+
+
+
+
+
+//----------------------------------------精品相册预览层层-------------------------
+
+/*
+ *精品相册预览层
+ * */
+var Photo_move_div = React.createClass({displayName: "Photo_move_div",
+render: function() {	
+    return (
+       React.createElement("div", {id: "list_div"}, 
+       React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: this.props.share_url})
+	   )    	
+
+    );
+  }
+});
 
 
 
@@ -348,7 +422,7 @@ var queryPlayMove=function(obj){
 
 
 
-/*
+/*     	    
  *新建与编辑精品相册功能
  * */
 var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
@@ -516,12 +590,9 @@ render: function() {
 		delete_className="G_Edit_show";
 	  }	
   	if(!o.tenokate){
-  		tenokate=(React.createElement("div", null, React.createElement("label", null, "背景模板：未选择"), React.createElement("br", null)));
+  		tenokate="选择模板";
 	   }else{
-		tenokate=(React.createElement("div", null, 
- 		 React.createElement("label", null, "背景模板："+o.tenokate.title), React.createElement("br", null), 
-  		 React.createElement("img", {src: o.tenokate.herald})
-		));
+		tenokate=o.tenokate.title;
 	  }	
 
   	if(!o.herald)o.herald="";
@@ -537,18 +608,12 @@ render: function() {
   	   React.createElement("div", {className: "am-g  am-u-md-6 am-u-sm-12"}, 
   		  
 		    React.createElement(AMR_ButtonToolbar, null, 
-    		 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
-    		 React.createElement(AMUIReact.Selected, {id: "mp3uuid", name: "mp3uuid", onChange: this.handleChange_selectMp3, btnWidth: "200", data: o.Mp3Arry, btnStyle: "primary", value: o.Mp3uuid})		            
-    		 ), 
-      		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_fpmove.bind(this,o)}, "选择模板"), 
-      		React.createElement(AMR_Button, {className: delete_className, amSize: "xs", amStyle: "secondary", onClick: this.buttion_delete.bind(this,o)}, "删除该相册")
-
+      	     React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black.bind(this,o)}, "返回相册墙"), 
+      		 React.createElement(AMR_Button, {className: delete_className, amSize: "xs", amStyle: "secondary", onClick: this.buttion_delete.bind(this,o)}, "删除该相册")
       		), 	
 
 
-	      React.createElement("label", null, "标题："), React.createElement("br", null), 
-	      
-	      
+	      React.createElement("label", null, "相册名称："), React.createElement("br", null), 
 		  React.createElement("form", {id: "KdPhotoForm", method: "post", className: "am-form"}, 
 		  React.createElement("input", {type: "hidden", name: "photo_count", value: o.imgArry.length}), 
 		  React.createElement("input", {type: "hidden", name: "uuid", value: o.uuid}), 
@@ -558,27 +623,33 @@ render: function() {
 		  React.createElement("input", {type: "hidden", name: "mp3", value: o.Mp3uuid}), 
 		  React.createElement("input", {type: "text", name: "title", id: "title", value: o.title, onChange: this.handleChange, maxlength: "256"}), 		
 
+
+		      
 		  
-  		  React.createElement("label", null, "音乐Mp3："+o.Mp3Name), React.createElement("br", null), 
-  		 tenokate
-		  ), 
+		React.createElement("br", null), 		 
+        React.createElement(AMR_ButtonToolbar, null, 
+        
+         React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "选择图片")
+		 ), 
+		 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_fpmove.bind(this,o)}, tenokate)
+		 ), 
+		 React.createElement("div", {className: "am-fl am-margin-left-sm am-margin-bottom-xs"}, 
+		  React.createElement(AMUIReact.Selected, {id: "mp3uuid", name: "mp3uuid", onChange: this.handleChange_selectMp3, btnWidth: "200", data: o.Mp3Arry, btnStyle: "primary", value: o.Mp3uuid})		            
+		 )
+
+		)
+  
+	), 
   		 
-		
-		    
-	
 		  React.createElement("br", null), 
-	       React.createElement("label", null, "班级相册图片："), 
-            React.createElement(AMR_ButtonToolbar, null, 
-     		 React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.bg_Class_fn.bind(this)}, "浏览...")
-     		), 
 		      React.createElement("div", {id: "show_imgList"}), React.createElement("br", null), 
 		      React.createElement("div", {className: "cls"}), 
      		  
-     		  
-     		  
+		  React.createElement("br", null), 
      	  React.createElement(AMR_ButtonToolbar, null, 	
-     	    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black.bind(this,o)}, "返回相册墙"), 
-     		React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "保存并返回")
+     	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_black_Click.bind(this,o)}, "保存并返回")
 		  )
     		    
 		    )
@@ -587,6 +658,260 @@ render: function() {
     );
   }
 });
+
+
+
+
+
+//老板有各展示力度的 编辑界面 代码
+//var Img_photo_rect = React.createClass({
+// getInitialState: function() {
+//
+//			return KDPhoto_play_move;
+//	  },
+////保存返回	  
+//buttion_black_Click: function(o) {
+//	  var imgs="";
+//	  $(".G_cookplan_Img_img").each(function(){
+//		  imgs+=$(this).attr("id")+",";
+//		});	  
+//	  imgs=imgs.substring(0,imgs.length-1)
+//	  $('#photo_uuids').val(imgs);
+//
+//	  var obj = $('#KdPhotoForm').serializeJson();
+//	  if(!obj.photo_uuids){
+//		  G_msg_pop("图片或内容至少填写一项.");
+//		  return;
+//		  
+//	  }  
+//  
+//	var opt={
+//			 formName:"KdPhotoForm",
+//			 url:hostUrl + "rest/kdMovie/save.json",
+//			 cbFN:null
+//			 };
+//	G_ajax_shouc_save(opt);
+//
+//	React.render(React.createElement(Query_photo_div,{				
+//		formdata:o.formdata
+//	}), document.getElementById('div_body'));
+//},	
+//	  
+//addShowImg:function(url,uuid){
+//	var prx_divid="Img_photo_rect_";
+//	var that=this;
+//	var divid=prx_divid+uuid;  
+//	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
+//
+//		this.setState(this.state);
+//	  React.render(React.createElement(KDphoto_Img_canDel, {
+//		  prx_divid:prx_divid,
+//			url: url,uuid:uuid,paThat:that,
+//			}), document.getElementById(divid));  
+//},
+//componentDidMount:function(){	
+//	//已经有的图片,显示出来.
+//	var imgArry=KDPhoto_play_move.imgArry;
+//	 if(imgArry.length==0)return;
+//	 for(var i=0;i<imgArry.length;i++){
+//		 this.addShowImg(imgArry[i].path,imgArry[i].uuid);
+//	 }		
+//
+//},
+////选择照片绘制
+//bg_Class_fn:function(){
+//	var that=this;
+//	var callback=function(imgArry){	
+//		 $("#show_imgList").html("");
+//		var calback_uuids=[];
+//		var uuids;
+//		//根据回调取得选择的图骗数组并且抽出其中的UUID
+//		 for(var i=0;i<imgArry.length;i++){			 
+//			 calback_uuids.push(imgArry[i].uuid);//数组 UUID
+//		 }		
+//		 uuids=stringArry(calback_uuids);	//将UUID数组转成字符串;	 
+//		 var imgs=queryMoviePhoto_uuids(uuids);	//根据uuid字符串服务器请求取得照片地址 数组 	 
+//		 for(var i=0;i<imgs.length;i++){
+//			 that.addShowImg(imgs[i].path,imgs[i].uuid);
+//		   }		   
+//	}
+//	
+//	
+////记录已选择的
+//	var img_arry=KDPhoto_play_move.imgArry;
+//	for(var i=0;i<img_arry.length;i++){
+//		G_photo_urlsSelectArry.push(img_arry[i].uuid);
+//	}
+//		var groupuuid=Store.getGroupBymyclassList(this.state.formdata.classuuid);
+//		 $("#show_imgList").html("");	
+//	    KDClassNewPhotoItem.queryForSelect(groupuuid,this.state.formdata.classuuid,1,callback);
+//
+//  },
+//handleChange:function(){
+////	this.state.queryForm.label=val;
+//	this.setState(this.state);
+//	this.setState($('#KdPhotoForm').serializeJson());
+//
+//},
+////MP3切换方法;		
+//handleChange_selectMp3: function(val){	
+//	var List=[];
+//	var Mp3List=this.state.Mp3Arry;
+//	for(var i=0;i<Mp3List.length;i++){
+//        if(Mp3List[i].value==val){
+//        	this.state.Mp3Name=Mp3List[i].label
+//        }
+//       }
+//	this.state.Mp3uuid=val;
+//	this.setState(this.state);
+//},
+////删除相册
+//buttion_delete:function(obj){
+//	if(!confirm("确定要删除该相册吗?")){
+//		return;
+//	}
+//	var uuid=obj.uuid;
+//  	$.AMUI.progress.start();
+//      var url = hostUrl + "rest/kdMovie/delete.json?uuid="+uuid;
+//	$.ajax({
+//		type : "POST",
+//		url : url,
+//		dataType : "json",
+//		 async: true,
+//		success : function(data) {
+//			$.AMUI.progress.done();
+//			// 登陆成功直接进入主页
+//			if (data.ResMsg.status == "success") {
+//				React.render(React.createElement(Query_photo_div,{				
+//					formdata:obj.formdata
+//				}), document.getElementById('div_body'));
+//				} else {
+//					alert(data.ResMsg.message);
+//				}
+//			},
+//			rror :G_ajax_error_fn
+//		});
+//
+//},
+////返回按钮
+//buttion_black:function(obj){
+//	React.render(React.createElement(Query_photo_div,{				
+//		formdata:obj.formdata
+//	}), document.getElementById('div_body'));
+//},
+////选择模板
+//buttion_fpmove: function(){		
+//	var tenokate_List=tenokate_fpmove();
+//	
+//	React.render(React.createElement(Img_fPMovieTemplate_rect, {
+//		evens:tenokate_List
+//	}), G_get_div_body());
+//},
+//
+//render: function() {	
+//	var o=this.state;
+//	var delete_className;
+//    var tenokate=(<div></div>)
+//	KDPhoto_play_move=this.state;
+//  	if(!o.uuid){
+//  		delete_className="G_Edit_hide";
+//	   }else{
+//		delete_className="G_Edit_show";
+//	  }	
+//  	if(!o.tenokate){
+//  		tenokate=(<div><label>背景模板：未选择</label><br/></div>);
+//	   }else{
+//		tenokate=(<div>
+// 		 <label>{"背景模板："+o.tenokate.title}</label><br/>
+//  		 <img src={o.tenokate.herald} />
+//		</div>);
+//	  }	
+//
+//  	if(!o.herald)o.herald="";
+//  	if(!o.tenokate)o.tenokate="";
+//  	if(!o.Mp3uuid)o.Mp3uuid="";
+//  	if(!o.photo_uuids)o.photo_uuids="";
+//    return (
+//    		<div id="KdPhotoForm_list_div">
+//    		<div className="header">
+//    		  <hr />
+//    		</div>   
+//    		
+//  	   <div className="am-g  am-u-md-6 am-u-sm-12">
+//  		  
+//		    <AMR_ButtonToolbar>
+//
+//      		<AMR_Button className={delete_className} amSize="xs"  amStyle="secondary" onClick={this.buttion_delete.bind(this,o)} >删除该相册</AMR_Button>
+//      	    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black.bind(this,o)} >返回相册墙</AMR_Button>
+//
+//      		</AMR_ButtonToolbar>	
+//
+//
+//	      <label>相册名称：</label><br/> 
+//		  <form id="KdPhotoForm" method="post" className="am-form">
+//		  <input type="hidden" name="photo_count"  value={o.imgArry.length}/>
+//		  <input type="hidden" name="uuid"  value={o.uuid}/>
+//		  <input type="hidden" name="herald"  value={o.herald}/>
+//		  <input type="hidden" name="template_key"  value={o.tenokate.key}/>
+//		  <input type="hidden" name="photo_uuids" id="photo_uuids"  value={o.photo_uuids}/>
+//		  <input type="hidden" name="mp3"  value={o.Mp3uuid}/>
+//		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxlength="256" />		
+//
+//
+//		      
+//		  
+//		 <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+//		 <AMUIReact.Selected id="mp3uuid" name="mp3uuid" onChange={this.handleChange_selectMp3} btnWidth="200"  data={o.Mp3Arry} btnStyle="primary" value={o.Mp3uuid} />    		            
+//		 </div>   
+//	    		 
+//	    	<br/>  		 
+//  		  <label>{"音乐Mp3："+o.Mp3Name}</label><br/>
+//    		<AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_fpmove.bind(this,o)} >选择模板</AMR_Button>
+//  		 {tenokate}
+//		  </form>
+//  		 
+//		  <br/>
+//	       <label>班级相册图片：</label>
+//         <AMR_ButtonToolbar>
+//  		   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
+//  	 	  </AMR_ButtonToolbar>
+//		      <div id="show_imgList"></div><br/>
+//		      <div className="cls"></div>
+//     		  
+//		  <br/>  
+//     	  <AMR_ButtonToolbar>	
+//     	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >保存并返回</AMR_Button>
+//		  </AMR_ButtonToolbar>
+//    		    
+//		    </div>
+//	   </div>    	
+//
+//    );
+//  }
+//});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -646,7 +971,7 @@ render: function() {
     		), 
     		
   	   React.createElement("div", {className: "am-g  am-u-md-6 am-u-sm-12"}, 
-	      React.createElement("label", null, "标题："+o.title), React.createElement("br", null), 	  
+	      React.createElement("label", null, "相册名称："+o.title), React.createElement("br", null), 	  
   		  React.createElement("label", null, "音乐Mp3："+o.Mp3Name), React.createElement("br", null), 
   		 tenokate, 
 
@@ -688,68 +1013,6 @@ var uuid=this.props.uuid;
       	)
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -929,7 +1192,7 @@ var KDPhoto_play_move={
 		formdata:null,
 		herald:null,
 		photo_uuids:null, //照片UUID
-		title:null,      //标题
+		title:null,      //相册名称
 		//uuids:null,
 		tenokate:null    //模板
            }
