@@ -220,7 +220,7 @@ public class KDMovieController extends AbstractRESTController {
 //			pData.setPageSize(50);
 //			model.put(RestConstants.Return_ResponseMessage_dianZanNameList,baseDianzanService.queryNameByPage(uuid, SystemConstants.common_type_FPPhotoItem, user_uuid, pData));
 //			
-			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getFPMovieByUuid(uuid));
+			model.put(RestConstants.Return_ResponseMessage_share_url,PxStringUtil.getKDMovieByUuid(uuid));
 			model.put(RestConstants.Return_ResponseMessage_reply_count,baseReplyService.queryCount(uuid, SystemConstants.common_type_KDMovie));
 			
 			

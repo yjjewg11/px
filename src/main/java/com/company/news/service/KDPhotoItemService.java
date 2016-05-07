@@ -377,7 +377,7 @@ public class KDPhotoItemService extends AbstractService {
 		
 		//2016/uuid.png
 		
-		String filePath ="fp/"+TimeUtils.getCurrentTime("yyyy")+"/"+uploadFile.getUuid()+".png";
+		String filePath ="kd/"+TimeUtils.getCurrentTime("yyyy")+"/"+uploadFile.getUuid()+".png";
 		
 		uploadFile.setPath(filePath);
 		
@@ -433,7 +433,7 @@ public class KDPhotoItemService extends AbstractService {
 		
 		//2016/uuid.png
 		
-		String filePath ="fp/"+TimeUtils.getCurrentTime("yyyy")+"/"+uploadFile.getUuid()+"."+extension;
+		String filePath ="kd/"+TimeUtils.getCurrentTime("yyyy")+"/"+uploadFile.getUuid()+"."+extension;
 		
 		uploadFile.setPath(filePath);
 
@@ -527,7 +527,7 @@ public class KDPhotoItemService extends AbstractService {
 		
 		for(Map o:list){
 			try {
-				o.put("path", PxStringUtil.imgUrlByRelativePath_sub((String)o.get("path"),"@640w"));
+				o.put("path", PxStringUtil.imgUrlByRelativePath_sub((String)o.get("path"),"640w"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

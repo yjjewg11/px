@@ -35,9 +35,9 @@ import com.company.news.entity.BaseDataList;
 import com.company.news.entity.ClassNews;
 import com.company.news.entity.Cookbook;
 import com.company.news.entity.CookbookPlan;
-import com.company.news.entity.FPMovie;
 import com.company.news.entity.Group;
 import com.company.news.entity.Group4Q;
+import com.company.news.entity.KDMovie;
 import com.company.news.entity.PxCourse;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
@@ -736,7 +736,7 @@ public class ShareController extends AbstractRESTController {
 	private KDPhotoItemService kDPhotoItemService;
 	
 		@RequestMapping("/getKDMovie")  
-	    public void getFPMovie(ModelMap model, HttpServletRequest request,HttpServletResponse response,PaginationData pData) {  
+	    public void getKDMovie(ModelMap model, HttpServletRequest request,HttpServletResponse response,PaginationData pData) {  
 	       try {  
 	    	   model.clear();
 	    	   ResponseMessage responseMessage = RestUtil
@@ -746,7 +746,7 @@ public class ShareController extends AbstractRESTController {
 	    	   String movie_uuid = request.getParameter("kdmovie_uuid");//客户端请求参数  
 		    	  
 	    	   
-	    	   FPMovie fPMovie= (FPMovie)this.nSimpleHibernateDao.getObject(FPMovie.class, movie_uuid);
+	    	   KDMovie fPMovie= (KDMovie)this.nSimpleHibernateDao.getObject(KDMovie.class, movie_uuid);
 	    	   if(fPMovie==null){
 	    		   responseMessage.setMessage("动态相册不存在！");
 	    		   HttpRequestUtils.responseJSONP(model, response, "getFPMovie");
