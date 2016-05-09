@@ -651,7 +651,20 @@ var fpPhotoUploadTask={
 		ajax_uploadByphone:function(base64){
 			$.AMUI.progress.start(); 
 			
-		
+			var error_reupload=function(msg,base64){
+				if(G_reUploadNumber<3){
+					if(confirm("这张上传失败,确定重新上传吗?")){
+						G_reUploadNumber++;
+						fpPhotoUploadTask.ajax_uploadByphone(base64);
+						return;
+				      }
+					
+				}
+				G_img_Photo--;
+				G_reUploadNumber=0;
+				alert(msg);
+				fpPhotoUploadTask.do_lrz();	
+			}
 			
 			  formObject = $('#KdPhotoForm').serializeJson();
 				formObject.base64=base64;
@@ -668,8 +681,8 @@ var fpPhotoUploadTask={
 					// 登陆成功直接进入主页
 					if (data.ResMsg.status == "success") {
 						if(!G_img_Photo)G_img_Photo=0;
-						G_img_Photo=G_img_Photo+1;
-						
+						G_img_Photo++;
+						G_reUploadNumber=0;
 						var progress_width=Math.round(G_img_Photo/G_img_number*100);
 						G_that.state.photoNum=G_img_Photo;
 						G_that.state.photoAllNum=G_img_number;
@@ -683,19 +696,23 @@ var fpPhotoUploadTask={
 
 						fpPhotoUploadTask.do_lrz();						
 					} else {
-						if(G_num==3){
-							G_num=0
-							alert(data.ResMsg.message);
-						}else{
-							if(!confirm("上传失败确定重新上传吗?")){
-								return;
-						        	}
-								G_num+=1
-								fpPhotoUploadTask.ajax_uploadByphone(base64);
-						}
+						error_reupload(data.ResMsg.message,base64);
 					}
 				},
-				error :G_ajax_error_fn
+				error :function ( obj, textStatus, errorThrown ){
+					$.AMUI.progress.done();
+					var msg=null;
+					if(obj.responseText&&obj.responseText.indexOf("G_key_no_connect_server")){
+						msg=("没连接上互联网.");
+					}else{
+						msg=(obj.status+","+textStatus+"="+errorThrown);
+					}
+					
+					
+					error_reupload(msg,base64);
+					
+					 console.log(',ajax_error：', obj.status+","+textStatus+"="+errorThrown);
+				}
 			});
 			
 		}
@@ -707,7 +724,7 @@ G_img_number=null;
 G_img_Photo=0;
 G_that=null;
 G_data=[];
-G_num=0;
+G_reUploadNumber=0;
 var Img_photo_rect = React.createClass({
  getInitialState: function() {
 	 var label_obj;

@@ -305,6 +305,11 @@ Look_img_photo: function(obj) {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
 			if (data.ResMsg.status == "success") {
+				
+				var flag=G_CallPhoneFN.openNewWindowUrl(data.data.title,data.data.title,null,data.share_url);
+				if(flag)return;
+				
+				 
 				React.render(React.createElement(Photo_move_div,{				
 					share_url:data.share_url
 				}), G_get_div_second());
@@ -333,11 +338,9 @@ return (
     	var title= event.title;
 	    var create_useruuid=event.create_useruuid;
     	if(!title)title="无";
+    	var editDiv=null;
     	if(create_useruuid==useruuid){
-    		btn_name="编辑";
-    	}else{
-    	    btn_name="查看";
-    		
+    		editDiv= React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: that.div_onClick.bind(this,event)}, "编辑");
     	}
     	
 	return (
@@ -350,7 +353,8 @@ return (
 			  React.createElement("br", null), 
 	      React.createElement(AMR_ButtonToolbar, null, 	
      	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: that.Look_img_photo.bind(this,event)}, "预览"), 
-     	   React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: that.div_onClick.bind(this,event)}, btn_name)
+     	   editDiv
+     	   
      	  )
      	   
 		   )
@@ -387,8 +391,11 @@ var Photo_move_div = React.createClass({displayName: "Photo_move_div",
 render: function() {	
     return (
        React.createElement("div", {id: "list_div"}, 
-       React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: this.props.share_url})
-	   )    	
+     
+       React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: this.props.share_url}), 
+       React.createElement("p", null, "分享地址:"), 
+       React.createElement("p", null, this.props.share_url)
+       )    	
 
     );
   }
