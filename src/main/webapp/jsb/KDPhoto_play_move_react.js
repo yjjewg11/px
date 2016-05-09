@@ -441,7 +441,7 @@ buttion_black_Click: function(o) {
 
 	  var obj = $('#KdPhotoForm').serializeJson();
 	  if(!obj.photo_uuids){
-		  G_msg_pop("图片或内容至少填写一项.");
+		  G_msg_pop("图片至少选择一张.");
 		  return;
 		  
 	  }  
@@ -451,11 +451,43 @@ buttion_black_Click: function(o) {
 			 url:hostUrl + "rest/kdMovie/save.json",
 			 cbFN:null
 			 };
-	G_ajax_shouc_save(opt);
+	$.AMUI.progress.start();
+	  if(!opt.jsonString){
+		  formObject = $('#'+opt.formName).serializeJson();
+		  opt.jsonString=JSON.stringify(formObject);
+	  }		 
+	  var async=true;
+	  if(opt.async===false){
+		  async=opt.async;
+	  }
+	$.ajax({
+		type : "POST",
+		url : opt.url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:opt.jsonString,
+		dataType : "json",
+		contentType : false, 
+		async:async,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(Query_photo_div,{				
+					formdata:o.formdata
+				}), document.getElementById('div_body'));
+				
+			}else{
+				 G_msg_pop(data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
 
-	React.render(React.createElement(Query_photo_div,{				
-		formdata:o.formdata
-	}), document.getElementById('div_body'));
+	
+	
+//	G_ajax_shouc_save(opt);
+
+
 },	
 	  
 addShowImg:function(url,uuid){
