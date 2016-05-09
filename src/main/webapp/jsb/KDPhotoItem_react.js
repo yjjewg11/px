@@ -734,7 +734,7 @@ getNewImgDiv:function(){
 },	  
 addShowImg:function(url,uuid){
 	  var divid=this.getNewImgDiv();
-	  if(!document.getElementById(divid))return;
+	  if($("#show_imgList").length==0)return;
 	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
 		this.state.div_list.push({parentDivId:divid})
 		this.setState(this.state);
