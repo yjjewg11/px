@@ -583,7 +583,7 @@ var fpPhotoUploadTask={
 		 * lrz_callback:压缩完成后,回调函数.
 		 */
 		do_lrz:function(){
-			
+			console.log("fpPhotoUploadTask.upload_files_arr",fpPhotoUploadTask.upload_files_arr)
 			var file=fpPhotoUploadTask.upload_files_arr.pop();
 			
 			if(!file)return;
@@ -638,6 +638,7 @@ var fpPhotoUploadTask={
 				progress_width=0;
 			
 				G_img_number=this.files.length;
+				G_data=$('#KdPhotoForm').serializeJson();
 					//支持多 图片上传
 					for(var i=0;i<this.files.length;i++){
 						fpPhotoUploadTask.upload_files_arr.push(this.files[i]);
@@ -677,12 +678,21 @@ var fpPhotoUploadTask={
 						G_that.setState(G_that.state);
 						
 						if(fpPhotoUploadTask.callbackFN){
-							fpPhotoUploadTask.callbackFN(data.imgUrl,data.data.uuid);
-						
-						}
-						fpPhotoUploadTask.do_lrz();
+							fpPhotoUploadTask.callbackFN(data.imgUrl,data.data.uuid);								
+						} 							 
+
+						fpPhotoUploadTask.do_lrz();						
 					} else {
-						alert(data.ResMsg.message);
+						if(G_num==3){
+							G_num=0
+							alert(data.ResMsg.message);
+						}else{
+							if(!confirm("上传失败确定重新上传吗?")){
+								return;
+						        	}
+								G_num+=1
+								fpPhotoUploadTask.ajax_uploadByphone(base64);
+						}
 					}
 				},
 				error :G_ajax_error_fn
@@ -696,6 +706,8 @@ var fpPhotoUploadTask={
 G_img_number=null;
 G_img_Photo=0;
 G_that=null;
+G_data=[];
+G_num=0;
 var Img_photo_rect = React.createClass({displayName: "Img_photo_rect",
  getInitialState: function() {
 	 var label_obj;
@@ -722,6 +734,7 @@ getNewImgDiv:function(){
 },	  
 addShowImg:function(url,uuid){
 	  var divid=this.getNewImgDiv();
+	  if(!document.getElementById(divid))return;
 	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
 		this.state.div_list.push({parentDivId:divid})
 		this.setState(this.state);
@@ -734,7 +747,7 @@ componentDidMount:function(){
 	 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 	 this.editor=editor;
 	 var that=this;		
-	 //已经有的图片,显示出来.		 
+	 //已经有的图片,显示出来.
 	 fpPhotoUploadTask.bind_onchange("#file_img_upload",function(imgurl,uuid){
 		 that.addShowImg(imgurl,uuid);		
 	  });	
