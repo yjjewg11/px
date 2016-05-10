@@ -545,17 +545,7 @@ handleChange:function(){
 	this.setState(this.state);
 	this.setState($('#KdPhotoForm').serializeJson());
 
-},
-//buttion_LestGo: function() {
-	
-	
-//	 for(var i=0;i<this.state.div_list.length;i++){
-//		 $("#"+this.state.div_list[i]).remove();
-//	 }			
-//this.state.div_list=[];	
-//this.state.btn_Letgo=false;
-//this.setState(this.props.formdata);
-//},	
+},	
 //MP3切换方法;		
 handleChange_selectMp3: function(val){	
 	var List=[];

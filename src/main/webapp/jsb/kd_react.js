@@ -8050,7 +8050,9 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
 		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event[0],1,2)}, event[3]));
-	}
+	}else{
+	    table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_teacher_look_info.bind(this,event[0],2)}, event[3]));	
+	  }
 	  return (
 	    React.createElement("tr", {className: className}, 
 		     React.createElement("td", null, table_th0), 

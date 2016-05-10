@@ -20,6 +20,7 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.RoleUserRelation;
+import com.company.news.entity.Student;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.User4QBaseInfo;
@@ -29,6 +30,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.UserRegJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -985,15 +987,31 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setMessage("修改成功");
 		return "";
 	}
+
+	
+//	@RequestMapping(value = "/get", method = RequestMethod.GET)
+//	public String get2( ModelMap model,
+//			HttpServletRequest request) {
+//		ResponseMessage responseMessage = RestUtil
+//				.addResponseMessageForModelMap(model);
+//		Student s;
+//		try {
+//			String uuid = request.getParameter("uuid");
+//			if (DBUtil.isSqlInjection(uuid, responseMessage)) {
+//				return "";
+//			}
 	
 	
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	public String get(@PathVariable String uuid,ModelMap model, HttpServletRequest request) {
+	
+	
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	public String get2( ModelMap model,
+			HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		User4Q a=null;
 		try {
-			a = userinfoService.get(uuid);
+			a = userinfoService.get("uuid");
 			if(a==null){
 				responseMessage.setMessage("数据不存在!");
 				return "";
