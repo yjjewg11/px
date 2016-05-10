@@ -687,11 +687,8 @@ var fpPhotoUploadTask={
 							G_num=0
 							alert(data.ResMsg.message);
 						}else{
-							if(!confirm("上传失败确定重新上传吗?")){
-								return;
-						        	}
-								G_num+=1
-								fpPhotoUploadTask.ajax_uploadByphone(base64);
+							G_num+=1
+							fpPhotoUploadTask.ajax_uploadByphone(base64);
 						}
 					}
 				},

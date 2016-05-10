@@ -124,6 +124,80 @@ function ajax_userinfo_login() {
   	});
   };
   
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+  /*
+   * 声请老师接送卡
+   * */
+   function ajax_teacher_apply(uuid,callback){
+  		if(!confirm("确定要申请接送卡吗?")){
+  			return;
+  		}
+   	$.AMUI.progress.start();
+       var url = hostUrl + "rest/userinfo/apply.json?uuid="+uuid;
+   	$.ajax({
+   		type : "POST",
+   		url : url,
+   		dataType : "json",
+   		 async: true,
+   		success : function(data) {
+   			$.AMUI.progress.done();
+   			// 登陆成功直接进入主页
+   			if (data.ResMsg.status == "success") {
+   				G_msg_pop(data.ResMsg.message);
+   				if(typeof callback=='function')callback();
+   			} else {
+   				alert("加载数据失败："+data.ResMsg.message);
+   			}
+   		},
+   		error :G_ajax_error_fn
+   	});
+   };
+   
+   /*
+    * 声请老师接送卡
+    * */
+    function ajax_teacher_cancelApply(uuid,userid,callback){
+   		if(!confirm("确定要申请接送卡吗?")){
+   			return;
+   		}
+    	$.AMUI.progress.start();
+        var url = hostUrl + "rest/userinfo/cancelApply.json";
+    	$.ajax({
+    		type : "POST",
+    		url : url,
+    		data:{uuid:uuid,userid:userid},
+    		dataType : "json",
+    		 async: true,
+    		success : function(data) {
+    			$.AMUI.progress.done();
+    			// 登陆成功直接进入主页
+    			if (data.ResMsg.status == "success") {
+    				G_msg_pop(data.ResMsg.message);
+    				if(typeof callback=='function')callback();
+    			} else {
+    				alert("加载数据失败："+data.ResMsg.message);
+    			}
+    		},
+    		error :G_ajax_error_fn
+    	});
+    };  
+  
+  
+  
+  
+  
+  
+  
+  
 function menu_group_change_fn(o){
 	Store.setCurGroup(o);
 	login_affter_init();

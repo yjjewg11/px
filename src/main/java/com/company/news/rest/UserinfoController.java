@@ -21,6 +21,7 @@ import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.RoleUserRelation;
 import com.company.news.entity.Student;
+import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.User4QBaseInfo;
@@ -989,57 +990,6 @@ public class UserinfoController extends AbstractRESTController {
 	}
 
 	
-//	@RequestMapping(value = "/get", method = RequestMethod.GET)
-//	public String get2( ModelMap model,
-//			HttpServletRequest request) {
-//		ResponseMessage responseMessage = RestUtil
-//				.addResponseMessageForModelMap(model);
-//		Student s;
-//		try {
-//			String uuid = request.getParameter("uuid");
-//			if (DBUtil.isSqlInjection(uuid, responseMessage)) {
-//				return "";
-//			}
-	
-	
-	
-	
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public String get2( ModelMap model,
-			HttpServletRequest request) {
-		ResponseMessage responseMessage = RestUtil
-				.addResponseMessageForModelMap(model);
-		User4Q a=null;
-		try {
-			a = userinfoService.get("uuid");
-			if(a==null){
-				responseMessage.setMessage("数据不存在!");
-				return "";
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
-			responseMessage.setMessage("服务器异常:"+e.getMessage());
-			return "";
-		}
-		model.addAttribute(RestConstants.Return_G_entity,a);
-		
-		String mygroup_uuids="";
-		try {
-			String myRightGroup=this.getMyGroupUuidsBySession(request);
-			List list = groupService.getGroupuuidsByUseruuidAndCurUserRight(a.getUuid(),myRightGroup);
-			mygroup_uuids=StringUtils.join(list, ",");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseMessage.setMessage("服务器异常:"+e.getMessage());
-		}
-		model.addAttribute("mygroup_uuids",mygroup_uuids);
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		return "";
-	}
-	
 	/**
 	 * 组织注册
 	 * 
@@ -1380,5 +1330,206 @@ public class UserinfoController extends AbstractRESTController {
 		
 		return "";
 	}
+	
+	
+	
+	
+	
+	/*
+	 * 获取用户信息(接送卡)
+	 * */
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	public String get2( ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		User4Q a;
+		try {
+			
+			String uuid = request.getParameter("uuid");
+			if (DBUtil.isSqlInjection(uuid, responseMessage)) {
+				return "";
+			}
+			a = userinfoService.get(uuid);
+			if(a==null){
+				responseMessage.setMessage("数据不存在!");
+				return "";
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		model.addAttribute(RestConstants.Return_G_entity,a);
+		
+		String mygroup_uuids="";
+		try {
+			String myRightGroup=this.getMyGroupUuidsBySession(request);
+			List list = groupService.getGroupuuidsByUseruuidAndCurUserRight(a.getUuid(),myRightGroup);
+			mygroup_uuids=StringUtils.join(list, ",");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+		}
+		model.addAttribute("mygroup_uuids",mygroup_uuids);
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}	
+	
+	
+	
+	/**
+	 * 查询一个班级的所有老师卡数据
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryByClassuuid", method = RequestMethod.GET)
+	public String getStudentByClassuuid(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			//String classuuid =request.getParameter("classuuid");
+			String groupuuid =request.getParameter("groupuuid");
+			String uuid =request.getParameter("uuid");
+
+			List<Object[]> list = userinfoService.queryByClass(groupuuid,uuid);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage
+			.setStatus(RestConstants.Return_ResponseMessage_failed);
+	responseMessage.setMessage("服务器异常:"+e.getMessage());
+	return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 老师接送卡
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/apply", method = RequestMethod.POST)
+	public String apply(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			String uuid =request.getParameter("uuid");
+			if(StringUtils.isBlank(uuid)){
+				responseMessage.setMessage("请选择老师.");
+				return "";
+			}
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			StudentBind obj = userinfoService.update_apply(uuid,responseMessage,user);
+			if(obj==null){
+				
+				return "";
+			}
+			responseMessage.setMessage("申请成功!申请号:"+obj.getUserid());
+			model.addAttribute(RestConstants.Return_G_entity, obj);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
+	/**
+	 * 删除申请学生接送卡
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/cancelApply", method = RequestMethod.POST)
+	public String cancelApply(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		String uuid =request.getParameter("uuid");
+		String userid =request.getParameter("userid");
+
+		try {
+			if(StringUtils.isBlank(uuid)){
+				responseMessage.setMessage("请选择老师.");
+				return "";
+			}
+			if(StringUtils.isBlank(userid)){
+				responseMessage.setMessage("请选择申请号.");
+				return "";
+			}
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			boolean obj = userinfoService.cancel_apply(uuid,userid,responseMessage,user);
+			if(!obj){
+				return "";
+			}
+			responseMessage.setMessage("操作成功!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

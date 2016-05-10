@@ -943,7 +943,7 @@ function G_class_teacher_look_info(uuid,type){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 //				if(ajaxYype==1){
-					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());	
+					React.render(React.createElement( Kd_commons_teacher_look_info,{formdata:data.data}), G_get_div_body());	
 //				}else{
 //					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());
 //				}

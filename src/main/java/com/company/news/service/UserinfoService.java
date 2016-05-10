@@ -27,6 +27,8 @@ import com.company.news.entity.PClass;
 import com.company.news.entity.Parent;
 import com.company.news.entity.Role;
 import com.company.news.entity.RoleUserRelation;
+import com.company.news.entity.Student;
+import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.User4QBaseInfo;
@@ -1769,4 +1771,130 @@ public class UserinfoService extends AbstractService {
 	}
 	
 
+	
+	
+	
+	
+	/**
+	 * 生成学生接送卡的唯一用户标识(userid在每个学校唯一)
+	 * @param studentuuid
+	 * @return
+	 */
+	public Long getMax_userid(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		// max(  CONVERT(userid,SIGNED )) 修复字符串超过1000,max 不正确bug.
+		 Object maxUserid= s.createSQLQuery("select  max(  CONVERT(userid,SIGNED ))  from  px_studentbind where groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")").uniqueResult();
+			//从100开始.防止100内,留自定义
+		 Long startUserid=100l;
+		 try {
+			 startUserid=Long.valueOf(maxUserid+"");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		}
+			 
+			 return startUserid;
+	}
+	
+	
+	/**
+	 * 声请学生接送卡
+	 * @param studentuuid
+	 * @return
+	 * @throws Exception 
+	 */
+	public StudentBind update_apply(String uuid, ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
+		
+		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class, uuid);
+		if (student == null){
+			responseMessage.setMessage("没有该老师 ,uuid="+uuid);
+			return null;
+		}
+		StudentBind b2=new StudentBind();
+		
+		b2.setStudentuuid(uuid);
+		if(StringUtils.isBlank(b2.getStudentuuid())){
+			throw new Exception("老师uuid不能为空");
+		}
+		Long startUserid=this.getMax_userid(student.getGroupuuid());
+		b2.setUserid((++startUserid)+"");
+		b2.setCard_factory(null);
+		b2.setCreate_user(user.getName());
+		b2.setCreate_useruuid(user.getUuid());
+		b2.setGroupuuid(student.getGroupuuid());
+		b2.setName(student.getName());
+		b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+		b2.setType(1);//学生卡
+		try {
+			this.nSimpleHibernateDao.save(b2);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("申请用户编号:"+startUserid+"冲突,请再次申请.");
+			return null;
+		}
+		return b2;
+	}
+	
+	
+	/**
+	 * 声请学生接送卡
+	 * @param studentuuid
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean cancel_apply(String studentuuid,String userid, ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
+		
+		//只允许删除没有绑定卡号的.
+		String hql="delete StudentBind where cardid is  null and studentuuid=? and userid=?";
+		Integer count= this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(hql, studentuuid,userid);
+		if (count==0){
+			responseMessage.setMessage("操作失败,没有该记录.");
+			return false;
+		}
+		
+		return true;
+	}	
+	
+	
+	
+	
+	/**
+	 * 查询老师绑定卡号信息.
+	 * @param classuuid
+	 * @param groupuuid
+	 * @param uuid
+	 * @return
+	 */
+	public List<Object[]> queryByClass( String groupuuid,String uuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		
+		String sql = "select b2.studentuuid,b2.cardid,b2.userid,s1.name ";
+		sql+=" from px_student s1  left join px_studentbind b2 on  s1.uuid=b2.studentuuid  ";
+	//	sql+=" where b2.cardid is not null ";
+		sql+=" where userid is not null ";
+		if (StringUtils.isNotBlank(groupuuid))
+			sql += " and   s1.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
+//		if (StringUtils.isNotBlank(classuuid))
+//			sql += " and  s1.classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
+		if (StringUtils.isNotBlank(uuid))
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+		
+		sql += "order by s1.classuuid";
+		
+		//student_uuid,cardid,userid,student_name
+		List<Object[]> list = s.createSQLQuery(sql).list();
+		
+		return list;
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
