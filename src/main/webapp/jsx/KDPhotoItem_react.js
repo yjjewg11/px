@@ -696,7 +696,9 @@ var fpPhotoUploadTask={
 
 						fpPhotoUploadTask.do_lrz();						
 					} else {
+
 						error_reupload(data.ResMsg.message,base64);
+
 					}
 				},
 				error :function ( obj, textStatus, errorThrown ){
