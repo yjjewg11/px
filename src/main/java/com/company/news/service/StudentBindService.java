@@ -13,6 +13,7 @@ import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Student;
 import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
+import com.company.news.entity.User4QBaseInfo;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.json.JSONUtils;
 import com.company.news.jsonform.DoorUserJsonform;
@@ -496,7 +497,7 @@ public class StudentBindService extends AbstractService {
 		b2.setGroupuuid(student.getGroupuuid());
 		b2.setName(student.getName());
 		b2.setCreatetime(TimeUtils.getCurrentTimestamp());
-		b2.setType(1);//学生卡
+		b2.setType(SystemConstants.StudentBind_type_1);//学生卡
 		try {
 			this.nSimpleHibernateDao.save(b2);
 		} catch (Exception e) {
@@ -508,6 +509,45 @@ public class StudentBindService extends AbstractService {
 		return b2;
 	}
 	
+	
+	/**
+	 * 声请学生接送卡
+	 * @param studentuuid
+	 * @return
+	 * @throws Exception 
+	 */
+	public StudentBind update_applyTeacher(String uuid,String groupuuid, ResponseMessage responseMessage,SessionUserInfoInterface user) throws Exception {
+		
+		User4QBaseInfo student = (User4QBaseInfo) this.nSimpleHibernateDao.getObjectById(User4QBaseInfo.class, uuid);
+		if (student == null){
+			responseMessage.setMessage("没有该老师 ,uuid="+uuid);
+			return null;
+		}
+		StudentBind b2=new StudentBind();
+		
+		b2.setStudentuuid(uuid);
+		if(StringUtils.isBlank(b2.getStudentuuid())){
+			throw new Exception("学生uuid不能为空");
+		}
+		Long startUserid=this.getMax_userid(groupuuid);
+		b2.setUserid((++startUserid)+"");
+		b2.setCard_factory(null);
+		b2.setCreate_user(user.getName());
+		b2.setCreate_useruuid(user.getUuid());
+		b2.setGroupuuid(groupuuid);
+		b2.setName(student.getName());
+		b2.setCreatetime(TimeUtils.getCurrentTimestamp());
+		b2.setType(SystemConstants.StudentBind_type_0);//学生卡
+		try {
+			this.nSimpleHibernateDao.save(b2);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("申请用户编号:"+startUserid+"冲突,请再次申请.");
+			return null;
+		}
+		return b2;
+	}
 	
 	/**
 	 * 声请学生接送卡

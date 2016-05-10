@@ -314,7 +314,7 @@ fx_Photo_move: function(obj,val) {
 			// 登陆成功直接进入主页
 		if (data.ResMsg.status == "success") {
 			if(val==0){
-				formdata={classuuid:"",url:data.share_url};
+				formdata={classuuid:"",url:data.share_url,content:obj.title};
 
 				React.render(React.createElement(Classnews_edit,{
 					formdata:formdata,
@@ -393,7 +393,7 @@ return (
 		  }	
 
     	if(event.status==0){
-    		status_name="-【发布中】";
+    		status_name="";
     	}else{
     		status_name="-【未发布】";
     		
@@ -402,13 +402,12 @@ return (
 	return (
 			
 		 <li id={"Common_mg_ClassNew_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "}   >			     						    
-		  <div className="am-gallery-item">
+		 <AMR_ButtonToolbar>
+		 <AMUIReact.Selected amSize="xs"  name="uuid" placeholder="分享" onChange={that.fx_Photo_move.bind(this,event)} btnWidth="100"  btnStyle="primary" data={fx_photo_List} /> 
+		    </AMR_ButtonToolbar>    
+		 <div className="am-gallery-item">
 		  
-		   <AMR_ButtonToolbar>
-		    <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-	    	 <AMUIReact.Selected  name="uuid" placeholder="分享" onChange={that.fx_Photo_move.bind(this,event)} btnWidth="200"  btnStyle="primary" data={fx_photo_List} /> 
-	 	    </div>
-	    	 </AMR_ButtonToolbar>
+		   
 	     
 	       
 		  <img  src={o}/>
@@ -422,7 +421,9 @@ return (
        <AMR_ButtonToolbar>
 	    <AMR_Button amSize="xs"  amStyle="secondary" onClick={that.Look_img_photo.bind(this,event)} >预览</AMR_Button>
 	    <AMR_Button amSize="xs" className={btn_className} amStyle="secondary" onClick={that.div_onClick.bind(this,event)} >编辑</AMR_Button>
-	   </AMR_ButtonToolbar>    	   
+	   
+	    
+	    </AMR_ButtonToolbar>    	   
 
      	   
 		   </div>
@@ -1418,4 +1419,4 @@ var	stringArry= function(imgArr) {
   };
 
 	return module;	
-}();
+}(); 

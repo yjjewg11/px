@@ -99,14 +99,6 @@ public class KDMovieService extends AbstractService {
 		this.nSimpleHibernateDao.getHibernateTemplate().save(dbobj);
 		
 		
-		if(SystemConstants.Check_status_fabu.equals(dbobj.getStatus())){
-			Map map=new HashMap();
-	    	map.put("uuid", dbobj.getUuid());
-	    	map.put("create_useruuid",user.getUuid());
-	    	map.put("title",user.getName()+"发布:"+dbobj.getTitle());
-	    	JobDetails job=new JobDetails("doJobMqIservice","sendKDMovie",map);
-			MQUtils.publish(job);
-		}
 	
 		
 		return dbobj;

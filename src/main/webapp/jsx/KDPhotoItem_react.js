@@ -653,11 +653,11 @@ var fpPhotoUploadTask={
 			
 			var error_reupload=function(msg,base64){
 				if(G_reUploadNumber<3){
-					if(confirm("这张上传失败,确定重新上传吗?")){
+				
 						G_reUploadNumber++;
 						fpPhotoUploadTask.ajax_uploadByphone(base64);
 						return;
-				      }
+				
 					
 				}
 				G_img_Photo--;
@@ -915,7 +915,7 @@ var KDphoto_Img_canDel = React.createClass({
 });
 
 
-
+ 
 
 	return module;	
 }();

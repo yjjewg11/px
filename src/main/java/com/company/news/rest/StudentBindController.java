@@ -220,6 +220,53 @@ public class StudentBindController extends AbstractRESTController {
 		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 		return "";
 	}
+	
+	
+	/**
+	 * 声请老师门禁
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/applyTeacher", method = RequestMethod.POST)
+	public String applyTeacher(ModelMap model,
+			HttpServletRequest request) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		try {
+			String studentuuid =request.getParameter("uuid");
+			if(DBUtil.isSqlInjection(studentuuid, responseMessage))return "";
+			if(StringUtils.isBlank(studentuuid)){
+				responseMessage.setMessage("请选择老师.");
+				return "";
+			}
+			String groupuuid =request.getParameter("groupuuid");
+			if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+			if(StringUtils.isBlank(studentuuid)){
+				responseMessage.setMessage("请选择学校");
+				return "";
+			}
+			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			StudentBind obj = studentBindService.update_applyTeacher(studentuuid,groupuuid,responseMessage,user);
+			if(obj==null){
+				
+				return "";
+			}
+			responseMessage.setMessage("申请成功!申请号:"+obj.getUserid());
+			model.addAttribute(RestConstants.Return_G_entity, obj);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	/**
 	 * 删除申请学生接送卡
 	 * 
