@@ -929,11 +929,7 @@ function G_class_teacher_look_info(uuid,type){
 	Queue.push(function(){G_class_students_look_info(uuid,type);},"老师详情");
 	$.AMUI.progress.start();
 	var url;
-//	if(ajaxYype==1){
 		url = hostUrl + "rest/userinfo/get.json?uuid="+uuid;
-//	}else{
-//		url = hostUrl + "rest/pxstudent/get.json?uuid="+uuid;
-//	}
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -941,12 +937,12 @@ function G_class_teacher_look_info(uuid,type){
 		 async: true,
 		success : function(data) {
 			$.AMUI.progress.done();
-			if (data.ResMsg.status == "success") {
-//				if(ajaxYype==1){
-					React.render(React.createElement( Kd_commons_teacher_look_info,{formdata:data.data}), G_get_div_body());	
-//				}else{
-//					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());
-//				}
+		if (data.ResMsg.status == "success") {
+			React.render(React.createElement( Kd_commons_teacher_look_info,{
+				formdata:data.data,
+				mygroup_uuids:data.mygroup_uuids			
+			}), G_get_div_body());	
+
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}

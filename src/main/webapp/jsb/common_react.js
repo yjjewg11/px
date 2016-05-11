@@ -1849,41 +1849,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  	        }
  		 });
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  
  /*老师申请卡中查看信息绘制方法
   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
@@ -1892,8 +1858,17 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  var Kd_commons_teacher_look_info =React.createClass({displayName: "Kd_commons_teacher_look_info",
 	 isRight:false,
  	 getInitialState: function() {
-			
-			this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
+ 		var groupuuid,group_List;
+ 		group_List=Store.getGroupNoGroup_wjd();
+ 		groupArry=G_selected_dataModelArray_byArray(group_List,"uuid","brand_name");
+		if(!groupuuid){
+			groupuuid=group_List[0].uuid;
+		}
+		this.props.formdata.groupuuid=groupuuid;	
+		this.props.formdata.groupArry=groupArry;
+		this.props.formdata.ickname=Store.getGroupNameByUuid(groupuuid);
+ 		this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
+
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
@@ -1903,86 +1878,91 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			    pageNo:pageNo
 		   }),  document.getElementById(this.div_reply_save_id));		
 	},	
-	  //加载绑定卡信息
-	  ajax_loadStudentbind_card:function(uuid){
-		  var that=this;
-		  that.last_apply_userid=null;
-		  $.AMUI.progress.start();
-		     var url = hostUrl + "rest/userinfo/queryByClassuuid.json?uuid="+uuid;
-		 	$.ajax({
-		 		type : "GET",
-		 		url : url,
-		 		dataType : "json",
-		 		 async: true,
-		 		success : function(data) {
-		 			$.AMUI.progress.done();
-		 			// 登陆成功直接进入主页
-		 			if (data.ResMsg.status == "success") {
-		 				$("#btn_cancelApply").hide();
-		 				var list=data.list;
-		 				var s="";
-		 				if(!list||list.length==0){
-		 					s="无";
-		 				}else{
-							//b2.studentuuid,b2.cardid,b2.userid,s1.name
-		 					for(var i=0;i<list.length;i++){
-		 						if(s)s+=",";
-		 						if(!list[i][1]){
-		 							list[i][1]="申请中";
-		 							$("#btn_cancelApply").show();//申请中可以取消
-		 							that.last_apply_userid=list[i][2];
-		 						}
-		 						s+=list[i][1]+"("+list[i][2]+")";
-		 					}
-		 				}
-		 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
-		 			} else {
-		 				alert("加载数据失败："+data.ResMsg.message);
-		 			}
-		 		},
-		 		error :G_ajax_error_fn
-		 	});
-	  },
-	  btn_studentbind_apply:function(uuid){
-		  var that=this;
-		  ajax_teacher_apply(uuid,function(){
-			  that.ajax_loadStudentbind_card(uuid);
-			  
-		  });
-	  },
-	  btn_studentbind_cancelApply:function(uuid){
-		  var that=this;
-		  if(!that.last_apply_userid){
-			  alert("只能取消申请中的接送卡!");
-			  return;
-		  }
-		  ajax_teacher_cancelApply(uuid,that.last_apply_userid,function(){
-			  that.ajax_loadStudentbind_card(uuid);
-			  
-		  });
-	  },
-	  componentDidMount:function(){
-		  $('.am-gallery').pureview();
-		  	this.ajax_loadStudentbind_card(this.state.uuid);
-		},
- 		render: function() {
+  //加载绑定卡信息
+  ajax_loadStudentbind_card:function(uuid){
+	  var that=this;
+	  that.last_apply_userid=null;
+	  $.AMUI.progress.start();
+	     var url = hostUrl + "rest/studentbind/query.json";
+	 	$.ajax({
+	 		type : "GET",
+	 		url : url,
+	 		data:{studentuuid:uuid,type:0},
+	 		dataType : "json",
+	 		 async: true,
+	 		success : function(data) {
+	 			$.AMUI.progress.done();
+	 			// 登陆成功直接进入主页
+	 			if (data.ResMsg.status == "success") {
+	 				$("#btn_cancelApply").hide();
+	 				var list=data.list.data;
+	 				var s="";
+	 				if(!list||list.length==0){
+	 					s="无";
+	 				}else{
+						//b2.studentuuid,b2.cardid,b2.userid,s1.name
+	 					for(var i=0;i<list.length;i++){
+	 						if(s)s+=",";
+	 						if(!list[i][1]){
+	 							list[i][1]="申请中";
+	 							$("#btn_cancelApply").show();//申请中可以取消
+	 							that.last_apply_userid=list[i][2];
+	 						}
+	 						s+=list[i][1]+"("+list[i][2]+")";
+	 					}
+	 				}
+	 				$("#input_studentbind_card").html("接送卡号(申请号):"+s);
+	 			} else {
+	 				alert("加载数据失败："+data.ResMsg.message);
+	 			}
+	 		},
+	 		error :G_ajax_error_fn
+	 	});
+  },
+  btn_studentbind_apply:function(uuid){
+	  var that=this;
+	  ajax_teacher_apply(uuid,this.state.groupuuid,function(){
+		  that.ajax_loadStudentbind_card(uuid);
+		  
+	  });
+  },
+  btn_studentbind_cancelApply:function(uuid){
+	  var that=this;
+	  if(!that.last_apply_userid){
+		  alert("只能取消申请中的接送卡!");
+		  return;
+	  }
+	  ajax_teacher_cancelApply(uuid,that.last_apply_userid,function(){
+		  that.ajax_loadStudentbind_card(uuid);
+		  
+	  });
+  },
+  componentDidMount:function(){
+	  $('.am-gallery').pureview();
+	  	this.ajax_loadStudentbind_card(this.state.uuid);
+	},
+	//切换学校
+	handleChange_selectclass_uuid:function(val){
+		var ickname=Store.getGroupNameByUuid(val);
+		var obj=this.state;		
+		 obj.ickname=ickname;
+		 obj.groupuuid=val;
+		 this.setState(obj);
+	      },		
+  render: function() {
  	     var o =this.state;
 		 if(!o.status)o.status=0;
 		 this.div_reply_save_id="btn_stutent_operate"+o.uuid;
 	     var imgGuid=o.headimg;
 	     var imglist=[imgGuid];
-//	     var rect_info=(<div></div>);
-//	     if(this.isRight||this.props.type==2){
-//	    	 rect_info=(		 		 
-//	    		  <AMR_ButtonToolbar>
-//			 	   <AMR_Button amStyle="secondary" onClick={this.btn_studentbind_apply.bind(this,o.uuid)} >申请接送卡</AMR_Button>
-//			 	   <AMR_Button amStyle="warning" id="btn_cancelApply" onClick={this.btn_studentbind_cancelApply.bind(this,o.uuid)} >取消申请接送卡</AMR_Button>
-//			 	  </AMR_ButtonToolbar>)
-//	     }
  		 return (
  		 		React.createElement("div", null, 
  		 		React.createElement("hr", null), 
 	    		  React.createElement(AMR_ButtonToolbar, null, 
+	    			React.createElement("div", {className: "am-fl am-margin-bottom-xs  am-margin-left-xs"}, 
+	    			 React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.handleChange_selectclass_uuid, btnWidth: "200", multiple: false, data: o.groupArry, btnStyle: "primary", value: o.groupuuid})
+	    			), 
+
 			 	   React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.btn_studentbind_apply.bind(this,o.uuid)}, "申请接送卡"), 
 			 	   React.createElement(AMR_Button, {amStyle: "warning", id: "btn_cancelApply", onClick: this.btn_studentbind_cancelApply.bind(this,o.uuid)}, "取消申请接送卡")
 			 	  ), 
@@ -1993,26 +1973,10 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement(AMUIReact.ListItem, {id: "input_studentbind_card"}, "接送卡号:加载中..."), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
 			      React.createElement(AMUIReact.ListItem, null, "性别:", Vo.get("sex_"+o.sex)), 
-					 React.createElement(AMUIReact.ListItem, null, "学校:", Store.getGroupNameByUuid(o.groupuuid)), 
-					React.createElement(AMUIReact.ListItem, null, "班级:", Store.getClassNameByUuid(o.classuuid)), 
-
-                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status)), 
-			      React.createElement(AMUIReact.ListItem, null, "出生日期:", o.birthday), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈姓名:", o.ma_name), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "妈妈电话", tel: o.ma_tel}), 
-			      React.createElement(AMUIReact.ListItem, null, "妈妈的工作:", o.ma_work), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸姓名:", o.ba_name), 
-			      React.createElement(AMUIReact.ListItem, null, "爸爸的工作:", o.ba_work), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "爸爸电话", tel: o.ba_tel}), 
-			      React.createElement(AMUIReact.ListItem, null, "家庭住址:", o.address), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "爷爷电话", tel: o.ye_tel}), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "奶奶电话", tel: o.nai_tel}), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "外公电话", tel: o.waigong_tel}), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "外婆电话", tel: o.waipo_tel}), 
-			      React.createElement(Class_student_Tel_ListItem, {name: "其他电话", tel: o.other_tel}), 
-			      React.createElement(AMUIReact.ListItem, null, 
-			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
- 			      )			        			      
+			      React.createElement(Class_student_Tel_ListItem, {name: "电话", tel: o.tel}), 
+				  React.createElement(AMUIReact.ListItem, null, "学校:", o.ickname), 
+                  React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status))
+		        			      
  			      ), 
  		    	    React.createElement(AMR_ButtonToolbar, null, 
  			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")

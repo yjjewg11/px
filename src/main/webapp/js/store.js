@@ -20,7 +20,7 @@
  * Store.getCurGroupByRight(rightname)//获取当前学校当前
  * Store.getGroupByRight(rightname);获取有权限的学校列表;
  * Store.getRoleList(type);获取角色列表;type:1 幼儿园
- * StgetGroupBymyclassList(classuuid);//根据班级UUID查找学校UUID;
+ * Store.getGroupBymyclassList(classuuid);//根据班级UUID查找学校UUID;
  * 
  * Store.clear();
  * 

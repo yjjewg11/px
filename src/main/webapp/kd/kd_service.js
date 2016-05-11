@@ -137,15 +137,16 @@ function ajax_userinfo_login() {
   /*
    * 声请老师接送卡
    * */
-   function ajax_teacher_apply(uuid,callback){
+   function ajax_teacher_apply(uuid,groupuuid,callback){
   		if(!confirm("确定要申请接送卡吗?")){
   			return;
   		}
    	$.AMUI.progress.start();
-       var url = hostUrl + "rest/userinfo/apply.json?uuid="+uuid;
+       var url = hostUrl + "rest/studentbind/applyTeacher.json";
    	$.ajax({
    		type : "POST",
    		url : url,
+   		data:{uuid:uuid,groupuuid:groupuuid},
    		dataType : "json",
    		 async: true,
    		success : function(data) {
@@ -170,11 +171,11 @@ function ajax_userinfo_login() {
    			return;
    		}
     	$.AMUI.progress.start();
-        var url = hostUrl + "rest/userinfo/cancelApply.json";
+        var url = hostUrl + "rest/studentbind/cancelApply.json";
     	$.ajax({
     		type : "POST",
     		url : url,
-    		data:{uuid:uuid,userid:userid},
+    		data:{studentuuid:uuid,userid:userid},
     		dataType : "json",
     		 async: true,
     		success : function(data) {
