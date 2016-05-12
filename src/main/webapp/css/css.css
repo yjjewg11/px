@@ -180,9 +180,9 @@ background-color: #5eb95e;
 
 .G_cookplan_Img{width:135px; height:100px; position:relative; margin:15px 5px 10px 0px; float:left;}
 .G_cookplan_Img_img{width: 134px;height: 100px;}
-.G_cookplan_Img_close{position:absolute; top:0px; right:2px;cursor: pointer;}
+.G_cookplan_Img_close{position:absolute; top:0px; right:2px;cursor: pointer;width: 21px;height: 21px;}
 .G_cookplan_Img_close_img{width: 21px;height: 21px;}
-
+.G_cookplan_Img_close img{width: 21px;height: 21px;}
 .px_reply_comment_bd{
 	overflow: hidden;
 	 margin:0rem 0rem 0rem 1.5rem;
