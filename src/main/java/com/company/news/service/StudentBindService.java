@@ -508,10 +508,9 @@ public class StudentBindService extends AbstractService {
 		}
 		return b2;
 	}
-	
-	
+
 	/**
-	 * 声请学生接送卡
+	 * 声请教师接送卡
 	 * @param studentuuid
 	 * @return
 	 * @throws Exception 
@@ -527,7 +526,7 @@ public class StudentBindService extends AbstractService {
 		
 		b2.setStudentuuid(uuid);
 		if(StringUtils.isBlank(b2.getStudentuuid())){
-			throw new Exception("学生uuid不能为空");
+			throw new Exception("老师uuid不能为空");
 		}
 		Long startUserid=this.getMax_userid(groupuuid);
 		b2.setUserid((++startUserid)+"");
@@ -537,7 +536,7 @@ public class StudentBindService extends AbstractService {
 		b2.setGroupuuid(groupuuid);
 		b2.setName(student.getName());
 		b2.setCreatetime(TimeUtils.getCurrentTimestamp());
-		b2.setType(SystemConstants.StudentBind_type_0);//学生卡
+		b2.setType(SystemConstants.StudentBind_type_0);//老师卡
 		try {
 			this.nSimpleHibernateDao.save(b2);
 		} catch (Exception e) {

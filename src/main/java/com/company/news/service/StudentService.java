@@ -791,7 +791,7 @@ public class StudentService extends AbstractStudentService {
 		sql+=" where b2.userid is null and p4.groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 	
 		if (StringUtils.isNotBlank(uuid))
-			sql += "   s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
+			sql += " and  s1.uuid in(" + DBUtil.stringsToWhereInValue(uuid) + ")";
 		if ("doorrecord_apply".equals(otherWhere))
 			sql += " and  b2.cardid is null ";
 		
