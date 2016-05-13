@@ -153,7 +153,7 @@ public class KDPhotoItemController extends AbstractRESTController {
 			if(DBUtil.isSqlInjection(label, responseMessage))return "";
 
 			
-			pData.setPageSize(18);//3,4,6 的倍数
+			pData.setPageSize(24);//4,6,24 的倍数
 			PageQueryResult pageQueryResult= kDPhotoItemService.query(user,groupuuid,class_uuid,label,user.getUuid(),pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

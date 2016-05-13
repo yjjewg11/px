@@ -17,6 +17,7 @@ import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AccountsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
@@ -241,11 +242,17 @@ public class AccountsController extends AbstractRESTController {
 //			responseMessage.setMessage(RightConstants.Return_msg);
 //			return "";
 //		}
+		
+		String uuid = request.getParameter("uuid");
+		
+		if (DBUtil.isSqlInjection(uuid, responseMessage)) {
+			return "";
+		}
 		try {
-//			boolean flag = accountsService.delete(request.getParameter("uuid"),
-//					responseMessage);
-//			if (!flag)
-//				return "";
+			boolean flag = accountsService.delete(request,uuid,
+					responseMessage);
+			if (!flag)
+				return "";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
