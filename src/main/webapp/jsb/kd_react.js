@@ -668,6 +668,8 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 	  componentDidMount:function(){
 		 var editor=$('#classnews_content').xheditor(xhEditor_classnews_emot);
 		 this.editor=editor;
+	
+		
 		// w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl){
 		 var that=this;		 
 		 //已经有的图片,显示出来.		 
@@ -5222,12 +5224,59 @@ render: function() {
   * 在kd_react
   **/
     var Accounts_EventsTable2_byRight = React.createClass({displayName: "Accounts_EventsTable2_byRight",
+
+			getInitialState: function() {
+		return {events:this.props.events};
+	  },
+	 componentWillReceiveProps: function(nextProps) {
+			this.setState( {events:nextProps.events});
+	  },
 	 getDefaultProps: function() {
 		    return {
 		     responsive: true, bordered: true, striped :true,hover:true,striped:true
 		    };
 		  },
+	ajax_btn_delete:function(event){
+		if(!confirm("确定删除该吗?")){
+			return;
+		}	
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/accounts/delete.json";
+		$.ajax({
+			type : "POST",
+			url : url,
+			data:{uuid:event.uuid},
+			dataType : "json",
+			async: true,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					 G_msg_pop(data.ResMsg.message);
+				$('#Accounts_'+event.uuid).hide();
+				} else {
+					alert(data.ResMsg.message);
+				}
+			},
+			error : G_ajax_error_fn
+		});
+	},
     	render: function() {
+	
+		 d = new Date();    
+		 
+	var s= d.getFullYear()+"-";     
+
+  var month=d.getMonth() + 1;
+	if(month<10){
+		  s +="0"+month;
+	}else{
+		  s +=month;
+	}
+   s += "-"+d.getDate();          
+
+   var todayStr=s;
+     var myuuid=Store.getUserinfo().uuid;
+   var that1=this;
       return (
       React.createElement("div", null, 
        React.createElement(AMR_Table, React.__spread({},  this.props, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}), 
@@ -5247,11 +5296,19 @@ render: function() {
             )
           ), 
           React.createElement("tbody", null, 
-            this.props.events.map(function(event) {
+            this.state.events.map(function(event) {
+				
+				var delete_btn_className="G_Edit_hide";
+				  if(myuuid== event.create_useruuid&&todayStr==event.create_time.split(" ")[0]){
+					delete_btn_className="G_Edit_show";
+				   }
+					
+				
+
               return ( 
-				  React.createElement("tr", {key: "_"+event.uuid}, 
+				  React.createElement("tr", {key: "Accounts_"+event.uuid, id: "Accounts_"+event.uuid}, 
   	     React.createElement("td", null, " ", Vo.get("KD_Accounts_type_"+event.type)), 
-  	     React.createElement("td", null, event.title), 
+  	     React.createElement("td", null, event.title, React.createElement("button", {className: "am-btn-sm am-btn-danger "+delete_btn_className, onClick: that1.ajax_btn_delete.bind(that1,event)}, "删除"), " "), 
   	     React.createElement("td", null, " ", event.num), 
   	     React.createElement("td", null, G_getDateYMD(event.accounts_time)), 	     
   	     React.createElement("td", null, " ", event.studentname), 
@@ -5712,8 +5769,8 @@ render: function() {
 React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1", id: "account_edit_prompt"}, 
   React.createElement("div", {className: "am-modal-dialog"}, 
     React.createElement("div", {className: "am-modal-hd", id: "account_edit_prompt_hd"}), 
-    React.createElement("div", {className: "am-modal-bd", id: "account_edit_prompt_bd"}, 
-      "来来来，吐槽点啥吧"
+    React.createElement("div", {className: "am-modal-bd", id: "account_edit_prompt_bd"}
+      
     ), 
     React.createElement("div", {className: "am-modal-footer"}, 
       React.createElement("span", {className: "am-modal-btn", "data-am-modal-cancel": true}, "取消"), 
@@ -8050,9 +8107,8 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
 		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event[0],1,2)}, event[3]));
-	}else{
-	    table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_teacher_look_info.bind(this,event[0],2)}, event[3]));	
-	  }
+	}
+	
 	  return (
 	    React.createElement("tr", {className: className}, 
 		     React.createElement("td", null, table_th0), 

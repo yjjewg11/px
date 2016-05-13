@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -17,13 +19,16 @@ import org.springframework.ui.ModelMap;
 
 import com.company.news.commons.util.DbUtils;
 import com.company.news.entity.Accounts;
+import com.company.news.entity.ClassNews;
 import com.company.news.entity.Student;
+import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.AccountsJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 /**
  * 
@@ -238,21 +243,40 @@ public class AccountsService extends AbstractService {
 	 * 
 	 * @param uuid
 	 */
-	public boolean delete(String uuid, ResponseMessage responseMessage) {
+	public boolean delete(HttpServletRequest request,String uuid, ResponseMessage responseMessage) {
 		if (StringUtils.isBlank(uuid)) {
 
 			responseMessage.setMessage("ID不能为空！");
 			return false;
 		}
-
-		if (uuid.indexOf(",") != -1)// 多ID
-		{
-			this.nSimpleHibernateDao.getHibernateTemplate().bulkUpdate(
-					"delete from Accounts where uuid in(?)", uuid);;
-		} else {
-			this.nSimpleHibernateDao
-					.deleteObjectById(Accounts.class, uuid);
+		
+		
+		Accounts obj=(Accounts)this.nSimpleHibernateDao.getObject(Accounts.class, uuid);
+		if(obj==null){
+			responseMessage.setMessage("对象不存在！");
+			return false;
 		}
+		
+		
+		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+		
+		if(!user.getUuid().equals(obj.getCreate_useruuid())){
+			responseMessage.setMessage("只有创建人,才能删除");
+			return false;
+		}
+		
+		String createDate=TimeUtils.getDateString(obj.getCreate_time(), TimeUtils.YYYY_MM_DD_FORMAT);
+		
+		String curDate=TimeUtils.getDateString(TimeUtils.getCurrentTimestamp(), TimeUtils.YYYY_MM_DD_FORMAT);
+		if(!curDate.equals(createDate)){
+			responseMessage.setMessage("只能删除当天创建的数据。");
+			return false;
+		}
+
+		this.nSimpleHibernateDao.delete(obj);
+		
+		
+
 
 		return true;
 	}
