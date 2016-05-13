@@ -48,6 +48,7 @@ var KDClassNewPhotoItem=function(groupuuid,classuuid,pageNo ){
  * @handleChange_class_Selected::班级查询；
  * @btn_query_click:名字查找；
  * */
+var query_All_Type=false;
 var G_queryLabel_List=[];
 var Query_photo_div =  React.createClass({ 
 	load_more_btn_id:"load_more_",
@@ -73,6 +74,7 @@ var Query_photo_div =  React.createClass({
 	};
 	return obj;
  },
+
 //取标签公用服务请求
  query_Label: function(groupuuid,classuuid) {
 	 var group_uuid,class_uuid;
@@ -133,6 +135,7 @@ handleClick_query: function(m) {
 	load_more_data:function(){
 		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
    		var that=this;
+   		var re_data;
    		var callback=function(re_data){
     			if(!re_data)return;
     			var number1=that.state.totalCount%that.state.pageSize;
@@ -147,7 +150,14 @@ handleClick_query: function(m) {
     			}
     			that.pageNo++;
     		}
-	var re_data=ajax_list(this.classnewsreply_list_div+this.pageNo,this.state.queryForm,this.pageNo,this,callback);
+  
+   		if(query_All_Type==true){
+   			re_data=ajax_queryMy(this.classnewsreply_list_div+this.pageNo,this.state.queryForm,this.pageNo,this,callback);	
+
+   		}else{
+   			re_data=ajax_list(this.classnewsreply_list_div+this.pageNo,this.state.queryForm,this.pageNo,this,callback);	
+   		}
+
 	 this.setState(this.state);
 	},
  refresh_data:function(){
@@ -187,6 +197,7 @@ btn_classPhtotItem:function(){
   }, 
 //查看所有学校与班级		
   All_group_class: function() {
+	  query_All_Type=false;
 		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
 		 
 		//取得学校数据（所有）
@@ -213,8 +224,14 @@ btn_classPhtotItem:function(){
 		this.refresh_data();
 		
   },
+//查看已经使用过的照片
+  My_Phtot: function() {
+	  query_All_Type=true;
+	  this.refresh_data();
+  },   
 //查看我的学校与班级		
   My_group_class: function() {
+	  query_All_Type=false;
 		var group_uuid,class_uuid,groupArry,classArry,groupList,classList;
 		 
 		//取得学校数据（所有）
@@ -305,7 +322,8 @@ render: function() {
 	var queryForm=this.state.queryForm;
 	var obj=this.state;
 	var arry_label=[];
-
+    var selected=(<div></div>);
+	
   	if(obj.query_My_All_list== 1){
   		btn_query_All_className="G_Edit_show";
   		btn_query_My_className="G_Edit_hide";
@@ -330,29 +348,37 @@ render: function() {
 	  }else{
 		photoClassName="G_Edit_hide";
 	 }
+	if(query_All_Type==false){
+		selected=(<div>		  
+	   	   <AMR_ButtonToolbar>
+  		   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectgroup} btnWidth="200"  data={obj.groupList} btnStyle="primary" value={queryForm.groupuuid} />    		            
+    	   </div> 
+    		
+    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={obj.classList} btnStyle="primary" value={queryForm.classuuid} />    		            
+    	   </div> 
+    		
+    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
+    		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={arry_label} btnStyle="primary" value={queryForm.label} />    		            
+    	   </div> 
+            </AMR_ButtonToolbar>
+		  </div>);
+	}
+//	console.log("query_All_Type",query_All_Type);
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
-		  <AMR_Panel>
-		   <AMR_ButtonToolbar>
-    		 <AMR_Button className={btn_query_All_className} amStyle="secondary" onClick={this.All_group_class.bind(this)} >查询所有班级</AMR_Button>
-    		 <AMR_Button className={btn_query_My_className} amStyle="secondary" onClick={this.My_group_class.bind(this)} >查询我的班级</AMR_Button>
-    		</AMR_ButtonToolbar>
-		  </AMR_Panel> 
+
+			<AMR_Panel>
+			 <AMR_ButtonToolbar>
+	  		   <AMR_Button className={btn_query_All_className} amStyle="secondary" onClick={this.All_group_class.bind(this)} >查询所有班级</AMR_Button>
+	  		   <AMR_Button className={btn_query_My_className} amStyle="secondary" onClick={this.My_group_class.bind(this)} >查询我的班级</AMR_Button>
+	  		   <AMR_Button amStyle="secondary" onClick={this.My_Phtot.bind(this)} >查询已使用过的照片</AMR_Button>
+	  	      </AMR_ButtonToolbar>
+			 </AMR_Panel> 
 		  <label>{"图片总数："+this.state.totalCount+"张"}</label>
 		  <AMUIReact.Form id="queryForm" inline  onKeyDown={this.handle_onKeyDown}>
-	   	   <AMR_ButtonToolbar>
-	  		   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-	    		<AMUIReact.Selected id="groupuuid" name="groupuuid" onChange={this.handleChange_selectgroup} btnWidth="200"  data={obj.groupList} btnStyle="primary" value={queryForm.groupuuid} />    		            
-	    	   </div> 
-	    		
-	    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-	    		<AMUIReact.Selected id="classuuid" name="classuuid" placeholder="班级切换"  onChange={this.handleChange} btnWidth="200"  data={obj.classList} btnStyle="primary" value={queryForm.classuuid} />    		            
-	    	   </div> 
-	    		
-	    	   <div className="am-fl am-margin-left-sm am-margin-bottom-xs">
-	    		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={arry_label} btnStyle="primary" value={queryForm.label} />    		            
-	    	   </div> 
-	     </AMR_ButtonToolbar>
+		  {selected}
 	    </AMUIReact.Form>
 	    
 	    <div className={photoClassName}>
@@ -381,6 +407,7 @@ render: function() {
   );
 }
 });
+//*******************************************普通程序查询入口*************************************
 /*
  * 请求相册服务器数据
  * 
@@ -445,10 +472,11 @@ var Query_photo_rect = React.createClass({
 
 	//imgphotoList绘制图片方法在用
 	for(var i=0;i<imgarry.length;i++){
-		 bgobj={path:null,uuid:null,label:null};
+		 bgobj={path:null,uuid:null,label:null,note:null};
 		 bgobj.path=imgarry[i].path;
 		 bgobj.uuid=imgarry[i].uuid;
 		 bgobj.label=imgarry[i].label;
+		 bgobj.note=imgarry[i].note;
 		 imgphotoList.push(bgobj);
 	    }
 
@@ -538,13 +566,17 @@ return (
 		  }	
     	var  o = event.path;
     	var label_text = event.label;
+    	var note_text  = event.note;
     	if(!label_text)label_text="无";
+    	if(!note_text)  note_text="无";
 	return (
 			
 		 <li id={"Common_mg_ClassNew_big_fn_item_"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "+className}  title={event.uuid}  onClick={that.div_onClick.bind(this,"Common_mg_ClassNew_big_fn_item_"+event.uuid,event)}>			     						    
 		  <div className="am-gallery-item">
 		   <img  src={o}/>
 	        <label>{"标签：【"+label_text+"】"}</label>
+	        <br/>
+	        <label>{"备注：【"+note_text+"】"}</label>
 	       </div>
 	      </li>		      
         	)
@@ -554,6 +586,208 @@ return (
 			    )
           }
         }); 	
+
+
+
+
+
+
+
+//********************************************查询所有已使用照片绘制************************************
+
+/*
+ * 已使用照片请求相册服务器数据
+ * 
+ * */
+ var  ajax_queryMy=function(list_div,queryForm,pageNo,that,callback) {
+	 
+		$.AMUI.progress.start();
+		var url = hostUrl + "rest/uploadFile/queryMy.json";
+		$.ajax({
+			type : "GET",
+			url : url,
+			dataType : "json",
+			async: false,
+			success : function(data) {
+				$.AMUI.progress.done();
+				if (data.ResMsg.status == "success") {
+					  that.state.list=data.list.data;
+					  that.state.pageSize=data.list.pageSize;
+				  if(pageNo=="1")that.state.totalCount=data.list.totalCount;
+					React.render(React.createElement(Query_Myphoto_rect, {
+						events: data.list,
+						Propsthat:that,
+						responsive: true, bordered: true, striped :true,hover:true,striped:true
+						}), document.getElementById(list_div));
+	 				if(typeof callback=='function'){
+						callback(data.list);
+					}
+				} else {
+					alert(data.ResMsg.message);
+					G_resMsg_filter(data.ResMsg);
+				}
+			},
+			error :G_ajax_error_fn
+		});		 
+	 
+};
+
+
+
+
+/*
+ * 根据已使用照片相册请求数据绘制相册图片;
+ * */
+var Query_Myphoto_rect = React.createClass({
+ //数据初始化
+ getInitialState: function() {
+  return this.props.events; 
+ },
+//数据
+ componentWillReceiveProps: function(nextProps) {	
+	 this.setState(this.getStateByPropes(nextProps));
+  },
+
+	render: function() {	
+	var bgobj,label_obj;
+	var imgarry=this.state.data;
+
+	    return (    		
+		    <div className="am-comment-bd">
+		     <Common_Img_My_fn  imgsList={imgarry}  Penthat={this.props.Propsthat} />  
+		    </div>
+	    );
+	  }
+	});
+
+var  Common_Img_My_fn  = React.createClass({
+	//精品相册动态选择
+	componentDidMount:function(){
+		  if(G_photo_urlsSelectArry.length!=0){
+			  var imglist=this.props.imgsList;
+			  for(var i=0;i<imglist.length;i++){
+				  if(imglist[i].OK==true){
+					  var trid="Common_Img_My_fn_item"+imglist[i].uuid;
+					  var divid="Common_Img_My_fn"+imglist[i].uuid;
+					  var tr=$("#"+trid);
+						tr.addClass("G_ch_classNews_item_checked");
+						 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+					     React.render(React.createElement(KDClassNewsPhotoItem_Img_canDel, {
+									url: imglist[i].path,
+									parentDivId:divid,trid:trid,
+									event:imglist[i]
+									}), document.getElementById(divid));  	
+					} 
+				  }
+			  }
+		  
+
+	},
+	//红框框样式点击方法;
+	div_onClick:function(trid,event){
+		var tr=$("#"+trid);
+		var divid="Common_Img_My_fn"+event.uuid;
+		
+		if(tr.attr("class").indexOf("G_ch_classNews_item_checked")>=0){ 
+			tr.removeClass("G_ch_classNews_item_checked");		
+			  $('#'+divid).remove();
+			  
+			  if(G_photo_urlsSelectArry.length!=0){
+				  var List=[];
+				  for(var i=0;i<G_photo_urlsSelectArry.length;i++){  
+					  if(G_photo_urlsSelectArry[i]!=event.uuid){
+						  List.push(G_photo_urlsSelectArry[i]);
+					  }					  
+				  }
+				  G_photo_urlsSelectArry=List;
+				  }
+		}else{ 
+			tr.addClass("G_ch_classNews_item_checked");
+			 $("#abc").append("<div id='"+divid+"'>加载中...</div>");		 	
+		     React.render(React.createElement(KDClassNewsPhotoItem_Img_canDel, {
+						url: event.path,
+						parentDivId:divid,trid:trid,
+						event:event
+						}), document.getElementById(divid));  	
+		} 
+
+	},
+  render: function() {
+	  var that=this
+
+	  var edit_btn_className;
+			  if (!this.props.imgsList){
+				  return;
+			  };  
+			  
+	  
+	  var is_Checked=false;
+  	  var className = is_Checked ? 'G_ch_classNews_item_checked' :'';
+			  
+return (
+   <div>
+	<ul  className="am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered">
+	   {this.props.imgsList.map(function(event) {
+		   
+		  if(G_photo_urlsSelectArry.length!=0){
+			  for(var i=0;i<G_photo_urlsSelectArry.length;i++){
+				  if(event.uuid==G_photo_urlsSelectArry[i]){
+					  event.OK=true;
+				  }
+			  }
+		  }	
+ var  o = event.path;
+	return (
+			
+		 <li id={"Common_Img_My_fn_item"+ event.uuid} className={"G_class_phtoto_Img  G_ch_classNews_item "+className}  title={event.uuid}  onClick={that.div_onClick.bind(this,"Common_Img_My_fn_item"+event.uuid,event)}>			     						    
+		  <div className="am-gallery-item">
+		   <img  src={o}/>
+	        <label>{"创建时间：【"+event.create_time+"】"}</label>
+	       </div>
+	      </li>		      
+        	)
+      })}
+    </ul>
+  </div>
+			    )
+          }
+        }); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //预览图片方法	
 var KDClassNewsPhotoItem_Img_canDel = React.createClass({

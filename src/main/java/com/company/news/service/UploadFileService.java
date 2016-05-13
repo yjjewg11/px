@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,8 @@ import net.coobird.thumbnailator.geometry.Positions;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -32,6 +36,7 @@ import sun.misc.BASE64Decoder;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
+import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.PxLogUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.commons.util.UUIDGenerator;
@@ -41,7 +46,10 @@ import com.company.news.commons.util.upload.OssIUploadFile;
 import com.company.news.entity.GroupHabits;
 import com.company.news.entity.UploadFile;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.RestConstants;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.SmbFileUtil;
 import com.company.news.rest.util.TimeUtils;
 import com.company.news.vo.ResponseMessage;
@@ -343,6 +351,84 @@ public class UploadFileService extends AbstractService {
 		return true;
 	}
 
+
+	String Selectsql=" SELECT t1.user_uuid,t1.create_time,t1.file_path,t1.uuid";
+	String SqlFrom=" FROM px_upload t1 ";	
+	
+	/**
+	 * 查询所有通知
+	 * 
+	 * @return
+	 */
+	public PageQueryResult query(SessionUserInfoInterface user,PaginationData pData) {
+		String selectsql=Selectsql;
+		String sql=SqlFrom+" where 1=1 ";
+		
+//		 if (StringUtils.isNotBlank(groupuuid)) {//根据学校uuid查询
+//			sql += " and   t1.group_uuid ='"+DBUtil.safeToWhereString(groupuuid)+"'";
+//		}
+//		
+//		 if (StringUtils.isNotBlank(class_uuid)) {//根据班级uuid查询
+//			sql += " and   t1.class_uuid ='"+DBUtil.safeToWhereString(class_uuid)+"'";
+//		}
+//		 
+//		 if (StringUtils.isNotBlank(label)) {//根据标签查询
+//			sql += " and   t1.label ='"+DBUtil.safeToWhereString(label)+"'";
+//		}
+		////使用创建时间做分页显示,beforeTime 取 2016-01-15 13:13 之前的数据.按照创建时间排倒序
+		 if(StringUtils.isNotBlank(pData.getMaxTime())){
+				pData.setPageNo(1);
+				sql += " and   t1.create_time <"+DBUtil.queryDateStringToDateByDBType(pData.getMaxTime());
+				
+				  sql += " order by t1.create_time asc";
+		}else if(StringUtils.isNotBlank(pData.getMinTime())){
+				pData.setPageNo(1);
+				sql += " and   t1.create_time >"+DBUtil.queryDateStringToDateByDBType(pData.getMinTime());
+				
+				  sql += " order by t1.create_time desc";
+		}else{//默认查询,当前时间倒叙
+			  sql += " order by t1.create_time desc";
+		}
+		Query  query =this.nSimpleHibernateDao.createSQLQuery(selectsql+sql);
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		String countsql="select count(*) "+sql;
+	    PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findByPageForQueryTotal(query,countsql, pData);
+		List<Map> list=pageQueryResult.getData();
+		this.warpMapList(list, user);
+		return pageQueryResult;
+	}
+	
+	/**
+	 * vo输出转换
+	 * @param list
+	 * @return
+	 */
+	private List warpMapList(List<Map> list,SessionUserInfoInterface user ) {
+		
+//		String uuids="";
+		for(Map o:list){
+			warpMap(o,user);
+//			uuids+=o.get("uuid")+",";
+		}
+		UserRedisCache.warpListMapByUserCache(list, "create_useruuid", "create_user", null);
+
+		
+		return list;
+	}	
+	private void warpMap(Map o, SessionUserInfoInterface user) {
+		try {
+			
+			if (uploadfiletype.equals("oss")) {
+				o.put("path", PxStringUtil.imgUrlByRelativePath_sub((String)o.get("file_path"),"108h"));
+			}else{
+				o.put("path", PxStringUtil.imgUrlByUuid((String)o.get("uuid")));
+			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
 	/**
 	 * 读取文件流并保存到response
 	 * 

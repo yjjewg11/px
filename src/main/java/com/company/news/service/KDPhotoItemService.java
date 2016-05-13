@@ -2,6 +2,7 @@ package com.company.news.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,22 +19,23 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import sun.misc.BASE64Decoder;
 
+import com.company.mq.JobDetails;
+import com.company.mq.MQUtils;
 import com.company.news.ProjectProperties;
 import com.company.news.SystemConstants;
 import com.company.news.cache.UserCache;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.commons.util.UUIDGenerator;
 import com.company.news.commons.util.UploadFileUtils;
 import com.company.news.commons.util.upload.DiskIUploadFile;
 import com.company.news.commons.util.upload.IUploadFile;
 import com.company.news.commons.util.upload.OssIUploadFile;
 import com.company.news.entity.FPPhotoItemOfUpdate;
 import com.company.news.entity.KDPhotoItem;
-import com.company.news.entity.UploadFile;
 import com.company.news.form.KDPhotoItemForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.FPPhotoItemJsonform;
+import com.company.news.jsonform.KDPhotoItemJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -541,5 +543,52 @@ public class KDPhotoItemService extends AbstractService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+//	public boolean isRight(HttpServletRequest request,String family_uuid, ResponseMessage responseMessage) {
+//		SessionUserInfoInterface user = SessionListener.getUserInfoBySession(request);
+//		
+//		String sql="select 1 from fp_family_members where family_uuid='"+family_uuid+"' and ( user_uuid='"+user.getUuid()+"' or tel='"+user.getLoginname()+"')";
+//		List list=this.nSimpleHibernateDao.createSqlQuery(sql).list();
+//		if(list.size()>0){
+//			return true;
+//		}
+//		responseMessage.setMessage("不是家庭成员,无权操作!");
+//		
+//		return false;
+//	}
+	public boolean updateNote(KDPhotoItemJsonform jsonform,
+			ResponseMessage responseMessage, HttpServletRequest request) throws Exception {
+		if (StringUtils.isBlank(jsonform.getUuid())) {
+			responseMessage.setMessage("uuid 不能为空!");
+			return false;
+		}
+		SessionUserInfoInterface user=SessionListener.getUserInfoBySession(request);
+		KDPhotoItem obj = (KDPhotoItem) nSimpleHibernateDao.getObject(KDPhotoItem.class,
+				jsonform.getUuid());
+		
+		if(obj==null){
+			responseMessage.setMessage("数据不存在.uuid ="+jsonform.getUuid());
+			return false;
+		}
+		
+//		if(!isRight(request, obj.getFamily_uuid(), responseMessage)){
+//			return false;
+//		}
+		
+//		obj.setUpdate_time(TimeUtils.getCurrentTimestamp());
+		obj.setNote(jsonform.getNote());
+//		obj.setAddress(jsonform.getAddress());
+//		obj.setStatus(SystemConstants.FPPhotoItem_Status_update);
+		
+		this.nSimpleHibernateDao.save(obj);
+		
+
+//		Map map=new HashMap();
+//    	map.put("uuid", obj.getFamily_uuid());
+////    	map.put("create_useruuid",user.getUuid());
+//    	map.put("title",user.getName()+"修改了照片备注");
+		
+//    	JobDetails job=new JobDetails("doJobMqIservice","sendFPPhotoItem",map);
+//		MQUtils.publish(job);
+		return true;
+	}
 }

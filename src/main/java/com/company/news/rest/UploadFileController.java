@@ -16,6 +16,10 @@ import com.company.news.ContentTypeConstants;
 import com.company.news.SystemConstants;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.UploadFile;
+import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
+import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.service.UploadFileService;
 import com.company.news.vo.ResponseMessage;
@@ -168,6 +172,40 @@ public class UploadFileController extends AbstractRESTController {
 		}
 		return "";
 	}
+	
+	/**
+	 * 
+	 * 查询我关联的所有家庭的相片.
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryMy", method = RequestMethod.GET)
+	public String queryMy(ModelMap model, HttpServletRequest request,PaginationData pData) {
+		model.clear();
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		//设置当前用户
+		SessionUserInfoInterface user=this.getUserInfoBySession(request);
+		
+		try {
+			
+
+			pData.setPageSize(18);//3,4,6 的倍数
+			PageQueryResult pageQueryResult= uploadFileService.query(user,pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+		return "";
+	}
+	
+	
 	
 	
 	/**

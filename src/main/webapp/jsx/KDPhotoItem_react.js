@@ -583,7 +583,6 @@ var fpPhotoUploadTask={
 		 * lrz_callback:压缩完成后,回调函数.
 		 */
 		do_lrz:function(){
-			console.log("fpPhotoUploadTask.upload_files_arr",fpPhotoUploadTask.upload_files_arr)
 			var file=fpPhotoUploadTask.upload_files_arr.pop();
 			
 			if(!file)return;
@@ -790,6 +789,7 @@ handleChange_label:function(val){
 	this.setState($('#KdPhotoForm').serializeJson());
 
 },
+
 disp_prompt:function(){
 var name=prompt("自定义标签(最多45位)","")
 
@@ -847,13 +847,13 @@ render: function() {
 
     		  <input type="hidden" name="group_uuid"  value={o.queryForm.groupuuid}/>
     		  <input type="hidden" name="class_uuid"  value={o.queryForm.classuuid}/> 
+    		  <input type="hidden" name="note"  value={o.queryForm.note}/> 
     		  <AMR_ButtonToolbar>
         		<div className="am-fl am-margin-left-sm am-margin-bottom-xs">
         		<AMUIReact.Selected id="label" name="label" placeholder="标签切换"  onChange={this.handleChange_label} btnWidth="200"  data={o.show_list} btnStyle="primary" value={o.queryForm.label} />    		            
         		 </div> 
       		    </AMR_ButtonToolbar>
 
-  		        
   		      <label>{"标签："+o.queryForm.label}</label><br/> 
     		  </form>
 

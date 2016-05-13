@@ -18,13 +18,12 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.company.news.ContentTypeConstants;
 import com.company.news.ProjectProperties;
-import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.KDPhotoItem;
-import com.company.news.entity.UploadFile;
 import com.company.news.form.KDPhotoItemForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
+import com.company.news.jsonform.KDPhotoItemJsonform;
 import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
@@ -558,6 +557,57 @@ public class KDPhotoItemController extends AbstractRESTController {
 			responseMessage.setMessage("服务器异常:"+e.getMessage());
 			return "";
 		}
+		return "";
+	}
+	
+	
+	
+	
+	/**
+	 * 修改保存相册基本资料
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateNote", method = RequestMethod.POST)
+	public String updateNote(ModelMap model, HttpServletRequest request) {
+		
+		
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		KDPhotoItemJsonform favoritesJsonform;
+		try {
+			favoritesJsonform = (KDPhotoItemJsonform) this.bodyJsonToFormObject(
+					bodyJson, KDPhotoItemJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage("服务器异常:"+error_bodyJsonToFormObject);
+			return "";
+		}
+		
+		//设置当前用户
+		
+		try {
+			Object flag;
+			    flag = kDPhotoItemService.updateNote(favoritesJsonform, responseMessage, request);
+
+			if (flag==null)// 请求服务返回失败标示
+				return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("更新成功");
 		return "";
 	}
 

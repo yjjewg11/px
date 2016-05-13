@@ -503,7 +503,6 @@ var queryPlayMove=function(obj){
  * */
 var Img_photo_rect = React.createClass({
  getInitialState: function() {
-
 			return KDPhoto_play_move;
 	  },
 //保存返回	  
@@ -559,23 +558,26 @@ buttion_black_Click: function(o) {
 		error : G_ajax_error_fn
 	});
 
-	
-	
-//	G_ajax_shouc_save(opt);
 
 
 },	
 	  
-addShowImg:function(url,uuid){
+addShowImg:function(obj){
 	var prx_divid="Img_photo_rect_";
 	var that=this;
+	var url=obj.path
+	var uuid=obj.uuid
+	var note=obj.note
 	var divid=prx_divid+uuid;  
 	  $("#show_imgList").append("<div id='"+divid+"'>加载中...</div>");	
 
 		this.setState(this.state);
 	  React.render(React.createElement(KDphoto_Img_canDel, {
 		  prx_divid:prx_divid,
-			url: url,uuid:uuid,paThat:that,
+			url:url,
+			uuid:uuid,
+			note:note,
+			paThat:that,
 			}), document.getElementById(divid));  
 },
 componentDidMount:function(){
@@ -585,7 +587,7 @@ componentDidMount:function(){
 	var imgArry=KDPhoto_play_move.imgArry;
 	 if(imgArry.length==0)return;
 	 for(var i=0;i<imgArry.length;i++){
-		 this.addShowImg(imgArry[i].path,imgArry[i].uuid);
+		 this.addShowImg(imgArry[i]);
 	 }		
 
 },
@@ -603,7 +605,7 @@ bg_Class_fn:function(){
 		 uuids=stringArry(calback_uuids);	//将UUID数组转成字符串;	 
 		 var imgs=queryMoviePhoto_uuids(uuids);	//根据uuid字符串服务器请求取得照片地址 数组 	 
 		 for(var i=0;i<imgs.length;i++){
-			 that.addShowImg(imgs[i].path,imgs[i].uuid);
+			 that.addShowImg(imgs[i]);
 		   }		   
 	}
 	
@@ -746,16 +748,16 @@ render: function() {
 		</AMR_ButtonToolbar>
   
 	</form>
-  		 
-		  <br/>
+	  <br/>  
+
+ 	  <AMR_ButtonToolbar>	
+ 	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >保存并返回</AMR_Button>
+	  </AMR_ButtonToolbar>
 		      <div id="show_imgList"></div><br/>
 		      <div className="cls"></div>
      		  
-		  <br/>  
-     	  <AMR_ButtonToolbar>	
-     	   <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_black_Click.bind(this,o)} >保存并返回</AMR_Button>
-		  </AMR_ButtonToolbar>
-    		    
+
+
 		    </div>
 	   </div>    	
 
@@ -1180,20 +1182,116 @@ var name="封面";
 	}	
 
 }, 
+//修改备注说明
+buttion_Click:function(obj){
+	React.render(React.createElement(Img_info_rect, {
+		evens:obj
+	}), G_get_div_body()); 
+ },	
+
   render: function() {
 var url=this.props.url;
 var uuid=this.props.uuid;
-
+var note=this.props.note;
+var data={url:url,uuid:uuid,note:note};
+if(!note)note="无";
 	 return (
-      		<div id={"Common_fPMovieTemplate_"+uuid}  onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img" >
+      		<div id={"Common_fPMovieTemplate_"+uuid}  onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img G_ch_classNews_item" >
  	       			<img  id ={uuid} className="G_cookplan_Img_img"  src={url} alt="图片不存在" />
  	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
- 	       		</div>		
+ 	       		<br/><label>备注说明：</label>
+ 	         	<p>{note}</p>
+ 			      <AMR_ButtonToolbar>
+ 	    		    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_Click.bind(this,data)} >修改备注</AMR_Button>
+ 	    		  </AMR_ButtonToolbar>
+ 	       	</div>		
       	)
   }
 });
 
+/*
+ * 备注详情修改界面
+ * */
+var Img_info_rect = React.createClass({
+ //数据初始化
+ getInitialState: function() {
+  return this.props.evens; 
+ },
+//数据
+ componentWillReceiveProps: function(nextProps) {	
+	 this.setState(this.getStateByPropes(nextProps));
+  },
+//备注说明
+  handleChange:function(val){
+	  this.state.note=val;
+  	this.setState(this.state);
+ 	this.setState($('#KdPhotoInfoForm').serializeJson());
+  }, 
+//确认保存  
+buttion_ok_Click: function() {
+	var that=this;
+	var opt={
+			 formName:"KdPhotoInfoForm",
+			 url:hostUrl + "rest/kDPhotoItem/updateNote.json",
+			 cbFN:null
+			 };
+	$.AMUI.progress.start();
+	  if(!opt.jsonString){
+		  formObject = $('#'+opt.formName).serializeJson();
+		  opt.jsonString=JSON.stringify(formObject);
+	  }		 
+	  var async=true;
+	  if(opt.async===false){
+		  async=opt.async;
+	  }
+	$.ajax({
+		type : "POST",
+		url : opt.url,
+		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
+		data:opt.jsonString,
+		dataType : "json",
+		contentType : false, 
+		async:async,
+		success : function(data) {
+			$.AMUI.progress.done();
+			// 登陆成功直接进入主页
+			if (data.ResMsg.status == "success") {
+				
+				for(var i=0;i<KDPhoto_play_move.imgArry.length;i++){
+					if(that.state.uuid==KDPhoto_play_move.imgArry[i].uuid){
+						KDPhoto_play_move.imgArry[i].note=that.state.note;						
+					}
+				}
+			
+				 React.render(React.createElement(Img_photo_rect), G_get_div_body()) 
+			}else{
+				 G_msg_pop(data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+},	  
+render: function() {	
 
+var obj=this.state;
+
+return (    		
+	  <div className="am-gallery-item">
+    <img src={obj.url} />
+    <br/>
+    <form id="KdPhotoInfoForm" method="post" className="am-form">
+	  <input type="hidden" name="uuid"  value={obj.uuid}/>
+  <label htmlFor="name">备注说明:</label>
+  <input type="text" name="note" id="note" value={obj.note} onChange={this.handleChange} placeholder="不超过45字！"/>   
+  </form>
+  <br/>
+  <AMR_ButtonToolbar>
+  <AMR_Button amSize="xs" amStyle="secondary" onClick={this.buttion_ok_Click.bind(this)} >确认返回</AMR_Button>
+  </AMR_ButtonToolbar>  
+  </div>	
+    );
+  }
+});
 
 
 
@@ -1203,7 +1301,6 @@ var uuid=this.props.uuid;
 /*
  * 模板界面选择绘制;
  * */
-var fPMovieTemplate_callback;
 var Img_fPMovieTemplate_rect = React.createClass({
  //数据初始化
  getInitialState: function() {
@@ -1233,7 +1330,7 @@ var  Common_fPMovieTemplate_fn  = React.createClass({
 div_onClick:function(trid,event){
 	this.is_Checked=true;
 	objfPMovieTemplate=event;
-	var name="已选择该模板";
+	var name="已选";
 	showDiv(trid,name);
 },	
 //确认模板按钮
@@ -1251,7 +1348,7 @@ componentDidMount:function(){
 	 if(KDPhoto_play_move.tenokate.key==imgsList[i].key){
 			this.is_Checked=true;
 			objfPMovieTemplate=imgsList[i];
-			var name="已选择该模板";
+			var name="已选";
 			showDiv("Common_fPMovieTemplate_fn_item_"+objfPMovieTemplate.key,name);
 	 }	 
  }
