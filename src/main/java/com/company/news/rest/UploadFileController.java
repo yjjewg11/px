@@ -191,7 +191,7 @@ public class UploadFileController extends AbstractRESTController {
 		try {
 			
 
-			pData.setPageSize(18);//3,4,6 的倍数
+			pData.setPageSize(24);//4,6,12 的倍数
 			PageQueryResult pageQueryResult= uploadFileService.query(user,pData);
 			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
 			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);

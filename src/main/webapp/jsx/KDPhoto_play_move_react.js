@@ -1196,16 +1196,16 @@ var note=this.props.note;
 var data={url:url,uuid:uuid,note:note};
 if(!note)note="无";
 	 return (
+		
       		<div id={"Common_fPMovieTemplate_"+uuid}  onClick={this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid)} className="G_cookplan_Img G_ch_classNews_item" >
  	       			<img  id ={uuid} className="G_cookplan_Img_img"  src={url} alt="图片不存在" />
  	       			<div className="G_cookplan_Img_close"  onClick={this.deleteImg.bind(this)}><img src={hostUrlCDN+"i/close.png"} border="0" /></div>
- 	       		<br/><label>备注说明：</label>
- 	         	<p>{note}</p>
- 			      <AMR_ButtonToolbar>
- 	    		    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.buttion_Click.bind(this,data)} >修改备注</AMR_Button>
- 	    		  </AMR_ButtonToolbar>
- 	       	</div>		
-      	)
+ 	       		
+ 	         <a className="G_ch_classNews_item_note"  onClick={this.buttion_Click.bind(this,data)} title={note}><span className="am-icon-edit"></span>{note}</a>
+ 			
+ 	       	</div>	
+			  
+      	) 
   }
 });
 
@@ -1281,12 +1281,12 @@ return (
     <br/>
     <form id="KdPhotoInfoForm" method="post" className="am-form">
 	  <input type="hidden" name="uuid"  value={obj.uuid}/>
-  <label htmlFor="name">备注说明:</label>
+  <label htmlFor="name">备注:</label>
   <input type="text" name="note" id="note" value={obj.note} onChange={this.handleChange} placeholder="不超过45字！"/>   
   </form>
   <br/>
   <AMR_ButtonToolbar>
-  <AMR_Button amSize="xs" amStyle="secondary" onClick={this.buttion_ok_Click.bind(this)} >确认返回</AMR_Button>
+  <AMR_Button amSize="xs" amStyle="secondary" onClick={this.buttion_ok_Click.bind(this)} >确认</AMR_Button>
   </AMR_ButtonToolbar>  
   </div>	
     );

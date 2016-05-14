@@ -675,7 +675,6 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		 //已经有的图片,显示出来.		 
 		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
 			  ////data.data.uuid,data.imgUrl
-			  console.log("URL",imgurl)
 			 that.addShowImg(imgurl);
 			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
 		  });		
@@ -3369,7 +3368,6 @@ bg_Class_fn:function(){
 	var editor=this.editor;
      var callback=function(imgArr){
           for(var i=0;i<imgArr.length;i++){
-			  console.log("测试人才",imgArr);
            editor.pasteHTML( '<img width="100%"   src="'+imgArr[i].src+'"/>')
           }          
      }
@@ -5777,15 +5775,153 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
       React.createElement("span", {className: "am-modal-btn", "data-am-modal-confirm": true}, "提交")
     )
   )
-)
+), 
 	
-
+	React.createElement(Accounts_EventsTable_myListByPage, null)
         )
       );
     }
     });
 
 
+//——————————————————————————收支记录<绘制>——————————————————————————
+  /*
+  * <收支记录>
+  * @请求数据成功后执行Accounts_EventsTable方法绘制
+  * 在kd_react
+  **/
+    var Accounts_EventsTable_myListByPage = React.createClass({displayName: "Accounts_EventsTable_myListByPage",		
+		getStateByPropes:function(nextProps){
+
+			
+			var queryForm={
+				groupuuid:nextProps.groupuuid
+			};
+			 var obj= {
+				queryForm:queryForm,
+				pageNo:1,
+				type:nextProps.type,
+				list: []
+			};
+			return obj;
+		},
+		data_type_list:[],
+		getInitialState: function() {
+		
+    	    return this.getStateByPropes(this.props);
+    	  },
+		handleChange: function(v) {
+
+		    this.setState(this.state);
+	  },
+	   componentWillReceiveProps: function(nextProps) {	
+		   this.setState(this.getStateByPropes(nextProps));
+	},
+
+	  componentDidMount: function() {
+		this.ajax_list(); 
+	  },
+	ajax_callback:function(list,sum_num){
+    		 if (list== null ) this.state.list=[];
+			 else
+    		  this.state.list=list.data;
+
+			this.state.sum_num=sum_num;
+			if(this.state.pageNo=="1")this.state.totalCount=list.totalCount;
+
+    		  this.setState(this.state);
+    	  },
+		ajax_list:function(){
+			
+    		$.AMUI.progress.start();
+    		var that=this;
+    		var url = hostUrl + "rest/accounts/myListByPage.json";
+    		$.ajax({
+    			type : "GET",
+    			url : url,
+    			data :{pageNo:this.state.pageNo},
+    			dataType : "json",
+    			//async: false,//必须同步执行
+    			success : function(data) {
+    				$.AMUI.progress.done();
+    				if (data.ResMsg.status == "success") {
+    				    that.ajax_callback( data.list,data.sum_num );     
+    				} else {
+    					alert(data.ResMsg.message);
+    					G_resMsg_filter(data.ResMsg);
+    				}
+    			},
+    			error : G_ajax_error_fn
+    		});
+    		
+    	},
+    	pageClick: function(m) {
+    		 var obj=this.state;
+    		 if(m=="pre"){
+    			
+    			 if(obj.pageNo<2){
+    				 G_msg_pop("第一页了");
+    				 return;
+    			 }
+    			 obj.pageNo=obj.pageNo-1;
+    			 this.ajax_list(obj);
+    			 return;
+    		 }else if(m=="next"){
+    			 if(!obj.list||obj.list.length==0){
+    				 G_msg_pop("最后一页了");
+    				 return ;
+    			 }
+    			 obj.pageNo=obj.pageNo+1;
+    			
+    			 this.ajax_list(obj);
+    			 return;
+    		 }
+    	},
+    handleClick_query: function() {
+			this.handleChange();
+    		this.state.pageNo=1;
+			
+			 this.ajax_list();
+    	
+     },
+    render: function() {
+			var queryForm=this.state.queryForm;
+			 if(!this.state.totalCount)this.state.totalCount=0;
+			 if(!this.state.sum_num)this.state.sum_num=0;
+      return (
+      React.createElement("div", null, 
+		  
+		  React.createElement(AMUIReact.Form, {id: "queryForm", inline: true, onKeyDown: this.handle_onKeyDown}, 
+           React.createElement(AMR_Panel, null, 
+		    React.createElement(AMR_ButtonToolbar, null, 
+		   
+	      React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+    	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
+          ), 	
+		  
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+          React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", this.state.pageNo, "页")
+          ), 	
+		
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+    	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")
+          ), 
+			  
+   		 
+	    
+		  React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+		  React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick_query.bind(this)}, "查询我的")
+          )
+
+    	   )
+			    )
+		), 
+    	
+         React.createElement(Accounts_EventsTable2_byRight, React.__spread({}, this.props, {events: this.state.list}))
+        )
+      );
+    }
+    });
  /*
    * <收支记录>添加按钮详情绘制;
    * @ajax_accounts_save：保存按钮调用
@@ -8103,10 +8239,12 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	    event.disabled ? 'am-disabled' : '';
 	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
 	var table_th0=event[6];
-	var table_th3=(React.createElement("a", {href: "javascript:void(0);"}, event[3]));
+	var table_th3;
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
 		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event[0],1,2)}, event[3]));
+	}else{
+ 	   table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_teacher_look_info.bind(this,event[0])}, event[3]));
 	}
 	
 	  return (
@@ -8908,8 +9046,6 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
-		console.log("list1",this.props.group_list);
-		console.log("list1",this.props.classlist);
 		 if (this.state.list== null ) this.state.list=[];
       return (
       React.createElement("div", null, 

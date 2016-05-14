@@ -164,7 +164,24 @@ background-color: #5eb95e;
     .G_ch_classNews_item_checked{
   			border:1px solid #FF0033; 
     }	
-	
+    .G_ch_classNews_item_note{
+  			 font-weight: normal;
+		  font-size: 1.4rem;
+		  color: #ffffff;
+		  position: absolute;
+		  bottom: 0;
+		  width: 100%;
+		  background-color: rgba(0, 0, 0, 0.5);
+		
+		  height: 30px;
+		  line-height: 30px;
+		  display: block;
+		  word-wrap: normal;
+		  /* for IE */
+		  text-overflow: ellipsis;
+		  white-space: nowrap;
+		  overflow: hidden;
+    }		
 .G_img_selected_mask{
 	position:absolute; top:0px; left:0px;
      background-color: #ccc;  

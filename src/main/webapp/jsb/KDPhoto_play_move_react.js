@@ -1196,16 +1196,16 @@ var note=this.props.note;
 var data={url:url,uuid:uuid,note:note};
 if(!note)note="无";
 	 return (
+		
       		React.createElement("div", {id: "Common_fPMovieTemplate_"+uuid, onClick: this.div_onClick.bind(this,"Common_fPMovieTemplate_"+uuid), className: "G_cookplan_Img G_ch_classNews_item"}, 
  	       			React.createElement("img", {id: uuid, className: "G_cookplan_Img_img", src: url, alt: "图片不存在"}), 
  	       			React.createElement("div", {className: "G_cookplan_Img_close", onClick: this.deleteImg.bind(this)}, React.createElement("img", {src: hostUrlCDN+"i/close.png", border: "0"})), 
- 	       		React.createElement("br", null), React.createElement("label", null, "备注说明："), 
- 	         	React.createElement("p", null, note), 
- 			      React.createElement(AMR_ButtonToolbar, null, 
- 	    		    React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_Click.bind(this,data)}, "修改备注")
- 	    		  )
- 	       	)		
-      	)
+ 	       		
+ 	         React.createElement("a", {className: "G_ch_classNews_item_note", onClick: this.buttion_Click.bind(this,data), title: note}, React.createElement("span", {className: "am-icon-edit"}), note)
+ 			
+ 	       	)	
+			  
+      	) 
   }
 });
 
@@ -1281,12 +1281,12 @@ return (
     React.createElement("br", null), 
     React.createElement("form", {id: "KdPhotoInfoForm", method: "post", className: "am-form"}, 
 	  React.createElement("input", {type: "hidden", name: "uuid", value: obj.uuid}), 
-  React.createElement("label", {htmlFor: "name"}, "备注说明:"), 
+  React.createElement("label", {htmlFor: "name"}, "备注:"), 
   React.createElement("input", {type: "text", name: "note", id: "note", value: obj.note, onChange: this.handleChange, placeholder: "不超过45字！"})
   ), 
   React.createElement("br", null), 
   React.createElement(AMR_ButtonToolbar, null, 
-  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_ok_Click.bind(this)}, "确认返回")
+  React.createElement(AMR_Button, {amSize: "xs", amStyle: "secondary", onClick: this.buttion_ok_Click.bind(this)}, "确认")
   )
   )	
     );

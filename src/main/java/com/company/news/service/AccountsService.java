@@ -201,6 +201,43 @@ public class AccountsService extends AbstractService {
 		return (List) q.list();
 	}
 
+	
+	
+
+	/**
+	 * 分页查询
+	 * 
+	 * @return
+	 */
+	public PageQueryResult myListByPage(PaginationData pData,String begDateStr, String endDateStr,AccountsJsonform accountsJsonform,ModelMap model) {
+		StringBuffer hql=new StringBuffer("from Accounts where create_useruuid='"+DbUtils.safeToWhereString(accountsJsonform.getCreate_useruuid())+"'");
+		
+		if(StringUtils.isNotBlank(begDateStr))
+			hql.append(" and accounts_time>="+DBUtil.stringToDateByDBType(begDateStr));
+		
+		if(StringUtils.isNotBlank(endDateStr))
+			hql.append(" and accounts_time<="+DBUtil.stringToDateByDBType(endDateStr));		
+		
+		if(accountsJsonform.getType()!=null)
+			hql.append(" and type="+accountsJsonform.getType());		
+		
+		if(StringUtils.isNotBlank(accountsJsonform.getClassuuid()))
+			hql.append(" and classuuid='"+DbUtils.safeToWhereString(accountsJsonform.getClassuuid())+"'");
+		
+		if(StringUtils.isNotBlank(accountsJsonform.getTitle())){
+			String title=accountsJsonform.getTitle();
+			title=DbUtils.safeToWhereString(title);
+			//内容、学生名、单据号、填写人
+			hql.append(" and ( title  like '%" + title + "%'  or studentname  like '%" + title + "%'   or invoice_num  like '%" + title + "%'  or create_user  like '%" + title + "%')"  );
+		}
+			
+
+		hql.append(" order by create_time desc");
+		
+	
+		return  this.nSimpleHibernateDao.findByPaginationToHql(hql.toString(), pData);
+	}
+
 	/**
 	 * 分页查询
 	 * 
