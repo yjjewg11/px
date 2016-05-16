@@ -365,7 +365,7 @@ render: function() {
             </AMR_ButtonToolbar>
 		  </div>);
 	}
-//	console.log("query_All_Type",query_All_Type);
+
   return (			
 		  <div data-am-widget="list_news" className="am-list-news am-list-news-default">
 

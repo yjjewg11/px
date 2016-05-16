@@ -365,7 +365,7 @@ render: function() {
             )
 		  ));
 	}
-//	console.log("query_All_Type",query_All_Type);
+
   return (			
 		  React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 

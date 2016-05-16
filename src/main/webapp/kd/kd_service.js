@@ -3185,8 +3185,8 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
   * 各属性置空开始，方便后面的的机构、班级、名字搜索；
   * */
  var g_teachingjudge_point=0;
- function ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type) {
- 	Queue.push(function(){ ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type);},"评价老师");
+ function ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type,pageNo) {
+ 	Queue.push(function(){ ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type,pageNo);},"评价老师");
 	var grouplist=Store.getGroupByRight("KD_teachingjudge_q");  
 	if(!grouplist||grouplist.length==0){
 		alert("没有权限!");
@@ -3195,6 +3195,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
 	if(!groupuuid){
 		groupuuid=grouplist[0].uuid;
 	}
+	if(!pageNo)pageNo=1;
  	  if(!type)type="";
  	  if(!teacher_name)teacher_name="";	
  		var now=new Date();
@@ -3206,7 +3207,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  		$.ajax({          
  			type : "GET",  
  			url : url,
- 			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type,teacher_name:teacher_name,type:type},
+ 			data:{begDateStr:begDateStr,endDateStr:endDateStr,groupuuid:groupuuid,type:type,teacher_name:teacher_name,type:type,pageNo:pageNo},
  			dataType : "json",
  			success : function(data) {
  				$.AMUI.progress.done();
@@ -3215,10 +3216,10 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  	  					begDateStr:begDateStr,
  	  					endDateStr:endDateStr,
  	  					group_uuid:groupuuid,
- 	  					type:type,
+ 	  					List:data.list,
  	  					group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name"),
  	  					teachingjudge_typelist:G_selected_dataModelArray_byArray(Vo.getTypeList("KD_Teachingjudge_type"),"key","val"),
- 	  					events: data.list,
+ 	  					events: data.list.data,
  	  					responsive: true, bordered: true, striped :true,hover:true,striped:true	  					
  	  				}), G_get_div_body());					
  				}

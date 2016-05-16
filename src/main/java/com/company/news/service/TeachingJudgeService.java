@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.company.news.cache.CommonsCache;
 import com.company.news.cache.redis.UserRedisCache;
 import com.company.news.commons.util.DbUtils;
+import com.company.news.commons.util.PxStringUtil;
+import com.company.news.entity.AbstractStudent;
 import com.company.news.entity.TeacherJudge;
 import com.company.news.entity.User4Q;
 import com.company.news.query.PageQueryResult;
@@ -33,8 +35,9 @@ public class TeachingJudgeService extends AbstractService {
 	 * 
 	 * @return
 	 */
-	public List query(String groupuuid, String type,
-			String date_start, String date_end) {
+	
+	public PageQueryResult query(String groupuuid, String type,
+			String date_start, String date_end, PaginationData pData) {
 
 		if (StringUtils.isBlank(date_start)) {
 			logger.error("date_start can't null");
@@ -46,53 +49,24 @@ public class TeachingJudgeService extends AbstractService {
 			return null;
 		}
 
-		/*
-		 * // 查询获取当前机构的所有教师 List<User4Q> list =
-		 * userinfoService.getUserByGroupuuid(groupuuid, null); if (list !=
-		 * null) {
-		 * 
-		 * //返回的LIST List<TeachingJudgeVo> teachingJudgeVos=new
-		 * LinkedList<TeachingJudgeVo>();
-		 */
 
-		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
-				.getSessionFactory().openSession();
-//		String sql = "select {t0.*} from px_teacherjudge {t0},px_usergrouprelation t1 where {t0}.teacheruuid=t1.useruuid ";
-//		sql += " and t1.groupuuid='" + DbUtils.safeToWhereString(groupuuid) + "'";
-//		sql += " and {t0}.create_time between '" + DbUtils.safeToWhereString(date_start) + "' and '"
-//				+ DbUtils.safeToWhereString(date_end) + "'";
-
-		String sql = "select t0.* from px_teacherjudge t0,px_usergrouprelation t1 where t0.teacheruuid=t1.useruuid ";
-		sql += " and t1.groupuuid='" + DBUtil.safeToWhereString(groupuuid) + "'";
 		
-		sql += " and t0.create_time>="+DBUtil.stringToDateYMDByDBType(date_start);
-		sql += " and t0.create_time<="+DBUtil.stringToDateYMD23_59_59ByDBType(date_end);
-
-		 PaginationData pData=new PaginationData();
-		 pData.setPageSize(1000);
-		 
-		 PageQueryResult resutlt=this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(sql, pData);
-		List list= resutlt.getData();
-//		return this.warpVoList(q.list());
-		this.warpMapList(list);
+		String sql = "select t0.teacheruuid,t0.type,t0.content,t0.create_user,t0.create_time from px_teacherjudge t0,px_usergrouprelation t1 where t0.teacheruuid=t1.useruuid";
 		
-		/*
-		 * Map<String, TeacherJudge> mappedTeacherJudge = new HashMap<String,
-		 * TeacherJudge>(); for (TeacherJudge teacherJudge : tlist) {
-		 * mappedTeacherJudge.put(teacherJudge.getTeacheruuid(), teacherJudge);
-		 * }
-		 * 
-		 * // 组合返回VO for(User4Q user4Q:list){ TeachingJudgeVo vo=new
-		 * TeachingJudgeVo(); vo.setUser4Q(user4Q);
-		 * vo.setTeacherJudge(mappedTeacherJudge.get(user4Q.getUuid()));
-		 * teachingJudgeVos.add(vo); }
-		 */
+		if (StringUtils.isNotBlank(groupuuid))
+			sql += " and t1.groupuuid='" + DBUtil.safeToWhereString(groupuuid) + "'";
+		if (StringUtils.isNotBlank(date_start))
+			sql += " and t0.create_time>="+DBUtil.stringToDateYMDByDBType(date_start);
+		if (StringUtils.isNotBlank(date_end))
+			sql += " and t0.create_time<="+DBUtil.stringToDateYMD23_59_59ByDBType(date_end);
+		
 
-		return list;
+		PageQueryResult pageQueryResult = this.nSimpleHibernateDao.findMapByPageForSqlNoTotal(sql, pData);
+		this.warpMapList(pageQueryResult.getData());
+
+		return pageQueryResult;
 
 	}
-
-	
 
 	/**
 	 * vo输出转换

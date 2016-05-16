@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.company.news.SystemConstants;
 import com.company.news.entity.TeacherJudge;
+import com.company.news.query.PageQueryResult;
+import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
@@ -45,43 +47,60 @@ public class TeachingJudgeController extends AbstractRESTController {
 	public String query(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-		
-		
-		String groupuuid=request.getParameter("groupuuid");
-		String type=request.getParameter("type");
-		String begDateStr=request.getParameter("begDateStr");
-		String endDateStr=request.getParameter("endDateStr");
-		
-		if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
-		if(DBUtil.isSqlInjection(type, responseMessage))return "";
-		if(DBUtil.isSqlInjection(begDateStr, responseMessage))return "";
-		if(DBUtil.isSqlInjection(endDateStr, responseMessage))return "";
-		
-		
-		
-		if (StringUtils.isBlank(groupuuid)) {
-			responseMessage.setMessage( "groupuuid 不能为空");
-			return "";
-		}
-		
-		String right=RightConstants.KD_teachingjudge_q;
-		if(SessionListener.isPXLogin(request)){
-			right=RightConstants.PX_teachingjudge_q;
-		}
+		try {
+
+			PaginationData pData = this.getPaginationDataByRequest(request);
+			pData.setPageSize(50);
+			String groupuuid = request.getParameter("groupuuid");
+			if (DBUtil.isSqlInjection(groupuuid, responseMessage)) {
+				return "";
+			}
+			String type = request.getParameter("type");
+			if (DBUtil.isSqlInjection(type, responseMessage)) {
+				return "";
+			}
+			String begDateStr = request.getParameter("begDateStr");
+			if (DBUtil.isSqlInjection(begDateStr, responseMessage)) {
+				return "";
+			}
+			String endDateStr = request.getParameter("endDateStr");
+			if (DBUtil.isSqlInjection(endDateStr, responseMessage)) {
+				return "";
+			}	
+			
+
+//			String name = request.getParameter("name");
+
+			if (StringUtils.isBlank(groupuuid)) {
+				responseMessage.setMessage( "groupuuid 不能为空");
+				return "";
+			}
+			String right=RightConstants.KD_teachingjudge_q;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_teachingjudge_q;
+			}
+			
 			if(!RightUtils.hasRight(groupuuid,right, request)){
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_nopower);
 				return "";
 			}
-		    List list= teachingJudgeService.query(groupuuid,type,
-		    		begDateStr,endDateStr);
-
-			model.addAttribute(RestConstants.Return_ResponseMessage_list, list);
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-
-		return "";
-	}
-
-
+			
+			
+			PageQueryResult pageQueryResult = teachingJudgeService.query(
+					groupuuid, type, begDateStr, endDateStr, pData);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list,
+					pageQueryResult);
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseMessage
+					.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:" + e.getMessage());
+			return "";
+		}
+	}	
 	
 	
 	
