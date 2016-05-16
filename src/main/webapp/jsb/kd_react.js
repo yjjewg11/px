@@ -675,7 +675,6 @@ var Classnews_edit = React.createClass({displayName: "Classnews_edit",
 		 //已经有的图片,显示出来.		 
 		  w_img_upload_nocut.bind_onchange("#file_img_upload",function(imgurl,uuid){
 			  ////data.data.uuid,data.imgUrl
-			  console.log("URL",imgurl)
 			 that.addShowImg(imgurl);
 			// $('#show_imgList').append('<img  width="198" height="198" src="'+imgurl+'"/>');			
 		  });		
@@ -3369,7 +3368,6 @@ bg_Class_fn:function(){
 	var editor=this.editor;
      var callback=function(imgArr){
           for(var i=0;i<imgArr.length;i++){
-			  console.log("测试人才",imgArr);
            editor.pasteHTML( '<img width="100%"   src="'+imgArr[i].src+'"/>')
           }          
      }
@@ -8103,10 +8101,12 @@ var Studentbind_EventRow_byRight = React.createClass({displayName: "Studentbind_
 	    event.disabled ? 'am-disabled' : '';
 	//b2.studentuuid,b2.cardid,b2.userid,s1.name,b2.create_user,b2.createtime 
 	var table_th0=event[6];
-	var table_th3=(React.createElement("a", {href: "javascript:void(0);"}, event[3]));
+	var table_th3;
 	if(this.props.type==1){
 		table_th0=Store.getClassByUuid(event[6]).name;
 		table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_students_look_info.bind(this,event[0],1,2)}, event[3]));
+	}else{
+ 	   table_th3=(React.createElement("a", {href: "javascript:void(0);", onClick: G_class_teacher_look_info.bind(this,event[0])}, event[3]));
 	}
 	
 	  return (
@@ -8908,8 +8908,6 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
     render: function() {
 			var queryForm=this.state.queryForm;
 		var that=this;
-		console.log("list1",this.props.group_list);
-		console.log("list1",this.props.classlist);
 		 if (this.state.list== null ) this.state.list=[];
       return (
       React.createElement("div", null, 
