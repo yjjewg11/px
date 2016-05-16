@@ -23,6 +23,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.AccountsService;
 import com.company.news.vo.ResponseMessage;
+import com.company.web.listener.SessionListener;
 
 @Controller
 @RequestMapping(value = "/accounts")
@@ -225,6 +226,42 @@ public class AccountsController extends AbstractRESTController {
 		return "";
 	}
 
+	/**
+	 * 根据分类获取所有，管理员用
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/myListByPage", method = RequestMethod.GET)
+	public String myListByPage(ModelMap model, HttpServletRequest request, AccountsJsonform accountsJsonform) {
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		PaginationData pData = this.getPaginationDataByRequest(request);
+		
+		try {
+		
+		
+			
+			String begDateStr=request.getParameter("begDateStr");
+			String endDateStr=request.getParameter("endDateStr");
+//			String type=request.getParameter("type");
+//			String classuuid=request.getParameter("classuuid");
+			
+			accountsJsonform.setCreate_useruuid(SessionListener.getUserInfoBySession(request).getUuid());
+			
+			PageQueryResult pageQueryResult = accountsService.myListByPage(pData,begDateStr,endDateStr, accountsJsonform,model);
+			model.addAttribute(RestConstants.Return_ResponseMessage_list, pageQueryResult);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		return "";
+	}
 	/**
 	 * 班级删除
 	 * 
