@@ -5268,57 +5268,135 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
    * @btn_query_click:名字查找；
    * */
   var Query_teachingjudge_list_byRight = React.createClass({displayName: "Query_teachingjudge_list_byRight",
+ //数据初始化
+ getInitialState: function() {
+	 var obj= {
+		events:this.props.events,	 
+		group_list:this.props.group_list,	 
+	    teachingjudge_typelist:this.props.teachingjudge_typelist,	 
+		group_uuid:this.props.group_uuid,
+		type:this.props.type,
+		begDateStr:this.props.begDateStr,
+ 	  	endDateStr:this.props.endDateStr,
+		List:this.props.List,
+		pageNo:1
+	};
+	return obj;
+ },
     handleChange_group_Selected: function(val) {
+	 /*
   	  var begDateStr=$('#begDateStr').val();
   	  var endDateStr=$('#endDateStr').val();
   	  var teacher_name=$('#sutdent_name').val();
   	  var type=this.props.type;
-  	  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,val,teacher_name,type);
+	  */
+	  var obj=this.state;
+	  obj.group_uuid=val;
+	  obj.teacher_name=$('#sutdent_name').val();
+      this.setState(this.state);
+  	  ajax_teachingjudge_query_byRight(obj.begDateStr,obj.endDateStr,val,obj.teacher_name,obj.type,obj.pageNo);
   	  }, 
     handleChange_type_Selected: function(val) {
+      /*
   	  var begDateStr=$('#begDateStr').val();
   	  var endDateStr=$('#endDateStr').val();
   	  var teacher_name=$('#sutdent_name').val();
   	  var groupuuid=this.props.group_uuid;
-  		  ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,val);
+	   */
+	  var obj=this.state;
+	  obj.type=val;
+	  obj.teacher_name=$('#sutdent_name').val();
+      this.setState(this.state);
+  	   ajax_teachingjudge_query_byRight(obj.begDateStr,obj.endDateStr,obj.groupuuid,obj.teacher_name,val,obj.pageNo);
       },
     btn_teachingjudge_click:function(){
-  	  var begDateStr=$('#begDateStr').val();
-  	  var endDateStr=$('#endDateStr').val();
-  	  var teacher_name=$('#sutdent_name').val();
-  	  var groupuuid=this.props.group_uuid;
-  	  var type=this.props.type;
-
-   ajax_teachingjudge_query_byRight(begDateStr,endDateStr,groupuuid,teacher_name,type); 
+		 var obj=this.state;
+	      obj.begDateStr=$('#begDateStr').val();
+  	      obj.endDateStr=$('#endDateStr').val();
+		  obj.teacher_name=$('#sutdent_name').val();
+	        this.setState(this.state);
+      ajax_teachingjudge_query_byRight(obj.begDateStr,obj.endDateStr,obj.groupuuid,obj.teacher_name,obj.type,obj.pageNo); 
      },
-    handleChange: function(event) {
-  		 var o=$('#editEchartForm').serializeJson();
+pageClick: function(m) {
+   var obj=this.state;
+   var pageSize=obj.List.pageSize;
+   var totalCount=obj.List.totalCount;
+   var data=obj.events;
+	 var number1=totalCount%pageSize;
+	 var number2=Math.round(totalCount/pageSize);
+obj.teacher_name=$('#sutdent_name').val();
+   if(m=="pre"){			
+    if(obj.pageNo<2){
+	  G_msg_pop("第一页了");
+	  return;
+	   }
+	  obj.pageNo=obj.pageNo-1;
+	   this.setState(this.state);
+   ajax_teachingjudge_query_byRight(obj.begDateStr,obj.endDateStr,obj.groupuuid,obj.teacher_name,obj.type,obj.pageNo); 
+	  return;
+	}else if(m=="next"){
+	 if(!data||data.length<pageSize){
+	  G_msg_pop("最后一页了");
+	  return ;
+	  }else if(obj.pageNo==number2&&number1==0){
+			 G_msg_pop("最后一页了");
+			 return ;
+		 }
+	 obj.pageNo=obj.pageNo+1;	
+	 this.setState(this.state);
+   ajax_teachingjudge_query_byRight(obj.begDateStr,obj.endDateStr,obj.groupuuid,obj.teacher_name,obj.type,obj.pageNo); 
+	  return;
+	 }
+	},
+    handleChange: function() {
+	
+  		 var o=$('#editGroupForm').serializeJson();
+	     var begDateStr=$('#begDateStr').val();
+  	     var endDateStr=$('#endDateStr').val();
   		   this.setState(o);
+		
   	  },
   render: function() { 
+	 var obj=this.state;
+	 var that=this;
       return (
       React.createElement("div", null, 
   	  React.createElement("hr", null), 	  
   	  React.createElement("div", {className: "am-form-group"}, 
-  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form"}, 
-  		React.createElement(AMR_ButtonToolbar, null, 
-          React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
-  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", data: this.props.group_list, btnStyle: "primary", value: this.props.group_uuid})
-  	), 
-  	React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
-  	  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid2", name: "type", onChange: this.handleChange_type_Selected, btnWidth: "200", data: this.props.teachingjudge_typelist, btnStyle: "primary", value: this.props.type})
-  	  )
-  	), 
-  	  React.createElement("div", {className: "am-form-group am-margin-top-xs"}, 
-  	  	React.createElement("div", {className: "am-u-lg-3 am-u-sm-6"}, 
-  	  		React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "学生姓名"}), 
-  			  React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: this.props.begDateStr, onChange: this.handleChange}), 
-  			  React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: this.props.endDateStr, onChange: this.handleChange}), 
-  			React.createElement("div", {className: "am-f1 am-margin-bottom-sm am-margin-left-xs"}, 
-  			  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-primary"}, "查询")	  				
-  	  	)
-  	  )
-     )
+  		React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+
+          React.createElement(AMR_Panel, null, 
+		  React.createElement(AMR_ButtonToolbar, null, 
+              
+		  React.createElement("div", {className: "am-f1 am-margin-bottom-xs am-margin-left-xs am-u-lg-3 am-u-sm-6"}, 	
+  	  	  React.createElement(PxInput, {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "姓名"})
+	      ), 
+
+	      React.createElement("div", {className: "am-f1 am-margin-bottom-xs am-margin-left-xs am-u-lg-3 am-u-sm-6"}, 	
+  		  React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: obj.begDateStr, onChange: this.handleChange})
+          ), 		
+	 
+		  React.createElement("div", {className: "am-f1 am-margin-bottom-xs am-margin-left-xs am-u-lg-3 am-u-sm-6"}, 		
+          React.createElement(AMUIReact.DateTimeInput, {icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: obj.endDateStr, onChange: this.handleChange})
+  		  ), 	
+	          
+		  React.createElement("div", {className: "am-f1 am-margin-bottom-xs am-margin-left-xs"}, 
+  		  React.createElement("button", {type: "button", className: "am-u-sm-2", onClick: this.btn_teachingjudge_click, className: "am-btn am-btn-secondary"}, "查询")	  				
+  	  	  )
+      )
+  	 ), 
+
+  React.createElement(AMR_ButtonToolbar, null, 
+   	 React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid1", name: "group_uuid", onChange: this.handleChange_group_Selected, btnWidth: "200", btnStyle: "primary", data: obj.group_list, value: obj.group_uuid})
+  	   ), 	 
+	 React.createElement("div", {className: "am-fl am-margin-bottom-xs am-margin-left-xs"}, 
+  	  React.createElement(AMUIReact.Selected, {className: "am-fl", id: "selectgroup_uuid2", name: "type", onChange: this.handleChange_type_Selected, btnWidth: "200", btnStyle: "primary", data: obj.teachingjudge_typelist, value: obj.type})
+  	   ), 
+	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页"), 	  
+       React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "第", obj.pageNo, "页"), 
+	  React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")	
+  )
   	  )
   	  
   	  ), 	  
@@ -5333,7 +5411,7 @@ var Class_EventsTable_byRight = React.createClass({displayName: "Class_EventsTab
             )
           ), 
           React.createElement("tbody", null, 
-            this.props.events.map(function(event) {
+            that.props.events.map(function(event) {
               return (React.createElement(Query_teachingjudge_EventRow_byRight, {key: event.id, event: event}));
             })
           )

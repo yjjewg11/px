@@ -221,15 +221,15 @@ function login_affter_init(){
 			if(G_user_hasRight("PX_statistics_m")){
 				menu_data.push(t_menu);
 			}	
-//	t_menu= {
-//	                "link": "##",
-//	                "title": "老师评价",
-//	                "fn":menu_teachingjudge_list_fn_byRight
-//	              };
-//			
-//				if(G_user_hasRight("PX_teachingjudge_q")){
-//					menu_data.push(t_menu);
-//				}
+	t_menu= {
+	                "link": "##",
+	                "title": "老师评价",
+	                "fn":menu_teachingjudge_list_fn_byRight
+	              };
+			
+				if(G_user_hasRight("PX_teachingjudge_q")){
+					menu_data.push(t_menu);
+				}
 //	
 //
 //		t_menu= {
