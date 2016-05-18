@@ -753,10 +753,23 @@ var G_html_preview=function(t_iframe,url,div,title) {
 		 subWeb.write("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
 		  subWeb.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no\">");
 		  subWeb.write('<link rel="stylesheet" href="../css/share.css"/>');
+		  subWeb.write('<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css"/>');
+
+		
+
+
 		  subWeb.write("</head><body>");
 		   
 		  if(title) subWeb.write(' <h2  class="art_title">'+title+'</h2>');
-	 subWeb.write(div);
+	 subWeb.write("<div class='am-gallery'>"+div+"</div>");
+
+
+	 
+  subWeb.write('  <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>');
+  subWeb.write('<script src="http://cdn.amazeui.org/amazeui/2.4.2/js/amazeui.min.js"></script>');
+
+  subWeb.write('<script type="text/javascript">$(".am-gallery").pureview();</script>');
+
 	   subWeb.write("</body></html>");
 	subWeb.close();
 }

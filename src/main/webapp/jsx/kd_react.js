@@ -883,6 +883,9 @@ var Announcements_show = React.createClass({
  handleClick: function(m,groupuuid,uuid) {
    btnclick_announce(m,groupuuid,uuid);
   }, 
+componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 render: function() {
 	 var obj=this.state;
 	  var edit_btn_className="G_Edit_hide";
@@ -896,7 +899,7 @@ return (
             <AMUIReact.Article
 		    title={obj.title}
 		    meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: obj.message}}></div>
+			<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+obj.message+"</div>"}}></div>
 		      </AMUIReact.Article>		     
 		     <AMR_ButtonToolbar>
 		     <AMR_Button className={edit_btn_className} amStyle="primary" onClick={this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)} >编辑</AMR_Button>
@@ -932,12 +935,29 @@ var Announcements_edit = React.createClass({
 	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+			  if(!imgurl)return;
+              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
           });
 	  },
-		   preview_fn:function(){
+	preview_fn:function(){
           G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        }, 
+	bg_Class_fn:function(){
+     var that=this;
+     var editor=this.editor;
+     var callback=function(imgArr){	 
+          for(var i=0;i<imgArr.length;i++){
+			  var imgurl = imgArr[i].src;
+			  if(!imgurl)return;
+			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+				editor.pasteHTML(imgDiv);
+          } 
+
+     }
+         KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);
+
+  },
 render: function() {
 	 var o = this.state;
 	  var type_div;
@@ -970,7 +990,10 @@ render: function() {
   		  <input type="text" name="title" id="title" value={o.title} onChange={this.handleChange} maxLength="45"   placeholder="不超过45字"/>
   		  <br/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
- 		{G_get_upload_img_Div()} 
+ 		   <AMR_ButtonToolbar>
+            <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览班级相册</AMR_Button>
+            </AMR_ButtonToolbar>
+		  {G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_announce_save}  className="am-btn am-btn-primary">提交</button>
 			  <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
 
@@ -2051,12 +2074,12 @@ render: function() {
 	     if(obj.url){
 	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={obj.url}></iframe>)	   
 	        }else{
-	   var imgObj="<div class='am-gallery'>"+obj.message+"</div>";
+	   
 	     iframe=(       
 			<AMUIReact.Article
 			title={obj.title}
 			meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: imgObj}}></div>
+			<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+obj.message+"</div>"}}></div>
 			</AMUIReact.Article>)
 	     }
 
@@ -2113,11 +2136,9 @@ var Announcements_goodedit = React.createClass({
 	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-			  var  o = imgurl;
-			  var imgList=o?o.split("@"):"";
-              var imgDiv='<a href="'+imgList[0]+'"><img src="'+o+'"} data-rel="'+imgList[0]+'"/></a>'
-
-                editor.pasteHTML(imgDiv)
+			  if(!imgurl)return;
+              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
           });
 	  },
 		   preview_fn:function(){
@@ -2128,10 +2149,10 @@ bg_Class_fn:function(){
      var editor=this.editor;
      var callback=function(imgArr){	 
           for(var i=0;i<imgArr.length;i++){
-			  var  o = imgArr[i].src;
-			  var imgList=o?o.split("@"):"";
-			  var imgDiv='<a href="'+imgList[0]+'"><img src="'+o+'"} data-rel="'+imgList[0]+'"/></a>'
-           editor.pasteHTML(imgDiv)
+			  var imgurl = imgArr[i].src;
+			  if(!imgurl)return;
+			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+				editor.pasteHTML(imgDiv);
           } 
 
      }
@@ -2162,9 +2183,8 @@ render: function() {
   		  <label htmlFor="name">分享链接(链接和内容选填一个):</label>
   		  <input type="text" name="url" id="url" value={o.url} onChange={this.handleChange_url} maxLength="256"   placeholder="可直接使用外部内容的链接地址显示"/>
   		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
- 	        <label>班级相册图片：</label>
-            <AMR_ButtonToolbar>
-            <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
+ 	           <AMR_ButtonToolbar>
+            <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览班级相册</AMR_Button>
             </AMR_ButtonToolbar>
 		  {G_get_upload_img_Div()} 
   		  <button type="button"  onClick={ajax_good_save}  className="am-btn am-btn-primary">提交</button>
@@ -3047,10 +3067,11 @@ var Group_EventRow_byRight = React.createClass({
   render: function() {
   	  var o = this.props.formdata;
     return (
+
   		  <AMUIReact.Article
   		    title={o.brand_name}
   		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}>
-  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+  			<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.description+"</div>"}}></div>
   		   </AMUIReact.Article>	
   		   
   		   
@@ -3072,14 +3093,30 @@ var Group_edit_byRight = React.createClass({
 	  },
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-			  
+			  this.editor=editor;
 			  if(!this.state.uuid){
 			  this.setProvCity();
 			  }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img   src="'+imgurl+'"/>')
+			  if(!imgurl)return;
+              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
           });
 	},
+	bg_Class_fn:function(){
+     var editor=this.editor;
+     var callback=function(imgArr){	 
+          for(var i=0;i<imgArr.length;i++){
+			  var imgurl = imgArr[i].src;
+			  if(!imgurl)return;
+			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+				editor.pasteHTML(imgDiv);
+          } 
+
+     }
+         KDClassNewPhotoItem.queryForSelect(this.state.uuid,null,1,callback);
+
+  },
 	   /*
 	    * (校务管理)<校园列表>内上传LOGO图片
 	    * */
@@ -3155,7 +3192,10 @@ setProvCity:function(){
     	       </div> 		
 		   
     	      <AMR_Input id="description" type="textarea" rows="50" label="校园介绍:" placeholder="校园介绍" name="description" value={o.description} onChange={this.handleChange}/>
-  		  	  {G_get_upload_img_Div()}
+  		  		   <AMR_ButtonToolbar>
+            <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览班级相册</AMR_Button>
+            </AMR_ButtonToolbar>
+			  {G_get_upload_img_Div()}
   	          <button type="button"  onClick={ajax_group_save_byRight}  className="am-btn am-btn-primary">提交</button>
 	    	 </div>
     		</form>   	   
@@ -3370,7 +3410,9 @@ var Announcements_edit_byRight = React.createClass({
 	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+             if(!imgurl)return;
+              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
         });
 	  },
 		   preview_fn:function(){
@@ -3381,7 +3423,10 @@ bg_Class_fn:function(){
 	var editor=this.editor;
      var callback=function(imgArr){
           for(var i=0;i<imgArr.length;i++){
-           editor.pasteHTML( '<img width="100%"   src="'+imgArr[i].src+'"/>')
+			var imgurl = imgArr[i].src;
+			  if(!imgurl)return;
+			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+				editor.pasteHTML(imgDiv);
           }          
      }
          KDClassNewPhotoItem.queryForSelect(this.state.groupuuid,null,1,callback);
@@ -3420,10 +3465,10 @@ return (
 		  <br/>
             {url}
 		  <AMR_Input id="announce_message" type="textarea" rows="10" label="内容:" placeholder="填写内容" name="message" value={o.message} onChange={this.handleChange}/>
-		      <label>班级相册图片：</label>
-                 <AMR_ButtonToolbar>
-                    <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览...</AMR_Button>
-                </AMR_ButtonToolbar>
+		         <AMR_ButtonToolbar>
+            <AMR_Button amSize="xs"  amStyle="secondary" onClick={this.bg_Class_fn.bind(this)} >浏览班级相册</AMR_Button>
+            </AMR_ButtonToolbar>
+
 		  {G_get_upload_img_Div()} 
 		  <button type="button"  onClick={ajax_announcements_save_byRight}  className="am-btn am-btn-primary">提交</button>
 			    <button type="button"  onClick={this.preview_fn.bind(this)}  className="am-btn am-btn-primary">预览</button>
@@ -3461,8 +3506,14 @@ var Announcements_show_byRight = React.createClass({
 		  this.setState(obj);
 		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
 	  },
+	componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 render: function() {
 	  var obj=this.state;
+
+
+
       var iframe=(<div></div>);
 	     if(obj.url){
 	       iframe=(<iframe id="t_iframe"  onLoad={G_iFrameHeight.bind(this,'t_iframe')}  frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"  width="100%" height="600px" src={obj.url}></iframe>)	   
@@ -3471,7 +3522,7 @@ render: function() {
 			<AMUIReact.Article
 			title={obj.title}
 			meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: obj.message}}></div>
+			<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+obj.message+"</div>"}}></div>
 			</AMUIReact.Article>)
 	     }
 return (
@@ -8791,6 +8842,9 @@ var Teachingplan_EventRow_byRight = React.createClass({
 		  this.setState(obj);
 		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
 	  },
+	componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
   render: function() {
   	  var obj=this.state;
   return (
@@ -8798,7 +8852,7 @@ var Teachingplan_EventRow_byRight = React.createClass({
   		  <AMUIReact.Article
   		    title={obj.title}
   		    meta={Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}>
-  			<div dangerouslySetInnerHTML={{__html: obj.message}}></div>
+  			<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+obj.message+"</div>"}}></div>
   		     </AMUIReact.Article>
   		    	<footer className="am-comment-footer">
   		    	<div className="am-comment-actions">
