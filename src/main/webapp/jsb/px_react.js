@@ -2288,22 +2288,25 @@ var Announcements_mygoodlist_div = React.createClass({displayName: "Announcement
 *精品文章点赞、评论、加载更多等详情绘制模板；
 * */
 var Announcements_goodshow = React.createClass({displayName: "Announcements_goodshow", 
-		getInitialState: function() {
-		this.props.data.isFavor=this.props.isFavor;
-		if(this.props.data)return this.props.data;
-	  },
+	getInitialState: function() {
+	this.props.data.isFavor=this.props.isFavor;
+	if(this.props.data)return this.props.data;
+  },
 	//精品文章删除、编辑点击按钮事件跳转kd_servise方法;
-  	handleClick: function(m,groupuuid,uuid) {
-		  btnclick_good_announce(m,groupuuid,uuid);
-  }, 
+handleClick: function(m,groupuuid,uuid) {
+	  btnclick_good_announce(m,groupuuid,uuid);
+}, 
 //收藏按钮方法;
-	  favorites_push: function(obj) {
-		  if(obj.isFavor==false)return;
-		  var url=obj.url;
-		   obj.isFavor=false;
-		  this.setState(obj);
-		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
-	  },
+  favorites_push: function(obj) {
+	  if(obj.isFavor==false)return;
+	  var url=obj.url;
+	   obj.isFavor=false;
+	  this.setState(obj);
+	commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
+  },
+componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 render: function() {
 	  var obj=this.state;
 	  var edit_btn_className="G_Edit_hide";
@@ -2314,11 +2317,12 @@ render: function() {
 	     if(obj.url){
 	       iframe=(React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,'t_iframe'), frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0", width: "100%", height: "600px", src: obj.url}))	   
 	        }else{
+           var imgObj="<div class='am-gallery'>"+obj.message+"</div>";
 	     iframe=(       
 			React.createElement(AMUIReact.Article, {
 			title: obj.title, 
 			meta: Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: obj.message}})
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: imgObj}})
 			))
 	     }
 return (
@@ -2377,7 +2381,11 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+              var  o = imgurl;
+			  var imgList=o?o.split("@"):"";
+              var imgDiv='<a href="'+imgList[0]+'"><img src="'+o+'"} data-rel="'+imgList[0]+'"/></a>'
+
+                editor.pasteHTML(imgDiv)
           });
 
 		w_img_upload_nocut.groupuuid=this.state.groupuuid;
