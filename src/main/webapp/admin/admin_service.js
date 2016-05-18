@@ -426,10 +426,11 @@ function btn_click_userinfo(m,obj,usernames,sex){
  	
  	}
  	$.AMUI.progress.start();
-     var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+     var url = hostUrl + "rest/userinfo/get.json";
  	$.ajax({
  		type : "GET",
  		url : url,
+ 		data:{uuid:formdata.uuid},
  		dataType : "json",
  		 async: true,
  		success : function(data) {

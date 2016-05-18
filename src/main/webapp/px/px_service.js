@@ -2067,9 +2067,10 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
      	
      	}
      	$.AMUI.progress.start();
-         var url = hostUrl + "rest/userinfo/"+formdata.uuid+".json";
+         var url = hostUrl + "rest/userinfo/get.json";
      	$.ajax({
      		type : "GET",
+     		data:{uuid:formdata.uuid},
      		url : url,
      		dataType : "json",
      		 async: true,
