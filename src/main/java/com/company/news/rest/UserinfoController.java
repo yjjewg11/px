@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -20,12 +19,11 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.redis.SessionUserRedisCache;
 import com.company.news.commons.util.PxStringUtil;
 import com.company.news.entity.RoleUserRelation;
-import com.company.news.entity.Student;
-import com.company.news.entity.StudentBind;
 import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.User4QBaseInfo;
 import com.company.news.entity.UserForJsCache;
+import com.company.news.entity.UserLoginTrace;
 import com.company.news.form.UserLoginForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
 import com.company.news.jsonform.UserRegJsonform;
@@ -37,6 +35,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.RightService;
+import com.company.news.service.UserLoginTraceService;
 import com.company.news.service.UserinfoService;
 import com.company.news.session.UserOfSession;
 import com.company.news.vo.ResponseMessage;
@@ -53,7 +52,8 @@ public class UserinfoController extends AbstractRESTController {
 	private GroupService groupService;
 	@Autowired
 	private RightService rightService;
-	
+	@Autowired
+	private UserLoginTraceService userLoginTraceService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
@@ -63,19 +63,25 @@ public class UserinfoController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		
-		//话题模块登录.
-		if(SystemConstants.Group_type_3.toString().equals(userLoginForm.getGrouptype())){
-			SessionUserInfoInterface user = userinfoService.loginBySns(userLoginForm, model, request,
-					responseMessage);
-			if(user==null)return "";
-			this.putUserInfoReturnToModel(user,model, request);
-			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-			responseMessage.setMessage("登陆成功");
-			return "";
-		}
+		
 		
 		//登录验证.验证失败则返回.
 		try {
+			
+			//话题模块登录.
+			if(SystemConstants.Group_type_3.toString().equals(userLoginForm.getGrouptype())){
+				SessionUserInfoInterface user = userinfoService.loginBySns(userLoginForm, model, request,
+						responseMessage);
+				if(user==null)return "";
+				this.putUserInfoReturnToModel(user,model, request);
+				
+				
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				responseMessage.setMessage("登陆成功");
+				return "";
+			}
+			
+			
 			User user;
 			try {
 				user = userinfoService.login(userLoginForm, model, request,
@@ -83,7 +89,10 @@ public class UserinfoController extends AbstractRESTController {
 				if (user==null)// 请求服务返回失败标示
 					return "";
 				
-				
+  
+			    
+			    
+			    
 				String str=userinfoService.getGroupTypes(user.getUuid());
 				//c1.如果用户有关联的机构类型,这根据类型判断.
 				if(StringUtils.isNotBlank(str)){
@@ -127,6 +136,7 @@ public class UserinfoController extends AbstractRESTController {
 			//培训机构登录走培训流程.
 			if(SystemConstants.Group_type_2.toString().equals(userLoginForm.getGrouptype())){
 				 pxlogin( user,userLoginForm, model,request);
+				 
 				 return "";
 			}
 			
@@ -181,6 +191,13 @@ public class UserinfoController extends AbstractRESTController {
 			userinfoService.putSession(userLoginForm.getGrouptype(), session, userOfSession, request);
 			// 返回用户信息
 			this.putUserInfoReturnToModel(user,model, request);
+			
+			
+			
+
+			
+			userLoginTraceService.addUserLoginTrace(user,UserLoginTrace.Type_account, responseMessage, request);
+			  
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -279,6 +296,12 @@ public class UserinfoController extends AbstractRESTController {
 			
 			// 返回用户信息
 			this.putUserInfoReturnToModel(user,model, request);
+			
+			
+
+			
+			userLoginTraceService.addUserLoginTrace(user,UserLoginTrace.Type_account, responseMessage, request);
+			  
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
