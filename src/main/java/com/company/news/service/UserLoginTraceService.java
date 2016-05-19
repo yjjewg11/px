@@ -1,24 +1,13 @@
 package com.company.news.service;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
-import com.company.news.commons.util.DbUtils;
-import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.AbstractStudent;
-import com.company.news.entity.IdEntity;
-import com.company.news.entity.KDMovie;
 import com.company.news.entity.Operate;
 import com.company.news.entity.UserLoginTrace;
 import com.company.news.interfaces.SessionUserInfoInterface;

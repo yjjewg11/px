@@ -23,6 +23,7 @@ import com.company.news.entity.User;
 import com.company.news.entity.User4Q;
 import com.company.news.entity.User4QBaseInfo;
 import com.company.news.entity.UserForJsCache;
+import com.company.news.entity.UserInfoUpdateTrace;
 import com.company.news.entity.UserLoginTrace;
 import com.company.news.form.UserLoginForm;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -35,6 +36,7 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.GroupService;
 import com.company.news.service.RightService;
+import com.company.news.service.UserInfoUpdateTraceService;
 import com.company.news.service.UserLoginTraceService;
 import com.company.news.service.UserinfoService;
 import com.company.news.session.UserOfSession;
@@ -54,7 +56,10 @@ public class UserinfoController extends AbstractRESTController {
 	private RightService rightService;
 	@Autowired
 	private UserLoginTraceService userLoginTraceService;
-
+	@Autowired
+	private UserInfoUpdateTraceService userInfoUpdateTraceService;
+	
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(UserLoginForm userLoginForm, ModelMap model,
 			HttpServletRequest request,HttpServletResponse response) {
@@ -887,6 +892,9 @@ public class UserinfoController extends AbstractRESTController {
 				e.printStackTrace();
 			}
 			session.setAttribute(RestConstants.Session_UserInfo, userOfSession);
+			
+		    userInfoUpdateTraceService.addUserinfoUpdate(user,UserInfoUpdateTrace.Type_info, responseMessage, request);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -950,11 +958,17 @@ public class UserinfoController extends AbstractRESTController {
 			return "";
 		}
 		// 默认注册未普通用户类型
+		SessionUserInfoInterface user=	this.getUserInfoBySession(request);
+	
 		userRegJsonform.setUuid(this.getUserInfoBySession(request).getUuid());
 
 		try {
 			boolean flag = userinfoService
 					.updatePassword(userRegJsonform, responseMessage);
+
+			
+			userInfoUpdateTraceService.addUsepassword(user,UserInfoUpdateTrace.Type_password, responseMessage, request);
+	
 			if (!flag)// 请求服务返回失败标示
 				return "";
 		} catch (Exception e) {
