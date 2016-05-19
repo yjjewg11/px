@@ -2162,8 +2162,13 @@ var DateTimeInput = React.createClass({displayName: "DateTimeInput",
   },
 
   handleOuterClick: function(event) {
-    var picker = React.findDOMNode(this.refs.DateTimePicker.getDOMNode());
+    var picker =null;
+	if(this.refs.dateInput){
+		 picker = React.findDOMNode(this.refs.dateInput.getDOMNode());
+	}else if(this.refs.DateTimePicker){
+		picker = React.findDOMNode(this.refs.DateTimePicker.getDOMNode());
 
+	}
     if (!isNodeInTree(event.target, picker)) {
       this.handleClose();
     }
