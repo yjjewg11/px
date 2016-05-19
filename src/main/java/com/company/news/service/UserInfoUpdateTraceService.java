@@ -103,6 +103,7 @@ public UserInfoUpdateTrace addUsepassword(SessionUserInfoInterface user,String t
 			PaginationData pData, ModelMap model) {
 		String selectsql=Selectsql;
 		String sqlFrom=SqlFrom;
+		sqlFrom += " where   t1.type ='info'";
 		//sqlFrom += " where   t1.uuid ='"+user.getUuid()+"'";
 		String sql=sqlFrom;
 		pData.setPageSize(10);
