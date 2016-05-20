@@ -427,16 +427,17 @@ function menu_group_myList_wjkj(type,name) {
  * */
 function menu_UserLoginTrace_fn_admin() {
 	Queue.push(function(){menu_UserLoginTrace_fn_admin();},"登录日志查询");
-//	ajax_uesrinfo_myList_wjkj();
+	ajax_userLogin_query_wjkj();
 };
 
 function menu_UserInfoUpdate_fn_admin() {
 	Queue.push(function(){menu_UserInfoUpdate_fn_admin();},"修改资料日志查询");
+	ajax_userUpdate_queryinfo_wjkj();
 
 };
 function menu_UserPasswordUpdate_fn_admin() {
 	Queue.push(function(){menu_UserPasswordUpdate_fn_admin();},"修改密码日志查询");
-
+	ajax_userUpdate_queryPassword_wjkj();
 };
 
 

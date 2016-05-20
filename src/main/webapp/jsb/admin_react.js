@@ -3136,3 +3136,360 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({display
   }); 
 
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//——————————————————————————查询日志————————————————————— 
+  
+/*
+*(查询登录日志)表单框绘制
+* */    
+var rect_userLogin_query_show = React.createClass({displayName: "rect_userLogin_query_show",
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement(AMR_Panel, null, 
+       React.createElement(AMR_ButtonToolbar, null, 
+      
+         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
+        ), 
+          
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+				 React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "共", this.state.totalCount, "条,第", this.state.pageNo, "页")
+ 
+        ), 
+        
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")
+        )
+	     )
+	     ), 	
+
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "用户uuid"), 
+            React.createElement("th", null, "Ip地址"), 
+		    React.createElement("th", null, "登录类型"), 
+            React.createElement("th", null, "登录时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+        this.state.data.map(function(event) {
+            return (React.createElement(Query_userLogin_byRight, {key: event.uuid, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * 查询登录日志表单上绘制详细内容;
+ * */
+var Query_userLogin_byRight = React.createClass({displayName: "Query_userLogin_byRight", 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      React.createElement("tr", {className: className}, 
+	        React.createElement("td", null, event.user_uuid), 
+	        React.createElement("td", null, event.ip), 
+	        React.createElement("td", null, event.type), 
+	        React.createElement("td", null, event.create_time)
+	      ) 
+	    );
+	  }
+	});    
+//-----------------------------------------------------------
+
+/*
+*(查询修改日志)表单框绘制
+* */    
+var rect_userUpdate_queryinfo_show = React.createClass({displayName: "rect_userUpdate_queryinfo_show",
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement(AMR_Panel, null, 
+       React.createElement(AMR_ButtonToolbar, null, 
+      
+         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
+        ), 
+          
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+				 React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "共", this.state.totalCount, "条,第", this.state.pageNo, "页")
+ 
+        ), 
+        
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")
+        )
+	     )
+	     ), 	
+
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+          React.createElement("th", null, "姓名"), 
+          React.createElement("th", null, "性别"), 
+          React.createElement("th", null, "职位"), 
+          React.createElement("th", null, "用户uuid"), 
+          React.createElement("th", null, "用户IP地址"), 
+          React.createElement("th", null, "密码(md5加密)"), 
+          React.createElement("th", null, "电话号码"), 
+          React.createElement("th", null, "电话验证"), 
+          React.createElement("th", null, "email地址"), 
+          React.createElement("th", null, "修改时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+        this.state.data.map(function(event) {
+            return (React.createElement(Query_userUpdate_byRight, {key: event.uuid, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * 查询修改资料日志表单上绘制详细内容;
+ * */
+var Query_userUpdate_byRight = React.createClass({displayName: "Query_userUpdate_byRight", 
+	  render: function() {
+	    var event = this.props.event;
+	    var sexTxet,tel_verifyText;
+	    if(event.sex==0){
+	    	sexTxet="男";
+	     }else{
+	    	sexTxet="女";
+	    }	    
+	    if(event.tel_verify==0){
+	    	tel_verifyText="没验证";
+	     }else if(event.tel_verify==1){
+	        tel_verifyText="验证";
+	     }else if(event.tel_verify==2){
+	    	tel_verifyText="提交验证";
+	    }else{
+	    	tel_verifyText="验证失败";
+	    }
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      React.createElement("tr", {className: className}, 
+	      React.createElement("td", null, event.name), 
+	      React.createElement("td", null, sexTxet), 
+	      React.createElement("td", null, event.office), 
+	      React.createElement("td", null, event.user_uuid), 
+	      React.createElement("td", null, event.ip), 
+	      React.createElement("td", null, event.password), 
+	      React.createElement("td", null, event.tel), 
+	      React.createElement("td", null, tel_verifyText), 
+	      React.createElement("td", null, event.email), 
+	      React.createElement("td", null, event.create_time)
+	      ) 
+	    );
+	  }
+	});    
+  
+  
+  
+  
+  
+
+
+//-----------------------------------------------------------
+
+/*
+*(查询修改密码日志)表单框绘制
+* */    
+var rect_userUpdate_queryPassword_show = React.createClass({displayName: "rect_userUpdate_queryPassword_show",
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement(AMR_Panel, null, 
+       React.createElement(AMR_ButtonToolbar, null, 
+      
+         React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "pre")}, "上一页")
+        ), 
+          
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+				 React.createElement(AMR_Button, {amStyle: "default", disabled: "false"}, "共", this.state.totalCount, "条,第", this.state.pageNo, "页")
+ 
+        ), 
+        
+          React.createElement("div", {className: "am-fl am-margin-bottom-sm am-margin-left-xs"}, 
+         React.createElement(AMR_Button, {amStyle: "default", onClick: this.pageClick.bind(this, "next")}, "下一页")
+        )
+	     )
+	     ), 	
+
+      React.createElement(AMR_Table, React.__spread({},  this.props), 
+        React.createElement("thead", null, 
+          React.createElement("tr", null, 
+          React.createElement("th", null, "姓名"), 
+          React.createElement("th", null, "用户uuid"), 
+          React.createElement("th", null, "修改时间")
+          )
+        ), 
+        React.createElement("tbody", null, 
+        this.state.data.map(function(event) {
+            return (React.createElement(Query_userUpdate_byRight, {key: event.uuid, event: event}));
+          })
+        )
+      )
+      )
+    );
+  }
+});
+    
+/*  	
+ * 查询修改密码日志表单上绘制详细内容;
+ * */
+var Query_userUpdate_byRight = React.createClass({displayName: "Query_userUpdate_byRight", 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      React.createElement("tr", {className: className}, 
+	      React.createElement("td", null, event.name), 
+	      React.createElement("td", null, event.user_uuid), 
+	      React.createElement("td", null, event.create_time)
+	      ) 
+	    );
+	  }
+	});  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
