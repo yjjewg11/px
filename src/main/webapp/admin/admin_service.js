@@ -1637,3 +1637,109 @@ $.ajax({
 		error :G_ajax_error_fn
 	   	});
 	      };
+	      
+	      
+//————————————————————————————查询日志—————————————————————————    
+  /*
+  *(查询登录日志)服务器请求
+  * */	      
+  function ajax_userLogin_query_wjkj(pageNo){
+Queue.push(function(){ajax_userLogin_query_wjkj(pageNo);},"登录日志");	
+  if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();	
+    var url = hostUrl + "rest/userLoginTrace/queryLoginTrace.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data:{pageNo:pageNo},
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(rect_userLogin_query_show,{
+					formdata:data.list
+				}), G_get_div_body());
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+
+		return ;
+	};	      
+	      
+	      
+	      
+	      
+  /*
+  *(查询修改资料日志)服务器请求
+  * */	      
+  function ajax_userUpdate_queryinfo_wjkj(pageNo){
+Queue.push(function(){ajax_userUpdate_queryinfo_wjkj(pageNo);},"登录日志");	
+  if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();	
+    var url = hostUrl + "rest/userInfoUpdateTrace/queryMyinfo.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data:{pageNo:pageNo},
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(rect_userUpdate_queryinfo_show,{
+					formdata:data.list
+				}), G_get_div_body());
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+
+		return ;
+	};	 	      
+	      
+	      
+	      
+	      
+  /*
+  *(查询修改密码日志)服务器请求
+  * */	      
+  function ajax_userUpdate_queryPassword_wjkj(pageNo){
+Queue.push(function(){ajax_userUpdate_queryPassword_wjkj(pageNo);},"登录日志");	
+  if(!pageNo)pageNo=1;
+	$.AMUI.progress.start();	
+    var url = hostUrl + "rest/userInfoUpdateTrace/queryMyPassword.json";
+	$.ajax({
+		type : "GET",
+		url : url,
+		data:{pageNo:pageNo},
+		dataType : "json",
+		 async: false,
+		success : function(data) {
+			$.AMUI.progress.done();
+			if (data.ResMsg.status == "success") {
+				React.render(React.createElement(rect_userUpdate_queryPassword_show,{
+					formdata:data.list
+				}), G_get_div_body());
+			} else {
+				alert("加载数据失败："+data.ResMsg.message);
+			}
+		},
+		error : G_ajax_error_fn
+	});
+
+		return ;
+	};	      
+	      
+	      
+	      
+	      
+	      
+	      
+	      
+	      

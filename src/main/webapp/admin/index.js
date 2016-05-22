@@ -53,6 +53,7 @@ function login_affter_init(){
                 "title": "班级互动",
                 "fn":function(){ajax_classnews_list_div_byRight(1);}
               },
+            
             {
                 "link": "##",
                 "title": "家长管理",
@@ -139,7 +140,23 @@ function login_affter_init(){
         	                    	 "fn":function(){menu_userinfo_list_fn_wjkj();},
         	                        "link": "##",
         	                        "title": "查询所有老师"
-        	                      }
+        	                      },
+
+          	                    {
+         	                    	 "fn":function(){menu_UserLoginTrace_fn_admin();},
+         	                        "link": "##",
+         	                        "title": "查询本用户登录日志"
+         	                      },
+          	                    {
+         	                    	 "fn":function(){menu_UserInfoUpdate_fn_admin();},
+         	                        "link": "##",
+         	                        "title": "查询本用户修改资料日志"
+         	                      },
+          	                    {
+         	                    	 "fn":function(){menu_UserPasswordUpdate_fn_admin();},
+         	                        "link": "##",
+         	                        "title": "查询本用户修改密码日志"
+         	                      }
         	                  ]
                   },
             {
@@ -400,6 +417,31 @@ function menu_group_myList_wjkj(type,name) {
 	Queue.push(function(){menu_group_myList_wjkj(type,name);},name);
 	ajax_group_myList_wjkj(type);
 }
+
+
+
+
+/*
+ * (查询功能)-查询日志
+ * @跳转发服务器请求
+ * */
+function menu_UserLoginTrace_fn_admin() {
+	Queue.push(function(){menu_UserLoginTrace_fn_admin();},"登录日志查询");
+	ajax_userLogin_query_wjkj();
+};
+
+function menu_UserInfoUpdate_fn_admin() {
+	Queue.push(function(){menu_UserInfoUpdate_fn_admin();},"修改资料日志查询");
+	ajax_userUpdate_queryinfo_wjkj();
+
+};
+function menu_UserPasswordUpdate_fn_admin() {
+	Queue.push(function(){menu_UserPasswordUpdate_fn_admin();},"修改密码日志查询");
+	ajax_userUpdate_queryPassword_wjkj();
+};
+
+
+
 
 
 /*

@@ -931,6 +931,9 @@ var Announcements_show = React.createClass({displayName: "Announcements_show",
 	  this.setState(obj);
 	commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
   },
+	componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 render: function() {
 	  var obj=this.state;
 	  var edit_btn_className="G_Edit_hide";
@@ -944,7 +947,7 @@ return (
             React.createElement(AMUIReact.Article, {
 		    title: obj.title, 
 		    meta: Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: obj.message}})
+			React.createElement("div", {dangerouslySetInnerHTML: {__html: "<div class='am-gallery'>"+obj.message+"</div>"}})
 		      ), 		     
 		     React.createElement(AMR_ButtonToolbar, null, 
 		     React.createElement(AMR_Button, {className: edit_btn_className, amStyle: "primary", onClick: this.handleClick.bind(this, "edit",obj.groupuuid,obj.uuid)}, "编辑"), 
@@ -982,7 +985,9 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+         			  if(!imgurl)return;
+              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
           });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 		
@@ -3601,7 +3606,8 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+           var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+                editor.pasteHTML(imgDiv);
         });
 			  	w_img_upload_nocut.groupuuid=this.state.groupuuid;
 	
@@ -3680,6 +3686,9 @@ var Announcements_show_byRight = React.createClass({displayName: "Announcements_
 		  this.setState(obj);
 		commons_ajax_favorites_push(obj.title,obj.type,obj.uuid,url)
 	  },
+componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 render: function() {
 	 var obj=this.state;
 
@@ -3691,7 +3700,7 @@ render: function() {
 			React.createElement(AMUIReact.Article, {
 			title: obj.title, 
 			meta: Vo.announce_type(obj.type)+" | "+Store.getGroupNameByUuid(obj.groupuuid)+" | "+obj.create_time+ "|阅读"+ this.props.count+"次"}, 
-			React.createElement("div", {dangerouslySetInnerHTML: {__html: obj.message}})
+				React.createElement("div", {dangerouslySetInnerHTML: {__html: "<div class='am-gallery'>"+obj.message+"</div>"}})
 			))
 	     }
 return (

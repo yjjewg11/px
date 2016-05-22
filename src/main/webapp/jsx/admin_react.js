@@ -3136,3 +3136,360 @@ var Message_queryLeaderMsgByParents_listpage_byRight =React.createClass({
   }); 
 
   //±±±±±±±±±±±±±±±±±±±±±±±±±±±  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//——————————————————————————查询日志————————————————————— 
+  
+/*
+*(查询登录日志)表单框绘制
+* */    
+var rect_userLogin_query_show = React.createClass({
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      <div> 
+        <AMR_Panel>
+       <AMR_ButtonToolbar> 
+      
+         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+        </div>     
+          
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+				 <AMR_Button amStyle="default" disabled="false" >共{this.state.totalCount}条,第{this.state.pageNo}页</AMR_Button>
+ 
+        </div>     
+        
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
+        </div>
+	     </AMR_ButtonToolbar>
+	     </AMR_Panel>	
+
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+            <th>用户uuid</th>
+            <th>Ip地址</th>
+		    <th>登录类型</th>
+            <th>登录时间</th>
+          </tr> 
+        </thead>
+        <tbody>
+        {this.state.data.map(function(event) {
+            return (<Query_userLogin_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * 查询登录日志表单上绘制详细内容;
+ * */
+var Query_userLogin_byRight = React.createClass({ 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      <tr className={className} >
+	        <td>{event.user_uuid}</td>
+	        <td>{event.ip}</td>
+	        <td>{event.type}</td>
+	        <td>{event.create_time}</td>
+	      </tr> 
+	    );
+	  }
+	});    
+//-----------------------------------------------------------
+
+/*
+*(查询修改日志)表单框绘制
+* */    
+var rect_userUpdate_queryinfo_show = React.createClass({
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      <div> 
+        <AMR_Panel>
+       <AMR_ButtonToolbar> 
+      
+         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+        </div>     
+          
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+				 <AMR_Button amStyle="default" disabled="false" >共{this.state.totalCount}条,第{this.state.pageNo}页</AMR_Button>
+ 
+        </div>     
+        
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
+        </div>
+	     </AMR_ButtonToolbar>
+	     </AMR_Panel>	
+
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+          <th>姓名</th>
+          <th>性别</th>
+          <th>职位</th> 
+          <th>用户uuid</th> 
+          <th>用户IP地址</th>
+          <th>密码(md5加密)</th>
+          <th>电话号码</th>
+          <th>电话验证</th> 
+          <th>email地址</th>
+          <th>修改时间</th> 
+          </tr> 
+        </thead>
+        <tbody>
+        {this.state.data.map(function(event) {
+            return (<Query_userUpdate_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * 查询修改资料日志表单上绘制详细内容;
+ * */
+var Query_userUpdate_byRight = React.createClass({ 
+	  render: function() {
+	    var event = this.props.event;
+	    var sexTxet,tel_verifyText;
+	    if(event.sex==0){
+	    	sexTxet="男";
+	     }else{
+	    	sexTxet="女";
+	    }	    
+	    if(event.tel_verify==0){
+	    	tel_verifyText="没验证";
+	     }else if(event.tel_verify==1){
+	        tel_verifyText="验证";
+	     }else if(event.tel_verify==2){
+	    	tel_verifyText="提交验证";
+	    }else{
+	    	tel_verifyText="验证失败";
+	    }
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      <tr className={className} >
+	      <td>{event.name}</td>
+	      <td>{sexTxet}</td>
+	      <td>{event.office}</td>
+	      <td>{event.user_uuid}</td>
+	      <td>{event.ip}</td>
+	      <td>{event.password}</td>
+	      <td>{event.tel}</td>  
+	      <td>{tel_verifyText}</td>  
+	      <td>{event.email}</td>  
+	      <td>{event.create_time}</td>  
+	      </tr> 
+	    );
+	  }
+	});    
+  
+  
+  
+  
+  
+
+
+//-----------------------------------------------------------
+
+/*
+*(查询修改密码日志)表单框绘制
+* */    
+var rect_userUpdate_queryPassword_show = React.createClass({
+ //数据初始化;
+ getInitialState: function() {
+	return this.props.formdata;
+  },
+		
+ componentWillReceiveProps: function(nextProps) {
+ this.setState(this.getStateByPropes(nextProps));
+ },
+
+ pageClick: function(m) {
+        var obj=this.state;
+        if(m=="pre"){
+             
+             if(obj.pageNo<2){
+                  G_msg_pop("第一页了");
+                  return;
+             }
+             obj.pageNo=obj.pageNo-1;
+             this.ajax_list(obj);
+             return;
+        }else if(m=="next"){
+             if(!obj.list||obj.list.length==0){
+                  G_msg_pop("最后一页了");
+                  return ;
+             }
+             obj.pageNo=obj.pageNo+1;
+             
+             this.ajax_list(obj);
+             return;
+        }
+   },
+		
+render: function() {
+    return (
+      <div> 
+        <AMR_Panel>
+       <AMR_ButtonToolbar> 
+      
+         <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "pre")} >上一页</AMR_Button>
+        </div>     
+          
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+				 <AMR_Button amStyle="default" disabled="false" >共{this.state.totalCount}条,第{this.state.pageNo}页</AMR_Button>
+ 
+        </div>     
+        
+          <div className="am-fl am-margin-bottom-sm am-margin-left-xs">
+         <AMR_Button amStyle="default" onClick={this.pageClick.bind(this, "next")} >下一页</AMR_Button>
+        </div>
+	     </AMR_ButtonToolbar>
+	     </AMR_Panel>	
+
+      <AMR_Table {...this.props}>  
+        <thead> 
+          <tr>
+          <th>姓名</th>
+          <th>用户uuid</th> 
+          <th>修改时间</th> 
+          </tr> 
+        </thead>
+        <tbody>
+        {this.state.data.map(function(event) {
+            return (<Query_userUpdate_byRight key={event.uuid} event={event} />);
+          })}
+        </tbody>
+      </AMR_Table>
+      </div>
+    );
+  }
+});
+    
+/*  	
+ * 查询修改密码日志表单上绘制详细内容;
+ * */
+var Query_userUpdate_byRight = React.createClass({ 
+	  render: function() {
+	    var event = this.props.event;
+	    var className = event.highlight ? 'am-active' :
+	      event.disabled ? 'am-disabled' : '';
+      if(!event.status)event.status=0;
+	    return (
+	      <tr className={className} >
+	      <td>{event.name}</td>
+	      <td>{event.user_uuid}</td>
+	      <td>{event.create_time}</td>  
+	      </tr> 
+	    );
+	  }
+	});  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
