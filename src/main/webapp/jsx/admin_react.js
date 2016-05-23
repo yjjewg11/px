@@ -3314,7 +3314,6 @@ render: function() {
           <th>职位</th> 
           <th>用户uuid</th> 
           <th>用户IP地址</th>
-          <th>密码(md5加密)</th>
           <th>电话号码</th>
           <th>电话验证</th> 
           <th>email地址</th>
@@ -3363,7 +3362,6 @@ var Query_userUpdate_byRight = React.createClass({
 	      <td>{event.office}</td>
 	      <td>{event.user_uuid}</td>
 	      <td>{event.ip}</td>
-	      <td>{event.password}</td>
 	      <td>{event.tel}</td>  
 	      <td>{tel_verifyText}</td>  
 	      <td>{event.email}</td>  
