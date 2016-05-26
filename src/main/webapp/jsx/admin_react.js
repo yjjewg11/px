@@ -3322,7 +3322,7 @@ render: function() {
         </thead>
         <tbody>
         {this.state.data.map(function(event) {
-            return (<Query_userUpdate_byRight key={event.uuid} event={event} />);
+            return (<Query_userUpdatequeryinfo_byRight key={event.uuid} event={event} />);
           })}
         </tbody>
       </AMR_Table>
@@ -3334,7 +3334,7 @@ render: function() {
 /*  	
  * 查询修改资料日志表单上绘制详细内容;
  * */
-var Query_userUpdate_byRight = React.createClass({ 
+var Query_userUpdatequeryinfo_byRight = React.createClass({ 
 	  render: function() {
 	    var event = this.props.event;
 	    var sexTxet,tel_verifyText;
