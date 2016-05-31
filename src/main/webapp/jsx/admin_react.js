@@ -3314,7 +3314,6 @@ render: function() {
           <th>职位</th> 
           <th>用户uuid</th> 
           <th>用户IP地址</th>
-          <th>密码(md5加密)</th>
           <th>电话号码</th>
           <th>电话验证</th> 
           <th>email地址</th>
@@ -3323,7 +3322,7 @@ render: function() {
         </thead>
         <tbody>
         {this.state.data.map(function(event) {
-            return (<Query_userUpdate_byRight key={event.uuid} event={event} />);
+            return (<Query_userUpdatequeryinfo_byRight key={event.uuid} event={event} />);
           })}
         </tbody>
       </AMR_Table>
@@ -3335,7 +3334,7 @@ render: function() {
 /*  	
  * 查询修改资料日志表单上绘制详细内容;
  * */
-var Query_userUpdate_byRight = React.createClass({ 
+var Query_userUpdatequeryinfo_byRight = React.createClass({ 
 	  render: function() {
 	    var event = this.props.event;
 	    var sexTxet,tel_verifyText;
@@ -3363,7 +3362,6 @@ var Query_userUpdate_byRight = React.createClass({
 	      <td>{event.office}</td>
 	      <td>{event.user_uuid}</td>
 	      <td>{event.ip}</td>
-	      <td>{event.password}</td>
 	      <td>{event.tel}</td>  
 	      <td>{tel_verifyText}</td>  
 	      <td>{event.email}</td>  

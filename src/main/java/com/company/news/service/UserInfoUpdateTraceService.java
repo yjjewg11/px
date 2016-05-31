@@ -52,8 +52,7 @@ public class UserInfoUpdateTraceService extends AbstractService {
 		dbobj.setIp(UserInfoFilter.getIpAddr(request));		
 		dbobj.setName(user.getName());
 		dbobj.setNickname(user.getNickname());
-		dbobj.setRealname(user.getRealname());		
-		dbobj.setPassword(user.getPassword());		
+		dbobj.setRealname(user.getRealname());			
 		dbobj.setTel(user.getTel());
 		dbobj.setTel_verify(user.getTel_verify());		
 		dbobj.setSex(user.getSex());
@@ -92,7 +91,7 @@ public UserInfoUpdateTrace addUsepassword(SessionUserInfoInterface user,String t
 	}	
 
 
-	String Selectsql=" SELECT t1.uuid,t1.user_uuid,t1.sessionid,t1.ip,t1.type,t1.name,t1.password,t1.tel,t1.tel_verify,t1.sex,t1.office,t1.img,t1.email,date_format(t1.create_time,'%Y-%m-%d') as create_time";
+	String Selectsql=" SELECT t1.uuid,t1.user_uuid,t1.sessionid,t1.ip,t1.type,t1.name,t1.tel,t1.tel_verify,t1.sex,t1.office,t1.img,t1.email,date_format(t1.create_time,'%Y-%m-%d') as create_time";
 	String SqlFrom=" FROM px_user_info_update_trace t1 ";	
 
 	/**
