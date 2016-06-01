@@ -3322,7 +3322,7 @@ render: function() {
         ), 
         React.createElement("tbody", null, 
         this.state.data.map(function(event) {
-            return (React.createElement(Query_userUpdate_byRight, {key: event.uuid, event: event}));
+            return (React.createElement(Query_userUpdatequeryinfo_byRight, {key: event.uuid, event: event}));
           })
         )
       )
@@ -3334,7 +3334,7 @@ render: function() {
 /*  	
  * 查询修改资料日志表单上绘制详细内容;
  * */
-var Query_userUpdate_byRight = React.createClass({displayName: "Query_userUpdate_byRight", 
+var Query_userUpdatequeryinfo_byRight = React.createClass({displayName: "Query_userUpdatequeryinfo_byRight", 
 	  render: function() {
 	    var event = this.props.event;
 	    var sexTxet,tel_verifyText;

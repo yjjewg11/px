@@ -936,7 +936,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
           });
 	  },
@@ -950,7 +950,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
 				editor.pasteHTML(imgDiv);
           } 
 
@@ -2137,7 +2137,7 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
           });
 	  },
@@ -2151,7 +2151,7 @@ bg_Class_fn:function(){
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
 				editor.pasteHTML(imgDiv);
           } 
 
@@ -3064,6 +3064,9 @@ var Group_EventRow_byRight = React.createClass({displayName: "Group_EventRow_byR
  *(校务管理)<预览按钮>绘制 ;
  * */
   var Group_show_byRight = React.createClass({displayName: "Group_show_byRight", 
+ componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
   render: function() {
   	  var o = this.props.formdata;
     return (
@@ -3099,7 +3102,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 			  }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
           });
 	},
@@ -3109,7 +3112,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
 				editor.pasteHTML(imgDiv);
           } 
 
@@ -3411,7 +3414,7 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
              if(!imgurl)return;
-              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
         });
 	  },
@@ -3425,7 +3428,7 @@ bg_Class_fn:function(){
           for(var i=0;i<imgArr.length;i++){
 			var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
 				editor.pasteHTML(imgDiv);
           }          
      }

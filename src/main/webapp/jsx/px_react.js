@@ -986,7 +986,7 @@ var Announcements_edit = React.createClass({
 	    this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
          			  if(!imgurl)return;
-              var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
           });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
@@ -2388,7 +2388,7 @@ var Announcements_goodedit = React.createClass({
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
               var  o = imgurl;
 			  var imgList=o?o.split("@"):"";
-              var imgDiv='<a href="'+imgList[0]+'"><img src="'+o+'"} data-rel="'+imgList[0]+'"/></a>'
+              var imgDiv='<a href="'+imgList[0]+'"><img class="am-img-thumbnail" src="'+o+'"} data-rel="'+imgList[0]+'"/></a><br />'
 
                 editor.pasteHTML(imgDiv)
           });
@@ -3271,13 +3271,16 @@ var Group_EventRow_byRight = React.createClass({
  *(校务管理)<预览按钮>绘制 ;
  * */
   var Group_show_byRight = React.createClass({ 
+ componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
   render: function() {
   	  var o = this.props.formdata;
     return (
   		  <AMUIReact.Article
   		    title={o.brand_name}
   		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}>
-  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+            <div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.description+"</div>"}}></div>
   		   </AMUIReact.Article>	
   		   
   		   
@@ -3299,10 +3302,12 @@ var Group_edit_byRight = React.createClass({
 	  },
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-			  
+			  this.editor=editor;
 			  
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+               if(!imgurl)return;
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+                editor.pasteHTML(imgDiv);
           });
 
 		if(!this.state.uuid){
@@ -3606,7 +3611,7 @@ var Announcements_edit_byRight = React.createClass({
 	   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-           var imgDiv='<img src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/>';
+           var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
                 editor.pasteHTML(imgDiv);
         });
 			  	w_img_upload_nocut.groupuuid=this.state.groupuuid;
@@ -7128,9 +7133,9 @@ obj.teacher_name=$('#sutdent_name').val();
  	 handleChange: function(event) {
  		    this.setState($('#editClassStudentForm').serializeJson());
  	  },
- 	  componentDidMount:function(){
-
- 		},
+ componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
  		render: function() {
  	     var o =this.state;
  	     var imgGuid=o.logo;
@@ -7156,7 +7161,7 @@ obj.teacher_name=$('#sutdent_name').val();
  	 			
  				</AMUIReact.ListItem>		 			       			      
  			 </AMUIReact.List> 	
-					<div dangerouslySetInnerHTML={{__html:o.context}}></div> 
+					<div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.context+"</div>"}}></div>
  		    </div> 
  		     );
  	        }
@@ -7185,7 +7190,9 @@ obj.teacher_name=$('#sutdent_name').val();
 		  var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 		    this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+	   			  if(!imgurl)return;
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+                editor.pasteHTML(imgDiv);
 	        });
 			w_img_upload_nocut.groupuuid=this.state.groupuuid;
 
@@ -7250,6 +7257,7 @@ obj.teacher_name=$('#sutdent_name').val();
 		  <form id="editCourseForm" method="post" className="am-form">
 			<PxInput type="hidden" name="uuid"  value={o.uuid}/>
 		     <PxInput type="hidden" name="groupuuid"  value={o.groupuuid}/>
+			   <PxInput type="hidden" id="img" name="img"  value={o.img} onChange={this.handleChange}/>    	
 			       <PxInput type="hidden" name="logo" id="logo" value={o.logo} onChange={this.handleChange}/>
 			<div>
 		      <AMUIReact.Image  id="img_head_image"   src={G_imgPath+o.logo} className={"G_img_header"}/>
@@ -8129,13 +8137,16 @@ var Group_EventRow_byRight_px = React.createClass({
  *(对外校务管理)<预览按钮>绘制 ;
  * */
   var Group_show_byRight_px = React.createClass({ 
+componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
   render: function() {
   	  var o = this.props.formdata;
     return (
   		  <AMUIReact.Article
   		    title={o.brand_name}
   		    meta={o.company_name+" | "+o.link_tel+" | "+o.address+" | 阅读"+this.props.count+"次"}>
-  			<div dangerouslySetInnerHTML={{__html: o.description}}></div>
+  		   <div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.description+"</div>"}}></div>
   		   </AMUIReact.Article>	
   		   
   		   
@@ -8157,12 +8168,14 @@ var Group_edit_byRight_px = React.createClass({
 	  },
 	  componentDidMount:function(){
 			  var editor=$('#description').xheditor(xhEditor_upImgOption_mfull);
-			  
+			  this.editor=editor;
 			  if(!this.state.uuid){
 			  this.setProvCity();
 		       }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-                editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+             if(!imgurl)return;
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+                editor.pasteHTML(imgDiv);
           });
 	},
 	   /*
@@ -8437,6 +8450,9 @@ setProvCity:function(){
 	handleClick: function(m,groupuuid,uuid) {
 		btnclick_Preferential_announce(m,groupuuid,uuid);
 }, 
+	 componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
    render: function() {
    	  var o = this.props.data;
 
@@ -8448,7 +8464,7 @@ setProvCity:function(){
 			<AMUIReact.Article
 			title={o.title}
 			meta={Vo.announce_type(o.type)+" | "+Store.getGroupNameByUuid(o.groupuuid)+" | "+o.create_time+ "|阅读"+ this.props.count+"次"}>
-			<div dangerouslySetInnerHTML={{__html: o.message}}></div>
+            <div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.message+"</div>"}}></div>
 			</AMUIReact.Article>)
 	     }
    return (
@@ -8463,12 +8479,12 @@ setProvCity:function(){
    		    	<div className="am-comment-actions">
    		    	<a href="javascript:void(0);"><i id={"btn_dianzan_"+o.uuid} className="am-icon-thumbs-up px_font_size_click"></i></a> 
    		    	 <a href="javascript:void(0);"  onClick={G_CallPhoneFN.setShareContent.bind(this,o.title,o.title,null,this.props.share_url)}><i className={G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}></i></a>	
-<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,obj.type,o.uuid)}  className="am-fr">举报</a>
+<a href="javascript:void(0);" onClick={common_check_illegal.bind(this,o.type,o.uuid)}  className="am-fr">举报</a>
 			   
    		    	</div>
    		    	</footer>
    		    	<Common_Dianzan_show_noAction uuid={o.uuid} type={o.type}  btn_dianzan={"btn_dianzan_"+o.uuid}/>
-   			  <Common_reply_list uuid={o.uuid}  type={o.type}   groupuuid={obj.groupuuid}/>			 
+   			  <Common_reply_list uuid={o.uuid}  type={o.type}   groupuuid={o.groupuuid}/>			 
    		   </div>
    );
    }
@@ -8504,7 +8520,9 @@ setProvCity:function(){
   var editor= $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
   this.editor=editor;
          w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-               editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+			  if(!imgurl)return;
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+                editor.pasteHTML(imgDiv);
              });
 
 	 w_img_upload_nocut.groupuuid=this.state.groupuuid;
@@ -8752,9 +8770,9 @@ var Teacher_look_info =React.createClass({
 	 handleChange: function(event) {
 		    this.setState($('#editClassStudentForm').serializeJson());
 	  },
-	  componentDidMount:function(){
-
-		},
+ componentDidMount:function(){
+  $('.am-gallery').pureview();
+},
 		render: function() {
 	     var o =this.state;
 	     var imgGuid=o.img;
@@ -8773,8 +8791,8 @@ var Teacher_look_info =React.createClass({
 			       <AMUIReact.ListItem>简介:{o.summary}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>发布状态:{Vo.get("course_status_"+o.status)}</AMUIReact.ListItem> 			      
 			     <AMUIReact.ListItem>更新时间:{o.update_time}</AMUIReact.ListItem>
-			    <AMUIReact.ListItem>老师介绍详细内容:
-	 			<div dangerouslySetInnerHTML={{__html:o.content}}></div> 
+			    <AMUIReact.ListItem>老师介绍详细内容:	 
+				 <div dangerouslySetInnerHTML={{__html: "<div class='am-gallery'>"+o.content+"</div>"}}></div>
 				</AMUIReact.ListItem>		 			       			      
 			 </AMUIReact.List> 		
 		    </div> 
@@ -8806,7 +8824,9 @@ var Px_teacher_edit = React.createClass({
 		  var editor = $('#announce_message').xheditor(xhEditor_upImgOption_mfull);
 		  this.editor=editor;
 	        w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
-	              editor.pasteHTML( '<img width="100%"   src="'+imgurl+'"/>')
+	       if(!imgurl)return;
+              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+                editor.pasteHTML(imgDiv);
 	        });
 				w_img_upload_nocut.groupuuid=this.state.groupuuid;
 				  
