@@ -15,6 +15,7 @@ import com.company.news.rest.util.RestUtil;
 import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.CountService;
+import com.company.news.service.EZCameraService;
 import com.company.news.service.SynPxRedisToDbImplService;
 import com.company.news.service.WenjieAdminService;
 import com.company.news.validate.CommonsValidate;
@@ -273,6 +274,44 @@ public class WenjieAdminController extends AbstractRESTController {
 					return "";
 				}
 //				new PxRedisCacheImpl().synCountRedisToDb(synPxRedisToDbImplService);
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+				return "";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage(e.getMessage());
+				return "";
+			}
+		}
+		
+
+		@Autowired
+		private EZCameraService eZCameraService;
+
+		/**
+		 * 同步监控设备到数据库
+		 * @param model
+		 * @param request
+		 * @return
+		 */
+		@RequestMapping(value = "/cameraListToDB", method = RequestMethod.POST)
+		public String update_cameraListToDB(ModelMap model, HttpServletRequest request) {
+			ResponseMessage responseMessage = RestUtil
+					.addResponseMessageForModelMap(model);
+			
+			if(!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_user_m, request)){
+				responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+				responseMessage.setMessage("cameraListToDB is not admin!");
+				return "";
+			}
+			try {
+				
+			
+				boolean flag=eZCameraService.update_cameraListToDB(model, request, responseMessage);
+				if(!flag){
+					return "";
+				}
 				responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
 				return "";
 			} catch (Exception e) {
