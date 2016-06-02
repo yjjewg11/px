@@ -1,8 +1,5 @@
 package com.company.news.service;
 
-import java.sql.Timestamp;
-
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,7 +8,6 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
-import com.company.news.entity.Operate;
 import com.company.news.entity.User;
 import com.company.news.entity.UserInfoUpdateTrace;
 import com.company.news.interfaces.SessionUserInfoInterface;
@@ -91,7 +87,7 @@ public UserInfoUpdateTrace addUsepassword(SessionUserInfoInterface user,String t
 	}	
 
 
-	String Selectsql=" SELECT t1.uuid,t1.user_uuid,t1.sessionid,t1.ip,t1.type,t1.name,t1.tel,t1.tel_verify,t1.sex,t1.office,t1.img,t1.email,date_format(t1.create_time,'%Y-%m-%d') as create_time";
+	String Selectsql=" SELECT t1.uuid,t1.user_uuid,t1.sessionid,t1.ip,t1.type,t1.name,t1.tel,t1.tel_verify,t1.sex,t1.office,t1.img,t1.email,t1.create_time";
 	String SqlFrom=" FROM px_user_info_update_trace t1 ";	
 
 	/**
@@ -121,7 +117,7 @@ public UserInfoUpdateTrace addUsepassword(SessionUserInfoInterface user,String t
 	
 	
 	
-	String Selectsql2=" SELECT t1.uuid,t1.user_uuid,t1.type,t1.name,date_format(t1.create_time,'%Y-%m-%d') as create_time";
+	String Selectsql2=" SELECT t1.uuid,t1.user_uuid,t1.type,t1.name,t1.create_time";
 	//String SqlFrom2=" FROM px_user_info_update_trace t2 ";	
 
 	/**
@@ -167,7 +163,7 @@ public UserInfoUpdateTrace addUsepassword(SessionUserInfoInterface user,String t
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return Operate.class;
+		return null;
 	}
 
 

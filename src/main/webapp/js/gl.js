@@ -516,6 +516,7 @@ window.xhEditor_upImgOption_mfull={
 		onUpload:xhEditor_insertUpload,
 		html5Upload:false,
 		height:'500',
+		loadCSS:hostUrl+'css/share.css?160602',
 		//tools:'mfull',
 		tools:'Cut,Copy,Paste,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Anchor,Img,Flash,add_Media_forCommons,add_audio,Hr,Emot,Table,|,Source,Preview,Print,Fullscreen',
 		urlType:'abs'
@@ -525,6 +526,7 @@ window.xhEditor_upImgOption={
 	upImgUrl:  hostUrl + "rest/uploadFile/xheditorUpload.json",
 	onUpload:xhEditor_insertUpload,
 	html5Upload:false,
+	loadCSS:hostUrl+'css/share.css?160602',
 	tools:'simple',
 	urlType:'abs'
 };

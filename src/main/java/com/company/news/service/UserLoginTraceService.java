@@ -64,7 +64,7 @@ public class UserLoginTraceService extends AbstractService {
 	}
 
 	
-	String Selectsql=" SELECT t1.uuid,t1.user_uuid, date_format(t1.create_time,'%Y-%m-%d') as create_time,t1.sessionid,t1.ip,t1.type";
+	String Selectsql=" SELECT t1.uuid,t1.user_uuid,t1.create_time,t1.sessionid,t1.ip,t1.type";
 	String SqlFrom=" FROM px_user_login_trace t1 ";	
 
 	/**
@@ -110,7 +110,7 @@ public class UserLoginTraceService extends AbstractService {
 	@Override
 	public Class getEntityClass() {
 		// TODO Auto-generated method stub
-		return Operate.class;
+		return null;
 	}
 
 

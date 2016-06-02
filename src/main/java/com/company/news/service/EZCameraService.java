@@ -9,7 +9,6 @@ import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
-import org.weixin4j.WeixinException;
 
 import com.company.common.HttpRequestUtils;
 import com.company.news.ProjectProperties;
@@ -55,7 +54,7 @@ public  class EZCameraService extends AbstractService {
 	public HikvisionClient hikvisionClient=new HikvisionClient();
 	
 	
-	public boolean update_cameraListToDB(ModelMap model, HttpServletRequest request,ResponseMessage responseMessage) throws WeixinException,Exception {
+	public boolean update_cameraListToDB(ModelMap model, HttpServletRequest request,ResponseMessage responseMessage) throws Exception {
 		//oauth_consumer_key=100330589&access_token=BF796FA297CC548136E8819D9BC1EA92&openid=0020D2823810BC79EAA0E228E14F1688&format=json
 		 String dateString=TimeUtils.getCurrentTime(TimeUtils.YYYY_MM_DD_FORMAT);
 			
@@ -108,7 +107,7 @@ public  class EZCameraService extends AbstractService {
 		
 	}
 	
-	public boolean getAccessToken(ModelMap model, HttpServletRequest request,ResponseMessage responseMessage) throws WeixinException,Exception {
+	public boolean getAccessToken(ModelMap model, HttpServletRequest request,ResponseMessage responseMessage) throws Exception {
 		//oauth_consumer_key=100330589&access_token=BF796FA297CC548136E8819D9BC1EA92&openid=0020D2823810BC79EAA0E228E14F1688&format=json
 		 String dateString=TimeUtils.getCurrentTime(TimeUtils.YYYY_MM_DD_FORMAT);
 			

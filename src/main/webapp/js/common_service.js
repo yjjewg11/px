@@ -752,8 +752,7 @@ var G_html_preview=function(t_iframe,url,div,title) {
 	    subWeb.write("<meta charset=\"utf-8\">");
 		 subWeb.write("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
 		  subWeb.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no\">");
-		  subWeb.write('<link rel="stylesheet" href="../css/share.css"/>');
-		  subWeb.write('<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css"/>');
+		  subWeb.write('<link rel="stylesheet" href="../css/share.css?160602"/>');
 
 		
 
