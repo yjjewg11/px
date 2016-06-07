@@ -290,6 +290,8 @@ public class StudentService extends AbstractStudentService {
 		return o;
 	}
 	
+	
+
 	/**
 	 * 查询关联学生的家长.
 	 * @param uuid
@@ -300,6 +302,7 @@ public class StudentService extends AbstractStudentService {
 		 return this.nSimpleHibernateDao.queryListMapBySql(sql);
 		
 	}
+	
 
 	/**
 	 * 
@@ -962,6 +965,25 @@ public class StudentService extends AbstractStudentService {
 				List list =q.list();
 
 		return list;
+	}
+	
+	
+
+	/**
+	 * 删除 支持多个，用逗号分隔
+	 * 
+	 * @param uuid
+	 */
+	public boolean hasRightInviteParents(HttpServletRequest request,String uuid, ResponseMessage responseMessage) {
+		
+		Student student = (Student) this.nSimpleHibernateDao.getObjectById(Student.class,uuid);
+		boolean flag = isHasRightToDo(student, responseMessage, request);
+		// 如果 是更新,只有班主任和管理员可以进行修改,
+		if(!flag){
+			responseMessage.setMessage("没有权限操作,没有学生管理权限,或者不是该学生的老师.");
+			return false;
+		}
+		return true;
 	}
 	
 	/**

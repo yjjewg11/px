@@ -32,8 +32,11 @@ import com.company.news.right.RightConstants;
 import com.company.news.right.RightUtils;
 import com.company.news.service.PxClassService;
 import com.company.news.service.StudentService;
+import com.company.news.service.WenjieAdminService;
+import com.company.news.validate.CommonsValidate;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
+import com.ucpaas.SendSMSUtils;
 
 @Controller
 @RequestMapping(value = "/student")
@@ -320,11 +323,15 @@ public class StudentController extends AbstractRESTController {
 			}
 			
 			s = studentService.get(uuid);
-//			List<Map> list=studentService.getStudentcontactrealationList(uuid);
 			if (s == null) {
 				responseMessage.setMessage("学生资料不存在.uuid=" + uuid);
 				return "";
 			}
+						
+		List<Map> list=studentService.getStudentcontactrealationList(uuid);
+		
+		model.addAttribute("parentList", list);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -543,10 +550,11 @@ public class StudentController extends AbstractRESTController {
 		}
 		return "";
 	}
-
+	@Autowired
+	  protected WenjieAdminService wenjieAdminService;
 	/**
 	 * 邀请家长
-	 * 
+	 * 获得问界互动家园授权,帐号手机号码,初始密码:{1}
 	 * @param model
 	 * @param request
 	 * @return
@@ -555,12 +563,60 @@ public class StudentController extends AbstractRESTController {
 	public String inviteParents(ModelMap model, HttpServletRequest request) {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
-
-		String tels = request.getParameter("tels");
-
-		responseMessage.setMessage("暂不开放,IOS家长客户端审核通过后,开放.");
-		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
-		return "";
+	
+		try {
+			String password="123456";
+			String tel=request.getParameter("tel");
+			String uuid=request.getParameter("uuid");
+			if(DBUtil.isSqlInjection(uuid, responseMessage)){
+				return "";
+			}
+			
+			
+			if (!CommonsValidate.checkCellphone(tel)) {
+				responseMessage.setMessage("电话号码格式不正确！");
+				return "";
+			}
+			if (StringUtils.isBlank(password)) {
+				responseMessage.setMessage("密码不能为空");
+				return "";
+			}
+			
+			
+			boolean flag=studentService.hasRightInviteParents(request, uuid, responseMessage);
+			if(!flag){
+				return "";
+			}
+			
+			String code=wenjieAdminService.update_parentRegSmsdb(tel, password, responseMessage);
+			
+			if(StringUtils.isBlank(code)){
+				responseMessage.setMessage("验证码不能为空");
+				return "";
+			}
+			
+			 flag=wenjieAdminService.update_parentReg(tel, password, code, responseMessage);
+			if(!flag){
+				return "";
+			}
+			
+			 flag=SendSMSUtils.sendRegistrationNotification(tel, password, responseMessage);
+			 if(!flag){
+				 responseMessage.setMessage("注册成功,帐号:"+tel+"初始密码:"+password);
+				
+			}else{
+				responseMessage.setMessage("注册成功,已发短信通知,帐号:"+tel+"初始密码:"+password);
+			}
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+			return "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+		
 	}
 
 	/**

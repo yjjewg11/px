@@ -674,6 +674,7 @@ G_ajax_abs_save(opt);
  			// 登陆成功直接进入主页
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Mycalss_student_edit,{
+					parentList:data.parentList,
  					formdata:data.data
  					}), G_get_div_body());
  			} else {
@@ -1513,13 +1514,14 @@ function ajax_parent_message_save(that){
  * （首页）家长通讯录功能；邀请家长服务器请求
  *@服务器请求：参数需要tels
  * */
-function ajax_parentContact_tels(tels){
+function ajax_parentContact_tels(tel,uuid){
 	$.AMUI.progress.start();
-    var url = hostUrl + "rest/student/inviteParents.json?tels="+tels;
+    var url = hostUrl + "rest/student/inviteParents.json";
 	$.ajax({
 		type : "POST",
 		url : url,
 		dataType : "json",
+			data:{tel:tel,uuid:uuid},
 		 async: true,
 		success : function(data) {
 			$.AMUI.progress.done();
@@ -1534,7 +1536,7 @@ function ajax_parentContact_tels(tels){
 	});
 };
 
-
+ 
 
 
 //老师通讯录废弃物分页代码
@@ -2990,6 +2992,7 @@ function react_ajax_announce_delete_byRight(groupuuid,uuid){
  			// 登陆成功直接进入主页
  			if (data.ResMsg.status == "success") {
  				React.render(React.createElement(Class_student_edit_byRight,{
+					parentList:data.parentList,
  					formdata:data.data
  					}), G_get_div_body());
  			} else {

@@ -77,7 +77,17 @@ public class ClassNewsService extends AbstractService {
 			return false;
 		}
 	
-		
+		if (StringUtils.isNotBlank(classNewsJsonform.getUrl())) {
+			classNewsJsonform.setUrl(PxStringUtil.getURLInString(classNewsJsonform.getUrl()));
+			
+			
+			if(classNewsJsonform.getUrl()==null){
+				responseMessage.setMessage("分享连接不正确,需要包含:http://");
+				return false;
+			}
+			
+		}
+	
 		String []  classuuidArray=classNewsJsonform.getClassuuid().split(",");
 		
 		for(String classuuid:classuuidArray){

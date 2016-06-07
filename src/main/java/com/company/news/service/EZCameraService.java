@@ -100,6 +100,10 @@ public  class EZCameraService extends AbstractService {
 				BeanUtils.copyProperties(eZCameraInfo, cameraInfo);
 				update_count++;
 			}
+			
+			if(eZCameraInfo.getIsOnline()==null){
+				eZCameraInfo.setIsOnline(true);
+			}
 			this.nSimpleHibernateDao.save(eZCameraInfo);
 		}
 		responseMessage.setMessage("同步成功,总数据:"+page.getTotal()+"!新加数据:"+create_count+",更新数据:"+update_count);

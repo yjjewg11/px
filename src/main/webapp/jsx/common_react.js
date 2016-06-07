@@ -1749,17 +1749,17 @@ function G_status(){
                   <AMUIReact.ListItem>状态:{Vo.get("student_status_"+o.status)}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>出生日期:{o.birthday}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>妈妈姓名:{o.ma_name}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel}/>
+			      <Class_student_Tel_ListItem name={"妈妈电话"} tel={o.ma_tel} parentList={this.props.parentList} uuid={o.uuid}/> 
 			      <AMUIReact.ListItem>妈妈的工作:{o.ma_work}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>爸爸姓名:{o.ba_name}</AMUIReact.ListItem>
 			      <AMUIReact.ListItem>爸爸的工作:{o.ba_work}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel}/>
+			      <Class_student_Tel_ListItem name={"爸爸电话"} tel={o.ba_tel} parentList={this.props.parentList} uuid={o.uuid}/>
 			      <AMUIReact.ListItem>家庭住址:{o.address}</AMUIReact.ListItem>
-			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}/>
-			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}/>
-			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel}/>
-			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel}/>
-			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel}/>
+			      <Class_student_Tel_ListItem name={"爷爷电话"} tel={o.ye_tel}  parentList={this.props.parentList} uuid={o.uuid}/>
+			      <Class_student_Tel_ListItem name={"奶奶电话"} tel={o.nai_tel}  parentList={this.props.parentList} uuid={o.uuid}/>
+			      <Class_student_Tel_ListItem name={"外公电话"} tel={o.waigong_tel} parentList={this.props.parentList} uuid={o.uuid}/>
+			      <Class_student_Tel_ListItem name={"外婆电话"} tel={o.waipo_tel} parentList={this.props.parentList} uuid={o.uuid}/>
+			      <Class_student_Tel_ListItem name={"其他电话"} tel={o.other_tel} parentList={this.props.parentList} uuid={o.uuid}/>
 			      <AMUIReact.ListItem>
 			      <div dangerouslySetInnerHTML={{__html:G_textToHTML("说明:"+o.note)}}></div>
  			      </AMUIReact.ListItem>			        			      

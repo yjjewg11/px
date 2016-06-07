@@ -914,11 +914,11 @@ function G_class_students_look_info(uuid,ajaxYype,type){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				if(ajaxYype==1){
-					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());	
+					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,parentList:data.parentList,type:type}), G_get_div_body());	
 				}else{
-					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,type:type}), G_get_div_body());
+					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,parentList:data.parentList,type:type}), G_get_div_body());
 				}
-			} else {
+			} else { 
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},

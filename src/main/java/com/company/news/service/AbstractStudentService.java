@@ -212,6 +212,7 @@ public class AbstractStudentService extends AbstractService {
 			isUpdateStudentContactRealation=true;
 		} else {
 			studentContactRealation.setIsreg(SystemConstants.USER_isreg_0);
+			studentContactRealation.setParent_uuid(null);
 		}
 
 
@@ -240,9 +241,7 @@ public class AbstractStudentService extends AbstractService {
 			
 		}
 		
-		if(isUpdateStudentContactRealation){
-			nSimpleHibernateDao.save(studentContactRealation);
-		}
+		nSimpleHibernateDao.save(studentContactRealation);
 		return studentContactRealation;
 	}
 	/**

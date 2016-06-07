@@ -2399,19 +2399,50 @@ var AMR_Col=AMUIReact.Col;
 var Class_student_Tel_ListItem =React.createClass({displayName: "Class_student_Tel_ListItem",
 	 getDefaultProps: function() {
 		    return {
+				parentList:null,
 		      name: "",
 		      tel:""
 		    };
 		  },
+	     getParentUuid:function(tel,parentList){
+				if(parentList==null||!tel){
+					return null;
+				}
+				for(var i=0;i<parentList.length;i++){
+					if(parentList[i].tel==tel){
+						return parentList[i].parent_uuid;
+					}
+
+				}
+				return null;
+		  },
 		render: function() {
-	    
+			var zhuce_className="am-hide";
+			if(this.props.tel){
+				  var parent_uuid=this.getParentUuid(this.props.tel,this.props.parentList);
+				  if(parent_uuid==null||parent_uuid==""){
+						zhuce_className="";//没关联家长uuid的允许注册
+				  }
+			}
+		
+			
 		 return (
-				 React.createElement(AMUIReact.ListItem, null, this.props.name, ":", this.props.tel, React.createElement("a", {className: this.props.tel?"":"am-hide", href: "tel:"+this.props.tel}, React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话")))
+				 React.createElement(AMUIReact.ListItem, null, 
+			 this.props.name, ":", this.props.tel, 
+
+		 	    React.createElement(AMR_ButtonToolbar, null, 
+			React.createElement("a", {className: this.props.tel?"":"am-hide", href: "tel:"+this.props.tel}, 
+				 React.createElement(AMUIReact.Button, {amStyle: "success"}, "电话")
+			 ), 
+				 React.createElement(AMUIReact.Button, {amStyle: "warning", className: zhuce_className, onClick: ajax_parentContact_tels.bind(this,this.props.tel,this.props.uuid)}, "注册号码")
+
+						    )
+			)
 		     );
 	        }
 		 });
 
-
+ 
 /*
  * <我的班级>添加学生详情界面
  * */
