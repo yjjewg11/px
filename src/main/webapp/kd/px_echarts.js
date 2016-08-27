@@ -241,14 +241,14 @@ var PXECharts_ajax={
 	 */
 	getStatisticsTypeList:function(){
 		var data=[];
-		data.push( {value: 'uss', label: '教师性别统计（按机构）'});
-		data.push( {value: 'uls', label: '教师活跃度统计（按机构）'});
-		data.push( {value: 'sss', label: '学生性别统计（按机构）'});
-		data.push( {value: 'getStudentAgeCountBygroup_bar', label: '年龄段统计(按机构)'});
+		data.push( {value: 'uss', label: '教师性别统计'});
+		data.push( {value: 'uls', label: '教师活跃度统计'});
+		data.push( {value: 'sss', label: '在校生性别统计'});
+		data.push( {value: 'getStudentAgeCountBygroup_bar', label: '在校生年龄段统计(按机构)'});
 		//data.push( {value: 'cnts', label: '班级互动TOP10（按机构）'});
-		data.push( {value: 'css', label: '人数统计（按班级）'});
+		data.push( {value: 'css', label: '在校生人数统计（按班级）'});
 		data.push( {value: 'getClassNewStudentNumber_bar', label: '新生统计（日期段）'});
-		data.push( {value: 'getClassLeaveStudentNumber_bar', label: '毕业离校统计（日期段）'});
+		data.push( {value: 'getClassLeaveStudentNumber_bar', label: '中途离校人数统计（日期段）'});
 		
 		//data.push( {value: 'cps', label: '人数统计（按班级家长）'});		
 		data.push( {value: 'cns', label: '班级互动（班级日期段）'});
@@ -257,6 +257,31 @@ var PXECharts_ajax={
 		data.push( {value: 'getJingpinwenzhangByTeacher_bar', label: '精品文章（老师日期段）'});
 		data.push( {value: 'getTeachingplanByClass_bar', label: '课程表（班级日期段）'});
 		data.push( {value: 'getCookbookPlanByMonth_bar', label: '食谱（日期段）'});
+		return data;
+	},
+	
+	/**
+	 * 统计列表,返回用于select 显示
+	 * @returns {Array}
+	 */ 
+	getStatisticsTypeList_graduation:function(){
+		var data=[];
+//		data.push( {value: 'uss', label: '教师性别统计（按机构）'});
+//		data.push( {value: 'uls', label: '教师活跃度统计（按机构）'});
+		data.push( {value: 'sss', label: '毕业生性别统计'});
+//		data.push( {value: 'getStudentAgeCountBygroup_bar', label: '年龄段统计(按机构)'});
+		//data.push( {value: 'cnts', label: '班级互动TOP10（按机构）'});
+		data.push( {value: 'css', label: '毕业生人数统计（按班级）'});
+//		data.push( {value: 'getClassNewStudentNumber_bar', label: '新生统计（日期段）'});
+//		data.push( {value: 'getClassLeaveStudentNumber_bar', label: '毕业离校统计（日期段）'});
+		
+		//data.push( {value: 'cps', label: '人数统计（按班级家长）'});		
+		data.push( {value: 'cns', label: '毕业班级互动（班级日期段）'});
+//		data.push( {value: 'getClassnewsByTeacher_bar', label: '毕业班级互动（老师日期段）'});
+//		data.push( {value: 'tjs', label: '教师评价统计（日期段）'});
+//		data.push( {value: 'getJingpinwenzhangByTeacher_bar', label: '精品文章（老师日期段）'});
+		data.push( {value: 'getTeachingplanByClass_bar', label: '课程表（班级日期段）'});
+//		data.push( {value: 'getCookbookPlanByMonth_bar', label: '食谱（日期段）'});
 		 
 	
 		return data;

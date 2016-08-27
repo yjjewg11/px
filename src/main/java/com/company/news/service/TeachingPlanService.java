@@ -270,5 +270,37 @@ public class TeachingPlanService extends AbstractService {
 //		q.setMaxResults(10);
 		return q.list();
 	}
+	
+	public List<Object[]> getTeachingplanCountsByClass_graduationYear(String groupuuid,
+			String begDateStr, String endDateStr,Integer graduationYear) {
+		
+		Date startDate=TimeUtils.getFirstDayOfYear(graduationYear);
+		Date endDate=TimeUtils.getFirstDayOfYear(graduationYear+1);
+		
+		
+		endDateStr+=" 23:59:59";
+		//user_name,news_count,dianzan_count,replay_count,read_sum_count
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+		String sql="SELECT t0.name as class_name,COUNT(DISTINCT t0.uuid) as news_count,COUNT(DISTINCT t1.uuid) as dianzan_count,COUNT(DISTINCT t2.uuid) as replay_count,SUM(DISTINCT t3.count) as read_sum_count from ";
+		sql+=" (select px_teachingplan.uuid,px_class.uuid as classuuid,px_class.name from  px_class  left join px_teachingplan on px_teachingplan.classuuid=px_class.uuid";
+			sql+="  where px_class.isdisable=1 and  px_class.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' ";
+			sql+= " and ( px_class.disable_time<"+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(endDate))+" and px_class.disable_time>="+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(startDate))+")";	
+			
+			
+			
+			sql+=" and (  px_teachingplan.plandate is NULL ";
+			sql+=" or( px_teachingplan.plandate<="+DBUtil.stringToDateByDBType(endDateStr)+" and px_teachingplan.plandate>="+DBUtil.stringToDateByDBType(begDateStr)+")";
+			sql+=")";
+			sql+=") t0 LEFT JOIN px_classnewsdianzan t1 on t0.uuid=t1.newsuuid";
+		sql+=" LEFT JOIN px_classnewsreply t2 on t0.uuid =t2.newsuuid";
+		sql+=" LEFT JOIN px_count t3 on t0.uuid =t3.ext_uuid";
+		sql+=" GROUP BY t0.classuuid order by news_count desc";
+		
+
+		Query q = s.createSQLQuery(sql);
+
+//		q.setMaxResults(10);
+		return q.list();
+	}
 
 }

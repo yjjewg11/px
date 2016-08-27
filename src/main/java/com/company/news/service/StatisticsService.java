@@ -56,7 +56,7 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @return
 	 */
 	public PieStatisticsVo getSssBygroup(ResponseMessage responseMessage,
-			String group_uuid) {
+			String group_uuid,String graduationYear) {
 		// 验证group合法性
 		if (!validateGroup(group_uuid, responseMessage))
 			return null;
@@ -65,7 +65,12 @@ public class StatisticsService extends AbstractStatisticsService {
 
 //		List<Student> list = studentService.getStudentByGroup(group_uuid);
 		
-		List<Object[]> list = studentService.getStudentSexCountByGroup(group_uuid);
+		List<Object[]> list=null;
+		if(StringUtils.isNumeric(graduationYear)){//毕业年的学生.
+			list = studentService.getGraduationStudentSexCountByGroup(group_uuid,Integer.valueOf(graduationYear));
+		}else{//在校生.
+			list = studentService.getUngraduationStudentSexCountByGroup(group_uuid);
+		}
 		logger.debug("getUserByGroupuuid 查询结束");
 
 //		
@@ -125,14 +130,22 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @return
 	 */
 	public PieStatisticsVo getCssBygroup(ResponseMessage responseMessage,
-			String group_uuid) {
+			String group_uuid,String graduationYear) {
 		// 验证group合法性
 		if (!validateGroup(group_uuid, responseMessage))
 			return null;
 
 		logger.debug("begain 班级学生人数统计");
 
-		List<PClass> list = classService.query(group_uuid);
+		List<PClass> list = null;
+		
+		
+		if(StringUtils.isNumeric(graduationYear)){//毕业年的学生.
+			list = classService.queryGraduationOfStatic(group_uuid,Integer.valueOf(graduationYear));
+		}else{//在校生.
+			list = classService.queryUnGraduationOfStatic(group_uuid);
+		}
+		
 		logger.debug("classService.query 查询结束");
 
 		// 返回
@@ -161,22 +174,28 @@ public class StatisticsService extends AbstractStatisticsService {
 			Map m = new HashMap<String, Integer>();
 			for (Object[] o : slist) {
 				m.put(o[1], o[0]);
-				studentCount+=Integer.valueOf(o[0].toString());
+//				studentCount+=Integer.valueOf(o[0].toString());
 			}
 			// 家长人数
 			Map pm = new HashMap<String, Integer>();
 			for (Object[] o : plist) {
 				pm.put(o[1], o[0]);
-				parentCount+=Integer.valueOf(o[0].toString());
+//				parentCount+=Integer.valueOf(o[0].toString());
 			}
 
 			String ps_p_data = "";
 			String ps_data = "";
 			for (PClass p : list) {
-				ps_data += ((m.get(p.getUuid()) == null ? 0 : m
-						.get(p.getUuid())) + ",");
-				ps_p_data += ((pm.get(p.getUuid()) == null ? 0 : pm.get(p
-						.getUuid())) + ",");
+				Object countObj=m.get(p.getUuid());
+				if(countObj==null)countObj=0;
+				studentCount+=Integer.valueOf(countObj.toString());
+				ps_data +=countObj + ",";
+				
+				
+				Object pmcountObj=pm.get(p.getUuid());
+				if(pmcountObj==null)pmcountObj=0;
+				parentCount+=Integer.valueOf(pmcountObj.toString());
+				ps_p_data +=pmcountObj + ",";
 			}
 
 			PieSeriesDataVo sdvo = new PieSeriesDataVo();
@@ -213,7 +232,7 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @return
 	 */
 	public PieStatisticsVo getClassnewsByClass(ResponseMessage responseMessage,
-			String begDateStr, String endDateStr, String group_uuid) {
+			String begDateStr, String endDateStr, String group_uuid,String graduationYear) {
 		// 验证group合法性
 //		if (!validateGroup(group_uuid, responseMessage))
 //			return null;
@@ -231,6 +250,16 @@ public class StatisticsService extends AbstractStatisticsService {
 		//uuid,name
 		List<Object[]> list = classNewsService.getClassNewsCountsByClass(
 				group_uuid, begDateStr, endDateStr,SystemConstants.Class_isdisable_0);
+		
+		
+		if(StringUtils.isNumeric(graduationYear)){//毕业年的学生.
+			list = classNewsService.getClassNewsCountsByClass_graduation(
+					group_uuid, begDateStr, endDateStr,Integer.valueOf(graduationYear));
+		}else{//在校生.
+			list = classNewsService.getClassNewsCountsByClass(
+					group_uuid, begDateStr, endDateStr,SystemConstants.Class_isdisable_0);
+		}
+		
 		logger.debug("classService.query 查询结束");
 
 		// 返回
@@ -1074,7 +1103,7 @@ public class StatisticsService extends AbstractStatisticsService {
 	 * @return
 	 */
 	public PieStatisticsVo getTeachingplanByClass_bar(ResponseMessage responseMessage,
-			String begDateStr, String endDateStr, String group_uuid) {
+			String begDateStr, String endDateStr, String group_uuid,String graduationYear) {
 		// 验证group合法性
 //		if (!validateGroup(group_uuid, responseMessage))
 //			return null;
@@ -1092,6 +1121,18 @@ public class StatisticsService extends AbstractStatisticsService {
 		//uuid,name
 		List<Object[]> list = teachingPlanService.getTeachingplanCountsByClass(
 				group_uuid, begDateStr, endDateStr,SystemConstants.Class_isdisable_0);
+		
+		
+		if(StringUtils.isNumeric(graduationYear)){//毕业年的学生.
+			
+			list = teachingPlanService.getTeachingplanCountsByClass(
+					group_uuid, begDateStr, endDateStr,Integer.valueOf(graduationYear));
+		}else{//在校生.
+			list = teachingPlanService.getTeachingplanCountsByClass(
+					group_uuid, begDateStr, endDateStr,SystemConstants.Class_isdisable_0);
+		}
+		
+		
 		logger.debug("classService.query 查询结束");
 
 		// 返回
@@ -1438,7 +1479,7 @@ public class StatisticsService extends AbstractStatisticsService {
 					psdvlist.add(sdvo_p);
 
 				}
-				vo.setTitle_text(g.getBrand_name() + " 毕业离校人数统计"+"["+begDateStr+"~"+endDateStr+"]");
+				vo.setTitle_text(g.getBrand_name() + " 中途离校人数统计"+"["+begDateStr+"~"+endDateStr+"]");
 				vo.setTitle_subtext("总计 " + list.size() + " 班,学生人数"+studentCount+"人,家长数"+parentCount+"人");
 				List legend_data = new ArrayList();
 				legend_data.add("学生人数");

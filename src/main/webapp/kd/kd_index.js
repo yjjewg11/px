@@ -236,9 +236,14 @@ function login_affter_init(){
 	                         {
 	                        
 	                           "link": "##",
-	                           "title": "报表",
+	                           "title": "报表(本学年)",
 	                        		 "fn":menu_statistics_list_fn_byRight
 	                         },
+	                         {
+		                           "link": "##",
+		                           "title": "历史报表(毕业班)",
+		                        		 "fn":menu_graduation_statistics_list_fn_byRight
+		                         },
 	                         {
 	                   		    "link": "##",
 	                   		    "title": "学生月签到",
@@ -996,12 +1001,12 @@ Queue.push(menu_query_list_fn_byRight,"学生列表");
  * @跳转kd_service发服务器请求
  * */
 function menu_statistics_list_fn_byRight() {
-	Queue.push(menu_statistics_list_fn_byRight,"统计");
+	Queue.push(menu_statistics_list_fn_byRight,"报表(本学年)");
 	
 	var  grouplist=Store.getGroupByRight("KD_statistics_m");			
 	var groupuuid;
 	var now=new Date();	
-	var begDateStr=G_week.getDateStr(now,-7);
+	var begDateStr=G_week.getDateStr(now,-7); 
 	
 	if(!grouplist||grouplist.length==0){
 		groupuuid=null;
@@ -1014,6 +1019,32 @@ function menu_statistics_list_fn_byRight() {
 		begDateStr:begDateStr,
 		groupuuid:groupuuid,
 		statistics_type_list:PXECharts_ajax.getStatisticsTypeList(),
+		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
+		}), G_get_div_body());
+};
+
+/*
+ * (标头)统计
+ * @跳转kd_service发服务器请求
+ * */
+function menu_graduation_statistics_list_fn_byRight() {
+	 Queue.push(menu_graduation_statistics_list_fn_byRight,"历史报表(毕业班)");
+	var  grouplist=Store.getGroupByRight("KD_statistics_m");			
+	var groupuuid;
+	var now=new Date();	
+	var begDateStr=G_week.getDateStr(now,-7);
+	
+	if(!grouplist||grouplist.length==0){
+		groupuuid=null;
+	}else{
+		groupuuid=grouplist[0].uuid;
+	}
+
+	
+	React.render(React.createElement(ECharts_graduation_Div_byRight, {
+		begDateStr:begDateStr,
+		groupuuid:groupuuid,
+		statistics_type_list:PXECharts_ajax.getStatisticsTypeList_graduation(),
 		group_list:G_selected_dataModelArray_byArray(grouplist,"uuid","brand_name")
 		}), G_get_div_body());
 };

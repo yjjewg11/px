@@ -41,9 +41,14 @@ public class StatisticsController extends AbstractRESTController {
 
 		try {
 			
+			//毕业年份
+			
+			
 			String groupuuid=request. getParameter("groupuuid");
 			String begDateStr=request. getParameter("begDateStr");
 			String endDateStr=request. getParameter("endDateStr");
+			String graduationYear=request. getParameter("graduationYear");
+			graduationYear=DBUtil.safeToWhereString(graduationYear);
 			
 			groupuuid=DBUtil.safeToWhereString(groupuuid);
 			begDateStr=DBUtil.safeToWhereString(begDateStr);
@@ -71,7 +76,7 @@ public class StatisticsController extends AbstractRESTController {
 			} else if (type.toLowerCase().equals("sss"))// 学生性别统计
 			{
 				PieStatisticsVo vo = statisticsService.getSssBygroup(
-						responseMessage, groupuuid);
+						responseMessage, groupuuid,graduationYear);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -80,7 +85,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("css"))// 学生班级统计
 			{
 				PieStatisticsVo vo = statisticsService.getCssBygroup(
-						responseMessage, groupuuid);
+						responseMessage, groupuuid,graduationYear);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -89,7 +94,7 @@ public class StatisticsController extends AbstractRESTController {
 			}else if (type.toLowerCase().equals("cns"))// 班级互动统计
 			{
 				PieStatisticsVo vo = statisticsService.getClassnewsByClass(
-						responseMessage, begDateStr,endDateStr,groupuuid);
+						responseMessage, begDateStr,endDateStr,groupuuid,graduationYear);
 
 				if (vo != null)
 					model.addAttribute(RestConstants.Return_G_entity, vo);
@@ -339,7 +344,8 @@ public class StatisticsController extends AbstractRESTController {
 			String groupuuid=request. getParameter("groupuuid");
 			String begDateStr=request. getParameter("begDateStr");
 			String endDateStr=request. getParameter("endDateStr");
-			
+			String graduationYear=request. getParameter("graduationYear");
+			graduationYear=DBUtil.safeToWhereString(graduationYear);
 			groupuuid=DBUtil.safeToWhereString(groupuuid);
 			begDateStr=DBUtil.safeToWhereString(begDateStr);
 			endDateStr=DBUtil.safeToWhereString(endDateStr);
@@ -348,7 +354,7 @@ public class StatisticsController extends AbstractRESTController {
 
 			
 			PieStatisticsVo vo = statisticsService.getTeachingplanByClass_bar(
-					responseMessage, begDateStr,endDateStr,groupuuid);
+					responseMessage, begDateStr,endDateStr,groupuuid,graduationYear);
 
 			if (vo != null)
 				model.addAttribute(RestConstants.Return_G_entity, vo);

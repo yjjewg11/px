@@ -1,6 +1,7 @@
 package com.company.news.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import com.company.news.SystemConstants;
 import com.company.news.cache.CommonsCache;
 import com.company.news.commons.util.DbUtils;
 import com.company.news.commons.util.PxStringUtil;
-import com.company.news.entity.FPFamilyMembers;
 import com.company.news.entity.Group4Q;
 import com.company.news.entity.PClass;
 import com.company.news.entity.Student;
@@ -29,8 +29,6 @@ import com.company.news.query.PageQueryResult;
 import com.company.news.query.PaginationData;
 import com.company.news.rest.util.DBUtil;
 import com.company.news.rest.util.TimeUtils;
-import com.company.news.right.RightConstants;
-import com.company.news.right.RightUtils;
 import com.company.news.vo.ResponseMessage;
 import com.company.web.listener.SessionListener;
 
@@ -384,6 +382,58 @@ public class StudentService extends AbstractStudentService {
 		return list;
 	}
 
+
+	/**
+	 * 根据机构UUID,获取性别统计.已毕业
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getGraduationStudentSexCountByGroup(String groupuuid,Integer year) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		//学生数量.教学计划数量,课程名,(班级信息)
+		Date startDate=TimeUtils.getFirstDayOfYear(year);
+		Date endDate=TimeUtils.getFirstDayOfYear(year+1);
+		
+		String sql_classuuid_in = "SELECT t1.uuid from px_class t1 ";
+		sql_classuuid_in+= " where t1.isdisable=1 and t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
+		sql_classuuid_in+= " and ( t1.disable_time<"+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(endDate))+" and t1.disable_time>="+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(startDate))+")";	
+		
+		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_student t0 ";
+				sql+="where t0.classuuid in("+sql_classuuid_in+")";
+				sql+=" group by t0.sex";
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
+
+		return list;
+	}
+
+	/**
+	 * 根据机构UUID,获取性别统计.未毕业
+	 * 
+	 * @param tel
+	 * @param type
+	 * @return
+	 */
+	public List getUngraduationStudentSexCountByGroup(String groupuuid) {
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		
+
+		String sql_classuuid_in = "SELECT t1.uuid from px_class t1 ";
+		sql_classuuid_in+= " where t1.isdisable=0 and t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
+		
+		String sql = "SELECT t0.sex, count( DISTINCT t0.uuid) from px_student t0 ";
+				sql+="where t0.classuuid in("+sql_classuuid_in+")";
+				sql+=" group by t0.sex";
+				Query q = s.createSQLQuery(sql);
+				List list =q.list();
+			
+
+		return list;
+	}
 	
 	/**
 	 * 根据机构UUID,获取绑定该学生
@@ -955,11 +1005,18 @@ public class StudentService extends AbstractStudentService {
 	 * @return
 	 */
 	public List getStudentAgeCountByGroup(String groupuuid) {
+		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
 				.getSessionFactory().openSession();
 		//性别,年龄,
+		
+		
+
+		String sql_classuuid_in = "SELECT t1.uuid from px_class t1 ";
+		sql_classuuid_in+= " where t1.isdisable=0 and t1.groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
+
 		String sql = "SELECT DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)),'%Y') +0 AS age , sum(sex=0) as male,sum(sex=1) as female FROM px_student";
-				sql+= " where groupuuid ='"+DbUtils.safeToWhereString(groupuuid)+"'";
+				sql+=" where classuuid in("+sql_classuuid_in+")";
 				sql+=" group by age";
 				Query q = s.createSQLQuery(sql);
 				List list =q.list();

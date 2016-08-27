@@ -6519,7 +6519,7 @@ render: function() {
   
   
   /*
-  图表加载
+  图表加载(在线班级数据统计)
    * */
   var ECharts_Div_byRight = React.createClass({ 
   	 getInitialState: function() {
@@ -6570,6 +6570,106 @@ render: function() {
 	    		 
 	    		 </div>
     		 	 <div className= "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2">
+  				  <button type="button"   onClick={this.handleChange}  className="am-btn am-btn-secondary">查询</button>	  				
+  	  	         </div>
+
+
+
+
+		         </AMR_ButtonToolbar>
+		          </AMR_Panel>
+
+
+    		 </div>
+    		 <div className="am-cf"></div>
+    		 </form>
+    		 
+    		 <div id="main_ECharts" className="ECharts"></div>
+  	    		</div>
+
+  	    );
+  	  }
+  	}); 
+
+
+	
+  
+  /*
+  图表加载(毕业班级数据统计)
+   * */
+  var ECharts_graduation_Div_byRight = React.createClass({ 
+  	 getInitialState: function() {
+
+		
+			var  o=this.props;
+		 if(!o.graduationYear)o.graduationYear=new Date().getFullYear();
+		 o.begDateStr=o.graduationYear+"-01-01";
+		 o.endDateStr=o.graduationYear+"-12-31";
+
+  		    return o;
+  		  },
+  	componentDidMount:function(){
+  		var tmp_fn=function(){
+  			 var o=$('#editEchartForm').serializeJson();
+		 PXECharts_ajax.ajax(o);
+	 };
+	 if(typeof(require)=="undefined"){
+		 var js="http://echarts.baidu.com/build/dist/echarts.js";
+		 loadJS(js,tmp_fn)
+	 }else{
+		 tmp_fn();
+	 }
+	
+  },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		
+		    //PXECharts.loading();
+	  },
+
+  handleChange_graduationYear: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		 o.begDateStr=o.graduationYear+"-01-01";
+		 o.endDateStr=o.graduationYear+"-12-31";
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		
+		    //PXECharts.loading();
+	  },
+  render: function() {
+	  var o = this.state;
+		//毕业年份
+	  	
+    return (
+    		<div>
+             <G_px_help_List data={G_kd_help_msg.msg_help_list18}/>
+    		 <form id="editEchartForm" method="post" className="am-form" action="javascript:void(0);">
+    		 <div>
+		          <AMR_Panel>
+                  <AMR_ButtonToolbar>
+				 <div className= "am-margin-bottom-xs am-margin-left-xs am-u-lg-2 am-u-sm-12">					    		 
+			
+				   <PxInput icon="calendar" type="text"  maxLength="4" size="4" placeholder="YYYY" name="graduationYear"  value={o.graduationYear} onChange={this.handleChange_graduationYear}/> 	
+
+	    		 </div>
+				  <div className= "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2  am-u-sm-6">
+	    		 <AMUIReact.Selected inline name="type" value={o.type} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.statistics_type_list} btnStyle="primary"  />          
+	    		 </div>
+				 <div className= "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2  am-u-sm-6">
+							    		 
+				<AMUIReact.Selected inline name="groupuuid" value={o.groupuuid} onChange={this.handleChange} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" />          
+	    		 </div>
+
+				 <div className= "am-margin-bottom-xs am-margin-left-xs am-u-lg-2 am-u-sm-6">					    		 
+				 <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="begDateStr" id="begDateStr" dateTime={o.begDateStr}    onChange={this.handleChange}/>
+	    		 </div>
+				 <div className= "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2 am-u-sm-6">
+			    <AMUIReact.DateTimeInput showTimePicker={false}  icon="calendar" format="YYYY-MM-DD" inline  name="endDateStr" id="endDateStr" dateTime={o.endDateStr}    onChange={this.handleChange}/>
+	    		 
+	    		 </div>
+    		 	 <div className= "am-margin-bottom-xs am-margin-left-xs  am-u-lg-1">
   				  <button type="button"   onClick={this.handleChange}  className="am-btn am-btn-secondary">查询</button>	  				
   	  	         </div>
 

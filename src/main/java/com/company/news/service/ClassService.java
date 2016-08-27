@@ -1,5 +1,6 @@
 package com.company.news.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -198,7 +199,7 @@ public class ClassService extends AbstractClassService {
 					+ DBUtil.stringsToWhereInValue(groupuuid) + ")";
 			sql += " order by CONVERT( {t1}.name USING gbk)";
 		}else{
-			sql += " order by {t1}.groupuuid,CONVERT( {t1}.name USING gbk)";
+			sql += " order by {t1}.groupuuid,{t1}.isdisable,CONVERT( {t1}.name USING gbk)";
 		}
 		
 		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
@@ -214,6 +215,72 @@ public class ClassService extends AbstractClassService {
 //		List l=this.nSimpleHibernateDao.findByPaginationToHqlNoTotal(hql, pData).getData();
 		// 抓取教师信息
 		warpVoList(l);
+		return l;
+
+	}
+	
+	
+
+	/**
+	 * 查询所有班级(未毕业)
+	 * 
+	 * @return
+	 */
+	public List<PClass> queryUnGraduationOfStatic(String groupuuid) {
+		
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);//防止大数据
+		
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_class {t1} ";
+		sql+= " where {t1}.isdisable=0";
+		
+		if (StringUtils.isNotBlank(groupuuid)) {
+			sql += " and {t1}.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		}
+		sql += " order by {t1}.groupuuid,CONVERT( {t1}.name USING gbk)";
+		
+		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
+
+		List l= this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData).getData();
+		// 抓取教师信息
+//		warpVoList(l);
+		return l;
+
+	}
+	/**
+	 * 查询所有班级(已毕业)
+	 * 
+	 * @return
+	 */
+	public List<PClass> queryGraduationOfStatic(String groupuuid,Integer year) {
+		
+		PaginationData pData=new PaginationData();
+		pData.setPageSize(100);//防止大数据
+		
+		Date startDate=TimeUtils.getFirstDayOfYear(year);
+		Date endDate=TimeUtils.getFirstDayOfYear(year+1);
+		
+		Session s = this.nSimpleHibernateDao.getHibernateTemplate()
+				.getSessionFactory().openSession();
+		String sql = "select DISTINCT {t1.*} from px_class {t1} ";
+		sql+= " where {t1}.isdisable=1";
+		sql+= " and ( {t1}.disable_time<"+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(endDate))+" and {t1}.disable_time>="+DBUtil.stringToDateByDBType(TimeUtils.getDateTimeString(startDate))+")";	
+		
+		if (StringUtils.isNotBlank(groupuuid)) {
+			sql += " and {t1}.groupuuid in("
+					+ DBUtil.stringsToWhereInValue(groupuuid) + ")";
+		}
+		sql += " order by {t1}.groupuuid,CONVERT( {t1}.name USING gbk)";
+		
+		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
+
+		List l= this.nSimpleHibernateDao.findByPageForSqlNoTotal(q, pData).getData();
+		// 抓取教师信息
+//		warpVoList(l);
 		return l;
 
 	}
@@ -233,7 +300,7 @@ public class ClassService extends AbstractClassService {
 		String sql = "select DISTINCT {t1.*} from px_class {t1} ";
 		sql += " where {t1}.uuid in("
 				+ "select classuuid from px_userclassrelation where   useruuid='"+DbUtils.safeToWhereString(useruuid)+ "')";
-		sql += " order by CONVERT( {t1}.name USING gbk)";
+		sql += " order by {t1}.isdisable, CONVERT( {t1}.name USING gbk)";
 		
 		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
 

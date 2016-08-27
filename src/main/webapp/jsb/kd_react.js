@@ -6519,7 +6519,7 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
   
   
   /*
-  图表加载
+  图表加载(在线班级数据统计)
    * */
   var ECharts_Div_byRight = React.createClass({displayName: "ECharts_Div_byRight", 
   	 getInitialState: function() {
@@ -6570,6 +6570,106 @@ React.createElement("div", {className: "am-modal am-modal-prompt", tabindex: "-1
 	    		 
 	    		 ), 
     		 	 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2"}, 
+  				  React.createElement("button", {type: "button", onClick: this.handleChange, className: "am-btn am-btn-secondary"}, "查询")	  				
+  	  	         )
+
+
+
+
+		         )
+		          )
+
+
+    		 ), 
+    		 React.createElement("div", {className: "am-cf"})
+    		 ), 
+    		 
+    		 React.createElement("div", {id: "main_ECharts", className: "ECharts"})
+  	    		)
+
+  	    );
+  	  }
+  	}); 
+
+
+	
+  
+  /*
+  图表加载(毕业班级数据统计)
+   * */
+  var ECharts_graduation_Div_byRight = React.createClass({displayName: "ECharts_graduation_Div_byRight", 
+  	 getInitialState: function() {
+
+		
+			var  o=this.props;
+		 if(!o.graduationYear)o.graduationYear=new Date().getFullYear();
+		 o.begDateStr=o.graduationYear+"-01-01";
+		 o.endDateStr=o.graduationYear+"-12-31";
+
+  		    return o;
+  		  },
+  	componentDidMount:function(){
+  		var tmp_fn=function(){
+  			 var o=$('#editEchartForm').serializeJson();
+		 PXECharts_ajax.ajax(o);
+	 };
+	 if(typeof(require)=="undefined"){
+		 var js="http://echarts.baidu.com/build/dist/echarts.js";
+		 loadJS(js,tmp_fn)
+	 }else{
+		 tmp_fn();
+	 }
+	
+  },
+  handleChange: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		
+		    //PXECharts.loading();
+	  },
+
+  handleChange_graduationYear: function(event) {
+		 var o=$('#editEchartForm').serializeJson();
+		 o.begDateStr=o.graduationYear+"-01-01";
+		 o.endDateStr=o.graduationYear+"-12-31";
+		   this.setState(o);
+		 PXECharts_ajax.ajax(o);
+		
+		    //PXECharts.loading();
+	  },
+  render: function() {
+	  var o = this.state;
+		//毕业年份
+	  	
+    return (
+    		React.createElement("div", null, 
+             React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list18}), 
+    		 React.createElement("form", {id: "editEchartForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+    		 React.createElement("div", null, 
+		          React.createElement(AMR_Panel, null, 
+                  React.createElement(AMR_ButtonToolbar, null, 
+				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs am-u-lg-2 am-u-sm-12"}, 					    		 
+			
+				   React.createElement(PxInput, {icon: "calendar", type: "text", maxLength: "4", size: "4", placeholder: "YYYY", name: "graduationYear", value: o.graduationYear, onChange: this.handleChange_graduationYear})	
+
+	    		 ), 
+				  React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2  am-u-sm-6"}, 
+	    		 React.createElement(AMUIReact.Selected, {inline: true, name: "type", value: o.type, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.statistics_type_list, btnStyle: "primary"})
+	    		 ), 
+				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2  am-u-sm-6"}, 
+							    		 
+				React.createElement(AMUIReact.Selected, {inline: true, name: "groupuuid", value: o.groupuuid, onChange: this.handleChange, btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary"})
+	    		 ), 
+
+				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs am-u-lg-2 am-u-sm-6"}, 					    		 
+				 React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "begDateStr", id: "begDateStr", dateTime: o.begDateStr, onChange: this.handleChange})
+	    		 ), 
+				 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-lg-2 am-u-sm-6"}, 
+			    React.createElement(AMUIReact.DateTimeInput, {showTimePicker: false, icon: "calendar", format: "YYYY-MM-DD", inline: true, name: "endDateStr", id: "endDateStr", dateTime: o.endDateStr, onChange: this.handleChange})
+	    		 
+	    		 ), 
+    		 	 React.createElement("div", {className: "am-margin-bottom-xs am-margin-left-xs  am-u-lg-1"}, 
   				  React.createElement("button", {type: "button", onClick: this.handleChange, className: "am-btn am-btn-secondary"}, "查询")	  				
   	  	         )
 
