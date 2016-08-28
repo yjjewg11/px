@@ -197,10 +197,8 @@ public class ClassService extends AbstractClassService {
 		if (StringUtils.isNotBlank(groupuuid)) {
 			sql += " where {t1}.groupuuid in("
 					+ DBUtil.stringsToWhereInValue(groupuuid) + ")";
-			sql += " order by CONVERT( {t1}.name USING gbk)";
-		}else{
-			sql += " order by {t1}.groupuuid,{t1}.isdisable,CONVERT( {t1}.name USING gbk)";
 		}
+		sql += " order by {t1}.groupuuid,{t1}.isdisable,CONVERT( {t1}.name USING gbk)";
 		
 		SQLQuery q = s.createSQLQuery(sql).addEntity("t1", PClass.class);
 
