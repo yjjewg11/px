@@ -571,16 +571,16 @@ public class ShareController extends AbstractRESTController {
 		ResponseMessage responseMessage = RestUtil
 				.addResponseMessageForModelMap(model);
 		try {
-			
+			 
 			if(_KDWebUrlIOS==null){
 					List list=this.nSimpleHibernateDao
 							.getHibernateTemplate().find(
 									"select description from BaseDataList where typeuuid='KDWebUrlIOS' and datakey=1");
 					
 						if(list!=null&&list.size()>0){
-							_KDWebUrl=list.get(0)+"";
+							_KDWebUrlIOS=list.get(0)+"";
 						}else{
-							_KDWebUrl="https://kd.wenjienet.com/px-rest/kd/index1.html?v1";
+							_KDWebUrlIOS="https://www.wenjienet.com/px-rest/kd/index1.html?v1";
 						}
 			}
 			
@@ -597,7 +597,7 @@ public class ShareController extends AbstractRESTController {
 					}
 		}
 		
-			model.put("url",_KDWebUrl);
+			model.put("url",_KDWebUrlIOS);
 			model.put("shareImgUrl",shareImgUrlIOS);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
