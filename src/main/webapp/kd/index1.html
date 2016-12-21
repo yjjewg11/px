@@ -1,6 +1,6 @@
 <!doctype html>
 <html manifest = "cache1.manifest" class="no-js" >
-<head>
+<head> 
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
 <meta http-equiv="Cache-Control" content="max-age=300" />
@@ -13,11 +13,12 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="renderer" content="webkit">
 
-  <link rel="icon" type="image/png" href="../assets/i/favicon.png">
+    <link rel="icon" type="image/png" href="../i/favicon.ico">
+
   <link rel="stylesheet" href="../assets/css/amazeui.min.css">
-  <link rel="stylesheet" href="../assets/css/app.css">
-    <link rel="stylesheet" href="../css/css.css"/>
-    <link rel="stylesheet" href="../w/cropbox/style.css"/>
+ 
+    <link rel="stylesheet" href="../css/css.css?161221"/>
+
 </head>
 <body>
 <div id="div_msg_pop" class="G_div_msg_pop"></div>
@@ -25,7 +26,7 @@
 <div id="div_seesion_body" style="display: none;">
 
 	<div id="div_header" class="am-topbar-fixed-top"></div>
-	<div id="div_menu"  class="px_index_div"></div>
+	<div id="div_menu" class="px_index_div"></div>
 	<div id="div_body"></div>
 	<div id="div_widget_chooseUser"></div>
 	<div id="div_widget_chooseCook"></div>
@@ -38,11 +39,7 @@
 
 function __refreshIndex(){
 	window.location.href="index.html"+"?a="+Math.random();
-	
 }
-//window.JavaScriptCall={
-//		selectImgForCallBack:function(){alert(1);}
-//}
 </script>
 <a href="javascript:__refreshIndex();" >点我重新加载</a>
 </div>
@@ -59,75 +56,92 @@ function __refreshIndex(){
     </div>
   </div>
 </div>
-<script src="../assets/js/jquery.min.js"></script>
+  <div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
+    <a href="#top" title="回到顶部">
+        <span class="am-gotop-title">回到顶部</span>
+          <i class="am-gotop-icon am-icon-chevron-up"></i>
+    </a>
+  </div>
 
+<script src="../w/jquery.min.js"></script>
+<script src="../w/react.min.js"></script>
 <script src="../assets/js/amazeui.js"></script>
-<script src="../w/react.js"></script>
-<script src="../assets/js/px_amazeui.react.js?090221"></script>
+<script src="../assets/js/px_amazeui.react.min.js"></script>
 
-<script type="text/javascript" src="../w/lrz/mobileFix.mini.js"></script>
-<script type="text/javascript" src="../w/lrz/exif.js"></script>
-<script type="text/javascript" src="../w/lrz/lrz.js"></script>
 
-<script src="../w/jQuery.md5.js"></script>
-<script src="../w/xheditor/xheditor-1.2.2.min.js"></script>
-<script src="../w/xheditor/zh-cn.js"></script>
-<script src="../w/cropbox/cropbox-min.js"></script>
- 
+<script src="../js/gl.merge.min.js"></script>
 
-<script src="../js/gl.js?1031"></script>
-<script src="../js/store.js?1031"></script>
-<script src="../js/phone_interface.js?1031"></script>
-<script src="../js/ios_interface.js?1031"></script>
+<script src="../w/xheditor/xheditor-1.2.2.merge.min.js"></script>
 
-<script src="../js/vo.js?1031"></script>
+<script src="../js/gl.min.js?161221"></script>
+<script src="../js/store.min.js?161221"></script>
+<script src="../js/phone_interface.min.js?161221"></script>
 
-<script src="../jsb/login_react.js?1031"></script>
-<script src="../sns/sns_index.js?1031"></script>
-<script src="../sns/sns_service.js?1031"></script>
-<script src="../jsb/sns_react.js?1031"></script>
-<script src="../jsb/KDPhotoItem_react.js?1031"></script>
-<script src="../jsb/KDClassNewsPhotoItem_react.js?1031"></script>
-<script src="../jsb/KDPhoto_play_move_react.js?1031"></script>
+<script src="../js/vo.min.js?161221"></script>
+
+<script src="../jsb/login_react.min.js?161221"></script>
+
+<script src="../sns/sns_index.min.js?161221"></script>
+<script src="../sns/sns_service.min.js?161221"></script>
+<script src="../jsb/sns_react.min.js?161221"></script>
+<script src="../jsb/KDPhotoItem_react.min.js?161221"></script>
+<script src="../jsb/KDClassNewsPhotoItem_react.min.js?161221"></script>
+<script src="../jsb/KDPhoto_play_move_react.min.js?161221"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script type="text/javascript">
 window.PxConfig={
-		ver:"1107",
-		group_type_1:[
-						"../js/gmsg.js",  
-						"../js/store.js",
-						"../js/widget.js",
-						"../js/common_service.js",
-				      	"../jsb/common_react.js",		           
-				      	"../jsb/kd_react.js",
-					   	"../jsb/widget_react.js",
-					   	"../jsb/kd_widget.js",  
-					   	
-					   	"px_echarts.js",
-					   	"widget.js",
-					   	"kd_service.js",
-					   	"kd_index.js"
-		      ],
-			group_type_2:[
-							"../js/px_gmsg.js",
-					       "../js/common_service.js",
-				           	"../jsb/common_react.js",
-				           	"../jsb/px_widget.js",
-				           	"../jsb/px_react.js",
-				        	"../jsb/widget_react.js",
-				        	
-				        	"../js/widget.js",
-				        	"../px/px_echarts.js",
-				        	"../px/store.js",
-				        	"../px/widget.js",
-				        	"../px/px_service.js",
-				        	"../px/px_index.js"
-				           ]
+	ver:"161221",
+	group_type_1:[
+				"../js/gmsg.min.js", 
+				"../js/store.min.js",
+				"../js/widget.min.js",
+				"../js/common_service.min.js",
+		      	"../jsb/common_react.min.js",		           
+		      	"../jsb/kd_react.min.js",
+			   	"../jsb/widget_react.min.js",
+			   	"../jsb/kd_widget.min.js",  
+			   	
+			   	"px_echarts.min.js",
+			   	"widget.min.js",
+			   	"kd_service.min.js",
+			   	"kd_index.min.js"
+      ],
+	group_type_2:[
+                    "../js/px_gmsg.min.js",
+			        "../js/common_service.min.js",
+		           	"../jsb/common_react.min.js",
+		           	"../jsb/px_widget.min.js",
+		           	"../jsb/px_react.min.js",
+		        	"../jsb/widget_react.min.js",		        	
+		        	"../js/widget.min.js",
+		        	"../px/px_echarts.min.js",
+		        	"../px/store.min.js",
+		        	"../px/widget.min.js",
+		        	"../px/px_service.min.js",
+		        	"../px/px_index.min.js"
+		           ]
+		
 }
-//JavaScriptCall={};
+
+
+
 </script>
-<script src="../js/login.js?1031"></script>
+<script src="../js/login.min.js?161221"></script>
 
-
+<div id="tmp"></div>
 </body>
 </html>

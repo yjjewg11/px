@@ -911,7 +911,12 @@ return (
 		    	React.createElement("a", {href: "javascript:void(0);"}, React.createElement("i", {id: "btn_dianzan_"+obj.uuid, className: "am-icon-thumbs-up px_font_size_click"})), 
 				React.createElement("a", {href: "javascript:void(0);", onClick: this.favorites_push.bind(this,obj)}, React.createElement("i", {className: obj.isFavor?"am-icon-heart px_font_size_click":"am-icon-heart px-icon-hasdianzan px_font_size_click"}), obj.isFavor?"收藏":"已收藏"), 	
 		    	React.createElement("a", {href: "javascript:void(0);", onClick: G_CallPhoneFN.setShareContent.bind(this,obj.title,obj.title,null,this.props.share_url)}, React.createElement("i", {className: G_CallPhoneFN.canShareUrl()?"am-icon-share-alt px_font_size_click":"am-hide"}))
-			    )
+			     
+			), 
+				React.createElement("div", {class: "doc-code demo-highlight"}, React.createElement("pre", {class: ""}, React.createElement("code", {class: "xml"}, 
+				this.props.share_url
+				)))
+				
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
 			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
@@ -2098,7 +2103,11 @@ return (
 		    	React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 
 			 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
 				
-			 )
+			 ), 
+			
+React.createElement("div", {class: "doc-code demo-highlight"}, React.createElement("pre", {class: ""}, React.createElement("code", {class: "xml"}, 
+				this.props.share_url
+				)))
 		    	), 
 		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
 			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
@@ -3580,7 +3589,10 @@ return (
 			React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 	
 		 React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
 	       
-		 )
+		 ), 
+			 React.createElement("div", {class: "doc-code demo-highlight"}, React.createElement("pre", {class: ""}, React.createElement("code", {class: "xml"}, 
+				this.props.share_url
+				)))
 	    	), 
 	    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
 		  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
@@ -8995,7 +9007,10 @@ var Teachingplan_EventRow_byRight = React.createClass({displayName: "Teachingpla
 				React.createElement(G_check_disable_div_byRight, {type: obj.type, uuid: obj.uuid, status: obj.status, groupuuid: obj.groupuuid, add_class: "am-fr"}), 
 				React.createElement("a", {href: "javascript:void(0);", className: "am-fr", onClick: common_check_illegal.bind(this,obj.type,obj.uuid)}, React.createElement("i", {className: "am-icon-exclamation-circle px_font_size_click"}), "举报")
   		    	
-			)
+			), 
+					React.createElement("div", {class: "doc-code demo-highlight"}, React.createElement("pre", {class: ""}, React.createElement("code", {class: "xml"}, 
+				this.props.share_url
+				)))
   		    	), 
   		    	React.createElement(Common_Dianzan_show_noAction, {uuid: obj.uuid, type: obj.type, btn_dianzan: "btn_dianzan_"+obj.uuid}), 
   			  React.createElement(Common_reply_list, {uuid: obj.uuid, type: obj.type, groupuuid: obj.groupuuid})			 
