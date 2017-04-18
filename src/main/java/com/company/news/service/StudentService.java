@@ -598,8 +598,27 @@ public class StudentService extends AbstractStudentService {
 			hql += " and  groupuuid in(" + DBUtil.stringsToWhereInValue(groupuuid) + ")";
 		if (StringUtils.isNotBlank(classuuid))
 			hql += " and  classuuid in(" + DBUtil.stringsToWhereInValue(classuuid) + ")";
-		if (StringUtils.isNotBlank(name))
-			hql += " and  name  like '%" + name + "%' ";
+		if (StringUtils.isNotBlank(name)){
+			
+			
+			if(StringUtils.isNumeric(name)){
+				String orC=" name  like '%" + name + "%' "
+						+" or  ma_tel  like '%" + name + "%' "
+						+" or  ba_tel  like '%" + name + "%' "
+						+" or  nai_tel  like '%" + name + "%' "
+						+" or  ye_tel  like '%" + name + "%' "
+						+" or  waipo_tel  like '%" + name + "%' "
+						+" or  waigong_tel  like '%" + name + "%' "
+						+" or  other_tel  like '%" + name + "%' "
+						+" or  ma_tel  like '%" + name + "%' "
+						;
+				hql += " and ("+orC+") ";
+				
+			}else{
+				hql += " and  name  like '%" + name + "%' ";
+			}
+		}
+			
 		
 		if (StringUtils.isNotBlank(status))
 			hql += " and  status  ="+status;
