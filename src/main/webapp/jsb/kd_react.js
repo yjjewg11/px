@@ -941,10 +941,10 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+              var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
                 editor.pasteHTML(imgDiv);
           });
-	  },
+	  }, 
 	preview_fn:function(){
           G_html_preview("t_iframe", this.state.url,this.editor.getSource(),this.state.title);
        },
@@ -955,7 +955,7 @@ var Announcements_edit = React.createClass({displayName: "Announcements_edit",
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+			  var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
 				editor.pasteHTML(imgDiv);
           }
 
@@ -2146,7 +2146,7 @@ var Announcements_goodedit = React.createClass({displayName: "Announcements_good
 	     this.editor=editor;
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+              var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
                 editor.pasteHTML(imgDiv);
           });
 	  },
@@ -2160,7 +2160,7 @@ bg_Class_fn:function(){
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+			 var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
 				editor.pasteHTML(imgDiv);
           }
 
@@ -3142,7 +3142,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
 			  }
           w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
 			  if(!imgurl)return;
-              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+              var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
                 editor.pasteHTML(imgDiv);
           });
 	},
@@ -3152,7 +3152,7 @@ var Group_edit_byRight = React.createClass({displayName: "Group_edit_byRight",
           for(var i=0;i<imgArr.length;i++){
 			  var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+			  var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
 				editor.pasteHTML(imgDiv);
           }
 
@@ -3454,7 +3454,7 @@ var Announcements_edit_byRight = React.createClass({displayName: "Announcements_
 	     this.editor=editor;
         w_img_upload_nocut.bind_onchange("#file_img_upload" ,function(imgurl){
              if(!imgurl)return;
-              var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+              var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
                 editor.pasteHTML(imgDiv);
         });
 	  },
@@ -3468,7 +3468,7 @@ bg_Class_fn:function(){
           for(var i=0;i<imgArr.length;i++){
 			var imgurl = imgArr[i].src;
 			  if(!imgurl)return;
-			  var imgDiv='<img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/><br />';
+			  var imgDiv='<div><img class="am-img-thumbnail" src="'+imgurl+'" data-rel="'+imgurl.split("@")[0]+'"/></div>';
 				editor.pasteHTML(imgDiv);
           }
      }
@@ -3487,7 +3487,7 @@ render: function() {
 		  React.createElement("input", {type: "text", name: "url", id: "url", value: o.url, onChange: this.handleChange_url, maxlength: "256", placeholder: "可直接使用外部内容的链接地址显示"})
 		)
 		)
-	  }
+	  } 
 return (
 		React.createElement("div", null, 
 		React.createElement("div", {className: "header"}, 
