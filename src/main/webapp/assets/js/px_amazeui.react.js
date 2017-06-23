@@ -2163,12 +2163,23 @@ var DateTimeInput = React.createClass({displayName: "DateTimeInput",
 
   handleOuterClick: function(event) {
     var picker =null;
-	if(this.refs.dateInput){
+
+	//修复左右月份切换点击，就隐藏bug。by lmq
+	/**
+if(this.refs.dateInput){
 		 picker = React.findDOMNode(this.refs.dateInput.getDOMNode());
 	}else if(this.refs.DateTimePicker){
 		picker = React.findDOMNode(this.refs.DateTimePicker.getDOMNode());
 
 	}
+	**/
+	 if(this.refs.DateTimePicker){
+		picker = React.findDOMNode(this.refs.DateTimePicker.getDOMNode());
+
+	}else if(this.refs.dateInput){
+		 picker = React.findDOMNode(this.refs.dateInput.getDOMNode());
+	}
+	
     if (!isNodeInTree(event.target, picker)) {
       this.handleClose();
     }
