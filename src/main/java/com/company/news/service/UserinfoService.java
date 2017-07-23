@@ -318,6 +318,97 @@ public class UserinfoService extends AbstractService {
 		UserRedisCache.setUserCacheByTeacher(user);
 		return true;
 	}
+	
+
+	/**
+	 * 管理员添加用户,添加用户,当关联的幼儿园（注册老师，关联幼儿园）
+	 * 
+	 * @param entityStr
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	public boolean addToOneGroup(UserRegJsonform userRegJsonform,
+			ResponseMessage responseMessage, String mygroup) throws Exception {
+		// name昵称验证
+		if (StringUtils.isBlank(mygroup)) {
+			responseMessage.setMessage("当前用户没有关联学校,无权限操作");
+			return false;
+		}
+		// TEL格式验证
+		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码格式不正确！");
+			return false;
+		}
+
+		// name昵称验证
+		if (StringUtils.isBlank(userRegJsonform.getName())
+				|| userRegJsonform.getName().length() > 15) {
+			responseMessage.setMessage("姓名不能为空，且长度不能超过15位！");
+			return false;
+		}
+
+		// Group_uuid昵称验证.初始添加用户,必须添加个机构.
+		if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+			responseMessage.setMessage("关联机构不能为空！");
+			return false;
+		}
+		// TEL格式验证
+		if (!CommonsValidate.checkCellphone(userRegJsonform.getTel())) {
+			responseMessage.setMessage("电话号码格式不正确！");
+			return false;
+		}
+		String attribute = "";
+		User user = (User) nSimpleHibernateDao.getObjectByAttribute(User.class,
+				"loginname", userRegJsonform.getTel());
+
+		if (user == null) {// 不存在,则新加用户并绑定关心.
+			user = new User();
+
+			BeanUtils.copyProperties(user, userRegJsonform);
+			user.setLoginname(userRegJsonform.getTel());
+			user.setCreate_time(TimeUtils.getCurrentTimestamp());
+			user.setDisable(USER_disable_default);
+			// user.setLogin_time(TimeUtils.getCurrentTimestamp());
+			user.setTel_verify(USER_tel_verify_default);
+			// user.setSex(0);
+			this.nSimpleHibernateDao.getHibernateTemplate().save(user);
+			responseMessage.setMessage("用户添加成功!");
+		} else {
+			responseMessage.setMessage("用户已存在绑定成功!");
+			
+			{
+				String sql = "select count(*) from px_usergrouprelation t0 where   t0.useruuid ='"+user.getUuid()+"' ";
+					sql += " and t0.groupuuid in("
+							+ DBUtil.stringsToWhereInValue(userRegJsonform.getGroup_uuid()) + ")";
+					
+					Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
+					
+				Object count =  s.createSQLQuery(sql).uniqueResult();
+				
+				if(Long.valueOf(count.toString())>0l){
+					responseMessage.setMessage("当期账号已经在幼儿园存在！");
+					return false;
+				}
+				
+
+			}
+			
+		}
+
+		String[] groupStrArr = userRegJsonform.getGroup_uuid().split(",");
+		for (int i = 0; i < groupStrArr.length; i++) {
+
+			UserGroupRelation userGroupRelation = new UserGroupRelation();
+			userGroupRelation.setUseruuid(user.getUuid());
+			userGroupRelation.setGroupuuid(groupStrArr[i]);
+			// 有事务管理，统一在Controller调用时处理异常
+			this.nSimpleHibernateDao.getHibernateTemplate().save(
+					userGroupRelation);
+		}
+		UserRedisCache.setUserCacheByTeacher(user);
+		return true;
+	}
 
 	/**
 	 * 更新用户基本资料
@@ -1277,6 +1368,58 @@ public class UserinfoService extends AbstractService {
 
 		return true;
 	}
+	
+	
+
+	/**
+	 * 从幼儿园移除多个老师
+	 * @param groupuuid
+	 * @param useruuids
+	 * @param responseMessage
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean deleteUsersOfGroupRelation(String groupuuid,String useruuids, ResponseMessage responseMessage,HttpServletRequest request) throws Exception {
+		
+		if (StringUtils.isBlank(useruuids)) {
+
+			responseMessage.setMessage("useruuids不能为空！");
+			return false;
+		}
+		
+		if (StringUtils.isBlank(groupuuid)) {
+
+			responseMessage.setMessage("groupuuid不能为空！");
+			return false;
+		}
+//		
+//		if (!RightUtils.hasRight(SystemConstants.Group_uuid_wjkj,
+//				RightConstants.AD_user_del, request)) {
+//			responseMessage.setMessage(RightConstants.Return_msg);
+//			return false;
+//		}
+//		
+		
+	
+
+		int tmpCout = this.nSimpleHibernateDao.getHibernateTemplate()
+				.bulkUpdate(
+						"delete from UserGroupRelation where  useruuid in("+DBUtil.stringsToWhereInValue(useruuids)+") and  groupuuid=?",
+						groupuuid);
+		this.logger.info("delete from UserGroupRelation count=" + tmpCout);
+		
+		
+		String desc ="useruuids="+useruuids+",groupuuid="+groupuuid;
+		
+		this.addLog("delete_userGroupRelation", "移除幼儿园老师", desc, request);
+
+//		this.nSimpleHibernateDao.delete(obj);
+
+
+		return true;
+	}	
+	
 
 	public UserForJsCache getUserForJsCache(String uuid) {
 		return (UserForJsCache) this.nSimpleHibernateDao.getObjectById(

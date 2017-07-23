@@ -24,7 +24,7 @@
 		</layout>
 		<!--过滤器设置输出的级别 -->
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
-			<param name="levelMin" value="DEBUG" />
+			<param name="levelMin" value="INFO" />
 			<param name="levelMax" value="ERROR" />
 			<param name="AcceptOnMatch" value="true" />
 		</filter>
@@ -76,7 +76,9 @@
 
 	<!-- 根logger的设置 -->
 	<root>
-		<appender-ref ref="myConsole" />
+	
+	<!-- <appender-ref ref="myConsole" /> -->
+		
 		<appender-ref ref="myFile" />
 		<appender-ref ref="myFile_WARN" />
 		<appender-ref ref="myFile_ERROR" />

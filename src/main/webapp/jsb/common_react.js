@@ -18,11 +18,11 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 		var right;
 	//	var tmp=window.grouptype;
 		//if(this.props.pxadmin)tmp=this.props.pxadmin;
-		
+
 			if(window.grouptype==2){
 				right="PX_announce_m";//培训机构屏蔽权限;
 			}else{
-				right="KD_announce_m";//幼儿园屏蔽权限;	
+				right="KD_announce_m";//幼儿园屏蔽权限;
 			}
 			this.rightFlag=false;
 			if(this.props.groupuuid){
@@ -70,18 +70,18 @@ var G_check_disable_div_byRight = React.createClass({displayName: "G_check_disab
 			  var bt_class=this.state.status==2?" am-text-danger":" am-btn-danger";
 			  return (
 				React.createElement("button", {className: "am-btn-sm  "+this.props.add_class+" "+bt_class, title: "屏蔽后管理员和创建者可见,其他人不可见.", onClick: this.ajax_check_disable.bind(this,this.props.type,this.props.uuid)}, bt_name)
-						
+
 		  );
 		  }else{
 			  return null;
 		  }
-			 
+
 		  if(this.props.msg)msg=this.props.msg;
 	    return (
 	    		React.createElement("div", null, React.createElement("h1", null, msg))
 	    );
 	  }
-	  }); 
+	  });
 var G_get_upload_img_Div=function(){
 	var G_upload_img_Div=React.createElement(AMR_Input, {type: "file", label: "本地上传图片：", id: "file_img_upload", accept: "image/*", capture: "camera", multiple: true})
 	if(G_CallPhoneFN.isPhoneApp()){
@@ -90,7 +90,7 @@ var G_get_upload_img_Div=function(){
 	return G_upload_img_Div;
 }
 //<G_help_popo title={title} msg={msg} />
-var G_help_popo = React.createClass({displayName: "G_help_popo", 
+var G_help_popo = React.createClass({displayName: "G_help_popo",
 	  render: function() {
 		  var title=G_tip.help;
 		  var msg="帮助内容";
@@ -107,13 +107,13 @@ var G_help_popo = React.createClass({displayName: "G_help_popo",
 	 		  )
 	    );
 	  }
-	  }); 
+	  });
 
 
 /**
  * 全局模版-没有内容时显示
  */
-var G_NoData_div = React.createClass({displayName: "G_NoData_div", 
+var G_NoData_div = React.createClass({displayName: "G_NoData_div",
 	  render: function() {
 		  var msg="没有数据";
 		  if(this.props.msg)msg=this.props.msg;
@@ -121,12 +121,12 @@ var G_NoData_div = React.createClass({displayName: "G_NoData_div",
 	    		React.createElement("div", null, React.createElement("h1", null, msg))
 	    );
 	  }
-	  }); 
-	  
-  
+	  });
+
+
 /**
  * 角色授权用户
- * 
+ *
 
 var opt={
 			groupuuid:Store.getCurGroup().uuid,
@@ -215,8 +215,8 @@ render: function() {
   );
 }
 });
-  
-//培训机构老师授权  
+
+//培训机构老师授权
 var G_Role_User_EventsTable2 = React.createClass({displayName: "G_Role_User_EventsTable2",
 	getInitialState: function() {
 		return this.load_role_bind_user(this.props.groupuuid);
@@ -297,7 +297,7 @@ render: function() {
 }
 });
 //role
-  var G_Role_User_EventsTable_EventRow = React.createClass({displayName: "G_Role_User_EventsTable_EventRow", 
+  var G_Role_User_EventsTable_EventRow = React.createClass({displayName: "G_Role_User_EventsTable_EventRow",
 	  getInitialState: function() {
 		    return {
 		    	groupuuid:this.props.groupuuid,
@@ -319,7 +319,7 @@ render: function() {
 		  if(!list||list.length==0)return ["",""];
 		  //list<[roleuuid,useruuid]
 		  var useruuids="";
-		  var usernames=""; 
+		  var usernames="";
 		  for(var i=0;i<list.length;i++){
 			  if(roleuuid==list[i][0]){
 				  useruuids+=list[i][1]+",";
@@ -350,7 +350,7 @@ render: function() {
 	       			type : "POST",
 	       			url : url,
 	       			async: false,
-	       			processData: true, 
+	       			processData: true,
 	       			dataType : "json",
 	       			data:{useruuids:useruuids,groupuuid:groupuuid,roleuuid:roleuuid},
 	       			success : function(data) {
@@ -385,26 +385,26 @@ render: function() {
         React.createElement("td", null, React.createElement(AMUIReact.Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, event.uuid,this.state.groupuuid,useruuids)}, "授权")), 
         React.createElement("td", null, users), 
         React.createElement("td", null, event.description, " ")
-      ) 
+      )
     );
   }
-  }); 
-  
+  });
+
 //userinfo
 
 //——————————————————————————老师管理——————————————————————————
-  
+
 //代码废弃
 ///*
 // * 老师管理服务器请求后绘制处理方法；
 // * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
-// * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
-// * @调用LIS.events.map方法循环绘制老师数组； 
+// * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理;
+// * @调用LIS.events.map方法循环绘制老师数组；
 // * @</select>下拉多选框;
 // * */
 //var Userinfo_EventsTable = React.createClass({
 //	handleClick: function(m) {
-//		
+//
 //		 if(m=="add"){
 //			 btn_click_userinfo(m,{group_uuid:this.props.group_uuid,office:"老师"},this.props.events.sex);
 //			 return;
@@ -418,7 +418,7 @@ render: function() {
 //					 usernames=this.alt;
 //				 }
 //				 else{
-//					 uuids+=','+this.value ;  
+//					 uuids+=','+this.value ;
 //					 usernames+=','+this.alt;
 //				 };
 //			 };
@@ -430,7 +430,7 @@ render: function() {
 //		  btn_click_userinfo(m,uuids,usernames);
 //	  },
 //	  handleChange_checkbox_all:function(){
-//		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+//		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked);
 //	  },
 //	  handleChange_selectgroup_uuid:function(val){
 //		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
@@ -443,19 +443,19 @@ render: function() {
 //    <div>
 //    <div className="header">
 //    <hr />
-//    </div>  
-//    
+//    </div>
+//
 //<form id="editGroupForm" method="post" className="am-form">
-//    
+//
 //    <AMR_ButtonToolbar className="am-cf am-margin-left-xs">
 // 	 <div className="am-fl">
 //	    <AMR_Button amStyle="primary" onClick={this.handleClick.bind(this, "add")} >添加</AMR_Button>
-//	    </div> 
+//	    </div>
 //	    <div className="am-fl am-margin-left-xs">
 //	    <AMR_Button amStyle="revise" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
-//	    </div> 
+//	    </div>
 //		  <div className="am-fl am-margin-left-xs">
-//		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>	  
+//		  <input type="text" name="sutdent_name" id="sutdent_name"   placeholder="教师姓名"/>
 //		  </div>
 //		    <div className="am-fl am-margin-left-xs">
 //			  <button type="button"  onClick={this.handleChange_selectgroup_sou_uuid}  className="am-btn am-btn-primary">搜索</button>
@@ -464,15 +464,15 @@ render: function() {
 //		  </form>
 //	  <hr/>
 //	  <div className="am-form-group">
-//	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />      
-//  
-//	  
+//	  <AMUIReact.Selected id="selectgroup_uuid" name="group_uuid" onChange={this.handleChange_selectgroup_uuid} btnWidth="200"  multiple= {false} data={this.props.group_list} btnStyle="primary" value={this.props.group_uuid} />
+//
+//
 //    </div>
-//	  
-//      <AMR_Table {...this.props}>  
-//        <thead> 
+//
+//      <AMR_Table {...this.props}>
+//        <thead>
 //          <tr>
-//          	<th>  
+//          	<th>
 //            <input type="checkbox" id="id_checkbox_all" onChange={this.handleChange_checkbox_all} />
 //            </th>
 //            <th>帐号</th>
@@ -483,7 +483,7 @@ render: function() {
 //            <th>状态</th>
 //            <th>登录时间</th>
 //            <th>创建时间</th>
-//          </tr> 
+//          </tr>
 //        </thead>
 //        <tbody>
 //          {this.props.events.map(function(event) {
@@ -495,7 +495,7 @@ render: function() {
 //    );
 //  }
 //});
-//    var Userinfo_EventRow = React.createClass({ 
+//    var Userinfo_EventRow = React.createClass({
 //    	  render: function() {
 //    	    var event = this.props.event;
 //    	    var className = event.highlight ? 'am-active' :
@@ -503,7 +503,7 @@ render: function() {
 //
 //    	    return (
 //    	      <tr className={className} >
-//    	      <td> 
+//    	      <td>
 //    	      <input type="checkbox" value={event.uuid} alt={event.name} name="table_checkbox" />
 //    	      </td>
 //    	        <td>{event.loginname}</td>
@@ -514,16 +514,16 @@ render: function() {
 //    	        <td  className={"px_disable_"+event.disable}>{Vo.get("disable_"+event.disable)}</td>
 //    	        <td>{event.login_time}</td>
 //    	        <td>{event.create_time}</td>
-//    	      </tr> 
+//    	      </tr>
 //    	    );
 //    	  }
-//    	}); 
- 
+//    	});
+
   /*（幼儿园老师管理）
   * 老师管理服务器请求后绘制处理方法；
   * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
-  * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
-  * @调用LIS.events.map方法循环绘制老师数组； 
+  * @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理;
+  * @调用LIS.events.map方法循环绘制老师数组；
   * @</select>下拉多选框;
   * */
   var Userinfo_EventsTable_div = React.createClass({displayName: "Userinfo_EventsTable_div",
@@ -563,38 +563,61 @@ render: function() {
   		this.pageNo=1;
   		$("#"+this.classnewsreply_list_div).html("");
   		this.load_more_data();
-  		
-  	},	
+
+  	},
   	 getInitialState: function() {
   		return {groupuuid:this.props.groupuuid};
   	  },
-  	handleClick: function(m) {		
-  		 if(m=="add"){
-  			 btn_click_userinfo(m,{group_uuid:$("input[name='group_uuid']").val(),office:"老师"});
-  			 return;
-  		 }
-  		 var uuids=null;
-  		 var usernames=null;
-  		 $($("input[name='table_checkbox']")).each(function(){
-  			 	if(this.checked){
-  				 if(uuids==null){
-  					 uuids=this.value;
-  					 usernames=this.alt;
-  				 }
-  				 else{
-  					 uuids+=','+this.value ;  
-  					 usernames+=','+this.alt;
-  				 };
-  			 	}
-  			});
+			//获取选中用户
+			getCheckUsers:function(){
+				var uuids=null;
+   		 var usernames=null;
+   		 $("input[name='table_checkbox']").each(function(){
+   			 	if(this.checked){
+   				 if(uuids==null){
+   					 uuids=this.value;
+   					 usernames=this.alt;
+   				 }
+   				 else{
+   					 uuids+=','+this.value ;
+   					 usernames+=','+this.alt;
+   				 };
+   			 	}
+   			});
+				return {uuids:uuids,usernames:usernames};
+			},
+  	handleClick: function(m) {
+
+			var group_uuid=$("input[name='group_uuid']").val();
+		 if(m=="add"){
+			 btn_click_userinfo(m,{group_uuid:group_uuid,office:"老师"});
+			 return;
+		 }
+
+		 	var checkUsers= this.getCheckUsers();
+  		 var uuids=checkUsers.uuids;
+  		 var usernames=checkUsers.usernames;
+  		//  $($("input[name='table_checkbox']")).each(function(){
+  		// 	 	if(this.checked){
+  		// 		 if(uuids==null){
+  		// 			 uuids=this.value;
+  		// 			 usernames=this.alt;
+  		// 		 }
+  		// 		 else{
+  		// 			 uuids+=','+this.value ;
+  		// 			 usernames+=','+this.alt;
+  		// 		 };
+  		// 	 	}
+  		// 	});
   		  if(!uuids){
   			  G_msg_pop("请勾选复选框！");
   			  return;
   		  }
-  		  btn_click_userinfo(m,uuids,usernames);
+				console.log("group_uuid",group_uuid);
+  		  btn_click_userinfo(m,uuids,usernames,group_uuid);
   	  },
   	  handleChange_checkbox_all:function(){
-  		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+  		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked);
   	  },
   	  handleChange_selectgroup_uuid:function(val){
   		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
@@ -605,57 +628,103 @@ render: function() {
   		 handleClick_download: function(xlsname) {
   			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
   	 },
-  	 
+		 //从幼儿园移除多个老师；
+			handleClick_deleteUsersOfGroupRelation(){
+				var checkUsers= this.getCheckUsers();
+				 var uuids=checkUsers.uuids;
+				 var usernames=checkUsers.usernames;
+				 	console.log("checkUsers",checkUsers);
+
+
+				 if(!uuids){
+   			  G_msg_pop("请勾选复选框！");
+   			  return;
+   		  }
+
+				if(!confirm("确定要移除已下老师："+usernames)){
+					return;
+				}
+					var groupuuid=$("input[name='group_uuid']").val();
+
+						$.AMUI.progress.start();
+						      var url = hostUrl + "rest/userinfo/deleteUsersOfGroupRelation.json";
+									var that=this;
+							$.ajax({
+								type : "POST",
+								url : url,
+								data : {useruuids:uuids,groupuuid:groupuuid},
+								dataType : "json",
+								success : function(data) {
+									$.AMUI.progress.done();
+									// 登陆成功直接进入主页
+									if (data.ResMsg.status == "success") {
+										G_msg_pop(data.ResMsg.message);
+
+										that.refresh_data();
+									} else {
+										alert(data.ResMsg.message);
+										G_resMsg_filter(data.ResMsg);
+									}
+								},
+								error : G_ajax_error_fn
+							});
+
+
+			},
+		//  <div className="am-fl am-cf am-margin-bottom-sm am-margin-left-xs">
+		//  <AMR_Button amStyle="secondary" onClick={this.handleClick.bind(this, "edit")} >修改</AMR_Button>
+		//  </div>
    render: function() {
   	 this.load_more_btn_id="load_more_"+this.props.uuid;
      return (
-  		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
+  		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
   		   React.createElement(G_px_help_List, {data: G_kd_help_msg.msg_help_list6}), 
-  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
+  		   React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
   		   React.createElement(AMR_Panel, null, 
   		   React.createElement(AMR_ButtonToolbar, null, 
 
   			  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
   			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
   			    ), 
-  			    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-  			    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "edit")}, "修改")
-  			    ), 
+
+						React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+						React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick_deleteUsersOfGroupRelation.bind(this)}, "移除")
+						), 
   				  React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-  				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+  				  React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})
   				  ), 
   				    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
   					  React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")
   					  )
-  					  
+
   				  )
   				  )
   				  ), 
-  				  
+
   				React.createElement(AMR_ButtonToolbar, null, 
   		  		   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
   	  			  React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
   	  			  )
   	  			), 
   				  React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
-  				  ), 	
+  				  ), 
   		    React.createElement("div", {id: this.classnewsreply_list_div}
-  			  ), 		   
-  		   		   
+  			  ), 
+
   			  React.createElement("div", {className: "am-list-news-ft"}, 
   			    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
-  			  )		  
-  			)		   		   
+  			  )
+  			)
      );
-     
+
    }
-  } 
-     );  
+  }
+     );
 /*（培训机构老师管理）
 * 老师管理服务器请求后绘制处理方法；
 * @逻辑：如果点击的不是添加按钮，则先检查是否勾选选框再处理其他判断；
-* @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理; 
-* @调用LIS.events.map方法循环绘制老师数组； 
+* @btn_click_userinfo：判断后程序跳转至d_service做各个按钮的处理;
+* @调用LIS.events.map方法循环绘制老师数组；
 * @</select>下拉多选框;
 * */
 var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_EventsTable_div1",
@@ -695,16 +764,37 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 		this.pageNo=1;
 		$("#"+this.classnewsreply_list_div).html("");
 		this.load_more_data();
-		
-	},	
+
+	},
 	 getInitialState: function() {
 		return {groupuuid:this.props.groupuuid};
-	  },
-	handleClick: function(m) {		
+	},
+	//获取选中用户
+	getCheckUsers:function(){
+		var uuids=null;
+	 var usernames=null;
+	 $("input[name='table_checkbox']").each(function(){
+			if(this.checked){
+			 if(uuids==null){
+				 uuids=this.value;
+				 usernames=this.alt;
+			 }
+			 else{
+				 uuids+=','+this.value ;
+				 usernames+=','+this.alt;
+			 };
+			}
+		});
+		return {uuids:uuids,usernames:usernames};
+	},
+	handleClick: function(m) {
+
+		var group_uuid=$("input[name='group_uuid']").val();
 		 if(m=="add"){
-			 btn_click_userinfo(m,{group_uuid:$("input[name='group_uuid']").val(),office:"老师"});
+			 btn_click_userinfo(m,{group_uuid:group_uuid,office:"老师"});
 			 return;
 		 }
+
 		 var uuids=null;
 		 var usernames=null;
 		 $($("input[name='table_checkbox']")).each(function(){
@@ -714,7 +804,7 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 					 usernames=this.alt;
 				 }
 				 else{
-					 uuids+=','+this.value ;  
+					 uuids+=','+this.value ;
 					 usernames+=','+this.alt;
 				 };
 			 	}
@@ -723,10 +813,11 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 			  G_msg_pop("请勾选复选框！");
 			  return;
 		  }
-		  btn_click_userinfo(m,uuids,usernames);
+			btn_click_userinfo(m,uuids,usernames,group_uuid);
+
 	  },
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked);
 	  },
 	  handleChange_selectgroup_uuid:function(val){
 		  ajax_uesrinfo_listByGroup(val,$('#sutdent_name').val());
@@ -737,63 +828,104 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 		 handleClick_download: function(xlsname) {
 			 ajax_flowername_download_byRight(group_uuid,uuids,xlsname);
 	 },
-	 
+	 //从幼儿园移除多个老师；
+	  handleClick_deleteUsersOfGroupRelation(){
+	 	 var checkUsers= this.getCheckUsers();
+	 		var uuids=checkUsers.uuids;
+	 		var usernames=checkUsers.usernames;
+	 		 console.log("checkUsers",checkUsers);
+
+
+	 		if(!uuids){
+	 		 G_msg_pop("请勾选复选框！");
+	 		 return;
+	 	 }
+
+	 	 if(!confirm("确定要移除已下老师："+usernames)){
+	 		 return;
+	 	 }
+	 		 var groupuuid=$("input[name='group_uuid']").val();
+
+	 			 $.AMUI.progress.start();
+	 						 var url = hostUrl + "rest/userinfo/deleteUsersOfGroupRelation.json";
+	 						 var that=this;
+	 				 $.ajax({
+	 					 type : "POST",
+	 					 url : url,
+	 					 data : {useruuids:uuids,groupuuid:groupuuid},
+	 					 dataType : "json",
+	 					 success : function(data) {
+	 						 $.AMUI.progress.done();
+	 						 // 登陆成功直接进入主页
+	 						 if (data.ResMsg.status == "success") {
+	 							 G_msg_pop(data.ResMsg.message);
+
+	 							 that.refresh_data();
+	 						 } else {
+	 							 alert(data.ResMsg.message);
+	 							 G_resMsg_filter(data.ResMsg);
+	 						 }
+	 					 },
+	 					 error : G_ajax_error_fn
+	 				 });
+
+
+	  },
  render: function() {
 	 this.load_more_btn_id="load_more_"+this.props.uuid;
    return (
-		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 		   
+		   React.createElement("div", {"data-am-widget": "list_news", className: "am-list-news am-list-news-default"}, 
 		   React.createElement(G_px_help_List, {data: G_px_help_msg.msg_px_help_list10}), 
-	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 		   
+	      React.createElement("form", {id: "editGroupForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
 	      React.createElement(AMR_Panel, null, 
 	      React.createElement(AMR_ButtonToolbar, null, 
-		   
+
 		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "add")}, "添加")
 		    ), 
-		    
+
+				React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
+				React.createElement(AMR_Button, {amStyle: "danger", onClick: this.handleClick_deleteUsersOfGroupRelation.bind(this)}, "移除")
+				), 
 		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-		    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.handleClick.bind(this, "edit")}, "修改")
-		    ), 
-			  
-		    React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
-			React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})	  
+			React.createElement("input", {type: "text", name: "sutdent_name", id: "sutdent_name", placeholder: "教师姓名"})
 			), 
-			    
+
 			React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 		    React.createElement("button", {type: "button", onClick: this.refresh_data.bind(this), className: "am-btn am-btn-secondary"}, "搜索")
-		    )					  
+		    )
 		  )
 		  )
 		  ), 
-				  
+
 			React.createElement(AMR_ButtonToolbar, null, 
 			   React.createElement("div", {className: "am-fl am-cf am-margin-bottom-sm am-margin-left-xs"}, 
 			   React.createElement(AMUIReact.Selected, {id: "selectgroup_uuid", name: "group_uuid", onChange: this.refresh_data.bind(this), btnWidth: "200", multiple: false, data: this.props.group_list, btnStyle: "primary", value: this.state.groupuuid})
-			   )	
+			   )
 			), 
-			
+
 				  React.createElement("div", {id: "div_totalNumber"}, "总人数:0"
-				  ), 	
+				  ), 
 		    React.createElement("div", {id: this.classnewsreply_list_div}
-			  ), 		   
-		   		   
+			  ), 
+
 			  React.createElement("div", {className: "am-list-news-ft"}, 
 			    React.createElement("a", {className: "am-list-news-more am-btn am-btn-default ", id: this.load_more_btn_id, onClick: this.load_more_data.bind(this)}, "查看更多 »")
-			  )		  
-			)		   		   
+			  )
+			)
    );
-   
+
  }
-} 
+}
    );
 
 
-   var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow", 	
+   var Userinfo_EventRow = React.createClass({displayName: "Userinfo_EventRow",
 		  render: function() {
 			    var event = this.props.events;
 			    var className = event.highlight ? 'am-active' :
 		  event.disabled ? 'am-disabled' : '';
-			    return (		  		    
+			    return (
 			    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
 				          React.createElement("tr", null, 
 				          	React.createElement("th", null, 
@@ -806,7 +938,7 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 				            React.createElement("th", null, "状态"), 
 				            React.createElement("th", null, "登录时间"), 
 				            React.createElement("th", null, "创建时间")
-				          ), 			 
+				          ), 
 			    			  this.props.events.map(function(event) {
 			    			      return (
 			    					      React.createElement("tr", {className: className}, 
@@ -819,21 +951,21 @@ var Userinfo_EventsTable_div1 = React.createClass({displayName: "Userinfo_Events
 			    				   	        React.createElement("td", null, event.sex=="0"?"男":"女"), 
 			    				   	        React.createElement("td", {className: "px_disable_"+event.disable}, Vo.get("disable_"+event.disable)), 
 			    				   	        React.createElement("td", null, event.login_time), 
-			    				   	        React.createElement("td", null, event.create_time), "                    ") 
+			    				   	        React.createElement("td", null, event.create_time), "                    ")
 			    			    		  )
-			    			         })	
-			    			  )		  
+			    			         })
+			    			  )
 			    	  );
-		}	     
-   	});     
+		}
+   	});
 
-    
+
 /*
 * 老师管理Button事件(添加和修改按钮绘制与标签事件处理)；
 * @formdata:选中的老师对象；
 * @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
-* */    
-var Userinfo_edit = React.createClass({displayName: "Userinfo_edit", 
+* */
+var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 	 getInitialState: function() {
 			if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
 		    return this.props.formdata;
@@ -849,7 +981,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		 var thit=this;
 		 var o=this.state;
 		 if(!tel){
-			 
+
 			 G_msg_pop("请输入手机号码.");
 			 return;
 		 }
@@ -870,14 +1002,14 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 	     				}else{
 	     					G_msg_pop("该老师未注册,请填写以下内容!");
 	     				}
-	     				
+
 	     			} else {
 	     				alert("加载数据失败："+data.ResMsg.message);
 	     			}
 				},
 				error : G_ajax_error_fn
-			});	
-	  },	  
+			});
+	  },
   render: function() {
 	  var o = this.state;
 	 console.log("this.state",this.state);
@@ -897,7 +1029,7 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 				    React.createElement("label", {className: one_classDiv}, "密码:"), 
 				   React.createElement("div", {className: two_classDiv}, 
     		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange})
-    		     ), 		      
+    		     ), 
     		      React.createElement("label", {className: one_classDiv}, "重复密码:"), 
     		       React.createElement("div", {className: two_classDiv}, 
     		        React.createElement(PxInput, {icon: "lock", type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange})
@@ -921,8 +1053,8 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		      React.createElement("div", {className: two_classDiv}, 
 		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"})
 		        ), 
-		        
-		        React.createElement("label", {className: one_classDiv}, "单选:"), 
+
+		        React.createElement("label", {className: one_classDiv}, "性别:"), 
 		        React.createElement("div", {className: two_classDiv}, 
 		        React.createElement(AMUIReact.FormGroup, null, 
 			     React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
@@ -939,15 +1071,143 @@ var Userinfo_edit = React.createClass({displayName: "Userinfo_edit",
 		   ), 
 		   passwordDiv, 
  	       React.createElement("button", {type: "button", onClick: ajax_userinfo_saveByAdmin, className: "am-btn am-btn-primary"}, "提交")
-		  )		
-		 )    		
+		  )
+		 )
     );
   }
-}); 
+});
+
+
+/*
+* 老师管理Button事件-添加老师到学校；
+* @formdata:选中的老师对象；
+* @m：是启用还是禁用功能；"add"-添加  "edit"-修改；
+* */
+var Userinfo_add = React.createClass({displayName: "Userinfo_add",
+	 getInitialState: function() {
+			// if(this.props.mygroup_uuids)this.props.formdata.group_uuid=this.props.mygroup_uuids;
+		    return this.props.formdata;
+		  },
+	 handleChange: function(event) {
+		    this.setState($('#editUserinfoForm').serializeJson());
+	  },
+	  handleChange_Selected: function(event) {
+			 $('#group_uuid').val(event);
+			    this.setState($('#editUserinfoForm').serializeJson());
+		  },
+	 handle_getUserBytel: function(tel,group_uuid) {
+		 var thit=this;
+		//  var o=this.state;
+		 var fix_group_uuid=this.state.group_uuid;
+		 if(!tel){
+			 G_msg_pop("请输入手机号码.");
+			 return;
+		 }
+		 $.AMUI.progress.start();
+			var url = hostUrl + "rest/userinfo/getUserBytel.json";
+			$.ajax({
+				type : "GET",
+				url : url,
+				data:{tel:tel},
+				dataType : "json",
+				success : function(data) {
+					$.AMUI.progress.done();
+	     			if (data.ResMsg.status == "success") {
+	     				if(data.data){
+	     					var formdata=data.data;
+								// 			formdata.group_uuid=data.mygroup_uuids;
+								formdata.group_uuid=fix_group_uuid;
+		     				thit.setState(formdata);
+	     				}else{
+	     					G_msg_pop("该老师未注册,请填写以下内容!");
+	     				}
+
+	     			} else {
+	     				alert("加载数据失败："+data.ResMsg.message);
+	     			}
+				},
+				error : G_ajax_error_fn
+			});
+	  },
+  render: function() {
+	  var o = this.state;
+	 console.log("this.state",this.state);
+	  var passwordDiv=null;
+	  var one_classDiv="am-u-lg-2 am-u-md-2 am-u-sm-4 am-form-label";
+	  var two_classDiv="am-u-lg-10 am-u-md-10 am-u-sm-8";
+	  var show_btn_UserBytel=null;
+	  if(!o.uuid){
+		  show_btn_UserBytel=(
+				  React.createElement("button", {type: "button", onClick: this.handle_getUserBytel.bind(this,$('#tel').val(),o.group_uuid), className: "am-btn am-btn-primary"}, "检查是否注册")
+				  );
+		  o.password="123456";
+		  o.password1="123456";
+		  passwordDiv=(
+				  React.createElement("div", null, 
+			       React.createElement("div", null, "(默认密码：123456)"), 
+				    React.createElement("label", {className: one_classDiv}, "密码:"), 
+				   React.createElement("div", {className: two_classDiv}, 
+    		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password", id: "password", value: o.password, onChange: this.handleChange})
+    		     ), 
+    		      React.createElement("label", {className: one_classDiv}, "重复密码:"), 
+    		       React.createElement("div", {className: two_classDiv}, 
+    		        React.createElement(PxInput, {icon: "lock", type: "password", name: "password1", id: "password1", value: o.password1, onChange: this.handleChange})
+    		         )
+				      )
+				  );
+	  }
+    return (
+  		  React.createElement("form", {id: "editUserinfoForm", method: "post", className: "am-form", action: "javascript:void(0);"}, 
+
+
+
+  		  React.createElement(PxInput, {type: "hidden", name: "group_uuid", value: o.group_uuid}), 
+			  React.createElement(PxInput, {type: "hidden", name: "uuid", value: o.uuid}), 
+		     React.createElement(PxInput, {type: "hidden", name: "type", value: "1"}), 
+			   React.createElement("div", {className: "am-form-group"}, 
+
+				 React.createElement("label", {className: one_classDiv}, "添加到机构:"), 
+ 			  React.createElement("div", {className: two_classDiv}, 
+ 				React.createElement(PxInput, {type: "text", readOnly: true, value: this.props.groupName, placeholder: ""})
+  					), 
+
+			    React.createElement("hr", null), 
+		       React.createElement("label", {className: one_classDiv}, "手机号码:"), 
+		      React.createElement("div", {className: two_classDiv}, 
+		     React.createElement(PxInput, {icon: "mobile", type: "text", name: "tel", id: "tel", value: o.tel, onChange: this.handleChange, placeholder: ""}), 
+		     show_btn_UserBytel
+		     ), 
+		     React.createElement("label", {className: one_classDiv}, "姓名:"), 
+		      React.createElement("div", {className: two_classDiv}, 
+		       React.createElement(PxInput, {icon: "user", type: "text", name: "name", id: "name", value: o.name, onChange: this.handleChange, placeholder: "不超过15位"})
+		        ), 
+
+		        React.createElement("label", {className: one_classDiv}, "性别:"), 
+		        React.createElement("div", {className: two_classDiv}, 
+		        React.createElement(AMUIReact.FormGroup, null, 
+			     React.createElement(PxInput, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
+				 React.createElement(PxInput, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
+		        )
+		        ), 
+		    React.createElement("label", {className: one_classDiv}, "Email:"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱", placeholder: ""})
+		       ), 
+		      React.createElement("label", {className: one_classDiv}, "职位:"), 
+		     React.createElement("div", {className: two_classDiv}, 
+		    React.createElement(PxInput, {type: "text", name: "office", id: "office", value: o.office, onChange: this.handleChange})
+		   ), 
+		   passwordDiv, 
+ 	       React.createElement("button", {type: "button", onClick: ajax_userinfo_addToOneGroupByAdmin, className: "am-btn am-btn-primary"}, "提交")
+		  )
+		 )
+    );
+  }
+});
 
 //分配权限 ;
-var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole", 
-	
+var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole",
+
 	render: function() {
 		  var o = this.props.formdata;
 	  return (
@@ -955,20 +1215,20 @@ var Userinfo_getRole = React.createClass({displayName: "Userinfo_getRole",
 		  		React.createElement("div", {className: "header"}, 
 		  		 React.createElement("hr", null)
 		  		), 
-		  		
+
 	  			React.createElement("button", {type: "button", onClick: btn_ajax_updateRole.bind(this, o.useruuid,o.groupuuid), className: "am-btn am-btn-primary"}, "提交"), 
 	  			React.createElement("h3", null, Store.getGroupNameByUuid(o.groupuuid)), 
 		  		React.createElement(UserChooseRole_EventsTable, React.__spread({},  this.props))
-		  	   
+
 	  	   )
 	  );
 	}
-	}); 
+	});
 
 
 
 //修改密码
-var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_updatepassword", 	
+var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_updatepassword",
 	render: function() {
 	return (
 		React.createElement("div", null, 
@@ -985,24 +1245,24 @@ var Div_userinfo_updatepassword = React.createClass({displayName: "Div_userinfo_
 		      React.createElement("label", {htmlFor: "password"}, "密码:"), 
 		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password"}), 
 		      React.createElement("br", null), 
-		      
+
 		      React.createElement("label", {htmlFor: "password1"}, "重复密码:"), 
 		      React.createElement(PxInput, {icon: "lock", type: "password", name: "password1"}), 
 		      React.createElement("br", null), 
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_updatepassword, className: "am-btn am-btn-primary"}, "提交")
 		    ), 
 		    React.createElement("hr", null)
-		  
+
 		  )
 		)
 		)
 	);
 	}
-}); 
+});
 
 
 ////修改资料
-var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update", 
+var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 	 getInitialState: function() {
 		    return this.props.formdata;
 		  },
@@ -1012,14 +1272,14 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 	 handle_uploadHeader: function(event) {
 			w_uploadImg.open(function(url){
 				$("#img").val(url);
-				 $("#img_head_image").attr("src",url); 
+				 $("#img_head_image").attr("src",url);
 				 G_img_down404("#img_head_image");
 			},1);
 	  },
 	  componentDidMount:function(){
 		  var imgGuid=this.state.img;
 		 if(imgGuid){
-			 $("#img_head_image").attr("src",imgGuid); 
+			 $("#img_head_image").attr("src",imgGuid);
 			 G_img_down404("#img_head_image");
 		 }
 
@@ -1038,7 +1298,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 			React.createElement("input", {type: "hidden", name: "img", id: "img", value: o.img, onChange: this.handleChange}), 
 		    React.createElement("label", {htmlFor: "nickname"}, "头像:"), 
  		    React.createElement(AMUIReact.Image, {id: "img_head_image", src: G_def_headImgPath, className: "G_img_header"}), 
- 		
+
  		   React.createElement("button", {type: "button", onClick: this.handle_uploadHeader, className: "am-btn am-btn-secondary"}, "上传头像"), 
  		   React.createElement("br", null), 
 		      React.createElement("label", {htmlFor: "name"}, "姓名:"), 
@@ -1048,7 +1308,7 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		      React.createElement(PxInput, {icon: "envelope", type: "email", name: "email", id: "email", value: o.email, onChange: this.handleChange, placeholder: "输入邮箱"}), 
 		      React.createElement("br", null), 
 		      React.createElement(AMUIReact.FormGroup, null, 
-		      React.createElement("label", null, "单选："), 
+		      React.createElement("label", null, "性别："), 
 		     React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "0", label: "男", inline: true, onChange: this.handleChange, checked: o.sex==0?"checked":""}), 
 		    React.createElement(AMUIReact.Input, {type: "radio", name: "sex", value: "1", label: "女", inline: true, onChange: this.handleChange, checked: o.sex==1?"checked":""})
 		   ), 
@@ -1059,26 +1319,26 @@ var Div_userinfo_update = React.createClass({displayName: "Div_userinfo_update",
 		      React.createElement("button", {type: "button", onClick: ajax_userinfo_update, className: "am-btn am-btn-primary"}, "提交")
 		    ), 
 		    React.createElement("hr", null)
-		  
+
 		  )
 		)
 		)
 	);
 	}
-}); 
+});
 
 //userinfo update end
 
 //role
-var UserChooseRole_EventRow = React.createClass({displayName: "UserChooseRole_EventRow", 
+var UserChooseRole_EventRow = React.createClass({displayName: "UserChooseRole_EventRow",
 	tr_onClick:function(trid,cbid){
 		var cbox=$("#"+cbid);
 		var tr=$("#"+trid);
 		if(cbox.prop("checked")){
-			cbox.prop("checked",false); 
+			cbox.prop("checked",false);
 			$(tr).removeClass("am-active");
 		}else{
-			cbox.prop("checked", true); 
+			cbox.prop("checked", true);
 			$(tr).addClass("am-active");
 		}
 	},
@@ -1096,14 +1356,14 @@ var UserChooseRole_EventRow = React.createClass({displayName: "UserChooseRole_Ev
     React.createElement("td", null, event.name), 
     React.createElement("td", null, event.description), 
     React.createElement("td", null, Vo.type(event.type))
-  ) 
+  )
 );
 }
-}); 
+});
 
 var UserChooseRole_EventsTable = React.createClass({displayName: "UserChooseRole_EventsTable",
 	  handleChange_checkbox_all:function(){
-		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked); 
+		  $('input[name="table_checkbox"]').prop("checked", $("#id_checkbox_all")[0].checked);
 		  if( $("#id_checkbox_all")[0].checked){
 			  $('tr[name="table_tr_checkbox"]').addClass("am-active");
 		  }else{
@@ -1186,7 +1446,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
            this.files = [];
        })
 
-         
+
 	  },
      render: function() {
     	 var spinner_divStyle={
@@ -1194,7 +1454,7 @@ var Upload_headImg = React.createClass({displayName: "Upload_headImg",
     	 };
        return (
        React.createElement("div", null, 
-  	
+
      React.createElement("div", {className: "header"}, 
      React.createElement("div", {className: "am-g"}, 
        React.createElement("h1", null, "上传图片")
@@ -1226,15 +1486,15 @@ React.createElement(AMUIReact_Button, {amStyle: "danger", onClick: this.handleCl
        );
      }
 });
-       
-       
+
+
 //点赞模板2,点赞显示与点赞按钮分离,传入点赞按钮id
 /*
- * 
- * 
- *@bind（this）方法中This代表对象前一步函数构造成对象传过来; 
+ *
+ *
+ *@bind（this）方法中This代表对象前一步函数构造成对象传过来;
  **/
-var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianzan_show_noAction", 
+var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianzan_show_noAction",
 	getInitialState: function() {
 		if(this.props.dianzan)return this.props.dianzan;
 		return commons_ajax_dianzan_getByNewsuuid(this.props.uuid);
@@ -1260,7 +1520,7 @@ var Common_Dianzan_show_noAction = React.createClass({displayName: "Common_Dianz
 		 else $("#"+this.props.btn_dianzan).removeClass("px-icon-hasdianzan");
 		 this.setState(commons_ajax_dianzan_getByNewsuuid(this.props.uuid));
 	 },
-render: function() {	
+render: function() {
 	var dianzanObject=this.state;
 	 this.obj=dianzanObject;
 	 var showStr=  null;
@@ -1276,12 +1536,12 @@ render: function() {
 
   );
 }
-}); 
+});
 
 /*
  * 图片绘制公共模板（点击可看原图）
  * */
-//$('.am-gallery').pureview();  
+//$('.am-gallery').pureview();
 var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
@@ -1290,43 +1550,43 @@ var  Common_mg_big_fn  = React.createClass({displayName: "Common_mg_big_fn",
 	  var that=this
 			  if (!this.props.imgsList){
 				  return;
-			  };		
+			  };
 			    return (
 		      React.createElement("div", null, 
 		      React.createElement("ul", {className: "am-gallery am-avg-sm-3 am-avg-md-4 am-avg-lg-6 am-gallery-imgbordered"}, 
-			   
+
 			    this.props.imgsList.map(function(event) {
 			    	 var  o = event;
 					  var  imgArr=o?o.split("@"):"";
 			        return (
-			       	  React.createElement("li", null, 			     			
+			       	  React.createElement("li", null, 
 			     	    React.createElement("div", {className: "am-gallery-item"}, 
 			     		  React.createElement("a", {href: imgArr[0], title: ""}, 
 			     		    React.createElement("img", {src: o, alt: "", "data-rel": imgArr[0]})
                           )
-			     		)	   
+			     		)
 	        		 )
 			        	)
 			      })
-			    )	   
+			    )
 			  )
 			    )
           }
-        }); 
+        });
 
 /*
  * 班级相册特殊图标绘制（点击可看原图）
  * */
-//$('.am-gallery').pureview();  
+//$('.am-gallery').pureview();
 
 /*
  * 图片绘制公共模板 绘制多张图片
  * */
-var common_img_big_show = React.createClass({displayName: "common_img_big_show", 
+var common_img_big_show = React.createClass({displayName: "common_img_big_show",
 	  componentDidMount:function(){
 		  $('.am-gallery').pureview();
 		},
-	render: function() {		  
+	render: function() {
 		  var  o = this.props.event;
 		  var  imgArr=o.split("@");
 		//  console.log("o-----",o,"   imgArr----",imgArr);
@@ -1338,13 +1598,13 @@ var common_img_big_show = React.createClass({displayName: "common_img_big_show",
 	             alt: "", "data-rel": imgArr[0]})
 		     )
 		   )
-		 )	   
+		 )
 	  );
 	}
-	}); 
+	});
 
 
-var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow", 	
+var Common_Classnewsreply_listshow = React.createClass({displayName: "Common_Classnewsreply_listshow",
 render: function() {
 		 var groupuuid=this.props.groupuuid;
   return (
@@ -1368,23 +1628,23 @@ render: function() {
 		    		    React.createElement("div", {className: "am-comment-bd am-comment-flip am-inline"}, 
 					        React.createElement("div", {dangerouslySetInnerHTML: {__html:event.content}})
 			  		    )
-		    			 
+
 		    			 )
 		    		)
-		    		
+
 		    		  )
 		  })
-		
-		    )		   
+
+		    )
   );
 }
-}); 
+});
 
 
 
 
 //评论模板
-var Common_reply_list = React.createClass({displayName: "Common_reply_list", 
+var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 	load_more_btn_id:"load_more_",
 	pageNo:1,
 	classnewsreply_list_div:"classnewsreply_list_div",
@@ -1401,7 +1661,7 @@ var Common_reply_list = React.createClass({displayName: "Common_reply_list",
 			$("#"+this.load_more_btn_id).hide();
 		}else{
 			$("#"+this.load_more_btn_id).show();
-		}		  
+		}
 		  this.pageNo++;
 	},
 	refreshReplyList:function(){
@@ -1418,23 +1678,23 @@ render: function() {
 		  React.createElement("div", null, 
 		  React.createElement("div", {id: this.classnewsreply_list_div}), 
 		    React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多"), 
-			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})			
-			 
+			 React.createElement(Common_reply_save, {uuid: this.props.uuid, type: this.props.type, parentThis: parentThis})
+
 			 )
   );
 }
-}); 
+});
 
-//我要评论模块 
+//我要评论模块
 //that.refreshReplyList();自己写的一个刷新方法 置空一切到初始状态然后绘制;
-var Common_reply_save = React.createClass({displayName: "Common_reply_save", 
+var Common_reply_save = React.createClass({displayName: "Common_reply_save",
 	classnewsreply_list_div:"classnewsreply_list_div",
 	reply_save_btn_click:function(){
 		var that=this.props.parentThis;
 		common_ajax_reply_save(function(){
 			$("#classnews_content_replay").val("");
 			that.refreshReplyList();
-		
+
 		})
 	},
 	componentDidMount:function(){
@@ -1446,36 +1706,36 @@ render: function() {
 			React.createElement("input", {type: "hidden", name: "newsuuid", value: this.props.uuid}), 
 			React.createElement("input", {type: "hidden", name: "uuid"}), 
 			React.createElement("input", {type: "hidden", name: "type", value: this.props.uuid}), 
-			
-			
+
+
 			React.createElement(AMR_Input, {id: "classnews_content_replay", type: "textarea", rows: "4", label: "我要评论", placeholder: "填写内容", name: "content"}), 
 
 			React.createElement("button", {type: "button", onClick: this.reply_save_btn_click.bind(this), className: "am-btn am-btn-primary"}, "提交")
-		      
-		    )	   
+
+		    )
   );
 }
-}); 
+});
 
 //新版帮助公共方法
-var G_px_help_List = React.createClass({displayName: "G_px_help_List", 
+var G_px_help_List = React.createClass({displayName: "G_px_help_List",
 	  render: function() {
 	    return (
 	    		  React.createElement("ol", {className: "am-breadcrumb am-text-warning"}, 
 		    		this.props.data.map(function(event) {
 			  			  return(
-			  			  	React.createElement("li", null, event)		  	  
+			  			  	React.createElement("li", null, event)
 			  			  )})
 	    		  )
 	    );
 	  }
-	  }); 
+	  });
 
 
 
 
 //绘制星星
-var G_rect_stars = React.createClass({displayName: "G_rect_stars", 
+var G_rect_stars = React.createClass({displayName: "G_rect_stars",
 	  render: function() {
 		  var ct_stars=this.props.ct_stars;
 		  var stars_list=[];
@@ -1489,25 +1749,25 @@ var G_rect_stars = React.createClass({displayName: "G_rect_stars",
 	    		  React.createElement("div", null, 
 		    		stars_list.map(function(event) {
 			  			  return(
-			          React.createElement("td", null, event.val)					  
+			          React.createElement("td", null, event.val)
 			  		)})
 	    		  )
 	    );
 	  }
-	  }); 
+	  });
 
 
 
 //返回预览方法
-var G_phone_iframe = React.createClass({displayName: "G_phone_iframe", 
-	  render: function() {		
+var G_phone_iframe = React.createClass({displayName: "G_phone_iframe",
+	  render: function() {
 	    return (
 	    		 React.createElement("div", {className: "iPhone px_margin_top_120"}, " ", React.createElement("div", {className: "screen"}, 
                React.createElement("iframe", {id: "t_iframe", width: "258px", height: "431px", frameborder: "0", scrolling: "auto", marginheight: "0", marginwidth: "0"})
 			   ), "  ")
 	    );
 	  }
-	  }); 
+	  });
 
 
 
@@ -1528,7 +1788,7 @@ function G_status(){
 /*
  *URL绘制公用组件
  * */
- var Common_Classnews_url = React.createClass({displayName: "Common_Classnews_url", 
+ var Common_Classnews_url = React.createClass({displayName: "Common_Classnews_url",
  render: function() {
  	  var url = this.props.url;
  return (
@@ -1537,44 +1797,44 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  )
  );
  }
- }); 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-//——————————————————————————学生列表操作公共方法<绘制>——————————————————————————  
- var Common_operate_rect = React.createClass({displayName: "Common_operate_rect", 
+ });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//——————————————————————————学生列表操作公共方法<绘制>——————————————————————————
+ var Common_operate_rect = React.createClass({displayName: "Common_operate_rect",
  	load_more_btn_id:"Sns_reply_reply_load_more_",
  	pageNo:1,
  	classnewsreply_list_div:"classnewsreply_list_div",
  	componentDidMount:function(){
  		this.refreshReplyList();
  	},
- 	load_more_data:function(){ 
+ 	load_more_data:function(){
  		$("#"+this.classnewsreply_list_div).append("<div id="+this.classnewsreply_list_div+this.pageNo+">加载中...</div>");
     		var that=this;
     		var callback=function(re_data){
@@ -1586,7 +1846,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
      			}
      			that.pageNo++;
      		}
- 	var re_data=common_stutent_operate(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);		  
+ 	var re_data=common_stutent_operate(this.props.uuid,this.classnewsreply_list_div+this.pageNo,this.pageNo,callback);
  },
  	refreshReplyList:function(){
  		$("#"+this.classnewsreply_list_div).html("");
@@ -1600,58 +1860,58 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
    return (
        React.createElement("div", null, 
         React.createElement("div", {id: this.classnewsreply_list_div}), 
-        React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")				 
+        React.createElement("button", {id: this.load_more_btn_id, type: "button", onClick: this.load_more_data.bind(this), className: "am-btn am-btn-primary"}, "加载更多")
  	  )
    );
  }
- }); 
+ });
 
- /*  	
+ /*
   * 学生列表操作详情表单上绘制详细内容;
   * */
- var Query_stutent_operate = React.createClass({displayName: "Query_stutent_operate", 
+ var Query_stutent_operate = React.createClass({displayName: "Query_stutent_operate",
  	  render: function() {
  	    var event = this.props.events;
  	    var className = event.highlight ? 'am-active' :
    event.disabled ? 'am-disabled' : '';
  	    return (
- 	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 		   	
+ 	    		  React.createElement(AMR_Table, {bordered: true, className: "am-table-striped am-table-hover am-text-nowrap"}, 
  		          React.createElement("tr", null, 
  		            React.createElement("th", null, "修改人姓名"), 
  		            React.createElement("th", null, "修改时间"), 
  		            React.createElement("th", null, "具体操作")
- 		          ), 			 
+ 		          ), 
  	    			  this.props.events.map(function(event) {
  	    			      return (
  	    					      React.createElement("tr", {className: className}, 
  	    				 	        React.createElement("td", null, event.create_user), 
  	    				 	        React.createElement("td", null, event.create_time), 
- 	    				 	        React.createElement("td", null, event.message), "                   ") 
+ 	    				 	        React.createElement("td", null, event.message), "                   ")
  	    			    		  )
- 	    			         })	
- 	    			  )		  
+ 	    			         })
+ 	    			  )
  	    	  );
  }
- }); 
- 
+ });
+
  /*幼儿园学生列表中查看学生信息绘制公用方法
   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-  * 
+  *
   * */
  var Kd_commons_Class_student_look_info =React.createClass({displayName: "Kd_commons_Class_student_look_info",
 	 isRight:false,
  	 getInitialState: function() {
-			
+
 			this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
-      	stutent_operate:function(uuid,pageNo){	
+      	stutent_operate:function(uuid,pageNo){
 		React.render(React.createElement(Common_operate_rect,
 		 		{uuid:uuid,
 			    pageNo:pageNo
-		   }),  document.getElementById(this.div_reply_save_id));		
-	},	
+		   }),  document.getElementById(this.div_reply_save_id));
+	},
 	  //加载绑定卡信息
 	  ajax_loadStudentbind_card:function(studentuuid){
 		  var that=this;
@@ -1696,7 +1956,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 		  var that=this;
 		  ajax_studentbind_apply(studentuuid,function(){
 			  that.ajax_loadStudentbind_card(studentuuid);
-			  
+
 		  });
 	  },
 	  btn_studentbind_cancelApply:function(studentuuid){
@@ -1707,7 +1967,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 		  }
 		  ajax_studentbind_cancelApply(studentuuid,that.last_apply_userid,function(){
 			  that.ajax_loadStudentbind_card(studentuuid);
-			  
+
 		  });
 	  },
 	  componentDidMount:function(){
@@ -1722,13 +1982,13 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     var imglist=[imgGuid];
 	     var rect_info=(React.createElement("div", null));
 	     if(this.isRight||this.props.type==2){
-	    	 rect_info=(		 		 
+	    	 rect_info=(
 	    		  React.createElement(AMR_ButtonToolbar, null, 
 				    React.createElement(AMR_Button, {amStyle: "secondary", onClick: ajax_myclass_students_edit.bind(this,o.uuid)}, "修改学生"), 
 			 	   React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.btn_studentbind_apply.bind(this,o.uuid)}, "申请接送卡"), 
 			 	   React.createElement(AMR_Button, {amStyle: "warning", id: "btn_cancelApply", onClick: this.btn_studentbind_cancelApply.bind(this,o.uuid)}, "取消申请接送卡"), 
 					 React.createElement(AMR_Button, {amStyle: "danger", onClick: ajax_student_delete.bind(this,o.uuid)}, "删除"), 
-		 	   	
+
 				 React.createElement(G_help_popo, {msg: G_tip.studentbind_app})
 			 	  ))
 	     }
@@ -1737,7 +1997,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  		 		React.createElement("hr", null), 
  		 		rect_info, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
-			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
+			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 
 				  React.createElement("br", null), 
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, {id: "input_studentbind_card"}, "接送卡号:加载中..."), 
@@ -1762,39 +2022,39 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement(Class_student_Tel_ListItem, {name: "其他电话", tel: o.other_tel, parentList: this.props.parentList, uuid: o.uuid}), 
 			      React.createElement(AMUIReact.ListItem, null, 
 			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
- 			      )			        			      
+ 			      )
  			      ), 
  		    	    React.createElement(AMR_ButtonToolbar, null, 
  			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
  			 	    ), 
-			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
- 		 	     ) 
+			    React.createElement("div", {id: this.div_reply_save_id}, "   ")
+ 		 	     )
  		     );
  	        }
  		 });
- 
- 
- 
+
+
+
  /*培训机构学生列表中查看学生信息绘制公用方法
   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-  * 
+  *
   * */
  var Px_Commons_Class_student_look_info =React.createClass({displayName: "Px_Commons_Class_student_look_info",
  	 getInitialState: function() {
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
-      	stutent_operate:function(uuid,pageNo){	
+      	stutent_operate:function(uuid,pageNo){
 		React.render(React.createElement(Common_operate_rect,
 		 		{uuid:uuid,
 			    pageNo:pageNo
-		   }),  document.getElementById(this.div_reply_save_id));		
-	},	
+		   }),  document.getElementById(this.div_reply_save_id));
+	},
 	  btn_studentbind_apply:function(studentuuid){
 		  var that=this;
 		  ajax_studentbind_apply(studentuuid,function(){
 			  that.ajax_loadStudentbind_card(studentuuid);
-			  
+
 		  });
 	  },
  		render: function() {
@@ -1805,18 +2065,18 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	     var imglist=[imgGuid];
 	     var rect_info=(React.createElement("div", null));
 	     if(this.props.type==2){
-	    	 rect_info=(		 		 
+	    	 rect_info=(
 	 		 		 React.createElement(AMR_ButtonToolbar, null, 
 	  		 	     React.createElement(AMR_Button, {amStyle: "secondary", onClick: ajax_myclass_students_edit.bind(this,o.uuid)}, "修改学生"), 
 					  React.createElement(AMR_Button, {amStyle: "danger", onClick: ajax_pxstudent_delete.bind(this,o.uuid)}, "删除")
-		 	   	
-	  		 	     )); 
+
+	  		 	     ));
 	     }
  		 return (
  		 		React.createElement("div", null, 
  		 		rect_info, 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
-			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
+			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 
 				  React.createElement("br", null), 
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, null, "昵称:", o.nickname), 
@@ -1838,22 +2098,22 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement(Class_student_Tel_ListItem, {name: "其他电话", tel: o.other_tel}), 
 			      React.createElement(AMUIReact.ListItem, null, 
 			      React.createElement("div", {dangerouslySetInnerHTML: {__html:G_textToHTML("说明:"+o.note)}})
- 			      )			        			      
+ 			      )
  			      ), 
  		    	    React.createElement(AMR_ButtonToolbar, null, 
  			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
  			 	    ), 
-			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
- 		 	     ) 
+			    React.createElement("div", {id: this.div_reply_save_id}, "   ")
+ 		 	     )
  		     );
  	        }
  		 });
- 
 
- 
+
+
  /*老师申请卡中查看信息绘制方法
   * <AMUIReact.ListItem>调用的为AMUIReact中的List 标签；
-  * 
+  *
   * */
  var Kd_commons_teacher_look_info =React.createClass({displayName: "Kd_commons_teacher_look_info",
 	 isRight:false,
@@ -1864,7 +2124,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 		if(!groupuuid){
 			groupuuid=group_List[0].uuid;
 		}
-		this.props.formdata.groupuuid=groupuuid;	
+		this.props.formdata.groupuuid=groupuuid;
 		this.props.formdata.groupArry=groupArry;
 		this.props.formdata.ickname=Store.getGroupNameByUuid(groupuuid);
  		this.isRight=G_user_hasRightByGroupuuid("KD_student_m",this.props.formdata.groupuuid);
@@ -1872,12 +2132,12 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
  		    return this.props.formdata;
  		  },
 		//查看操作记录方法
-      	stutent_operate:function(uuid,pageNo){	
+      	stutent_operate:function(uuid,pageNo){
 		React.render(React.createElement(Common_operate_rect,
 		 		{uuid:uuid,
 			    pageNo:pageNo
-		   }),  document.getElementById(this.div_reply_save_id));		
-	},	
+		   }),  document.getElementById(this.div_reply_save_id));
+	},
   //加载绑定卡信息
   ajax_loadStudentbind_card:function(uuid){
 	  var that=this;
@@ -1923,7 +2183,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	  var that=this;
 	  ajax_teacher_apply(uuid,this.state.groupuuid,function(){
 		  that.ajax_loadStudentbind_card(uuid);
-		  
+
 	  });
   },
   btn_studentbind_cancelApply:function(uuid){
@@ -1934,7 +2194,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	  }
 	  ajax_teacher_cancelApply(uuid,that.last_apply_userid,function(){
 		  that.ajax_loadStudentbind_card(uuid);
-		  
+
 	  });
   },
   componentDidMount:function(){
@@ -1944,11 +2204,11 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 	//切换学校
 	handleChange_selectclass_uuid:function(val){
 		var ickname=Store.getGroupNameByUuid(val);
-		var obj=this.state;		
+		var obj=this.state;
 		 obj.ickname=ickname;
 		 obj.groupuuid=val;
 		 this.setState(obj);
-	      },		
+	      },
   render: function() {
  	     var o =this.state;
 		 if(!o.status)o.status=0;
@@ -1967,7 +2227,7 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			 	   React.createElement(AMR_Button, {amStyle: "warning", id: "btn_cancelApply", onClick: this.btn_studentbind_cancelApply.bind(this,o.uuid)}, "取消申请接送卡")
 			 	  ), 
 			    React.createElement(AMUIReact.List, {static: true, border: true, striped: true}, 
-			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 				  
+			      React.createElement(Common_mg_big_fn, {imgsList: imglist}), 
 				  React.createElement("br", null), 
 			      React.createElement(AMUIReact.ListItem, {icon: "mobile"}, "姓名:", o.name), 
 			      React.createElement(AMUIReact.ListItem, {id: "input_studentbind_card"}, "接送卡号:加载中..."), 
@@ -1976,19 +2236,13 @@ React.createElement("iframe", {id: "t_iframe", onLoad: G_iFrameHeight.bind(this,
 			      React.createElement(Class_student_Tel_ListItem, {name: "电话", tel: o.tel}), 
 				  React.createElement(AMUIReact.ListItem, null, "学校:", o.ickname), 
                   React.createElement(AMUIReact.ListItem, null, "状态:", Vo.get("student_status_"+o.status))
-		        			      
+
  			      ), 
  		    	    React.createElement(AMR_ButtonToolbar, null, 
  			 	    React.createElement(AMR_Button, {amStyle: "secondary", onClick: this.stutent_operate.bind(this,o.uuid,o.pageNo)}, "加载修改记录")
  			 	    ), 
-			    React.createElement("div", {id: this.div_reply_save_id}, "   ")	
- 		 	     ) 
+			    React.createElement("div", {id: this.div_reply_save_id}, "   ")
+ 		 	     )
  		     );
  	        }
- 		 }); 
- 
- 
- 
- 
- 
- 
+ 		 });

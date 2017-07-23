@@ -446,7 +446,7 @@ public class UserinfoController extends AbstractRESTController {
 	}
 
 	/**
-	 * 添加用户
+	 * 添加用户到当期用户所在所有的幼儿园，删除所有关联关系，再根据新的幼儿园建立关系。
 	 * 
 	 * @param model
 	 * @param request
@@ -494,6 +494,7 @@ public class UserinfoController extends AbstractRESTController {
 		responseMessage.setMessage("增加成功");
 		return "";
 	}
+	
 
 	/**
 	 * 获取用户信息用于通讯录.去掉 wjd的学校.
@@ -1028,7 +1029,102 @@ public class UserinfoController extends AbstractRESTController {
 
 	
 	/**
-	 * 组织注册
+	 * 添加用户,当关联的幼儿园（注册老师，关联1个幼儿园老师）
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addToOneGroupByAdmin", method = RequestMethod.POST)
+	public String addToOneGroupByAdmin(ModelMap model, HttpServletRequest request) {
+		
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+
+		
+		// 请求消息体
+		String bodyJson = RestUtil.getJsonStringByRequest(request);
+		UserRegJsonform userRegJsonform;
+		try {
+			userRegJsonform = (UserRegJsonform) this.bodyJsonToFormObject(
+					bodyJson, UserRegJsonform.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setMessage(error_bodyJsonToFormObject);
+			return "";
+		}
+
+		try {
+			
+			// type 添加用户时需要指定用户类型
+			if (userRegJsonform.getType() == null) {
+				responseMessage.setMessage("用户类型不能为空！");
+				return "";
+			}
+			
+			if (StringUtils.isBlank(userRegJsonform.getGroup_uuid())) {
+				responseMessage.setMessage("关联机构不能为空！");
+				return "";
+			}
+			//设置当前用户
+//			SessionUserInfoInterface user=this.getUserInfoBySession(request);
+			
+			boolean noRight=true;
+			String myRightgroup=null;
+			
+			//平台管理员所有都可以修改.
+			if(noRight){
+				if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_role_m, request))noRight=false;
+			}
+			//该幼儿园管理员才可以修改.
+			if(noRight){
+				
+				String right=RightConstants.KD_teacher_m;
+				if(SessionListener.isPXLogin(request)){
+					right=RightConstants.PX_teacher_m;
+				}
+				myRightgroup=RightUtils.getRightGroups(right, request);
+				
+				if(StringUtils.isBlank(myRightgroup)){
+		            responseMessage.setMessage( RightConstants.Return_msg );
+		            return "";
+				}
+				
+				String[] groupStrArr=userRegJsonform.getGroup_uuid().split(",");
+				for(int i=0;i<groupStrArr.length;i++){
+					
+					if(!RightUtils.hasRight(groupStrArr[i], right, request)){
+							responseMessage.setMessage("非法操作,没有该幼儿园老师管理权限.");
+					}
+				}
+				
+			}
+			
+			boolean flag = userinfoService
+					.addToOneGroup(userRegJsonform, responseMessage,myRightgroup);
+			if (!flag)// 请求服务返回失败标示
+				return "";
+			
+			String desc=bodyJson;
+			userinfoService.addLog("addUserByAdmin","添加用户", desc, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage("服务器异常:"+e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		
+		return "";
+	}
+	
+	
+	/**
+	 * 组织注册（编辑使用，可以同时去除多个关联关系，废弃）
 	 * 
 	 * @param model
 	 * @param request
@@ -1149,6 +1245,82 @@ public class UserinfoController extends AbstractRESTController {
 		try {
 			
 			boolean flag = userinfoService.delete(request.getParameter("uuid"),
+					responseMessage,request);
+			if (!flag)
+				return "";
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			responseMessage.setStatus(RestConstants.Return_ResponseMessage_failed);
+			responseMessage.setMessage(e.getMessage());
+			return "";
+		}
+
+		responseMessage.setStatus(RestConstants.Return_ResponseMessage_success);
+		responseMessage.setMessage("删除成功");
+		return "";
+	}
+	
+	
+
+	/**
+	 * 从幼儿园移除多个老师
+	 * @param groupuuid
+	 * @param useruuids
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteUsersOfGroupRelation", method = RequestMethod.POST)
+	public String deleteUsersOfGroupRelation(ModelMap model, HttpServletRequest request) {
+		
+		
+		String groupuuid=request
+				.getParameter("groupuuid");
+		String useruuids=request
+				.getParameter("useruuids");
+		
+	
+		// 返回消息体
+		ResponseMessage responseMessage = RestUtil
+				.addResponseMessageForModelMap(model);
+		
+		if(DBUtil.isSqlInjection(groupuuid, responseMessage))return "";
+		if(DBUtil.isSqlInjection(useruuids, responseMessage))return "";
+		
+		
+		
+		boolean noRight=true;
+		String myRightgroup=null;
+		
+		//平台管理员所有都可以修改.
+		if(noRight){
+			if(RightUtils.hasRight(SystemConstants.Group_uuid_wjkj, RightConstants.AD_user_del, request))noRight=false;
+		}
+		//该幼儿园管理员才可以修改.
+		if(noRight){
+			
+			String right=RightConstants.KD_teacher_m;
+			if(SessionListener.isPXLogin(request)){
+				right=RightConstants.PX_teacher_m;
+			}
+			if(RightUtils.hasRight(groupuuid, right, request)){
+				noRight=false;
+			}
+			
+			
+		}
+		
+		if(noRight){
+			responseMessage.setMessage("没有老师管理权限");
+			return "";
+		}
+		try {
+			
+			boolean flag = userinfoService.deleteUsersOfGroupRelation(groupuuid,useruuids,
 					responseMessage,request);
 			if (!flag)
 				return "";

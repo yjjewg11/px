@@ -5,7 +5,7 @@
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
 
  * 保存通用方法
- * 
+ *
  * 表单格式
 var opt={
 	 formName:"editClassnewsForm",
@@ -21,7 +21,7 @@ var opt={
 	 cbFN:null,
 	 }
 	 G_ajax_abs_save(opt);
-	 
+
 	 opt.jsonString等于空的时候执行一次opt.jsonString=JSON.stringify(formObject);我们自己去取一次formName表单;
  */
 function G_ajax_abs_save(opt){
@@ -29,12 +29,12 @@ $.AMUI.progress.start();
 	  if(!opt.jsonString){
 		  formObject = $('#'+opt.formName).serializeJson();
 		  opt.jsonString=JSON.stringify(formObject);
-	  }		 
+	  }
 	  var async=true;
 	  if(opt.async===false){
 		  async=opt.async;
 	  }
-	  
+
 	  if(typeof opt.success!='function'){
 		  opt.success= function(data) {
 				$.AMUI.progress.done();
@@ -46,7 +46,7 @@ $.AMUI.progress.start();
 						G_msg_pop(data.ResMsg.message);
 						Queue.doBackFN();
 					}
-					
+
 				} else {
 					alert(data.ResMsg.message);
 				}
@@ -58,7 +58,7 @@ $.AMUI.progress.start();
 		processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
 		data:opt.jsonString,
 		dataType : "json",
-		contentType : false, 
+		contentType : false,
 		async:async,
 		success :opt.success,
 		error : G_ajax_error_fn
@@ -74,7 +74,7 @@ function G_ajax_shouc_save(opt){
 		  if(!opt.jsonString){
 			  formObject = $('#'+opt.formName).serializeJson();
 			  opt.jsonString=JSON.stringify(formObject);
-		  }		 
+		  }
 		  var async=true;
 		  if(opt.async===false){
 			  async=opt.async;
@@ -85,7 +85,7 @@ function G_ajax_shouc_save(opt){
 			processData: false, //设置 processData 选项为 false，防止自动转换数据格式。
 			data:opt.jsonString,
 			dataType : "json",
-			contentType : false, 
+			contentType : false,
 			async:async,
 			success : function(data) {
 				$.AMUI.progress.done();
@@ -97,7 +97,7 @@ function G_ajax_shouc_save(opt){
 						G_msg_pop(data.ResMsg.message);
 						//Queue.doBackFN();
 					}
-					
+
 				}else{
 					G_resMsg_Timeout(data.ResMsg)
 				}
@@ -106,7 +106,7 @@ function G_ajax_shouc_save(opt){
 		});
 	}
 
- 
+
 
 
 /**
@@ -117,13 +117,13 @@ function G_ajax_shouc_save(opt){
 w_img_upload_nocut={
 		div_id:"div_widget_chooseUser",
 		div_body:"div_body",
-		
+
 		cropper:null,
 		callbackFN:null,
 		type:4,
 		base64:null,
 		groupuuid:null,//用于添加水印时填值
-		
+
 		//客户端压缩图片
 		/**
 		 * lrz_callback:压缩完成后,回调函数.
@@ -151,7 +151,7 @@ w_img_upload_nocut={
 		                    size: results.base64.length // 校验用，防止未完整接收
 		                };*/
 			            if(results&&results.base64){
-			            	
+
 			            	w_img_upload_nocut.ajax_uploadByphone(results.base64);
 			            }
 		            }
@@ -163,7 +163,7 @@ w_img_upload_nocut={
 		1.绑定上传图片.w_img_upload_nocut.bind_onchange(fileId,callbackFN)
 2.传入学校uuid,后台判断是否加水印.w_img_upload_nocut.groupuuid=null;
 		*/
-		
+
 		bind_onchange:function(fileId,callbackFN){
 			w_img_upload_nocut.upload_files_arr=[];
 			w_img_upload_nocut.groupuuid=null;//清空
@@ -179,11 +179,11 @@ w_img_upload_nocut={
 					//支持多 图片上传
 					for(var i=0;i<this.files.length;i++){
 						w_img_upload_nocut.upload_files_arr.push(this.files[i]);
-					}					
+					}
 					w_img_upload_nocut.do_lrz();
-			
-				
-				
+
+
+
 			  });//end change
 		},
 		ajax_uploadByphone:function(base64){
@@ -193,7 +193,7 @@ w_img_upload_nocut={
 			$.ajax({
 				type : "POST",
 				url : url,
-				timeout : 0, 
+				timeout : 0,
 				dataType : "json",
 				data:{groupuuid:w_img_upload_nocut.groupuuid,type:w_img_upload_nocut.type,base64:base64},
 				 async: true,
@@ -213,14 +213,14 @@ w_img_upload_nocut={
 				},
 				error :G_ajax_error_fn
 			});
-			
+
 		}
 };
 //uploadImg
 /**1我的头像,2:菜谱
 * w_uploadImg.open(callbackFN,type);
 * w_uploadImg.base64='data:image/png;base64,iVBORw0KG...'
-* 
+*
 * w_uploadImg.ajax_uploadByphone(base64);
 */
 var w_uploadImg={
@@ -236,7 +236,7 @@ var w_uploadImg={
 			$.ajax({
 				type : "POST",
 				url : url,
-				timeout : 0, 
+				timeout : 0,
 				dataType : "json",
 				data:{type:w_uploadImg.type,base64:base64},
 				 async: true,
@@ -248,14 +248,14 @@ var w_uploadImg={
 							w_uploadImg.callbackFN(data.imgUrl,data.data.uuid);
 						}
 						w_uploadImg.hide();
-						
+
 					} else {
 						alert(data.ResMsg.message);
 					}
 				},
 				error : G_ajax_error_fn
 			});
-			
+
 		},
 		ajax_upload:function(){
 			$.AMUI.progress.start();
@@ -263,7 +263,7 @@ var w_uploadImg={
 			$.ajax({
 				type : "POST",
 				url : url,
-				timeout : 0, 
+				timeout : 0,
 				dataType : "json",
 				data:{type:w_uploadImg.type,base64:w_uploadImg.base64},
 				 async: true,
@@ -275,29 +275,29 @@ var w_uploadImg={
 							w_uploadImg.callbackFN(data.imgUrl,data.data.uuid);
 						}
 						w_uploadImg.hide();
-						
+
 					} else {
 						alert(data.ResMsg.message);
 					}
 				},
 				error : G_ajax_error_fn
 			});
-			
+
 		},
 		handleClick: function(m) {
 			if("cancel"==m){
 				w_uploadImg.hide();
 				return;
-				
+
 			} if("ok"==m){
 				if(w_uploadImg.base64==null){
 					alert("请先剪切图片，在提交。");
 					return;
 				}
 				w_uploadImg.ajax_upload();
-				
+
 			}
-			 
+
      	  },
 		open:function(callbackFN,type){
 			if(!type)type=1;
@@ -308,26 +308,39 @@ var w_uploadImg={
 			w_uploadImg.show();
 		},
 		show:function(){
-			
+
 			React.render(React.createElement(Upload_headImg, {
 				responsive: true, bordered: true, striped :true,hover:true,striped:true
 				}), document.getElementById(w_ch_user.div_id));
 			$("#"+this.div_body).hide();
 			$("#"+this.div_id).show();
-			
+
 		},
-		
+
 		hide:function(callbackFN){
 			$("#"+this.div_body).show();
 			$("#"+this.div_id).html("");
-		}	
+		}
 };
 //修改密码
 function menu_userinfo_updatepassword_fn(){
-	Queue.push(menu_userinfo_updatepassword_fn,"修改密码");	
+	Queue.push(menu_userinfo_updatepassword_fn,"修改密码");
 	React.render(React.createElement(Div_userinfo_updatepassword,null)
 			, document.getElementById('div_body'));
 }
+
+	/*
+	* <老师管理>提交Button事件-添加1个老师到一个学校
+	* */
+	function ajax_userinfo_addToOneGroupByAdmin(){
+	 if($("#password")[0])$("#password").val($.md5($("#password").val()));
+		 var opt={
+						 formName: "editUserinfoForm",
+						 url:hostUrl + "rest/userinfo/addToOneGroupByAdmin.json",
+						 cbFN:null
+						 };
+	G_ajax_abs_save(opt);
+	}
 
 //用户登陆(修改密码也调用)
 function ajax_userinfo_updatepassword() {
@@ -338,18 +351,18 @@ function ajax_userinfo_updatepassword() {
 		  return;
 	  }
 	  delete objectForm.password1;
-	  objectForm.oldpassword=$.md5(objectForm.oldpassword); 
-	  objectForm.password=$.md5(objectForm.password); 
+	  objectForm.oldpassword=$.md5(objectForm.oldpassword);
+	  objectForm.password=$.md5(objectForm.password);
   var jsonString=JSON.stringify(objectForm);
   var url = hostUrl + "rest/userinfo/updatepassword.json";
-			
+
 	$.ajax({
 		type : "POST",
 		url : url,
-		processData: false, 
+		processData: false,
 		data : jsonString,
 		dataType : "json",
-		contentType : false,  
+		contentType : false,
 		success : function(data) {
 			$.AMUI.progress.done();
 			// 登陆成功直接进入主页
@@ -376,21 +389,21 @@ function ajax_userinfo_getRole(useruuid,usernames,groupuuid,roleList){
 		success : function(data) {
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
-				
+
 				React.render(React.createElement(Userinfo_getRole, {
 					formdata:{useruuid:useruuid,username:usernames},
 					events: roleList,
 					chooselist: JSON.stringify(data.list),
 					responsive: true, bordered: true, striped :true,hover:true,striped:true
 					}), document.getElementById('div_body'));
-				
+
 			} else {
 				alert(data.ResMsg.message);
 			}
 		},
 		error : G_ajax_error_fn
 	});
-	
+
 };
 /*
  * 老师管理Button事件(启用和禁用按钮功能)；
@@ -424,7 +437,7 @@ function ajax_userinfo_updateDisable(useruuids,disable){
 
 //（我）<修改资料>
 function menu_userinfo_update_fn(){
-	Queue.push(menu_userinfo_update_fn,"修改资料");	
+	Queue.push(menu_userinfo_update_fn,"修改资料");
 	React.render(React.createElement(Div_userinfo_update,{formdata:Store.getUserinfo()})
 			, document.getElementById('div_body'));
 }
@@ -440,7 +453,7 @@ function ajax_userinfo_update() {
 			 }
 			 };
 	G_ajax_abs_save(opt);
-	
+
 }
 
 
@@ -456,7 +469,7 @@ function ajax_userteacher_save() {
 			 }
 			 };
 	G_ajax_abs_save(opt);
-	
+
 }
 
 //获取班级信息公用模板方法 return 出去做
@@ -481,7 +494,7 @@ function commons_ajax_dianzan_getByNewsuuid(newsuuid){
 		},
 		error :G_ajax_error_fn
 	});
-	
+
 	return reObj;
 };
 /*
@@ -501,10 +514,10 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan,dianzansave_callback)
 		$.ajax({
 			type : "POST",
 			url : url,
-			processData: false, 
+			processData: false,
 			data : jsonString,
 			dataType : "json",
-			contentType : false,  
+			contentType : false,
 			success : function(data) {
 				$.AMUI.progress.done();
 				// 登陆成功直接进入主页
@@ -519,8 +532,8 @@ function common_ajax_dianzan_save(newsuuid,type,canDianzan,dianzansave_callback)
 			},
 			error : G_ajax_error_fn
 		});
-	
-	
+
+
 }
 
 
@@ -585,8 +598,8 @@ function common_ajax_reply_save(callback,formid){
  * */
 function commons_ajax_favorites_push(title,type,reluuid,url){
 	var formObject={
-			title:title+"",type:type+"",reluuid:reluuid+"",url:url+""	
-	};	
+			title:title+"",type:type+"",reluuid:reluuid+"",url:url+""
+	};
 	 var jsonString=JSON.stringify(formObject);
 	 var opt={
 			// formObject:formObject,
@@ -595,7 +608,7 @@ function commons_ajax_favorites_push(title,type,reluuid,url){
 			 cbFN:null
 			 };
 			 G_ajax_shouc_save(opt);
-	
+
 };
 
 
@@ -611,50 +624,50 @@ function commons_ajax_favorites_push(title,type,reluuid,url){
  */
 function common_teacherDailyTask_type(type){
 	var teacherDailyTask_name;
-	 switch (type)   
+	 switch (type)
 	   {
-  case 0:     
-	      teacherDailyTask_name="公告信息"; 
-	       break; 
-  case 1:    
-	      teacherDailyTask_name="老师公告";  
-           break;   
-  case 3:   
-	      teacherDailyTask_name="精品文章"; 
+  case 0:
+	      teacherDailyTask_name="公告信息";
+	       break;
+  case 1:
+	      teacherDailyTask_name="老师公告";
            break;
-	case 4:  
-	      teacherDailyTask_name="招生计划"; 
+  case 3:
+	      teacherDailyTask_name="精品文章";
+           break;
+	case 4:
+	      teacherDailyTask_name="招生计划";
 	       break;
   case 7:
-	  	  teacherDailyTask_name="课程表"; 
+	  	  teacherDailyTask_name="课程表";
 	       break;
-	case 6:  
-	      teacherDailyTask_name="食谱"; 
+	case 6:
+	      teacherDailyTask_name="食谱";
 	       break;
 	case 5:
-		  teacherDailyTask_name="精品课程"; 
+		  teacherDailyTask_name="精品课程";
            break;
 	case 99:
-		  teacherDailyTask_name="班级互动"; 
+		  teacherDailyTask_name="班级互动";
 	       break;
 	case 11:
-		  teacherDailyTask_name="家长通讯录"; 
+		  teacherDailyTask_name="家长通讯录";
 	       break;
-	case 12: 
-		  teacherDailyTask_name="园长信箱"; 
+	case 12:
+		  teacherDailyTask_name="园长信箱";
 	       break;
-	case 13:  
-		  teacherDailyTask_name="签到记录"; 
+	case 13:
+		  teacherDailyTask_name="签到记录";
 	       break;
 	case 10:
-		  teacherDailyTask_name="Case 10"; 
+		  teacherDailyTask_name="Case 10";
 	       break;
-	   default:       
+	   default:
 		   teacherDailyTask_name="此信息为非法信息，请联系管理员！";
 	       Styte.out.println("此信息为非法信息，请联系管理员！");
 	       break;
 	   }
-	 return teacherDailyTask_name; 	
+	 return teacherDailyTask_name;
 }
 
 /*
@@ -671,9 +684,9 @@ function common_teacherDailyTask_status(status){
         	teacherDailyTask_status={status:"已过期",className:"am-danger"};
         }else{
         	teacherDailyTask_status={status:"有问题的状态",className:""};
-        } 
-	
-	 return teacherDailyTask_status; 	
+        }
+
+	 return teacherDailyTask_status;
 }
 
 
@@ -683,7 +696,7 @@ function common_teacherDailyTask_status(status){
  * 禁止发布公共组件方法
  * */
 function common_sns_check_disable(type,uuid){
-	
+
 	if(!confirm("确定要屏蔽吗?")){
 		return;
 	}
@@ -734,17 +747,17 @@ function common_check_illegal(type,uuid){
 }
 
 
-var G_html_preview=function(t_iframe,url,div,title) {   
-	 var ifm= document.getElementById(t_iframe);   
+var G_html_preview=function(t_iframe,url,div,title) {
+	 var ifm= document.getElementById(t_iframe);
 	 if(url){
 		 ifm.src=url;
 		 return;
 	 }else{
 		 ifm.src="about:blank";
 	 }
-	 
-	
-	 var subWeb = document.frames ? document.frames[t_iframe].document : ifm.contentDocument; 
+
+
+	 var subWeb = document.frames ? document.frames[t_iframe].document : ifm.contentDocument;
 	 subWeb.open("text/html","replace");
 
 	  subWeb.write("<!doctype html>");
@@ -754,16 +767,16 @@ var G_html_preview=function(t_iframe,url,div,title) {
 		  subWeb.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no\">");
 		  subWeb.write('<link rel="stylesheet" href="../css/share.css?160602"/>');
 
-		
+
 
 
 		  subWeb.write("</head><body>");
-		   
+
 		  if(title) subWeb.write(' <h2  class="art_title">'+title+'</h2>');
 	 subWeb.write("<div class='am-gallery'>"+div+"</div>");
 
 
-	 
+
   subWeb.write('  <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>');
   subWeb.write('<script src="http://cdn.amazeui.org/amazeui/2.4.2/js/amazeui.min.js"></script>');
 
@@ -783,7 +796,7 @@ function G_getHtmlTitle(url,callback){
 	if(url){
 			 if(url==G_getHtmlTitle_url)return;
 		 if(url.indexOf("http://")>-1||url.indexOf("https://")>-1){
-		
+
 				G_getHtmlTitle_url=url;
 
 				if(G_getHtmlTitle_ajax_loading)return;
@@ -806,14 +819,14 @@ function G_getHtmlTitle(url,callback){
 							 G_getHtmlTitle(url,callback);
 							 return;
 						 }
-				
+
 						if (data.ResMsg.status == "success") {
 							if(data.data)callback(data.data);
 
-					
-						} 
+
+						}
 					}
-				});	
+				});
 		 }
 
 	  }
@@ -830,8 +843,8 @@ function G_getHtmlTitle(url,callback){
 function common_stutent_operate(studen_tuuid,list_div,pageNo,callback) {
 	if(!pageNo)pageNo=1;
 		var url = hostUrl + "rest/operate/query.json";
-		$.ajax({          
-			type : "GET",  
+		$.ajax({
+			type : "GET",
 			url : url,
 			data:{studentuuid:studen_tuuid,pageNo:pageNo},
 			dataType : "json",
@@ -846,7 +859,7 @@ function common_stutent_operate(studen_tuuid,list_div,pageNo,callback) {
 					}), document.getElementById(list_div));
  	 				if(typeof callback=='function'){
  						callback(data.list);
- 					}	
+ 					}
  				} else {
  					alert(data.ResMsg.message);
  				}
@@ -872,13 +885,13 @@ function common_classnews_url(data){
 			url:data
 			}),G_get_div_second());
 };
-//登录失败跳转登录界面	
+//登录失败跳转登录界面
 function G_resMsg_filter(ResMsg){
 	if("sessionTimeout"==ResMsg.status){
 		//window.location = hostUrl + "login.html";
 		menu_userinfo_login_fn();
 	}
-}	
+}
 
 //sessionTimeout公用方法.
 function G_resMsg_Timeout(ResMsg){
@@ -914,11 +927,11 @@ function G_class_students_look_info(uuid,ajaxYype,type){
 			$.AMUI.progress.done();
 			if (data.ResMsg.status == "success") {
 				if(ajaxYype==1){
-					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,parentList:data.parentList,type:type}), G_get_div_body());	
+					React.render(React.createElement( Kd_commons_Class_student_look_info,{formdata:data.data,parentList:data.parentList,type:type}), G_get_div_body());
 				}else{
 					React.render(React.createElement( Px_Commons_Class_student_look_info,{formdata:data.data,parentList:data.parentList,type:type}), G_get_div_body());
 				}
-			} else { 
+			} else {
 				alert("加载数据失败："+data.ResMsg.message);
 			}
 		},
@@ -952,8 +965,8 @@ function G_class_teacher_look_info(uuid,type){
 		if (data.ResMsg.status == "success") {
 			React.render(React.createElement( Kd_commons_teacher_look_info,{
 				formdata:data.data,
-				mygroup_uuids:data.mygroup_uuids			
-			}), G_get_div_body());	
+				mygroup_uuids:data.mygroup_uuids
+			}), G_get_div_body());
 
 			} else {
 				alert("加载数据失败："+data.ResMsg.message);
