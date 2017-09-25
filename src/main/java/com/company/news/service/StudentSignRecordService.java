@@ -3,6 +3,7 @@ package com.company.news.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,33 +106,99 @@ public class StudentSignRecordService extends AbstractService {
 	 * @throws Exception
 	 */
 	public List updateStatMonthByTeacher(String yyyy_mm, String groupuuid,ResponseMessage responseMessage) throws Exception {
+		
 		Session s = this.nSimpleHibernateDao.getHibernateTemplate().getSessionFactory().openSession();
 		
 		
 		//1.获取学校有门禁卡的所有用户.
 		//startDatestr="2015-09-17 00:00:00";
+//		
+//		String sql = "select DISTINCT s1.uuid,s1.name ";
+//		sql+=" from px_user s1 inner join px_studentbind b2 on  b2.studentuuid=s1.uuid   " ;
+//		sql+=" where b2.cardid is not null and b2.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
+//		sql+="order by CONVERT( s1.name USING gbk)";
+//		
+//		
 		
+		//过滤掉卡还在，但是老师不在学校的老师数据
 		String sql = "select DISTINCT s1.uuid,s1.name ";
 		sql+=" from px_user s1 inner join px_studentbind b2 on  b2.studentuuid=s1.uuid   " ;
+		sql+="  inner join px_usergrouprelation px_usergrouprelation on  px_usergrouprelation.useruuid=s1.uuid   " ;
 		sql+=" where b2.cardid is not null and b2.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
 		sql+="order by CONVERT( s1.name USING gbk)";
+		
+		
+		
 		
 		//student_uuid,cardid,userid,student_name
 		Query q = s.createSQLQuery(sql);
 		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		List<Map> userlist=q.list();
-		
+//		
+//		if(userlist.size()==0){
+//			responseMessage.setMessage(yyyy_mm+"月没有刷卡记录.");
+//			return null;
+//		}
+//		
+//		
+//		List<String> userIdList=new ArrayList();
+//		
+//		
+//		for(Map userMap:userlist){
+//			userIdList.add((String)userMap.get("uuid"));
+//		}
+//		
 		
 		//2.获取 一个学校,一个月的,每天最小打卡时间,最大打卡时间.
 		
+		
+		String sqlUserids = " select useruuid  from px_usergrouprelation   where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
+		
+		
 		 sql = "select studentuuid,DATE_FORMAT(sign_time,'%d') as dd";
 		sql+=" ,CONCAT(DATE_FORMAT(min(sign_time),'%H:%i'),'-',DATE_FORMAT(max(sign_time),'%H:%i')) as sign_time2 " ;
+		sql+=" from  px_studentsignrecord ";
+		sql+=" where groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' and DATE_FORMAT(sign_time,'%Y-%m')='"+yyyy_mm+"'";
+		sql+=" and   studentuuid in("+sqlUserids+")";
+		sql+=" GROUP BY  studentuuid, DATE_FORMAT(sign_time,'%Y-%m-%d')  ; ";
 		
-		sql+=" from  px_studentsignrecord where studentuuid is not null ";
-		sql+=" and groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"' and DATE_FORMAT(sign_time,'%Y-%m')='"+yyyy_mm+"'";
-		sql+="GROUP BY  studentuuid, DATE_FORMAT(sign_time,'%Y-%m-%d')  ORDER BY studentuuid; ";
 		
 		
+		
+		
+		
+//		
+//		
+//		
+//		
+//		Calendar yyyy_mm_Calendar=TimeUtils.string2Calendar("yyyy-MM", yyyy_mm);
+//		
+//		yyyy_mm_Calendar.set(Calendar.DAY_OF_MONTH, 1);
+//		yyyy_mm_Calendar.set(Calendar.HOUR_OF_DAY, 0);
+//		yyyy_mm_Calendar.set(Calendar.MINUTE, 0);
+//		yyyy_mm_Calendar.set(Calendar.SECOND, 0);
+//		
+//    	
+//		Date startDate=yyyy_mm_Calendar.getTime();
+//		
+//		yyyy_mm_Calendar.add(Calendar.MONTH, 1);
+//		Date endDate=yyyy_mm_Calendar.getTime();
+//		
+//		String startDatestr=TimeUtils.getDateTimeString(startDate);
+//		String endDatestr=TimeUtils.getDateTimeString(endDate);
+//		
+//		
+//		
+////		
+//		
+//		 sql = "select px_studentsignrecord.studentuuid,DATE_FORMAT(px_studentsignrecord.sign_time,'%d') as dd";
+//			sql+=" ,CONCAT(DATE_FORMAT(min(px_studentsignrecord.sign_time),'%H:%i'),'-',DATE_FORMAT(max(px_studentsignrecord.sign_time),'%H:%i')) as sign_time2 " ;
+//			
+//			sql+=" from  px_studentsignrecord ";
+//			sql+="  inner join px_usergrouprelation px_usergrouprelation on  px_usergrouprelation.useruuid=px_studentsignrecord.studentuuid   " ;
+//			sql+=" where px_studentsignrecord.sign_time>"+DBUtil.stringToDateByDBType(startDatestr)+" and px_studentsignrecord.sign_time<"+DBUtil.stringToDateByDBType(endDatestr)+" and px_usergrouprelation.groupuuid='"+DbUtils.safeToWhereString(groupuuid)+"'";
+//			sql+=" GROUP BY  px_studentsignrecord.studentuuid, DATE_FORMAT(px_studentsignrecord.sign_time,'%Y-%m-%d'); ";
+//			
 	
 		
 		//student_uuid,cardid,userid,student_name
@@ -164,7 +231,30 @@ public class StudentSignRecordService extends AbstractService {
 				
 		if(list.size()==0){
 			responseMessage.setMessage(yyyy_mm+"月没有刷卡记录.");
-			return null;
+			List resultList=new ArrayList();
+			//3.3 保存一个用户的一月数据
+			for(Map userMap:userlist){
+				String studentuuid=(String)userMap.get("uuid");
+				String name=(String)userMap.get("name");
+				JSONObject json=jsonmap.get(studentuuid);
+				String jsonstr=null;
+				if(json!=null){
+					 jsonstr=json.toString();
+				}
+				StatMonthAttendance statData=new StatMonthAttendance();
+				statData.setType(SystemConstants.StatMonthAttendance_type_1);
+				statData.setGroupuuid("groupuuid");
+				statData.setUseruuid(studentuuid);
+				statData.setUsername(name);
+				statData.setYyyy_mm(yyyy_mm);
+				statData.setJsonstr(jsonstr);
+				resultList.add(statData);
+			
+			}
+			
+			
+			return resultList;
+			
 		}
 		else if(!isSaveStatMonth){
 			 sql = "delete from px_stat_month_attendance where type="+SystemConstants.StatMonthAttendance_type_1;
